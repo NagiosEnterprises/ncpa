@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+
+import socket
+import sys
+import optparse
+
+try:
+    import json
+except:
+    import simplejson as json
+
+def parse_args():
+    parser = optparse.OptionParser()
+    parser.add_option("-H","--hostname")
+    parser.add_option("-M","--metric")
+    parser.add_option("-P","--port",default=9990,type="int")
+    parser.add_option("-w","--warning",default=None,type="str")
+    parser.add_option("-c","--critical",default=None,type="str")
+    parser.add_option("-s","--spec",default="",type="str")
+    options, args = parser.parse_args()
+    
+    if not options.hostname:
+        parser.print_help()
+        parser.error("Hostname is required for use.")
+    if not options.metric:
+        parser.print_help()
+        parser.error("Metric is required.")
+    
+    return options
+
+def query_server(host, metric, port, warning, critical, spec=''):
+    data_string = json.dumps({  'metric'    : metric,
+                                'warning'   : warning,
+                                'critical'  : critical,
+                                'spec'      : spec })
+    # Create a socket (SOCK_STREAM means a TCP socket)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        # Connect to server and send data
+        sock.connect((host, port))
+        sock.sendall(data_string + "\n")
+        # Receive data from the server and shut down
+        received = sock.recv(1024)
+    finally:
+        sock.close()
+    #~ print "Sent:     {}".format(data_string)
+    #~ print "Received: {}".format(received)
+    return json.loads(received)
+
+#~ def in_range(value, dst_range):
+    
+
+#~ def parse_result(received, options):
+    #~ values = received['values']
+    #~ if values == '':
+        #~ retcode = 2
+    #~ elif options.wa
+
+if __name__ == "__main__":
+    options = parse_args()
+    host = getattr(options, 'hostname')
+    port = getattr(options, 'port')
+    metric = getattr(options, 'metric')
+    warning = getattr(options, 'warning')
+    critical = getattr(options, 'critical')
+    spec = getattr(options, 'spec')
+    received = query_server(host, metric, port, warning, critical, spec)
+    print received['stdout']
+    sys.exit(received['returncode'])
+    #~ parse_result(recieved, options)
