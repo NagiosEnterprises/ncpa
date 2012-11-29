@@ -90,14 +90,14 @@ class ReturnObject(object):
         a plugin, returns true if value is withing the range value
         '''
         import re
-        #~ If its blank, return False so that it will always be OK
+        #~ If its blank, return False so that it will never trigger an alert
         if not trange:
-            False
+            return False
         #~ If its only a number
         is_match = re.match(r'^(\d+)$', trange)
         if is_match:
             tvalue = float(is_match.group(1))
-            return value > tvalue
+            return 0 >= value or value >= tvalue
         #~ If it contains a colon
         is_match = re.match(r'^(@?)(\d+|~):(\d*)$', trange)
         if is_match:
@@ -110,7 +110,7 @@ class ReturnObject(object):
                 top = float(is_match.group(3))
             except:
                 top = float('Inf')
-            preliminary = value > bottom and value < top
+            preliminary = value < bottom or value > top
             if at:
                 return not preliminary
             else:
