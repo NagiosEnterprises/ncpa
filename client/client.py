@@ -1,5 +1,9 @@
 #!/usr/bin/env python
+"""
+SYNOPSIS
 
+    
+"""
 import socket
 import sys
 import optparse
@@ -11,12 +15,25 @@ except:
 
 def parse_args():
     parser = optparse.OptionParser()
-    parser.add_option("-H","--hostname")
-    parser.add_option("-M","--metric")
-    parser.add_option("-P","--port",default=9990,type="int")
-    parser.add_option("-w","--warning",default=None,type="str")
-    parser.add_option("-c","--critical",default=None,type="str")
-    parser.add_option("-s","--spec",default="",type="str")
+    parser.add_option(  "-H","--hostname",
+                        help="The hostname to be connected to." )
+    parser.add_option(  "-M","--metric",
+                        help="The metric to check, this is defined on client system.")
+    parser.add_option(  "-P","--port",
+                        default=9990,
+                        type="int",
+                        help="Port to use to connect to the client.")
+    parser.add_option(  "-w","--warning",
+                        default=None,
+                        type="str",
+                        help="Warning value to be passed for the check.")
+    parser.add_option(  "-c","--critical",
+                        default=None,
+                        type="str",
+                        help="Critical value to be passed for the check.")
+    parser.add_option(  "-s","--spec",
+                        default="",
+                        type="str")
     options, args = parser.parse_args()
     
     if not options.hostname:

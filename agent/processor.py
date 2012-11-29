@@ -26,6 +26,10 @@ class ReturnObject(object):
         self.stdout = stdout
     
     def get_stdout(self):
+        '''
+        Wrapper script to be run after the check method is run, returns
+        the string to be put to stdout
+        '''
         retcode = self.get_return_code()
         if retcode == 0:
             prefix = 'OK'
@@ -44,6 +48,10 @@ class ReturnObject(object):
             return 'Error running plugin.'
     
     def get_perfdata(self):
+        '''
+        Returns string representing relevant perfdata, Takes no arguments,
+        returns perfdata string
+        '''
         if self.unit in ['s','%','c','B','KB','GB']:
             unit = self.unit
         else:
@@ -52,11 +60,19 @@ class ReturnObject(object):
         return ' '.join(perflist)
     
     def to_json(self):
+        '''
+        Wraps the nagios check result in a JSON for returning to
+        the server
+        '''
         this_dict = {   "returncode" : self.get_return_code(),
                         "stdout" : self.get_stdout() }
         return json.dumps(this_dict)
     
     def get_return_code(self):
+        '''
+        Looks at the internal variables self.warning and self.critical
+        and returns the proper nagios return code
+        '''
         returncode = 0
         if self.warning:
             for value in self.values:
@@ -69,6 +85,10 @@ class ReturnObject(object):
         return returncode
     
     def is_within_range(self, trange, value):
+        '''
+        Given a string Nagios range code, and a return value from
+        a plugin, returns true if value is withing the range value
+        '''
         import re
         #~ If its blank, return False so that it will always be OK
         if not trange:
@@ -97,7 +117,10 @@ class ReturnObject(object):
                 return preliminary
 
 def check_metric(submitted_dict):
-    
+    '''
+    Dispatch function that runs the proper metric, this function is
+    what all queries get handed to.
+    '''
     metric = submitted_dict['metric']
     warning = submitted_dict.get('warning','')
     critical = submitted_dict.get('critical','')
