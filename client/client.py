@@ -7,11 +7,7 @@ SYNOPSIS
 import socket
 import sys
 import optparse
-
-try:
-    import json
-except:
-    import simplejson as json
+import json
 
 def parse_args():
     parser = optparse.OptionParser()
@@ -60,18 +56,7 @@ def query_server(host, metric, port, warning, critical, spec=''):
         received = sock.recv(1024)
     finally:
         sock.close()
-    #~ print "Sent:     {}".format(data_string)
-    #~ print "Received: {}".format(received)
     return json.loads(received)
-
-#~ def in_range(value, dst_range):
-    
-
-#~ def parse_result(received, options):
-    #~ values = received['values']
-    #~ if values == '':
-        #~ retcode = 2
-    #~ elif options.wa
 
 if __name__ == "__main__":
     options = parse_args()
