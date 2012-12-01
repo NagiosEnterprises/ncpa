@@ -1,4 +1,5 @@
 import psutil
+import subprocess
 
 def check_cpu(item):
     item.values = psutil.cpu_percent(percpu=True)
@@ -21,4 +22,26 @@ def check_memory(item):
     item.set_stdout('Physical Memory Usage is at')
     return item
     
+def check_custom(item, name, script_args, *args, **kwargs):
+    '''
+    Runs custom scripts that MUST be located in the scripts subdirectory
+    of the executable
     
+    Notice, this command will replace all semicolons
+    '''
+    import os
+    import shlex
+    
+    command  = [os.path.abspath('scripts/%s' % (name))]
+    command += shlex.split(script_args)
+    
+    if item.warning:
+        command += ['-w', item.warning]
+    if item.critical:
+        command += ['-c', item.critical]
+    
+    running_check = subprocess.Popen(command)
+    running_check.wait()
+    
+    item.returncode = running_check.returncode
+    item.stdout = running_check.stdout.read()

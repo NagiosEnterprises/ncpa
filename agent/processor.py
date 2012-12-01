@@ -59,13 +59,17 @@ class ReturnObject(object):
         perflist = ["%s=%s%s" % (self.nice, x, unit) for x in self.values]
         return ' '.join(perflist)
     
-    def to_json(self):
+    def to_json(self, custom=False):
         '''
         Wraps the nagios check result in a JSON for returning to
         the server
         '''
-        this_dict = {   "returncode" : self.get_return_code(),
-                        "stdout" : self.get_stdout() }
+        if custom_plugin:
+            this_dict = {   "returncode" : self.get_return_code(),
+                            "stdout" : self.get_stdout() }
+        else:
+            this_dict = {   "returncode" : self.returncode,
+                            "stdout"     : self.stdout }
         return json.dumps(this_dict)
     
     def get_return_code(self):
@@ -133,6 +137,6 @@ def check_metric(submitted_dict):
     if metric == 'check_memory':
         item = checks.check_memory(item)
     else:
-        pass
+        item = checks.check_custom(item, metric, spec)
     
     return item.to_json()
