@@ -3,6 +3,10 @@
 import SocketServer
 import processor
 import json
+import ConfigParser
+import os
+import sys
+import logging
 
 class MyTCPHandler(SocketServer.BaseRequestHandler):
     """
@@ -21,10 +25,36 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         # just send back the same data, but upper-cased
         self.request.sendall(returnstr)
 
-if __name__ == "__main__":
-    HOST, PORT = "0.0.0.0", 9990
+def parse_config():
+    """
+    Parse the agent.cfg config file, required, listening will not run
+    without one.
+    """
+    global config
+    config = ConfigParser.ConfigParser()
+    path = os.path.realpath('')
+    config.readfp(open('agent.cfg'))
 
+def setup_logger():
+    """
+    Setup the logger that will aquiesce through all the rest of the
+    ncpa.
+    """
+    global config
+    log_config = dict(config.items('logging', 1))
+    log_config['level'] = getattr(logging, log_config['log_level'], logging.INFO)
+    del log_config['log_level']
+    logging.basicConfig(**log_config)
+
+def main():
+    
+    global config
+    
+    HOST = config.get('listening server', 'ip')
+    PORT = int(config.get('listening server', 'port'))
+    
     # Create the server, binding to localhost on port 9994
+    logging.info('Starting TCP Server on %s:%d', HOST, PORT)
     server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
 
     # Activate the server; this will keep running until you
@@ -35,3 +65,13 @@ if __name__ == "__main__":
         server.shutdown()
     finally:
         server.shutdown()
+
+if __name__ == "__main__":
+    
+    parse_config()
+    setup_logger()
+    try:
+        main()
+    except Exception as e:
+        #~ If every other exeptions falls through, just log it
+        logging.error(e)
