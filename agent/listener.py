@@ -19,6 +19,7 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
     def handle(self):
         # self.request is the TCP socket connected to the client
         self.data = self.request.recv(4096).strip()
+        logging.debug('Received incoming connection. Info is: %s', self.data)
         #~ print "{} wrote:".format(self.client_address[0])
         jsondata = json.loads(self.data)
         returnstr = processor.check_metric(jsondata)
@@ -33,7 +34,7 @@ def parse_config():
     global config
     config = ConfigParser.ConfigParser()
     path = os.path.realpath('')
-    config.readfp(open('agent.cfg'))
+    config.read('agent.cfg')
 
 def setup_logger():
     """
@@ -47,7 +48,9 @@ def setup_logger():
     logging.basicConfig(**log_config)
 
 def main():
-    
+    '''
+    Kickoff the TCP Server
+    '''
     global config
     
     HOST = config.get('listening server', 'ip')
@@ -72,6 +75,8 @@ if __name__ == "__main__":
     setup_logger()
     try:
         main()
-    except Exception as e:
+    except IOError as e:
         #~ If every other exeptions falls through, just log it
         logging.error(e)
+        print 'Exiting listener due to an unhandled exception.'
+        print type(e)

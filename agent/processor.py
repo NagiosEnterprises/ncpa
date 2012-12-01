@@ -1,5 +1,6 @@
 import checks
 import json
+import logging
 
 class ReturnObject(object):
     
@@ -64,7 +65,7 @@ class ReturnObject(object):
         Wraps the nagios check result in a JSON for returning to
         the server
         '''
-        if custom_plugin:
+        if not custom:
             this_dict = {   "returncode" : self.get_return_code(),
                             "stdout" : self.get_stdout() }
         else:
@@ -128,13 +129,15 @@ def check_metric(submitted_dict):
     metric = submitted_dict['metric']
     warning = submitted_dict.get('warning','')
     critical = submitted_dict.get('critical','')
+    spec = submitted_dict.get('spec', '')
     item = ReturnObject(warning=warning, critical=critical)
     
+    logging.debug('Beginning execution for %s', metric)
     if metric == 'check_cpu':
         item = checks.check_cpu(item)
-    if metric == 'check_swap':
+    elif metric == 'check_swap':
         item = checks.check_swap(item)
-    if metric == 'check_memory':
+    elif metric == 'check_memory':
         item = checks.check_memory(item)
     else:
         item = checks.check_custom(item, metric, spec)
