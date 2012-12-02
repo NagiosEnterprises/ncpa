@@ -39,19 +39,19 @@ def check_custom(item, plugin_name, plugin_args, *args, **kwargs):
     import ConfigParser
     
     _, extension = os.path.splitext(plugin_name)
-    plugin_name  = os.path.abspath('scripts/%s' % (plugin_name))
-    
+    plugin_name  = 'scripts/%s' % (plugin_name)
+    cmd = []
     try:
-        instruction = config.get('plugin suffix instructions', extension, 1)
+        instruction = config.get('plugin suffix instructions', extension)
         logging.debug('Executing the plugin with instruction contained in config. Instruction is: %s', instruction)
-        cmd = get_cmdline_instruct(item, plugin_name, plugin_args, instruction)
+        cmd += get_cmdline_instruct(item, plugin_name, plugin_args, instruction)
     except ConfigParser.NoOptionError:
         logging.debug('Executing the plugin with instruction by execution.')
-        cmd = get_cmdline_no_instruct(item, plugin_name, plugin_args)
+        cmd += get_cmdline_no_instruct(item, plugin_name, plugin_args)
     
     logging.debug('Running process with command line: %s',' '.join(cmd))
     
-    running_check = subprocess.Popen(map(str,cmd), stdout=subprocess.PIPE)
+    running_check = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     running_check.wait()
     
     item.returncode = running_check.returncode
@@ -74,12 +74,13 @@ def get_cmdline_instruct(item, plugin_name, plugin_args, instruction):
     import shlex
     import string
     template = string.Template(instruction)
-    named    = template.safe_substitute(plugin_name=plugin_name, plugin_args=plugin_args)
+    named    = template.substitute(plugin_name=plugin_name, plugin_args=plugin_args)
     
     command = []
-    for entry in shlex.split(named):
-        if str(entry).strip():
-            command.append(str(entry))
+    for x in shlex.split(named):
+        safe = x.replace('\0', '')
+        if safe:
+            command.append(safe)
     
     return command
 

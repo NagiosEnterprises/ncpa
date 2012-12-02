@@ -129,7 +129,7 @@ def check_metric(submitted_dict):
     metric = submitted_dict.get('metric', '')
     warning = submitted_dict.get('warning', '')
     critical = submitted_dict.get('critical', '')
-    spec = submitted_dict.get('spec', '')
+    arguments = submitted_dict.get('arguments', r'')
     item = ReturnObject(warning=warning, critical=critical)
     
     logging.debug('Beginning execution for %s', metric)
@@ -142,7 +142,7 @@ def check_metric(submitted_dict):
     elif metric == 'check_memory':
         item = checks.check_memory(item)
     else:
-        item = checks.check_custom(item, metric, spec)
+        item = checks.check_custom(item, metric, arguments)
         custom_plugin = True
     
     return item.to_json(custom_plugin)
