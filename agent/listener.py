@@ -31,32 +31,28 @@ def parse_config():
     Parse the agent.cfg config file, required, listening will not run
     without one.
     """
-    global config
     config = ConfigParser.ConfigParser()
     path = os.path.realpath('')
     config.read('agent.cfg')
+    return config
 
-def setup_logger():
+def setup_logger(config):
     """
     Setup the logger that will aquiesce through all the rest of the
     ncpa.
     """
-    global config
     log_config = dict(config.items('logging', 1))
     log_config['level'] = getattr(logging, log_config['log_level'], logging.INFO)
     del log_config['log_level']
     logging.basicConfig(**log_config)
 
-def main():
-    '''
+def main(config):
+    """
     Kickoff the TCP Server
-    '''
-    global config
-    
+    """
     HOST = config.get('listening server', 'ip')
     PORT = int(config.get('listening server', 'port'))
     
-    # Create the server, binding to localhost on port 9994
     logging.info('Starting TCP Server on %s:%d', HOST, PORT)
     server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
 
@@ -69,14 +65,18 @@ def main():
     finally:
         server.shutdown()
 
+config = parse_config()
+
 if __name__ == "__main__":
     
-    parse_config()
-    setup_logger()
+    config = parse_config()
+    setup_logger(config)
+    
     try:
-        main()
+        main(config)
     except IOError as e:
         #~ If every other exeptions falls through, just log it
+        #~ THIS IS NOW JUST  A PLACE HOLDER SO I SEE EXCEPTIONS AND THEIR TYPE
         logging.error(e)
         print 'Exiting listener due to an unhandled exception.'
         print type(e)

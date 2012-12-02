@@ -1,5 +1,7 @@
 import psutil
 import subprocess
+import listener
+import logging
 
 def check_cpu(item):
     item.values = psutil.cpu_percent(percpu=True)
@@ -22,26 +24,77 @@ def check_memory(item):
     item.set_stdout('Physical Memory Usage is at')
     return item
     
-def check_custom(item, name, script_args, *args, **kwargs):
-    '''
+def check_custom(item, plugin_name, plugin_args, *args, **kwargs):
+    """
     Runs custom scripts that MUST be located in the scripts subdirectory
     of the executable
     
-    Notice, this command will replace all semicolons
-    '''
+    Notice, this command will replace all semicolons and special shell
+    characters that are found in the plugin_name or script_args, if you
+    need to use those, then you need to define them in the agent.cfg
+    file.
+    """
     import os
+    from listener import config
+    import ConfigParser
+    
+    _, extension = os.path.splitext(plugin_name)
+    plugin_name  = os.path.abspath('scripts/%s' % (plugin_name))
+    
+    try:
+        instruction = config.get('plugin suffix instructions', extension, 1)
+        logging.debug('Executing the plugin with instruction contained in config. Instruction is: %s', instruction)
+        cmd = get_cmdline_instruct(item, plugin_name, plugin_args, instruction)
+    except ConfigParser.NoOptionError:
+        logging.debug('Executing the plugin with instruction by execution.')
+        cmd = get_cmdline_no_instruct(item, plugin_name, plugin_args)
+    
+    logging.debug('Running process with command line: %s',' '.join(cmd))
+    
+    running_check = subprocess.Popen(map(str,cmd), stdout=subprocess.PIPE)
+    running_check.wait()
+    
+    item.returncode = running_check.returncode
+    item.stdout = running_check.stdout.read()
+    
+    return item
+
+def get_cmdline_instruct(item, plugin_name, plugin_args, instruction):
+    """
+    Execute with special instructions.
+    
+    TODO - Investigate better parameter passing
+    
+    EXAMPLE instruction (Powershell):
+    powershell -ExecutionPolicy Unrestricted $plugin_name $plugin_args
+    
+    EXAMPLE instruction (VBS):
+    wscript $plugin_name $plugin_args
+    """
+    import shlex
+    import string
+    template = string.Template(instruction)
+    named    = template.safe_substitute(plugin_name=plugin_name, plugin_args=plugin_args)
+    
+    command = []
+    for entry in shlex.split(named):
+        if str(entry).strip():
+            command.append(str(entry))
+    
+    return command
+
+def get_cmdline_no_instruct(item, plugin_name, plugin_args):
+    """
+    Execute the script normally, with no special considerations.
+    """
     import shlex
     
-    command  = [os.path.abspath('scripts/%s' % (name))]
-    command += shlex.split(script_args)
+    command  = [plugin_name]
+    command += shlex.split(plugin_args)
     
     if item.warning:
         command += ['-w', item.warning]
     if item.critical:
         command += ['-c', item.critical]
     
-    running_check = subprocess.Popen(command)
-    running_check.wait()
-    
-    item.returncode = running_check.returncode
-    item.stdout = running_check.stdout.read()
+    return command

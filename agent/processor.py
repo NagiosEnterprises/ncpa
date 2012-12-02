@@ -126,13 +126,15 @@ def check_metric(submitted_dict):
     Dispatch function that runs the proper metric, this function is
     what all queries get handed to.
     '''
-    metric = submitted_dict['metric']
-    warning = submitted_dict.get('warning','')
-    critical = submitted_dict.get('critical','')
+    metric = submitted_dict.get('metric', '')
+    warning = submitted_dict.get('warning', '')
+    critical = submitted_dict.get('critical', '')
     spec = submitted_dict.get('spec', '')
     item = ReturnObject(warning=warning, critical=critical)
     
     logging.debug('Beginning execution for %s', metric)
+    
+    custom_plugin = False
     if metric == 'check_cpu':
         item = checks.check_cpu(item)
     elif metric == 'check_swap':
@@ -141,5 +143,6 @@ def check_metric(submitted_dict):
         item = checks.check_memory(item)
     else:
         item = checks.check_custom(item, metric, spec)
+        custom_plugin = True
     
-    return item.to_json()
+    return item.to_json(custom_plugin)
