@@ -67,6 +67,6 @@ if __name__ == "__main__":
     critical = getattr(options, 'critical')
     spec = getattr(options, 'spec')
     received = query_server(host, metric, port, warning, critical, spec)
-    print received['stdout']
+    print received['stdout'],
     sys.exit(received['returncode'])
     #~ parse_result(recieved, options)
