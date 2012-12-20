@@ -118,3 +118,5 @@
 12/20/12 03:14:43 DEBUG:Beginning execution for return_two.sh
 12/20/12 03:14:43 DEBUG:Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
 12/20/12 03:14:43 DEBUG:Running process with command line: /bin/sh scripts/return_two.sh
+12/20/12 03:18:09 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 03:18:16 INFO:Starting TCP Server on 0.0.0.0:5695
