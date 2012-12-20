@@ -1,6 +1,23 @@
 import checks
 import json
 import logging
+import SocketServer
+
+class MyTCPHandler(SocketServer.BaseRequestHandler):
+    """
+    The RequestHandler class for our server.
+
+    It is instantiated once per connection to the server, and must
+    override the handle() method to implement communication to the
+    client.
+    """
+    def handle(self):
+        # self.request is the TCP socket connected to the client
+        self.data = self.request.recv(4096).strip()
+        logging.debug('Received incoming connection. Info is: %s', self.data)
+        jsondata = json.loads(self.data)
+        returnstr = check_metric(jsondata)
+        self.request.sendall(returnstr)
 
 class ReturnObject(object):
     

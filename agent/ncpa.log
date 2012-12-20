@@ -1,0 +1,120 @@
+12/20/12 00:34:56 INFO:Starting TCP Server on 0.0.0.0:5689
+12/20/12 01:12:27 INFO:Starting TCP Server on 0.0.0.0:5689
+12/20/12 01:12:43 INFO:Starting TCP Server on 0.0.0.0:5689
+12/20/12 01:13:37 INFO:Starting TCP Server on 0.0.0.0:5689
+12/20/12 01:13:47 INFO:Starting TCP Server on 0.0.0.0:5689
+12/20/12 01:18:14 INFO:Starting TCP Server on 0.0.0.0:5689
+12/20/12 01:18:41 INFO:Starting TCP Server on 0.0.0.0:5689
+12/20/12 01:18:50 INFO:Starting TCP Server on 0.0.0.0:5689
+12/20/12 01:18:59 INFO:Starting TCP Server on 0.0.0.0:5689
+12/20/12 01:18:59 WARNING:User attempted to restart, var/ncpa.pid still exists, exiting.
+12/20/12 01:19:33 WARNING:User attempted to restart, var/ncpa.pid still exists, exiting.
+12/20/12 01:20:24 INFO:Starting TCP Server on 0.0.0.0:5689
+12/20/12 01:20:24 INFO:Starting TCP Server on 0.0.0.0:5689
+12/20/12 01:20:43 INFO:Starting TCP Server on 0.0.0.0:5690
+12/20/12 01:20:43 INFO:Starting TCP Server on 0.0.0.0:5690
+12/20/12 01:20:47 INFO:Starting TCP Server on 0.0.0.0:5690
+12/20/12 01:20:47 INFO:Starting TCP Server on 0.0.0.0:5690
+12/20/12 01:20:54 INFO:Starting TCP Server on 0.0.0.0:5691
+12/20/12 01:20:54 INFO:Starting TCP Server on 0.0.0.0:5691
+12/20/12 01:27:39 INFO:Starting TCP Server on 0.0.0.0:5691
+12/20/12 01:27:39 INFO:Starting TCP Server on 0.0.0.0:5691
+12/20/12 01:29:50 INFO:Starting TCP Server on 0.0.0.0:5691
+12/20/12 01:29:50 INFO:Starting TCP Server on 0.0.0.0:5691
+12/20/12 01:30:07 INFO:Starting TCP Server on 0.0.0.0:5692
+12/20/12 01:30:07 INFO:Starting TCP Server on 0.0.0.0:5692
+12/20/12 01:31:44 INFO:Starting TCP Server on 0.0.0.0:5692
+12/20/12 01:31:59 INFO:Starting TCP Server on 0.0.0.0:5693
+12/20/12 01:31:59 INFO:Starting TCP Server on 0.0.0.0:5693
+12/20/12 01:32:04 DEBUG:Received incoming connection. Info is: {"metric": "check_cpu", "warning": null, "critical": null, "spec": ""}
+12/20/12 01:35:22 INFO:Starting TCP Server on 0.0.0.0:5693
+12/20/12 01:36:26 INFO:Starting TCP Server on 0.0.0.0:5693
+12/20/12 01:36:26 INFO:Starting TCP Server on 0.0.0.0:5693
+12/20/12 01:36:30 DEBUG:Received incoming connection. Info is: {"metric": "check_cpu", "warning": null, "critical": null, "spec": ""}
+12/20/12 01:36:53 INFO:Starting TCP Server on 0.0.0.0:5693
+12/20/12 01:37:01 INFO:Starting TCP Server on 0.0.0.0:5694
+12/20/12 01:37:01 INFO:Starting TCP Server on 0.0.0.0:5694
+12/20/12 01:37:04 DEBUG:Received incoming connection. Info is: {"metric": "check_cpu", "warning": null, "critical": null, "spec": ""}
+12/20/12 01:39:17 INFO:Starting TCP Server on 0.0.0.0:5694
+12/20/12 01:39:17 INFO:Starting TCP Server on 0.0.0.0:5694
+12/20/12 01:39:21 DEBUG:Received incoming connection. Info is: {"metric": "check_cpu", "warning": null, "critical": null, "spec": ""}
+12/20/12 01:39:59 INFO:Starting TCP Server on 0.0.0.0:5694
+12/20/12 01:40:08 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 01:40:08 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 01:40:36 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 01:40:36 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 01:40:41 DEBUG:Received incoming connection. Info is: {"metric": "check_cpu", "warning": null, "critical": null, "spec": ""}
+12/20/12 01:43:24 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 01:43:24 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 01:43:28 DEBUG:Received incoming connection. Info is: {"metric": "check_cpu", "warning": null, "critical": null, "spec": ""}
+12/20/12 01:47:07 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 01:47:26 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 01:47:26 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 01:47:32 DEBUG:Received incoming connection. Info is: {"metric": "check_cpu", "warning": null, "critical": null, "spec": ""}
+12/20/12 01:51:22 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 01:51:29 DEBUG:Received incoming connection. Info is: {"metric": "check_cpu", "warning": null, "critical": null, "spec": ""}
+12/20/12 01:52:12 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 01:52:55 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 01:52:58 DEBUG:Received incoming connection. Info is: {"metric": "check_cpu", "warning": null, "critical": null, "spec": ""}
+12/20/12 01:53:40 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 01:53:55 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 01:53:58 DEBUG:Received incoming connection. Info is: {"metric": "check_cpu", "warning": null, "critical": null, "spec": ""}
+12/20/12 01:53:58 DEBUG:Beginning execution for check_cpu
+12/20/12 01:54:04 DEBUG:Received incoming connection. Info is: {"metric": "check_mem", "warning": null, "critical": null, "spec": ""}
+12/20/12 01:54:04 DEBUG:Beginning execution for check_mem
+12/20/12 01:54:07 DEBUG:Received incoming connection. Info is: {"metric": "check_memory", "warning": null, "critical": null, "spec": ""}
+12/20/12 01:54:07 DEBUG:Beginning execution for check_memory
+12/20/12 02:22:54 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 02:23:26 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 02:23:28 DEBUG:Received incoming connection. Info is: {"metric": "check_memory", "warning": null, "critical": null, "spec": ""}
+12/20/12 02:23:28 DEBUG:Beginning execution for check_memory
+12/20/12 02:24:51 DEBUG:Received incoming connection. Info is: {"metric": "return_two.sh", "warning": null, "critical": null, "spec": ""}
+12/20/12 02:24:51 DEBUG:Beginning execution for return_two.sh
+12/20/12 02:24:51 DEBUG:Executing the plugin with instruction contained in config. Instruction is: $plugin_name $plugin_args
+12/20/12 02:24:51 DEBUG:Running process with command line: scripts/return_two.sh
+12/20/12 02:25:23 DEBUG:Received incoming connection. Info is: {"metric": "return_two.sh", "warning": null, "critical": null, "spec": ""}
+12/20/12 02:25:23 DEBUG:Beginning execution for return_two.sh
+12/20/12 02:25:23 DEBUG:Executing the plugin with instruction contained in config. Instruction is: $plugin_name $plugin_args
+12/20/12 02:25:23 DEBUG:Running process with command line: scripts/return_two.sh
+12/20/12 02:25:42 DEBUG:Received incoming connection. Info is: {"metric": "return_two.sh", "warning": null, "critical": null, "spec": ""}
+12/20/12 02:25:42 DEBUG:Beginning execution for return_two.sh
+12/20/12 02:25:42 DEBUG:Executing the plugin with instruction contained in config. Instruction is: $plugin_name $plugin_args
+12/20/12 02:25:42 DEBUG:Running process with command line: scripts/return_two.sh
+12/20/12 02:26:31 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 02:26:35 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 02:26:43 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 02:26:46 DEBUG:Received incoming connection. Info is: {"metric": "return_two.sh", "warning": null, "critical": null, "spec": ""}
+12/20/12 02:26:46 DEBUG:Beginning execution for return_two.sh
+12/20/12 02:26:46 DEBUG:Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
+12/20/12 02:26:46 DEBUG:Running process with command line: /bin/sh scripts/return_two.sh
+12/20/12 02:29:10 DEBUG:Received incoming connection. Info is: {"metric": "return_two.sh", "warning": null, "critical": null, "spec": ""}
+12/20/12 02:29:10 DEBUG:Beginning execution for return_two.sh
+12/20/12 02:29:10 DEBUG:Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
+12/20/12 02:29:10 DEBUG:Running process with command line: /bin/sh scripts/return_two.sh
+12/20/12 02:35:15 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 02:35:54 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 02:36:40 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 02:45:09 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 02:45:41 DEBUG:Received incoming connection. Info is: {"metric": "return_two.sh", "warning": null, "critical": null, "spec": ""}
+12/20/12 02:45:41 DEBUG:Beginning execution for return_two.sh
+12/20/12 02:45:41 DEBUG:Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
+12/20/12 02:45:41 DEBUG:Running process with command line: /bin/sh scripts/return_two.sh
+12/20/12 02:59:58 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 03:07:35 WARNING:User attempted to restart, var/ncpa.pid still exists, exiting.
+12/20/12 03:09:03 WARNING:User attempted to restart, var/ncpa.pid still exists, exiting.
+12/20/12 03:09:20 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 03:09:27 DEBUG:Received incoming connection. Info is: {"metric": "return_two.sh", "warning": null, "critical": null, "spec": ""}
+12/20/12 03:09:27 DEBUG:Beginning execution for return_two.sh
+12/20/12 03:09:27 DEBUG:Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
+12/20/12 03:09:27 DEBUG:Running process with command line: /bin/sh scripts/return_two.sh
+12/20/12 03:09:56 WARNING:User attempted to restart, var/ncpa.pid still exists, exiting.
+12/20/12 03:11:07 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 03:12:24 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 03:12:52 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 03:12:59 WARNING:User attempted to restart, var/ncpa.pid still exists, exiting.
+12/20/12 03:14:27 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 03:14:32 INFO:Starting TCP Server on 0.0.0.0:5695
+12/20/12 03:14:43 DEBUG:Received incoming connection. Info is: {"metric": "return_two.sh", "warning": null, "critical": null, "spec": ""}
+12/20/12 03:14:43 DEBUG:Beginning execution for return_two.sh
+12/20/12 03:14:43 DEBUG:Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
+12/20/12 03:14:43 DEBUG:Running process with command line: /bin/sh scripts/return_two.sh
