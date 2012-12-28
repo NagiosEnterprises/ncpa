@@ -7,11 +7,10 @@ class NCPADaemon(object):
     to. Override all of these methods.
     '''
     
-    def __init__(self, config_filename, handler, *args, **kwargs):
+    def __init__(self, config_filename, *args, **kwargs):
         '''
         Always inherit this method
         '''
-        self.handler = handler
         self.config_filename = config_filename
         self.parse_config()
         self.setup_logging()

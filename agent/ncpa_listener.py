@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-import processor
+import listener.processor
 import daemons
 import platform
 import optparse
 
-TCP_HANDLER = processor.MyTCPHandler
+TCP_HANDLER = listener.processor.MyTCPHandler
 
 def parse_args():
     
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     if not platform.system() == 'Windows':
         daemon = daemons.posix.ListenerDaemon(config_filename=options.config, handler=TCP_HANDLER)
     else:
-        daemon = daemons.windows.WindowsDaemon(config_filename=options.config, handler=TCP_HANDLER)
+        daemon = daemons.windows.ListenerDaemon(config_filename=options.config, handler=TCP_HANDLER)
     
     gen_daemon = getattr(daemon, args[0])
     gen_daemon()

@@ -123,8 +123,9 @@ class ListenerDaemon(PosixDaemon):
     This kicks off the TCP listener.
     '''
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, handler, *args, **kwargs):
         self.PIDFILE = 'var/ncpa_listener.pid'
+        self.handler = handler
         super(ListenerDaemon, self).__init__(*args, **kwargs)
     
     def start(self, *args, **kwargs):
