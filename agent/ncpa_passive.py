@@ -2,6 +2,7 @@
 import daemons
 import platform
 import optparse
+import passive.handlers
 
 def parse_args():
     
@@ -9,12 +10,12 @@ def parse_args():
     
     parser = optparse.OptionParser()
     
-    parser.add_option('-c', '--config', help='Config file to use.', default='etc/agent.cfg')
+    parser.add_option('-c', '--config', help='Config file to use.', default='etc/ncpa.cfg')
     
     options, args = parser.parse_args()
     
     if not len(args) == 1 or args[0] not in ['start', 'stop', 'reload']:
-        parser.error('Must give either start, stop or reload.')
+        parser.error('Must only give either start, stop or reload.')
     
     return options, args
 

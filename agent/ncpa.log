@@ -1,0 +1,3 @@
+12/27/12 22:17:49 INFO:Starting TCP Server on 0.0.0.0:5695
+12/27/12 22:19:19 DEBUG:Received incoming connection. Info is: {"metric": "check_memory", "warning": null, "critical": null, "spec": ""}
+12/27/12 22:19:19 DEBUG:Beginning execution for check_memory

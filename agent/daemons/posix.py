@@ -5,7 +5,7 @@ import logging
 import os
 import time
 import signal
-import time
+import threading
 
 def daemonize():
     '''
@@ -133,17 +133,21 @@ class ListenerDaemon(PosixDaemon):
         Kickoff the TCP Server
         '''
         self.check_pid(self.PIDFILE)
-       
-        HOST = self.config.get('listening server', 'ip')
-        PORT = int(self.config.get('listening server', 'port'))
         
-        self.logger.info('Starting TCP Server on %s:%d', HOST, PORT)
-        server = SocketServer.TCPServer((HOST, PORT), self.handler)
+        address = self.config.get('listening server', 'ipport').split(',')
+        host, port = [], []
+        for tmp in address:
+            tmp_address, tmp_port = tmp.split(':')
+            host.append(tmp_address)
+            port.append(tmp_port)
+        
+        servers = [ SocketServer.TCPServer((host, int(port)), self.handler) for host, port in zip(host, port)]
         self.draw_spinner('Daemonizing...')
         daemonize()
         self.write_pid(self.PIDFILE, os.getpid())
         try:
-            server.serve_forever()
+            for server in servers:
+                threading.Thread(target=server.serve_forever, args=[]).start()
         except Exception, e:
             self.logger.exception(e)
     

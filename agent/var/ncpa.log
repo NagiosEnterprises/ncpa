@@ -1,0 +1,6 @@
+12/27/12 22:40:32 DEBUG:Received incoming connection. Info is: {"metric": "check_memory", "warning": null, "critical": null, "spec": ""}
+12/27/12 22:40:32 DEBUG:Beginning execution for check_memory
+12/27/12 22:48:32 DEBUG:Received incoming connection. Info is: {"metric": "check_memory", "warning": null, "critical": null, "spec": ""}
+12/27/12 22:48:32 DEBUG:Beginning execution for check_memory
+12/27/12 22:48:58 DEBUG:Received incoming connection. Info is: {"metric": "check_memory", "warning": null, "critical": null, "spec": ""}
+12/27/12 22:48:58 DEBUG:Beginning execution for check_memory
