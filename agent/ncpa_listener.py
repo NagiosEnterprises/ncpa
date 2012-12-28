@@ -5,7 +5,6 @@ import platform
 import optparse
 
 TCP_HANDLER = processor.MyTCPHandler
-CONFIG_FILENAME = 'agent.cfg'
 
 def parse_args():
     

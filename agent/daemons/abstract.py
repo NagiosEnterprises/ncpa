@@ -20,9 +20,6 @@ class NCPADaemon(object):
         '''
         Set the parsed config to self.config
         '''
-        print type(self.config_filename)
-        import sys
-        sys.exit()
         self.config = ConfigParser.ConfigParser()
         self.config.read(self.config_filename)
     
@@ -30,9 +27,6 @@ class NCPADaemon(object):
         '''
         This should always setup the logger.
         '''
-        print type(self.config)
-        import sys
-        sys.exit()
         log_config = dict(self.config.items('logging', 1))
         log_config['level'] = getattr(logging, log_config['log_level'], logging.INFO)
         del log_config['log_level']

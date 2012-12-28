@@ -120,3 +120,4 @@
 12/20/12 03:14:43 DEBUG:Running process with command line: /bin/sh scripts/return_two.sh
 12/20/12 03:18:09 INFO:Starting TCP Server on 0.0.0.0:5695
 12/20/12 03:18:16 INFO:Starting TCP Server on 0.0.0.0:5695
+12/27/12 21:42:33 INFO:Starting TCP Server on 0.0.0.0:5695

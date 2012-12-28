@@ -5,6 +5,7 @@ import logging
 import os
 import time
 import signal
+import time
 
 def daemonize():
     '''
@@ -101,7 +102,21 @@ class PassiveDaemon(PosixDaemon):
     '''
     
     def __init__(self, *args, **kwargs):
+        self.PIDFILE = 'var/ncpa_passive.pid'
         super(PassiveDaemon, self).__init__(*args, **kwargs)
+    
+    def start(self, *args, **kwargs):
+        '''
+        Start the waiting loop.
+        '''
+        while True:
+            passive_config = self.config.items('passive', 1)
+            
+            print passive_config['sleep']
+            
+            import sys
+            sys.exit()
+            
 
 class ListenerDaemon(PosixDaemon):
     '''
@@ -109,14 +124,13 @@ class ListenerDaemon(PosixDaemon):
     '''
     
     def __init__(self, *args, **kwargs):
-        self.PIDFILE = 'var/ncpa.pid'
+        self.PIDFILE = 'var/ncpa_listener.pid'
         super(ListenerDaemon, self).__init__(*args, **kwargs)
     
     def start(self, *args, **kwargs):
         '''
         Kickoff the TCP Server
         '''
-        
         self.check_pid(self.PIDFILE)
        
         HOST = self.config.get('listening server', 'ip')
@@ -136,4 +150,4 @@ class ListenerDaemon(PosixDaemon):
         '''
         Stop the TCP Server.
         '''
-        super(stop, self).stop(self.PIDFILE, *args, **kwargs)
+        super(ListenerDaemon, self).stop(self.PIDFILE, *args, **kwargs)
