@@ -1,4 +1,6 @@
 import logging
+import json
+import urllib
 
 logger = logging.getLogger()
 
@@ -32,7 +34,25 @@ class NagiosHandler(object):
             tmp.parse_command(raw_command)
             logger.debug(tmp)
             self.ncpa_commands.append(tmp)
-            
+    
+    def query_agent(self, ncpa_command, *args, **kwargs):
+        '''
+        Query the local active agent.
+        '''
+        logger.debug('Querying agent.')
+        address = self.config.get('passive', 'connect')
+        host, port = address.split(':')
+        logger.debug('Config states we connect to %s' % address)
+        data_string = json.dumps({  'metric'    : ncpa_command.command,
+                                    'warning'   : None,
+                                    'critical'  : None,
+                                    'spec'      : ncpa_command.arguments })
+        logger.debug('Creating socket.')
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((host, port))
+        
+        
+        
     
     def set_association(self, *args, **kwargs):
         '''
@@ -45,12 +65,21 @@ class NagiosHandler(object):
         Grab the commands from the config.
         '''
         self._parse_commands()
+    
+    def submit_to_nagios(self, *args, **kwargs):
+        '''
+        This item should submit to Nagios and will have to be overridden.
+        '''
+        raise Exception('Abstract call to submit_to_nagios()')
 
 class NagiosAssociation(object):
+    '''
+    More or less a struct style object that simply makes it easier
+    to keep track of the Nagios Association.
+    '''
     
-    def __init__(self, nag_host, server_address, port=None, *args, **kwargs):
-        self.server_address = server_address
-        self.port = port
+    def __init__(self, *args, **kwargs):
+        self.server_address = kwargs.get(server_address, None)
 
 class NCPACommand(object):
     
@@ -60,6 +89,8 @@ class NCPACommand(object):
         self.command = None
         self.arguments = None
         self.json = None
+        self.stdout = None
+        self.returncode = None
     
     def __repr__(self):
         builder  = 'Nagios Hostname: %s -- ' % self.nag_hostname
@@ -78,7 +109,19 @@ class NCPACommand(object):
         CPU Usage, respectively.
         '''
         self.nag_hostname, self.nag_servicename = directive.split('|')
+        if nag_hostname == '__HOST__':
+            self.check_type = 'host'
+        else:
+            self.check_type = 'service'
         logger.debug('Setting hostname to %s and servicename to %s' % (self.nag_hostname, self.nag_servicename))
+    
+    def parse_result(self, result, *args, **kwargs):
+        '''
+        Parse the json result.
+        '''
+        p_result = json.loads(result)
+        self.stdout = p_result.get('stdout', 3)
+        self.returncode = p_result.get('returncode', 'An error occurred parsing the JSON')
     
     def parse_command(self, config_command, *args, **kwargs):
         '''

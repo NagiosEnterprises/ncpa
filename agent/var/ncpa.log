@@ -26442,3 +26442,5 @@ Arguments: None
 12/30/12 20:19:23 DEBUG:Command did not contain arguments. Single directive.
 12/30/12 20:19:23 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None
 12/30/12 20:19:23 DEBUG:Nagios handler established.
+12/30/12 21:07:25 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+12/30/12 21:07:40 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.

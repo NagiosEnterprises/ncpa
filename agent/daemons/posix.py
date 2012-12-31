@@ -114,9 +114,6 @@ class PassiveDaemon(PosixDaemon):
             import passive.handler_utils
             b = passive.abstract.NagiosHandler(self.config)
             sys.exit(1)
-            
-            
-            
 
 class ListenerDaemon(PosixDaemon):
     '''
@@ -132,6 +129,7 @@ class ListenerDaemon(PosixDaemon):
         '''
         Kickoff the TCP Server
         '''
+        
         self.check_pid(self.PIDFILE)
         
         address = self.config.get('listening server', 'ipport').split(',')
@@ -155,4 +153,5 @@ class ListenerDaemon(PosixDaemon):
         '''
         Stop the TCP Server.
         '''
+        
         super(ListenerDaemon, self).stop(self.PIDFILE, *args, **kwargs)
