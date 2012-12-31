@@ -20,6 +20,7 @@ class NCPADaemon(object):
         Set the parsed config to self.config
         '''
         self.config = ConfigParser.ConfigParser()
+        self.config.optionxform = str
         self.config.read(self.config_filename)
     
     def setup_logging(self, *arg, **kwargs):

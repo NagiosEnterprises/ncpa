@@ -110,12 +110,12 @@ class PassiveDaemon(PosixDaemon):
         Start the waiting loop.
         '''
         while True:
-            passive_config = self.config.items('passive', 1)
             
-            print passive_config['sleep']
+            import passive.handler_utils
+            b = passive.abstract.NagiosHandler(self.config)
+            sys.exit(1)
             
-            import sys
-            sys.exit()
+            
             
 
 class ListenerDaemon(PosixDaemon):
