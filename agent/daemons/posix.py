@@ -111,8 +111,9 @@ class PassiveDaemon(PosixDaemon):
         '''
         while True:
             
-            import passive.handler_utils
-            b = passive.abstract.NagiosHandler(self.config)
+            import passive.nrdp
+            handler = passive.nrdp.Handler(self.config)
+            handler.run()
             sys.exit(1)
 
 class ListenerDaemon(PosixDaemon):

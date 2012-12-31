@@ -1,6 +1,6 @@
 import logging
 import json
-import urllib
+import socket
 
 logger = logging.getLogger()
 
@@ -24,9 +24,11 @@ class NagiosHandler(object):
         '''
         Grab the commands from the config.
         '''
+        logger.debug('Parsing commands...')
         commands = dict(self.config.items('passive checks'))
         self.ncpa_commands = []
         for command in commands:
+            logger.debug('Parsing new individual command.')
             host_service = command
             raw_command = commands[command]
             tmp = NCPACommand()
@@ -35,7 +37,7 @@ class NagiosHandler(object):
             logger.debug(tmp)
             self.ncpa_commands.append(tmp)
     
-    def query_agent(self, ncpa_command, *args, **kwargs):
+    def send_command(self, ncpa_command, *args, **kwargs):
         '''
         Query the local active agent.
         '''
@@ -49,28 +51,34 @@ class NagiosHandler(object):
                                     'spec'      : ncpa_command.arguments })
         logger.debug('Creating socket.')
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((host, port))
+        sock.connect((host, int(port)))
+        sock.sendall(data_string + "\n")
+        received = sock.recv(1024)
+        sock.close()
+        return received
         
-        
-        
-    
-    def set_association(self, *args, **kwargs):
+    def send_all_commands(self, *args, **kwargs):
         '''
-        Setup contact info for the Nagios Server.
+        Sends all commands
         '''
-        raise Exception('Abstract call to _set_association().')
+        for command in self.ncpa_commands:
+            tmp_result = self.send_command(command)
+            command.set_json(tmp_result)
     
     def parse_config(self, *args, **kwargs):
         '''
         Grab the commands from the config.
         '''
+        logging.debug('Parsing config...')
         self._parse_commands()
     
-    def submit_to_nagios(self, *args, **kwargs):
+    def run(self, *args, **kwargs):
         '''
-        This item should submit to Nagios and will have to be overridden.
+        This item is a convenience method to consist with the API of a
+        handler that is expected to exist in order to be called
+        generically.
         '''
-        raise Exception('Abstract call to submit_to_nagios()')
+        self.send_all_commands()
 
 class NagiosAssociation(object):
     '''
@@ -96,8 +104,20 @@ class NCPACommand(object):
         builder  = 'Nagios Hostname: %s -- ' % self.nag_hostname
         builder += 'Nagios Servicename: %s -- ' % self.nag_servicename 
         builder += 'Command: %s -- ' % self.command
-        builder += 'Arguments: %s' % self.arguments
+        builder += 'Arguments: %s -- ' % self.arguments
+        builder += 'Stdout: %s -- ' % self.stdout
+        builder += 'Return Code: %s' % str(self.returncode)
         return builder
+    
+    def set_json(self, json_data, *args, **kwargs):
+        '''
+        Accepts the returned JSON and turns it into the stdout and
+        return code.
+        '''
+        self.json = json_data
+        tmp_json = json.loads(json_data)
+        self.stdout = tmp_json.get('stdout', 'Error parsing the JSON.')
+        self.returncode = tmp_json.get('returncode', 'Error parsing the JSON.')
     
     def set_host_and_service(self, directive, *args, **kwargs):
         '''
@@ -109,7 +129,7 @@ class NCPACommand(object):
         CPU Usage, respectively.
         '''
         self.nag_hostname, self.nag_servicename = directive.split('|')
-        if nag_hostname == '__HOST__':
+        if self.nag_servicename == '__HOST__':
             self.check_type = 'host'
         else:
             self.check_type = 'service'
