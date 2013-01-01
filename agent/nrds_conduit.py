@@ -2,6 +2,7 @@
 
 import requests
 from xml.dom.minidom import Document
+from xml.dom.minidom import parseString
 
 class nrds():
     def __init__(self, token, nrdp_url):
@@ -22,7 +23,12 @@ class nrds():
 
 
     def fetch_config(self, *args, **kwargs):
-        kwargs['cmd'] = 'updatenrds'
+        
+        #http://192.168.1.102/nrdp/?token=e9c6oudjfjs6&cmd=getconfig&configname=windows&os=Windows&os_ver=5.1.2600&arch=x86
+        
+        kwargs['cmd'] = 'getconfig'
+        kwargs['os']  = 'chinook'
+        kwargs['configname'] = 'ncpa'
         
         kwargs['XMLDATA']  = self.build_xml( kwargs )
         
@@ -30,8 +36,19 @@ class nrds():
             self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
             )
         
+        #print self.url_request.text
+        #print kwargs['path']
+        #self.xml_responce   = parseString( self.url_request.text )
+        #self.config         = self.xml_responce.getElementsByTagName('config')[0].toxml()
+        #self.config_no_tags = self.config.replace('<config>','').replace('</config>','')
+        
         with open(kwargs['path'], 'w') as config:
             config.write(self.url_request.content)
+            
+    def new_config_pred(self, *args, **kwargs):
+        kwargs['cmd'] = 'updatenrds'
+        
+        
     
     def build_xml(self, settings_dict):
         
