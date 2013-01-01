@@ -48,7 +48,7 @@ class NagiosHandler(object):
         data_string = json.dumps({  'metric'    : ncpa_command.command,
                                     'warning'   : None,
                                     'critical'  : None,
-                                    'spec'      : ncpa_command.arguments })
+                                    'arguments'      : ncpa_command.arguments })
         logger.debug('Creating socket.')
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((host, int(port)))

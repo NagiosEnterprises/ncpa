@@ -148,11 +148,12 @@ class ListenerDaemon(PosixDaemon):
             for server in servers:
                 threading.Thread(target=server.serve_forever, args=[]).start()
         except Exception, e:
+            f = open('/tmp/logfile','b')
+            f.write('This was an exception.\n %s' % str(e))
             self.logger.exception(e)
     
     def stop(self, *args, **kwargs):
         '''
         Stop the TCP Server.
         '''
-        
         super(ListenerDaemon, self).stop(self.PIDFILE, *args, **kwargs)

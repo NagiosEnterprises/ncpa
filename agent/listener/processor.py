@@ -3,6 +3,8 @@ import json
 import logging
 import SocketServer
 
+logger = logging.getLogger()
+
 class MyTCPHandler(SocketServer.BaseRequestHandler):
     """
     The RequestHandler class for our server.
@@ -16,7 +18,11 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         self.data = self.request.recv(4096).strip()
         logging.debug('Received incoming connection. Info is: %s', self.data)
         jsondata = json.loads(self.data)
-        returnstr = check_metric(jsondata)
+        logging.debug('JSON loaded from input.')
+        try:
+            returnstr = check_metric(jsondata)
+        except Exception, e:
+            logger.error('Exception was caught. %s' % str(e))
         self.request.sendall(returnstr)
 
 class ReturnObject(object):
@@ -138,6 +144,24 @@ class ReturnObject(object):
             else:
                 return preliminary
 
+def get_warn_crit_from_arguments(arguments):
+    import optparse
+    import shlex
+    
+    logger.debug('Parsing arguments: %s' % arguments)
+    
+    parser = optparse.OptionParser()
+    
+    parser.add_option('-w', '--warning')
+    parser.add_option('-c', '--critical')
+    
+    options, args = parser.parse_args(shlex.split(arguments))
+    
+    warning = options.warning or ''
+    critical = options.critical or ''
+    
+    return warning, critical
+
 def check_metric(submitted_dict):
     '''
     Dispatch function that runs the proper metric, this function is
@@ -146,10 +170,21 @@ def check_metric(submitted_dict):
     metric = submitted_dict.get('metric', '')
     warning = submitted_dict.get('warning', '')
     critical = submitted_dict.get('critical', '')
-    arguments = submitted_dict.get('arguments', r'')
-    item = ReturnObject(warning=warning, critical=critical)
+    arguments = submitted_dict.get('arguments', '')
     
-    logging.debug('Beginning execution for %s', metric)
+    #~ if not warning and not critical and arguments:
+        #~ try:
+            #~ warning, critical = get_warn_crit_from_arguments(arguments)
+        #~ except Exception, e:
+            #~ logger.error('Exception raised. %s' % str(e))
+        #~ logger.info('Warning: %s, Critical: %s' %(str(warning), str(critical)))
+    
+    try:
+        item = ReturnObject(warning=warning, critical=critical)
+    except Exception, e:
+        logger.exception(e)
+    
+    logger.debug('Beginning execution for %s', metric)
     
     custom_plugin = False
     if metric == 'check_cpu':
