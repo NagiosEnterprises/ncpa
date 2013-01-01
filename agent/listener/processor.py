@@ -149,17 +149,22 @@ def get_warn_crit_from_arguments(arguments):
     import shlex
     
     logger.debug('Parsing arguments: %s' % arguments)
-    
+    #~ Must give the arguments a prog name in order for them to work with
+    #~ optparse
+    arguments = str('./xxx ' + arguments)
     parser = optparse.OptionParser()
-    
     parser.add_option('-w', '--warning')
     parser.add_option('-c', '--critical')
-    
-    options, args = parser.parse_args(shlex.split(arguments))
-    
+    try:
+        arg_lat = shlex.split(arguments)
+        logger.info(str(arg_lat))
+        options, args = parser.parse_args(arg_lat)
+    except:
+        import traceback
+        f = open('var/exception.txt', 'a')
+        traceback.print_exc(file=f)
     warning = options.warning or ''
     critical = options.critical or ''
-    
     return warning, critical
 
 def check_metric(submitted_dict):
@@ -172,12 +177,9 @@ def check_metric(submitted_dict):
     critical = submitted_dict.get('critical', '')
     arguments = submitted_dict.get('arguments', '')
     
-    #~ if not warning and not critical and arguments:
-        #~ try:
-            #~ warning, critical = get_warn_crit_from_arguments(arguments)
-        #~ except Exception, e:
-            #~ logger.error('Exception raised. %s' % str(e))
-        #~ logger.info('Warning: %s, Critical: %s' %(str(warning), str(critical)))
+    if not warning and not critical and arguments:
+        warning, critical = get_warn_crit_from_arguments(arguments)
+        logger.info('Warning: %s, Critical: %s' %(str(warning), str(critical)))
     
     try:
         item = ReturnObject(warning=warning, critical=critical)
