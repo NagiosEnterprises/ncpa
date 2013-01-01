@@ -26,3 +26,18 @@ class nrds():
         
         with open(self.local_path_location, 'w') as plugin:
             plugin.write(self.url_request.content)
+            
+    def query_available_plugins():
+        #this will fetch the config and return an array of
+        #available plugins
+        
+    def update_available():
+        #predicate procedure which will return T or F if
+        #config is available
+        
+    def fetch_config():
+        #will fetch updated config
+        
+    
+        
+    
