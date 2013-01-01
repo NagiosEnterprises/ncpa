@@ -1,10 +1,5 @@
 #!/usr/bin/env python
-#import urllib2
-#from httplib2 import Http
-from urllib import urlencode
-#h = Http()
-import urllib
-
+import requests
 
 url    = "http://192.168.2.29/nrdp/"
 token  = "e9c6oudjfjs6"
@@ -14,16 +9,29 @@ os     = "Windows"
 os_ver = "6.1.7601"
 arch   = "x86"
 
+def get_plugin(url, *args, **kwargs):
+    kwargs['token'] = "e9c6oudjfjs6"
+    for key in kwargs:
+        print kwargs[key]
+        
+    #a = requests.get(url, params=kwargs)
+    
+    #print a
+    #url_request = requests.get(url, params=**kwargs)
+    #the_real_slim_shady = './plugins/' + kwargs['plugin']
+    
+    #with open(the_real_slim_shady, 'w') as plugin:
+    #    plugin.write(url_request.content)
+    
+    
+def test_var_kwargs(farg, **kwargs):
+    print "formal arg:", farg
+    for key in kwargs:
+        print "another keyword arg: %s: %s" % (key, kwargs[key])
 
-def get_plugin():
-	data = dict(token=token, cmd=cmd, plugin=plugin, os=os, os_ver=os_ver, arch=arch)
-	
-	retrieve_url   = url + urlencode( data )
-	full_plug_path = "./plugins/" + plugin
-	
-	urllib.urlretrieve (retrieve_url, full_plug_path)
-
-get_plugin()
+post_var = { plugin:'check_winping.exe' }
+#~ test_var_kwargs(farg=1, myarg2="two", myarg3=3)
+get_plugin(url, plugin='check_winping.exe', )
 
 #CHUNK = 16 * 1024
 #with open(plugin, 'wb') as fp:
