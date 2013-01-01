@@ -24,21 +24,7 @@ class nrds():
     def fetch_config(self, *args, **kwargs):
         kwargs['cmd'] = 'updatenrds'
         
-        doc = Document()
-        configs = doc.createElement("configs")
-        doc.appendChild(configs)
-        config = doc.createElement("config")
-        configs.appendChild(config)
-        name = doc.createElement("name")
-        config.appendChild(name)
-        name_text = doc.createTextNode(kwargs['config_name'])
-        name.appendChild(name_text)
-        version = doc.createElement("version")
-        config.appendChild(version)
-        version_number = doc.createTextNode(kwargs['config_version'])
-        version.appendChild(version_number)
-
-        kwargs['XMLDATA'] = doc.toprettyxml(indent="")
+        kwargs['XMLDATA']  = self.build_xml( kwargs )
         
         self.url_request = requests.post(
             self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
@@ -46,7 +32,25 @@ class nrds():
         
         with open(kwargs['path'], 'w') as config:
             config.write(self.url_request.content)
-
+    
+    def build_xml(self, settings_dict):
+        
+        doc = Document()
+        configs = doc.createElement("configs")
+        doc.appendChild(configs)
+        config = doc.createElement("config")
+        configs.appendChild(config)
+        name = doc.createElement("name")
+        config.appendChild(name)
+        name_text = doc.createTextNode(settings_dict['config_name'])
+        name.appendChild(name_text)
+        version = doc.createElement("version")
+        config.appendChild(version)
+        version_number = doc.createTextNode(settings_dict['config_version'])
+        version.appendChild(version_number)
+        
+        return doc.toprettyxml(indent="")
+        
         #top = http://192.168.2.29/nrdp//?token=k2suan32qt50&cmd=updatenrds&XMLDATA=<?xml version='1.0' ?><configs><config><name>windows</name><version>0.2</version></config></configs>
         #~ #http://192.168.2.29/nrdp//?token=k2suan32qt50&cmd=updatenrds&XMLDATA=%3C?xml%20version='1.0'%20?%3E%3Cconfigs%3E%3Cconfig%3E%3Cname%3Ewindows%3C/name%3E%3Cversion%3E0.1%3C/version%3E%3C/config%3E%3C/configs%3E
         #~ #this will fetch the config and return an array of
