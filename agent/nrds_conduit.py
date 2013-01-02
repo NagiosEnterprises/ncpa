@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 
 import requests
+import xmltodict
 from xml.dom.minidom import Document
 from xml.dom.minidom import parseString
 
 class nrds():
+    """
+    api for nrds config management
+    """
+    
     def __init__(self, token, nrdp_url):
         self.nrds_settings = { 'token':token, 'nrdp_url':nrdp_url } 
     
@@ -30,26 +35,35 @@ class nrds():
         kwargs['os']  = 'chinook'
         kwargs['configname'] = 'ncpa'
         
+        self.url_request = requests.post(
+            self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
+            )
+            
+        with open(kwargs['path'], 'w') as config:
+            config.write(self.url_request.content)
+            
+    def new_config(self, *args, **kwargs):
+        kwargs['cmd'] = 'updatenrds'
+        
         kwargs['XMLDATA']  = self.build_xml( kwargs )
         
         self.url_request = requests.post(
             self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
             )
+
+        self.config_dict = xmltodict.parse( self.url_request.content )
+        self.status      = self.config_dict['result']['status']
         
-        #print self.url_request.text
-        #print kwargs['path']
-        #self.xml_responce   = parseString( self.url_request.text )
-        #self.config         = self.xml_responce.getElementsByTagName('config')[0].toxml()
-        #self.config_no_tags = self.config.replace('<config>','').replace('</config>','')
+        if self.status == "1":
+            return True
+        else:
+            return False
         
-        with open(kwargs['path'], 'w') as config:
-            config.write(self.url_request.content)
-            
-    def new_config_pred(self, *args, **kwargs):
-        kwargs['cmd'] = 'updatenrds'
+        #~ with open('/tmp/config.xml', 'w') as config:
+            #~ config.write(self.url_request.content)
         
+        #http://192.168.2.29/nrdp//?token=k2suan32qt50&cmd=updatenrds&XMLDATA=<?xml version='1.0' ?><configs><config><name>windows</name><version>0.2</version></config></configs>
         
-    
     def build_xml(self, settings_dict):
         
         doc = Document()
