@@ -1,6 +1,7 @@
 import logging
 import json
 import socket
+import ConfigParser
 
 logger = logging.getLogger()
 
@@ -16,8 +17,7 @@ class NagiosHandler(object):
         Does initial such as parsing the config.
         '''
         logger.debug('Establishing Nagios handler...')
-        self.config = config
-        self.parse_config()
+        self.parse_config(config)
         logger.debug('Nagios handler established.')
     
     def _parse_commands(self, *args, **kwargs):
@@ -65,10 +65,17 @@ class NagiosHandler(object):
             tmp_result = self.send_command(command)
             command.set_json(tmp_result)
     
-    def parse_config(self, *args, **kwargs):
+    def parse_config(self, config, *args, **kwargs):
         '''
         Grab the commands from the config.
         '''
+        #~ This is for debugging and Handler creation only
+        try:
+            config.sections()
+        except AttributeError:
+            obj_config = ConfigParser.ConfigParser()
+            obj_config.read(config)
+        self.config = obj_config
         logging.debug('Parsing config...')
         self._parse_commands()
     
