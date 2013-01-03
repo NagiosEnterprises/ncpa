@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import requests
+import abstract
 import xmltodict
 from xml.dom.minidom import Document
 from xml.dom.minidom import parseString
@@ -8,13 +9,19 @@ from xml.dom.minidom import parseString
 plugin_loc ='./plugins'
 path       ='./etc/ncpa_test.cfg'
 
-class nrds( abstract.NagiosHandler ):
+class Handler( abstract.NagiosHandler ):
     """
     api for nrds config management
     """
     
-    def __init__(self, token, nrdp_url):
-        self.nrds_settings = { 'token':token, 'nrdp_url':nrdp_url } 
+    def __init__(self, *args, **kwargs):
+        super(Handler, self).__init__(*args, **kwargs)
+        #~ self.nrds_settings = { 'token':token, 'nrdp_url':nrdp_url }
+        
+    def run(self, *args, **kwargs):
+        self.get_plug()
+        self.fetch_config()
+        
     
     def get_plug(self, *args, **kwargs):
         kwargs["cmd"] = "getplugin"
@@ -26,7 +33,7 @@ class nrds( abstract.NagiosHandler ):
             
         self.local_path_location = plugin_loc + kwargs['plugin']
         
-        with open(self.local_path_location, 'w') as plugin:
+        with open(self.local_path_locatinnecton, 'w') as plugin:
             plugin.write(self.url_request.content)
 
 
@@ -90,6 +97,9 @@ class nrds( abstract.NagiosHandler ):
             self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
             )
             
+    def print_local_config(self):
+        print self.config
+        
     def build_xml(self, settings_dict):
         
         doc = Document()
