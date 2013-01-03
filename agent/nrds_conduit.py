@@ -44,13 +44,17 @@ class nrds():
             
     def new_config(self, *args, **kwargs):
         kwargs['cmd'] = 'updatenrds'
+        kwargs['os']  = 'chinook'
+        kwargs['config_name'] = 'ncpa'
         
         kwargs['XMLDATA']  = self.build_xml( kwargs )
         
         self.url_request = requests.post(
             self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
             )
-
+            
+        #~ print self.url_request.content
+         
         self.config_dict = xmltodict.parse( self.url_request.content )
         self.status      = self.config_dict['result']['status']
         
@@ -58,12 +62,12 @@ class nrds():
             return True
         else:
             return False
-        
-        #~ with open('/tmp/config.xml', 'w') as config:
-            #~ config.write(self.url_request.content)
-        
-        #http://192.168.2.29/nrdp//?token=k2suan32qt50&cmd=updatenrds&XMLDATA=<?xml version='1.0' ?><configs><config><name>windows</name><version>0.2</version></config></configs>
-        
+        #~ 
+        with open('/tmp/config.xml', 'w') as config:
+            config.write(self.url_request.content)
+        #~ 
+        #~ #http://192.168.2.29/nrdp//?token=k2suan32qt50&cmd=updatenrds&XMLDATA=<?xml version='1.0' ?><configs><config><name>windows</name><version>0.2</version></config></configs>
+        #~ 
     def build_xml(self, settings_dict):
         
         doc = Document()
