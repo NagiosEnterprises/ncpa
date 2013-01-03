@@ -8,7 +8,7 @@ from xml.dom.minidom import parseString
 plugin_loc ='./plugins'
 path       ='./etc/ncpa_test.cfg'
 
-class nrds():
+class nrds( abstract.NagiosHandler ):
     """
     api for nrds config management
     """
@@ -80,10 +80,16 @@ class nrds():
         #~ 
         
     def get_available_plugins(self, *args, **kwargs):
-        self.config = fetch_config( kwargs )
+        """takes config name as argument
+        return list of plugins as defined by config file"""
         
-        print self.config
+        kwargs['cmd'] = 'getconfig'
+        kwargs['os']  = 'chinook'
         
+        self.url_request = requests.post(
+            self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
+            )
+            
     def build_xml(self, settings_dict):
         
         doc = Document()
