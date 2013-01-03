@@ -6,6 +6,7 @@ import os
 import time
 import signal
 import threading
+import listener.processor
 
 def daemonize():
     '''
@@ -120,9 +121,9 @@ class ListenerDaemon(PosixDaemon):
     '''
     This kicks off the TCP listener.
     '''
-    def __init__(self, handler, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         self.PIDFILE = 'var/ncpa_listener.pid'
-        self.handler = handler
+        self.handler = listener.process.MyTCPHandler
         super(ListenerDaemon, self).__init__(*args, **kwargs)
     
     def start(self, *args, **kwargs):
