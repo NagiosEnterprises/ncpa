@@ -28,4 +28,5 @@ if __name__ == "__main__":
         gen_daemon()
     else:
         import win32serviceutil
-        win32serviceutil.HandleCommandLine(daemons.windows.ListenerDaemon(config_filename=options.config, handler=TCP_HANDLER))
+        import pythoncom
+        win32serviceutil.HandleCommandLine(daemons.windows.ListenerDaemon)

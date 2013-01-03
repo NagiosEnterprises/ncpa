@@ -7,12 +7,13 @@ import socket
 import SocketServer
 import threading
 import abstract
+import listener.processor
 
 class WrapperDaemon(abstract.NCPADaemon):
     
-    def __init__(self, handler, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(WrapperDaemon, self).__init__(self, *args, **kwargs)
-        self.handler = handler
+        self.handler = listener.process.MyTCPHandler
     
     def run(self, *args, **kwargs):
         '''
@@ -33,15 +34,12 @@ class WrapperDaemon(abstract.NCPADaemon):
             f.write('This was an exception.\n %s' % str(e))
             self.logger.exception(e)
 
-class ListenerDaemon(win32serviceutil.ServiceFramework, abstract.NCPADaemon):
+class ListenerDaemon(win32serviceutil.ServiceFramework):
+    _svc_name_ = 'NCPAListener'
+    _svc_display_name_ = 'NCPA Listener'
     
-    def __init__(self, config_filename, handler, *args, **kwargs):
-        win32serviceutil.ServiceFramework.__init__(self, *args, **kwargs)
-        self._svc_name = 'ncpalistener'
-        self._svc_display_name = 'NCPA Listener'
-        self.config_filename = config_filename
-        self.handler = handler
-        win32serviceutil.ServiceFramework.__init__(self, *args)
+    def __init__(self, args):
+        win32serviceutil.ServiceFramework.__init__(self, args)
         self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
         socket.setdefaulttimeout(60)
 
@@ -56,5 +54,5 @@ class ListenerDaemon(win32serviceutil.ServiceFramework, abstract.NCPADaemon):
         self.main()
 
     def main(self):
-        process = WrapperDaemon(handler=self.handler, config_filename=self.config_filename)
+        process = WrapperDaemon(config_filename='etc/ncpa.cfg')
         process.run()
