@@ -29290,3 +29290,7 @@ Arguments: None
 01/03/13 01:05:09 DEBUG:Received incoming connection. Info is: {"metric": "check_cpu", "warning": null, "critical": null, "arguments": ""}
 01/03/13 01:05:09 DEBUG:JSON loaded from input.
 01/03/13 01:05:09 DEBUG:Beginning execution for check_cpu
+01/03/13 01:41:11 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+01/03/13 01:41:39 DEBUG:Received incoming connection. Info is: {"metric": "check_memory", "warning": null, "critical": null, "arguments": ""}
+01/03/13 01:41:39 DEBUG:JSON loaded from input.
+01/03/13 01:41:39 DEBUG:Beginning execution for check_memory

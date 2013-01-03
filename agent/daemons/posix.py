@@ -123,7 +123,7 @@ class ListenerDaemon(PosixDaemon):
     '''
     def __init__(self, *args, **kwargs):
         self.PIDFILE = 'var/ncpa_listener.pid'
-        self.handler = listener.process.MyTCPHandler
+        self.handler = listener.processor.MyTCPHandler
         super(ListenerDaemon, self).__init__(*args, **kwargs)
     
     def start(self, *args, **kwargs):
