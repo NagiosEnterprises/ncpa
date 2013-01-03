@@ -5,6 +5,9 @@ import xmltodict
 from xml.dom.minidom import Document
 from xml.dom.minidom import parseString
 
+plugin_loc ='./plugins'
+path       ='./etc/ncpa_test.cfg'
+
 class nrds():
     """
     api for nrds config management
@@ -21,7 +24,7 @@ class nrds():
             self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
             )
             
-        self.local_path_location = self.nrds_settings['plugin_loc'] + kwargs['plugin']
+        self.local_path_location = plugin_loc + kwargs['plugin']
         
         with open(self.local_path_location, 'w') as plugin:
             plugin.write(self.url_request.content)
@@ -39,7 +42,7 @@ class nrds():
             self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
             )
             
-        with open(kwargs['path'], 'w') as config:
+        with open(path, 'w') as config:
             config.write(self.url_request.content)
             
     def new_config(self, *args, **kwargs):
