@@ -31,12 +31,15 @@ class nrds():
 
 
     def fetch_config(self, *args, **kwargs):
+        """
+        fetch config takes config name as argument and downloads new config to
+        whatever is declared as path
+        """
         
-        #http://192.168.1.102/nrdp/?token=e9c6oudjfjs6&cmd=getconfig&configname=windows&os=Windows&os_ver=5.1.2600&arch=x86
+        #http://192.168.1.102/nrdp/?token=k2suan32qt50&cmd=getconfig&configname=windows&os=Windows
         
         kwargs['cmd'] = 'getconfig'
         kwargs['os']  = 'chinook'
-        kwargs['configname'] = 'ncpa'
         
         self.url_request = requests.post(
             self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
@@ -46,6 +49,10 @@ class nrds():
             config.write(self.url_request.content)
             
     def new_config(self, *args, **kwargs):
+        """
+        takes current config version as argument and returns T or F if new config is available
+        """
+        
         kwargs['cmd'] = 'updatenrds'
         kwargs['os']  = 'chinook'
         kwargs['config_name'] = 'ncpa'
@@ -71,6 +78,12 @@ class nrds():
         #~ 
         #~ #http://192.168.2.29/nrdp//?token=k2suan32qt50&cmd=updatenrds&XMLDATA=<?xml version='1.0' ?><configs><config><name>windows</name><version>0.2</version></config></configs>
         #~ 
+        
+    def get_available_plugins(self, *args, **kwargs):
+        self.config = fetch_config( kwargs )
+        
+        print self.config
+        
     def build_xml(self, settings_dict):
         
         doc = Document()
