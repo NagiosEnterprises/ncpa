@@ -1,7 +1,6 @@
-#!/usr/bin/env python
-import daemons
 import platform
 import optparse
+import daemons
 
 def parse_args():
     
@@ -13,7 +12,7 @@ def parse_args():
     
     options, args = parser.parse_args()
     
-    if not len(args) == 1 or args[0] not in ['start', 'stop', 'reload']:
+    if not len(args) == 1 or args[0] not in ['start', 'stop', 'reload'] and not platform.system() == 'Windows':
         parser.error('Must only give either start, stop or reload.')
     
     return options, args
@@ -28,5 +27,4 @@ if __name__ == "__main__":
         gen_daemon()
     else:
         import win32serviceutil
-        import pythoncom
         win32serviceutil.HandleCommandLine(daemons.windows.ListenerDaemon)
