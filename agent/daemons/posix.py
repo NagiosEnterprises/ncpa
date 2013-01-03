@@ -120,7 +120,6 @@ class ListenerDaemon(PosixDaemon):
     '''
     This kicks off the TCP listener.
     '''
-    
     def __init__(self, handler, *args, **kwargs):
         self.PIDFILE = 'var/ncpa_listener.pid'
         self.handler = handler
@@ -129,8 +128,7 @@ class ListenerDaemon(PosixDaemon):
     def start(self, *args, **kwargs):
         '''
         Kickoff the TCP Server
-        '''
-        
+        ''' 
         self.check_pid(self.PIDFILE)
         
         address = self.config.get('listening server', 'ipport').split(',')
@@ -148,7 +146,6 @@ class ListenerDaemon(PosixDaemon):
             for server in servers:
                 threading.Thread(target=server.serve_forever, args=[]).start()
         except Exception, e:
-            f = open('/tmp/logfile','b')
             f.write('This was an exception.\n %s' % str(e))
             self.logger.exception(e)
     

@@ -23,12 +23,11 @@ def parse_args():
 
 if __name__ == "__main__":
     
-    options, args = parse_args()
-    
     if not platform.system() == 'Windows':
+        options, args = parse_args()
         daemon = daemons.posix.ListenerDaemon(config_filename=options.config, handler=TCP_HANDLER)
+        gen_daemon = getattr(daemon, args[0])
+        gen_daemon()
     else:
-        daemon = daemons.windows.ListenerDaemon(config_filename=options.config, handler=TCP_HANDLER)
-    
-    gen_daemon = getattr(daemon, args[0])
-    gen_daemon()
+        import win32serviceutil
+        win32serviceutil.HandleCommandLine(daemons.windows.ListenerDaemon(config_filename=options.config, handler=TCP_HANDLER)
