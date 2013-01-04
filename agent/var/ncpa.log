@@ -29294,3 +29294,94 @@ Arguments: None
 01/03/13 01:41:39 DEBUG:Received incoming connection. Info is: {"metric": "check_memory", "warning": null, "critical": null, "arguments": ""}
 01/03/13 01:41:39 DEBUG:JSON loaded from input.
 01/03/13 01:41:39 DEBUG:Beginning execution for check_memory
+01/03/13 23:25:03 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+01/03/13 23:27:48 DEBUG:Parsing config...
+01/03/13 23:28:18 DEBUG:Parsing config...
+01/03/13 23:28:18 DEBUG:Parsing commands...
+01/03/13 23:28:35 DEBUG:Parsing config...
+01/03/13 23:28:35 DEBUG:Parsing commands...
+01/03/13 23:28:35 DEBUG:Parsing new individual command.
+01/03/13 23:29:42 DEBUG:Parsing config...
+01/03/13 23:29:42 DEBUG:Parsing commands...
+01/03/13 23:29:42 DEBUG:Parsing new individual command.
+01/03/13 23:29:42 DEBUG:Setting hostname to localhost and servicename to __HOST__
+01/03/13 23:29:42 DEBUG:Parsing command: check_swap
+01/03/13 23:29:42 DEBUG:Command did not contain arguments. Single directive.
+01/03/13 23:29:42 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __HOST__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/03/13 23:29:42 DEBUG:Parsing new individual command.
+01/03/13 23:29:42 DEBUG:Setting hostname to localhost and servicename to CPU Usage
+01/03/13 23:29:42 DEBUG:Parsing command: check_cpu
+01/03/13 23:29:42 DEBUG:Command did not contain arguments. Single directive.
+01/03/13 23:29:42 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: CPU Usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/03/13 23:29:42 DEBUG:Parsing new individual command.
+01/03/13 23:29:42 DEBUG:Setting hostname to localhost and servicename to Memory Usage
+01/03/13 23:29:42 DEBUG:Parsing command: check_memory
+01/03/13 23:29:42 DEBUG:Command did not contain arguments. Single directive.
+01/03/13 23:29:42 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/03/13 23:29:42 DEBUG:Establishing Nagios handler...
+01/03/13 23:29:42 DEBUG:Nagios handler established.
+01/03/13 23:29:42 DEBUG:Querying agent.
+01/03/13 23:29:42 DEBUG:Config states we connect to 127.0.0.1:5691
+01/03/13 23:29:42 DEBUG:Creating socket.
+01/03/13 23:29:42 DEBUG:Received incoming connection. Info is: {"metric": "check_swap", "warning": null, "critical": null, "arguments": null}
+01/03/13 23:29:43 DEBUG:JSON loaded from input.
+01/03/13 23:29:43 DEBUG:Beginning execution for check_swap
+01/03/13 23:29:43 DEBUG:Querying agent.
+01/03/13 23:29:43 DEBUG:Config states we connect to 127.0.0.1:5691
+01/03/13 23:29:43 DEBUG:Creating socket.
+01/03/13 23:29:43 DEBUG:Received incoming connection. Info is: {"metric": "check_cpu", "warning": null, "critical": null, "arguments": null}
+01/03/13 23:29:43 DEBUG:JSON loaded from input.
+01/03/13 23:29:43 DEBUG:Beginning execution for check_cpu
+01/03/13 23:29:43 DEBUG:Querying agent.
+01/03/13 23:29:43 DEBUG:Config states we connect to 127.0.0.1:5691
+01/03/13 23:29:43 DEBUG:Creating socket.
+01/03/13 23:29:43 DEBUG:Received incoming connection. Info is: {"metric": "check_memory", "warning": null, "critical": null, "arguments": null}
+01/03/13 23:29:43 DEBUG:JSON loaded from input.
+01/03/13 23:29:43 DEBUG:Beginning execution for check_memory
+01/03/13 23:29:43 INFO:Starting new HTTPS connection (1): 192.168.1.26
+01/03/13 23:29:43 DEBUG:"POST /nrdp?token=a&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ASwap+Usage+is+at+%3A+0.0%25%7CSwap_Usage%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ACPU+Utilization+is+at+%3A+0.0%25%7CCPU_Load%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3APhysical+Memory+Usage+is+at+%3A+25.3%25%7CMemory_Usage%3D25.3%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E HTTP/1.1" 301 1118
+01/03/13 23:29:43 DEBUG:"POST /nrdp/?token=a&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ASwap+Usage+is+at+%3A+0.0%25%7CSwap_Usage%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ACPU+Utilization+is+at+%3A+0.0%25%7CCPU_Load%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3APhysical+Memory+Usage+is+at+%3A+25.3%25%7CMemory_Usage%3D25.3%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E&token=a&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ASwap+Usage+is+at+%3A+0.0%25%7CSwap_Usage%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ACPU+Utilization+is+at+%3A+0.0%25%7CCPU_Load%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3APhysical+Memory+Usage+is+at+%3A+25.3%25%7CMemory_Usage%3D25.3%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E HTTP/1.1" 200 170
+01/03/13 23:29:43 INFO:Message from NRDP server: OK
+01/03/13 23:29:43 INFO:Meta output from NRDP server: 3 checks processed.
+01/03/13 23:30:20 DEBUG:Parsing config...
+01/03/13 23:30:20 DEBUG:Parsing commands...
+01/03/13 23:30:20 DEBUG:Parsing new individual command.
+01/03/13 23:30:20 DEBUG:Setting hostname to localhost and servicename to __HOST__
+01/03/13 23:30:20 DEBUG:Parsing command: check_swap
+01/03/13 23:30:20 DEBUG:Command did not contain arguments. Single directive.
+01/03/13 23:30:20 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __HOST__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/03/13 23:30:20 DEBUG:Parsing new individual command.
+01/03/13 23:30:20 DEBUG:Setting hostname to localhost and servicename to CPU Usage
+01/03/13 23:30:20 DEBUG:Parsing command: check_cpu
+01/03/13 23:30:20 DEBUG:Command did not contain arguments. Single directive.
+01/03/13 23:30:20 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: CPU Usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/03/13 23:30:20 DEBUG:Parsing new individual command.
+01/03/13 23:30:20 DEBUG:Setting hostname to localhost and servicename to Memory Usage
+01/03/13 23:30:20 DEBUG:Parsing command: check_memory
+01/03/13 23:30:20 DEBUG:Command did not contain arguments. Single directive.
+01/03/13 23:30:20 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/03/13 23:30:20 DEBUG:Establishing Nagios handler...
+01/03/13 23:30:20 DEBUG:Nagios handler established.
+01/03/13 23:30:20 DEBUG:Querying agent.
+01/03/13 23:30:20 DEBUG:Config states we connect to 127.0.0.1:5691
+01/03/13 23:30:20 DEBUG:Creating socket.
+01/03/13 23:30:20 DEBUG:Received incoming connection. Info is: {"metric": "check_swap", "warning": null, "critical": null, "arguments": null}
+01/03/13 23:30:20 DEBUG:JSON loaded from input.
+01/03/13 23:30:20 DEBUG:Beginning execution for check_swap
+01/03/13 23:30:20 DEBUG:Querying agent.
+01/03/13 23:30:20 DEBUG:Config states we connect to 127.0.0.1:5691
+01/03/13 23:30:20 DEBUG:Creating socket.
+01/03/13 23:30:20 DEBUG:Received incoming connection. Info is: {"metric": "check_cpu", "warning": null, "critical": null, "arguments": null}
+01/03/13 23:30:20 DEBUG:JSON loaded from input.
+01/03/13 23:30:20 DEBUG:Beginning execution for check_cpu
+01/03/13 23:30:20 DEBUG:Querying agent.
+01/03/13 23:30:20 DEBUG:Config states we connect to 127.0.0.1:5691
+01/03/13 23:30:20 DEBUG:Creating socket.
+01/03/13 23:30:20 DEBUG:Received incoming connection. Info is: {"metric": "check_memory", "warning": null, "critical": null, "arguments": null}
+01/03/13 23:30:20 DEBUG:JSON loaded from input.
+01/03/13 23:30:20 DEBUG:Beginning execution for check_memory
+01/03/13 23:30:20 INFO:Starting new HTTPS connection (1): 192.168.1.26
+01/03/13 23:30:20 DEBUG:"POST /nrdp?token=a&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ASwap+Usage+is+at+%3A+0.0%25%7CSwap_Usage%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ACPU+Utilization+is+at+%3A+0.0%25%7CCPU_Load%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3APhysical+Memory+Usage+is+at+%3A+25.5%25%7CMemory_Usage%3D25.5%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E HTTP/1.1" 301 1118
+01/03/13 23:30:21 DEBUG:"POST /nrdp/?token=a&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ASwap+Usage+is+at+%3A+0.0%25%7CSwap_Usage%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ACPU+Utilization+is+at+%3A+0.0%25%7CCPU_Load%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3APhysical+Memory+Usage+is+at+%3A+25.5%25%7CMemory_Usage%3D25.5%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E&token=a&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ASwap+Usage+is+at+%3A+0.0%25%7CSwap_Usage%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ACPU+Utilization+is+at+%3A+0.0%25%7CCPU_Load%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3APhysical+Memory+Usage+is+at+%3A+25.5%25%7CMemory_Usage%3D25.5%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E HTTP/1.1" 200 170
+01/03/13 23:30:21 INFO:Message from NRDP server: OK
+01/03/13 23:30:21 INFO:Meta output from NRDP server: 3 checks processed.

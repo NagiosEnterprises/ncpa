@@ -1,9 +1,7 @@
 import logging
 import json
 import socket
-import ConfigParser
-
-logger = logging.getLogger()
+import utils
 
 class NagiosHandler(object):
     '''
@@ -16,40 +14,40 @@ class NagiosHandler(object):
         '''
         Does initial such as parsing the config.
         '''
-        logger.debug('Establishing Nagios handler...')
         self.parse_config(config)
-        logger.debug('Nagios handler established.')
+        self.logger.debug('Establishing Nagios handler...')
+        self.logger.debug('Nagios handler established.')
     
     def _parse_commands(self, *args, **kwargs):
         '''
         Grab the commands from the config.
         '''
-        logger.debug('Parsing commands...')
+        self.logger.debug('Parsing commands...')
         commands = dict(self.config.items('passive checks'))
         self.ncpa_commands = []
         for command in commands:
-            logger.debug('Parsing new individual command.')
+            self.logger.debug('Parsing new individual command.')
             host_service = command
             raw_command = commands[command]
             tmp = NCPACommand()
             tmp.set_host_and_service(host_service)
             tmp.parse_command(raw_command)
-            logger.debug(tmp)
+            self.logger.debug(tmp)
             self.ncpa_commands.append(tmp)
     
     def send_command(self, ncpa_command, *args, **kwargs):
         '''
         Query the local active agent.
         '''
-        logger.debug('Querying agent.')
+        self.logger.debug('Querying agent.')
         address = self.config.get('passive', 'connect')
         host, port = address.split(':')
-        logger.debug('Config states we connect to %s' % address)
+        self.logger.debug('Config states we connect to %s' % address)
         data_string = json.dumps({  'metric'    : ncpa_command.command,
                                     'warning'   : None,
                                     'critical'  : None,
                                     'arguments'      : ncpa_command.arguments })
-        logger.debug('Creating socket.')
+        self.logger.debug('Creating socket.')
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((host, int(port)))
         sock.sendall(data_string + "\n")
@@ -65,6 +63,16 @@ class NagiosHandler(object):
             tmp_result = self.send_command(command)
             command.set_json(tmp_result)
     
+    def setup_logging(self, *arg, **kwargs):
+        '''
+        This should always setup the logger.
+        '''
+        log_config = dict(self.config.items('logging', 1))
+        log_config['level'] = getattr(logging, log_config['log_level'], logging.INFO)
+        del log_config['log_level']
+        logging.basicConfig(**log_config)
+        self.logger = logging.getLogger()
+    
     def parse_config(self, config, *args, **kwargs):
         '''
         Grab the commands from the config.
@@ -72,11 +80,13 @@ class NagiosHandler(object):
         #~ This is for debugging and Handler creation only
         try:
             config.sections()
+            obj_config = config
         except AttributeError:
-            obj_config = ConfigParser.ConfigParser()
+            obj_config = utils.PConfigParser()
             obj_config.read(config)
         self.config = obj_config
-        logging.debug('Parsing config...')
+        self.setup_logging()
+        self.logger.debug('Parsing config...')
         self._parse_commands()
     
     def run(self, *args, **kwargs):
@@ -106,6 +116,7 @@ class NCPACommand(object):
         self.json = None
         self.stdout = None
         self.returncode = None
+        self.logger = logging.getLogger()
     
     def __repr__(self):
         builder  = 'Nagios Hostname: %s -- ' % self.nag_hostname
@@ -140,7 +151,7 @@ class NCPACommand(object):
             self.check_type = 'host'
         else:
             self.check_type = 'service'
-        logger.debug('Setting hostname to %s and servicename to %s' % (self.nag_hostname, self.nag_servicename))
+        self.logger.debug('Setting hostname to %s and servicename to %s' % (self.nag_hostname, self.nag_servicename))
     
     def parse_result(self, result, *args, **kwargs):
         '''
@@ -159,10 +170,10 @@ class NCPACommand(object):
         Should set self.command to check_memory, anything in a space
         after it should be regarded as arguments.
         '''
-        logger.debug('Parsing command: %s' % config_command)
+        self.logger.debug('Parsing command: %s' % config_command)
         try:
             self.command, self.arguments = config_command.split(' ', 1)
-            logger.debug('Command contained arguments.')
+            self.logger.debug('Command contained arguments.')
         except ValueError:
             self.command = config_command
-            logger.debug('Command did not contain arguments. Single directive.')
+            self.logger.debug('Command did not contain arguments. Single directive.')
