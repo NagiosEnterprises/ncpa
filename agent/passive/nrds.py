@@ -43,10 +43,11 @@ class Handler( abstract.NagiosHandler ):
 
     def fetch_config(self, *args, **kwargs):
         """
-        Downloads new config to whatever is declared as path
+        Downloads new config to
+        whatever is declared as path
         """
         
-        kwargs['configname'] = self.config.get('nrds', 'CONFIG_NAME')
+        kwargs['configname'] = self.config.get('nrds', 'config_name')
         
         #http://192.168.1.102/nrdp/?token=k2suan32qt50&cmd=getconfig&configname=windows&os=Windows
         
@@ -70,7 +71,8 @@ class Handler( abstract.NagiosHandler ):
         
         kwargs['cmd'] = 'updatenrds'
         kwargs['os']  = 'chinook'
-        kwargs['config_name'] = 'ncpa'
+        kwargs['config_name'] = self.config.get( 'nrds' , 'config_name' )
+        kwargs['config_version'] = self.config.get( 'nrds', 'config_version' )
         
         kwargs['XMLDATA']  = self.build_xml( kwargs )
         
