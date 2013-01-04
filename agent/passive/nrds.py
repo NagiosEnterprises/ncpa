@@ -18,27 +18,26 @@ class Handler( abstract.NagiosHandler ):
     def __init__(self, *args, **kwargs):
         super(Handler, self).__init__(*args, **kwargs)
         
-        token = self.config.get('nrdp', 'nrdp_token')
-        nrdp_url = self.config.get('nrdp', 'nrdp_server')
-        self.nrds_settings = { 'token':token, 'nrdp_url':nrdp_url }
+        self.token = self.config.get('nrdp', 'nrdp_token')
+        self.nrdp_url = self.config.get('nrdp', 'nrdp_server')
         
     def run(self, *args, **kwargs):
         self.get_plug()
         self.fetch_config()
         
-    
-    def get_plug(self, *args, **kwargs):
-        kwargs["cmd"] = "getplugin"
-        kwargs["os"]  = "chinook"
-        
-        self.url_request = requests.post(
-            self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
-            )
-            
-        self.local_path_location = plugin_loc + kwargs['plugin']
-        
-        with open(self.local_path_locatinnecton, 'w') as plugin:
-            plugin.write(self.url_request.content)
+    #~ def get_plug(self, *args, **kwargs):
+        #~ 
+        #~ kwargs["cmd"] = "getplugin"
+        #~ kwargs["os"]  = "chinook"
+        #~ 
+        #~ self.url_request = requests.post(
+            #~ self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
+            #~ )
+            #~ 
+        #~ self.local_path_location = plugin_loc + kwargs['plugin']
+        #~ 
+        #~ with open(self.local_path_locatinnecton, 'w') as plugin:
+            #~ plugin.write(self.url_request.content)
 
 
     def fetch_config(self, *args, **kwargs):
@@ -53,22 +52,28 @@ class Handler( abstract.NagiosHandler ):
         
         kwargs['cmd'] = 'getconfig'
         kwargs['os']  = 'chinook'
-        kwargs["token"] = self.nrds_settings["token"]
+        kwargs["token"] = self.token
         
         #post_this = dict( self.nrds_settings.items() + kwargs.items() )
          
-        self.url_request = utils.send_nrdp( self.nrds_settings['nrdp_url'], **kwargs )
-
-        with open(path, 'w') as config:
-            config.write(self.url_request.content)
-            
+        print self.nrdp_url
+        print kwargs
+        
+        self.url_request = utils.send_nrdp( self.nrdp_url, **kwargs )
+        
+        print self.url_request.content
+        
+        #TODO validate config before saving
+        if self.url_request.content != "":
+            with open( self.config.file_path , 'w') as config:
+                config.write(self.url_request.content)
+                
     def new_config(self, *args, **kwargs):
         """
         takes current config version as argument and returns T or F if new config is available
         """
         
-        print self.nrds_settings
-        
+        kwargs['token'] = self.token
         kwargs['cmd'] = 'updatenrds'
         kwargs['os']  = 'chinook'
         kwargs['config_name'] = self.config.get( 'nrds' , 'config_name' )
@@ -76,37 +81,37 @@ class Handler( abstract.NagiosHandler ):
         
         kwargs['XMLDATA']  = self.build_xml( kwargs )
         
-        print kwargs['XMLDATA']
-        #~ self.url_request = requests.post(
-            #~ self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
-            #~ )
-            #~ 
-        #~ print self.url_request.content
-         #~ 
-        #~ self.config_dict = xmltodict.parse( self.url_request.content )
-        #~ self.status      = self.config_dict['result']['status']
-        #~ 
-        #~ if self.status == "1":
-            #~ return True
-        #~ else:
-            #~ return False
-            #~ 
+        #print kwargs['XMLDATA']
+        print kwargs
+        self.url_request = utils.send_nrdp( self.nrdp_url, **kwargs )
+            
+        #TODO log results for we do not have this config
+        print self.url_request.content
+         
+        self.config_dict = xmltodict.parse( self.url_request.content )
+        self.status      = self.config_dict['result']['status']
+        
+        if self.status == "1":
+            return True
+        else:
+            return False
+            
         #~ with open('/tmp/config.xml', 'w') as config:
             #~ config.write(self.url_request.content)
         #~ 
         #~ #http://192.168.2.29/nrdp//?token=k2suan32qt50&cmd=updatenrds&XMLDATA=<?xml version='1.0' ?><configs><config><name>windows</name><version>0.2</version></config></configs>
         #~ 
         
-    def get_available_plugins(self, *args, **kwargs):
-        """takes config name as argument
-        return list of plugins as defined by config file"""
-        
-        kwargs['cmd'] = 'getconfig'
-        kwargs['os']  = 'chinook'
-        
-        self.url_request = requests.post(
-            self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
-            )
+    #~ def get_available_plugins(self, *args, **kwargs):
+        #~ """takes config name as argument
+        #~ return list of plugins as defined by config file"""
+        #~ 
+        #~ kwargs['cmd'] = 'getconfig'
+        #~ kwargs['os']  = 'chinook'
+        #~ 
+        #~ self.url_request = requests.post(
+            #~ self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
+            #~ )
         
     def build_xml(self, settings_dict):
         
