@@ -7,9 +7,6 @@ from xml.dom.minidom import Document
 from xml.dom.minidom import parseString
 import utils
 
-plugin_loc ='./plugins'
-path       ='../etc/ncpa_test.cfg'
-
 class Handler( abstract.NagiosHandler ):
     """
     api for nrds config management
@@ -25,20 +22,18 @@ class Handler( abstract.NagiosHandler ):
         self.get_plug()
         self.fetch_config()
         
-    #~ def get_plug(self, *args, **kwargs):
-        #~ 
-        #~ kwargs["cmd"] = "getplugin"
-        #~ kwargs["os"]  = "chinook"
-        #~ 
-        #~ self.url_request = requests.post(
-            #~ self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
-            #~ )
-            #~ 
-        #~ self.local_path_location = plugin_loc + kwargs['plugin']
-        #~ 
-        #~ with open(self.local_path_locatinnecton, 'w') as plugin:
-            #~ plugin.write(self.url_request.content)
-
+    def getplugin(self, *args, **kwargs):
+        self.plugin_loc = self.config.get('plugin directives', 'plugin_path')
+        
+        kwargs['cmd'] = self.getplugin.__name__
+        kwargs['os']  = "Chinook"
+        kwargs['token'] = self.token
+        
+        self.url_request = utils.send_nrdp( self.nrdp_url, **kwargs )
+        self.local_path_location = self.plugin_loc + kwargs['plugin']
+        
+        with open(self.local_path_location, 'w') as plugin:
+            plugin.write(self.url_request.content)
 
     def fetch_config(self, *args, **kwargs):
         """
@@ -95,12 +90,6 @@ class Handler( abstract.NagiosHandler ):
             return True
         else:
             return False
-            
-        #~ with open('/tmp/config.xml', 'w') as config:
-            #~ config.write(self.url_request.content)
-        #~ 
-        #~ #http://192.168.2.29/nrdp//?token=k2suan32qt50&cmd=updatenrds&XMLDATA=<?xml version='1.0' ?><configs><config><name>windows</name><version>0.2</version></config></configs>
-        #~ 
         
     #~ def get_available_plugins(self, *args, **kwargs):
         #~ """takes config name as argument
