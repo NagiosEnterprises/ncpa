@@ -35,7 +35,7 @@ class Handler( abstract.NagiosHandler ):
         with open(self.local_path_location, 'w') as plugin:
             plugin.write(self.url_request.content)
 
-    def fetch_config(self, *args, **kwargs):
+    def getconfig(self, *args, **kwargs):
         """
         Downloads new config to
         whatever is declared as path
@@ -45,16 +45,12 @@ class Handler( abstract.NagiosHandler ):
         
         #http://192.168.1.102/nrdp/?token=k2suan32qt50&cmd=getconfig&configname=windows&os=Windows
         
-        kwargs['cmd'] = 'getconfig'
+        kwargs['cmd'] = self.getconfig.__name__
         kwargs['os']  = 'chinook'
         kwargs["token"] = self.token
         
-        #post_this = dict( self.nrds_settings.items() + kwargs.items() )
-         
-        print self.nrdp_url
-        print kwargs
-        
         self.url_request = utils.send_nrdp( self.nrdp_url, **kwargs )
+        print self.url_request.url
         
         print self.url_request.content
         
