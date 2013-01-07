@@ -16,10 +16,12 @@ import win32api
 import inspect
 import re
 import sys
+import abstract
 
 class ListenerService(win32serviceutil.ServiceFramework):
     _svc_name_ = 'NCPAListener'
     _svc_display_name_ = 'NCPA Listener'
+    _svc_description = 'Service that listens on a TCP port.'
     
     def __init__(self, *args):
         win32serviceutil.ServiceFramework.__init__(self, *args)
@@ -36,9 +38,9 @@ class ListenerService(win32serviceutil.ServiceFramework):
         return res + suffix
     
     def import_handler(self):
-        '''
-        TODO Change it so the way the import is handled is sane. This works,
-        but it needs to be reworked.
+        '''Imports the handlers in the Windows fashion.
+        
+        @todo Change it so the way the import is handled is sane. This works, but it needs to be reworked.
         '''
         agent = re.compile(r'(.*agent.?)')
         this_module = inspect.currentframe().f_code.co_filename
@@ -79,8 +81,7 @@ class ListenerService(win32serviceutil.ServiceFramework):
         self.config.read(self.config_filename)
     
     def setup_logging(self, *arg, **kwargs):
-        '''
-        This should always setup the logger.
+        '''This should always setup the logger.
         '''
         log_config = dict(self.config.items('logging', 1))
         log_config['level'] = getattr(logging, log_config['log_level'], logging.INFO)
@@ -90,8 +91,9 @@ class ListenerService(win32serviceutil.ServiceFramework):
         self.logger = logging.getLogger()
     
     def start(self):
-        '''
-        Kickoff the TCP Server
+        '''Kickoff the TCP Server
+        
+        @todo Integrate this with the Windows code. It shares so much...and gains so little
         ''' 
         self.import_handler()
         address = self.config.get('listening server', 'ipport').split(',')
@@ -111,12 +113,22 @@ class ListenerService(win32serviceutil.ServiceFramework):
     def stop(self):
         pass
 
+class PassiveService(ListenerService):
+    _svc_name_ = 'NCPAPassive'
+    _svc_display_name_ = 'NCPA Passive'
+    _svc_description_ = 'Service that sleeps, then awakens and accesses the NCPA agent.'
+    
+    def __init__(self, *args, **kwargs):
+		super(PassiveService, self).__init__(*args, **kwargs)
+	
+	def start(self):
+		
+
 def instart(cls, handler, config, stay_alive=True):
-    ''' 
-    Install and  Start (auto) a Service
+    '''Install and  Start (auto) a Service
             
-    cls : the class (derived from Service) that implement the Service
-    stay_alive : Service will stop on logout if False
+    @param cls Class: Class (derived from Service) that implement the Service
+    @param stay_alive boolean: Service will stop on logout if False
     '''
     try:
         module_path=modules[cls.__module__].__file__

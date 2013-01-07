@@ -105,6 +105,16 @@ class PassiveDaemon(PosixDaemon):
         self.PIDFILE = 'var/ncpa_passive.pid'
         super(PassiveDaemon, self).__init__(*args, **kwargs)
     
+    def run_all_handlers(self, *args, **kwargs):
+		'''Will run all handlers that exist.
+		
+		The handler must:
+		- Have a config header entry
+		- Abide by the handler API set forth by passive.abstract.NagiosHandler
+		- Terminate in a timely fashion
+		'''
+		
+    
     def start(self, *args, **kwargs):
         '''
         Start the waiting loop.
