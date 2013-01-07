@@ -30,5 +30,5 @@ if __name__ == "__main__":
         gen_daemon()
     else:
         this_path = os.getcwd()
-        daemon = daemons.windows.ListenerService
-        daemons.windows.instart(daemon, listener.processor.MyTCPHandler, this_path)
+        daemon = daemons.windows.PassiveService
+        daemons.windows.instart(daemon)

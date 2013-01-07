@@ -16,7 +16,14 @@ import win32api
 import inspect
 import re
 import sys
+import time
 import abstract
+
+def import_basedir():
+    agent = re.compile(r'(.*agent.?)')
+    this_module = inspect.currentframe().f_code.co_filename
+    res = agent.search(this_module).group(1)
+    sys.path.append(res)
 
 class ListenerService(win32serviceutil.ServiceFramework):
     _svc_name_ = 'NCPAListener'
@@ -119,12 +126,48 @@ class PassiveService(ListenerService):
     _svc_description_ = 'Service that sleeps, then awakens and accesses the NCPA agent.'
     
     def __init__(self, *args, **kwargs):
-		super(PassiveService, self).__init__(*args, **kwargs)
-	
-	def start(self):
-		
+        ListenerService.__init__(self, *args, **kwargs)
+    
+    def run_all_handlers(self, *args, **kwargs):
+        '''Will run all handlers that exist.
+        
+        The handler must:
+        - Have a config header entry
+        - Abide by the handler API set forth by passive.abstract.NagiosHandler
+        - Terminate in a timely fashion
+        '''
+        handlers = self.config.get('passive', 'handlers').split(',')
+        import_basedir()
+        
+        import passive.nrdp
+        
+        for handler in handlers:
+            try:
+                module_name = 'passive.%s' % handler
+                __import__(module_name)
+                tmp_handler = sys.modules[module_name]
+            except ImportError,e:
+                self.logger.error('Could not import module passive.%s, skipping. %s' % (handler, str(e)))
+            else:
+                try:
+                    ins_handler = tmp_handler.Handler(self.config)
+                    ins_handler.run()
+                    self.logger.debug('Successfully ran handler %s' % handler)
+                except Exception, e:
+                    self.logger.exception(e)
+    
+    def start(self, *args, **kwargs):
+        '''Start the waiting loop.
+        '''
+        while True:
+            self.parse_config()
+            self.run_all_handlers()
+            
+            sleep = int(self.config.get('passive', 'sleep'))
+            time.sleep(sleep)
 
-def instart(cls, handler, config, stay_alive=True):
+
+def instart(cls, stay_alive=True):
     '''Install and  Start (auto) a Service
             
     @param cls Class: Class (derived from Service) that implement the Service
@@ -138,7 +181,7 @@ def instart(cls, handler, config, stay_alive=True):
         module_path=executable
     module_file = splitext(abspath(module_path))[0]
     cls._svc_reg_class_ = '%s.%s' % (module_file, cls.__name__)
-    cls.config_filename = config
+    print cls._svc_name_
     if stay_alive: 
         win32api.SetConsoleCtrlHandler(lambda x: True, True)
     try:

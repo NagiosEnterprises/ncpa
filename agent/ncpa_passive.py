@@ -17,9 +17,9 @@ def parse_args():
     parser.add_option('-c', '--config', help='Config file to use.', default='etc/ncpa.cfg')
     
     options, args = parser.parse_args()
-    
-    if not len(args) == 1 or args[0] not in ['start', 'stop', 'reload']:
-        parser.error('Must only give either start, stop or reload.')
+    #~ 
+    #~ if not len(args) == 1 or args[0] not in ['start', 'stop', 'reload']:
+        #~ parser.error('Must only give either start, stop or reload.')
     
     return options, args
 
@@ -32,4 +32,6 @@ if __name__ == "__main__":
         gen_daemon = getattr(daemon, args[0])
         gen_daemon()
     else:
-        daemon = daemons.windows.PassiveDaemon(config_filename=options.config)
+        this_path = os.getcwd()
+        daemon = daemons.windows.PassiveService
+        daemons.windows.instart(daemon)
