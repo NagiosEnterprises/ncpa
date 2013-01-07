@@ -30,8 +30,7 @@ if __name__ == "__main__":
     
     if not platform.system() == 'Windows':
         daemon = daemons.posix.PassiveDaemon(config_filename=options.config)
+        gen_daemon = getattr(daemon, args[0])
+        gen_daemon()
     else:
         daemon = daemons.windows.PassiveDaemon(config_filename=options.config)
-    
-    gen_daemon = getattr(daemon, args[0])
-    gen_daemon()

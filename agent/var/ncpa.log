@@ -30198,3 +30198,10 @@ Arguments: None
 01/06/13 19:42:53 INFO:Starting new HTTP connection (1): 192.168.1.54
 01/06/13 19:42:53 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test HTTP/1.1" 301 379
 01/06/13 19:42:53 DEBUG:"GET /nrdp/?token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test&token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test HTTP/1.1" 200 23
+01/06/13 23:04:05 ERROR:Could not import module passive.nrdp, skipping...
+01/06/13 23:04:05 ERROR:local variable 'tmp_handler' referenced before assignment
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 123, in run_all_handlers
+    ins_handler = tmp_handler.Handler(self.config)
+UnboundLocalError: local variable 'tmp_handler' referenced before assignment
+01/06/13 23:06:09 ERROR:Could not import module passive.nrdp, skipping...

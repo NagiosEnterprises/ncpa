@@ -119,12 +119,13 @@ class PassiveDaemon(PosixDaemon):
                 tmp_handler = __import__('passive.%s')
             except ImportError:
                 self.logger.error('Could not import module passive.%s, skipping...' % handler)
-            try:
-                ins_handler = tmp_handler.Handler(self.config)
-                ins_handler.run()
-                self.logger.debug('Successfully ran handler %s' % handler)
-            except Exception, e:
-                self.logger.exception(e)
+            else:
+                try:
+                    ins_handler = tmp_handler.Handler(self.config)
+                    ins_handler.run()
+                    self.logger.debug('Successfully ran handler %s' % handler)
+                except Exception, e:
+                    self.logger.exception(e)
         
         
     
@@ -133,7 +134,7 @@ class PassiveDaemon(PosixDaemon):
         '''
         while True:
             self.parse_config()
-            self.run_all_handler()
+            self.run_all_handlers()
             
             sleep = int(self.config.get('passive', 'sleep'))
             time.sleep(sleep)
