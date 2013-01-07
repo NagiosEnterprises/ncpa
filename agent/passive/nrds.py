@@ -59,28 +59,31 @@ class Handler( abstract.NagiosHandler ):
             with open( self.config.file_path , 'w') as config:
                 config.write(self.url_request.content)
                 
-    def new_config(self, *args, **kwargs):
+    def updatenrds(self, *args, **kwargs):
         """
         takes current config version as argument and returns T or F if new config is available
         """
         
         kwargs['token'] = self.token
-        kwargs['cmd'] = 'updatenrds'
+        kwargs['cmd'] = self.updatenrds.__name__
         kwargs['os']  = 'chinook'
         kwargs['config_name'] = self.config.get( 'nrds' , 'config_name' )
         kwargs['config_version'] = self.config.get( 'nrds', 'config_version' )
         
         kwargs['XMLDATA']  = self.build_xml( kwargs )
         
-        #print kwargs['XMLDATA']
+        print kwargs['XMLDATA']
         print kwargs
         self.url_request = utils.send_nrdp( self.nrdp_url, **kwargs )
-            
+        #print self.url_request.url
+        
         #TODO log results for we do not have this config
-        print self.url_request.content
+        #print self.url_request.content
          
         self.config_dict = xmltodict.parse( self.url_request.content )
         self.status      = self.config_dict['result']['status']
+        
+        print self.status
         
         if self.status == "1":
             return True
