@@ -2,8 +2,33 @@ import checks
 import json
 import logging
 import SocketServer
+import BaseHTTPServer
+import cgi
+import urlparse
 
 logger = logging.getLogger()
+
+class GenHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+    
+    def response(self):
+        
+        try:
+            returnstr = check_metric(self.params)
+        except Exception, e:
+            logger.error('Exception was caught. %s' % str(e))
+            returnstr = json.dumps({ 'error' : str(e)})
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.end_headers()
+        self.wfile.write(returnstr)
+    
+    def do_GET(self):
+        
+        parsed_path = urlparse.urlparse(self.path)
+        self.params = dict(urlparse.parse_qsl(parsed_path.query))
+        logger.warning(str(self.params))
+        self.response()
+        
 
 class MyTCPHandler(SocketServer.BaseRequestHandler):
     """

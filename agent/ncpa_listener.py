@@ -25,7 +25,7 @@ if __name__ == "__main__":
     options, args = parse_args()
     
     if not platform.system() == 'Windows':
-        daemon = daemons.posix.ListenerDaemon(config_filename=options.config, handler=listener.processor.MyTCPHandler)
+        daemon = daemons.posix.ListenerDaemon(config_filename=options.config, handler=listener.processor.GenHandler)
         gen_daemon = getattr(daemon, args[0])
         gen_daemon()
     else:

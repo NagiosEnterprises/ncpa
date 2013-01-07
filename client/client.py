@@ -8,15 +8,16 @@ import socket
 import sys
 import optparse
 import json
+import requests
 
 def parse_args():
     parser = optparse.OptionParser()
     parser.add_option(  "-H","--hostname",
                         help="The hostname to be connected to." )
     parser.add_option(  "-M","--metric",
-                        help="The metric to check, this is defined on client system.")
+                        help="The metric to check, this is defined on client system. This would also be the plugin name in the plugins directory. Do not attach arguments to it, use the -a directive for that.")
     parser.add_option(  "-P","--port",
-                        default=9990,
+                        default=5691,
                         type="int",
                         help="Port to use to connect to the client.")
     parser.add_option(  "-w","--warning",
@@ -27,7 +28,7 @@ def parse_args():
                         default=None,
                         type="str",
                         help="Critical value to be passed for the check.")
-    parser.add_option(  "-s","--spec",
+    parser.add_option(  "-a","--arguments",
                         default="",
                         type="str")
     options, args = parser.parse_args()
@@ -41,32 +42,18 @@ def parse_args():
     
     return options
 
-def query_server(host, metric, port, warning, critical, spec=''):
-    data_string = json.dumps({  'metric'    : metric,
-                                'warning'   : warning,
-                                'critical'  : critical,
-                                'spec'      : spec })
-    # Create a socket (SOCK_STREAM means a TCP socket)
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        # Connect to server and send data
-        sock.connect((host, port))
-        sock.sendall(data_string + "\n")
-        # Receive data from the server and shut down
-        received = sock.recv(1024)
-    finally:
-        sock.close()
-    return json.loads(received)
+def query_server(host, *args, **kwargs):
+    result = requests.get(host, params=kwargs, verify=False)
+    return result.json()
 
 if __name__ == "__main__":
     options = parse_args()
-    host = getattr(options, 'hostname')
-    port = getattr(options, 'port')
-    metric = getattr(options, 'metric')
-    warning = getattr(options, 'warning')
-    critical = getattr(options, 'critical')
-    spec = getattr(options, 'spec')
-    received = query_server(host, metric, port, warning, critical, spec)
-    print received['stdout'],
-    sys.exit(received['returncode'])
-    #~ parse_result(recieved, options)
+    host = 'http://' + options.hostname + ':' + str(options.port)
+    received = query_server(host, **options.__dict__)
+    try:
+        print received['stdout'],
+        sys.exit(received['returncode'])
+    except KeyError:
+        print 'ERROR:', received['error']
+        sys.exit(3)
+

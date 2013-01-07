@@ -1,6 +1,7 @@
 import abstract
 import sys
 import SocketServer
+import BaseHTTPServer
 import logging
 import os
 import time
@@ -138,6 +139,10 @@ class PassiveDaemon(PosixDaemon):
     def start(self, *args, **kwargs):
         '''Start the waiting loop.
         '''
+        self.check_pid(self.PIDFILE)
+        self.draw_spinner('Daemonizing...')
+        daemonize()
+        self.write_pid(self.PIDFILE, os.getpid())
         while True:
             self.parse_config()
             self.run_all_handlers()
@@ -148,7 +153,7 @@ class PassiveDaemon(PosixDaemon):
     def stop(self, *args, **kwargs):
         '''Stop the waiting loop.
         '''
-        super(ListenerDaemon, self).stop(self.PIDFILE, *args, **kwargs)
+        super(PassiveDaemon, self).stop(self.PIDFILE, *args, **kwargs)
 
 class ListenerDaemon(PosixDaemon):
     '''
@@ -172,7 +177,7 @@ class ListenerDaemon(PosixDaemon):
             host.append(tmp_address)
             port.append(tmp_port)
         
-        servers = [ SocketServer.TCPServer((host, int(port)), self.handler) for host, port in zip(host, port)]
+        servers = [ BaseHTTPServer.HTTPServer((host, int(port)), self.handler) for host, port in zip(host, port)]
         self.draw_spinner('Daemonizing...')
         daemonize()
         self.write_pid(self.PIDFILE, os.getpid())

@@ -2,6 +2,7 @@ import logging
 import json
 import socket
 import utils
+import requests
 
 class NagiosHandler(object):
     '''
@@ -41,19 +42,13 @@ class NagiosHandler(object):
         '''
         self.logger.debug('Querying agent.')
         address = self.config.get('passive', 'connect')
-        host, port = address.split(':')
         self.logger.debug('Config states we connect to %s' % address)
-        data_string = json.dumps({  'metric'    : ncpa_command.command,
-                                    'warning'   : None,
-                                    'critical'  : None,
-                                    'arguments'      : ncpa_command.arguments })
-        self.logger.debug('Creating socket.')
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((host, int(port)))
-        sock.sendall(data_string + "\n")
-        received = sock.recv(1024)
-        sock.close()
-        return received
+        params = {  'metric'    : ncpa_command.command,
+                    'warning'   : None,
+                    'critical'  : None,
+                    'arguments' : ncpa_command.arguments }
+        received = requests.get(address, params=params, verify=False)
+        return received.content
         
     def send_all_commands(self, *args, **kwargs):
         '''
