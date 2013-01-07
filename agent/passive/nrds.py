@@ -67,15 +67,10 @@ class Handler( abstract.NagiosHandler ):
         kwargs['token'] = self.token
         kwargs['cmd'] = self.updatenrds.__name__
         kwargs['os']  = 'chinook'
-        kwargs['config_name'] = self.config.get( 'nrds' , 'config_name' )
-        kwargs['config_version'] = self.config.get( 'nrds', 'config_version' )
-        
-        kwargs['XMLDATA']  = self.build_xml( kwargs )
-        
-        print kwargs['XMLDATA']
-        print kwargs
+        kwargs['configname'] = self.config.get( 'nrds' , 'config_name' )
+        kwargs['version'] = self.config.get( 'nrds', 'config_version' )
+
         self.url_request = utils.send_nrdp( self.nrdp_url, **kwargs )
-        #print self.url_request.url
         
         #TODO log results for we do not have this config
         #print self.url_request.content
@@ -100,30 +95,13 @@ class Handler( abstract.NagiosHandler ):
         #~ self.url_request = requests.post(
             #~ self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
             #~ )
-        
-    def build_xml(self, settings_dict):
-        
-        doc = Document()
-        configs = doc.createElement("configs")
-        doc.appendChild(configs)
-        config = doc.createElement("config")
-        configs.appendChild(config)
-        name = doc.createElement("name")
-        config.appendChild(name)
-        name_text = doc.createTextNode(settings_dict['config_name'])
-        name.appendChild(name_text)
-        version = doc.createElement("version")
-        config.appendChild(version)
-        version_number = doc.createTextNode(settings_dict['config_version'])
-        version.appendChild(version_number)
-        
-        return doc.toprettyxml(indent="")
-        
+
         #top = http://192.168.2.29/nrdp//?token=k2suan32qt50&cmd=updatenrds&XMLDATA=<?xml version='1.0' ?><configs><config><name>windows</name><version>0.2</version></config></configs>
         #~ #http://192.168.2.29/nrdp//?token=k2suan32qt50&cmd=updatenrds&XMLDATA=%3C?xml%20version='1.0'%20?%3E%3Cconfigs%3E%3Cconfig%3E%3Cname%3Ewindows%3C/name%3E%3Cversion%3E0.1%3C/version%3E%3C/config%3E%3C/configs%3E
         #~ #this will fetch the config and return an array of
         #~ #available plugins
         #~ 
+        
     #~ def update_available():
         #~ #predicate procedure which will return T or F if
         #~ #config is available
