@@ -62,8 +62,7 @@ class PosixDaemon(abstract.NCPADaemon):
         raise Exception("Instantiation of abstract base class.")
     
     def stop(self, pidfile, *args, **kwargs):
-        '''
-        Kill spawned daemon gracefully
+        '''Kill spawned daemon gracefully
         '''
         try:
             f = open(pidfile, 'r')
@@ -106,25 +105,43 @@ class PassiveDaemon(PosixDaemon):
         super(PassiveDaemon, self).__init__(*args, **kwargs)
     
     def run_all_handlers(self, *args, **kwargs):
-		'''Will run all handlers that exist.
-		
-		The handler must:
-		- Have a config header entry
-		- Abide by the handler API set forth by passive.abstract.NagiosHandler
-		- Terminate in a timely fashion
-		'''
-		
+        '''Will run all handlers that exist.
+        
+        The handler must:
+        - Have a config header entry
+        - Abide by the handler API set forth by passive.abstract.NagiosHandler
+        - Terminate in a timely fashion
+        '''
+        handlers = self.config.get('passive', 'handlers').split(',')
+        
+        for handler in handlers:
+            try:
+                tmp_handler = __import__('passive.%s')
+            except ImportError:
+                self.logger.error('Could not import module passive.%s, skipping...' % handler)
+            try:
+                ins_handler = tmp_handler.Handler(self.config)
+                ins_handler.run()
+                self.logger.debug('Successfully ran handler %s' % handler)
+            except Exception, e:
+                self.logger.exception(e)
+        
+        
     
     def start(self, *args, **kwargs):
-        '''
-        Start the waiting loop.
+        '''Start the waiting loop.
         '''
         while True:
+            self.parse_config()
+            self.run_all_handler()
             
-            import passive.nrdp
-            handler = passive.nrdp.Handler(self.config)
-            handler.run()
-            sys.exit(1)
+            sleep = int(self.config.get('passive', 'sleep'))
+            time.sleep(sleep)
+    
+    def stop(self, *args, **kwargs):
+        '''Stop the waiting loop.
+        '''
+        super(ListenerDaemon, self).stop(self.PIDFILE, *args, **kwargs)
 
 class ListenerDaemon(PosixDaemon):
     '''
