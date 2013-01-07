@@ -3,8 +3,6 @@
 import requests
 import abstract
 import xmltodict
-from xml.dom.minidom import Document
-from xml.dom.minidom import parseString
 import utils
 
 class Handler( abstract.NagiosHandler ):
@@ -84,31 +82,3 @@ class Handler( abstract.NagiosHandler ):
             return True
         else:
             return False
-        
-    #~ def get_available_plugins(self, *args, **kwargs):
-        #~ """takes config name as argument
-        #~ return list of plugins as defined by config file"""
-        #~ 
-        #~ kwargs['cmd'] = 'getconfig'
-        #~ kwargs['os']  = 'chinook'
-        #~ 
-        #~ self.url_request = requests.post(
-            #~ self.nrds_settings['nrdp_url'], params=dict( self.nrds_settings.items() + kwargs.items() )
-            #~ )
-
-        #top = http://192.168.2.29/nrdp//?token=k2suan32qt50&cmd=updatenrds&XMLDATA=<?xml version='1.0' ?><configs><config><name>windows</name><version>0.2</version></config></configs>
-        #~ #http://192.168.2.29/nrdp//?token=k2suan32qt50&cmd=updatenrds&XMLDATA=%3C?xml%20version='1.0'%20?%3E%3Cconfigs%3E%3Cconfig%3E%3Cname%3Ewindows%3C/name%3E%3Cversion%3E0.1%3C/version%3E%3C/config%3E%3C/configs%3E
-        #~ #this will fetch the config and return an array of
-        #~ #available plugins
-        #~ 
-        
-    #~ def update_available():
-        #~ #predicate procedure which will return T or F if
-        #~ #config is available
-        #~ 
-    #~ def fetch_config():
-        #~ #will fetch updated config
-        #~ 
-    
-        
-    
