@@ -71,8 +71,12 @@ class PosixDaemon(abstract.NCPADaemon):
             sys.exit(1)
         ncpa_pid = f.read()
         f.close()
-        os.kill(int(ncpa_pid), signal.SIGTERM)
-        self.draw_spinner('Terminating')
+        try:
+            os.kill(int(ncpa_pid), signal.SIGTERM)
+        except OSError:
+            print 'No process with pid, deleting pid.'
+        else:
+            self.draw_spinner('Terminating')
         os.remove(pidfile)
     
     def reload(self, *args, **kwargs):
@@ -116,7 +120,9 @@ class PassiveDaemon(PosixDaemon):
         
         for handler in handlers:
             try:
-                tmp_handler = __import__('passive.%s')
+                module_name = 'passive.%s' % handler
+                __import__(module_name)
+                tmp_handler = sys.modules[module_name]
             except ImportError:
                 self.logger.error('Could not import module passive.%s, skipping...' % handler)
             else:

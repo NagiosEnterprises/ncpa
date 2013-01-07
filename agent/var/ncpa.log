@@ -30205,3 +30205,104 @@ Traceback (most recent call last):
     ins_handler = tmp_handler.Handler(self.config)
 UnboundLocalError: local variable 'tmp_handler' referenced before assignment
 01/06/13 23:06:09 ERROR:Could not import module passive.nrdp, skipping...
+01/06/13 23:08:39 ERROR:Could not import module passive.nrdp, skipping...
+01/06/13 23:10:52 ERROR:Could not import module passive.nrdp, skipping...
+01/06/13 23:11:25 ERROR:Could not import module passive.nrdp, skipping...
+01/06/13 23:12:23 ERROR:'module' object has no attribute 'Handler'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 124, in run_all_handlers
+    ins_handler = tmp_handler.Handler(self.config)
+AttributeError: 'module' object has no attribute 'Handler'
+01/06/13 23:22:34 DEBUG:Parsing config...
+01/06/13 23:22:34 DEBUG:Parsing commands...
+01/06/13 23:22:34 DEBUG:Parsing new individual command.
+01/06/13 23:22:34 DEBUG:Setting hostname to localhost and servicename to __HOST__
+01/06/13 23:22:34 DEBUG:Parsing command: check_swap
+01/06/13 23:22:34 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 23:22:34 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __HOST__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 23:22:34 DEBUG:Parsing new individual command.
+01/06/13 23:22:34 DEBUG:Setting hostname to localhost and servicename to CPU Usage
+01/06/13 23:22:34 DEBUG:Parsing command: check_cpu
+01/06/13 23:22:34 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 23:22:34 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: CPU Usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 23:22:34 DEBUG:Parsing new individual command.
+01/06/13 23:22:34 DEBUG:Setting hostname to localhost and servicename to Memory Usage
+01/06/13 23:22:34 DEBUG:Parsing command: check_memory
+01/06/13 23:22:34 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 23:22:34 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 23:22:34 DEBUG:Establishing Nagios handler...
+01/06/13 23:22:34 DEBUG:Nagios handler established.
+01/06/13 23:22:34 DEBUG:Querying agent.
+01/06/13 23:22:34 DEBUG:Config states we connect to 127.0.0.1:5691
+01/06/13 23:22:34 DEBUG:Creating socket.
+01/06/13 23:22:34 ERROR:[Errno 111] Connection refused
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 127, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 73, in run
+    self.send_all_commands()
+  File "/tmp/ncpa/agent/passive/abstract.py", line 63, in send_all_commands
+    tmp_result = self.send_command(command)
+  File "/tmp/ncpa/agent/passive/abstract.py", line 52, in send_command
+    sock.connect((host, int(port)))
+  File "<string>", line 1, in connect
+error: [Errno 111] Connection refused
+01/06/13 23:23:30 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+01/06/13 23:24:43 DEBUG:Parsing config...
+01/06/13 23:24:43 DEBUG:Parsing commands...
+01/06/13 23:24:43 DEBUG:Parsing new individual command.
+01/06/13 23:24:43 DEBUG:Setting hostname to localhost and servicename to __HOST__
+01/06/13 23:24:43 DEBUG:Parsing command: check_swap
+01/06/13 23:24:43 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 23:24:43 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __HOST__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 23:24:43 DEBUG:Parsing new individual command.
+01/06/13 23:24:43 DEBUG:Setting hostname to localhost and servicename to CPU Usage
+01/06/13 23:24:43 DEBUG:Parsing command: check_cpu
+01/06/13 23:24:43 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 23:24:43 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: CPU Usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 23:24:43 DEBUG:Parsing new individual command.
+01/06/13 23:24:43 DEBUG:Setting hostname to localhost and servicename to Memory Usage
+01/06/13 23:24:43 DEBUG:Parsing command: check_memory
+01/06/13 23:24:43 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 23:24:43 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 23:24:43 DEBUG:Establishing Nagios handler...
+01/06/13 23:24:43 DEBUG:Nagios handler established.
+01/06/13 23:24:43 DEBUG:Querying agent.
+01/06/13 23:24:43 DEBUG:Config states we connect to 127.0.0.1:5691
+01/06/13 23:24:43 DEBUG:Creating socket.
+01/06/13 23:24:43 DEBUG:Received incoming connection. Info is: {"metric": "check_swap", "warning": null, "critical": null, "arguments": null}
+01/06/13 23:24:43 DEBUG:JSON loaded from input.
+01/06/13 23:24:43 DEBUG:Beginning execution for check_swap
+01/06/13 23:24:43 DEBUG:Querying agent.
+01/06/13 23:24:43 DEBUG:Config states we connect to 127.0.0.1:5691
+01/06/13 23:24:43 DEBUG:Creating socket.
+01/06/13 23:24:43 DEBUG:Received incoming connection. Info is: {"metric": "check_cpu", "warning": null, "critical": null, "arguments": null}
+01/06/13 23:24:43 DEBUG:JSON loaded from input.
+01/06/13 23:24:43 DEBUG:Beginning execution for check_cpu
+01/06/13 23:24:43 DEBUG:Querying agent.
+01/06/13 23:24:43 DEBUG:Config states we connect to 127.0.0.1:5691
+01/06/13 23:24:43 DEBUG:Creating socket.
+01/06/13 23:24:43 DEBUG:Received incoming connection. Info is: {"metric": "check_memory", "warning": null, "critical": null, "arguments": null}
+01/06/13 23:24:43 DEBUG:JSON loaded from input.
+01/06/13 23:24:43 DEBUG:Beginning execution for check_memory
+01/06/13 23:24:43 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 23:24:43 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ASwap+Usage+is+at+%3A+0.0%25%7CSwap_Usage%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ACPU+Utilization+is+at+%3A+0.0%25%7CCPU_Load%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3APhysical+Memory+Usage+is+at+%3A+25.2%25%7CMemory_Usage%3D25.2%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E HTTP/1.1" 301 1127
+01/06/13 23:24:43 DEBUG:"POST /nrdp/?token=k2suan32qt50&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ASwap+Usage+is+at+%3A+0.0%25%7CSwap_Usage%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ACPU+Utilization+is+at+%3A+0.0%25%7CCPU_Load%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3APhysical+Memory+Usage+is+at+%3A+25.2%25%7CMemory_Usage%3D25.2%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E&token=k2suan32qt50&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ASwap+Usage+is+at+%3A+0.0%25%7CSwap_Usage%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3ACPU+Utilization+is+at+%3A+0.0%25%7CCPU_Load%3D0.0%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3E0%3C%2Fstate%3E%3Coutput%3EOK%3APhysical+Memory+Usage+is+at+%3A+25.2%25%7CMemory_Usage%3D25.2%25%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E HTTP/1.1" 500 0
+01/06/13 23:24:43 ERROR:None
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 131, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 74, in run
+    self.submit_to_nagios()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 102, in submit_to_nagios
+    self.log_result(retxml.content)
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 81, in log_result
+    tree = etree.fromstring(retxml)
+  File "lxml.etree.pyx", line 2532, in lxml.etree.fromstring (src/lxml/lxml.etree.c:48270)
+  File "parser.pxi", line 1545, in lxml.etree._parseMemoryDocument (src/lxml/lxml.etree.c:71812)
+  File "parser.pxi", line 1424, in lxml.etree._parseDoc (src/lxml/lxml.etree.c:70673)
+  File "parser.pxi", line 938, in lxml.etree._BaseParser._parseDoc (src/lxml/lxml.etree.c:67442)
+  File "parser.pxi", line 539, in lxml.etree._ParserContext._handleParseResultDoc (src/lxml/lxml.etree.c:63824)
+  File "parser.pxi", line 625, in lxml.etree._handleParseResult (src/lxml/lxml.etree.c:64745)
+  File "parser.pxi", line 576, in lxml.etree._raiseParseError (src/lxml/lxml.etree.c:64260)
+XMLSyntaxError: None
