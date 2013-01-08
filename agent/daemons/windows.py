@@ -54,7 +54,7 @@ class ListenerService(win32serviceutil.ServiceFramework):
         res = agent.search(this_module).group(1)
         sys.path.append(res)
         import listener.processor
-        self.handler = listener.processor.MyTCPHandler
+        self.handler = listener.processor.GenHandler
     
     def log(self, msg):
         import servicemanager
