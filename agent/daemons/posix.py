@@ -133,8 +133,6 @@ class PassiveDaemon(PosixDaemon):
                     self.logger.debug('Successfully ran handler %s' % handler)
                 except Exception, e:
                     self.logger.exception(e)
-        
-        
     
     def start(self, *args, **kwargs):
         '''Start the waiting loop.
@@ -173,11 +171,11 @@ class ListenerDaemon(PosixDaemon):
         address = self.config.get('listening server', 'ipport').split(',')
         host, port = [], []
         for tmp in address:
-            tmp_address, tmp_port = tmp.split(':')
+            tmp_address, tmp_port = tmp.rsplit(':', 1)
             host.append(tmp_address)
             port.append(tmp_port)
         
-        servers = [ BaseHTTPServer.HTTPServer((host, int(port)), self.handler) for host, port in zip(host, port)]
+        servers = [ abstract.ConfigHTTPServer(self.config, (host, int(port)), self.handler) for host, port in zip(host, port)]
         self.draw_spinner('Daemonizing...')
         daemonize()
         self.write_pid(self.PIDFILE, os.getpid())

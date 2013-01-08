@@ -95,8 +95,8 @@ class Handler(abstract.NagiosHandler):
         Submit the result as XML to the NRDP server.
         '''
         self.set_xml_of_checkresults()
-        server = self.config.get('nrdp', 'nrdp_server')
-        token = self.config.get('nrdp', 'nrdp_token')
+        server = self.config.get('nrdp', 'parent')
+        token = self.config.get('nrdp', 'token')
         xmldata = etree.tostring(self.checkresults)
         retxml = utils.send_nrdp(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
         self.log_result(retxml.content)

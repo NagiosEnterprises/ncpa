@@ -1,5 +1,12 @@
 import logging
 import ConfigParser
+import BaseHTTPServer
+
+class ConfigHTTPServer(BaseHTTPServer.HTTPServer):
+    
+    def __init__(self, config, *args, **kwargs):
+        BaseHTTPServer.HTTPServer.__init__(self, *args, **kwargs)
+        self.config = config
 
 class NCPADaemon(object):
     '''

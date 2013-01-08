@@ -110,7 +110,7 @@ class ListenerService(win32serviceutil.ServiceFramework):
             host.append(tmp_address)
             port.append(tmp_port)
         
-        servers = [ SocketServer.TCPServer((host, int(port)), self.handler) for host, port in zip(host, port)]
+        servers = [ abstract.ConfigHTTPServer(self.config, (host, int(port)), self.handler) for host, port in zip(host, port)]
         try:
             for server in servers:
                 threading.Thread(target=server.serve_forever, args=[]).start()

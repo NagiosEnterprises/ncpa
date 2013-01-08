@@ -5,50 +5,80 @@ import SocketServer
 import BaseHTTPServer
 import cgi
 import urlparse
+import requests
 
 logger = logging.getLogger()
 
 class GenHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     
-    def response(self):
+    def response(self, content, code=200, header='application/json'):
+        '''Convenience method to simple send a well formed HTTP response
+        back to the requester.
         
+        @param content String - Content that will be the body of the response
+        @param code Integer - Response code
+        @param header String - Content-type declaration
+        '''
         try:
             returnstr = check_metric(self.params)
         except Exception, e:
             logger.error('Exception was caught. %s' % str(e))
             returnstr = json.dumps({ 'error' : str(e)})
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json')
+        self.send_response(code)
+        self.send_header('Content-type', header)
         self.end_headers()
-        self.wfile.write(returnstr)
+        self.wfile.write(content)
+    
+    def do_check(self):
+        '''Runs the check on the local server. Calls response() with
+        the result.
+        '''
+        try:
+            returnstr = check_metric(self.params)
+        except Exception, e:
+            logger.error('Exception was caught. %s' % str(e))
+            returnstr = json.dumps({ 'error' : str(e)})
+        self.response(content=returnstr)
+    
+    def forward_request(self):
+        '''Forwards request to parent NRDX
+        '''
+        forward_to = self.server.config.get('nrdp', 'parent')
+        if self.request_method == 'get':
+            response = requests.get(forward_to, params=self.params)
+        else:
+            response = requests.post(forward_to, params=self.params)
+        self.response(response.text, response.status_code, response.headers['content-type'])
+    
+    def handle_incoming(self):
+        '''Gateway function meant to tie POST and GET together. If
+        'cmd' is present in the REQUEST variable, it will forward the
+        request to its parent, otherwise it will run the check
+        '''
+        if 'cmd' in self.params:
+            self.forward_request()
+        else:
+            self.do_check()
+    
+    def do_POST(self):
+        ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
+        if ctype == 'multipart/form-data':
+            postvars = cgi.parse_multipart(self.rfile, pdict)
+        elif ctype == 'application/x-www-form-urlencoded':
+            length = int(self.headers.getheader('content-length'))
+            postvars = cgi.parse_qs(self.rfile.read(length), keep_blank_values=1)
+        else:
+            postvars = {}
+        self.request_method = 'post'
+        self.params = postvars
+        self.handle_incoming()
     
     def do_GET(self):
         
         parsed_path = urlparse.urlparse(self.path)
         self.params = dict(urlparse.parse_qsl(parsed_path.query))
-        logger.warning(str(self.params))
-        self.response()
-        
-
-class MyTCPHandler(SocketServer.BaseRequestHandler):
-    """
-    The RequestHandler class for our server.
-
-    It is instantiated once per connection to the server, and must
-    override the handle() method to implement communication to the
-    client.
-    """
-    def handle(self):
-        # self.request is the TCP socket connected to the client
-        self.data = self.request.recv(4096).strip()
-        logging.debug('Received incoming connection. Info is: %s', self.data)
-        jsondata = json.loads(self.data)
-        logging.debug('JSON loaded from input.')
-        try:
-            returnstr = check_metric(jsondata)
-        except Exception, e:
-            logger.error('Exception was caught. %s' % str(e))
-        self.request.sendall(returnstr)
+        self.request_method = 'get'
+        self.handle_incoming()
 
 class ReturnObject(object):
     

@@ -5835,3 +5835,31 @@ NameError: global name 'received' is not defined
 01/07/13 03:54:51 INFO:Meta output from NRDP server: 3 checks processed.
 01/07/13 03:54:51 DEBUG:Successfully ran handler nrdp
 01/07/13 03:54:52 WARNING:User attempted to restart, var/ncpa_passive.pid still exists, exiting.
+01/08/13 00:08:34 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+01/08/13 00:46:11 DEBUG:Beginning execution for check_memory
+01/08/13 00:46:11 DEBUG:Beginning execution for check_memory
+01/08/13 00:46:11 DEBUG:Beginning execution for 
+01/08/13 00:46:11 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/08/13 00:46:11 DEBUG:Beginning execution for 
+01/08/13 00:46:11 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/08/13 00:46:11 DEBUG:Beginning execution for 
+01/08/13 00:46:11 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/08/13 00:46:11 DEBUG:Beginning execution for 
+01/08/13 00:46:11 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/08/13 00:48:02 DEBUG:Beginning execution for check_swap
+01/08/13 00:48:02 DEBUG:Beginning execution for check_swap
+01/08/13 00:48:09 DEBUG:Beginning execution for check_cpu
+01/08/13 00:48:09 DEBUG:Beginning execution for check_cpu
+01/08/13 00:48:16 DEBUG:Beginning execution for check_cp
+01/08/13 00:48:16 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/08/13 00:48:16 DEBUG:Beginning execution for check_cp
+01/08/13 00:48:16 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/08/13 00:49:31 DEBUG:Beginning execution for 
+01/08/13 00:49:31 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/08/13 01:08:10 DEBUG:Beginning execution for 
+01/08/13 01:08:10 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/08/13 01:14:59 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/08/13 01:14:59 DEBUG:"GET /nrdp?cmd=booya HTTP/1.1" 301 321
+01/08/13 01:14:59 DEBUG:"GET /nrdp/?cmd=booya&cmd=booya HTTP/1.1" 200 110
+01/08/13 01:14:59 DEBUG:Beginning execution for 
+01/08/13 01:14:59 ERROR:Exception was caught. 'module' object has no attribute 'config'
