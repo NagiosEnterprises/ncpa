@@ -5966,3 +5966,1267 @@ ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=5692): Max retries ex
 01/08/13 01:49:42 ERROR:Exception was caught. 'module' object has no attribute 'config'
 01/08/13 01:49:42 DEBUG:Beginning execution for 
 01/08/13 01:49:42 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:34:41 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+01/10/13 01:35:17 DEBUG:Beginning execution for 
+01/10/13 01:35:17 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:35:17 DEBUG:Beginning execution for 
+01/10/13 01:35:17 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:35:17 DEBUG:Beginning execution for 
+01/10/13 01:35:17 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:35:17 DEBUG:Beginning execution for 
+01/10/13 01:35:17 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:35:17 DEBUG:Beginning execution for 
+01/10/13 01:35:17 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:35:17 DEBUG:Beginning execution for 
+01/10/13 01:35:17 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:35:23 DEBUG:Beginning execution for 
+01/10/13 01:35:23 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:35:23 DEBUG:Beginning execution for 
+01/10/13 01:35:23 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:37:35 DEBUG:Beginning execution for 
+01/10/13 01:37:35 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:41:19 DEBUG:Beginning execution for 
+01/10/13 01:41:19 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:43:23 DEBUG:Beginning execution for 
+01/10/13 01:43:23 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:43:29 DEBUG:Beginning execution for 
+01/10/13 01:43:29 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:44:43 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 01:44:52 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+01/10/13 01:45:03 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 01:47:41 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 01:48:33 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 01:50:18 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 01:52:06 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 01:52:37 DEBUG:Beginning execution for 
+01/10/13 01:52:37 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:52:37 ERROR:%d format: a number is required, not str
+01/10/13 01:52:37 DEBUG:Beginning execution for 
+01/10/13 01:52:37 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:53:40 DEBUG:Beginning execution for 
+01/10/13 01:53:40 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:53:40 ERROR:%d format: a number is required, not str
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 90, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 61, in handle_incoming
+    self.response(self.directive, 'text/html')
+  File "/tmp/ncpa/agent/listener/processor.py", line 27, in response
+    self.send_response(code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 382, in send_response
+    (self.protocol_version, code, message))
+TypeError: %d format: a number is required, not str
+01/10/13 01:53:40 DEBUG:Beginning execution for 
+01/10/13 01:53:40 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:54:12 DEBUG:Beginning execution for 
+01/10/13 01:54:12 ERROR:Exception was caught. 'module' object has no attribute 'config'
+01/10/13 01:54:44 DEBUG:Beginning execution for 
+01/10/13 01:54:44 ERROR:'module' object has no attribute 'config'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 23, in response
+    returnstr = check_metric(self.params)
+  File "/tmp/ncpa/agent/listener/processor.py", line 266, in check_metric
+    item = checks.check_custom(item, metric, arguments)
+  File "/tmp/ncpa/agent/listener/checks.py", line 40, in check_custom
+    config = listener.config
+AttributeError: 'module' object has no attribute 'config'
+01/10/13 01:57:53 ERROR:check_metric() takes exactly 2 arguments (1 given)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 23, in response
+    returnstr = check_metric(self.params)
+TypeError: check_metric() takes exactly 2 arguments (1 given)
+01/10/13 02:13:12 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:13:17 ERROR:HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 84, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 41, in forward_request
+    response = requests.get(forward_to, params=self.params, timeout=5)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 165, in send
+    raise Timeout(e)
+Timeout: HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+01/10/13 02:13:17 DEBUG:Beginning execution for 
+01/10/13 02:13:17 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 29, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 260, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:13:17 ERROR:global name 'status_code' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 84, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 58, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 18, in respond
+    self.send_response(getattr(status_code, status_code, 500))
+NameError: global name 'status_code' is not defined
+01/10/13 02:13:17 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:13:22 ERROR:HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 84, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 41, in forward_request
+    response = requests.get(forward_to, params=self.params, timeout=5)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 165, in send
+    raise Timeout(e)
+Timeout: HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+01/10/13 02:13:22 DEBUG:Beginning execution for 
+01/10/13 02:13:22 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 29, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 260, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:13:22 ERROR:global name 'status_code' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 84, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 58, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 18, in respond
+    self.send_response(getattr(status_code, status_code, 500))
+NameError: global name 'status_code' is not defined
+01/10/13 02:13:34 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:13:39 ERROR:HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 84, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 41, in forward_request
+    response = requests.get(forward_to, params=self.params, timeout=5)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 165, in send
+    raise Timeout(e)
+Timeout: HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+01/10/13 02:13:39 DEBUG:Beginning execution for 
+01/10/13 02:13:39 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 29, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 260, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:13:39 ERROR:global name 'status_code' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 84, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 58, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 18, in respond
+    self.send_response(getattr(self, status_code, 500))
+NameError: global name 'status_code' is not defined
+01/10/13 02:13:39 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:13:44 ERROR:HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 84, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 41, in forward_request
+    response = requests.get(forward_to, params=self.params, timeout=5)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 165, in send
+    raise Timeout(e)
+Timeout: HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+01/10/13 02:13:44 DEBUG:Beginning execution for 
+01/10/13 02:13:44 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 29, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 260, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:13:44 ERROR:global name 'status_code' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 84, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 58, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 18, in respond
+    self.send_response(getattr(self, status_code, 500))
+NameError: global name 'status_code' is not defined
+01/10/13 02:13:54 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:13:59 ERROR:HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 84, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 41, in forward_request
+    response = requests.get(forward_to, params=self.params, timeout=5)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 165, in send
+    raise Timeout(e)
+Timeout: HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+01/10/13 02:13:59 DEBUG:Beginning execution for 
+01/10/13 02:13:59 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 29, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 260, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:13:59 ERROR:global name 'status_code' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 84, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 58, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 18, in respond
+    self.send_response(getattr(self, status_code, 500))
+NameError: global name 'status_code' is not defined
+01/10/13 02:13:59 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:14:04 ERROR:HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 84, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 41, in forward_request
+    response = requests.get(forward_to, params=self.params, timeout=5)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 165, in send
+    raise Timeout(e)
+Timeout: HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+01/10/13 02:14:04 DEBUG:Beginning execution for 
+01/10/13 02:14:04 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 29, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 260, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:14:04 ERROR:global name 'status_code' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 84, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 58, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 18, in respond
+    self.send_response(getattr(self, status_code, 500))
+NameError: global name 'status_code' is not defined
+01/10/13 02:14:40 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:14:45 ERROR:HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 84, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 41, in forward_request
+    response = requests.get(forward_to, params=self.params, timeout=5)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 165, in send
+    raise Timeout(e)
+Timeout: HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+01/10/13 02:14:45 DEBUG:Beginning execution for 
+01/10/13 02:14:45 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 29, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 260, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:14:45 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 84, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 58, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 18, in respond
+    self.send_response(getattr(self, 'status_code', 500))
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:17:13 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:17:18 ERROR:HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 89, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 61, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 47, in forward_request
+    response = requests.get(forward_to, params=self.params, timeout=5)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 165, in send
+    raise Timeout(e)
+Timeout: HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+01/10/13 02:17:18 DEBUG:Beginning execution for 
+01/10/13 02:17:18 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 270, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:17:18 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 89, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 64, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.status_code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:17:18 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:17:23 ERROR:HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 89, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 61, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 47, in forward_request
+    response = requests.get(forward_to, params=self.params, timeout=5)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 165, in send
+    raise Timeout(e)
+Timeout: HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+01/10/13 02:17:23 DEBUG:Beginning execution for 
+01/10/13 02:17:23 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 270, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:17:23 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 89, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 64, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.status_code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:19:23 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:19:28 ERROR:HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 89, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 61, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 47, in forward_request
+    response = requests.get(forward_to, params=self.params, timeout=5)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 165, in send
+    raise Timeout(e)
+Timeout: HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+01/10/13 02:19:28 DEBUG:Beginning execution for 
+01/10/13 02:19:28 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 270, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:19:28 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 89, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 64, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.status_code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:19:28 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:19:33 ERROR:HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 89, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 61, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 47, in forward_request
+    response = requests.get(forward_to, params=self.params, timeout=5)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 165, in send
+    raise Timeout(e)
+Timeout: HTTPConnectionPool(host='192.168.1.26', port=5692): Request timed out. (timeout=5)
+01/10/13 02:19:33 DEBUG:Beginning execution for 
+01/10/13 02:19:33 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 270, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:19:33 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 89, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 64, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.status_code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:22:34 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:22:44 ERROR:global name 'e' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 66, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in forward_request
+    self.message = str(e)
+NameError: global name 'e' is not defined
+01/10/13 02:22:44 DEBUG:Beginning execution for 
+01/10/13 02:22:44 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 275, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:22:44 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 69, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.status_code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:22:44 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:22:54 ERROR:global name 'e' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 66, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in forward_request
+    self.message = str(e)
+NameError: global name 'e' is not defined
+01/10/13 02:22:54 DEBUG:Beginning execution for 
+01/10/13 02:22:54 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 275, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:22:54 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 69, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.status_code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:23:39 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:23:49 ERROR:global name 'e' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 66, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in forward_request
+    self.message = str(e)
+NameError: global name 'e' is not defined
+01/10/13 02:23:49 DEBUG:Beginning execution for 
+01/10/13 02:23:49 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 275, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:23:49 ERROR:GenHandler instance has no attribute 'code'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 69, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.code)
+AttributeError: GenHandler instance has no attribute 'code'
+01/10/13 02:23:49 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:23:59 ERROR:global name 'e' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 66, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in forward_request
+    self.message = str(e)
+NameError: global name 'e' is not defined
+01/10/13 02:23:59 DEBUG:Beginning execution for 
+01/10/13 02:23:59 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 275, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:23:59 ERROR:GenHandler instance has no attribute 'code'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 69, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.code)
+AttributeError: GenHandler instance has no attribute 'code'
+01/10/13 02:24:51 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:25:01 ERROR:global name 'e' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 66, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in forward_request
+    self.message = str(e)
+NameError: global name 'e' is not defined
+01/10/13 02:25:01 DEBUG:Beginning execution for 
+01/10/13 02:25:01 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 275, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:25:01 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 69, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:25:01 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:25:11 ERROR:global name 'e' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 66, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in forward_request
+    self.message = str(e)
+NameError: global name 'e' is not defined
+01/10/13 02:25:11 DEBUG:Beginning execution for 
+01/10/13 02:25:11 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 275, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:25:11 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 69, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:27:13 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:27:24 ERROR:global name 'e' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 66, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in forward_request
+    self.message = str(e)
+NameError: global name 'e' is not defined
+01/10/13 02:27:24 DEBUG:Beginning execution for 
+01/10/13 02:27:24 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 275, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:27:24 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 69, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:27:24 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:27:34 ERROR:global name 'e' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 66, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in forward_request
+    self.message = str(e)
+NameError: global name 'e' is not defined
+01/10/13 02:27:34 DEBUG:Beginning execution for 
+01/10/13 02:27:34 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 275, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:27:34 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 69, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:28:09 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:28:19 ERROR:global name 'e' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 66, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in forward_request
+    self.message = str(e)
+NameError: global name 'e' is not defined
+01/10/13 02:28:19 DEBUG:Beginning execution for 
+01/10/13 02:28:19 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 275, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:28:19 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 69, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:28:19 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:28:29 ERROR:global name 'e' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 66, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in forward_request
+    self.message = str(e)
+NameError: global name 'e' is not defined
+01/10/13 02:28:29 DEBUG:Beginning execution for 
+01/10/13 02:28:29 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 275, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:28:29 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 69, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:29:03 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:29:13 ERROR:global name 'e' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 66, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in forward_request
+    self.message = str(e)
+NameError: global name 'e' is not defined
+01/10/13 02:29:13 DEBUG:Beginning execution for 
+01/10/13 02:29:13 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 275, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:29:13 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 69, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:29:13 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:29:23 ERROR:global name 'e' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 66, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in forward_request
+    self.message = str(e)
+NameError: global name 'e' is not defined
+01/10/13 02:29:23 DEBUG:Beginning execution for 
+01/10/13 02:29:23 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 35, in do_check
+    self.message = check_metric(self.params, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 275, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 02:29:23 ERROR:[Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 69, in handle_incoming
+    self.respond()
+  File "/tmp/ncpa/agent/listener/processor.py", line 24, in respond
+    self.send_response(self.code)
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 384, in send_response
+    self.send_header('Server', self.version_string())
+  File "/usr/lib/python2.6/BaseHTTPServer.py", line 390, in send_header
+    self.wfile.write("%s: %s\r\n" % (keyword, value))
+  File "/usr/lib/python2.6/socket.py", line 324, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 303, in flush
+    self._sock.sendall(buffer(data, write_offset, buffer_size))
+error: [Errno 32] Broken pipe
+01/10/13 02:30:11 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:31:40 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:31:40 DEBUG:"GET /nrdp?cmd=true&boo=false HTTP/1.1" 301 334
+01/10/13 02:31:40 DEBUG:"GET /nrdp/?cmd=true&boo=false&cmd=true&boo=false HTTP/1.1" 200 110
+01/10/13 02:31:40 ERROR:global name 'e' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 94, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 66, in handle_incoming
+    self.forward_request()
+  File "/tmp/ncpa/agent/listener/processor.py", line 55, in forward_request
+    self.message = str(e)
+NameError: global name 'e' is not defined
+01/10/13 02:32:28 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:32:28 DEBUG:"GET /nrdp?cmd=true&boo=false HTTP/1.1" 301 334
+01/10/13 02:32:28 DEBUG:"GET /nrdp/?cmd=true&boo=false&cmd=true&boo=false HTTP/1.1" 200 110
+01/10/13 02:32:56 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:32:56 DEBUG:"GET /nrdp?cmd=true&boo=false HTTP/1.1" 301 334
+01/10/13 02:32:56 DEBUG:"GET /nrdp/?cmd=true&boo=false&cmd=true&boo=false HTTP/1.1" 200 110
+01/10/13 02:49:33 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+01/10/13 02:49:47 ERROR:GenHandler instance has no attribute 'POST'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 97, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 65, in handle_incoming
+    self.setup_response()
+  File "/tmp/ncpa/agent/listener/processor.py", line 18, in setup_response
+    self.REQUEST = dict(self.GET.items() + self.POST.items())
+AttributeError: GenHandler instance has no attribute 'POST'
+01/10/13 02:52:34 ERROR:GenHandler instance has no attribute 'POST'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 105, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 73, in handle_incoming
+    self.setup_response()
+  File "/tmp/ncpa/agent/listener/processor.py", line 23, in setup_response
+    type(self.POST)
+AttributeError: GenHandler instance has no attribute 'POST'
+01/10/13 02:53:01 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:53:01 DEBUG:"GET /nrdp?cmd=true&boo=false HTTP/1.1" 301 334
+01/10/13 02:53:01 DEBUG:"GET /nrdp/?cmd=true&boo=false&cmd=true&boo=false HTTP/1.1" 200 110
+01/10/13 02:53:01 ERROR:global name 'hp' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 105, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 80, in handle_incoming
+    hp.respond()
+NameError: global name 'hp' is not defined
+01/10/13 02:53:28 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:53:28 DEBUG:"GET /nrdp?cmd=true&boo=false HTTP/1.1" 301 334
+01/10/13 02:53:28 DEBUG:"GET /nrdp/?cmd=true&boo=false&cmd=true&boo=false HTTP/1.1" 200 110
+01/10/13 02:53:28 ERROR:'NoneType' object has no attribute 'code'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 105, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 80, in handle_incoming
+    self.respond(response)
+  File "/tmp/ncpa/agent/listener/processor.py", line 32, in respond
+    self.send_response(response.code)
+AttributeError: 'NoneType' object has no attribute 'code'
+01/10/13 02:54:53 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/10/13 02:54:53 DEBUG:"GET /nrdp?cmd=true&boo=false HTTP/1.1" 301 334
+01/10/13 02:54:53 DEBUG:"GET /nrdp/?cmd=true&boo=false&cmd=true&boo=false HTTP/1.1" 200 110
+01/10/13 02:55:13 DEBUG:Beginning execution for check_cpu
+01/10/13 02:55:18 DEBUG:Beginning execution for check_memory
+01/10/13 02:55:53 ERROR:'NoneType' object has no attribute 'code'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 107, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 82, in handle_incoming
+    self.respond(response)
+  File "/tmp/ncpa/agent/listener/processor.py", line 32, in respond
+    self.send_response(response.code)
+AttributeError: 'NoneType' object has no attribute 'code'
+01/10/13 03:08:53 ERROR:global name 'self' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 107, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 79, in handle_incoming
+    response = frontend.handle(self)
+  File "/tmp/ncpa/agent/listener/frontend.py", line 5, in handle
+    return render_to_response('base.html', {})
+  File "/tmp/ncpa/agent/listener/html.py", line 16, in render_to_response
+    self.message = template.render(**params)
+NameError: global name 'self' is not defined
+01/10/13 03:09:18 ERROR:'NoneType' object has no attribute 'code'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 107, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 82, in handle_incoming
+    self.respond(response)
+  File "/tmp/ncpa/agent/listener/processor.py", line 32, in respond
+    self.send_response(response.code)
+AttributeError: 'NoneType' object has no attribute 'code'
+01/10/13 03:17:26 ERROR:local variable 'response' referenced before assignment
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 114, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 89, in handle_incoming
+    self.respond(response)
+UnboundLocalError: local variable 'response' referenced before assignment
+01/10/13 03:27:23 DEBUG:Beginning execution for 
+01/10/13 03:27:23 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 44, in do_check
+    hp.message = check_metric(self.REQUEST, self.server.config)
+  File "/tmp/ncpa/agent/listener/processor.py", line 307, in check_metric
+    item = checks.check_custom(item, metric, arguments, config)
+  File "/tmp/ncpa/agent/listener/checks.py", line 45, in check_custom
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/10/13 03:38:15 ERROR:[Errno 2] No such file or directory: '/tmp/ncpa/agent/listener/processor/static/test.css'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 87, in handle_incoming
+    f = open(filename, 'r')
+IOError: [Errno 2] No such file or directory: '/tmp/ncpa/agent/listener/processor/static/test.css'
+01/10/13 03:38:55 ERROR:[Errno 2] No such file or directory: '/static/test.css'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 87, in handle_incoming
+    f = open(filename, 'r')
+IOError: [Errno 2] No such file or directory: '/static/test.css'
+01/10/13 04:14:27 ERROR:main() takes exactly 1 argument (0 given)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 128, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 79, in handle_incoming
+    response = frontend.handle(self)
+  File "/tmp/ncpa/agent/listener/frontend.py", line 7, in handle
+    main()
+TypeError: main() takes exactly 1 argument (0 given)
+01/10/13 04:14:54 ERROR:'NoneType' object has no attribute 'code'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 128, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 103, in handle_incoming
+    self.respond(response)
+  File "/tmp/ncpa/agent/listener/processor.py", line 32, in respond
+    self.send_response(response.code)
+AttributeError: 'NoneType' object has no attribute 'code'
+01/10/13 04:27:27 WARNING:Dir was 
+01/10/13 04:28:01 WARNING:Dir was /config
+01/10/13 04:28:01 ERROR:render_to_response() got an unexpected keyword argument 'config'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 128, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 79, in handle_incoming
+    response = frontend.handle(self)
+  File "/tmp/ncpa/agent/listener/frontend.py", line 11, in handle
+    return config(request)
+  File "/tmp/ncpa/agent/listener/frontend.py", line 17, in config
+    return render_to_response('config.html', config=request.server.config.__dict__['_sections'])
+TypeError: render_to_response() got an unexpected keyword argument 'config'
+01/10/13 04:28:24 WARNING:Dir was /config
+01/10/13 04:28:24 ERROR:Encountered unknown tag 'endfor'.
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 128, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 79, in handle_incoming
+    response = frontend.handle(self)
+  File "/tmp/ncpa/agent/listener/frontend.py", line 11, in handle
+    return config(request)
+  File "/tmp/ncpa/agent/listener/frontend.py", line 17, in config
+    return render_to_response('config.html', request.server.config.__dict__['_sections'])
+  File "/tmp/ncpa/agent/listener/html.py", line 15, in render_to_response
+    template = env.get_template(template)
+  File "/usr/lib/python2.6/site-packages/jinja2/environment.py", line 719, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/lib/python2.6/site-packages/jinja2/environment.py", line 693, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/lib/python2.6/site-packages/jinja2/loaders.py", line 127, in load
+    code = environment.compile(source, name, filename)
+  File "/usr/lib/python2.6/site-packages/jinja2/environment.py", line 493, in compile
+    self.handle_exception(exc_info, source_hint=source)
+  File "/tmp/ncpa/agent/listener/templates/config.html", line 8, in template
+    {% endfor %}
+TemplateSyntaxError: Encountered unknown tag 'endfor'.
+01/10/13 04:29:10 WARNING:Dir was /config
+01/10/13 04:29:10 ERROR:'config' is undefined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 128, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 79, in handle_incoming
+    response = frontend.handle(self)
+  File "/tmp/ncpa/agent/listener/frontend.py", line 11, in handle
+    return config(request)
+  File "/tmp/ncpa/agent/listener/frontend.py", line 17, in config
+    return render_to_response('config.html', request.server.config.__dict__['_sections'])
+  File "/tmp/ncpa/agent/listener/html.py", line 16, in render_to_response
+    hp.message = template.render(**params)
+  File "/usr/lib/python2.6/site-packages/jinja2/environment.py", line 894, in render
+    return self.environment.handle_exception(exc_info, True)
+  File "/tmp/ncpa/agent/listener/templates/config.html", line 1, in top-level template code
+    {% for section, value in config.items() %}
+  File "/usr/lib/python2.6/site-packages/jinja2/environment.py", line 372, in getattr
+    return getattr(obj, attribute)
+UndefinedError: 'config' is undefined
+01/10/13 04:30:50 WARNING:Dir was /config
+01/10/13 04:32:00 WARNING:Dir was /config
+01/10/13 04:32:00 ERROR:expected token 'end of statement block', got 'not'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 128, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 79, in handle_incoming
+    response = frontend.handle(self)
+  File "/tmp/ncpa/agent/listener/frontend.py", line 11, in handle
+    return config(request)
+  File "/tmp/ncpa/agent/listener/frontend.py", line 17, in config
+    return render_to_response('config.html', {'config' : request.server.config.__dict__['_sections']})
+  File "/tmp/ncpa/agent/listener/html.py", line 15, in render_to_response
+    template = env.get_template(template)
+  File "/usr/lib/python2.6/site-packages/jinja2/environment.py", line 719, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/lib/python2.6/site-packages/jinja2/environment.py", line 693, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/lib/python2.6/site-packages/jinja2/loaders.py", line 127, in load
+    code = environment.compile(source, name, filename)
+  File "/usr/lib/python2.6/site-packages/jinja2/environment.py", line 493, in compile
+    self.handle_exception(exc_info, source_hint=source)
+  File "/tmp/ncpa/agent/listener/templates/config.html", line 5, in template
+    {% if key not == '__name__' %}
+TemplateSyntaxError: expected token 'end of statement block', got 'not'
+01/10/13 04:32:12 WARNING:Dir was /config
+01/10/13 04:38:54 WARNING:Dir was /config
+01/10/13 04:40:02 WARNING:Dir was /
+01/10/13 04:40:51 WARNING:Dir was /
+01/10/13 04:41:35 WARNING:Dir was /
+01/10/13 04:41:36 WARNING:Dir was /config/
+01/10/13 04:43:52 WARNING:Dir was /
+01/10/13 04:43:52 WARNING:Dir was /config/
+01/10/13 04:44:49 WARNING:Dir was /
+01/10/13 04:44:50 WARNING:Dir was /config/
+01/10/13 04:47:34 WARNING:Dir was /
+01/10/13 04:47:34 WARNING:Dir was /config/
+01/10/13 04:47:47 WARNING:Dir was /
+01/10/13 04:47:48 WARNING:Dir was /config/
+01/10/13 04:48:11 WARNING:Dir was /
+01/10/13 04:48:12 WARNING:Dir was /config/
+01/10/13 04:49:38 WARNING:Dir was /
+01/10/13 04:49:39 WARNING:Dir was /config/
+01/10/13 04:51:34 WARNING:Dir was /
+01/10/13 04:51:35 WARNING:Dir was /config/
+01/10/13 04:52:48 WARNING:Dir was /
+01/10/13 04:52:49 WARNING:Dir was /config/
+01/10/13 04:53:21 WARNING:Dir was /
+01/10/13 04:53:21 WARNING:Dir was /config/
+01/10/13 04:54:04 WARNING:Dir was /
+01/10/13 04:54:05 WARNING:Dir was /config/
+01/10/13 04:54:21 WARNING:Dir was /
+01/10/13 04:54:21 WARNING:Dir was /config/
+01/10/13 04:54:37 WARNING:Dir was /
+01/10/13 04:54:37 WARNING:Dir was /config/
+01/10/13 04:54:58 WARNING:Dir was /
+01/10/13 04:54:59 WARNING:Dir was /config/
+01/10/13 05:11:22 ERROR:'NoneType' object has no attribute 'code'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 136, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 107, in handle_incoming
+    self.respond(response)
+  File "/tmp/ncpa/agent/listener/processor.py", line 34, in respond
+    self.send_response(response.code)
+AttributeError: 'NoneType' object has no attribute 'code'
+01/10/13 05:11:35 ERROR:'NoneType' object has no attribute 'code'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 136, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 107, in handle_incoming
+    self.respond(response)
+  File "/tmp/ncpa/agent/listener/processor.py", line 34, in respond
+    self.send_response(response.code)
+AttributeError: 'NoneType' object has no attribute 'code'
+01/10/13 05:13:00 ERROR:'NoneType' object has no attribute 'code'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 136, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 107, in handle_incoming
+    self.respond(response)
+  File "/tmp/ncpa/agent/listener/processor.py", line 34, in respond
+    self.send_response(response.code)
+AttributeError: 'NoneType' object has no attribute 'code'
+01/10/13 05:13:12 ERROR:'NoneType' object has no attribute 'code'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 136, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 107, in handle_incoming
+    self.respond(response)
+  File "/tmp/ncpa/agent/listener/processor.py", line 34, in respond
+    self.send_response(response.code)
+AttributeError: 'NoneType' object has no attribute 'code'
+01/10/13 05:13:23 ERROR:'NoneType' object has no attribute 'code'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/processor.py", line 136, in do_GET
+    self.handle_incoming()
+  File "/tmp/ncpa/agent/listener/processor.py", line 107, in handle_incoming
+    self.respond(response)
+  File "/tmp/ncpa/agent/listener/processor.py", line 34, in respond
+    self.send_response(response.code)
+AttributeError: 'NoneType' object has no attribute 'code'

@@ -1,6 +1,7 @@
 import psutil
 import subprocess
 import logging
+import ConfigParser
 
 def check_cpu(item, *args, **kwargs):
     item.values = psutil.cpu_percent(percpu=True)
@@ -23,7 +24,7 @@ def check_memory(item, *args, **kwargs):
     item.set_stdout('Physical Memory Usage is at')
     return item
     
-def check_custom(item, plugin_name, plugin_args, *args, **kwargs):
+def check_custom(item, plugin_name, plugin_args, config, *args, **kwargs):
     """
     Runs custom scripts that MUST be located in the scripts subdirectory
     of the executable
@@ -34,10 +35,6 @@ def check_custom(item, plugin_name, plugin_args, *args, **kwargs):
     file.
     """
     import os
-    import listener
-    import ConfigParser
-    
-    config = listener.config
     
     _, extension = os.path.splitext(plugin_name)
     plugin_name  = 'scripts/%s' % (plugin_name)

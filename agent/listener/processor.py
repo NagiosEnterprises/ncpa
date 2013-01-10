@@ -6,61 +6,108 @@ import BaseHTTPServer
 import cgi
 import urlparse
 import requests
+import frontend
+import re
+import html
+import commands
 
 logger = logging.getLogger()
 
 class GenHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     
-    def response(self, content, code=200, header='application/json'):
+    def setup_response(self):
+        self.directive = self.path.split('?', 1)[0]
+        try:
+            type(self.GET)
+        except AttributeError:
+            self.GET = {}
+        try:
+            type(self.POST)
+        except AttributeError:
+            self.POST = {}
+        self.REQUEST = dict(self.GET.items() + self.POST.items())
+    
+    def respond(self, response):
         '''Convenience method to simple send a well formed HTTP response
         back to the requester.
-        
-        @param content String - Content that will be the body of the response
-        @param code Integer - Response code
-        @param header String - Content-type declaration
         '''
-        try:
-            returnstr = check_metric(self.params)
-        except Exception, e:
-            logger.error('Exception was caught. %s' % str(e))
-            returnstr = json.dumps({ 'error' : str(e)})
-        self.send_response(code)
-        self.send_header('Content-type', header)
+        self.send_response(response.code)
+        self.send_header('Content-type', response.header)
         self.end_headers()
-        self.wfile.write(content)
+        self.wfile.write(response.message)
     
     def do_check(self):
         '''Runs the check on the local server. Calls response() with
         the result.
         '''
+        hp = html.HttpResponse()
+        hp.header = 'application/json'
         try:
-            returnstr = check_metric(self.params)
+            hp.message = check_metric(self.REQUEST, self.server.config)
+            hp.code = 200
         except Exception, e:
-            logger.error('Exception was caught. %s' % str(e))
-            returnstr = json.dumps({ 'error' : str(e)})
-        self.response(content=returnstr)
+            logger.exception(e)
+            hp.message = json.dumps({ 'error' : str(e)})
+            hp.code = 500
+        return hp
     
     def forward_request(self):
         '''Forwards request to parent NRDX
         '''
         forward_to = self.server.config.get('nrdp', 'parent')
-        if self.request_method == 'get':
-            response = requests.get(forward_to, params=self.params)
-        else:
-            response = requests.post(forward_to, params=self.params)
-        self.response(response.text, response.status_code, response.headers['content-type'])
+        hp = html.HttpResponse()
+        try:
+            if self.request_method == 'get':
+                response = requests.get(forward_to, params=self.REQUEST)
+            else:
+                response = requests.post(forward_to, params=self.REQUEST)
+            hp.message = response.text
+            hp.code = response.status_code
+            hp.headers = response.headers['content-type']
+        except Exception, e:
+            hp.message = str(e)
+            hp.code = 404
+        return hp
     
     def handle_incoming(self):
         '''Gateway function meant to tie POST and GET together. If
         'cmd' is present in the REQUEST variable, it will forward the
         request to its parent, otherwise it will run the check
         '''
-        if 'cmd' in self.params:
-            self.forward_request()
+        self.setup_response()
+        if re.search('^/nrdp', self.directive):
+            response = self.forward_request()
+        elif re.search('^/frontend', self.directive):
+            response = frontend.handle(self)
+        elif re.search('^/static', self.directive):
+            res = re.search(r'^/static/(.*)\.(css|js)$', self.directive)
+            response = html.HttpResponse()
+            if res:
+                directory = __file__.rsplit('/', 1)[0]
+                filename = directory + '/static/%s.%s' % (res.group(1), res.group(2))
+                try:
+                    f = open(filename, 'r')
+                    response.message = ''.join(f.readlines())
+                    f.close()
+                    if res.group(1) == 'css':
+                        response.header = 'text/css'
+                    elif res.group(1) == 'js':
+                        response.header = 'application/javascript'
+                except IOError, e:
+                    logger.exception(e)
+                    response.message = '%s was not readable.' % filename
+                    response.code = 404
+            else:
+                response.message = 'No such file.'
+                response.code = 403
+        elif re.search('^/command', self.directive):
+            response = handle_command(self)
         else:
-            self.do_check()
+            response = self.do_check()
+        self.respond(response)
     
     def do_POST(self):
+        logger.info('Processing request...')
         ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
         if ctype == 'multipart/form-data':
             postvars = cgi.parse_multipart(self.rfile, pdict)
@@ -70,15 +117,41 @@ class GenHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         else:
             postvars = {}
         self.request_method = 'post'
-        self.params = postvars
-        self.handle_incoming()
+        self.POST = postvars
+        try:
+            self.handle_incoming()
+        except Exception, e:
+            self.handle_server_exception(e)
     
     def do_GET(self):
         
         parsed_path = urlparse.urlparse(self.path)
-        self.params = dict(urlparse.parse_qsl(parsed_path.query))
+        self.GET = dict(urlparse.parse_qsl(parsed_path.query))
         self.request_method = 'get'
-        self.handle_incoming()
+        try:
+            self.handle_incoming()
+        except Exception, e:
+            self.handle_server_exception(e)
+    
+    def handle_server_exception(self, e):
+        logger.exception(e)
+        hp = html.HttpResponse()
+        hp.message = str(e)
+        hp.code = 500
+
+def handle_command(request):
+    hp = html.HttpResponse()
+    hp.header = 'application/json'
+    if not request.REQUEST.get('command'):
+        hp.message = json.dumps({'errors':'No command given.'})
+        hp.code = 400
+    elif request.REQUEST.get('command') == 'enumerate_plugins':
+        plugins = commands.enumerate_plugins()
+        count = len(plugins)
+        hp.message = json.dumps({'plugins' : plugins, 'count' : count})
+    return hp
+    
+        
 
 class ReturnObject(object):
     
@@ -222,7 +295,7 @@ def get_warn_crit_from_arguments(arguments):
     critical = options.critical or ''
     return warning, critical
 
-def check_metric(submitted_dict):
+def check_metric(submitted_dict, config):
     '''
     Dispatch function that runs the proper metric, this function is
     what all queries get handed to.
@@ -251,7 +324,7 @@ def check_metric(submitted_dict):
     elif metric == 'check_memory':
         item = checks.check_memory(item)
     else:
-        item = checks.check_custom(item, metric, arguments)
+        item = checks.check_custom(item, metric, arguments, config)
         custom_plugin = True
     
     return item.to_json(custom_plugin)

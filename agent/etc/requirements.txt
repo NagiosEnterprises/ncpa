@@ -2,3 +2,4 @@ psutil
 requests
 lxml
 xmltodict
+Jinja
