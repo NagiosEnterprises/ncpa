@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <link rel='stylesheet' href='/static/chinook.css' />
+        <link rel='stylesheet' href='/static/jquery-ui.css' />
+        <script src='/static/jquery-1.8.3.min.js'></script>
+        <script src='/static/jquery-ui.js'></script>
+        <script>
+            $(document).ready(function() {
+                $('#tabs').tabs();
+                $('#config').load('/frontend/config/')
+            });
+        </script>
+    </head>
+    <body>
+        <div id='bodywrapper'>
+            {% block content %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,26 @@
+<div class='CSSTableGenerator'>
+    <table>
+    <tr>
+        <td colspan='999'>Chinook Config</td>
+    </tr>
+    {% for section, value in config.items() %}
+        <tr class='section'>
+            <td colspan='999'>
+                {{ section|upper }}
+            </td>
+        </tr>
+        {% for key, entry in value.items() %}
+            <tr class='subsection'>
+            {% if key != '__name__' %}
+                <td class='label jright'>
+                    <label for='key'>{{ key|capitalize }}</label>
+                </td>
+                <td class='value'>
+                    <input name='key' type='text' value='{{ entry }}'/>
+                </td>
+            {% endif %}
+            </tr>
+        {% endfor %}
+    {% endfor %}
+    </table>
+</div>
