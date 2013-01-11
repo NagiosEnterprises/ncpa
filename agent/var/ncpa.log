@@ -808,3 +808,328 @@ BuildError: ('/error/?msg=ConfigParser+instance+has+no+attribute+%27__getitem__%
 01/11/13 00:44:40 INFO:192.168.1.28 - - [11/Jan/2013 00:44:40] "GET /static/images/ui-bg_glass_65_ffffff_1x400.png HTTP/1.1" 404 -
 01/11/13 00:44:41 INFO:192.168.1.28 - - [11/Jan/2013 00:44:41] "GET /config/ HTTP/1.1" 200 -
 01/11/13 00:44:43 INFO:192.168.1.28 - - [11/Jan/2013 00:44:43] "GET /static/images/ui-bg_glass_75_dadada_1x400.png HTTP/1.1" 404 -
+01/11/13 00:58:31 ERROR:Exception on /command/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 54, in command
+    params = urllib.urlencode({'msg' : str(e)})
+UnboundLocalError: local variable 'generic' referenced before assignment
+01/11/13 00:58:31 INFO:192.168.1.28 - - [11/Jan/2013 00:58:31] "GET /command/ HTTP/1.1" 500 -
+01/11/13 01:00:59 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:01:03 ERROR:Exception on /command/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 57, in command
+    return generic(request)
+UnboundLocalError: local variable 'generic' referenced before assignment
+01/11/13 01:01:03 INFO:192.168.1.28 - - [11/Jan/2013 01:01:03] "GET /command/ HTTP/1.1" 500 -
+01/11/13 01:01:51 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:01:55 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 52, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 01:01:55 INFO:192.168.1.28 - - [11/Jan/2013 01:01:55] "GET /command/ HTTP/1.1" 302 -
+01/11/13 01:01:55 INFO:192.168.1.28 - - [11/Jan/2013 01:01:55] "GET /error/?msg=%27module%27+object+has+no+attribute+%27%27 HTTP/1.1" 200 -
+01/11/13 01:03:18 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:03:21 ERROR:Exception on /error/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 26, in error
+    return jsonfiy(error=msg)
+NameError: global name 'jsonfiy' is not defined
+01/11/13 01:03:21 INFO:192.168.1.28 - - [11/Jan/2013 01:03:21] "GET /error/?msg=%27module%27+object+has+no+attribute+%27%27 HTTP/1.1" 500 -
+01/11/13 01:04:01 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:04:07 INFO:192.168.1.28 - - [11/Jan/2013 01:04:07] "GET / HTTP/1.1" 200 -
+01/11/13 01:04:08 INFO:192.168.1.28 - - [11/Jan/2013 01:04:08] "GET /static/images/ui-bg_flat_75_ffffff_40x100.png HTTP/1.1" 404 -
+01/11/13 01:04:08 INFO:192.168.1.28 - - [11/Jan/2013 01:04:08] "GET /static/images/ui-bg_highlight-soft_75_cccccc_1x100.png HTTP/1.1" 404 -
+01/11/13 01:04:08 INFO:192.168.1.28 - - [11/Jan/2013 01:04:08] "GET /static/images/ui-bg_glass_75_e6e6e6_1x400.png HTTP/1.1" 404 -
+01/11/13 01:04:08 INFO:192.168.1.28 - - [11/Jan/2013 01:04:08] "GET /static/images/ui-bg_glass_65_ffffff_1x400.png HTTP/1.1" 404 -
+01/11/13 01:04:08 INFO:192.168.1.28 - - [11/Jan/2013 01:04:08] "GET /config/ HTTP/1.1" 200 -
+01/11/13 01:04:18 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 51, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 01:04:18 INFO:192.168.1.28 - - [11/Jan/2013 01:04:18] "GET /command/ HTTP/1.1" 302 -
+01/11/13 01:04:18 INFO:192.168.1.28 - - [11/Jan/2013 01:04:18] "GET /error/?msg=%27module%27+object+has+no+attribute+%27%27 HTTP/1.1" 200 -
+01/11/13 01:06:05 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:06:16 ERROR:'Request' object has no attribute 'REQUEST'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 31, in check
+    processor.check_metric(request.REQUEST, config['inconfig'])
+  File "/usr/lib/python2.6/site-packages/werkzeug/local.py", line 336, in __getattr__
+    return getattr(self._get_current_object(), name)
+AttributeError: 'Request' object has no attribute 'REQUEST'
+01/11/13 01:06:16 INFO:192.168.1.28 - - [11/Jan/2013 01:06:16] "GET /check?metric=check_cpu HTTP/1.1" 302 -
+01/11/13 01:06:16 INFO:192.168.1.28 - - [11/Jan/2013 01:06:16] "GET /error/?msg=%27Request%27+object+has+no+attribute+%27REQUEST%27 HTTP/1.1" 200 -
+01/11/13 01:06:36 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:06:42 ERROR:'function' object is unsubscriptable
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 31, in check
+    processor.check_metric(request.args, config['inconfig'])
+TypeError: 'function' object is unsubscriptable
+01/11/13 01:06:42 INFO:192.168.1.28 - - [11/Jan/2013 01:06:42] "GET /check?metric=check_cpu HTTP/1.1" 302 -
+01/11/13 01:06:42 INFO:192.168.1.28 - - [11/Jan/2013 01:06:42] "GET /error/?msg=%27function%27+object+is+unsubscriptable HTTP/1.1" 200 -
+01/11/13 01:07:16 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:07:24 ERROR:'function' object is unsubscriptable
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 31, in check
+    processor.check_metric(request.args, config['iconfig'])
+TypeError: 'function' object is unsubscriptable
+01/11/13 01:07:24 INFO:192.168.1.28 - - [11/Jan/2013 01:07:24] "GET /check?metric=check_cpu HTTP/1.1" 302 -
+01/11/13 01:07:24 INFO:192.168.1.28 - - [11/Jan/2013 01:07:24] "GET /error/?msg=%27function%27+object+is+unsubscriptable HTTP/1.1" 200 -
+01/11/13 01:07:57 INFO:192.168.1.28 - - [11/Jan/2013 01:07:57] "GET /error/?msg=%27function%27+object+is+unsubscriptable HTTP/1.1" 200 -
+01/11/13 01:08:02 ERROR:'function' object is unsubscriptable
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 31, in check
+    processor.check_metric(request.args, listener.config['iconfig'])
+TypeError: 'function' object is unsubscriptable
+01/11/13 01:08:02 INFO:192.168.1.28 - - [11/Jan/2013 01:08:02] "GET /check?metric=check_cpu HTTP/1.1" 302 -
+01/11/13 01:08:02 INFO:192.168.1.28 - - [11/Jan/2013 01:08:02] "GET /error/?msg=%27function%27+object+is+unsubscriptable HTTP/1.1" 200 -
+01/11/13 01:08:09 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:08:15 DEBUG:Beginning execution for check_cpu
+01/11/13 01:08:15 ERROR:Exception on /check [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1361, in full_dispatch_request
+    response = self.make_response(rv)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1439, in make_response
+    raise ValueError('View function did not return a response')
+ValueError: View function did not return a response
+01/11/13 01:08:15 INFO:192.168.1.28 - - [11/Jan/2013 01:08:15] "GET /check?metric=check_cpu HTTP/1.1" 500 -
+01/11/13 01:08:35 DEBUG:Beginning execution for check_cpu
+01/11/13 01:08:35 ERROR:Exception on /check [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1361, in full_dispatch_request
+    response = self.make_response(rv)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1439, in make_response
+    raise ValueError('View function did not return a response')
+ValueError: View function did not return a response
+01/11/13 01:08:35 INFO:192.168.1.28 - - [11/Jan/2013 01:08:35] "GET /check?metric=check_cpu HTTP/1.1" 500 -
+01/11/13 01:08:44 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:08:46 DEBUG:Beginning execution for check_cpu
+01/11/13 01:08:46 INFO:192.168.1.28 - - [11/Jan/2013 01:08:46] "GET /check?metric=check_cpu HTTP/1.1" 200 -
+01/11/13 01:11:20 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:11:26 DEBUG:Beginning execution for check_cpu
+01/11/13 01:11:26 INFO:192.168.1.28 - - [11/Jan/2013 01:11:26] "GET /check?metric=check_cpu HTTP/1.1" 200 -
+01/11/13 01:22:14 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:22:49 INFO:192.168.1.28 - - [11/Jan/2013 01:22:49] "GET /nrdp/?cmd=whatup&token=a HTTP/1.1" 404 -
+01/11/13 01:23:33 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:23:37 INFO:192.168.1.28 - - [11/Jan/2013 01:23:37] "GET /nrdp/?cmd=whatup&token=a HTTP/1.1" 404 -
+01/11/13 01:24:15 ERROR:global name 'listner' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in nrdp
+    forward_to = listner.config['iconfig'].get('nrdp', 'parent')
+NameError: global name 'listner' is not defined
+01/11/13 01:24:15 INFO:192.168.1.28 - - [11/Jan/2013 01:24:15] "GET /nrdp?cmd=whatup&token=a HTTP/1.1" 302 -
+01/11/13 01:24:15 INFO:192.168.1.28 - - [11/Jan/2013 01:24:15] "GET /error?msg=global+name+%27listner%27+is+not+defined HTTP/1.1" 200 -
+01/11/13 01:24:30 INFO:192.168.1.28 - - [11/Jan/2013 01:24:30] "GET /error?msg=global+name+%27listner%27+is+not+defined HTTP/1.1" 200 -
+01/11/13 01:25:02 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:25:11 INFO:192.168.1.28 - - [11/Jan/2013 01:25:11] "GET /nrdp/?cmd=whatup&token=a HTTP/1.1" 404 -
+01/11/13 01:26:40 INFO:192.168.1.28 - - [11/Jan/2013 01:26:40] "GET /nrdp/?cmd=whatup&token=a HTTP/1.1" 404 -
+01/11/13 01:27:32 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:27:36 INFO:192.168.1.28 - - [11/Jan/2013 01:27:36] "GET /nrdp/?cmd=whatup&token=a HTTP/1.1" 404 -
+01/11/13 01:28:38 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:28:38 INFO: * Restarting with reloader
+01/11/13 01:28:43 INFO:192.168.1.28 - - [11/Jan/2013 01:28:43] "GET /nrdp/?cmd=whatup&token=a HTTP/1.1" 404 -
+01/11/13 01:29:18 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:29:23 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:29:23 INFO: * Restarting with reloader
+01/11/13 01:29:27 INFO:192.168.1.28 - - [11/Jan/2013 01:29:27] "GET /nrdp/?cmd=whatup&token=a HTTP/1.1" 404 -
+01/11/13 01:29:32 INFO:192.168.1.28 - - [11/Jan/2013 01:29:32] "GET /nrdp/?cmd=whatup&token=a HTTP/1.1" 404 -
+01/11/13 01:29:35 INFO:192.168.1.28 - - [11/Jan/2013 01:29:35] "GET /nrdp/?cmd=whatup&token=a HTTP/1.1" 404 -
+01/11/13 01:30:49 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:31:00 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:31:00 INFO: * Restarting with reloader
+01/11/13 01:31:03 INFO:192.168.1.28 - - [11/Jan/2013 01:31:03] "GET /nrdp/?cmd=whatup&token=a HTTP/1.1" 404 -
+01/11/13 01:32:06 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:32:06 INFO: * Restarting with reloader
+01/11/13 01:32:10 INFO:192.168.1.28 - - [11/Jan/2013 01:32:10] "GET /nrdp/?cmd=whatup&token=a HTTP/1.1" 404 -
+01/11/13 01:32:41 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:32:49 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:32:49 INFO: * Restarting with reloader
+01/11/13 01:32:52 INFO:192.168.1.28 - - [11/Jan/2013 01:32:52] "GET /nrdp/?cmd=whatup&token=a HTTP/1.1" 404 -
+01/11/13 01:33:10 WARNING:http://192.168.1.26/nrdp
+01/11/13 01:33:10 ERROR:'Request' object has no attribute 'post'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 46, in nrdp
+    response = requests.post(forward_to, params=request.post)
+  File "/usr/lib/python2.6/site-packages/werkzeug/local.py", line 336, in __getattr__
+    return getattr(self._get_current_object(), name)
+AttributeError: 'Request' object has no attribute 'post'
+01/11/13 01:33:10 INFO:192.168.1.28 - - [11/Jan/2013 01:33:10] "GET /nrdp?cmd=whatup&token=a HTTP/1.1" 302 -
+01/11/13 01:33:10 INFO:192.168.1.28 - - [11/Jan/2013 01:33:10] "GET /error?msg=%27Request%27+object+has+no+attribute+%27post%27 HTTP/1.1" 200 -
+01/11/13 01:34:08 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:34:13 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:34:13 INFO: * Restarting with reloader
+01/11/13 01:34:21 WARNING:http://192.168.1.26/nrdp
+01/11/13 01:34:21 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/11/13 01:34:21 DEBUG:"POST /nrdp?token=a&cmd=whatup HTTP/1.1" 301 334
+01/11/13 01:34:21 DEBUG:"POST /nrdp/?token=a&cmd=whatup&token=a&cmd=whatup HTTP/1.1" 200 18
+01/11/13 01:34:21 INFO:192.168.1.28 - - [11/Jan/2013 01:34:21] "GET /nrdp?cmd=whatup&token=a HTTP/1.1" 200 -
+01/11/13 01:35:00 WARNING:http://192.168.1.26/nrdp
+01/11/13 01:35:00 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/11/13 01:35:00 DEBUG:"POST /nrdp?token=a&cmd=updatenrds HTTP/1.1" 301 338
+01/11/13 01:35:00 DEBUG:"POST /nrdp/?token=a&cmd=updatenrds&token=a&cmd=updatenrds HTTP/1.1" 200 109
+01/11/13 01:35:00 INFO:192.168.1.28 - - [11/Jan/2013 01:35:00] "GET /nrdp?cmd=updatenrds&token=a HTTP/1.1" 200 -
+01/11/13 01:35:54 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:36:00 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:36:00 INFO: * Restarting with reloader
+01/11/13 01:36:05 WARNING:http://192.168.1.26/nrdp
+01/11/13 01:36:05 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/11/13 01:36:05 DEBUG:"POST /nrdp?token=a&cmd=updatenrds HTTP/1.1" 301 338
+01/11/13 01:36:05 DEBUG:"POST /nrdp/?token=a&cmd=updatenrds&token=a&cmd=updatenrds HTTP/1.1" 200 109
+01/11/13 01:36:05 ERROR:'Response' object is unsubscriptable
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 48, in nrdp
+    resp['Content-type'] = response['Content-type']
+TypeError: 'Response' object is unsubscriptable
+01/11/13 01:36:05 INFO:192.168.1.28 - - [11/Jan/2013 01:36:05] "GET /nrdp?cmd=updatenrds&token=a HTTP/1.1" 302 -
+01/11/13 01:36:05 INFO:192.168.1.28 - - [11/Jan/2013 01:36:05] "GET /error?msg=%27Response%27+object+is+unsubscriptable HTTP/1.1" 200 -
+01/11/13 01:37:16 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:37:21 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:37:21 INFO: * Restarting with reloader
+01/11/13 01:37:31 INFO:192.168.1.28 - - [11/Jan/2013 01:37:31] "GET /nrdp/?cmd=true&boo=false HTTP/1.1" 404 -
+01/11/13 01:37:55 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:38:53 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:38:53 INFO: * Restarting with reloader
+01/11/13 01:38:57 INFO:192.168.1.28 - - [11/Jan/2013 01:38:57] "GET /nrdp/?cmd=true&boo=false HTTP/1.1" 404 -
+01/11/13 01:41:36 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:41:40 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:41:40 INFO: * Restarting with reloader
+01/11/13 01:41:44 INFO:192.168.1.28 - - [11/Jan/2013 01:41:44] "GET /nrdp/?cmd=true&boo=false HTTP/1.1" 404 -
+01/11/13 01:43:37 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:44:18 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:44:18 INFO: * Restarting with reloader
+01/11/13 01:44:21 INFO:192.168.1.28 - - [11/Jan/2013 01:44:21] "GET /nrdp/?cmd=true&boo=false HTTP/1.1" 404 -
+01/11/13 01:44:43 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:44:51 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:44:51 INFO: * Restarting with reloader
+01/11/13 01:44:54 INFO:192.168.1.28 - - [11/Jan/2013 01:44:54] "GET /nrdp/?cmd=true&boo=false HTTP/1.1" 404 -
+01/11/13 01:47:35 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:47:40 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:47:40 INFO: * Restarting with reloader
+01/11/13 01:47:44 INFO:192.168.1.28 - - [11/Jan/2013 01:47:44] "GET /nrdp/?cmd=true&boo=false HTTP/1.1" 404 -
+01/11/13 01:48:47 INFO:192.168.1.28 - - [11/Jan/2013 01:48:47] "GET /commands HTTP/1.1" 404 -
+01/11/13 01:48:54 INFO:192.168.1.28 - - [11/Jan/2013 01:48:54] "GET /command?command=enumerate_plugins HTTP/1.1" 200 -
+01/11/13 01:49:02 WARNING:http://192.168.1.26/nrdp
+01/11/13 01:49:02 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/11/13 01:49:02 DEBUG:"POST /nrdp?token=a&cmd=whatup HTTP/1.1" 301 334
+01/11/13 01:49:02 DEBUG:"POST /nrdp/?token=a&cmd=whatup&token=a&cmd=whatup HTTP/1.1" 200 18
+01/11/13 01:49:02 INFO:192.168.1.28 - - [11/Jan/2013 01:49:02] "GET /nrdp?cmd=whatup&token=a HTTP/1.1" 200 -
+01/11/13 01:49:27 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:49:32 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:49:32 INFO: * Restarting with reloader
+01/11/13 01:49:36 WARNING:http://192.168.1.26/nrdp
+01/11/13 01:49:36 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/11/13 01:49:36 DEBUG:"POST /nrdp?token=a&cmd=whatup HTTP/1.1" 301 334
+01/11/13 01:49:36 DEBUG:"POST /nrdp/?token=a&cmd=whatup&token=a&cmd=whatup HTTP/1.1" 200 18
+01/11/13 01:49:36 ERROR:make_response() got an unexpected keyword argument 'mimetype'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 47, in nrdp
+    return make_response(response.content, 200, mimetype='text/xml')
+TypeError: make_response() got an unexpected keyword argument 'mimetype'
+01/11/13 01:49:36 INFO:192.168.1.28 - - [11/Jan/2013 01:49:36] "GET /nrdp?cmd=whatup&token=a HTTP/1.1" 302 -
+01/11/13 01:49:36 INFO:192.168.1.28 - - [11/Jan/2013 01:49:36] "GET /error?msg=make_response%28%29+got+an+unexpected+keyword+argument+%27mimetype%27 HTTP/1.1" 200 -
+01/11/13 01:50:27 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:50:33 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:50:33 INFO: * Restarting with reloader
+01/11/13 01:50:40 WARNING:http://192.168.1.26/nrdp
+01/11/13 01:50:40 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/11/13 01:50:40 DEBUG:"POST /nrdp?token=a&cmd=whatup HTTP/1.1" 301 334
+01/11/13 01:50:40 DEBUG:"POST /nrdp/?token=a&cmd=whatup&token=a&cmd=whatup HTTP/1.1" 200 18
+01/11/13 01:50:40 ERROR:'Response' object does not support item assignment
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 48, in nrdp
+    resp['content-type'] = response.headers['content-type']
+TypeError: 'Response' object does not support item assignment
+01/11/13 01:50:40 INFO:192.168.1.28 - - [11/Jan/2013 01:50:40] "GET /nrdp?cmd=whatup&token=a HTTP/1.1" 302 -
+01/11/13 01:50:40 INFO:192.168.1.28 - - [11/Jan/2013 01:50:40] "GET /error?msg=%27Response%27+object+does+not+support+item+assignment HTTP/1.1" 200 -
+01/11/13 01:52:29 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:52:45 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:52:45 INFO: * Restarting with reloader
+01/11/13 01:52:56 WARNING:http://192.168.1.26/nrdp
+01/11/13 01:52:56 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/11/13 01:52:56 DEBUG:"POST /nrdp?token=a&cmd=whatup HTTP/1.1" 301 334
+01/11/13 01:52:56 DEBUG:"POST /nrdp/?token=a&cmd=whatup&token=a&cmd=whatup HTTP/1.1" 200 18
+01/11/13 01:52:56 ERROR:make_response() got an unexpected keyword argument 'content_type'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 47, in nrdp
+    resp = make_response(response.content, 200, content_type=response.headers['content-type'])
+TypeError: make_response() got an unexpected keyword argument 'content_type'
+01/11/13 01:52:56 INFO:192.168.1.28 - - [11/Jan/2013 01:52:56] "GET /nrdp?cmd=whatup&token=a HTTP/1.1" 302 -
+01/11/13 01:52:56 INFO:192.168.1.28 - - [11/Jan/2013 01:52:56] "GET /error?msg=make_response%28%29+got+an+unexpected+keyword+argument+%27content_type%27 HTTP/1.1" 200 -
+01/11/13 01:53:40 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:53:45 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:53:45 INFO: * Restarting with reloader
+01/11/13 01:53:52 WARNING:http://192.168.1.26/nrdp
+01/11/13 01:53:52 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/11/13 01:53:52 DEBUG:"POST /nrdp?token=a&cmd=whatup HTTP/1.1" 301 334
+01/11/13 01:53:52 DEBUG:"POST /nrdp/?token=a&cmd=whatup&token=a&cmd=whatup HTTP/1.1" 200 18
+01/11/13 01:53:52 ERROR:make_response() got an unexpected keyword argument 'mimetype'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 47, in nrdp
+    resp = make_response(response.content, 200, mimetype=response.headers['content-type'])
+TypeError: make_response() got an unexpected keyword argument 'mimetype'
+01/11/13 01:53:52 INFO:192.168.1.28 - - [11/Jan/2013 01:53:52] "GET /nrdp?cmd=whatup&token=a HTTP/1.1" 302 -
+01/11/13 01:53:52 INFO:192.168.1.28 - - [11/Jan/2013 01:53:52] "GET /error?msg=make_response%28%29+got+an+unexpected+keyword+argument+%27mimetype%27 HTTP/1.1" 200 -
+01/11/13 01:54:58 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:55:03 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:55:03 INFO: * Restarting with reloader
+01/11/13 01:55:12 WARNING:http://192.168.1.26/nrdp
+01/11/13 01:55:12 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/11/13 01:55:12 DEBUG:"POST /nrdp?token=a&cmd=whatup HTTP/1.1" 301 334
+01/11/13 01:55:12 DEBUG:"POST /nrdp/?token=a&cmd=whatup&token=a&cmd=whatup HTTP/1.1" 200 18
+01/11/13 01:55:12 ERROR:global name 'Response' is not defined
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 47, in nrdp
+    resp = Response(response.content, 200, content_type=response.headers['content-type'])
+NameError: global name 'Response' is not defined
+01/11/13 01:55:12 INFO:192.168.1.28 - - [11/Jan/2013 01:55:12] "GET /nrdp?cmd=whatup&token=a HTTP/1.1" 302 -
+01/11/13 01:55:12 INFO:192.168.1.28 - - [11/Jan/2013 01:55:12] "GET /error?msg=global+name+%27Response%27+is+not+defined HTTP/1.1" 200 -
+01/11/13 01:55:21 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:55:25 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:55:25 INFO: * Restarting with reloader
+01/11/13 01:55:33 WARNING:http://192.168.1.26/nrdp
+01/11/13 01:55:33 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/11/13 01:55:33 DEBUG:"POST /nrdp?token=a&cmd=whatup HTTP/1.1" 301 334
+01/11/13 01:55:33 DEBUG:"POST /nrdp/?token=a&cmd=whatup&token=a&cmd=whatup HTTP/1.1" 200 18
+01/11/13 01:55:33 INFO:192.168.1.28 - - [11/Jan/2013 01:55:33] "GET /nrdp?cmd=whatup&token=a HTTP/1.1" 200 -
+01/11/13 01:55:46 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 01:55:50 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 01:55:50 INFO: * Restarting with reloader
+01/11/13 01:55:53 WARNING:http://192.168.1.26/nrdp
+01/11/13 01:55:53 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/11/13 01:55:53 DEBUG:"POST /nrdp?token=a&cmd=whatup HTTP/1.1" 301 334
+01/11/13 01:55:53 DEBUG:"POST /nrdp/?token=a&cmd=whatup&token=a&cmd=whatup HTTP/1.1" 200 18
+01/11/13 01:55:53 INFO:192.168.1.28 - - [11/Jan/2013 01:55:53] "GET /nrdp?cmd=whatup&token=a HTTP/1.1" 200 -
+01/11/13 01:56:07 WARNING:http://192.168.1.26/nrdp
+01/11/13 01:56:07 INFO:Starting new HTTP connection (1): 192.168.1.26
+01/11/13 01:56:07 DEBUG:"POST /nrdp HTTP/1.1" 301 311
+01/11/13 01:56:07 DEBUG:"POST /nrdp/ HTTP/1.1" 200 1243
+01/11/13 01:56:07 INFO:192.168.1.28 - - [11/Jan/2013 01:56:07] "GET /nrdp HTTP/1.1" 200 -

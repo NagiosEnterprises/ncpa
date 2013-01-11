@@ -13,4 +13,4 @@ def enumerate_plugins(*args, **kwargs):
     except Exception, e:
         logging.exception(e)
         return json.dumps({'error' : str(e)})
-        
+    

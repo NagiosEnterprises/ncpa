@@ -211,7 +211,7 @@ class ReturnObject(object):
         perflist = ["%s=%s%s" % (self.nice, x, unit) for x in self.values]
         return ' '.join(perflist)
     
-    def to_json(self, custom=False):
+    def to_dict(self, custom=False):
         '''
         Wraps the nagios check result in a JSON for returning to
         the server
@@ -222,7 +222,7 @@ class ReturnObject(object):
         else:
             this_dict = {   "returncode" : self.returncode,
                             "stdout"     : self.stdout }
-        return json.dumps(this_dict)
+        return this_dict
     
     def get_return_code(self):
         '''
@@ -327,4 +327,4 @@ def check_metric(submitted_dict, config):
         item = checks.check_custom(item, metric, arguments, config)
         custom_plugin = True
     
-    return item.to_json(custom_plugin)
+    return item.to_dict(custom_plugin)
