@@ -1,5 +1,6 @@
 import requests
 import ConfigParser
+import logging
 
 class PConfigParser(ConfigParser.ConfigParser):
     
@@ -12,4 +13,5 @@ class PConfigParser(ConfigParser.ConfigParser):
 
 def send_nrdp(url, *args, **kwargs):
     r = requests.post(url, params=kwargs, verify=False)
+    logging.debug('hitting url with payload: %s' % str(r.url))
     return r

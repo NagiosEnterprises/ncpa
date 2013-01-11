@@ -11,9 +11,10 @@ class Handler(abstract.NagiosHandler):
     
     def __init__(self, *args, **kwargs):
         super(Handler, self).__init__(*args, **kwargs)
-        
-        self.token = self.config.get('nrdp', 'token')
-        self.nrdp_url = self.config.get('nrdp', 'parent')
+
+        self.token = self.config.get('nrdp', 'token', None)
+        self.nrdp_url = self.config.get('nrdp', 'parent', None)
+            
         
     def run(self, *args, **kwargs):
         self.getconfig()
@@ -42,7 +43,7 @@ class Handler(abstract.NagiosHandler):
         
         kwargs['cmd'] = self.getconfig.__name__
         kwargs['os']  = 'chinook'
-        kwargs["token"] = self.token
+        kwargs['token'] = self.token
         
         self.url_request = utils.send_nrdp( self.nrdp_url, **kwargs )
         self.logger.debug('URL I am requesting: %s' % self.url_request.url)
