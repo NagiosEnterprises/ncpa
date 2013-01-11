@@ -1,0 +1,6 @@
+psutil
+requests
+lxml
+xmltodict
+Jinja2
+flask
