@@ -3,6 +3,7 @@ import requests
 import abstract
 import xmltodict
 import utils
+import json
 
 class Handler(abstract.NagiosHandler):
     """
@@ -16,8 +17,9 @@ class Handler(abstract.NagiosHandler):
         self.nrdp_url = self.config.get('nrdp', 'parent')
             
     def run(self, *args, **kwargs):
-        self.getconfig()
-        self.getplugin()
+        if self.updatenrds:
+            self.getconfig()
+        self.known_plugins()
         
     def getplugin(self, *args, **kwargs):
         self.plugin_loc = self.config.get('plugin directives', 'plugin_path')
@@ -28,6 +30,8 @@ class Handler(abstract.NagiosHandler):
         
         self.url_request = utils.send_request(self.nrdp_url, **kwargs)
         self.local_path_location = self.plugin_loc + kwargs['plugin']
+        
+        self.logger.debug( "downloading plugin to location: %s" % str(self.local_path_location))
         
         with open(self.local_path_location, 'w') as plugin:
             plugin.write(self.url_request.content)
@@ -75,3 +79,33 @@ class Handler(abstract.NagiosHandler):
             return True
         else:
             return False
+            
+    def known_plugins(self, *args, **kwargs):
+        self.socket = self.config.get('passive', 'connect')
+        self.current_plugins = self.config.items('passive checks')
+        
+        self.known = []
+        '''@ handel index error'''      
+        for self.plugin_dir in self.current_plugins:
+            self.plugin = self.plugin_dir[1]
+            self.logger.debug('plugin directives I know about: %s' % self.plugin)
+            self.known.append(self.plugin)
+        
+        kwargs['command'] = 'enumerate_plugins'
+        
+        self.url_request = utils.send_request(self.socket,**kwargs)
+        self.current_plugins = self.url_request.json()
+        
+        self.builtins = self.current_plugins['builtins']
+        self.externals = self.current_plugins['externals'] 
+        
+        index = self.known.index('check_memory')
+        
+        for self.built in self.builtins:
+            for self.know_this in self.known:
+                if self.know_this == self.built:
+                    index = self.known.index( self.know_this )
+                    del self.known[ index ]
+                    
+        for self.know_this in self.known:
+            self.getplugin( plugin = self.know_this )
