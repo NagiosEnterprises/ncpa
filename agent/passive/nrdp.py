@@ -98,6 +98,6 @@ class Handler(abstract.NagiosHandler):
         server = self.config.get('nrdp', 'parent')
         token = self.config.get('nrdp', 'token')
         xmldata = etree.tostring(self.checkresults)
-        retxml = utils.send_nrdp(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
+        retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
         self.log_result(retxml.content)
         

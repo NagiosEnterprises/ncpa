@@ -12,7 +12,6 @@ class Handler(abstract.NagiosHandler):
     
     def __init__(self, *args, **kwargs):
         super(Handler, self).__init__(*args, **kwargs)
-
         self.token = self.config.get('nrdp', 'token')
         self.nrdp_url = self.config.get('nrdp', 'parent')
             
@@ -50,7 +49,6 @@ class Handler(abstract.NagiosHandler):
         
         self.url_request = utils.send_request( self.nrdp_url, **kwargs )
         self.logger.debug('URL I am requesting: %s' % self.url_request.url)
-        self.logger.debug('Content returned: %s' % self.url_request.content)
         
         if self.url_request.content != "":
             with open( self.config.file_path , 'w') as config:
@@ -83,29 +81,33 @@ class Handler(abstract.NagiosHandler):
     def known_plugins(self, *args, **kwargs):
         self.socket = self.config.get('passive', 'connect')
         self.current_plugins = self.config.items('passive checks')
-        
-        self.known = []
-        '''@ handel index error'''      
-        for self.plugin_dir in self.current_plugins:
-            self.plugin = self.plugin_dir[1]
-            self.logger.debug('plugin directives I know about: %s' % self.plugin)
-            self.known.append(self.plugin)
+        #~ '''@ handel index error'''      
+        #~ for self.plugin_dir in self.current_plugins:
+            #~ self.plugin = self.plugin_dir[1]
+            #~ self.logger.debug('plugin directives I know about: %s' % self.plugin)
+            #~ self.known.append(self.plugin)
         
         kwargs['command'] = 'enumerate_plugins'
         
-        self.url_request = utils.send_request(self.socket,**kwargs)
-        self.current_plugins = self.url_request.json()
+        required_plugins = [x[1] for x in self.current_plugins]
+        installed_plugins_json = utils.send_request(self.socket, **kwargs).json()
+        #~ self.current_plugins = self.url_request.json()
         
-        self.builtins = self.current_plugins['builtins']
-        self.externals = self.current_plugins['externals'] 
+        #~ builtins = installed_plugins_json['builtins']
+        externals = installed_plugins_json['externals'] 
         
-        index = self.known.index('check_memory')
+        #~ index = self.known.index('check_memory')
         
-        for self.built in self.builtins:
-            for self.know_this in self.known:
-                if self.know_this == self.built:
-                    index = self.known.index( self.know_this )
-                    del self.known[ index ]
-                    
-        for self.know_this in self.known:
-            self.getplugin( plugin = self.know_this )
+        for plugin in externals:
+            for required in required_plugins:
+                if required == plugin:
+                    try:
+                        index = required_plugins.index(plugin)
+                    except IndexError, e:
+                        logging.exception(e)
+                    else:
+                        del required_plugins[index]
+        
+        for to_install in required_plugins:
+            self.logger.warning('Installing %s' % (to_install,))
+            #~ self.getplugin(plugin=to_install)

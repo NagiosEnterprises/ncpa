@@ -121,6 +121,7 @@ class PassiveDaemon(PosixDaemon):
         
         for handler in handlers:
             try:
+                handler = handler.strip()
                 module_name = 'passive.%s' % handler
                 __import__(module_name)
                 tmp_handler = sys.modules[module_name]
@@ -143,7 +144,10 @@ class PassiveDaemon(PosixDaemon):
         self.write_pid(self.PIDFILE, os.getpid())
         while True:
             self.parse_config()
-            self.run_all_handlers()
+            try:
+                self.run_all_handlers()
+            except Exception, e:
+                self.logger.exception(e)
             sleep = int(self.config.get('passive', 'sleep'))
             time.sleep(sleep)
     

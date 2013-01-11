@@ -2,6 +2,15 @@ import logging
 import ConfigParser
 import BaseHTTPServer
 
+class PConfigParser(ConfigParser.ConfigParser):
+    
+    def __init__(self, *args, **kwargs):
+        ConfigParser.ConfigParser.__init__(self, *args, **kwargs)
+    
+    def read(self, file_path, *args, **kwargs):
+        self.file_path = file_path
+        ConfigParser.ConfigParser.read(self, file_path, *args, **kwargs)
+
 class ConfigHTTPServer(BaseHTTPServer.HTTPServer):
     
     def __init__(self, config, *args, **kwargs):
@@ -26,7 +35,7 @@ class NCPADaemon(object):
         '''
         Set the parsed config to self.config
         '''
-        self.config = ConfigParser.ConfigParser()
+        self.config = PConfigParser()
         self.config.optionxform = str
         self.config.read(self.config_filename)
     
