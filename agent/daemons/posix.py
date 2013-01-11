@@ -6,7 +6,7 @@ import logging
 import os
 import time
 import signal
-import threading
+import listener.server
 
 def daemonize():
     '''
@@ -168,20 +168,16 @@ class ListenerDaemon(PosixDaemon):
         ''' 
         self.check_pid(self.PIDFILE)
         
-        address = self.config.get('listening server', 'ipport').split(',')
-        host, port = [], []
-        for tmp in address:
-            tmp_address, tmp_port = tmp.rsplit(':', 1)
-            host.append(tmp_address)
-            port.append(tmp_port)
-        
-        servers = [ abstract.ConfigHTTPServer(self.config, (host, int(port)), self.handler) for host, port in zip(host, port)]
+        address = self.config.get('listening server', 'ip')
+        port = int(self.config.get('listening server', 'port'))
         self.draw_spinner('Daemonizing...')
         daemonize()
         self.write_pid(self.PIDFILE, os.getpid())
         try:
-            for server in servers:
-                threading.Thread(target=server.serve_forever, args=[]).start()
+            listener.server.listener.run(address, port)
+            url_for('static', filename='jquery-1.8.3.min.js')
+            url_for('static', filename='jquery-ui.css')
+            url_for('static', filename='jquery-ui.js')
         except Exception, e:
             f.write('This was an exception.\n %s' % str(e))
             self.logger.exception(e)
