@@ -3870,6 +3870,825 @@ Arguments: None
 01/06/13 19:42:53 INFO:Starting new HTTP connection (1): 192.168.1.54
 01/06/13 19:42:53 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test HTTP/1.1" 301 379
 01/06/13 19:42:53 DEBUG:"GET /nrdp/?token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test&token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test HTTP/1.1" 200 23
+<<<<<<< .mine
+01/06/13 19:49:38 DEBUG:Parsing config...
+01/06/13 19:49:38 DEBUG:Parsing commands...
+01/06/13 19:49:38 DEBUG:Parsing new individual command.
+01/06/13 19:49:38 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 19:49:38 DEBUG:Parsing command: check_swap
+01/06/13 19:49:38 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:49:38 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:49:38 DEBUG:Parsing new individual command.
+01/06/13 19:49:38 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 19:49:38 DEBUG:Parsing command: check_cpu
+01/06/13 19:49:38 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:49:38 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:49:38 DEBUG:Parsing new individual command.
+01/06/13 19:49:38 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 19:49:38 DEBUG:Parsing command: check_memory
+01/06/13 19:49:38 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:49:38 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:49:38 DEBUG:Establishing Nagios handler...
+01/06/13 19:49:38 DEBUG:Nagios handler established.
+01/06/13 19:49:38 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 19:49:38 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test HTTP/1.1" 301 379
+01/06/13 19:49:38 DEBUG:"GET /nrdp/?token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test&token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test HTTP/1.1" 200 23
+01/06/13 19:49:38 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 19:49:38 DEBUG:"POST /nrdp?config_version=0.2&config_name=ncpa&cmd=updatenrds&token=k2suan32qt50&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.2%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 593
+01/06/13 19:49:38 DEBUG:"GET /nrdp/?config_version=0.2&config_name=ncpa&cmd=updatenrds&token=k2suan32qt50&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.2%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.2&config_name=ncpa&cmd=updatenrds&token=k2suan32qt50&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.2%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1330
+01/06/13 19:51:31 DEBUG:Parsing config...
+01/06/13 19:51:31 DEBUG:Parsing commands...
+01/06/13 19:51:31 DEBUG:Parsing new individual command.
+01/06/13 19:51:31 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 19:51:31 DEBUG:Parsing command: check_swap
+01/06/13 19:51:31 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:51:31 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:51:31 DEBUG:Parsing new individual command.
+01/06/13 19:51:31 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 19:51:31 DEBUG:Parsing command: check_cpu
+01/06/13 19:51:31 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:51:31 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:51:31 DEBUG:Parsing new individual command.
+01/06/13 19:51:31 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 19:51:31 DEBUG:Parsing command: check_memory
+01/06/13 19:51:31 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:51:31 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:51:31 DEBUG:Establishing Nagios handler...
+01/06/13 19:51:31 DEBUG:Nagios handler established.
+01/06/13 19:51:31 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 19:51:31 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test HTTP/1.1" 301 379
+01/06/13 19:51:31 DEBUG:"GET /nrdp/?token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test&token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test HTTP/1.1" 200 23
+01/06/13 19:51:31 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 19:51:31 DEBUG:"POST /nrdp?config_version=0.2&config_name=ncpa&cmd=updatenrds&token=k2suan32qt50&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.2%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 593
+01/06/13 19:51:31 DEBUG:"GET /nrdp/?config_version=0.2&config_name=ncpa&cmd=updatenrds&token=k2suan32qt50&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.2%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.2&config_name=ncpa&cmd=updatenrds&token=k2suan32qt50&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.2%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1330
+01/06/13 19:52:10 DEBUG:Parsing config...
+01/06/13 19:52:10 DEBUG:Parsing commands...
+01/06/13 19:52:10 DEBUG:Parsing new individual command.
+01/06/13 19:52:10 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 19:52:10 DEBUG:Parsing command: check_swap
+01/06/13 19:52:10 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:52:10 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:52:10 DEBUG:Parsing new individual command.
+01/06/13 19:52:10 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 19:52:10 DEBUG:Parsing command: check_cpu
+01/06/13 19:52:10 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:52:10 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:52:10 DEBUG:Parsing new individual command.
+01/06/13 19:52:10 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 19:52:10 DEBUG:Parsing command: check_memory
+01/06/13 19:52:10 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:52:10 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:52:10 DEBUG:Establishing Nagios handler...
+01/06/13 19:52:10 DEBUG:Nagios handler established.
+01/06/13 19:52:11 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 19:52:11 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test HTTP/1.1" 301 379
+01/06/13 19:52:11 DEBUG:"GET /nrdp/?token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test&token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test HTTP/1.1" 200 23
+01/06/13 19:52:11 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 19:52:11 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa HTTP/1.1" 301 383
+01/06/13 19:52:11 DEBUG:"GET /nrdp/?token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa&token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa HTTP/1.1" 200 0
+01/06/13 19:53:46 DEBUG:Parsing config...
+01/06/13 19:53:46 DEBUG:Parsing commands...
+01/06/13 19:53:46 DEBUG:Parsing new individual command.
+01/06/13 19:53:46 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 19:53:46 DEBUG:Parsing command: check_swap
+01/06/13 19:53:46 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:53:46 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:53:46 DEBUG:Parsing new individual command.
+01/06/13 19:53:46 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 19:53:46 DEBUG:Parsing command: check_cpu
+01/06/13 19:53:46 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:53:46 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:53:46 DEBUG:Parsing new individual command.
+01/06/13 19:53:46 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 19:53:46 DEBUG:Parsing command: check_memory
+01/06/13 19:53:46 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:53:46 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:53:46 DEBUG:Establishing Nagios handler...
+01/06/13 19:53:46 DEBUG:Nagios handler established.
+01/06/13 19:53:46 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 19:53:46 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test HTTP/1.1" 301 379
+01/06/13 19:53:46 DEBUG:"GET /nrdp/?token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test&token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test HTTP/1.1" 200 23
+01/06/13 19:53:46 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 19:53:46 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa HTTP/1.1" 301 383
+01/06/13 19:53:46 DEBUG:"GET /nrdp/?token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa&token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa HTTP/1.1" 200 0
+01/06/13 19:54:11 DEBUG:Parsing config...
+01/06/13 19:54:11 DEBUG:Parsing commands...
+01/06/13 19:54:11 DEBUG:Parsing new individual command.
+01/06/13 19:54:11 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 19:54:11 DEBUG:Parsing command: check_swap
+01/06/13 19:54:11 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:54:11 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:54:11 DEBUG:Parsing new individual command.
+01/06/13 19:54:11 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 19:54:11 DEBUG:Parsing command: check_cpu
+01/06/13 19:54:11 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:54:11 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:54:11 DEBUG:Parsing new individual command.
+01/06/13 19:54:11 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 19:54:11 DEBUG:Parsing command: check_memory
+01/06/13 19:54:11 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:54:11 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:54:11 DEBUG:Establishing Nagios handler...
+01/06/13 19:54:11 DEBUG:Nagios handler established.
+01/06/13 19:54:11 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 19:54:11 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test HTTP/1.1" 301 379
+01/06/13 19:54:11 DEBUG:"GET /nrdp/?token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test&token=k2suan32qt50&cmd=getplugin&os=Chinook&plugin=test HTTP/1.1" 200 23
+01/06/13 19:54:11 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 19:54:11 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa HTTP/1.1" 301 383
+01/06/13 19:54:11 DEBUG:"GET /nrdp/?token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa&token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa HTTP/1.1" 200 0
+01/06/13 19:55:24 DEBUG:Parsing config...
+01/06/13 19:55:24 DEBUG:Parsing commands...
+01/06/13 19:55:24 DEBUG:Parsing new individual command.
+01/06/13 19:55:24 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 19:55:24 DEBUG:Parsing command: check_swap
+01/06/13 19:55:24 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:55:24 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:55:24 DEBUG:Parsing new individual command.
+01/06/13 19:55:24 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 19:55:24 DEBUG:Parsing command: check_cpu
+01/06/13 19:55:24 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:55:24 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:55:24 DEBUG:Parsing new individual command.
+01/06/13 19:55:24 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 19:55:24 DEBUG:Parsing command: check_memory
+01/06/13 19:55:24 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:55:24 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:55:24 DEBUG:Establishing Nagios handler...
+01/06/13 19:55:24 DEBUG:Nagios handler established.
+01/06/13 19:55:24 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 19:55:24 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa HTTP/1.1" 301 383
+01/06/13 19:55:24 DEBUG:"GET /nrdp/?token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa&token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa HTTP/1.1" 200 0
+01/06/13 19:57:30 DEBUG:Parsing config...
+01/06/13 19:57:30 DEBUG:Parsing commands...
+01/06/13 19:57:30 DEBUG:Parsing new individual command.
+01/06/13 19:57:30 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 19:57:30 DEBUG:Parsing command: check_swap
+01/06/13 19:57:30 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:57:30 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:57:30 DEBUG:Parsing new individual command.
+01/06/13 19:57:30 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 19:57:30 DEBUG:Parsing command: check_cpu
+01/06/13 19:57:30 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:57:30 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:57:30 DEBUG:Parsing new individual command.
+01/06/13 19:57:30 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 19:57:30 DEBUG:Parsing command: check_memory
+01/06/13 19:57:30 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:57:30 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:57:30 DEBUG:Establishing Nagios handler...
+01/06/13 19:57:30 DEBUG:Nagios handler established.
+01/06/13 19:57:30 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 19:57:30 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa HTTP/1.1" 301 383
+01/06/13 19:57:30 DEBUG:"GET /nrdp/?token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa&token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa HTTP/1.1" 200 0
+01/06/13 19:58:55 DEBUG:Parsing config...
+01/06/13 19:58:55 DEBUG:Parsing commands...
+01/06/13 19:58:55 DEBUG:Parsing new individual command.
+01/06/13 19:58:55 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 19:58:55 DEBUG:Parsing command: check_swap
+01/06/13 19:58:55 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:58:55 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:58:55 DEBUG:Parsing new individual command.
+01/06/13 19:58:55 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 19:58:55 DEBUG:Parsing command: check_cpu
+01/06/13 19:58:55 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:58:55 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:58:55 DEBUG:Parsing new individual command.
+01/06/13 19:58:55 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 19:58:55 DEBUG:Parsing command: check_memory
+01/06/13 19:58:55 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:58:55 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:58:55 DEBUG:Establishing Nagios handler...
+01/06/13 19:58:55 DEBUG:Nagios handler established.
+01/06/13 19:59:03 DEBUG:Parsing config...
+01/06/13 19:59:03 DEBUG:Parsing commands...
+01/06/13 19:59:03 DEBUG:Parsing new individual command.
+01/06/13 19:59:03 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 19:59:03 DEBUG:Parsing command: check_swap
+01/06/13 19:59:03 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:59:03 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:59:03 DEBUG:Parsing new individual command.
+01/06/13 19:59:03 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 19:59:03 DEBUG:Parsing command: check_cpu
+01/06/13 19:59:03 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:59:03 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:59:03 DEBUG:Parsing new individual command.
+01/06/13 19:59:03 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 19:59:03 DEBUG:Parsing command: check_memory
+01/06/13 19:59:03 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:59:03 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:59:03 DEBUG:Establishing Nagios handler...
+01/06/13 19:59:03 DEBUG:Nagios handler established.
+01/06/13 19:59:03 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 19:59:03 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa HTTP/1.1" 301 383
+01/06/13 19:59:03 DEBUG:"GET /nrdp/?token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa&token=k2suan32qt50&cmd=getplugin&os=chinook&configname=ncpa HTTP/1.1" 200 0
+01/06/13 19:59:39 DEBUG:Parsing config...
+01/06/13 19:59:39 DEBUG:Parsing commands...
+01/06/13 19:59:39 DEBUG:Parsing new individual command.
+01/06/13 19:59:39 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 19:59:39 DEBUG:Parsing command: check_swap
+01/06/13 19:59:39 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:59:39 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:59:39 DEBUG:Parsing new individual command.
+01/06/13 19:59:39 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 19:59:39 DEBUG:Parsing command: check_cpu
+01/06/13 19:59:39 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:59:39 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:59:39 DEBUG:Parsing new individual command.
+01/06/13 19:59:39 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 19:59:39 DEBUG:Parsing command: check_memory
+01/06/13 19:59:39 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 19:59:39 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 19:59:39 DEBUG:Establishing Nagios handler...
+01/06/13 19:59:39 DEBUG:Nagios handler established.
+01/06/13 19:59:40 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/06/13 19:59:40 DEBUG:"POST /nrdp?token=k2suan32qt50&cmd=getconfig&os=chinook&configname=ncpa HTTP/1.1" 301 383
+01/06/13 19:59:40 DEBUG:"GET /nrdp/?token=k2suan32qt50&cmd=getconfig&os=chinook&configname=ncpa&token=k2suan32qt50&cmd=getconfig&os=chinook&configname=ncpa HTTP/1.1" 200 1156
+01/06/13 20:00:33 DEBUG:Parsing config...
+01/06/13 20:00:33 DEBUG:Parsing commands...
+01/06/13 20:00:33 DEBUG:Parsing new individual command.
+01/06/13 20:00:33 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:00:33 DEBUG:Parsing command: check_swap
+01/06/13 20:00:33 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:00:33 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:00:33 DEBUG:Parsing new individual command.
+01/06/13 20:00:33 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:00:33 DEBUG:Parsing command: check_cpu
+01/06/13 20:00:33 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:00:33 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:00:33 DEBUG:Parsing new individual command.
+01/06/13 20:00:33 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:00:33 DEBUG:Parsing command: check_memory
+01/06/13 20:00:33 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:00:33 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:00:33 DEBUG:Establishing Nagios handler...
+01/06/13 20:00:33 DEBUG:Nagios handler established.
+01/06/13 20:00:33 INFO:Starting new HTTPS connection (1): 192.168.1.26
+01/06/13 20:00:52 DEBUG:Parsing config...
+01/06/13 20:00:52 DEBUG:Parsing commands...
+01/06/13 20:00:52 DEBUG:Parsing new individual command.
+01/06/13 20:00:52 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:00:52 DEBUG:Parsing command: check_swap
+01/06/13 20:00:52 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:00:52 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:00:52 DEBUG:Parsing new individual command.
+01/06/13 20:00:52 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:00:52 DEBUG:Parsing command: check_cpu
+01/06/13 20:00:52 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:00:52 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:00:52 DEBUG:Parsing new individual command.
+01/06/13 20:00:52 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:00:52 DEBUG:Parsing command: check_memory
+01/06/13 20:00:52 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:00:52 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:00:52 DEBUG:Establishing Nagios handler...
+01/06/13 20:00:52 DEBUG:Nagios handler established.
+01/06/13 20:00:52 INFO:Starting new HTTPS connection (1): 192.168.1.26
+01/06/13 20:01:41 DEBUG:Parsing config...
+01/06/13 20:01:41 DEBUG:Parsing commands...
+01/06/13 20:01:41 DEBUG:Parsing new individual command.
+01/06/13 20:01:41 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:01:41 DEBUG:Parsing command: check_swap
+01/06/13 20:01:41 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:01:41 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:01:41 DEBUG:Parsing new individual command.
+01/06/13 20:01:41 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:01:41 DEBUG:Parsing command: check_cpu
+01/06/13 20:01:41 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:01:41 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:01:41 DEBUG:Parsing new individual command.
+01/06/13 20:01:41 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:01:41 DEBUG:Parsing command: check_memory
+01/06/13 20:01:41 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:01:41 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:01:41 DEBUG:Establishing Nagios handler...
+01/06/13 20:01:41 DEBUG:Nagios handler established.
+01/06/13 20:01:41 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:01:41 DEBUG:"POST /nrdp?token=aa&cmd=getconfig&os=chinook&configname=ncpa HTTP/1.1" 301 375
+01/06/13 20:01:41 DEBUG:"GET /nrdp/?token=aa&cmd=getconfig&os=chinook&configname=ncpa&token=aa&cmd=getconfig&os=chinook&configname=ncpa HTTP/1.1" 200 1156
+01/06/13 20:03:10 DEBUG:Parsing config...
+01/06/13 20:03:10 DEBUG:Parsing commands...
+01/06/13 20:03:10 DEBUG:Parsing new individual command.
+01/06/13 20:03:10 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:03:10 DEBUG:Parsing command: check_swap
+01/06/13 20:03:10 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:03:10 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:03:10 DEBUG:Parsing new individual command.
+01/06/13 20:03:10 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:03:10 DEBUG:Parsing command: check_cpu
+01/06/13 20:03:10 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:03:10 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:03:10 DEBUG:Parsing new individual command.
+01/06/13 20:03:10 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:03:10 DEBUG:Parsing command: check_memory
+01/06/13 20:03:10 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:03:10 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:03:10 DEBUG:Establishing Nagios handler...
+01/06/13 20:03:10 DEBUG:Nagios handler established.
+01/06/13 20:03:10 INFO:Starting new HTTPS connection (1): 192.168.1.26
+01/06/13 20:03:43 DEBUG:Parsing config...
+01/06/13 20:03:43 DEBUG:Parsing commands...
+01/06/13 20:03:43 DEBUG:Parsing new individual command.
+01/06/13 20:03:43 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:03:43 DEBUG:Parsing command: check_swap
+01/06/13 20:03:43 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:03:43 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:03:43 DEBUG:Parsing new individual command.
+01/06/13 20:03:43 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:03:43 DEBUG:Parsing command: check_cpu
+01/06/13 20:03:43 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:03:43 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:03:43 DEBUG:Parsing new individual command.
+01/06/13 20:03:43 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:03:43 DEBUG:Parsing command: check_memory
+01/06/13 20:03:43 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:03:43 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:03:43 DEBUG:Establishing Nagios handler...
+01/06/13 20:03:43 DEBUG:Nagios handler established.
+01/06/13 20:03:43 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:03:43 DEBUG:"POST /nrdp?token=aa&cmd=getconfig&os=chinook&configname=ncpa HTTP/1.1" 301 375
+01/06/13 20:03:43 DEBUG:"GET /nrdp/?token=aa&cmd=getconfig&os=chinook&configname=ncpa&token=aa&cmd=getconfig&os=chinook&configname=ncpa HTTP/1.1" 200 1157
+01/06/13 20:07:04 DEBUG:Parsing config...
+01/06/13 20:07:04 DEBUG:Parsing commands...
+01/06/13 20:07:04 DEBUG:Parsing new individual command.
+01/06/13 20:07:04 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:07:04 DEBUG:Parsing command: check_swap
+01/06/13 20:07:04 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:07:04 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:07:04 DEBUG:Parsing new individual command.
+01/06/13 20:07:04 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:07:04 DEBUG:Parsing command: check_cpu
+01/06/13 20:07:04 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:07:04 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:07:04 DEBUG:Parsing new individual command.
+01/06/13 20:07:04 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:07:04 DEBUG:Parsing command: check_memory
+01/06/13 20:07:04 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:07:04 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:07:04 DEBUG:Establishing Nagios handler...
+01/06/13 20:07:04 DEBUG:Nagios handler established.
+01/06/13 20:07:04 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:07:04 DEBUG:"POST /nrdp?token=aa&cmd=getconfig&os=chinook&configname=ncpa HTTP/1.1" 301 375
+01/06/13 20:07:04 DEBUG:"GET /nrdp/?token=aa&cmd=getconfig&os=chinook&configname=ncpa&token=aa&cmd=getconfig&os=chinook&configname=ncpa HTTP/1.1" 200 1157
+01/06/13 20:08:00 DEBUG:Parsing config...
+01/06/13 20:08:00 DEBUG:Parsing commands...
+01/06/13 20:08:00 DEBUG:Parsing new individual command.
+01/06/13 20:08:00 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:08:00 DEBUG:Parsing command: check_swap
+01/06/13 20:08:00 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:08:00 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:08:00 DEBUG:Parsing new individual command.
+01/06/13 20:08:00 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:08:00 DEBUG:Parsing command: check_cpu
+01/06/13 20:08:00 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:08:00 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:08:00 DEBUG:Parsing new individual command.
+01/06/13 20:08:00 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:08:00 DEBUG:Parsing command: check_memory
+01/06/13 20:08:00 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:08:00 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:08:00 DEBUG:Establishing Nagios handler...
+01/06/13 20:08:00 DEBUG:Nagios handler established.
+01/06/13 20:08:00 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:08:00 DEBUG:"POST /nrdp?config_version=999&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E999%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 585
+01/06/13 20:08:01 DEBUG:"GET /nrdp/?config_version=999&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E999%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=999&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E999%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1331
+01/06/13 20:08:17 DEBUG:Parsing config...
+01/06/13 20:08:17 DEBUG:Parsing commands...
+01/06/13 20:08:17 DEBUG:Parsing new individual command.
+01/06/13 20:08:17 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:08:17 DEBUG:Parsing command: check_swap
+01/06/13 20:08:17 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:08:17 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:08:17 DEBUG:Parsing new individual command.
+01/06/13 20:08:17 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:08:17 DEBUG:Parsing command: check_cpu
+01/06/13 20:08:17 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:08:17 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:08:17 DEBUG:Parsing new individual command.
+01/06/13 20:08:17 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:08:17 DEBUG:Parsing command: check_memory
+01/06/13 20:08:17 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:08:17 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:08:17 DEBUG:Establishing Nagios handler...
+01/06/13 20:08:17 DEBUG:Nagios handler established.
+01/06/13 20:08:17 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:08:17 DEBUG:"POST /nrdp?config_version=999&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E999%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 585
+01/06/13 20:08:17 DEBUG:"GET /nrdp/?config_version=999&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E999%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=999&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E999%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1331
+01/06/13 20:08:47 DEBUG:Parsing config...
+01/06/13 20:08:47 DEBUG:Parsing commands...
+01/06/13 20:08:47 DEBUG:Parsing new individual command.
+01/06/13 20:08:47 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:08:47 DEBUG:Parsing command: check_swap
+01/06/13 20:08:47 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:08:47 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:08:47 DEBUG:Parsing new individual command.
+01/06/13 20:08:47 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:08:47 DEBUG:Parsing command: check_cpu
+01/06/13 20:08:47 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:08:47 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:08:47 DEBUG:Parsing new individual command.
+01/06/13 20:08:47 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:08:47 DEBUG:Parsing command: check_memory
+01/06/13 20:08:47 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:08:47 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:08:47 DEBUG:Establishing Nagios handler...
+01/06/13 20:08:47 DEBUG:Nagios handler established.
+01/06/13 20:08:47 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:08:47 DEBUG:"POST /nrdp?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 585
+01/06/13 20:08:47 DEBUG:"GET /nrdp/?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1331
+01/06/13 20:10:17 DEBUG:Parsing config...
+01/06/13 20:10:17 DEBUG:Parsing commands...
+01/06/13 20:10:17 DEBUG:Parsing new individual command.
+01/06/13 20:10:17 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:10:17 DEBUG:Parsing command: check_swap
+01/06/13 20:10:17 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:10:17 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:10:17 DEBUG:Parsing new individual command.
+01/06/13 20:10:17 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:10:17 DEBUG:Parsing command: check_cpu
+01/06/13 20:10:17 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:10:17 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:10:17 DEBUG:Parsing new individual command.
+01/06/13 20:10:17 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:10:17 DEBUG:Parsing command: check_memory
+01/06/13 20:10:17 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:10:17 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:10:17 DEBUG:Establishing Nagios handler...
+01/06/13 20:10:17 DEBUG:Nagios handler established.
+01/06/13 20:10:18 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:10:18 DEBUG:"POST /nrdp?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 585
+01/06/13 20:10:18 DEBUG:"GET /nrdp/?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1331
+01/06/13 20:11:12 DEBUG:Parsing config...
+01/06/13 20:11:12 DEBUG:Parsing commands...
+01/06/13 20:11:12 DEBUG:Parsing new individual command.
+01/06/13 20:11:12 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:11:12 DEBUG:Parsing command: check_swap
+01/06/13 20:11:12 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:11:12 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:11:12 DEBUG:Parsing new individual command.
+01/06/13 20:11:12 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:11:12 DEBUG:Parsing command: check_cpu
+01/06/13 20:11:12 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:11:12 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:11:12 DEBUG:Parsing new individual command.
+01/06/13 20:11:12 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:11:12 DEBUG:Parsing command: check_memory
+01/06/13 20:11:12 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:11:12 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:11:12 DEBUG:Establishing Nagios handler...
+01/06/13 20:11:12 DEBUG:Nagios handler established.
+01/06/13 20:11:12 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:11:12 DEBUG:"POST /nrdp?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 585
+01/06/13 20:11:12 DEBUG:"GET /nrdp/?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1331
+01/06/13 20:12:21 DEBUG:Parsing config...
+01/06/13 20:12:21 DEBUG:Parsing commands...
+01/06/13 20:12:21 DEBUG:Parsing new individual command.
+01/06/13 20:12:21 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:12:21 DEBUG:Parsing command: check_swap
+01/06/13 20:12:21 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:12:21 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:12:21 DEBUG:Parsing new individual command.
+01/06/13 20:12:21 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:12:21 DEBUG:Parsing command: check_cpu
+01/06/13 20:12:21 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:12:21 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:12:21 DEBUG:Parsing new individual command.
+01/06/13 20:12:21 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:12:21 DEBUG:Parsing command: check_memory
+01/06/13 20:12:21 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:12:21 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:12:21 DEBUG:Establishing Nagios handler...
+01/06/13 20:12:21 DEBUG:Nagios handler established.
+01/06/13 20:12:21 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:12:21 DEBUG:"POST /nrdp?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 585
+01/06/13 20:12:21 DEBUG:"GET /nrdp/?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1331
+01/06/13 20:14:03 DEBUG:Parsing config...
+01/06/13 20:14:03 DEBUG:Parsing commands...
+01/06/13 20:14:03 DEBUG:Parsing new individual command.
+01/06/13 20:14:03 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:14:03 DEBUG:Parsing command: check_swap
+01/06/13 20:14:03 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:14:03 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:14:03 DEBUG:Parsing new individual command.
+01/06/13 20:14:03 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:14:03 DEBUG:Parsing command: check_cpu
+01/06/13 20:14:03 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:14:03 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:14:03 DEBUG:Parsing new individual command.
+01/06/13 20:14:03 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:14:03 DEBUG:Parsing command: check_memory
+01/06/13 20:14:03 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:14:03 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:14:03 DEBUG:Establishing Nagios handler...
+01/06/13 20:14:03 DEBUG:Nagios handler established.
+01/06/13 20:14:03 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:14:03 DEBUG:"POST /nrdp?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 585
+01/06/13 20:14:04 DEBUG:"GET /nrdp/?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1331
+01/06/13 20:14:44 DEBUG:Parsing config...
+01/06/13 20:14:44 DEBUG:Parsing commands...
+01/06/13 20:14:44 DEBUG:Parsing new individual command.
+01/06/13 20:14:44 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:14:44 DEBUG:Parsing command: check_swap
+01/06/13 20:14:44 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:14:44 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:14:44 DEBUG:Parsing new individual command.
+01/06/13 20:14:44 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:14:44 DEBUG:Parsing command: check_cpu
+01/06/13 20:14:44 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:14:44 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:14:44 DEBUG:Parsing new individual command.
+01/06/13 20:14:44 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:14:44 DEBUG:Parsing command: check_memory
+01/06/13 20:14:44 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:14:44 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:14:44 DEBUG:Establishing Nagios handler...
+01/06/13 20:14:44 DEBUG:Nagios handler established.
+01/06/13 20:14:45 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:14:45 DEBUG:"GET /nrdp?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 585
+01/06/13 20:14:45 DEBUG:"GET /nrdp/?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1331
+01/06/13 20:15:16 DEBUG:Parsing config...
+01/06/13 20:15:16 DEBUG:Parsing commands...
+01/06/13 20:15:16 DEBUG:Parsing new individual command.
+01/06/13 20:15:16 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:15:16 DEBUG:Parsing command: check_swap
+01/06/13 20:15:16 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:15:16 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:15:16 DEBUG:Parsing new individual command.
+01/06/13 20:15:16 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:15:16 DEBUG:Parsing command: check_cpu
+01/06/13 20:15:16 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:15:16 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:15:16 DEBUG:Parsing new individual command.
+01/06/13 20:15:16 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:15:16 DEBUG:Parsing command: check_memory
+01/06/13 20:15:16 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:15:16 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:15:16 DEBUG:Establishing Nagios handler...
+01/06/13 20:15:16 DEBUG:Nagios handler established.
+01/06/13 20:15:16 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:15:16 DEBUG:"POST /nrdp?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 585
+01/06/13 20:15:16 DEBUG:"GET /nrdp/?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1331
+01/06/13 20:15:47 DEBUG:Parsing config...
+01/06/13 20:15:47 DEBUG:Parsing commands...
+01/06/13 20:15:47 DEBUG:Parsing new individual command.
+01/06/13 20:15:47 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:15:47 DEBUG:Parsing command: check_swap
+01/06/13 20:15:47 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:15:47 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:15:47 DEBUG:Parsing new individual command.
+01/06/13 20:15:47 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:15:47 DEBUG:Parsing command: check_cpu
+01/06/13 20:15:47 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:15:47 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:15:47 DEBUG:Parsing new individual command.
+01/06/13 20:15:47 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:15:47 DEBUG:Parsing command: check_memory
+01/06/13 20:15:47 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:15:47 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:15:47 DEBUG:Establishing Nagios handler...
+01/06/13 20:15:47 DEBUG:Nagios handler established.
+01/06/13 20:15:47 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:15:47 DEBUG:"POST /nrdp?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 585
+01/06/13 20:15:47 DEBUG:"GET /nrdp/?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1331
+01/06/13 20:15:59 DEBUG:Parsing config...
+01/06/13 20:15:59 DEBUG:Parsing commands...
+01/06/13 20:15:59 DEBUG:Parsing new individual command.
+01/06/13 20:15:59 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:15:59 DEBUG:Parsing command: check_swap
+01/06/13 20:15:59 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:15:59 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:15:59 DEBUG:Parsing new individual command.
+01/06/13 20:15:59 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:15:59 DEBUG:Parsing command: check_cpu
+01/06/13 20:15:59 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:15:59 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:15:59 DEBUG:Parsing new individual command.
+01/06/13 20:15:59 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:15:59 DEBUG:Parsing command: check_memory
+01/06/13 20:15:59 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:15:59 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:15:59 DEBUG:Establishing Nagios handler...
+01/06/13 20:15:59 DEBUG:Nagios handler established.
+01/06/13 20:15:59 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:15:59 DEBUG:"POST /nrdp?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 585
+01/06/13 20:15:59 DEBUG:"GET /nrdp/?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1331
+01/06/13 20:16:29 DEBUG:Parsing config...
+01/06/13 20:16:29 DEBUG:Parsing commands...
+01/06/13 20:16:29 DEBUG:Parsing new individual command.
+01/06/13 20:16:29 DEBUG:Setting hostname to localhost and servicename to __host__
+01/06/13 20:16:29 DEBUG:Parsing command: check_swap
+01/06/13 20:16:29 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:16:29 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:16:29 DEBUG:Parsing new individual command.
+01/06/13 20:16:29 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/06/13 20:16:29 DEBUG:Parsing command: check_cpu
+01/06/13 20:16:29 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:16:29 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:16:29 DEBUG:Parsing new individual command.
+01/06/13 20:16:29 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/06/13 20:16:29 DEBUG:Parsing command: check_memory
+01/06/13 20:16:29 DEBUG:Command did not contain arguments. Single directive.
+01/06/13 20:16:29 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/06/13 20:16:29 DEBUG:Establishing Nagios handler...
+01/06/13 20:16:29 DEBUG:Nagios handler established.
+01/06/13 20:16:29 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/06/13 20:16:29 DEBUG:"POST /nrdp?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 585
+01/06/13 20:16:30 DEBUG:"GET /nrdp/?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1331
+01/07/13 05:40:43 DEBUG:Parsing config...
+01/07/13 05:40:43 DEBUG:Parsing commands...
+01/07/13 05:40:43 DEBUG:Parsing new individual command.
+01/07/13 05:40:43 DEBUG:Setting hostname to localhost and servicename to __host__
+01/07/13 05:40:43 DEBUG:Parsing command: check_swap
+01/07/13 05:40:43 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:40:43 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:40:43 DEBUG:Parsing new individual command.
+01/07/13 05:40:43 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/07/13 05:40:43 DEBUG:Parsing command: check_cpu
+01/07/13 05:40:43 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:40:43 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:40:43 DEBUG:Parsing new individual command.
+01/07/13 05:40:43 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/07/13 05:40:43 DEBUG:Parsing command: check_memory
+01/07/13 05:40:43 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:40:43 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:40:43 DEBUG:Establishing Nagios handler...
+01/07/13 05:40:43 DEBUG:Nagios handler established.
+01/07/13 05:40:43 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/07/13 05:40:43 DEBUG:"POST /nrdp?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 585
+01/07/13 05:40:43 DEBUG:"GET /nrdp/?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1375
+01/07/13 05:42:36 DEBUG:Parsing config...
+01/07/13 05:42:36 DEBUG:Parsing commands...
+01/07/13 05:42:36 DEBUG:Parsing new individual command.
+01/07/13 05:42:36 DEBUG:Setting hostname to localhost and servicename to __host__
+01/07/13 05:42:36 DEBUG:Parsing command: check_swap
+01/07/13 05:42:36 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:42:36 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:42:36 DEBUG:Parsing new individual command.
+01/07/13 05:42:36 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/07/13 05:42:36 DEBUG:Parsing command: check_cpu
+01/07/13 05:42:36 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:42:36 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:42:36 DEBUG:Parsing new individual command.
+01/07/13 05:42:36 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/07/13 05:42:36 DEBUG:Parsing command: check_memory
+01/07/13 05:42:36 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:42:36 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:42:36 DEBUG:Establishing Nagios handler...
+01/07/13 05:42:36 DEBUG:Nagios handler established.
+01/07/13 05:42:36 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/07/13 05:42:36 DEBUG:"POST /nrdp?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 585
+01/07/13 05:42:36 DEBUG:"GET /nrdp/?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1350
+01/07/13 05:48:27 DEBUG:Parsing config...
+01/07/13 05:48:27 DEBUG:Parsing commands...
+01/07/13 05:48:27 DEBUG:Parsing new individual command.
+01/07/13 05:48:27 DEBUG:Setting hostname to localhost and servicename to __host__
+01/07/13 05:48:27 DEBUG:Parsing command: check_swap
+01/07/13 05:48:27 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:48:27 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:48:27 DEBUG:Parsing new individual command.
+01/07/13 05:48:27 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/07/13 05:48:27 DEBUG:Parsing command: check_cpu
+01/07/13 05:48:27 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:48:27 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:48:27 DEBUG:Parsing new individual command.
+01/07/13 05:48:27 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/07/13 05:48:27 DEBUG:Parsing command: check_memory
+01/07/13 05:48:27 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:48:27 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:48:27 DEBUG:Establishing Nagios handler...
+01/07/13 05:48:27 DEBUG:Nagios handler established.
+01/07/13 05:48:36 DEBUG:Parsing config...
+01/07/13 05:48:36 DEBUG:Parsing commands...
+01/07/13 05:48:36 DEBUG:Parsing new individual command.
+01/07/13 05:48:36 DEBUG:Setting hostname to localhost and servicename to __host__
+01/07/13 05:48:36 DEBUG:Parsing command: check_swap
+01/07/13 05:48:36 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:48:36 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:48:36 DEBUG:Parsing new individual command.
+01/07/13 05:48:36 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/07/13 05:48:36 DEBUG:Parsing command: check_cpu
+01/07/13 05:48:36 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:48:36 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:48:36 DEBUG:Parsing new individual command.
+01/07/13 05:48:36 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/07/13 05:48:36 DEBUG:Parsing command: check_memory
+01/07/13 05:48:36 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:48:36 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:48:36 DEBUG:Establishing Nagios handler...
+01/07/13 05:48:36 DEBUG:Nagios handler established.
+01/07/13 05:48:36 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/07/13 05:48:36 DEBUG:"POST /nrdp?cmd=updatenrds&config_version=0.1&token=aa&config_name=ncpa HTTP/1.1" 301 383
+01/07/13 05:48:36 DEBUG:"GET /nrdp/?cmd=updatenrds&config_version=0.1&token=aa&config_name=ncpa&cmd=updatenrds&config_version=0.1&token=aa&config_name=ncpa HTTP/1.1" 200 109
+01/07/13 05:50:40 DEBUG:Parsing config...
+01/07/13 05:50:40 DEBUG:Parsing commands...
+01/07/13 05:50:40 DEBUG:Parsing new individual command.
+01/07/13 05:50:40 DEBUG:Setting hostname to localhost and servicename to __host__
+01/07/13 05:50:40 DEBUG:Parsing command: check_swap
+01/07/13 05:50:40 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:50:40 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:50:40 DEBUG:Parsing new individual command.
+01/07/13 05:50:40 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/07/13 05:50:40 DEBUG:Parsing command: check_cpu
+01/07/13 05:50:40 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:50:40 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:50:40 DEBUG:Parsing new individual command.
+01/07/13 05:50:40 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/07/13 05:50:40 DEBUG:Parsing command: check_memory
+01/07/13 05:50:40 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:50:40 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:50:40 DEBUG:Establishing Nagios handler...
+01/07/13 05:50:40 DEBUG:Nagios handler established.
+01/07/13 05:50:40 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/07/13 05:50:40 DEBUG:"POST /nrdp?cmd=updatenrds&config_version=0.1&token=aa&config_name=ncpa HTTP/1.1" 301 383
+01/07/13 05:50:40 DEBUG:"GET /nrdp/?cmd=updatenrds&config_version=0.1&token=aa&config_name=ncpa&cmd=updatenrds&config_version=0.1&token=aa&config_name=ncpa HTTP/1.1" 200 109
+01/07/13 05:51:22 DEBUG:Parsing config...
+01/07/13 05:51:22 DEBUG:Parsing commands...
+01/07/13 05:51:22 DEBUG:Parsing new individual command.
+01/07/13 05:51:22 DEBUG:Setting hostname to localhost and servicename to __host__
+01/07/13 05:51:22 DEBUG:Parsing command: check_swap
+01/07/13 05:51:22 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:51:22 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:51:22 DEBUG:Parsing new individual command.
+01/07/13 05:51:22 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/07/13 05:51:22 DEBUG:Parsing command: check_cpu
+01/07/13 05:51:22 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:51:22 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:51:22 DEBUG:Parsing new individual command.
+01/07/13 05:51:22 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/07/13 05:51:22 DEBUG:Parsing command: check_memory
+01/07/13 05:51:22 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:51:22 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:51:22 DEBUG:Establishing Nagios handler...
+01/07/13 05:51:22 DEBUG:Nagios handler established.
+01/07/13 05:51:22 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/07/13 05:51:22 DEBUG:"POST /nrdp?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 301 583
+01/07/13 05:51:22 DEBUG:"GET /nrdp/?config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook&config_version=0.1&config_name=ncpa&cmd=updatenrds&token=aa&XMLDATA=%3C%3Fxml+version%3D%221.0%22+%3F%3E%0A%3Cconfigs%3E%0A%3Cconfig%3E%0A%3Cname%3Encpa%3C%2Fname%3E%0A%3Cversion%3E0.1%3C%2Fversion%3E%0A%3C%2Fconfig%3E%0A%3C%2Fconfigs%3E%0A&os=chinook HTTP/1.1" 200 1350
+01/07/13 05:53:31 DEBUG:Parsing config...
+01/07/13 05:53:31 DEBUG:Parsing commands...
+01/07/13 05:53:31 DEBUG:Parsing new individual command.
+01/07/13 05:53:31 DEBUG:Setting hostname to localhost and servicename to __host__
+01/07/13 05:53:31 DEBUG:Parsing command: check_swap
+01/07/13 05:53:31 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:53:31 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:53:31 DEBUG:Parsing new individual command.
+01/07/13 05:53:31 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/07/13 05:53:31 DEBUG:Parsing command: check_cpu
+01/07/13 05:53:31 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:53:31 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:53:31 DEBUG:Parsing new individual command.
+01/07/13 05:53:31 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/07/13 05:53:31 DEBUG:Parsing command: check_memory
+01/07/13 05:53:31 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:53:31 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:53:31 DEBUG:Establishing Nagios handler...
+01/07/13 05:53:31 DEBUG:Nagios handler established.
+01/07/13 05:53:31 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/07/13 05:53:31 DEBUG:"POST /nrdp?token=aa&cmd=updatenrds&os=chinook&configname=ncpa&version=0.1 HTTP/1.1" 301 390
+01/07/13 05:53:31 DEBUG:"GET /nrdp/?token=aa&cmd=updatenrds&os=chinook&configname=ncpa&version=0.1&token=aa&cmd=updatenrds&os=chinook&configname=ncpa&version=0.1 HTTP/1.1" 200 1350
+01/07/13 05:54:25 DEBUG:Parsing config...
+01/07/13 05:54:25 DEBUG:Parsing commands...
+01/07/13 05:54:25 DEBUG:Parsing new individual command.
+01/07/13 05:54:25 DEBUG:Setting hostname to localhost and servicename to __host__
+01/07/13 05:54:25 DEBUG:Parsing command: check_swap
+01/07/13 05:54:25 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:54:25 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:54:25 DEBUG:Parsing new individual command.
+01/07/13 05:54:25 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/07/13 05:54:25 DEBUG:Parsing command: check_cpu
+01/07/13 05:54:25 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:54:25 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:54:25 DEBUG:Parsing new individual command.
+01/07/13 05:54:25 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/07/13 05:54:25 DEBUG:Parsing command: check_memory
+01/07/13 05:54:25 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 05:54:25 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 05:54:25 DEBUG:Establishing Nagios handler...
+01/07/13 05:54:25 DEBUG:Nagios handler established.
+01/07/13 05:54:25 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/07/13 05:54:25 DEBUG:"POST /nrdp?token=aa&cmd=updatenrds&os=chinook&configname=ncpa&version=0.1 HTTP/1.1" 301 390
+01/07/13 05:54:25 DEBUG:"GET /nrdp/?token=aa&cmd=updatenrds&os=chinook&configname=ncpa&version=0.1&token=aa&cmd=updatenrds&os=chinook&configname=ncpa&version=0.1 HTTP/1.1" 200 1350
+01/07/13 06:02:28 DEBUG:Parsing config...
+01/07/13 06:02:28 DEBUG:Parsing commands...
+01/07/13 06:02:28 DEBUG:Parsing new individual command.
+01/07/13 06:02:28 DEBUG:Setting hostname to localhost and servicename to __host__
+01/07/13 06:02:28 DEBUG:Parsing command: check_swap
+01/07/13 06:02:28 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 06:02:28 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 06:02:28 DEBUG:Parsing new individual command.
+01/07/13 06:02:28 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/07/13 06:02:28 DEBUG:Parsing command: check_cpu
+01/07/13 06:02:28 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 06:02:28 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 06:02:28 DEBUG:Parsing new individual command.
+01/07/13 06:02:28 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/07/13 06:02:28 DEBUG:Parsing command: check_memory
+01/07/13 06:02:28 DEBUG:Command did not contain arguments. Single directive.
+01/07/13 06:02:28 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/07/13 06:02:28 DEBUG:Establishing Nagios handler...
+01/07/13 06:02:28 DEBUG:Nagios handler established.
+01/07/13 06:02:28 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/07/13 06:02:28 DEBUG:"POST /nrdp?token=aa&cmd=updatenrds&os=chinook&configname=ncpa&version=0.1 HTTP/1.1" 301 390
+01/07/13 06:02:28 DEBUG:"GET /nrdp/?token=aa&cmd=updatenrds&os=chinook&configname=ncpa&version=0.1&token=aa&cmd=updatenrds&os=chinook&configname=ncpa&version=0.1 HTTP/1.1" 200 1350
+=======
 01/06/13 23:04:05 ERROR:Could not import module passive.nrdp, skipping...
 01/06/13 23:04:05 ERROR:local variable 'tmp_handler' referenced before assignment
 Traceback (most recent call last):
@@ -7230,3 +8049,65 @@ Traceback (most recent call last):
   File "/tmp/ncpa/agent/listener/processor.py", line 34, in respond
     self.send_response(response.code)
 AttributeError: 'NoneType' object has no attribute 'code'
+>>>>>>> .r1237
+01/11/13 02:59:40 DEBUG:Parsing config...
+01/11/13 02:59:40 DEBUG:Parsing commands...
+01/11/13 02:59:40 DEBUG:Parsing new individual command.
+01/11/13 02:59:40 DEBUG:Setting hostname to localhost and servicename to __host__
+01/11/13 02:59:40 DEBUG:Parsing command: check_swap
+01/11/13 02:59:40 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 02:59:40 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 02:59:40 DEBUG:Parsing new individual command.
+01/11/13 02:59:40 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/11/13 02:59:40 DEBUG:Parsing command: check_cpu
+01/11/13 02:59:40 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 02:59:40 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 02:59:40 DEBUG:Parsing new individual command.
+01/11/13 02:59:40 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/11/13 02:59:40 DEBUG:Parsing command: check_memory
+01/11/13 02:59:40 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 02:59:40 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 02:59:40 DEBUG:Establishing Nagios handler...
+01/11/13 02:59:40 DEBUG:Nagios handler established.
+01/11/13 02:59:40 INFO:Starting new HTTP connection (1): 192.168.1.54
+01/11/13 02:59:40 DEBUG:"POST /nrdp?token=aa&cmd=updatenrds&os=chinook&configname=ncpa&version=0.1 HTTP/1.1" 301 390
+01/11/13 02:59:40 DEBUG:"GET /nrdp/?token=aa&cmd=updatenrds&os=chinook&configname=ncpa&version=0.1&token=aa&cmd=updatenrds&os=chinook&configname=ncpa&version=0.1 HTTP/1.1" 200 1350
+01/11/13 02:59:40 DEBUG:Status number of new config check: 1
+01/11/13 03:06:09 DEBUG:Parsing config...
+01/11/13 03:06:09 DEBUG:Parsing commands...
+01/11/13 03:06:09 DEBUG:Parsing new individual command.
+01/11/13 03:06:09 DEBUG:Setting hostname to localhost and servicename to __host__
+01/11/13 03:06:09 DEBUG:Parsing command: check_swap
+01/11/13 03:06:09 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:06:09 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:06:09 DEBUG:Parsing new individual command.
+01/11/13 03:06:09 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/11/13 03:06:09 DEBUG:Parsing command: check_cpu
+01/11/13 03:06:09 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:06:09 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:06:09 DEBUG:Parsing new individual command.
+01/11/13 03:06:09 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/11/13 03:06:09 DEBUG:Parsing command: check_memory
+01/11/13 03:06:09 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:06:09 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:06:09 DEBUG:Establishing Nagios handler...
+01/11/13 03:06:09 DEBUG:Nagios handler established.
+01/11/13 03:06:34 DEBUG:Parsing config...
+01/11/13 03:06:34 DEBUG:Parsing commands...
+01/11/13 03:06:34 DEBUG:Parsing new individual command.
+01/11/13 03:06:34 DEBUG:Setting hostname to localhost and servicename to __host__
+01/11/13 03:06:34 DEBUG:Parsing command: check_swap
+01/11/13 03:06:34 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:06:34 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __host__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:06:34 DEBUG:Parsing new individual command.
+01/11/13 03:06:34 DEBUG:Setting hostname to localhost and servicename to cpu usage
+01/11/13 03:06:34 DEBUG:Parsing command: check_cpu
+01/11/13 03:06:34 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:06:34 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: cpu usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:06:34 DEBUG:Parsing new individual command.
+01/11/13 03:06:34 DEBUG:Setting hostname to localhost and servicename to memory usage
+01/11/13 03:06:34 DEBUG:Parsing command: check_memory
+01/11/13 03:06:34 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:06:34 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: memory usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:06:34 DEBUG:Establishing Nagios handler...
+01/11/13 03:06:34 DEBUG:Nagios handler established.

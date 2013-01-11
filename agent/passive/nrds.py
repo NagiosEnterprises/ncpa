@@ -16,8 +16,8 @@ class Handler(abstract.NagiosHandler):
         self.nrdp_url = self.config.get('nrdp', 'parent')
         
     def run(self, *args, **kwargs):
-        self.get_plug()
-        self.fetch_config()
+        self.getconfig()
+        self.getplugin()
         
     def getplugin(self, *args, **kwargs):
         self.plugin_loc = self.config.get('plugin directives', 'plugin_path')
@@ -40,8 +40,6 @@ class Handler(abstract.NagiosHandler):
         
         kwargs['configname'] = self.config.get('nrds', 'config_name')
         
-        #http://192.168.1.102/nrdp/?token=k2suan32qt50&cmd=getconfig&configname=windows&os=Windows
-        
         kwargs['cmd'] = self.getconfig.__name__
         kwargs['os']  = 'chinook'
         kwargs["token"] = self.token
@@ -57,7 +55,7 @@ class Handler(abstract.NagiosHandler):
     def updatenrds(self, *args, **kwargs):
         '''Takes current config version as argument and returns T or F 
         if new config is available
-        
+
         @todo Log results if we do not have this config
         '''
         kwargs['token'] = self.token
