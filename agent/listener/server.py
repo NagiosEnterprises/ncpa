@@ -36,7 +36,7 @@ def check():
         logging.exception(e)
         return redirect(url_for('error', msg=str(e)))
 
-@listener.route('/nrdp/')
+@listener.route('/nrdp/', methods=['GET', 'POST'])
 def nrdp():
     try:
         forward_to = listener.config['iconfig'].get('nrdp', 'parent')

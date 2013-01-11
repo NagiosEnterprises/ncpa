@@ -47,7 +47,7 @@ def enumerate_processes(*args, **kwargs):
         index = header.index(sortby)
     except Exception,e :
         index = 4
-    sorted(extracted_procs, key=lambda x: x[index], reverse=True)
+    extracted_procs.sort(key=lambda x: x[index], reverse=True)
     return json.dumps({     'header' : header,
                             'procs'  : extracted_procs })
     

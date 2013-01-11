@@ -1,27 +1,41 @@
-<div id='ProcessTable'>
-    <script>
-    $(document).ready(function() {
-        $('#ProcessTable').load('/processes/?top=50&sortby=MEM&skip=30');
-    })
-    </script>
-    <div id='CSSTableGenerator'>
-        <table>
-            <thead>
-                <tr>
-                    {% for head in header %} 
-                    <th>{{ head }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in procs %}
-                <tr>
-                    {% for column in row %}
-                    <td>{{ column }}</td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+<html>
+    <head>
+        <link rel='stylesheet' href='/static/chinook.css' />
+        <link rel='stylesheet' href='/static/jquery-ui.css' />
+        <script src='/static/jquery-1.8.3.min.js'></script>
+        <script src='/static/jquery-ui.js'></script>
+        <script>
+            setInterval(function(){
+                document.location.href = '/processes/?skip=30&sortby=MEM';
+                }, 10000);
+        </script>
+    </head>
+    <body>
+        <div id='ProcessTable'>
+            <div class='CSSTableGenerator'>
+                <table>
+                    <thead>
+                        <tr>
+                            {% for head in header %} 
+                            <th>{{ head }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in procs %}
+                        <tr>
+                            {% for column in row %}
+                                {% if column != '' %}
+                                    <td>{{ column }}</td>
+                                {% else %}
+                                    <td>init</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
