@@ -35,7 +35,7 @@ def check():
         logging.exception(e)
         return redirect(url_for('error', msg=str(e)))
 
-@listener.route('/nrdp')
+@listener.route('/nrdp', methods=['POST', 'GET'])
 def nrdp():
     try:
         forward_to = listener.config['iconfig'].get('nrdp', 'parent')
@@ -43,7 +43,7 @@ def nrdp():
         if request.method == 'get':
             response = requests.get(forward_to, params=request.args)
         else:
-            response = requests.post(forward_to, params=request.args)
+            response = requests.post(forward_to, params=request.form)
         resp = Response(response.content, 200, mimetype=response.headers['content-type'])
         return resp
     except Exception, e:
