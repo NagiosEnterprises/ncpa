@@ -14,4 +14,5 @@ class PConfigParser(ConfigParser.ConfigParser):
 def send_request(url, *args, **kwargs):
     r = requests.post(url, params=kwargs, verify=False)
     logging.debug('hitting url with payload: %s' % str(r.url))
+    logging.debug('content response from payload: %s' & str(r.content))
     return r
