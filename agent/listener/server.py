@@ -9,6 +9,8 @@ import ConfigParser
 import os
 
 listener = Flask(__name__)
+listener.debug=False
+config = None
 
 @listener.route('/')
 def index():
@@ -17,25 +19,26 @@ def index():
     except Exception, e:
         logging.exception(e)
 
-@listener.route('/error')
+@listener.route('/error/', methods=['GET', 'POST'])
 def error():
     msg = request.args.get('msg', '')
     if not msg:
         msg = 'Error occurred during processing request.'
     return json.dumps({ 'error' : msg })
 
-@listener.route('/config')
+#~ @listener.router('/check')
+#~ def check():
+    
+
+@listener.route('/config/')
 def config():
     try:
-        config = ConfigParser.ConfigParser()
-        logging.error(os.path.abspath('etc/ncpa.cfg'))
-        config.read('etc/ncpa.cfg')
-        #~ return render_template('config.html', {'config' : listener.pconfig.__dict__['_sections']})
-        return render_template('config.html', {'config' : {'hi' : 'there'}})
-    except:
+        return render_template('config.html', **{'config' : listener.config['iconfig'].__dict__['_sections']})
+        #~ return render_template('config.html', {'config' : {'hi' : 'there'}})
+    except Exception, e:
         logging.exception(e)
         params = urllib.urlencode({'msg' : str(e)})
-        redirect(url_for('/error?%s' % params))
+        redirect(url_for('/error/?%s' % params))
     
 
 @listener.route('/command/')
@@ -47,7 +50,7 @@ def command():
         except Exception, e:
             logging.exception(e)
             params = urllib.urlencode({'msg' : str(e)})
-            return redirect(url_for('/error?%s' % params ))
+            return redirect('/error/?%s' % params )
     return generic(request)
 
 if __name__ == "__main__":

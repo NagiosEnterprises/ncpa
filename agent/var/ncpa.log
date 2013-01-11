@@ -366,3 +366,445 @@ UnboundLocalError: local variable 'externals' referenced before assignment
 01/11/13 00:16:09 INFO:192.168.1.28 - - [11/Jan/2013 00:16:09] "GET /command/?command=enumerate_plugins HTTP/1.1" 200 -
 01/11/13 00:16:31 INFO: * Running on http://0.0.0.0:5692/
 01/11/13 00:16:32 INFO:192.168.1.28 - - [11/Jan/2013 00:16:32] "GET /command/?command=enumerate_plugins HTTP/1.1" 200 -
+01/11/13 00:27:14 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:27:23 INFO:192.168.1.28 - - [11/Jan/2013 00:27:23] "GET /command/?command=enumerate_plugins HTTP/1.1" 200 -
+01/11/13 00:27:29 ERROR:/tmp/ncpa/agent/etc/ncpa.cfg
+01/11/13 00:27:29 ERROR:Exception on /config [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    logging.exception(e)
+NameError: global name 'e' is not defined
+01/11/13 00:27:29 INFO:192.168.1.28 - - [11/Jan/2013 00:27:29] "GET /config HTTP/1.1" 500 -
+01/11/13 00:27:53 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:27:56 ERROR:Exception on /config [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 38, in config
+    logging.exception(e)
+NameError: global name 'e' is not defined
+01/11/13 00:27:56 INFO:192.168.1.28 - - [11/Jan/2013 00:27:56] "GET /config HTTP/1.1" 500 -
+01/11/13 00:28:22 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:28:25 ERROR:Exception on /config [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 39, in config
+    logging.exception(e)
+NameError: global name 'e' is not defined
+01/11/13 00:28:25 INFO:192.168.1.28 - - [11/Jan/2013 00:28:25] "GET /config HTTP/1.1" 500 -
+01/11/13 00:31:44 ERROR:'Config' object has no attribute 'set'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 177, in start
+    listener.server.listener.config.set('iconfig', self.config)
+AttributeError: 'Config' object has no attribute 'set'
+01/11/13 00:32:28 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:32:34 ERROR:Exception on /config [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 39, in config
+    logging.exception(e)
+NameError: global name 'e' is not defined
+01/11/13 00:32:34 INFO:192.168.1.28 - - [11/Jan/2013 00:32:34] "GET /config HTTP/1.1" 500 -
+01/11/13 00:32:55 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:32:59 ERROR:render_template() takes exactly 1 argument (2 given)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 37, in config
+    return render_template('config.html', {'config' : {'hi' : 'there'}})
+TypeError: render_template() takes exactly 1 argument (2 given)
+01/11/13 00:32:59 ERROR:Exception on /config [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    redirect(url_for('/error?%s' % params))
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 361, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 354, in url_for
+    force_external=external)
+  File "/usr/lib/python2.6/site-packages/werkzeug/routing.py", line 1607, in build
+    raise BuildError(endpoint, values, method)
+BuildError: ('/error?msg=render_template%28%29+takes+exactly+1+argument+%282+given%29', {}, None)
+01/11/13 00:32:59 INFO:192.168.1.28 - - [11/Jan/2013 00:32:59] "GET /config HTTP/1.1" 500 -
+01/11/13 00:33:44 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:33:51 INFO:192.168.1.28 - - [11/Jan/2013 00:33:51] "GET /config HTTP/1.1" 301 -
+01/11/13 00:33:51 ERROR:render_template() takes exactly 1 argument (2 given)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 37, in config
+    return render_template('config.html', {'config' : {'hi' : 'there'}})
+TypeError: render_template() takes exactly 1 argument (2 given)
+01/11/13 00:33:51 ERROR:Exception on /config/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    redirect(url_for('/error?%s' % params))
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 361, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 354, in url_for
+    force_external=external)
+  File "/usr/lib/python2.6/site-packages/werkzeug/routing.py", line 1607, in build
+    raise BuildError(endpoint, values, method)
+BuildError: ('/error?msg=render_template%28%29+takes+exactly+1+argument+%282+given%29', {}, None)
+01/11/13 00:33:51 INFO:192.168.1.28 - - [11/Jan/2013 00:33:51] "GET /config/ HTTP/1.1" 500 -
+01/11/13 00:34:36 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:34:39 ERROR:render_template() takes exactly 1 argument (2 given)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 37, in config
+    return render_template('config.html', {'config' : {'hi' : 'there'}})
+TypeError: render_template() takes exactly 1 argument (2 given)
+01/11/13 00:34:39 ERROR:Exception on /config/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    redirect(url_for('/error?%s' % params))
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 361, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 354, in url_for
+    force_external=external)
+  File "/usr/lib/python2.6/site-packages/werkzeug/routing.py", line 1607, in build
+    raise BuildError(endpoint, values, method)
+BuildError: ('/error?msg=render_template%28%29+takes+exactly+1+argument+%282+given%29', {}, None)
+01/11/13 00:34:39 INFO:192.168.1.28 - - [11/Jan/2013 00:34:39] "GET /config/ HTTP/1.1" 500 -
+01/11/13 00:35:03 ERROR:render_template() takes exactly 1 argument (2 given)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 37, in config
+    return render_template('config.html', {'config' : {'hi' : 'there'}})
+TypeError: render_template() takes exactly 1 argument (2 given)
+01/11/13 00:35:03 ERROR:Exception on /config/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    redirect(url_for('/error?%s' % params))
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 361, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 354, in url_for
+    force_external=external)
+  File "/usr/lib/python2.6/site-packages/werkzeug/routing.py", line 1607, in build
+    raise BuildError(endpoint, values, method)
+BuildError: ('/error?msg=render_template%28%29+takes+exactly+1+argument+%282+given%29', {}, None)
+01/11/13 00:35:03 INFO:192.168.1.28 - - [11/Jan/2013 00:35:03] "GET /config/ HTTP/1.1" 500 -
+01/11/13 00:35:12 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:35:15 ERROR:render_template() takes exactly 1 argument (2 given)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 37, in config
+    return render_template('config.html', {'config' : {'hi' : 'there'}})
+TypeError: render_template() takes exactly 1 argument (2 given)
+01/11/13 00:35:15 ERROR:Exception on /config/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    redirect(url_for('/error?%s' % params))
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 361, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 354, in url_for
+    force_external=external)
+  File "/usr/lib/python2.6/site-packages/werkzeug/routing.py", line 1607, in build
+    raise BuildError(endpoint, values, method)
+BuildError: ('/error?msg=render_template%28%29+takes+exactly+1+argument+%282+given%29', {}, None)
+01/11/13 00:35:15 INFO:192.168.1.28 - - [11/Jan/2013 00:35:15] "GET /config/ HTTP/1.1" 500 -
+01/11/13 00:35:22 ERROR:render_template() takes exactly 1 argument (2 given)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 37, in config
+    return render_template('config.html', {'config' : {'hi' : 'there'}})
+TypeError: render_template() takes exactly 1 argument (2 given)
+01/11/13 00:35:22 ERROR:Exception on /config/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    redirect(url_for('/error?%s' % params))
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 361, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 354, in url_for
+    force_external=external)
+  File "/usr/lib/python2.6/site-packages/werkzeug/routing.py", line 1607, in build
+    raise BuildError(endpoint, values, method)
+BuildError: ('/error?msg=render_template%28%29+takes+exactly+1+argument+%282+given%29', {}, None)
+01/11/13 00:35:22 INFO:192.168.1.28 - - [11/Jan/2013 00:35:22] "GET /config/ HTTP/1.1" 500 -
+01/11/13 00:35:56 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:35:58 ERROR:render_template() takes exactly 1 argument (2 given)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 37, in config
+    return render_template('config.html', {'config' : {'hi' : 'there'}})
+TypeError: render_template() takes exactly 1 argument (2 given)
+01/11/13 00:35:58 ERROR:Exception on /config/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    redirect(url_for('/error/?%s' % params))
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 361, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 354, in url_for
+    force_external=external)
+  File "/usr/lib/python2.6/site-packages/werkzeug/routing.py", line 1607, in build
+    raise BuildError(endpoint, values, method)
+BuildError: ('/error/?msg=render_template%28%29+takes+exactly+1+argument+%282+given%29', {}, None)
+01/11/13 00:35:58 INFO:192.168.1.28 - - [11/Jan/2013 00:35:58] "GET /config/ HTTP/1.1" 500 -
+01/11/13 00:36:54 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:36:57 ERROR:render_template() takes exactly 1 argument (2 given)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 37, in config
+    return render_template('config.html', {'config' : {'hi' : 'there'}})
+TypeError: render_template() takes exactly 1 argument (2 given)
+01/11/13 00:36:57 ERROR:Exception on /config/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    redirect(url_for('/error/?%s' % params))
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 361, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 354, in url_for
+    force_external=external)
+  File "/usr/lib/python2.6/site-packages/werkzeug/routing.py", line 1607, in build
+    raise BuildError(endpoint, values, method)
+BuildError: ('/error/?msg=render_template%28%29+takes+exactly+1+argument+%282+given%29', {}, None)
+01/11/13 00:36:57 INFO:192.168.1.28 - - [11/Jan/2013 00:36:57] "GET /config/ HTTP/1.1" 500 -
+01/11/13 00:38:56 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:39:19 ERROR:'Flask' object has no attribute 'pconfig'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 36, in config
+    return render_template('config.html', **{'config' : listener.pconfig.__dict__['_sections']})
+AttributeError: 'Flask' object has no attribute 'pconfig'
+01/11/13 00:39:19 ERROR:Exception on /config/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    redirect(url_for('listener', '/error/?%s' % params))
+TypeError: url_for() takes exactly 1 argument (2 given)
+01/11/13 00:39:19 INFO:192.168.1.28 - - [11/Jan/2013 00:39:19] "GET /config/ HTTP/1.1" 500 -
+01/11/13 00:39:49 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:39:51 ERROR:'Flask' object has no attribute 'pconfig'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 36, in config
+    return render_template('config.html', **{'config' : listener.pconfig.__dict__['_sections']})
+AttributeError: 'Flask' object has no attribute 'pconfig'
+01/11/13 00:39:51 ERROR:Exception on /config/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    redirect(url_for('/error/?%s' % params))
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 361, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 354, in url_for
+    force_external=external)
+  File "/usr/lib/python2.6/site-packages/werkzeug/routing.py", line 1607, in build
+    raise BuildError(endpoint, values, method)
+BuildError: ('/error/?msg=%27Flask%27+object+has+no+attribute+%27pconfig%27', {}, None)
+01/11/13 00:39:51 INFO:192.168.1.28 - - [11/Jan/2013 00:39:51] "GET /config/ HTTP/1.1" 500 -
+01/11/13 00:40:39 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:40:42 ERROR:'iconfig'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 36, in config
+    return render_template('config.html', **{'config' : listener.config.__dict__['iconfig']['_sections']})
+KeyError: 'iconfig'
+01/11/13 00:40:42 ERROR:Exception on /config/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    redirect(url_for('/error/?%s' % params))
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 361, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 354, in url_for
+    force_external=external)
+  File "/usr/lib/python2.6/site-packages/werkzeug/routing.py", line 1607, in build
+    raise BuildError(endpoint, values, method)
+BuildError: ('/error/?msg=%27iconfig%27', {}, None)
+01/11/13 00:40:42 INFO:192.168.1.28 - - [11/Jan/2013 00:40:42] "GET /config/ HTTP/1.1" 500 -
+01/11/13 00:41:31 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:41:37 ERROR:'iconfig'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 36, in config
+    return render_template('config.html', **{'config' : listener.config.__dict__['iconfig']})
+KeyError: 'iconfig'
+01/11/13 00:41:37 ERROR:Exception on /config/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    redirect(url_for('/error/?%s' % params))
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 361, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 354, in url_for
+    force_external=external)
+  File "/usr/lib/python2.6/site-packages/werkzeug/routing.py", line 1607, in build
+    raise BuildError(endpoint, values, method)
+BuildError: ('/error/?msg=%27iconfig%27', {}, None)
+01/11/13 00:41:37 INFO:192.168.1.28 - - [11/Jan/2013 00:41:37] "GET /config/ HTTP/1.1" 500 -
+01/11/13 00:42:29 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:42:31 ERROR:items() takes at least 2 arguments (1 given)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 36, in config
+    return render_template('config.html', **{'config' : listener.config['iconfig']})
+  File "/usr/lib/python2.6/site-packages/flask/templating.py", line 125, in render_template
+    context, ctx.app)
+  File "/usr/lib/python2.6/site-packages/flask/templating.py", line 107, in _render
+    rv = template.render(context)
+  File "/usr/lib/python2.6/site-packages/jinja2/environment.py", line 894, in render
+    return self.environment.handle_exception(exc_info, True)
+  File "/tmp/ncpa/agent/listener/templates/config.html", line 6, in top-level template code
+    {% for section, value in config.items() %}
+TypeError: items() takes at least 2 arguments (1 given)
+01/11/13 00:42:31 ERROR:Exception on /config/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    redirect(url_for('/error/?%s' % params))
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 361, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 354, in url_for
+    force_external=external)
+  File "/usr/lib/python2.6/site-packages/werkzeug/routing.py", line 1607, in build
+    raise BuildError(endpoint, values, method)
+BuildError: ('/error/?msg=items%28%29+takes+at+least+2+arguments+%281+given%29', {}, None)
+01/11/13 00:42:31 INFO:192.168.1.28 - - [11/Jan/2013 00:42:31] "GET /config/ HTTP/1.1" 500 -
+01/11/13 00:43:25 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:43:27 ERROR:ConfigParser instance has no attribute '__getitem__'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 36, in config
+    return render_template('config.html', **{'config' : listener.config['iconfig']['_sections']})
+AttributeError: ConfigParser instance has no attribute '__getitem__'
+01/11/13 00:43:27 ERROR:Exception on /config/ [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/tmp/ncpa/agent/listener/server.py", line 41, in config
+    redirect(url_for('/error/?%s' % params))
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 361, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 354, in url_for
+    force_external=external)
+  File "/usr/lib/python2.6/site-packages/werkzeug/routing.py", line 1607, in build
+    raise BuildError(endpoint, values, method)
+BuildError: ('/error/?msg=ConfigParser+instance+has+no+attribute+%27__getitem__%27', {}, None)
+01/11/13 00:43:27 INFO:192.168.1.28 - - [11/Jan/2013 00:43:27] "GET /config/ HTTP/1.1" 500 -
+01/11/13 00:43:50 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 00:43:53 INFO:192.168.1.28 - - [11/Jan/2013 00:43:53] "GET /config/ HTTP/1.1" 200 -
+01/11/13 00:44:05 INFO:192.168.1.28 - - [11/Jan/2013 00:44:05] "GET /main HTTP/1.1" 404 -
+01/11/13 00:44:40 INFO:192.168.1.28 - - [11/Jan/2013 00:44:40] "GET / HTTP/1.1" 200 -
+01/11/13 00:44:40 INFO:192.168.1.28 - - [11/Jan/2013 00:44:40] "GET /static/images/ui-bg_flat_75_ffffff_40x100.png HTTP/1.1" 404 -
+01/11/13 00:44:40 INFO:192.168.1.28 - - [11/Jan/2013 00:44:40] "GET /static/images/ui-bg_highlight-soft_75_cccccc_1x100.png HTTP/1.1" 404 -
+01/11/13 00:44:40 INFO:192.168.1.28 - - [11/Jan/2013 00:44:40] "GET /static/images/ui-bg_glass_75_e6e6e6_1x400.png HTTP/1.1" 404 -
+01/11/13 00:44:40 INFO:192.168.1.28 - - [11/Jan/2013 00:44:40] "GET /static/images/ui-bg_glass_65_ffffff_1x400.png HTTP/1.1" 404 -
+01/11/13 00:44:41 INFO:192.168.1.28 - - [11/Jan/2013 00:44:41] "GET /config/ HTTP/1.1" 200 -
+01/11/13 00:44:43 INFO:192.168.1.28 - - [11/Jan/2013 00:44:43] "GET /static/images/ui-bg_glass_75_dadada_1x400.png HTTP/1.1" 404 -

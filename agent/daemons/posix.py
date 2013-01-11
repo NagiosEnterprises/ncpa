@@ -174,13 +174,13 @@ class ListenerDaemon(PosixDaemon):
         self.write_pid(self.PIDFILE, os.getpid())
         try:
             #~ self.logger.info('Starting server...')
+            listener.server.listener.config['iconfig'] = self.config
             listener.server.listener.run(address, port)
             url_for('static', filename='chinook.css')
             url_for('static', filename='jquery-1.8.3.min.js')
             url_for('static', filename='jquery-ui.css')
             url_for('static', filename='jquery-ui.js')
         except Exception, e:
-            f.write('This was an exception.\n %s' % str(e))
             self.logger.exception(e)
     
     def stop(self, *args, **kwargs):
