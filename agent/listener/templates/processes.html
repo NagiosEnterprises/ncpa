@@ -1,0 +1,27 @@
+<div id='ProcessTable'>
+    <script>
+    $(document).ready(function() {
+        $('#ProcessTable').load('/processes/?top=50&sortby=MEM&skip=30');
+    })
+    </script>
+    <div id='CSSTableGenerator'>
+        <table>
+            <thead>
+                <tr>
+                    {% for head in header %} 
+                    <th>{{ head }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in procs %}
+                <tr>
+                    {% for column in row %}
+                    <td>{{ column }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
