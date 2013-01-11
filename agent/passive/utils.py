@@ -11,7 +11,7 @@ class PConfigParser(ConfigParser.ConfigParser):
         self.file_path = file_path
         ConfigParser.ConfigParser.read(self, file_path, *args, **kwargs)
 
-def send_nrdp(url, *args, **kwargs):
+def send_request(url, *args, **kwargs):
     r = requests.post(url, params=kwargs, verify=False)
     logging.debug('hitting url with payload: %s' % str(r.url))
     return r

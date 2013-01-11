@@ -15,7 +15,6 @@ class Handler(abstract.NagiosHandler):
         self.token = self.config.get('nrdp', 'token', None)
         self.nrdp_url = self.config.get('nrdp', 'parent', None)
             
-        
     def run(self, *args, **kwargs):
         self.getconfig()
         self.getplugin()
@@ -27,11 +26,11 @@ class Handler(abstract.NagiosHandler):
         kwargs['os']  = "Chinook"
         kwargs['token'] = self.token
         
-        self.url_request = utils.send_nrdp(self.nrdp_url, **kwargs)
+        self.url_request = utils.send_request(self.nrdp_url, **kwargs)
         self.local_path_location = self.plugin_loc + kwargs['plugin']
         
         with open(self.local_path_location, 'w') as plugin:
-            plugin.write(self.url_request.content)
+            plugin.write(self.send_request.content)
 
     def getconfig(self, *args, **kwargs):
         '''Downloads new config to whatever is declared as path
@@ -45,13 +44,16 @@ class Handler(abstract.NagiosHandler):
         kwargs['os']  = 'chinook'
         kwargs['token'] = self.token
         
-        self.url_request = utils.send_nrdp( self.nrdp_url, **kwargs )
-        self.logger.debug('URL I am requesting: %s' % self.url_request.url)
+        self.url_request = utils.send_request( self.nrdp_url, **kwargs )
+        
+        '''
+        @todo this should be handeled in utils
+        '''
         self.logger.debug('Content returned: %s' % self.url_request.content)
         
-        if self.url_request.content != "":
+        if self.send_request.content != "":
             with open( self.config.file_path , 'w') as config:
-                config.write(self.url_request.content)
+                config.write(self.send_request.content)
                 
     def updatenrds(self, *args, **kwargs):
         '''Takes current config version as argument and returns T or F 
@@ -65,7 +67,7 @@ class Handler(abstract.NagiosHandler):
         kwargs['configname'] = self.config.get('nrds', 'config_name')
         kwargs['version'] = self.config.get('nrds', 'config_version')
 
-        self.url_request = utils.send_nrdp(self.nrdp_url, **kwargs)
+        self.url_request = utils.send_request(self.nrdp_url, **kwargs)
         
         self.config_dict = xmltodict.parse(self.url_request.content)
         self.status      = self.config_dict['result']['status']
@@ -76,3 +78,6 @@ class Handler(abstract.NagiosHandler):
             return True
         else:
             return False
+            
+    def known_plugins(self, *args, **kwargs):
+        utils.send_request(self.nrdp_url, **kwargs)
