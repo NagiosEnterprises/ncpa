@@ -18700,3 +18700,1273 @@ Traceback (most recent call last):
     raise ConnectionError(e)
 ConnectionError: HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
 01/11/13 03:42:53 INFO:192.168.1.28 - - [11/Jan/2013 03:42:53] "GET /static/images/ui-bg_glass_75_dadada_1x400.png HTTP/1.1" 404 -
+01/11/13 03:45:09 INFO:192.168.1.28 - - [11/Jan/2013 03:45:09] "GET /config/ HTTP/1.1" 404 -
+01/11/13 03:45:12 INFO:192.168.1.28 - - [11/Jan/2013 03:45:12] "GET /config/ HTTP/1.1" 404 -
+01/11/13 03:47:53 DEBUG:Parsing config...
+01/11/13 03:47:53 DEBUG:Parsing commands...
+01/11/13 03:47:53 DEBUG:Parsing new individual command.
+01/11/13 03:47:53 DEBUG:Setting hostname to localhost and servicename to __HOST__
+01/11/13 03:47:53 DEBUG:Parsing command: check_swap
+01/11/13 03:47:53 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:47:53 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __HOST__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:47:53 DEBUG:Parsing new individual command.
+01/11/13 03:47:53 DEBUG:Setting hostname to localhost and servicename to test
+01/11/13 03:47:53 DEBUG:Parsing command: test
+01/11/13 03:47:53 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:47:53 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: test -- Command: test -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:47:53 DEBUG:Parsing new individual command.
+01/11/13 03:47:53 DEBUG:Setting hostname to localhost and servicename to CPU Usage
+01/11/13 03:47:53 DEBUG:Parsing command: check_cpu
+01/11/13 03:47:53 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:47:53 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: CPU Usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:47:53 DEBUG:Parsing new individual command.
+01/11/13 03:47:53 DEBUG:Setting hostname to localhost and servicename to Memory Usage
+01/11/13 03:47:53 DEBUG:Parsing command: check_memory
+01/11/13 03:47:53 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:47:53 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:47:53 DEBUG:Establishing Nagios handler...
+01/11/13 03:47:53 DEBUG:Nagios handler established.
+01/11/13 03:47:53 DEBUG:Querying agent.
+01/11/13 03:47:53 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 03:47:53 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 03:47:53 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 66, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 03:47:53 INFO:127.0.0.1 - - [11/Jan/2013 03:47:53] "GET /command?metric=check_swap HTTP/1.1" 302 -
+01/11/13 03:47:53 DEBUG:"GET /command?metric=check_swap HTTP/1.1" 302 315
+01/11/13 03:47:53 INFO:127.0.0.1 - - [11/Jan/2013 03:47:53] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 -
+01/11/13 03:47:53 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 58
+01/11/13 03:47:53 DEBUG:Querying agent.
+01/11/13 03:47:53 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 03:47:53 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 03:47:53 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 66, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 03:47:53 INFO:127.0.0.1 - - [11/Jan/2013 03:47:53] "GET /command?metric=test HTTP/1.1" 302 -
+01/11/13 03:47:53 DEBUG:"GET /command?metric=test HTTP/1.1" 302 315
+01/11/13 03:47:53 INFO:127.0.0.1 - - [11/Jan/2013 03:47:53] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 -
+01/11/13 03:47:53 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 58
+01/11/13 03:47:53 DEBUG:Querying agent.
+01/11/13 03:47:53 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 03:47:53 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 03:47:53 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 66, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 03:47:53 INFO:127.0.0.1 - - [11/Jan/2013 03:47:53] "GET /command?metric=check_cpu HTTP/1.1" 302 -
+01/11/13 03:47:53 DEBUG:"GET /command?metric=check_cpu HTTP/1.1" 302 315
+01/11/13 03:47:53 INFO:127.0.0.1 - - [11/Jan/2013 03:47:53] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 -
+01/11/13 03:47:53 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 58
+01/11/13 03:47:53 DEBUG:Querying agent.
+01/11/13 03:47:53 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 03:47:53 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 03:47:53 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 66, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 03:47:53 INFO:127.0.0.1 - - [11/Jan/2013 03:47:53] "GET /command?metric=check_memory HTTP/1.1" 302 -
+01/11/13 03:47:53 DEBUG:"GET /command?metric=check_memory HTTP/1.1" 302 315
+01/11/13 03:47:53 INFO:127.0.0.1 - - [11/Jan/2013 03:47:53] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 -
+01/11/13 03:47:53 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 58
+01/11/13 03:47:53 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/11/13 03:47:56 ERROR:HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 133, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 74, in run
+    self.submit_to_nagios()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 101, in submit_to_nagios
+    retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
+  File "/tmp/ncpa/agent/passive/utils.py", line 15, in send_request
+    r = requests.get(url, params=kwargs, verify=False, allow_redirects=True)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 159, in send
+    raise ConnectionError(e)
+ConnectionError: HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+01/11/13 03:47:59 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 03:48:09 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 03:48:09 INFO: * Restarting with reloader
+01/11/13 03:48:12 INFO:192.168.1.28 - - [11/Jan/2013 03:48:12] "GET /config/ HTTP/1.1" 404 -
+01/11/13 03:49:49 WARNING:https://192.168.1.54/nrdp
+01/11/13 03:49:49 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/11/13 03:49:52 ERROR:HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 46, in nrdp
+    response = requests.post(forward_to, params=request.form)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 81, in post
+    return request('post', url, data=data, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 159, in send
+    raise ConnectionError(e)
+ConnectionError: HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+01/11/13 03:49:52 INFO:192.168.1.28 - - [11/Jan/2013 03:49:52] "GET /nrdp?command=enumerate_plugins HTTP/1.1" 302 -
+01/11/13 03:49:52 INFO:192.168.1.28 - - [11/Jan/2013 03:49:52] "GET /error?msg=HTTPSConnectionPool%28host%3D%27192.168.1.54%27%2C+port%3D443%29%3A+Max+retries+exceeded+with+url%3A+%2Fnrdp+%28Caused+by+%3Cclass+%27socket.error%27%3E%3A+%5BErrno+113%5D+No+route+to+host%29 HTTP/1.1" 200 -
+01/11/13 03:50:03 WARNING:https://192.168.1.54/nrdp
+01/11/13 03:50:03 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/11/13 03:50:06 ERROR:HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 46, in nrdp
+    response = requests.post(forward_to, params=request.form)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 81, in post
+    return request('post', url, data=data, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 159, in send
+    raise ConnectionError(e)
+ConnectionError: HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+01/11/13 03:50:06 INFO:192.168.1.28 - - [11/Jan/2013 03:50:06] "GET /nrdp?cmd=whatup&token=a HTTP/1.1" 302 -
+01/11/13 03:50:06 INFO:192.168.1.28 - - [11/Jan/2013 03:50:06] "GET /error?msg=HTTPSConnectionPool%28host%3D%27192.168.1.54%27%2C+port%3D443%29%3A+Max+retries+exceeded+with+url%3A+%2Fnrdp+%28Caused+by+%3Cclass+%27socket.error%27%3E%3A+%5BErrno+113%5D+No+route+to+host%29 HTTP/1.1" 200 -
+01/11/13 03:52:56 DEBUG:Parsing config...
+01/11/13 03:52:56 DEBUG:Parsing commands...
+01/11/13 03:52:56 DEBUG:Parsing new individual command.
+01/11/13 03:52:56 DEBUG:Setting hostname to localhost and servicename to __HOST__
+01/11/13 03:52:56 DEBUG:Parsing command: check_swap
+01/11/13 03:52:56 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:52:56 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __HOST__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:52:56 DEBUG:Parsing new individual command.
+01/11/13 03:52:56 DEBUG:Setting hostname to localhost and servicename to test
+01/11/13 03:52:56 DEBUG:Parsing command: test
+01/11/13 03:52:56 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:52:56 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: test -- Command: test -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:52:56 DEBUG:Parsing new individual command.
+01/11/13 03:52:56 DEBUG:Setting hostname to localhost and servicename to CPU Usage
+01/11/13 03:52:56 DEBUG:Parsing command: check_cpu
+01/11/13 03:52:56 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:52:56 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: CPU Usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:52:56 DEBUG:Parsing new individual command.
+01/11/13 03:52:56 DEBUG:Setting hostname to localhost and servicename to Memory Usage
+01/11/13 03:52:56 DEBUG:Parsing command: check_memory
+01/11/13 03:52:56 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:52:56 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:52:56 DEBUG:Establishing Nagios handler...
+01/11/13 03:52:56 DEBUG:Nagios handler established.
+01/11/13 03:52:56 DEBUG:Querying agent.
+01/11/13 03:52:56 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 03:52:56 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 03:52:56 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 67, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 03:52:56 INFO:127.0.0.1 - - [11/Jan/2013 03:52:56] "GET /command?metric=check_swap HTTP/1.1" 302 -
+01/11/13 03:52:56 DEBUG:"GET /command?metric=check_swap HTTP/1.1" 302 315
+01/11/13 03:52:56 INFO:127.0.0.1 - - [11/Jan/2013 03:52:56] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 -
+01/11/13 03:52:56 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 58
+01/11/13 03:52:56 DEBUG:Querying agent.
+01/11/13 03:52:56 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 03:52:56 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 03:52:56 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 67, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 03:52:56 INFO:127.0.0.1 - - [11/Jan/2013 03:52:56] "GET /command?metric=test HTTP/1.1" 302 -
+01/11/13 03:52:56 DEBUG:"GET /command?metric=test HTTP/1.1" 302 315
+01/11/13 03:52:56 INFO:127.0.0.1 - - [11/Jan/2013 03:52:56] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 -
+01/11/13 03:52:56 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 58
+01/11/13 03:52:56 DEBUG:Querying agent.
+01/11/13 03:52:56 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 03:52:56 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 03:52:56 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 67, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 03:52:56 INFO:127.0.0.1 - - [11/Jan/2013 03:52:56] "GET /command?metric=check_cpu HTTP/1.1" 302 -
+01/11/13 03:52:56 DEBUG:"GET /command?metric=check_cpu HTTP/1.1" 302 315
+01/11/13 03:52:56 INFO:127.0.0.1 - - [11/Jan/2013 03:52:56] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 -
+01/11/13 03:52:56 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 58
+01/11/13 03:52:56 DEBUG:Querying agent.
+01/11/13 03:52:56 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 03:52:56 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 03:52:56 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 67, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 03:52:56 INFO:127.0.0.1 - - [11/Jan/2013 03:52:56] "GET /command?metric=check_memory HTTP/1.1" 302 -
+01/11/13 03:52:56 DEBUG:"GET /command?metric=check_memory HTTP/1.1" 302 315
+01/11/13 03:52:56 INFO:127.0.0.1 - - [11/Jan/2013 03:52:56] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 -
+01/11/13 03:52:56 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 58
+01/11/13 03:52:56 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/11/13 03:52:59 ERROR:HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 133, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 74, in run
+    self.submit_to_nagios()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 101, in submit_to_nagios
+    retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
+  File "/tmp/ncpa/agent/passive/utils.py", line 15, in send_request
+    r = requests.get(url, params=kwargs, verify=False, allow_redirects=True)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 159, in send
+    raise ConnectionError(e)
+ConnectionError: HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+01/11/13 03:55:27 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 03:55:45 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 03:55:45 INFO: * Restarting with reloader
+01/11/13 03:55:52 INFO:192.168.1.28 - - [11/Jan/2013 03:55:52] "GET /config/ HTTP/1.1" 404 -
+01/11/13 03:56:57 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 03:57:06 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 03:57:06 INFO: * Restarting with reloader
+01/11/13 03:57:15 INFO:192.168.1.28 - - [11/Jan/2013 03:57:15] "GET /config/ HTTP/1.1" 404 -
+01/11/13 03:57:31 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 03:57:31 INFO: * Restarting with reloader
+01/11/13 03:57:59 DEBUG:Parsing config...
+01/11/13 03:57:59 DEBUG:Parsing commands...
+01/11/13 03:57:59 DEBUG:Parsing new individual command.
+01/11/13 03:57:59 DEBUG:Setting hostname to localhost and servicename to __HOST__
+01/11/13 03:57:59 DEBUG:Parsing command: check_swap
+01/11/13 03:57:59 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:57:59 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __HOST__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:57:59 DEBUG:Parsing new individual command.
+01/11/13 03:57:59 DEBUG:Setting hostname to localhost and servicename to test
+01/11/13 03:57:59 DEBUG:Parsing command: test
+01/11/13 03:57:59 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:57:59 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: test -- Command: test -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:57:59 DEBUG:Parsing new individual command.
+01/11/13 03:57:59 DEBUG:Setting hostname to localhost and servicename to CPU Usage
+01/11/13 03:57:59 DEBUG:Parsing command: check_cpu
+01/11/13 03:57:59 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:57:59 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: CPU Usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:57:59 DEBUG:Parsing new individual command.
+01/11/13 03:57:59 DEBUG:Setting hostname to localhost and servicename to Memory Usage
+01/11/13 03:57:59 DEBUG:Parsing command: check_memory
+01/11/13 03:57:59 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 03:57:59 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 03:57:59 DEBUG:Establishing Nagios handler...
+01/11/13 03:57:59 DEBUG:Nagios handler established.
+01/11/13 03:57:59 DEBUG:Querying agent.
+01/11/13 03:57:59 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 03:57:59 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 03:57:59 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 70, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 03:57:59 INFO:127.0.0.1 - - [11/Jan/2013 03:57:59] "GET /command?metric=check_swap HTTP/1.1" 302 -
+01/11/13 03:57:59 DEBUG:"GET /command?metric=check_swap HTTP/1.1" 302 315
+01/11/13 03:57:59 INFO:127.0.0.1 - - [11/Jan/2013 03:57:59] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 -
+01/11/13 03:57:59 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 58
+01/11/13 03:57:59 DEBUG:Querying agent.
+01/11/13 03:57:59 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 03:57:59 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 03:57:59 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 70, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 03:57:59 INFO:127.0.0.1 - - [11/Jan/2013 03:57:59] "GET /command?metric=test HTTP/1.1" 302 -
+01/11/13 03:57:59 DEBUG:"GET /command?metric=test HTTP/1.1" 302 315
+01/11/13 03:57:59 INFO:127.0.0.1 - - [11/Jan/2013 03:57:59] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 -
+01/11/13 03:57:59 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 58
+01/11/13 03:57:59 DEBUG:Querying agent.
+01/11/13 03:57:59 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 03:57:59 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 03:57:59 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 70, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 03:57:59 INFO:127.0.0.1 - - [11/Jan/2013 03:57:59] "GET /command?metric=check_cpu HTTP/1.1" 302 -
+01/11/13 03:57:59 DEBUG:"GET /command?metric=check_cpu HTTP/1.1" 302 315
+01/11/13 03:57:59 INFO:127.0.0.1 - - [11/Jan/2013 03:57:59] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 -
+01/11/13 03:57:59 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 58
+01/11/13 03:57:59 DEBUG:Querying agent.
+01/11/13 03:57:59 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 03:57:59 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 03:57:59 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 70, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 03:57:59 INFO:127.0.0.1 - - [11/Jan/2013 03:57:59] "GET /command?metric=check_memory HTTP/1.1" 302 -
+01/11/13 03:57:59 DEBUG:"GET /command?metric=check_memory HTTP/1.1" 302 315
+01/11/13 03:57:59 INFO:127.0.0.1 - - [11/Jan/2013 03:57:59] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 -
+01/11/13 03:57:59 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 58
+01/11/13 03:57:59 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/11/13 03:58:02 ERROR:HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 133, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 74, in run
+    self.submit_to_nagios()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 101, in submit_to_nagios
+    retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
+  File "/tmp/ncpa/agent/passive/utils.py", line 15, in send_request
+    r = requests.get(url, params=kwargs, verify=False, allow_redirects=True)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 159, in send
+    raise ConnectionError(e)
+ConnectionError: HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+01/11/13 03:58:07 INFO:192.168.1.28 - - [11/Jan/2013 03:58:07] "GET /config/ HTTP/1.1" 404 -
+01/11/13 03:58:09 INFO:192.168.1.28 - - [11/Jan/2013 03:58:09] "GET /config/ HTTP/1.1" 404 -
+01/11/13 03:58:18 INFO:192.168.1.28 - - [11/Jan/2013 03:58:18] "GET /config?this=false HTTP/1.1" 200 -
+01/11/13 03:58:29 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 03:58:37 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 03:58:37 INFO: * Restarting with reloader
+01/11/13 03:58:42 INFO:192.168.1.28 - - [11/Jan/2013 03:58:42] "GET /config/ HTTP/1.1" 200 -
+01/11/13 03:59:03 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 03:59:09 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 03:59:09 INFO: * Restarting with reloader
+01/11/13 03:59:21 INFO:192.168.1.28 - - [11/Jan/2013 03:59:21] "GET /command/?command=enumerate_plugins HTTP/1.1" 200 -
+01/11/13 03:59:34 INFO:192.168.1.28 - - [11/Jan/2013 03:59:34] "GET / HTTP/1.1" 200 -
+01/11/13 03:59:35 INFO:192.168.1.28 - - [11/Jan/2013 03:59:35] "GET /static/images/ui-bg_flat_75_ffffff_40x100.png HTTP/1.1" 404 -
+01/11/13 03:59:35 INFO:192.168.1.28 - - [11/Jan/2013 03:59:35] "GET /static/images/ui-bg_highlight-soft_75_cccccc_1x100.png HTTP/1.1" 404 -
+01/11/13 03:59:35 INFO:192.168.1.28 - - [11/Jan/2013 03:59:35] "GET /static/images/ui-bg_glass_75_e6e6e6_1x400.png HTTP/1.1" 404 -
+01/11/13 03:59:35 INFO:192.168.1.28 - - [11/Jan/2013 03:59:35] "GET /static/images/ui-bg_glass_65_ffffff_1x400.png HTTP/1.1" 404 -
+01/11/13 03:59:35 INFO:192.168.1.28 - - [11/Jan/2013 03:59:35] "GET /config/ HTTP/1.1" 200 -
+01/11/13 03:59:37 INFO:192.168.1.28 - - [11/Jan/2013 03:59:37] "GET /static/images/ui-bg_glass_75_dadada_1x400.png HTTP/1.1" 404 -
+01/11/13 03:59:46 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 03:59:52 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 03:59:52 INFO: * Restarting with reloader
+01/11/13 03:59:56 INFO:192.168.1.28 - - [11/Jan/2013 03:59:56] "GET / HTTP/1.1" 200 -
+01/11/13 03:59:56 INFO:192.168.1.28 - - [11/Jan/2013 03:59:56] "GET /static/images/ui-bg_flat_75_ffffff_40x100.png HTTP/1.1" 404 -
+01/11/13 03:59:56 INFO:192.168.1.28 - - [11/Jan/2013 03:59:56] "GET /static/images/ui-bg_highlight-soft_75_cccccc_1x100.png HTTP/1.1" 404 -
+01/11/13 03:59:56 INFO:192.168.1.28 - - [11/Jan/2013 03:59:56] "GET /static/images/ui-bg_glass_75_e6e6e6_1x400.png HTTP/1.1" 404 -
+01/11/13 03:59:56 INFO:192.168.1.28 - - [11/Jan/2013 03:59:56] "GET /static/images/ui-bg_glass_65_ffffff_1x400.png HTTP/1.1" 404 -
+01/11/13 03:59:56 INFO:192.168.1.28 - - [11/Jan/2013 03:59:56] "GET /config/ HTTP/1.1" 200 -
+01/11/13 03:59:57 INFO:192.168.1.28 - - [11/Jan/2013 03:59:57] "GET /static/images/ui-bg_glass_75_dadada_1x400.png HTTP/1.1" 404 -
+01/11/13 04:03:02 DEBUG:Parsing config...
+01/11/13 04:03:02 DEBUG:Parsing commands...
+01/11/13 04:03:02 DEBUG:Parsing new individual command.
+01/11/13 04:03:02 DEBUG:Setting hostname to localhost and servicename to __HOST__
+01/11/13 04:03:02 DEBUG:Parsing command: check_swap
+01/11/13 04:03:02 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:03:02 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __HOST__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:03:02 DEBUG:Parsing new individual command.
+01/11/13 04:03:02 DEBUG:Setting hostname to localhost and servicename to test
+01/11/13 04:03:02 DEBUG:Parsing command: test
+01/11/13 04:03:02 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:03:02 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: test -- Command: test -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:03:02 DEBUG:Parsing new individual command.
+01/11/13 04:03:02 DEBUG:Setting hostname to localhost and servicename to CPU Usage
+01/11/13 04:03:02 DEBUG:Parsing command: check_cpu
+01/11/13 04:03:02 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:03:02 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: CPU Usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:03:02 DEBUG:Parsing new individual command.
+01/11/13 04:03:02 DEBUG:Setting hostname to localhost and servicename to Memory Usage
+01/11/13 04:03:02 DEBUG:Parsing command: check_memory
+01/11/13 04:03:02 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:03:02 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:03:02 DEBUG:Establishing Nagios handler...
+01/11/13 04:03:02 DEBUG:Nagios handler established.
+01/11/13 04:03:02 DEBUG:Querying agent.
+01/11/13 04:03:02 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:03:02 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:03:02 INFO:127.0.0.1 - - [11/Jan/2013 04:03:02] "GET /command?metric=check_swap HTTP/1.1" 301 -
+01/11/13 04:03:02 DEBUG:"GET /command?metric=check_swap HTTP/1.1" 301 303
+01/11/13 04:03:02 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:03:02 INFO:127.0.0.1 - - [11/Jan/2013 04:03:02] "GET /command/?metric=check_swap&metric=check_swap HTTP/1.1" 302 -
+01/11/13 04:03:02 DEBUG:"GET /command/?metric=check_swap&metric=check_swap HTTP/1.1" 302 315
+01/11/13 04:03:02 INFO:127.0.0.1 - - [11/Jan/2013 04:03:02] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 -
+01/11/13 04:03:02 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 58
+01/11/13 04:03:02 DEBUG:Querying agent.
+01/11/13 04:03:02 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:03:02 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:03:02 INFO:127.0.0.1 - - [11/Jan/2013 04:03:02] "GET /command?metric=test HTTP/1.1" 301 -
+01/11/13 04:03:02 DEBUG:"GET /command?metric=test HTTP/1.1" 301 291
+01/11/13 04:03:02 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:03:02 INFO:127.0.0.1 - - [11/Jan/2013 04:03:02] "GET /command/?metric=test&metric=test HTTP/1.1" 302 -
+01/11/13 04:03:03 DEBUG:"GET /command/?metric=test&metric=test HTTP/1.1" 302 315
+01/11/13 04:03:03 INFO:127.0.0.1 - - [11/Jan/2013 04:03:03] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 -
+01/11/13 04:03:03 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 58
+01/11/13 04:03:03 DEBUG:Querying agent.
+01/11/13 04:03:03 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:03:03 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:03:03 INFO:127.0.0.1 - - [11/Jan/2013 04:03:03] "GET /command?metric=check_cpu HTTP/1.1" 301 -
+01/11/13 04:03:03 DEBUG:"GET /command?metric=check_cpu HTTP/1.1" 301 301
+01/11/13 04:03:03 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:03:03 INFO:127.0.0.1 - - [11/Jan/2013 04:03:03] "GET /command/?metric=check_cpu&metric=check_cpu HTTP/1.1" 302 -
+01/11/13 04:03:03 DEBUG:"GET /command/?metric=check_cpu&metric=check_cpu HTTP/1.1" 302 315
+01/11/13 04:03:03 INFO:127.0.0.1 - - [11/Jan/2013 04:03:03] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 -
+01/11/13 04:03:03 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 58
+01/11/13 04:03:03 DEBUG:Querying agent.
+01/11/13 04:03:03 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:03:03 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:03:03 INFO:127.0.0.1 - - [11/Jan/2013 04:03:03] "GET /command?metric=check_memory HTTP/1.1" 301 -
+01/11/13 04:03:03 DEBUG:"GET /command?metric=check_memory HTTP/1.1" 301 307
+01/11/13 04:03:03 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:03:03 INFO:127.0.0.1 - - [11/Jan/2013 04:03:03] "GET /command/?metric=check_memory&metric=check_memory HTTP/1.1" 302 -
+01/11/13 04:03:03 DEBUG:"GET /command/?metric=check_memory&metric=check_memory HTTP/1.1" 302 315
+01/11/13 04:03:03 INFO:127.0.0.1 - - [11/Jan/2013 04:03:03] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 -
+01/11/13 04:03:03 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 58
+01/11/13 04:03:03 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/11/13 04:03:06 ERROR:HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 133, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 74, in run
+    self.submit_to_nagios()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 101, in submit_to_nagios
+    retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
+  File "/tmp/ncpa/agent/passive/utils.py", line 15, in send_request
+    r = requests.get(url, params=kwargs, verify=False, allow_redirects=True)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 159, in send
+    raise ConnectionError(e)
+ConnectionError: HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+01/11/13 04:08:06 DEBUG:Parsing config...
+01/11/13 04:08:06 DEBUG:Parsing commands...
+01/11/13 04:08:06 DEBUG:Parsing new individual command.
+01/11/13 04:08:06 DEBUG:Setting hostname to localhost and servicename to __HOST__
+01/11/13 04:08:06 DEBUG:Parsing command: check_swap
+01/11/13 04:08:06 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:08:06 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __HOST__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:08:06 DEBUG:Parsing new individual command.
+01/11/13 04:08:06 DEBUG:Setting hostname to localhost and servicename to test
+01/11/13 04:08:06 DEBUG:Parsing command: test
+01/11/13 04:08:06 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:08:06 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: test -- Command: test -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:08:06 DEBUG:Parsing new individual command.
+01/11/13 04:08:06 DEBUG:Setting hostname to localhost and servicename to CPU Usage
+01/11/13 04:08:06 DEBUG:Parsing command: check_cpu
+01/11/13 04:08:06 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:08:06 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: CPU Usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:08:06 DEBUG:Parsing new individual command.
+01/11/13 04:08:06 DEBUG:Setting hostname to localhost and servicename to Memory Usage
+01/11/13 04:08:06 DEBUG:Parsing command: check_memory
+01/11/13 04:08:06 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:08:06 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:08:06 DEBUG:Establishing Nagios handler...
+01/11/13 04:08:06 DEBUG:Nagios handler established.
+01/11/13 04:08:06 DEBUG:Querying agent.
+01/11/13 04:08:06 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:08:06 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:08:06 INFO:127.0.0.1 - - [11/Jan/2013 04:08:06] "GET /command?metric=check_swap HTTP/1.1" 301 -
+01/11/13 04:08:06 DEBUG:"GET /command?metric=check_swap HTTP/1.1" 301 303
+01/11/13 04:08:06 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:08:06 INFO:127.0.0.1 - - [11/Jan/2013 04:08:06] "GET /command/?metric=check_swap&metric=check_swap HTTP/1.1" 302 -
+01/11/13 04:08:06 DEBUG:"GET /command/?metric=check_swap&metric=check_swap HTTP/1.1" 302 315
+01/11/13 04:08:06 INFO:127.0.0.1 - - [11/Jan/2013 04:08:06] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 -
+01/11/13 04:08:06 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 58
+01/11/13 04:08:06 DEBUG:Querying agent.
+01/11/13 04:08:06 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:08:06 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:08:06 INFO:127.0.0.1 - - [11/Jan/2013 04:08:06] "GET /command?metric=test HTTP/1.1" 301 -
+01/11/13 04:08:06 DEBUG:"GET /command?metric=test HTTP/1.1" 301 291
+01/11/13 04:08:06 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:08:06 INFO:127.0.0.1 - - [11/Jan/2013 04:08:06] "GET /command/?metric=test&metric=test HTTP/1.1" 302 -
+01/11/13 04:08:06 DEBUG:"GET /command/?metric=test&metric=test HTTP/1.1" 302 315
+01/11/13 04:08:06 INFO:127.0.0.1 - - [11/Jan/2013 04:08:06] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 -
+01/11/13 04:08:06 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 58
+01/11/13 04:08:06 DEBUG:Querying agent.
+01/11/13 04:08:06 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:08:06 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:08:06 INFO:127.0.0.1 - - [11/Jan/2013 04:08:06] "GET /command?metric=check_cpu HTTP/1.1" 301 -
+01/11/13 04:08:06 DEBUG:"GET /command?metric=check_cpu HTTP/1.1" 301 301
+01/11/13 04:08:06 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:08:06 INFO:127.0.0.1 - - [11/Jan/2013 04:08:06] "GET /command/?metric=check_cpu&metric=check_cpu HTTP/1.1" 302 -
+01/11/13 04:08:06 DEBUG:"GET /command/?metric=check_cpu&metric=check_cpu HTTP/1.1" 302 315
+01/11/13 04:08:06 INFO:127.0.0.1 - - [11/Jan/2013 04:08:06] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 -
+01/11/13 04:08:06 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 58
+01/11/13 04:08:06 DEBUG:Querying agent.
+01/11/13 04:08:06 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:08:06 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:08:06 INFO:127.0.0.1 - - [11/Jan/2013 04:08:06] "GET /command?metric=check_memory HTTP/1.1" 301 -
+01/11/13 04:08:06 DEBUG:"GET /command?metric=check_memory HTTP/1.1" 301 307
+01/11/13 04:08:06 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:08:06 INFO:127.0.0.1 - - [11/Jan/2013 04:08:06] "GET /command/?metric=check_memory&metric=check_memory HTTP/1.1" 302 -
+01/11/13 04:08:06 DEBUG:"GET /command/?metric=check_memory&metric=check_memory HTTP/1.1" 302 315
+01/11/13 04:08:06 INFO:127.0.0.1 - - [11/Jan/2013 04:08:06] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 -
+01/11/13 04:08:06 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 58
+01/11/13 04:08:06 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/11/13 04:08:09 ERROR:HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 133, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 74, in run
+    self.submit_to_nagios()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 101, in submit_to_nagios
+    retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
+  File "/tmp/ncpa/agent/passive/utils.py", line 15, in send_request
+    r = requests.get(url, params=kwargs, verify=False, allow_redirects=True)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 159, in send
+    raise ConnectionError(e)
+ConnectionError: HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+01/11/13 04:13:09 DEBUG:Parsing config...
+01/11/13 04:13:09 DEBUG:Parsing commands...
+01/11/13 04:13:09 DEBUG:Parsing new individual command.
+01/11/13 04:13:09 DEBUG:Setting hostname to localhost and servicename to __HOST__
+01/11/13 04:13:09 DEBUG:Parsing command: check_swap
+01/11/13 04:13:09 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:13:09 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __HOST__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:13:09 DEBUG:Parsing new individual command.
+01/11/13 04:13:09 DEBUG:Setting hostname to localhost and servicename to test
+01/11/13 04:13:09 DEBUG:Parsing command: test
+01/11/13 04:13:09 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:13:09 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: test -- Command: test -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:13:09 DEBUG:Parsing new individual command.
+01/11/13 04:13:09 DEBUG:Setting hostname to localhost and servicename to CPU Usage
+01/11/13 04:13:09 DEBUG:Parsing command: check_cpu
+01/11/13 04:13:09 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:13:09 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: CPU Usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:13:09 DEBUG:Parsing new individual command.
+01/11/13 04:13:09 DEBUG:Setting hostname to localhost and servicename to Memory Usage
+01/11/13 04:13:09 DEBUG:Parsing command: check_memory
+01/11/13 04:13:09 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:13:09 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:13:09 DEBUG:Establishing Nagios handler...
+01/11/13 04:13:09 DEBUG:Nagios handler established.
+01/11/13 04:13:09 DEBUG:Querying agent.
+01/11/13 04:13:09 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:13:09 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:13:09 INFO:127.0.0.1 - - [11/Jan/2013 04:13:09] "GET /command?metric=check_swap HTTP/1.1" 301 -
+01/11/13 04:13:09 DEBUG:"GET /command?metric=check_swap HTTP/1.1" 301 303
+01/11/13 04:13:09 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:13:09 INFO:127.0.0.1 - - [11/Jan/2013 04:13:09] "GET /command/?metric=check_swap&metric=check_swap HTTP/1.1" 302 -
+01/11/13 04:13:09 DEBUG:"GET /command/?metric=check_swap&metric=check_swap HTTP/1.1" 302 315
+01/11/13 04:13:09 INFO:127.0.0.1 - - [11/Jan/2013 04:13:09] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 -
+01/11/13 04:13:09 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 58
+01/11/13 04:13:09 DEBUG:Querying agent.
+01/11/13 04:13:09 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:13:09 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:13:09 INFO:127.0.0.1 - - [11/Jan/2013 04:13:09] "GET /command?metric=test HTTP/1.1" 301 -
+01/11/13 04:13:09 DEBUG:"GET /command?metric=test HTTP/1.1" 301 291
+01/11/13 04:13:09 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:13:09 INFO:127.0.0.1 - - [11/Jan/2013 04:13:09] "GET /command/?metric=test&metric=test HTTP/1.1" 302 -
+01/11/13 04:13:09 DEBUG:"GET /command/?metric=test&metric=test HTTP/1.1" 302 315
+01/11/13 04:13:09 INFO:127.0.0.1 - - [11/Jan/2013 04:13:09] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 -
+01/11/13 04:13:09 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 58
+01/11/13 04:13:09 DEBUG:Querying agent.
+01/11/13 04:13:09 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:13:09 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:13:09 INFO:127.0.0.1 - - [11/Jan/2013 04:13:09] "GET /command?metric=check_cpu HTTP/1.1" 301 -
+01/11/13 04:13:09 DEBUG:"GET /command?metric=check_cpu HTTP/1.1" 301 301
+01/11/13 04:13:09 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:13:09 INFO:127.0.0.1 - - [11/Jan/2013 04:13:09] "GET /command/?metric=check_cpu&metric=check_cpu HTTP/1.1" 302 -
+01/11/13 04:13:09 DEBUG:"GET /command/?metric=check_cpu&metric=check_cpu HTTP/1.1" 302 315
+01/11/13 04:13:09 INFO:127.0.0.1 - - [11/Jan/2013 04:13:09] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 -
+01/11/13 04:13:09 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 58
+01/11/13 04:13:09 DEBUG:Querying agent.
+01/11/13 04:13:09 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:13:09 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:13:09 INFO:127.0.0.1 - - [11/Jan/2013 04:13:09] "GET /command?metric=check_memory HTTP/1.1" 301 -
+01/11/13 04:13:09 DEBUG:"GET /command?metric=check_memory HTTP/1.1" 301 307
+01/11/13 04:13:09 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:13:09 INFO:127.0.0.1 - - [11/Jan/2013 04:13:09] "GET /command/?metric=check_memory&metric=check_memory HTTP/1.1" 302 -
+01/11/13 04:13:09 DEBUG:"GET /command/?metric=check_memory&metric=check_memory HTTP/1.1" 302 315
+01/11/13 04:13:09 INFO:127.0.0.1 - - [11/Jan/2013 04:13:09] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 -
+01/11/13 04:13:09 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 58
+01/11/13 04:13:09 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/11/13 04:13:12 ERROR:HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 133, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 74, in run
+    self.submit_to_nagios()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 101, in submit_to_nagios
+    retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
+  File "/tmp/ncpa/agent/passive/utils.py", line 15, in send_request
+    r = requests.get(url, params=kwargs, verify=False, allow_redirects=True)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 159, in send
+    raise ConnectionError(e)
+ConnectionError: HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+01/11/13 04:18:12 DEBUG:Parsing config...
+01/11/13 04:18:12 DEBUG:Parsing commands...
+01/11/13 04:18:12 DEBUG:Parsing new individual command.
+01/11/13 04:18:12 DEBUG:Setting hostname to localhost and servicename to __HOST__
+01/11/13 04:18:12 DEBUG:Parsing command: check_swap
+01/11/13 04:18:12 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:18:12 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __HOST__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:18:12 DEBUG:Parsing new individual command.
+01/11/13 04:18:12 DEBUG:Setting hostname to localhost and servicename to test
+01/11/13 04:18:12 DEBUG:Parsing command: test
+01/11/13 04:18:12 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:18:12 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: test -- Command: test -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:18:12 DEBUG:Parsing new individual command.
+01/11/13 04:18:12 DEBUG:Setting hostname to localhost and servicename to CPU Usage
+01/11/13 04:18:12 DEBUG:Parsing command: check_cpu
+01/11/13 04:18:12 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:18:12 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: CPU Usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:18:12 DEBUG:Parsing new individual command.
+01/11/13 04:18:12 DEBUG:Setting hostname to localhost and servicename to Memory Usage
+01/11/13 04:18:12 DEBUG:Parsing command: check_memory
+01/11/13 04:18:12 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:18:12 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:18:12 DEBUG:Establishing Nagios handler...
+01/11/13 04:18:12 DEBUG:Nagios handler established.
+01/11/13 04:18:12 DEBUG:Querying agent.
+01/11/13 04:18:12 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:18:12 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:18:12 INFO:127.0.0.1 - - [11/Jan/2013 04:18:12] "GET /command?metric=check_swap HTTP/1.1" 301 -
+01/11/13 04:18:12 DEBUG:"GET /command?metric=check_swap HTTP/1.1" 301 303
+01/11/13 04:18:12 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:18:12 INFO:127.0.0.1 - - [11/Jan/2013 04:18:12] "GET /command/?metric=check_swap&metric=check_swap HTTP/1.1" 302 -
+01/11/13 04:18:12 DEBUG:"GET /command/?metric=check_swap&metric=check_swap HTTP/1.1" 302 315
+01/11/13 04:18:12 INFO:127.0.0.1 - - [11/Jan/2013 04:18:12] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 -
+01/11/13 04:18:12 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 58
+01/11/13 04:18:12 DEBUG:Querying agent.
+01/11/13 04:18:12 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:18:12 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:18:12 INFO:127.0.0.1 - - [11/Jan/2013 04:18:12] "GET /command?metric=test HTTP/1.1" 301 -
+01/11/13 04:18:12 DEBUG:"GET /command?metric=test HTTP/1.1" 301 291
+01/11/13 04:18:12 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:18:12 INFO:127.0.0.1 - - [11/Jan/2013 04:18:12] "GET /command/?metric=test&metric=test HTTP/1.1" 302 -
+01/11/13 04:18:12 DEBUG:"GET /command/?metric=test&metric=test HTTP/1.1" 302 315
+01/11/13 04:18:12 INFO:127.0.0.1 - - [11/Jan/2013 04:18:12] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 -
+01/11/13 04:18:12 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 58
+01/11/13 04:18:12 DEBUG:Querying agent.
+01/11/13 04:18:12 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:18:12 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:18:12 INFO:127.0.0.1 - - [11/Jan/2013 04:18:12] "GET /command?metric=check_cpu HTTP/1.1" 301 -
+01/11/13 04:18:12 DEBUG:"GET /command?metric=check_cpu HTTP/1.1" 301 301
+01/11/13 04:18:12 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:18:12 INFO:127.0.0.1 - - [11/Jan/2013 04:18:12] "GET /command/?metric=check_cpu&metric=check_cpu HTTP/1.1" 302 -
+01/11/13 04:18:12 DEBUG:"GET /command/?metric=check_cpu&metric=check_cpu HTTP/1.1" 302 315
+01/11/13 04:18:12 INFO:127.0.0.1 - - [11/Jan/2013 04:18:12] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 -
+01/11/13 04:18:12 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 58
+01/11/13 04:18:12 DEBUG:Querying agent.
+01/11/13 04:18:12 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:18:12 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:18:12 INFO:127.0.0.1 - - [11/Jan/2013 04:18:12] "GET /command?metric=check_memory HTTP/1.1" 301 -
+01/11/13 04:18:12 DEBUG:"GET /command?metric=check_memory HTTP/1.1" 301 307
+01/11/13 04:18:12 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:18:12 INFO:127.0.0.1 - - [11/Jan/2013 04:18:12] "GET /command/?metric=check_memory&metric=check_memory HTTP/1.1" 302 -
+01/11/13 04:18:12 DEBUG:"GET /command/?metric=check_memory&metric=check_memory HTTP/1.1" 302 315
+01/11/13 04:18:12 INFO:127.0.0.1 - - [11/Jan/2013 04:18:12] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 -
+01/11/13 04:18:12 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 58
+01/11/13 04:18:12 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/11/13 04:18:15 ERROR:HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 133, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 74, in run
+    self.submit_to_nagios()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 101, in submit_to_nagios
+    retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
+  File "/tmp/ncpa/agent/passive/utils.py", line 15, in send_request
+    r = requests.get(url, params=kwargs, verify=False, allow_redirects=True)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 159, in send
+    raise ConnectionError(e)
+ConnectionError: HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+01/11/13 04:23:15 DEBUG:Parsing config...
+01/11/13 04:23:15 DEBUG:Parsing commands...
+01/11/13 04:23:15 DEBUG:Parsing new individual command.
+01/11/13 04:23:15 DEBUG:Setting hostname to localhost and servicename to __HOST__
+01/11/13 04:23:15 DEBUG:Parsing command: check_swap
+01/11/13 04:23:15 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:23:15 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __HOST__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:23:15 DEBUG:Parsing new individual command.
+01/11/13 04:23:15 DEBUG:Setting hostname to localhost and servicename to test
+01/11/13 04:23:15 DEBUG:Parsing command: test
+01/11/13 04:23:15 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:23:15 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: test -- Command: test -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:23:15 DEBUG:Parsing new individual command.
+01/11/13 04:23:15 DEBUG:Setting hostname to localhost and servicename to CPU Usage
+01/11/13 04:23:15 DEBUG:Parsing command: check_cpu
+01/11/13 04:23:15 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:23:15 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: CPU Usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:23:15 DEBUG:Parsing new individual command.
+01/11/13 04:23:15 DEBUG:Setting hostname to localhost and servicename to Memory Usage
+01/11/13 04:23:15 DEBUG:Parsing command: check_memory
+01/11/13 04:23:15 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:23:15 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:23:15 DEBUG:Establishing Nagios handler...
+01/11/13 04:23:15 DEBUG:Nagios handler established.
+01/11/13 04:23:15 DEBUG:Querying agent.
+01/11/13 04:23:15 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:23:15 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:23:15 INFO:127.0.0.1 - - [11/Jan/2013 04:23:15] "GET /command?metric=check_swap HTTP/1.1" 301 -
+01/11/13 04:23:15 DEBUG:"GET /command?metric=check_swap HTTP/1.1" 301 303
+01/11/13 04:23:15 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:23:15 INFO:127.0.0.1 - - [11/Jan/2013 04:23:15] "GET /command/?metric=check_swap&metric=check_swap HTTP/1.1" 302 -
+01/11/13 04:23:15 DEBUG:"GET /command/?metric=check_swap&metric=check_swap HTTP/1.1" 302 315
+01/11/13 04:23:15 INFO:127.0.0.1 - - [11/Jan/2013 04:23:15] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 -
+01/11/13 04:23:15 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 58
+01/11/13 04:23:15 DEBUG:Querying agent.
+01/11/13 04:23:15 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:23:15 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:23:15 INFO:127.0.0.1 - - [11/Jan/2013 04:23:15] "GET /command?metric=test HTTP/1.1" 301 -
+01/11/13 04:23:15 DEBUG:"GET /command?metric=test HTTP/1.1" 301 291
+01/11/13 04:23:15 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:23:15 INFO:127.0.0.1 - - [11/Jan/2013 04:23:15] "GET /command/?metric=test&metric=test HTTP/1.1" 302 -
+01/11/13 04:23:15 DEBUG:"GET /command/?metric=test&metric=test HTTP/1.1" 302 315
+01/11/13 04:23:15 INFO:127.0.0.1 - - [11/Jan/2013 04:23:15] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 -
+01/11/13 04:23:15 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 58
+01/11/13 04:23:15 DEBUG:Querying agent.
+01/11/13 04:23:15 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:23:15 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:23:15 INFO:127.0.0.1 - - [11/Jan/2013 04:23:15] "GET /command?metric=check_cpu HTTP/1.1" 301 -
+01/11/13 04:23:15 DEBUG:"GET /command?metric=check_cpu HTTP/1.1" 301 301
+01/11/13 04:23:15 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:23:15 INFO:127.0.0.1 - - [11/Jan/2013 04:23:15] "GET /command/?metric=check_cpu&metric=check_cpu HTTP/1.1" 302 -
+01/11/13 04:23:15 DEBUG:"GET /command/?metric=check_cpu&metric=check_cpu HTTP/1.1" 302 315
+01/11/13 04:23:15 INFO:127.0.0.1 - - [11/Jan/2013 04:23:15] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 -
+01/11/13 04:23:15 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 58
+01/11/13 04:23:15 DEBUG:Querying agent.
+01/11/13 04:23:15 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:23:15 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:23:15 INFO:127.0.0.1 - - [11/Jan/2013 04:23:15] "GET /command?metric=check_memory HTTP/1.1" 301 -
+01/11/13 04:23:15 DEBUG:"GET /command?metric=check_memory HTTP/1.1" 301 307
+01/11/13 04:23:15 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:23:15 INFO:127.0.0.1 - - [11/Jan/2013 04:23:15] "GET /command/?metric=check_memory&metric=check_memory HTTP/1.1" 302 -
+01/11/13 04:23:15 DEBUG:"GET /command/?metric=check_memory&metric=check_memory HTTP/1.1" 302 315
+01/11/13 04:23:15 INFO:127.0.0.1 - - [11/Jan/2013 04:23:15] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 -
+01/11/13 04:23:15 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 58
+01/11/13 04:23:15 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/11/13 04:23:18 ERROR:HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 133, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 74, in run
+    self.submit_to_nagios()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 101, in submit_to_nagios
+    retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
+  File "/tmp/ncpa/agent/passive/utils.py", line 15, in send_request
+    r = requests.get(url, params=kwargs, verify=False, allow_redirects=True)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 159, in send
+    raise ConnectionError(e)
+ConnectionError: HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+01/11/13 04:28:18 DEBUG:Parsing config...
+01/11/13 04:28:18 DEBUG:Parsing commands...
+01/11/13 04:28:18 DEBUG:Parsing new individual command.
+01/11/13 04:28:18 DEBUG:Setting hostname to localhost and servicename to __HOST__
+01/11/13 04:28:18 DEBUG:Parsing command: check_swap
+01/11/13 04:28:18 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:28:18 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __HOST__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:28:18 DEBUG:Parsing new individual command.
+01/11/13 04:28:18 DEBUG:Setting hostname to localhost and servicename to test
+01/11/13 04:28:18 DEBUG:Parsing command: test
+01/11/13 04:28:18 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:28:18 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: test -- Command: test -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:28:18 DEBUG:Parsing new individual command.
+01/11/13 04:28:18 DEBUG:Setting hostname to localhost and servicename to CPU Usage
+01/11/13 04:28:18 DEBUG:Parsing command: check_cpu
+01/11/13 04:28:18 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:28:18 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: CPU Usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:28:18 DEBUG:Parsing new individual command.
+01/11/13 04:28:18 DEBUG:Setting hostname to localhost and servicename to Memory Usage
+01/11/13 04:28:18 DEBUG:Parsing command: check_memory
+01/11/13 04:28:18 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:28:18 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:28:18 DEBUG:Establishing Nagios handler...
+01/11/13 04:28:18 DEBUG:Nagios handler established.
+01/11/13 04:28:18 DEBUG:Querying agent.
+01/11/13 04:28:18 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:28:18 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:28:18 INFO:127.0.0.1 - - [11/Jan/2013 04:28:18] "GET /command?metric=check_swap HTTP/1.1" 301 -
+01/11/13 04:28:18 DEBUG:"GET /command?metric=check_swap HTTP/1.1" 301 303
+01/11/13 04:28:18 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:28:18 INFO:127.0.0.1 - - [11/Jan/2013 04:28:18] "GET /command/?metric=check_swap&metric=check_swap HTTP/1.1" 302 -
+01/11/13 04:28:18 DEBUG:"GET /command/?metric=check_swap&metric=check_swap HTTP/1.1" 302 315
+01/11/13 04:28:18 INFO:127.0.0.1 - - [11/Jan/2013 04:28:18] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 -
+01/11/13 04:28:18 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_swap HTTP/1.1" 200 58
+01/11/13 04:28:18 DEBUG:Querying agent.
+01/11/13 04:28:18 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:28:18 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:28:18 INFO:127.0.0.1 - - [11/Jan/2013 04:28:18] "GET /command?metric=test HTTP/1.1" 301 -
+01/11/13 04:28:18 DEBUG:"GET /command?metric=test HTTP/1.1" 301 291
+01/11/13 04:28:18 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:28:18 INFO:127.0.0.1 - - [11/Jan/2013 04:28:18] "GET /command/?metric=test&metric=test HTTP/1.1" 302 -
+01/11/13 04:28:18 DEBUG:"GET /command/?metric=test&metric=test HTTP/1.1" 302 315
+01/11/13 04:28:18 INFO:127.0.0.1 - - [11/Jan/2013 04:28:18] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 -
+01/11/13 04:28:18 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=test HTTP/1.1" 200 58
+01/11/13 04:28:18 DEBUG:Querying agent.
+01/11/13 04:28:18 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:28:18 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:28:18 INFO:127.0.0.1 - - [11/Jan/2013 04:28:18] "GET /command?metric=check_cpu HTTP/1.1" 301 -
+01/11/13 04:28:18 DEBUG:"GET /command?metric=check_cpu HTTP/1.1" 301 301
+01/11/13 04:28:18 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:28:18 INFO:127.0.0.1 - - [11/Jan/2013 04:28:18] "GET /command/?metric=check_cpu&metric=check_cpu HTTP/1.1" 302 -
+01/11/13 04:28:18 DEBUG:"GET /command/?metric=check_cpu&metric=check_cpu HTTP/1.1" 302 315
+01/11/13 04:28:18 INFO:127.0.0.1 - - [11/Jan/2013 04:28:18] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 -
+01/11/13 04:28:18 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_cpu HTTP/1.1" 200 58
+01/11/13 04:28:18 DEBUG:Querying agent.
+01/11/13 04:28:18 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:28:18 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:28:18 INFO:127.0.0.1 - - [11/Jan/2013 04:28:18] "GET /command?metric=check_memory HTTP/1.1" 301 -
+01/11/13 04:28:18 DEBUG:"GET /command?metric=check_memory HTTP/1.1" 301 307
+01/11/13 04:28:18 ERROR:'module' object has no attribute ''
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 69, in command
+    generic = getattr(commands, command)
+AttributeError: 'module' object has no attribute ''
+01/11/13 04:28:18 INFO:127.0.0.1 - - [11/Jan/2013 04:28:18] "GET /command/?metric=check_memory&metric=check_memory HTTP/1.1" 302 -
+01/11/13 04:28:18 DEBUG:"GET /command/?metric=check_memory&metric=check_memory HTTP/1.1" 302 315
+01/11/13 04:28:18 INFO:127.0.0.1 - - [11/Jan/2013 04:28:18] "GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 -
+01/11/13 04:28:18 DEBUG:"GET /error?msg=%27module%27+object+has+no+attribute+%27%27&metric=check_memory HTTP/1.1" 200 58
+01/11/13 04:28:18 INFO:Starting new HTTPS connection (1): 192.168.1.54
+01/11/13 04:28:21 ERROR:HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 133, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 74, in run
+    self.submit_to_nagios()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 101, in submit_to_nagios
+    retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
+  File "/tmp/ncpa/agent/passive/utils.py", line 15, in send_request
+    r = requests.get(url, params=kwargs, verify=False, allow_redirects=True)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 159, in send
+    raise ConnectionError(e)
+ConnectionError: HTTPSConnectionPool(host='192.168.1.54', port=443): Max retries exceeded with url: /nrdp?token=aa&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%3Ccheckresult+type%3D%22host%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3Etest%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3ECPU+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3Ccheckresult+type%3D%22service%22%3E%3Chostname%3Elocalhost%3C%2Fhostname%3E%3Cservicename%3EMemory+Usage%3C%2Fservicename%3E%3Cstate%3EError+parsing+the+JSON.%3C%2Fstate%3E%3Coutput%3EError+parsing+the+JSON.%3C%2Foutput%3E%3C%2Fcheckresult%3E%3C%2Fcheckresults%3E (Caused by <class 'socket.error'>: [Errno 113] No route to host)
+01/11/13 04:32:43 INFO: * Detected change in '/tmp/ncpa/agent/listener/commands.py', reloading
+01/11/13 04:33:21 DEBUG:Parsing config...
+01/11/13 04:33:21 DEBUG:Parsing commands...
+01/11/13 04:33:21 DEBUG:Parsing new individual command.
+01/11/13 04:33:21 DEBUG:Setting hostname to localhost and servicename to __HOST__
+01/11/13 04:33:21 DEBUG:Parsing command: check_swap
+01/11/13 04:33:21 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:33:21 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: __HOST__ -- Command: check_swap -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:33:21 DEBUG:Parsing new individual command.
+01/11/13 04:33:21 DEBUG:Setting hostname to localhost and servicename to test
+01/11/13 04:33:21 DEBUG:Parsing command: test
+01/11/13 04:33:21 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:33:21 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: test -- Command: test -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:33:21 DEBUG:Parsing new individual command.
+01/11/13 04:33:21 DEBUG:Setting hostname to localhost and servicename to CPU Usage
+01/11/13 04:33:21 DEBUG:Parsing command: check_cpu
+01/11/13 04:33:21 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:33:21 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: CPU Usage -- Command: check_cpu -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:33:21 DEBUG:Parsing new individual command.
+01/11/13 04:33:21 DEBUG:Setting hostname to localhost and servicename to Memory Usage
+01/11/13 04:33:21 DEBUG:Parsing command: check_memory
+01/11/13 04:33:21 DEBUG:Command did not contain arguments. Single directive.
+01/11/13 04:33:21 DEBUG:Nagios Hostname: localhost -- Nagios Servicename: Memory Usage -- Command: check_memory -- Arguments: None -- Stdout: None -- Return Code: None
+01/11/13 04:33:21 DEBUG:Establishing Nagios handler...
+01/11/13 04:33:21 DEBUG:Nagios handler established.
+01/11/13 04:33:21 DEBUG:Querying agent.
+01/11/13 04:33:21 DEBUG:Config states we connect to http://127.0.0.1:5692/command
+01/11/13 04:33:21 INFO:Starting new HTTP connection (1): 127.0.0.1
+01/11/13 04:33:21 ERROR:HTTPConnectionPool(host='127.0.0.1', port=5692): Max retries exceeded with url: /command?metric=check_swap (Caused by <class 'socket.error'>: [Errno 111] Connection refused)
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/daemons/posix.py", line 133, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrdp.py", line 73, in run
+    self.send_all_commands()
+  File "/tmp/ncpa/agent/passive/abstract.py", line 58, in send_all_commands
+    tmp_result = self.send_command(command)
+  File "/tmp/ncpa/agent/passive/abstract.py", line 50, in send_command
+    received = requests.get(address, params=params, verify=False)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 49, in get
+    return request('get', url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 38, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 262, in request
+    resp = self.send(prep, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+  File "/usr/lib/python2.6/site-packages/requests/sessions.py", line 357, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/adapters.py", line 159, in send
+    raise ConnectionError(e)
+ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=5692): Max retries exceeded with url: /command?metric=check_swap (Caused by <class 'socket.error'>: [Errno 111] Connection refused)
+01/11/13 04:34:19 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 04:34:19 INFO: * Restarting with reloader
+01/11/13 04:34:23 INFO:192.168.1.28 - - [11/Jan/2013 04:34:23] "GET /command/?command=enumerate_processes HTTP/1.1" 500 -
+01/11/13 04:34:23 INFO:192.168.1.28 - - [11/Jan/2013 04:34:23] "GET /command/?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+01/11/13 04:34:23 INFO:192.168.1.28 - - [11/Jan/2013 04:34:23] "GET /command/?__debugger__=yes&cmd=resource&f=jquery.js HTTP/1.1" 200 -
+01/11/13 04:34:23 INFO:192.168.1.28 - - [11/Jan/2013 04:34:23] "GET /command/?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+01/11/13 04:34:23 INFO:192.168.1.28 - - [11/Jan/2013 04:34:23] "GET /command/?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.1" 200 -
+01/11/13 04:34:23 INFO:192.168.1.28 - - [11/Jan/2013 04:34:23] "GET /command/?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+01/11/13 04:34:23 INFO:192.168.1.28 - - [11/Jan/2013 04:34:23] "GET /command/?__debugger__=yes&cmd=resource&f=source.png HTTP/1.1" 200 -
+01/11/13 04:34:58 INFO: * Detected change in '/tmp/ncpa/agent/listener/commands.py', reloading
+01/11/13 04:35:04 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 04:35:04 INFO: * Restarting with reloader
+01/11/13 04:35:21 INFO:192.168.1.28 - - [11/Jan/2013 04:35:21] "GET /command/?command=enumerate_processes HTTP/1.1" 500 -
+01/11/13 04:35:21 INFO:192.168.1.28 - - [11/Jan/2013 04:35:21] "GET /command/?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+01/11/13 04:35:21 INFO:192.168.1.28 - - [11/Jan/2013 04:35:21] "GET /command/?__debugger__=yes&cmd=resource&f=jquery.js HTTP/1.1" 200 -
+01/11/13 04:35:21 INFO:192.168.1.28 - - [11/Jan/2013 04:35:21] "GET /command/?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+01/11/13 04:35:22 INFO:192.168.1.28 - - [11/Jan/2013 04:35:22] "GET /command/?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.1" 200 -
+01/11/13 04:35:22 INFO:192.168.1.28 - - [11/Jan/2013 04:35:22] "GET /command/?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+01/11/13 04:35:22 INFO:192.168.1.28 - - [11/Jan/2013 04:35:22] "GET /command/?__debugger__=yes&cmd=resource&f=source.png HTTP/1.1" 200 -
+01/11/13 04:35:42 INFO: * Detected change in '/tmp/ncpa/agent/listener/commands.py', reloading
+01/11/13 04:36:04 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 04:36:04 INFO: * Restarting with reloader
+01/11/13 04:36:29 INFO:192.168.1.28 - - [11/Jan/2013 04:36:29] "GET /command/?command=enumerate_processes HTTP/1.1" 500 -
+01/11/13 04:36:29 INFO:192.168.1.28 - - [11/Jan/2013 04:36:29] "GET /command/?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+01/11/13 04:36:29 INFO:192.168.1.28 - - [11/Jan/2013 04:36:29] "GET /command/?__debugger__=yes&cmd=resource&f=jquery.js HTTP/1.1" 200 -
+01/11/13 04:36:29 INFO:192.168.1.28 - - [11/Jan/2013 04:36:29] "GET /command/?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+01/11/13 04:36:29 INFO:192.168.1.28 - - [11/Jan/2013 04:36:29] "GET /command/?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.1" 200 -
+01/11/13 04:36:29 INFO:192.168.1.28 - - [11/Jan/2013 04:36:29] "GET /command/?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+01/11/13 04:36:29 INFO:192.168.1.28 - - [11/Jan/2013 04:36:29] "GET /command/?__debugger__=yes&cmd=resource&f=source.png HTTP/1.1" 200 -
+01/11/13 04:37:05 INFO: * Detected change in '/tmp/ncpa/agent/listener/commands.py', reloading
+01/11/13 04:37:10 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 04:37:10 INFO: * Restarting with reloader
+01/11/13 04:38:30 INFO: * Detected change in '/tmp/ncpa/agent/listener/commands.py', reloading
+01/11/13 04:38:35 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 04:38:35 INFO: * Restarting with reloader
+01/11/13 04:38:54 INFO:192.168.1.28 - - [11/Jan/2013 04:38:54] "GET /command/?command=enumerate_processes HTTP/1.1" 200 -
+01/11/13 04:42:01 INFO: * Detected change in '/tmp/ncpa/agent/listener/commands.py', reloading
+01/11/13 04:42:35 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 04:42:35 INFO: * Restarting with reloader
+01/11/13 04:42:44 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 04:42:44 INFO: * Restarting with reloader
+01/11/13 04:43:47 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 04:44:50 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 04:44:50 INFO: * Restarting with reloader
+01/11/13 04:45:07 INFO:192.168.1.28 - - [11/Jan/2013 04:45:07] "GET /command/?command=enumerate_processes&top=5 HTTP/1.1" 200 -
+01/11/13 04:45:38 INFO: * Detected change in '/tmp/ncpa/agent/listener/commands.py', reloading
+01/11/13 04:45:44 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 04:45:44 INFO: * Restarting with reloader
+01/11/13 04:45:52 INFO:192.168.1.28 - - [11/Jan/2013 04:45:52] "GET /command/?command=enumerate_processes&top=5 HTTP/1.1" 200 -
+01/11/13 04:57:40 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/11/13 04:58:05 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 04:58:05 INFO: * Restarting with reloader
+01/11/13 04:58:27 INFO:192.168.1.28 - - [11/Jan/2013 04:58:27] "GET /processes/ HTTP/1.1" 200 -
+01/11/13 04:59:23 INFO: * Detected change in '/tmp/ncpa/agent/listener/commands.py', reloading
+01/11/13 04:59:35 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 04:59:35 INFO: * Restarting with reloader
+01/11/13 04:59:54 INFO:192.168.1.28 - - [11/Jan/2013 04:59:54] "GET /processes/ HTTP/1.1" 200 -
+01/11/13 05:01:03 INFO:192.168.1.28 - - [11/Jan/2013 05:01:03] "GET /processes/?top=15&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:08:22 INFO:192.168.1.28 - - [11/Jan/2013 05:08:22] "GET / HTTP/1.1" 200 -
+01/11/13 05:08:22 INFO:192.168.1.28 - - [11/Jan/2013 05:08:22] "GET /static/images/ui-bg_flat_75_ffffff_40x100.png HTTP/1.1" 404 -
+01/11/13 05:08:22 INFO:192.168.1.28 - - [11/Jan/2013 05:08:22] "GET /static/images/ui-bg_highlight-soft_75_cccccc_1x100.png HTTP/1.1" 404 -
+01/11/13 05:08:22 INFO:192.168.1.28 - - [11/Jan/2013 05:08:22] "GET /static/images/ui-bg_glass_75_e6e6e6_1x400.png HTTP/1.1" 404 -
+01/11/13 05:08:22 INFO:192.168.1.28 - - [11/Jan/2013 05:08:22] "GET /static/images/ui-bg_glass_65_ffffff_1x400.png HTTP/1.1" 404 -
+01/11/13 05:08:22 INFO:192.168.1.28 - - [11/Jan/2013 05:08:22] "GET /static/images/ui-bg_glass_75_dadada_1x400.png HTTP/1.1" 404 -
+01/11/13 05:08:22 INFO:192.168.1.28 - - [11/Jan/2013 05:08:22] "GET /config/ HTTP/1.1" 200 -
+01/11/13 05:09:01 INFO:192.168.1.28 - - [11/Jan/2013 05:09:01] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:09:06 INFO:192.168.1.28 - - [11/Jan/2013 05:09:06] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:09:12 INFO:192.168.1.28 - - [11/Jan/2013 05:09:12] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:09:17 INFO:192.168.1.28 - - [11/Jan/2013 05:09:17] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:09:22 INFO:192.168.1.28 - - [11/Jan/2013 05:09:22] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:09:27 INFO:192.168.1.28 - - [11/Jan/2013 05:09:27] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:09:32 INFO:192.168.1.28 - - [11/Jan/2013 05:09:32] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:09:38 INFO:192.168.1.28 - - [11/Jan/2013 05:09:38] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:09:43 INFO:192.168.1.28 - - [11/Jan/2013 05:09:43] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:09:48 INFO:192.168.1.28 - - [11/Jan/2013 05:09:48] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:09:53 INFO:192.168.1.28 - - [11/Jan/2013 05:09:53] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:09:58 INFO:192.168.1.28 - - [11/Jan/2013 05:09:58] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:10:04 INFO:192.168.1.28 - - [11/Jan/2013 05:10:04] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:10:09 INFO:192.168.1.28 - - [11/Jan/2013 05:10:09] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:10:14 INFO:192.168.1.28 - - [11/Jan/2013 05:10:14] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:10:19 INFO:192.168.1.28 - - [11/Jan/2013 05:10:19] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:10:24 INFO:192.168.1.28 - - [11/Jan/2013 05:10:24] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:10:30 INFO:192.168.1.28 - - [11/Jan/2013 05:10:30] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:10:35 INFO:192.168.1.28 - - [11/Jan/2013 05:10:35] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:10:40 INFO:192.168.1.28 - - [11/Jan/2013 05:10:40] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:10:45 INFO:192.168.1.28 - - [11/Jan/2013 05:10:45] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:10:50 INFO:192.168.1.28 - - [11/Jan/2013 05:10:50] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:10:55 INFO:192.168.1.28 - - [11/Jan/2013 05:10:55] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:11:01 INFO:192.168.1.28 - - [11/Jan/2013 05:11:01] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:11:06 INFO:192.168.1.28 - - [11/Jan/2013 05:11:06] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:11:11 INFO:192.168.1.28 - - [11/Jan/2013 05:11:11] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:11:16 INFO:192.168.1.28 - - [11/Jan/2013 05:11:16] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:11:21 INFO:192.168.1.28 - - [11/Jan/2013 05:11:21] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:11:27 INFO:192.168.1.28 - - [11/Jan/2013 05:11:27] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:11:32 INFO:192.168.1.28 - - [11/Jan/2013 05:11:32] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:11:37 INFO:192.168.1.28 - - [11/Jan/2013 05:11:37] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:11:42 INFO:192.168.1.28 - - [11/Jan/2013 05:11:42] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:11:47 INFO:192.168.1.28 - - [11/Jan/2013 05:11:47] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:11:53 INFO:192.168.1.28 - - [11/Jan/2013 05:11:53] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:11:58 INFO:192.168.1.28 - - [11/Jan/2013 05:11:58] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:12:03 INFO:192.168.1.28 - - [11/Jan/2013 05:12:03] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:12:08 INFO:192.168.1.28 - - [11/Jan/2013 05:12:08] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:12:13 INFO:192.168.1.28 - - [11/Jan/2013 05:12:13] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:12:19 INFO:192.168.1.28 - - [11/Jan/2013 05:12:19] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:12:24 INFO:192.168.1.28 - - [11/Jan/2013 05:12:24] "GET /processes/?top=50&sortby=CPU HTTP/1.1" 200 -
+01/11/13 05:12:26 INFO: * Detected change in '/tmp/ncpa/agent/listener/commands.py', reloading
+01/11/13 05:13:41 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 05:13:41 INFO: * Restarting with reloader
+01/11/13 05:13:47 INFO:192.168.1.28 - - [11/Jan/2013 05:13:47] "GET / HTTP/1.1" 200 -
+01/11/13 05:13:48 INFO:192.168.1.28 - - [11/Jan/2013 05:13:48] "GET /static/images/ui-bg_flat_75_ffffff_40x100.png HTTP/1.1" 404 -
+01/11/13 05:13:48 INFO:192.168.1.28 - - [11/Jan/2013 05:13:48] "GET /static/images/ui-bg_highlight-soft_75_cccccc_1x100.png HTTP/1.1" 404 -
+01/11/13 05:13:48 INFO:192.168.1.28 - - [11/Jan/2013 05:13:48] "GET /static/images/ui-bg_glass_75_e6e6e6_1x400.png HTTP/1.1" 404 -
+01/11/13 05:13:48 INFO:192.168.1.28 - - [11/Jan/2013 05:13:48] "GET /static/images/ui-bg_glass_65_ffffff_1x400.png HTTP/1.1" 404 -
+01/11/13 05:13:48 INFO:192.168.1.28 - - [11/Jan/2013 05:13:48] "GET /config/ HTTP/1.1" 200 -
+01/11/13 05:13:48 INFO:192.168.1.28 - - [11/Jan/2013 05:13:48] "GET /static/images/ui-bg_glass_75_dadada_1x400.png HTTP/1.1" 404 -
+01/11/13 05:13:56 INFO:192.168.1.28 - - [11/Jan/2013 05:13:56] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:14:01 INFO:192.168.1.28 - - [11/Jan/2013 05:14:01] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:14:07 INFO:192.168.1.28 - - [11/Jan/2013 05:14:07] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:14:12 INFO:192.168.1.28 - - [11/Jan/2013 05:14:12] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:14:17 INFO:192.168.1.28 - - [11/Jan/2013 05:14:17] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:14:22 INFO:192.168.1.28 - - [11/Jan/2013 05:14:22] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:14:27 INFO:192.168.1.28 - - [11/Jan/2013 05:14:27] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:14:33 INFO:192.168.1.28 - - [11/Jan/2013 05:14:33] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:14:38 INFO:192.168.1.28 - - [11/Jan/2013 05:14:38] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:14:43 INFO:192.168.1.28 - - [11/Jan/2013 05:14:43] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:14:48 INFO:192.168.1.28 - - [11/Jan/2013 05:14:48] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:14:53 INFO:192.168.1.28 - - [11/Jan/2013 05:14:53] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:14:59 INFO:192.168.1.28 - - [11/Jan/2013 05:14:59] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:14:59 INFO: * Detected change in '/tmp/ncpa/agent/listener/commands.py', reloading
+01/11/13 05:15:07 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 05:15:07 INFO: * Restarting with reloader
+01/11/13 05:15:17 INFO:192.168.1.28 - - [11/Jan/2013 05:15:17] "GET / HTTP/1.1" 200 -
+01/11/13 05:15:18 INFO:192.168.1.28 - - [11/Jan/2013 05:15:18] "GET /static/images/ui-bg_flat_75_ffffff_40x100.png HTTP/1.1" 404 -
+01/11/13 05:15:18 INFO:192.168.1.28 - - [11/Jan/2013 05:15:18] "GET /static/images/ui-bg_highlight-soft_75_cccccc_1x100.png HTTP/1.1" 404 -
+01/11/13 05:15:18 INFO:192.168.1.28 - - [11/Jan/2013 05:15:18] "GET /static/images/ui-bg_glass_75_e6e6e6_1x400.png HTTP/1.1" 404 -
+01/11/13 05:15:18 INFO:192.168.1.28 - - [11/Jan/2013 05:15:18] "GET /static/images/ui-bg_glass_65_ffffff_1x400.png HTTP/1.1" 404 -
+01/11/13 05:15:18 INFO:192.168.1.28 - - [11/Jan/2013 05:15:18] "GET /config/ HTTP/1.1" 200 -
+01/11/13 05:15:18 INFO:192.168.1.28 - - [11/Jan/2013 05:15:18] "GET /static/images/ui-bg_glass_75_dadada_1x400.png HTTP/1.1" 404 -
+01/11/13 05:15:26 INFO:192.168.1.28 - - [11/Jan/2013 05:15:26] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:15:31 INFO:192.168.1.28 - - [11/Jan/2013 05:15:31] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:15:37 INFO:192.168.1.28 - - [11/Jan/2013 05:15:37] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:15:42 INFO:192.168.1.28 - - [11/Jan/2013 05:15:42] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:15:47 INFO:192.168.1.28 - - [11/Jan/2013 05:15:47] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:15:52 INFO:192.168.1.28 - - [11/Jan/2013 05:15:52] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:15:58 INFO:192.168.1.28 - - [11/Jan/2013 05:15:58] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:16:03 INFO:192.168.1.28 - - [11/Jan/2013 05:16:03] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:16:08 INFO:192.168.1.28 - - [11/Jan/2013 05:16:08] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:16:13 INFO:192.168.1.28 - - [11/Jan/2013 05:16:13] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:16:18 INFO:192.168.1.28 - - [11/Jan/2013 05:16:18] "GET /processes/?top=50&sortby=CPU&skip=30 HTTP/1.1" 200 -
+01/11/13 05:16:24 INFO:192.168.1.28 - - [11/Jan/2013 05:16:24] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:16:29 INFO:192.168.1.28 - - [11/Jan/2013 05:16:29] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:16:36 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 05:16:36 INFO: * Restarting with reloader
+01/11/13 05:16:47 INFO:192.168.1.28 - - [11/Jan/2013 05:16:47] "GET / HTTP/1.1" 200 -
+01/11/13 05:16:48 INFO:192.168.1.28 - - [11/Jan/2013 05:16:48] "GET /static/images/ui-bg_flat_75_ffffff_40x100.png HTTP/1.1" 404 -
+01/11/13 05:16:48 INFO:192.168.1.28 - - [11/Jan/2013 05:16:48] "GET /static/images/ui-bg_highlight-soft_75_cccccc_1x100.png HTTP/1.1" 404 -
+01/11/13 05:16:48 INFO:192.168.1.28 - - [11/Jan/2013 05:16:48] "GET /static/images/ui-bg_glass_75_e6e6e6_1x400.png HTTP/1.1" 404 -
+01/11/13 05:16:48 INFO:192.168.1.28 - - [11/Jan/2013 05:16:48] "GET /static/images/ui-bg_glass_65_ffffff_1x400.png HTTP/1.1" 404 -
+01/11/13 05:16:48 INFO:192.168.1.28 - - [11/Jan/2013 05:16:48] "GET /config/ HTTP/1.1" 200 -
+01/11/13 05:16:48 INFO:192.168.1.28 - - [11/Jan/2013 05:16:48] "GET /static/images/ui-bg_glass_75_dadada_1x400.png HTTP/1.1" 404 -
+01/11/13 05:16:55 INFO:192.168.1.28 - - [11/Jan/2013 05:16:55] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:17:00 INFO:192.168.1.28 - - [11/Jan/2013 05:17:00] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:17:05 INFO:192.168.1.28 - - [11/Jan/2013 05:17:05] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:17:10 INFO:192.168.1.28 - - [11/Jan/2013 05:17:10] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:17:15 INFO:192.168.1.28 - - [11/Jan/2013 05:17:15] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:17:21 INFO:192.168.1.28 - - [11/Jan/2013 05:17:21] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:17:26 INFO:192.168.1.28 - - [11/Jan/2013 05:17:26] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:17:31 INFO:192.168.1.28 - - [11/Jan/2013 05:17:31] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:17:36 INFO:192.168.1.28 - - [11/Jan/2013 05:17:36] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:17:41 INFO:192.168.1.28 - - [11/Jan/2013 05:17:41] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:17:47 INFO:192.168.1.28 - - [11/Jan/2013 05:17:47] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:17:52 INFO:192.168.1.28 - - [11/Jan/2013 05:17:52] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:17:57 INFO:192.168.1.28 - - [11/Jan/2013 05:17:57] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:18:02 INFO:192.168.1.28 - - [11/Jan/2013 05:18:02] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:18:07 INFO:192.168.1.28 - - [11/Jan/2013 05:18:07] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:18:13 INFO:192.168.1.28 - - [11/Jan/2013 05:18:13] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:18:18 INFO:192.168.1.28 - - [11/Jan/2013 05:18:18] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:18:23 INFO:192.168.1.28 - - [11/Jan/2013 05:18:23] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:18:28 INFO:192.168.1.28 - - [11/Jan/2013 05:18:28] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:18:33 INFO:192.168.1.28 - - [11/Jan/2013 05:18:33] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:18:39 INFO:192.168.1.28 - - [11/Jan/2013 05:18:39] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:18:44 INFO:192.168.1.28 - - [11/Jan/2013 05:18:44] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:18:49 INFO:192.168.1.28 - - [11/Jan/2013 05:18:49] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:18:53 INFO: * Detected change in '/tmp/ncpa/agent/listener/commands.py', reloading
+01/11/13 05:19:03 INFO: * Running on http://0.0.0.0:5692/
+01/11/13 05:19:03 INFO: * Restarting with reloader
+01/11/13 05:19:07 INFO:192.168.1.28 - - [11/Jan/2013 05:19:07] "GET / HTTP/1.1" 200 -
+01/11/13 05:19:07 INFO:192.168.1.28 - - [11/Jan/2013 05:19:07] "GET /static/images/ui-bg_flat_75_ffffff_40x100.png HTTP/1.1" 404 -
+01/11/13 05:19:07 INFO:192.168.1.28 - - [11/Jan/2013 05:19:07] "GET /static/images/ui-bg_highlight-soft_75_cccccc_1x100.png HTTP/1.1" 404 -
+01/11/13 05:19:07 INFO:192.168.1.28 - - [11/Jan/2013 05:19:07] "GET /static/images/ui-bg_glass_75_e6e6e6_1x400.png HTTP/1.1" 404 -
+01/11/13 05:19:07 INFO:192.168.1.28 - - [11/Jan/2013 05:19:07] "GET /static/images/ui-bg_glass_65_ffffff_1x400.png HTTP/1.1" 404 -
+01/11/13 05:19:07 INFO:192.168.1.28 - - [11/Jan/2013 05:19:07] "GET /config/ HTTP/1.1" 200 -
+01/11/13 05:19:08 INFO:192.168.1.28 - - [11/Jan/2013 05:19:08] "GET /static/images/ui-bg_glass_75_dadada_1x400.png HTTP/1.1" 404 -
+01/11/13 05:19:15 INFO:192.168.1.28 - - [11/Jan/2013 05:19:15] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:19:20 INFO:192.168.1.28 - - [11/Jan/2013 05:19:20] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:19:25 INFO:192.168.1.28 - - [11/Jan/2013 05:19:25] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:19:31 INFO:192.168.1.28 - - [11/Jan/2013 05:19:31] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:19:36 INFO:192.168.1.28 - - [11/Jan/2013 05:19:36] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:19:41 INFO:192.168.1.28 - - [11/Jan/2013 05:19:41] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:19:46 INFO:192.168.1.28 - - [11/Jan/2013 05:19:46] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:19:51 INFO:192.168.1.28 - - [11/Jan/2013 05:19:51] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:19:56 INFO:192.168.1.28 - - [11/Jan/2013 05:19:56] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:20:02 INFO:192.168.1.28 - - [11/Jan/2013 05:20:02] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:20:07 INFO:192.168.1.28 - - [11/Jan/2013 05:20:07] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:20:12 INFO:192.168.1.28 - - [11/Jan/2013 05:20:12] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:20:17 INFO:192.168.1.28 - - [11/Jan/2013 05:20:17] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:20:23 INFO:192.168.1.28 - - [11/Jan/2013 05:20:23] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:20:28 INFO:192.168.1.28 - - [11/Jan/2013 05:20:28] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:20:33 INFO:192.168.1.28 - - [11/Jan/2013 05:20:33] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:20:38 INFO:192.168.1.28 - - [11/Jan/2013 05:20:38] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:20:43 INFO:192.168.1.28 - - [11/Jan/2013 05:20:43] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:20:48 INFO:192.168.1.28 - - [11/Jan/2013 05:20:48] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:20:54 INFO:192.168.1.28 - - [11/Jan/2013 05:20:54] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:20:59 INFO:192.168.1.28 - - [11/Jan/2013 05:20:59] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:21:04 INFO:192.168.1.28 - - [11/Jan/2013 05:21:04] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:21:09 INFO:192.168.1.28 - - [11/Jan/2013 05:21:09] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:21:14 INFO:192.168.1.28 - - [11/Jan/2013 05:21:14] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:21:20 INFO:192.168.1.28 - - [11/Jan/2013 05:21:20] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:21:25 INFO:192.168.1.28 - - [11/Jan/2013 05:21:25] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:21:30 INFO:192.168.1.28 - - [11/Jan/2013 05:21:30] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:21:35 INFO:192.168.1.28 - - [11/Jan/2013 05:21:35] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:21:40 INFO:192.168.1.28 - - [11/Jan/2013 05:21:40] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:21:46 INFO:192.168.1.28 - - [11/Jan/2013 05:21:46] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:21:51 INFO:192.168.1.28 - - [11/Jan/2013 05:21:51] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:21:56 INFO:192.168.1.28 - - [11/Jan/2013 05:21:56] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:22:01 INFO:192.168.1.28 - - [11/Jan/2013 05:22:01] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:22:06 INFO:192.168.1.28 - - [11/Jan/2013 05:22:06] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:22:12 INFO:192.168.1.28 - - [11/Jan/2013 05:22:12] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:22:17 INFO:192.168.1.28 - - [11/Jan/2013 05:22:17] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:22:22 INFO:192.168.1.28 - - [11/Jan/2013 05:22:22] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:22:27 INFO:192.168.1.28 - - [11/Jan/2013 05:22:27] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:22:32 INFO:192.168.1.28 - - [11/Jan/2013 05:22:32] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:22:38 INFO:192.168.1.28 - - [11/Jan/2013 05:22:38] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:22:43 INFO:192.168.1.28 - - [11/Jan/2013 05:22:43] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:22:48 INFO:192.168.1.28 - - [11/Jan/2013 05:22:48] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:22:53 INFO:192.168.1.28 - - [11/Jan/2013 05:22:53] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:22:58 INFO:192.168.1.28 - - [11/Jan/2013 05:22:58] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:23:04 INFO:192.168.1.28 - - [11/Jan/2013 05:23:04] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:23:09 INFO:192.168.1.28 - - [11/Jan/2013 05:23:09] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:23:14 INFO:192.168.1.28 - - [11/Jan/2013 05:23:14] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:23:19 INFO:192.168.1.28 - - [11/Jan/2013 05:23:19] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:23:24 INFO:192.168.1.28 - - [11/Jan/2013 05:23:24] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:23:29 INFO:192.168.1.28 - - [11/Jan/2013 05:23:29] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:23:35 INFO:192.168.1.28 - - [11/Jan/2013 05:23:35] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -
+01/11/13 05:23:40 INFO:192.168.1.28 - - [11/Jan/2013 05:23:40] "GET /processes/?top=50&sortby=MEM&skip=30 HTTP/1.1" 200 -

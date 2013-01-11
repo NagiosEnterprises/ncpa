@@ -8,6 +8,7 @@ import ConfigParser
 import os
 import processor
 import requests
+import json
 
 listener = Flask(__name__)
 listener.debug=True
@@ -26,7 +27,7 @@ def error(msg=None):
         msg = 'Error occurred during processing request.'
     return jsonify(error=msg)
 
-@listener.route('/check')
+@listener.route('/check/')
 def check():
     try:
         result = processor.check_metric(request.args, listener.config['iconfig'])
@@ -35,7 +36,7 @@ def check():
         logging.exception(e)
         return redirect(url_for('error', msg=str(e)))
 
-@listener.route('/nrdp', methods=['POST', 'GET'])
+@listener.route('/nrdp/')
 def nrdp():
     try:
         forward_to = listener.config['iconfig'].get('nrdp', 'parent')
@@ -50,16 +51,22 @@ def nrdp():
         logging.exception(e)
         return redirect(url_for('error', msg=str(e)))
 
-@listener.route('/config')
+@listener.route('/config/')
 def config():
     try:
         return render_template('config.html', **{'config' : listener.config['iconfig'].__dict__['_sections']})
     except Exception, e:
         logging.exception(e)
         return redirect(url_for('error', msg=str(e)))
-    
 
-@listener.route('/command')
+@listener.route('/processes/')
+def processes():
+    procs = json.loads(commands.enumerate_processes(request=request))
+    header = procs.get('header', [])
+    procs = procs.get('procs', [])
+    return render_template('processes.html', header=header, procs=procs)
+
+@listener.route('/command/')
 def command():
     command = request.args.get('command', '')
     try:
@@ -67,7 +74,7 @@ def command():
     except Exception, e:
         logging.exception(e)
         return redirect(url_for('error', msg=str(e)))
-    return generic(request)
+    return generic(request=request)
 
 if __name__ == "__main__":
     listener.run('0.0.0.0', 5692)
