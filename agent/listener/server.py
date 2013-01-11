@@ -5,9 +5,10 @@ import commands
 import logging
 import json
 import urllib
+import ConfigParser
+import os
 
 listener = Flask(__name__)
-listener.debug = False
 
 @listener.route('/')
 def index():
@@ -16,7 +17,6 @@ def index():
     except Exception, e:
         logging.exception(e)
 
-@listener.errorhandler(500)
 @listener.route('/error')
 def error():
     msg = request.args.get('msg', '')
@@ -27,6 +27,9 @@ def error():
 @listener.route('/config')
 def config():
     try:
+        config = ConfigParser.ConfigParser()
+        logging.error(os.path.abspath('etc/ncpa.cfg'))
+        config.read('etc/ncpa.cfg')
         #~ return render_template('config.html', {'config' : listener.pconfig.__dict__['_sections']})
         return render_template('config.html', {'config' : {'hi' : 'there'}})
     except:

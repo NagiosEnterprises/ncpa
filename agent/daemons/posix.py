@@ -144,7 +144,6 @@ class PassiveDaemon(PosixDaemon):
         while True:
             self.parse_config()
             self.run_all_handlers()
-            
             sleep = int(self.config.get('passive', 'sleep'))
             time.sleep(sleep)
     
@@ -174,7 +173,9 @@ class ListenerDaemon(PosixDaemon):
         daemonize()
         self.write_pid(self.PIDFILE, os.getpid())
         try:
+            #~ self.logger.info('Starting server...')
             listener.server.listener.run(address, port)
+            url_for('static', filename='chinook.css')
             url_for('static', filename='jquery-1.8.3.min.js')
             url_for('static', filename='jquery-ui.css')
             url_for('static', filename='jquery-ui.js')
