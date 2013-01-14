@@ -3762,3 +3762,21 @@ TypeError: coercing to Unicode: need string or buffer, list found
 01/14/13 00:07:40 WARNING:[u'plugins']
 01/14/13 00:07:40 WARNING:[]
 01/14/13 00:07:40 INFO:192.168.1.28 - - [14/Jan/2013 00:07:40] "GET /api/agent/plugins HTTP/1.1" 200 -
+01/14/13 00:13:20 INFO:192.168.1.28 - - [14/Jan/2013 00:13:20] "GET /api/ HTTP/1.1" 404 -
+01/14/13 00:14:29 INFO: * Detected change in '/tmp/ncpa/agent/listener/server.py', reloading
+01/14/13 00:14:44 INFO: * Running on http://0.0.0.0:5693/
+01/14/13 00:14:44 INFO: * Restarting with reloader
+01/14/13 00:14:47 WARNING:[]
+01/14/13 00:14:48 INFO:192.168.1.28 - - [14/Jan/2013 00:14:48] "GET /api/ HTTP/1.1" 200 -
+01/14/13 00:18:19 INFO: * Detected change in '/tmp/ncpa/agent/listener/psapi.py', reloading
+01/14/13 00:18:21 INFO: * Running on http://0.0.0.0:5693/
+01/14/13 00:18:21 INFO: * Restarting with reloader
+01/14/13 00:18:25 WARNING:[]
+01/14/13 00:18:26 INFO:192.168.1.28 - - [14/Jan/2013 00:18:26] "GET /api/ HTTP/1.1" 200 -
+01/14/13 00:18:36 WARNING:[u'cpu']
+01/14/13 00:18:36 WARNING:[]
+01/14/13 00:18:37 INFO:192.168.1.28 - - [14/Jan/2013 00:18:37] "GET /api/cpu HTTP/1.1" 200 -
+01/14/13 00:18:47 WARNING:[u'cpu', u'count']
+01/14/13 00:18:47 WARNING:[u'count']
+01/14/13 00:18:47 WARNING:[]
+01/14/13 00:18:48 INFO:192.168.1.28 - - [14/Jan/2013 00:18:48] "GET /api/cpu/count HTTP/1.1" 200 -

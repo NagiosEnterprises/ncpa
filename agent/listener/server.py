@@ -61,6 +61,7 @@ def config():
         logging.exception(e)
         return redirect(url_for('error', msg=str(e)))
 
+@listener.route('/api/')
 @listener.route('/api/<path:accessor>')
 def api(accessor=''):
     path = [x for x in accessor.split('/') if x]

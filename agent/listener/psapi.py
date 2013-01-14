@@ -25,7 +25,7 @@ class Node(object):
     def walk(self):
         stat = {}
         for child in self.children:
-            stat[child.name] = child.run()
+            stat.update(child.run())
         return stat
     
     def run(self):
