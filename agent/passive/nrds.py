@@ -16,7 +16,7 @@ class Handler(abstract.NagiosHandler):
         self.nrdp_url = self.config.get('nrdp', 'parent')
             
     def run(self, *args, **kwargs):
-        if self.updatenrds:
+        if self.updatenrds():
             self.getconfig()
         self.known_plugins()
         
