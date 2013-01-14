@@ -6,9 +6,11 @@ import logging
 import urllib
 import ConfigParser
 import os
+import sys
 import processor
 import requests
 import json
+import psapi
 
 listener = Flask(__name__)
 listener.debug=True
@@ -21,7 +23,7 @@ def index():
     except Exception, e:
         logging.exception(e)
 
-@listener.route('/error')
+@listener.route('/error/<msg>')
 def error(msg=None):
     if not msg:
         msg = 'Error occurred during processing request.'
@@ -59,6 +61,16 @@ def config():
         logging.exception(e)
         return redirect(url_for('error', msg=str(e)))
 
+@listener.route('/api/<path:accessor>')
+def api(accessor=''):
+    path = [x for x in accessor.split('/') if x]
+    try:
+        response = psapi.root.accessor(path)
+    except Exception, e:
+        logging.exception(e)
+        return redirect(url_for('error', msg='Referencing node that does not exist.'))
+    return jsonify({'value' : response })
+
 @listener.route('/processes/')
 def processes():
     procs = json.loads(commands.enumerate_processes(request=request))
@@ -68,10 +80,13 @@ def processes():
 
 @listener.route('/command/')
 def command():
+    logging.debug('Accessing command...')
     command = request.args.get('command', '')
     try:
+        logging.debug('Getting function')
         generic = getattr(commands, command)
     except Exception, e:
+        logging.debug('We failed.')
         logging.exception(e)
         return redirect(url_for('error', msg=str(e)))
     return generic(request=request)

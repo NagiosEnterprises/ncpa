@@ -3,6 +3,24 @@ import json
 import logging
 import psutil
 import time
+import sys
+
+def dirs_in_directory(module_file):
+    dirname = os.path.dirname(module_file)
+    return [x for x in os.listdir(dirname) if os.path.isdir(dirname + '/' + x)]
+    
+
+def generic_getter(name, lat):
+    
+    def gen(location):
+        stat = {}
+        for mod in lat:
+            module = '%s.%s' % (location, mod)
+            __import__(str(module))
+            stat[mod] = sys.modules[module].get(location)
+        return {name : stat}
+    
+    return gen
 
 def enumerate_plugins(*args, **kwargs):
     try:
