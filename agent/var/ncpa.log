@@ -4092,3 +4092,258 @@ NameError: global name 'subprocess' is not defined
 01/23/13 18:45:47 DEBUG:Running process with command line: /bin/sh plugins/yancyforprez.sh andmore fancy that
 01/23/13 18:45:47 INFO:127.0.0.1 - - [23/Jan/2013 18:45:47] "GET /api/agent/plugins/yancyforprez.sh/andmore%20fancy%20that HTTP/1.1" 200 -
 01/23/13 18:45:47 INFO:127.0.0.1 - - [23/Jan/2013 18:45:47] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 21:09:33 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/pluginapi.py', reloading
+01/23/13 21:21:25 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 21:21:25 INFO: * Restarting with reloader
+01/23/13 21:21:35 INFO:127.0.0.1 - - [23/Jan/2013 21:21:35] "GET /api/ HTTP/1.1" 302 -
+01/23/13 21:21:35 INFO:127.0.0.1 - - [23/Jan/2013 21:21:35] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 21:21:35 INFO:127.0.0.1 - - [23/Jan/2013 21:21:35] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 21:21:51 WARNING:[]
+01/23/13 21:21:52 INFO:127.0.0.1 - - [23/Jan/2013 21:21:52] "GET /api/?token=brody HTTP/1.1" 500 -
+01/23/13 21:21:52 INFO:127.0.0.1 - - [23/Jan/2013 21:21:52] "GET /api/?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+01/23/13 21:21:52 INFO:127.0.0.1 - - [23/Jan/2013 21:21:52] "GET /api/?__debugger__=yes&cmd=resource&f=jquery.js HTTP/1.1" 200 -
+01/23/13 21:21:52 INFO:127.0.0.1 - - [23/Jan/2013 21:21:52] "GET /api/?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+01/23/13 21:21:52 INFO:127.0.0.1 - - [23/Jan/2013 21:21:52] "GET /api/?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+01/23/13 21:21:53 INFO:127.0.0.1 - - [23/Jan/2013 21:21:53] "GET /api/?__debugger__=yes&cmd=resource&f=source.png HTTP/1.1" 200 -
+01/23/13 21:21:53 INFO:127.0.0.1 - - [23/Jan/2013 21:21:53] "GET /api/?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.1" 200 -
+01/23/13 21:21:53 INFO:127.0.0.1 - - [23/Jan/2013 21:21:53] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 21:22:26 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 21:22:28 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 21:22:28 INFO: * Restarting with reloader
+01/23/13 21:22:34 WARNING:[]
+01/23/13 21:22:35 INFO:127.0.0.1 - - [23/Jan/2013 21:22:35] "GET /api/?token=brody HTTP/1.1" 200 -
+01/23/13 21:22:35 INFO:127.0.0.1 - - [23/Jan/2013 21:22:35] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 21:36:27 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/psapi.py', reloading
+01/23/13 21:36:30 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 21:36:30 INFO: * Restarting with reloader
+01/23/13 21:36:33 WARNING:[]
+01/23/13 21:36:34 INFO:127.0.0.1 - - [23/Jan/2013 21:36:34] "GET /api/?token=brody HTTP/1.1" 200 -
+01/23/13 21:36:34 INFO:127.0.0.1 - - [23/Jan/2013 21:36:34] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 21:45:21 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/psapi.py', reloading
+01/23/13 21:45:26 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 21:45:26 INFO: * Restarting with reloader
+01/23/13 21:45:30 WARNING:[]
+01/23/13 21:45:32 INFO:127.0.0.1 - - [23/Jan/2013 21:45:32] "GET /api/?token=brody HTTP/1.1" 200 -
+01/23/13 21:45:32 INFO:127.0.0.1 - - [23/Jan/2013 21:45:32] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 21:46:17 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/psapi.py', reloading
+01/23/13 21:46:20 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 21:46:20 INFO: * Restarting with reloader
+01/23/13 21:46:23 WARNING:[]
+01/23/13 21:46:24 ERROR:'int' object is not callable
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 95, in api
+    response = psapi.getter(accessor)
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 88, in getter
+    return root.accessor(path)
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 23, in accessor
+    return self.run()
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 32, in run
+    return {self.name : self.method()}
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 28, in walk
+    stat.update(child.run())
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 32, in run
+    return {self.name : self.method()}
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 28, in walk
+    stat.update(child.run())
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 32, in run
+    return {self.name : self.method()}
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 28, in walk
+    stat.update(child.run())
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 32, in run
+    return {self.name : self.method()}
+TypeError: 'int' object is not callable
+01/23/13 21:46:24 INFO:127.0.0.1 - - [23/Jan/2013 21:46:24] "GET /api/?token=brody HTTP/1.1" 302 -
+01/23/13 21:46:24 INFO:127.0.0.1 - - [23/Jan/2013 21:46:24] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+01/23/13 21:46:24 INFO:127.0.0.1 - - [23/Jan/2013 21:46:24] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 21:48:15 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/psapi.py', reloading
+01/23/13 21:48:20 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 21:48:20 INFO: * Restarting with reloader
+01/23/13 21:48:29 INFO:127.0.0.1 - - [23/Jan/2013 21:48:29] "GET /api/cpu HTTP/1.1" 302 -
+01/23/13 21:48:29 INFO:127.0.0.1 - - [23/Jan/2013 21:48:29] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 21:48:29 INFO:127.0.0.1 - - [23/Jan/2013 21:48:29] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 21:48:41 WARNING:[u'cpu']
+01/23/13 21:48:41 WARNING:[]
+01/23/13 21:48:42 INFO:127.0.0.1 - - [23/Jan/2013 21:48:42] "GET /api/cpu?token=brody HTTP/1.1" 200 -
+01/23/13 21:48:42 INFO:127.0.0.1 - - [23/Jan/2013 21:48:42] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 21:48:57 WARNING:[u'disk']
+01/23/13 21:48:57 WARNING:[]
+01/23/13 21:48:57 INFO:127.0.0.1 - - [23/Jan/2013 21:48:57] "GET /api/disk/?token=brody HTTP/1.1" 200 -
+01/23/13 21:48:57 INFO:127.0.0.1 - - [23/Jan/2013 21:48:57] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 21:51:36 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/psapi.py', reloading
+01/23/13 21:51:40 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 21:51:40 INFO: * Restarting with reloader
+01/23/13 21:51:43 WARNING:[u'disk']
+01/23/13 21:51:43 WARNING:[]
+01/23/13 21:51:43 INFO:127.0.0.1 - - [23/Jan/2013 21:51:43] "GET /api/disk/?token=brody HTTP/1.1" 200 -
+01/23/13 21:51:43 INFO:127.0.0.1 - - [23/Jan/2013 21:51:43] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 21:51:50 WARNING:[u'disk']
+01/23/13 21:51:50 WARNING:[]
+01/23/13 21:51:50 INFO:127.0.0.1 - - [23/Jan/2013 21:51:50] "GET /api/disk/?token=brody HTTP/1.1" 200 -
+01/23/13 21:51:50 INFO:127.0.0.1 - - [23/Jan/2013 21:51:50] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 21:55:08 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/psapi.py', reloading
+01/23/13 21:55:35 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 21:55:35 INFO: * Restarting with reloader
+01/23/13 21:55:40 WARNING:[u'disk']
+01/23/13 21:55:40 WARNING:[]
+01/23/13 21:55:40 INFO:127.0.0.1 - - [23/Jan/2013 21:55:40] "GET /api/disk/?token=brody HTTP/1.1" 200 -
+01/23/13 21:55:40 INFO:127.0.0.1 - - [23/Jan/2013 21:55:40] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 21:55:55 WARNING:[]
+01/23/13 21:55:56 INFO:127.0.0.1 - - [23/Jan/2013 21:55:56] "GET /api/?token=brody HTTP/1.1" 200 -
+01/23/13 21:55:56 INFO:127.0.0.1 - - [23/Jan/2013 21:55:56] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 21:56:38 WARNING:[u'disk', u'sda2', u'read_time']
+01/23/13 21:56:38 WARNING:[u'sda2', u'read_time']
+01/23/13 21:56:38 WARNING:[u'read_time']
+01/23/13 21:56:38 WARNING:[]
+01/23/13 21:56:38 INFO:127.0.0.1 - - [23/Jan/2013 21:56:38] "GET /api/disk/sda2/read_time?token=brody HTTP/1.1" 200 -
+01/23/13 21:56:38 INFO:127.0.0.1 - - [23/Jan/2013 21:56:38] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 22:05:03 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/psapi.py', reloading
+01/23/13 22:05:31 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 22:05:31 INFO: * Restarting with reloader
+01/23/13 22:05:49 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/psapi.py', reloading
+01/23/13 22:05:52 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 22:05:52 INFO: * Restarting with reloader
+01/23/13 22:05:58 WARNING:[u'interface']
+01/23/13 22:05:58 ERROR:No node with that name: interface
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 95, in api
+    response = psapi.getter(accessor)
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 96, in getter
+    return root.accessor(path)
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 21, in accessor
+    raise IndexError('No node with that name: %s' % path[0])
+IndexError: No node with that name: interface
+01/23/13 22:05:58 INFO:127.0.0.1 - - [23/Jan/2013 22:05:58] "GET /api/interface/?token=brody HTTP/1.1" 302 -
+01/23/13 22:05:58 INFO:127.0.0.1 - - [23/Jan/2013 22:05:58] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+01/23/13 22:05:58 INFO:127.0.0.1 - - [23/Jan/2013 22:05:58] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 22:06:12 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/psapi.py', reloading
+01/23/13 22:06:45 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 22:06:45 INFO: * Restarting with reloader
+01/23/13 22:06:52 INFO:127.0.0.1 - - [23/Jan/2013 22:06:52] "GET /api/interface HTTP/1.1" 302 -
+01/23/13 22:06:52 INFO:127.0.0.1 - - [23/Jan/2013 22:06:52] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 22:06:52 INFO:127.0.0.1 - - [23/Jan/2013 22:06:52] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 22:07:06 WARNING:[u'interface']
+01/23/13 22:07:06 WARNING:[]
+01/23/13 22:07:06 INFO:127.0.0.1 - - [23/Jan/2013 22:07:06] "GET /api/interface/?token=brody HTTP/1.1" 200 -
+01/23/13 22:07:06 INFO:127.0.0.1 - - [23/Jan/2013 22:07:06] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 22:15:49 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/psapi.py', reloading
+01/23/13 22:15:57 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 22:15:57 INFO: * Restarting with reloader
+01/23/13 22:16:04 WARNING:[u'user']
+01/23/13 22:16:04 WARNING:[]
+01/23/13 22:16:04 INFO:127.0.0.1 - - [23/Jan/2013 22:16:04] "GET /api/user/?token=brody HTTP/1.1" 200 -
+01/23/13 22:16:04 INFO:127.0.0.1 - - [23/Jan/2013 22:16:04] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 22:16:40 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 22:16:40 INFO: * Restarting with reloader
+01/23/13 22:16:45 WARNING:[u'user']
+01/23/13 22:16:45 WARNING:[]
+01/23/13 22:16:45 INFO:127.0.0.1 - - [23/Jan/2013 22:16:45] "GET /api/user/?token=brody HTTP/1.1" 200 -
+01/23/13 22:16:45 INFO:127.0.0.1 - - [23/Jan/2013 22:16:45] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 22:16:49 WARNING:[u'user']
+01/23/13 22:16:49 WARNING:[]
+01/23/13 22:16:49 INFO:127.0.0.1 - - [23/Jan/2013 22:16:49] "GET /api/user/?token=brody HTTP/1.1" 200 -
+01/23/13 22:16:49 INFO:127.0.0.1 - - [23/Jan/2013 22:16:49] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 23:52:37 WARNING:[]
+01/23/13 23:52:38 INFO:127.0.0.1 - - [23/Jan/2013 23:52:38] "GET /api/?token=brody HTTP/1.1" 200 -
+01/23/13 23:52:38 INFO:127.0.0.1 - - [23/Jan/2013 23:52:38] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 23:54:05 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/psapi.py', reloading
+01/23/13 23:54:25 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 23:54:25 INFO: * Restarting with reloader
+01/23/13 23:54:28 WARNING:[]
+01/23/13 23:54:29 INFO:127.0.0.1 - - [23/Jan/2013 23:54:29] "GET /api/?token=brody HTTP/1.1" 200 -
+01/23/13 23:54:30 INFO:127.0.0.1 - - [23/Jan/2013 23:54:30] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 23:54:39 WARNING:[u'user', u'count']
+01/23/13 23:54:39 WARNING:[u'count']
+01/23/13 23:54:39 WARNING:[]
+01/23/13 23:54:39 INFO:127.0.0.1 - - [23/Jan/2013 23:54:39] "GET /api/user/count?token=brody HTTP/1.1" 200 -
+01/23/13 23:54:39 INFO:127.0.0.1 - - [23/Jan/2013 23:54:39] "GET /favicon.ico HTTP/1.1" 404 -
+01/24/13 00:08:44 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/psapi.py', reloading
+01/24/13 00:35:26 INFO: * Running on http://0.0.0.0:5693/
+01/24/13 00:35:26 INFO: * Restarting with reloader
+01/24/13 00:35:30 ERROR:No node with that name: plugins
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 95, in api
+    response = psapi.getter(accessor)
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 101, in getter
+    return root.accessor(path)
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 19, in accessor
+    return x.accessor(path[1:])
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 20, in accessor
+    raise IndexError('No node with that name: %s' % path[0])
+IndexError: No node with that name: plugins
+01/24/13 00:35:30 INFO:127.0.0.1 - - [24/Jan/2013 00:35:30] "GET /api/agent/plugins/yancyforprez.sh/?token=brody HTTP/1.1" 302 -
+01/24/13 00:35:30 INFO:127.0.0.1 - - [24/Jan/2013 00:35:30] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+01/24/13 00:35:30 INFO:127.0.0.1 - - [24/Jan/2013 00:35:30] "GET /favicon.ico HTTP/1.1" 404 -
+01/24/13 00:35:54 ERROR:No node with that name: yancyforprez.sh
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 95, in api
+    response = psapi.getter(accessor)
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 101, in getter
+    return root.accessor(path)
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 19, in accessor
+    return x.accessor(path[1:])
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 19, in accessor
+    return x.accessor(path[1:])
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 20, in accessor
+    raise IndexError('No node with that name: %s' % path[0])
+IndexError: No node with that name: yancyforprez.sh
+01/24/13 00:35:54 INFO:127.0.0.1 - - [24/Jan/2013 00:35:54] "GET /api/agent/plugin/yancyforprez.sh/andmore?token=brody HTTP/1.1" 302 -
+01/24/13 00:35:54 INFO:127.0.0.1 - - [24/Jan/2013 00:35:54] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+01/24/13 00:35:54 INFO:127.0.0.1 - - [24/Jan/2013 00:35:54] "GET /favicon.ico HTTP/1.1" 404 -
+01/24/13 00:36:14 INFO:127.0.0.1 - - [24/Jan/2013 00:36:14] "GET /api/agent/plugin/?token=brody HTTP/1.1" 200 -
+01/24/13 00:36:14 INFO:127.0.0.1 - - [24/Jan/2013 00:36:14] "GET /favicon.ico HTTP/1.1" 404 -
+01/24/13 00:36:24 ERROR:No node with that name: yancyforprez.sh
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 95, in api
+    response = psapi.getter(accessor)
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 101, in getter
+    return root.accessor(path)
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 19, in accessor
+    return x.accessor(path[1:])
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 19, in accessor
+    return x.accessor(path[1:])
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 20, in accessor
+    raise IndexError('No node with that name: %s' % path[0])
+IndexError: No node with that name: yancyforprez.sh
+01/24/13 00:36:24 INFO:127.0.0.1 - - [24/Jan/2013 00:36:24] "GET /api/agent/plugin/yancyforprez.sh?token=brody HTTP/1.1" 302 -
+01/24/13 00:36:25 INFO:127.0.0.1 - - [24/Jan/2013 00:36:25] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+01/24/13 00:36:25 INFO:127.0.0.1 - - [24/Jan/2013 00:36:25] "GET /favicon.ico HTTP/1.1" 404 -
+01/24/13 00:36:32 INFO:127.0.0.1 - - [24/Jan/2013 00:36:32] "GET /favicon.ico HTTP/1.1" 404 -
+01/24/13 00:37:09 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/24/13 00:37:12 INFO: * Running on http://0.0.0.0:5693/
+01/24/13 00:37:12 INFO: * Restarting with reloader
+01/24/13 00:37:19 INFO:127.0.0.1 - - [24/Jan/2013 00:37:19] "GET /favicon.ico HTTP/1.1" 404 -
+01/24/13 00:37:34 INFO:127.0.0.1 - - [24/Jan/2013 00:37:34] "GET /favicon.ico HTTP/1.1" 404 -
+01/24/13 00:37:42 DEBUG:Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
+01/24/13 00:37:42 DEBUG:Running process with command line: /bin/sh plugins/yancyforprez.sh andone
+01/24/13 00:37:42 INFO:127.0.0.1 - - [24/Jan/2013 00:37:42] "GET /api/agent/plugin/yancyforprez.sh/andone?token=brody HTTP/1.1" 200 -
+01/24/13 00:37:42 INFO:127.0.0.1 - - [24/Jan/2013 00:37:42] "GET /favicon.ico HTTP/1.1" 404 -
+01/24/13 00:37:49 ERROR:No node with that name: yancyforprez.sh
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 95, in api
+    response = psapi.getter(accessor)
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 101, in getter
+    return root.accessor(path)
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 19, in accessor
+    return x.accessor(path[1:])
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 19, in accessor
+    return x.accessor(path[1:])
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 20, in accessor
+    raise IndexError('No node with that name: %s' % path[0])
+IndexError: No node with that name: yancyforprez.sh
+01/24/13 00:37:49 INFO:127.0.0.1 - - [24/Jan/2013 00:37:49] "GET /api/agent/plugin/yancyforprez.sh/?token=brody HTTP/1.1" 302 -
+01/24/13 00:37:49 INFO:127.0.0.1 - - [24/Jan/2013 00:37:49] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+01/24/13 00:37:49 INFO:127.0.0.1 - - [24/Jan/2013 00:37:49] "GET /favicon.ico HTTP/1.1" 404 -
+01/24/13 00:37:54 INFO:127.0.0.1 - - [24/Jan/2013 00:37:54] "GET /favicon.ico HTTP/1.1" 404 -
+01/24/13 00:38:25 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/24/13 00:39:37 INFO: * Running on http://0.0.0.0:5693/
+01/24/13 00:39:37 INFO: * Restarting with reloader
+01/24/13 00:39:43 INFO:127.0.0.1 - - [24/Jan/2013 00:39:43] "GET /favicon.ico HTTP/1.1" 404 -
+01/24/13 00:39:46 INFO:127.0.0.1 - - [24/Jan/2013 00:39:46] "GET /favicon.ico HTTP/1.1" 404 -
+01/24/13 00:39:49 DEBUG:Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
+01/24/13 00:39:49 DEBUG:Running process with command line: /bin/sh plugins/yancyforprez.sh andone
+01/24/13 00:39:49 INFO:127.0.0.1 - - [24/Jan/2013 00:39:49] "GET /api/agent/plugin/yancyforprez.sh/andone?token=brody HTTP/1.1" 200 -
+01/24/13 00:39:49 INFO:127.0.0.1 - - [24/Jan/2013 00:39:49] "GET /favicon.ico HTTP/1.1" 404 -
+01/24/13 00:40:01 DEBUG:Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
+01/24/13 00:40:01 DEBUG:Running process with command line: /bin/sh plugins/yancyforprez.sh None
+01/24/13 00:40:01 INFO:127.0.0.1 - - [24/Jan/2013 00:40:01] "GET /api/agent/plugin/yancyforprez.sh/ HTTP/1.1" 200 -
+01/24/13 00:40:01 INFO:127.0.0.1 - - [24/Jan/2013 00:40:01] "GET /favicon.ico HTTP/1.1" 404 -

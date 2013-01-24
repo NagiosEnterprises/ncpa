@@ -77,11 +77,12 @@ def config():
         logging.exception(e)
         return redirect(url_for('error', msg=str(e)))
 
-@listener.route('/api/agent/plugins/<plugin_name>/<path:plugin_args>')
+@listener.route('/api/agent/plugin/<plugin_name>/')
+@listener.route('/api/agent/plugin/<plugin_name>/<path:plugin_args>')
 def plugin_api(plugin_name=None, plugin_args=None):
     config = listener.config['iconfig']
     try:
-        response = pluginapi.execute(plugin_name, plugin_args, config)
+        response = pluginapi.execute_plugin(plugin_name, plugin_args, config)
     except Exception, e:
         logging.exception(e)
         return redirect(url_for('error', msg='Error running plugin.'))
@@ -91,13 +92,12 @@ def plugin_api(plugin_name=None, plugin_args=None):
 @listener.route('/api/<path:accessor>')
 @requires_auth
 def api(accessor=''):
-    path = [x for x in accessor.split('/') if x]
     try:
-        response = psapi.root.accessor(path)
+        response = psapi.getter(accessor)
     except Exception, e:
         logging.exception(e)
         return redirect(url_for('error', msg='Referencing node that does not exist.'))
-    return jsonify({'value' : response })
+    return jsonify({'value' : response})
 
 @listener.route('/processes/')
 @requires_auth

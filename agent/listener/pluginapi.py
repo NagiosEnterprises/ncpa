@@ -5,6 +5,14 @@ import logging
 import shlex
 import string
 
+def try_both(plugin_name, plugin_args, config):
+    """Try both the builtin and named plugin, in that order.
+    """
+    try:
+        execute_plugin(plugin_name, plugin_args, config)
+    except:
+        execute_named(plugin_name, plugin_args)
+
 def get_cmdline_instruct(plugin_name, plugin_args, instruction):
     """
     Execute with special instructions.
@@ -32,13 +40,9 @@ def get_cmdline_no_instruct(plugin_name, plugin_args):
     """
     Execute the script normally, with no special considerations.
     """
-    
-    command  = [plugin_name]
-    command += shlex.split(plugin_args)
-    
-    return command
+    return [plugin_name] + shlex.split(plugin_args)
 
-def execute(plugin_name, plugin_args, config, *args, **kwargs):
+def execute_plugin(plugin_name, plugin_args, config, *args, **kwargs):
     """
     Runs custom scripts that MUST be located in the scripts subdirectory
     of the executable

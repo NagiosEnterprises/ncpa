@@ -13,7 +13,6 @@ class Node(object):
         self.name = name
     
     def accessor(self, path):
-        logging.warning(path)
         if path:
             for x in self.children:
                 if x.name == path[0]:
@@ -30,15 +29,26 @@ class Node(object):
     
     def run(self):
         return {self.name : self.method()}
-        
 
-def convert_ps_disk_val(named_tuple):
-    stat = {}
-    order_list = ['read_count', 'write_count', 'read_bytes', 'write_bytes', 'read_time', 'write_time']
-    for device in named_tuple:
-        stat[device] = {}
-        for metric in order_list:
-            stat[device][metric] = getattr(device, order_list)
+def make_disk_nodes(disk_name):
+    read_time = Node('read_time', method=lambda: ps.disk_io_counters(perdisk=True)[disk_name].read_time)
+    write_time = Node('write_time', method=lambda: ps.disk_io_counters(perdisk=True)[disk_name].write_time)
+    read_count = Node('read_count', method=lambda: ps.disk_io_counters(perdisk=True)[disk_name].read_count)
+    write_count = Node('write_count', method=lambda: ps.disk_io_counters(perdisk=True)[disk_name].write_count)
+    read_bytes = Node('read_bytes', method=lambda: ps.disk_io_counters(perdisk=True)[disk_name].read_bytes)
+    write_bytes = Node('write_bytes', method=lambda: ps.disk_io_counters(perdisk=True)[disk_name].write_bytes)
+    return Node(disk_name, children=(read_time, write_time, read_count, write_count, read_bytes, write_bytes))
+
+def make_if_nodes(if_name):
+    bytes_sent = Node('bytes_sent', method=lambda: ps.network_io_counters(pernic=True)[if_name].bytes_sent)
+    bytes_recv = Node('bytes_recv', method=lambda: ps.network_io_counters(pernic=True)[if_name].bytes_recv)
+    packets_sent = Node('packets_sent', method=lambda: ps.network_io_counters(pernic=True)[if_name].packets_sent)
+    packets_recv = Node('packets_recv', method=lambda: ps.network_io_counters(pernic=True)[if_name].packets_recv)
+    errin = Node('errin', method=lambda: ps.network_io_counters(pernic=True)[if_name].errin)
+    errout = Node('errout', method=lambda: ps.network_io_counters(pernic=True)[if_name].errout)
+    dropin = Node('dropin', method=lambda: ps.network_io_counters(pernic=True)[if_name].dropin)
+    dropout = Node('dropout', method=lambda: ps.network_io_counters(pernic=True)[if_name].dropout)
+    return Node(if_name, children=(bytes_sent, bytes_recv, packets_sent, packets_recv, errin, errout, dropin, dropout))
 
 #~ CPU Tree
 cpu_count = Node('count', method=lambda: len(ps.cpu_percent(percpu=True)))
@@ -48,7 +58,6 @@ cpu_system = Node('system', method=lambda: [x.system for x in ps.cpu_times(percp
 cpu_idle = Node('idle', method=lambda: [x.idle for x in ps.cpu_times(percpu=True)])
 
 cpu = Node('cpu', children=(cpu_count, cpu_system, cpu_percent, cpu_user, cpu_idle))
-
 
 #~ Memory Tree
 mem_virt_total = Node('total', method=lambda: ps.virtual_memory().total)
@@ -68,17 +77,25 @@ mem_swap = Node('swap', children=(mem_swap_total, mem_swap_free, mem_swap_percen
 
 memory = Node('memory', children=(mem_virt, mem_swap))
 
-disk_read_count = Node('read_count', method=lambda: ps.disk_io_counters(perdisk=True))
-disk_write_count = Node('write_count', method=lambda: ps.disk_io_counters(perdisk=True))
-disk_read_bytes = Node('read_bytes', method=lambda: ps.disk_io_counters(perdisk=True))
-disk_write_bytes = Node('write_bytes', method=lambda: ps.disk_io_counters(perdisk=True))
-disk_read_time = Node('read_time', method=lambda: ps.disk_io_counters(perdisk=True))
-disk_write_time = Node('write_time', method=lambda: dict(ps.disk_io_counters(perdisk=True)))
+disk_children = [make_disk_nodes(x) for x in ps.disk_io_counters(perdisk=True).keys()]
 
-disk = Node('disk', children=(disk_read_count, disk_write_count, disk_read_bytes, disk_write_bytes, disk_read_time, disk_write_time))
+disk = Node('disk', children=disk_children)
 
-plugins = Node('plugins', method=lambda: [x for x in os.listdir('plugins') if os.path.isfile('plugins/%s' % x)])
+if_children = [make_if_nodes(x) for x in ps.network_io_counters(pernic=True).keys()]
 
-agent = Node('agent', children=(plugins,))
+interface = Node('interface', children=if_children)
 
-root = Node('root', children=(cpu, memory, disk, agent))
+plugin = Node('plugin', method=lambda: [x for x in os.listdir('plugins') if os.path.isfile('plugins/%s' % x)])
+
+agent = Node('agent', children=(plugin,))
+
+user_count = Node('count', method=lambda: len([x.name for x in ps.get_users()]))
+user_list  = Node('list', method=lambda: [x.name for x in ps.get_users()])
+
+user = Node('user', children=(user_count, user_list))
+
+root = Node('root', children=(cpu, memory, disk, interface, agent, user))
+
+def getter(accessor=''):
+    path = [x for x in accessor.split('/') if x]
+    return root.accessor(path)
