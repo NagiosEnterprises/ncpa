@@ -77,7 +77,7 @@ disk_write_time = Node('write_time', method=lambda: dict(ps.disk_io_counters(per
 
 disk = Node('disk', children=(disk_read_count, disk_write_count, disk_read_bytes, disk_write_bytes, disk_read_time, disk_write_time))
 
-plugins = Node('plugins', method=lambda: [x for x in os.listdir('plugins') if os.path.isfile('plugins/%s' % x)] + ['check_memory', 'check_swap', 'check_cpu'])
+plugins = Node('plugins', method=lambda: [x for x in os.listdir('plugins') if os.path.isfile('plugins/%s' % x)])
 
 agent = Node('agent', children=(plugins,))
 

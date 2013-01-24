@@ -1,0 +1,2 @@
+echo $@
+exit 2

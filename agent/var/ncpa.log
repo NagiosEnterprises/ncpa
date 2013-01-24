@@ -3780,3 +3780,315 @@ TypeError: coercing to Unicode: need string or buffer, list found
 01/14/13 00:18:47 WARNING:[u'count']
 01/14/13 00:18:47 WARNING:[]
 01/14/13 00:18:48 INFO:192.168.1.28 - - [14/Jan/2013 00:18:48] "GET /api/cpu/count HTTP/1.1" 200 -
+01/23/13 10:36:01 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+01/23/13 10:36:08 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 10:36:08 INFO: * Restarting with reloader
+01/23/13 10:36:08 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+01/23/13 10:36:55 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+01/23/13 10:36:59 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 10:36:59 INFO: * Restarting with reloader
+01/23/13 10:37:42 WARNING:[u'cpu']
+01/23/13 10:37:42 WARNING:[]
+01/23/13 10:37:44 INFO:127.0.0.1 - - [23/Jan/2013 10:37:44] "GET /api/cpu HTTP/1.1" 200 -
+01/23/13 10:37:44 INFO:127.0.0.1 - - [23/Jan/2013 10:37:44] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 11:01:19 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 17:32:00 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+01/23/13 17:32:04 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 17:32:04 INFO: * Restarting with reloader
+01/23/13 17:32:10 WARNING:[u'cpu']
+01/23/13 17:32:10 WARNING:[]
+01/23/13 17:32:11 INFO:127.0.0.1 - - [23/Jan/2013 17:32:11] "GET /api/cpu HTTP/1.1" 200 -
+01/23/13 17:32:11 INFO:127.0.0.1 - - [23/Jan/2013 17:32:11] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:32:52 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 17:37:02 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 17:37:02 INFO: * Restarting with reloader
+01/23/13 17:37:09 WARNING:[u'cpu']
+01/23/13 17:37:09 WARNING:[]
+01/23/13 17:37:10 INFO:127.0.0.1 - - [23/Jan/2013 17:37:10] "GET /api/cpu HTTP/1.1" 200 -
+01/23/13 17:37:10 INFO:127.0.0.1 - - [23/Jan/2013 17:37:10] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:37:45 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 17:37:49 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 17:37:49 INFO: * Restarting with reloader
+01/23/13 17:37:54 WARNING:[u'cpu']
+01/23/13 17:37:54 WARNING:[]
+01/23/13 17:37:55 INFO:127.0.0.1 - - [23/Jan/2013 17:37:55] "GET /api/cpu HTTP/1.1" 200 -
+01/23/13 17:37:55 INFO:127.0.0.1 - - [23/Jan/2013 17:37:55] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:38:37 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 17:39:05 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 17:39:05 INFO: * Restarting with reloader
+01/23/13 17:39:12 INFO:In auth function
+01/23/13 17:39:12 INFO:127.0.0.1 - - [23/Jan/2013 17:39:12] "GET /api/cpu HTTP/1.1" 500 -
+01/23/13 17:39:12 INFO:127.0.0.1 - - [23/Jan/2013 17:39:12] "GET /api/cpu?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+01/23/13 17:39:12 INFO:127.0.0.1 - - [23/Jan/2013 17:39:12] "GET /api/cpu?__debugger__=yes&cmd=resource&f=jquery.js HTTP/1.1" 200 -
+01/23/13 17:39:12 INFO:127.0.0.1 - - [23/Jan/2013 17:39:12] "GET /api/cpu?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+01/23/13 17:39:12 INFO:127.0.0.1 - - [23/Jan/2013 17:39:12] "GET /api/cpu?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+01/23/13 17:39:12 INFO:127.0.0.1 - - [23/Jan/2013 17:39:12] "GET /api/cpu?__debugger__=yes&cmd=resource&f=source.png HTTP/1.1" 200 -
+01/23/13 17:39:12 INFO:127.0.0.1 - - [23/Jan/2013 17:39:12] "GET /api/cpu?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.1" 200 -
+01/23/13 17:39:12 INFO:127.0.0.1 - - [23/Jan/2013 17:39:12] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:39:22 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 17:39:24 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 17:39:24 INFO: * Restarting with reloader
+01/23/13 17:39:29 INFO:In auth function
+01/23/13 17:39:29 INFO:127.0.0.1 - - [23/Jan/2013 17:39:29] "GET /api/cpu HTTP/1.1" 302 -
+01/23/13 17:39:29 INFO:127.0.0.1 - - [23/Jan/2013 17:39:29] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 17:39:29 INFO:127.0.0.1 - - [23/Jan/2013 17:39:29] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:39:52 INFO:In auth function
+01/23/13 17:39:52 WARNING:[u'cpu']
+01/23/13 17:39:52 WARNING:[]
+01/23/13 17:39:53 INFO:127.0.0.1 - - [23/Jan/2013 17:39:53] "GET /api/cpu?token=a HTTP/1.1" 200 -
+01/23/13 17:39:54 INFO:127.0.0.1 - - [23/Jan/2013 17:39:54] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:41:17 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 17:41:19 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 17:41:19 INFO: * Restarting with reloader
+01/23/13 17:41:25 INFO:127.0.0.1 - - [23/Jan/2013 17:41:25] "GET /api/cpu HTTP/1.1" 500 -
+01/23/13 17:41:25 INFO:127.0.0.1 - - [23/Jan/2013 17:41:25] "GET /api/cpu?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+01/23/13 17:41:25 INFO:127.0.0.1 - - [23/Jan/2013 17:41:25] "GET /api/cpu?__debugger__=yes&cmd=resource&f=jquery.js HTTP/1.1" 200 -
+01/23/13 17:41:25 INFO:127.0.0.1 - - [23/Jan/2013 17:41:25] "GET /api/cpu?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+01/23/13 17:41:25 INFO:127.0.0.1 - - [23/Jan/2013 17:41:25] "GET /api/cpu?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+01/23/13 17:41:25 INFO:127.0.0.1 - - [23/Jan/2013 17:41:25] "GET /api/cpu?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.1" 200 -
+01/23/13 17:41:25 INFO:127.0.0.1 - - [23/Jan/2013 17:41:25] "GET /api/cpu?__debugger__=yes&cmd=resource&f=source.png HTTP/1.1" 200 -
+01/23/13 17:41:25 INFO:127.0.0.1 - - [23/Jan/2013 17:41:25] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:41:45 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 17:41:48 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 17:41:48 INFO: * Restarting with reloader
+01/23/13 17:41:51 INFO:In auth function
+01/23/13 17:41:51 WARNING:[u'cpu']
+01/23/13 17:41:51 WARNING:[]
+01/23/13 17:41:52 INFO:127.0.0.1 - - [23/Jan/2013 17:41:52] "GET /api/cpu HTTP/1.1" 200 -
+01/23/13 17:41:52 INFO:127.0.0.1 - - [23/Jan/2013 17:41:52] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:42:49 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 17:42:51 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 17:42:51 INFO: * Restarting with reloader
+01/23/13 17:42:55 INFO:In auth function
+01/23/13 17:42:55 INFO:127.0.0.1 - - [23/Jan/2013 17:42:55] "GET /api/cpu HTTP/1.1" 302 -
+01/23/13 17:42:55 INFO:127.0.0.1 - - [23/Jan/2013 17:42:55] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 17:42:55 INFO:127.0.0.1 - - [23/Jan/2013 17:42:55] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:43:14 INFO:In auth function
+01/23/13 17:43:14 WARNING:[u'cpu']
+01/23/13 17:43:14 WARNING:[]
+01/23/13 17:43:15 INFO:127.0.0.1 - - [23/Jan/2013 17:43:15] "GET /api/cpu?token=brody HTTP/1.1" 200 -
+01/23/13 17:43:15 INFO:127.0.0.1 - - [23/Jan/2013 17:43:15] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:45:02 INFO:In auth function
+01/23/13 17:45:02 INFO:127.0.0.1 - - [23/Jan/2013 17:45:02] "GET /api/cpu HTTP/1.1" 302 -
+01/23/13 17:45:02 INFO:127.0.0.1 - - [23/Jan/2013 17:45:02] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 17:45:02 INFO:127.0.0.1 - - [23/Jan/2013 17:45:02] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:46:03 INFO:127.0.0.1 - - [23/Jan/2013 17:46:03] "GET /config/ HTTP/1.1" 200 -
+01/23/13 17:46:03 INFO:127.0.0.1 - - [23/Jan/2013 17:46:03] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:46:37 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 17:48:35 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 17:48:35 INFO: * Restarting with reloader
+01/23/13 17:48:40 INFO:In auth function
+01/23/13 17:48:40 INFO:127.0.0.1 - - [23/Jan/2013 17:48:40] "GET /api/ HTTP/1.1" 302 -
+01/23/13 17:48:40 INFO:127.0.0.1 - - [23/Jan/2013 17:48:40] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 17:48:41 INFO:127.0.0.1 - - [23/Jan/2013 17:48:41] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:48:43 INFO:127.0.0.1 - - [23/Jan/2013 17:48:43] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:48:51 INFO:In auth function
+01/23/13 17:48:51 WARNING:[]
+01/23/13 17:48:53 INFO:127.0.0.1 - - [23/Jan/2013 17:48:53] "GET /api/?token=brody HTTP/1.1" 200 -
+01/23/13 17:48:53 INFO:127.0.0.1 - - [23/Jan/2013 17:48:53] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:49:28 INFO:In auth function
+01/23/13 17:49:28 WARNING:[u'cpu']
+01/23/13 17:49:28 WARNING:[]
+01/23/13 17:49:29 INFO:127.0.0.1 - - [23/Jan/2013 17:49:29] "GET /api/cpu/?token=brody HTTP/1.1" 200 -
+01/23/13 17:49:29 INFO:127.0.0.1 - - [23/Jan/2013 17:49:29] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 17:53:25 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 17:53:31 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 17:53:31 INFO: * Restarting with reloader
+01/23/13 17:53:35 WARNING:[u'cpu']
+01/23/13 17:53:35 WARNING:[]
+01/23/13 17:53:36 INFO:127.0.0.1 - - [23/Jan/2013 17:53:36] "GET /api/cpu/?token=brody HTTP/1.1" 200 -
+01/23/13 17:53:36 INFO:127.0.0.1 - - [23/Jan/2013 17:53:36] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:01:37 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:01:37 INFO: * Restarting with reloader
+01/23/13 18:01:45 INFO:127.0.0.1 - - [23/Jan/2013 18:01:45] "GET /api/agent/ HTTP/1.1" 302 -
+01/23/13 18:01:45 INFO:127.0.0.1 - - [23/Jan/2013 18:01:45] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 18:01:45 INFO:127.0.0.1 - - [23/Jan/2013 18:01:45] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:01:58 WARNING:[u'agent']
+01/23/13 18:01:58 WARNING:[]
+01/23/13 18:01:58 INFO:127.0.0.1 - - [23/Jan/2013 18:01:58] "GET /api/agent/?token=brody HTTP/1.1" 200 -
+01/23/13 18:01:59 INFO:127.0.0.1 - - [23/Jan/2013 18:01:59] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:02:08 INFO:127.0.0.1 - - [23/Jan/2013 18:02:08] "GET /api/agent/plugins/ HTTP/1.1" 302 -
+01/23/13 18:02:08 INFO:127.0.0.1 - - [23/Jan/2013 18:02:08] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 18:02:08 INFO:127.0.0.1 - - [23/Jan/2013 18:02:08] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:02:19 WARNING:[u'agent', u'plugins']
+01/23/13 18:02:19 WARNING:[u'plugins']
+01/23/13 18:02:19 WARNING:[]
+01/23/13 18:02:19 INFO:127.0.0.1 - - [23/Jan/2013 18:02:19] "GET /api/agent/plugins/?token=brody HTTP/1.1" 200 -
+01/23/13 18:02:19 INFO:127.0.0.1 - - [23/Jan/2013 18:02:19] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:03:39 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/psapi.py', reloading
+01/23/13 18:03:41 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:03:41 INFO: * Restarting with reloader
+01/23/13 18:03:45 WARNING:[u'agent', u'plugins']
+01/23/13 18:03:45 WARNING:[u'plugins']
+01/23/13 18:03:45 WARNING:[]
+01/23/13 18:03:45 INFO:127.0.0.1 - - [23/Jan/2013 18:03:45] "GET /api/agent/plugins/?token=brody HTTP/1.1" 200 -
+01/23/13 18:03:45 INFO:127.0.0.1 - - [23/Jan/2013 18:03:45] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:08:52 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 18:09:13 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:09:13 INFO: * Restarting with reloader
+01/23/13 18:09:22 INFO:127.0.0.1 - - [23/Jan/2013 18:09:22] "GET /api/agent/plugins/yancyforprez.sh HTTP/1.1" 302 -
+01/23/13 18:09:22 INFO:127.0.0.1 - - [23/Jan/2013 18:09:22] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 18:09:22 INFO:127.0.0.1 - - [23/Jan/2013 18:09:22] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:09:50 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 18:09:52 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:09:52 INFO: * Restarting with reloader
+01/23/13 18:10:00 INFO:127.0.0.1 - - [23/Jan/2013 18:10:00] "GET /api/agent/plugins/yancyforprez.sh HTTP/1.1" 200 -
+01/23/13 18:10:01 INFO:127.0.0.1 - - [23/Jan/2013 18:10:01] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:10:46 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 18:12:31 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:12:31 INFO: * Restarting with reloader
+01/23/13 18:12:35 ERROR:global name 'pluginapi' is not defined
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 84, in plugin_api
+    response = pluginapi.execute(path, config)
+NameError: global name 'pluginapi' is not defined
+01/23/13 18:12:35 INFO:127.0.0.1 - - [23/Jan/2013 18:12:35] "GET /api/agent/plugins/yancyforprez.sh HTTP/1.1" 302 -
+01/23/13 18:12:35 INFO:127.0.0.1 - - [23/Jan/2013 18:12:35] "GET /error/Error%20running%20plugin. HTTP/1.1" 200 -
+01/23/13 18:12:35 INFO:127.0.0.1 - - [23/Jan/2013 18:12:35] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:12:53 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 18:12:57 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:12:57 INFO: * Restarting with reloader
+01/23/13 18:13:06 INFO:127.0.0.1 - - [23/Jan/2013 18:13:06] "GET /api/agent/plugins/yancyforprez.sh HTTP/1.1" 200 -
+01/23/13 18:13:06 INFO:127.0.0.1 - - [23/Jan/2013 18:13:06] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:17:03 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/pluginapi.py', reloading
+01/23/13 18:17:32 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:17:32 INFO: * Restarting with reloader
+01/23/13 18:17:42 INFO:127.0.0.1 - - [23/Jan/2013 18:17:42] "GET /api/agent/plugins/yancyforprez.sh HTTP/1.1" 200 -
+01/23/13 18:17:42 INFO:127.0.0.1 - - [23/Jan/2013 18:17:42] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:17:46 INFO:127.0.0.1 - - [23/Jan/2013 18:17:46] "GET /api/agent/plugins/yancyforprez.sh HTTP/1.1" 200 -
+01/23/13 18:17:46 INFO:127.0.0.1 - - [23/Jan/2013 18:17:46] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:18:02 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/pluginapi.py', reloading
+01/23/13 18:33:50 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:33:50 INFO: * Restarting with reloader
+01/23/13 18:33:54 ERROR:execute() takes exactly 2 arguments (3 given)
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 84, in plugin_api
+    response = pluginapi.execute(plugin_name, plugin_args, config)
+TypeError: execute() takes exactly 2 arguments (3 given)
+01/23/13 18:33:54 INFO:127.0.0.1 - - [23/Jan/2013 18:33:54] "GET /api/agent/plugins/yancyforprez.sh/args HTTP/1.1" 302 -
+01/23/13 18:33:54 INFO:127.0.0.1 - - [23/Jan/2013 18:33:54] "GET /error/Error%20running%20plugin. HTTP/1.1" 200 -
+01/23/13 18:33:55 INFO:127.0.0.1 - - [23/Jan/2013 18:33:55] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:34:20 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/pluginapi.py', reloading
+01/23/13 18:34:24 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:34:24 INFO: * Restarting with reloader
+01/23/13 18:34:32 INFO:127.0.0.1 - - [23/Jan/2013 18:34:32] "GET /api/agent/plugins/yancyforprez.sh/args HTTP/1.1" 200 -
+01/23/13 18:34:32 INFO:127.0.0.1 - - [23/Jan/2013 18:34:32] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:34:41 INFO:127.0.0.1 - - [23/Jan/2013 18:34:41] "GET /api/agent/plugins/yancyforprez.sh/args/andmore HTTP/1.1" 302 -
+01/23/13 18:34:41 INFO:127.0.0.1 - - [23/Jan/2013 18:34:41] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 18:34:42 INFO:127.0.0.1 - - [23/Jan/2013 18:34:42] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:35:12 INFO:127.0.0.1 - - [23/Jan/2013 18:35:12] "GET /api/agent/plugins/yancyforprez.sh/args/andmore/ HTTP/1.1" 302 -
+01/23/13 18:35:12 INFO:127.0.0.1 - - [23/Jan/2013 18:35:12] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 18:35:12 INFO:127.0.0.1 - - [23/Jan/2013 18:35:12] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:36:37 INFO:127.0.0.1 - - [23/Jan/2013 18:36:37] "GET /api/agent/plugins/yancyforprez.sh/and%2Fmore HTTP/1.1" 302 -
+01/23/13 18:36:37 INFO:127.0.0.1 - - [23/Jan/2013 18:36:37] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 18:36:37 INFO:127.0.0.1 - - [23/Jan/2013 18:36:37] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:36:53 INFO:127.0.0.1 - - [23/Jan/2013 18:36:53] "GET /api/agent/plugins/yancyforprez.sh/args%2Fandmore/ HTTP/1.1" 302 -
+01/23/13 18:36:53 INFO:127.0.0.1 - - [23/Jan/2013 18:36:53] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 18:36:53 INFO:127.0.0.1 - - [23/Jan/2013 18:36:53] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:37:19 INFO:127.0.0.1 - - [23/Jan/2013 18:37:19] "GET /api/agent/plugins/yancyforprez.sh/andmore HTTP/1.1" 200 -
+01/23/13 18:37:19 INFO:127.0.0.1 - - [23/Jan/2013 18:37:19] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:37:31 INFO:127.0.0.1 - - [23/Jan/2013 18:37:31] "GET /api/agent/plugins/yancyforprez.sh/and%2Fmore HTTP/1.1" 302 -
+01/23/13 18:37:31 INFO:127.0.0.1 - - [23/Jan/2013 18:37:31] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+01/23/13 18:37:31 INFO:127.0.0.1 - - [23/Jan/2013 18:37:31] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:38:12 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/server.py', reloading
+01/23/13 18:38:16 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:38:16 INFO: * Restarting with reloader
+01/23/13 18:38:21 INFO:127.0.0.1 - - [23/Jan/2013 18:38:21] "GET /api/agent/plugins/yancyforprez.sh/andmore HTTP/1.1" 200 -
+01/23/13 18:38:21 INFO:127.0.0.1 - - [23/Jan/2013 18:38:21] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:38:25 INFO:127.0.0.1 - - [23/Jan/2013 18:38:25] "GET /api/agent/plugins/yancyforprez.sh/andmore/stuff HTTP/1.1" 200 -
+01/23/13 18:38:25 INFO:127.0.0.1 - - [23/Jan/2013 18:38:25] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:39:17 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/pluginapi.py', reloading
+01/23/13 18:40:35 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:40:35 INFO: * Restarting with reloader
+01/23/13 18:40:43 ERROR:global name 'ConfigParser' is not defined
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 84, in plugin_api
+    response = pluginapi.execute(plugin_name, plugin_args, config)
+  File "/home/nscott/ncpa/agent/listener/pluginapi.py", line 20, in execute
+    except ConfigParser.NoOptionError:
+NameError: global name 'ConfigParser' is not defined
+01/23/13 18:40:43 INFO:127.0.0.1 - - [23/Jan/2013 18:40:43] "GET /api/agent/plugins/yancyforprez.sh/andmore/stuff HTTP/1.1" 302 -
+01/23/13 18:40:43 INFO:127.0.0.1 - - [23/Jan/2013 18:40:43] "GET /error/Error%20running%20plugin. HTTP/1.1" 200 -
+01/23/13 18:40:44 INFO:127.0.0.1 - - [23/Jan/2013 18:40:44] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:41:14 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/pluginapi.py', reloading
+01/23/13 18:41:19 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:41:19 INFO: * Restarting with reloader
+01/23/13 18:41:25 ERROR:No section: 'plugin suffix instructions'
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 84, in plugin_api
+    response = pluginapi.execute(plugin_name, plugin_args, config)
+  File "/home/nscott/ncpa/agent/listener/pluginapi.py", line 19, in execute
+    instruction = config.get('plugin suffix instructions', extension)
+  File "/usr/lib/python2.7/ConfigParser.py", line 607, in get
+    raise NoSectionError(section)
+NoSectionError: No section: 'plugin suffix instructions'
+01/23/13 18:41:25 INFO:127.0.0.1 - - [23/Jan/2013 18:41:25] "GET /api/agent/plugins/yancyforprez.sh/andmore HTTP/1.1" 302 -
+01/23/13 18:41:25 INFO:127.0.0.1 - - [23/Jan/2013 18:41:25] "GET /error/Error%20running%20plugin. HTTP/1.1" 200 -
+01/23/13 18:41:25 INFO:127.0.0.1 - - [23/Jan/2013 18:41:25] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:42:00 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/pluginapi.py', reloading
+01/23/13 18:42:04 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:42:04 INFO: * Restarting with reloader
+01/23/13 18:42:10 ERROR:global name 'logging' is not defined
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 84, in plugin_api
+    response = pluginapi.execute(plugin_name, plugin_args, config)
+  File "/home/nscott/ncpa/agent/listener/pluginapi.py", line 20, in execute
+    logging.debug('Executing the plugin with instruction contained in config. Instruction is: %s', instruction)
+NameError: global name 'logging' is not defined
+01/23/13 18:42:10 INFO:127.0.0.1 - - [23/Jan/2013 18:42:10] "GET /api/agent/plugins/yancyforprez.sh/andmore HTTP/1.1" 302 -
+01/23/13 18:42:10 INFO:127.0.0.1 - - [23/Jan/2013 18:42:10] "GET /error/Error%20running%20plugin. HTTP/1.1" 200 -
+01/23/13 18:42:10 INFO:127.0.0.1 - - [23/Jan/2013 18:42:10] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:42:21 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/pluginapi.py', reloading
+01/23/13 18:42:25 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:42:25 INFO: * Restarting with reloader
+01/23/13 18:42:28 DEBUG:Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
+01/23/13 18:42:28 ERROR:global name 'get_cmdline_instruct' is not defined
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 84, in plugin_api
+    response = pluginapi.execute(plugin_name, plugin_args, config)
+  File "/home/nscott/ncpa/agent/listener/pluginapi.py", line 22, in execute
+    cmd += get_cmdline_instruct(item, plugin_name, plugin_args, instruction)
+NameError: global name 'get_cmdline_instruct' is not defined
+01/23/13 18:42:28 INFO:127.0.0.1 - - [23/Jan/2013 18:42:28] "GET /api/agent/plugins/yancyforprez.sh/andmore HTTP/1.1" 302 -
+01/23/13 18:42:28 INFO:127.0.0.1 - - [23/Jan/2013 18:42:28] "GET /error/Error%20running%20plugin. HTTP/1.1" 200 -
+01/23/13 18:42:28 INFO:127.0.0.1 - - [23/Jan/2013 18:42:28] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:43:14 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/pluginapi.py', reloading
+01/23/13 18:43:17 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:43:17 INFO: * Restarting with reloader
+01/23/13 18:43:36 DEBUG:Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
+01/23/13 18:43:36 ERROR:global name 'item' is not defined
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 84, in plugin_api
+    response = pluginapi.execute(plugin_name, plugin_args, config)
+  File "/home/nscott/ncpa/agent/listener/pluginapi.py", line 62, in execute
+    cmd += get_cmdline_instruct(item, plugin_name, plugin_args, instruction)
+NameError: global name 'item' is not defined
+01/23/13 18:43:36 INFO:127.0.0.1 - - [23/Jan/2013 18:43:36] "GET /api/agent/plugins/yancyforprez.sh/andmore HTTP/1.1" 302 -
+01/23/13 18:43:36 INFO:127.0.0.1 - - [23/Jan/2013 18:43:36] "GET /error/Error%20running%20plugin. HTTP/1.1" 200 -
+01/23/13 18:43:36 INFO:127.0.0.1 - - [23/Jan/2013 18:43:36] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:44:55 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/pluginapi.py', reloading
+01/23/13 18:44:58 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:44:58 INFO: * Restarting with reloader
+01/23/13 18:45:08 DEBUG:Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
+01/23/13 18:45:08 DEBUG:Running process with command line: /bin/sh plugins/yancyforprez.sh andmore
+01/23/13 18:45:08 ERROR:global name 'subprocess' is not defined
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 84, in plugin_api
+    response = pluginapi.execute(plugin_name, plugin_args, config)
+  File "/home/nscott/ncpa/agent/listener/pluginapi.py", line 64, in execute
+    running_check = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+NameError: global name 'subprocess' is not defined
+01/23/13 18:45:08 INFO:127.0.0.1 - - [23/Jan/2013 18:45:08] "GET /api/agent/plugins/yancyforprez.sh/andmore HTTP/1.1" 302 -
+01/23/13 18:45:08 INFO:127.0.0.1 - - [23/Jan/2013 18:45:08] "GET /error/Error%20running%20plugin. HTTP/1.1" 200 -
+01/23/13 18:45:08 INFO:127.0.0.1 - - [23/Jan/2013 18:45:08] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:45:21 INFO: * Detected change in '/home/nscott/ncpa/agent/listener/pluginapi.py', reloading
+01/23/13 18:45:25 INFO: * Running on http://0.0.0.0:5693/
+01/23/13 18:45:25 INFO: * Restarting with reloader
+01/23/13 18:45:29 DEBUG:Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
+01/23/13 18:45:29 DEBUG:Running process with command line: /bin/sh plugins/yancyforprez.sh andmore
+01/23/13 18:45:29 INFO:127.0.0.1 - - [23/Jan/2013 18:45:29] "GET /api/agent/plugins/yancyforprez.sh/andmore HTTP/1.1" 200 -
+01/23/13 18:45:29 INFO:127.0.0.1 - - [23/Jan/2013 18:45:29] "GET /favicon.ico HTTP/1.1" 404 -
+01/23/13 18:45:47 DEBUG:Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
+01/23/13 18:45:47 DEBUG:Running process with command line: /bin/sh plugins/yancyforprez.sh andmore fancy that
+01/23/13 18:45:47 INFO:127.0.0.1 - - [23/Jan/2013 18:45:47] "GET /api/agent/plugins/yancyforprez.sh/andmore%20fancy%20that HTTP/1.1" 200 -
+01/23/13 18:45:47 INFO:127.0.0.1 - - [23/Jan/2013 18:45:47] "GET /favicon.ico HTTP/1.1" 404 -

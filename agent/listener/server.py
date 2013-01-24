@@ -11,18 +11,32 @@ import processor
 import requests
 import json
 import psapi
+import pluginapi
+import functools
 
 listener = Flask(__name__)
 listener.debug=True
 config = None
 
+def requires_auth(f):
+    @functools.wraps(f)
+    def decorated(*args, **kwargs):
+        ncpa_token = listener.config['iconfig'].get('api', 'community_string')
+        token = request.args.get('token', None)
+        if token != ncpa_token:
+            return redirect(url_for('error', msg='Incorrect credentials given.'))
+        return f(*args, **kwargs)
+    return decorated
+
 @listener.route('/')
+@requires_auth
 def index():
     try:
         return render_template('main.html')
     except Exception, e:
         logging.exception(e)
 
+@listener.route('/error/')
 @listener.route('/error/<msg>')
 def error(msg=None):
     if not msg:
@@ -30,6 +44,7 @@ def error(msg=None):
     return jsonify(error=msg)
 
 @listener.route('/check/')
+@requires_auth
 def check():
     try:
         result = processor.check_metric(request.args, listener.config['iconfig'])
@@ -54,6 +69,7 @@ def nrdp():
         return redirect(url_for('error', msg=str(e)))
 
 @listener.route('/config/')
+@requires_auth
 def config():
     try:
         return render_template('config.html', **{'config' : listener.config['iconfig'].__dict__['_sections']})
@@ -61,8 +77,19 @@ def config():
         logging.exception(e)
         return redirect(url_for('error', msg=str(e)))
 
+@listener.route('/api/agent/plugins/<plugin_name>/<path:plugin_args>')
+def plugin_api(plugin_name=None, plugin_args=None):
+    config = listener.config['iconfig']
+    try:
+        response = pluginapi.execute(plugin_name, plugin_args, config)
+    except Exception, e:
+        logging.exception(e)
+        return redirect(url_for('error', msg='Error running plugin.'))
+    return jsonify({'value' : response})
+
 @listener.route('/api/')
 @listener.route('/api/<path:accessor>')
+@requires_auth
 def api(accessor=''):
     path = [x for x in accessor.split('/') if x]
     try:
@@ -73,6 +100,7 @@ def api(accessor=''):
     return jsonify({'value' : response })
 
 @listener.route('/processes/')
+@requires_auth
 def processes():
     procs = json.loads(commands.enumerate_processes(request=request))
     header = procs.get('header', [])
@@ -80,6 +108,7 @@ def processes():
     return render_template('processes.html', header=header, procs=procs)
 
 @listener.route('/command/')
+@requires_auth
 def command():
     logging.debug('Accessing command...')
     command = request.args.get('command', '')
