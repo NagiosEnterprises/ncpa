@@ -91,7 +91,7 @@ if_children = [make_if_nodes(x) for x in ps.network_io_counters(pernic=True).key
 
 interface = Node('interface', children=if_children)
 
-plugin = Node('plugin', method=lambda: [os.path.normpath("%s/%s") % (plugins, x) for x in os.listdir(plugins) if os.path.isfile(os.path.normpath('%s/%s') % (plugins, x))])
+plugin = Node('plugin', method=lambda: [os.path.basename(x) for x in os.listdir(plugins) if os.path.isfile(os.path.normpath('%s/%s') % (plugins, x))])
 
 agent = Node('agent', children=(plugin,))
 
