@@ -4395,3 +4395,285 @@ AttributeError: 'module' object has no attribute 'x'
 02/08/13 16:03:18 WARNING:Path: agent/plugin/
 02/08/13 16:03:18 INFO:127.0.0.1 - - [08/Feb/2013 16:03:18] "GET /api/agent/plugin/ HTTP/1.1" 200 -
 02/08/13 16:03:18 INFO:127.0.0.1 - - [08/Feb/2013 16:03:18] "GET /favicon.ico HTTP/1.1" 404 -
+02/08/13 16:45:16 WARNING:C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins
+02/08/13 16:45:16 ERROR:name 'disk_io_counters' is not defined
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\ncpa_listener_windows.py", line 77, in start
+    import listener.server
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 13, in <module>
+    import psapi
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 98, in <module>
+    disk_physical = Node('phyical', children=disk_io_counters)
+NameError: name 'disk_io_counters' is not defined
+02/08/13 16:45:45 WARNING:C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins
+02/08/13 16:45:45 INFO: * Running on http://0.0.0.0:5693/
+02/08/13 16:45:51 WARNING:Path: 
+02/08/13 16:45:52 ERROR:[Errno 2] No such file or directory: 'E:\'
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 96, in api
+    response = psapi.getter(accessor)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 119, in getter
+    return root.accessor(path)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 28, in accessor
+    return self.run()
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 50, in <lambda>
+    total_size = Node('total_size', method=lambda: ps.disk_usage(mountpoint).total)
+  File "C:\Python27\lib\site-packages\psutil\__init__.py", line 1011, in disk_usage
+    return _psplatform.get_disk_usage(path)
+  File "C:\Python27\lib\site-packages\psutil\_psmswindows.py", line 95, in get_disk_usage
+    raise OSError(errno.ENOENT, "No such file or directory: '%s'" % path)
+OSError: [Errno 2] No such file or directory: 'E:\'
+02/08/13 16:45:52 INFO:127.0.0.1 - - [08/Feb/2013 16:45:52] "GET /api/ HTTP/1.1" 302 -
+02/08/13 16:45:52 INFO:127.0.0.1 - - [08/Feb/2013 16:45:52] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+02/08/13 16:45:52 INFO:127.0.0.1 - - [08/Feb/2013 16:45:52] "GET /favicon.ico HTTP/1.1" 404 -
+02/08/13 16:48:55 WARNING:C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins
+02/08/13 16:48:55 INFO: * Running on http://0.0.0.0:5693/
+02/08/13 16:49:01 WARNING:Path: 
+02/08/13 16:49:02 ERROR:[Errno 2] No such file or directory: 'E:\'
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 96, in api
+    response = psapi.getter(accessor)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 127, in getter
+    return root.accessor(path)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 28, in accessor
+    return self.run()
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 50, in <lambda>
+    total_size = Node('total_size', method=lambda: ps.disk_usage(mountpoint).total)
+  File "C:\Python27\lib\site-packages\psutil\__init__.py", line 1011, in disk_usage
+    return _psplatform.get_disk_usage(path)
+  File "C:\Python27\lib\site-packages\psutil\_psmswindows.py", line 95, in get_disk_usage
+    raise OSError(errno.ENOENT, "No such file or directory: '%s'" % path)
+OSError: [Errno 2] No such file or directory: 'E:\'
+02/08/13 16:49:02 INFO:127.0.0.1 - - [08/Feb/2013 16:49:02] "GET /api/ HTTP/1.1" 302 -
+02/08/13 16:49:02 INFO:127.0.0.1 - - [08/Feb/2013 16:49:02] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+02/08/13 16:49:02 INFO:127.0.0.1 - - [08/Feb/2013 16:49:02] "GET /favicon.ico HTTP/1.1" 404 -
+02/08/13 16:50:17 WARNING:C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins
+02/08/13 16:50:17 INFO: * Running on http://0.0.0.0:5693/
+02/08/13 16:50:25 WARNING:Path: 
+02/08/13 16:50:26 ERROR:[Errno 2] No such file or directory: 'E:\'
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 96, in api
+    response = psapi.getter(accessor)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 127, in getter
+    return root.accessor(path)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 28, in accessor
+    return self.run()
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 50, in <lambda>
+    total_size = Node('total_size', method=lambda: ps.disk_usage(mountpoint).total)
+  File "C:\Python27\lib\site-packages\psutil\__init__.py", line 1011, in disk_usage
+    return _psplatform.get_disk_usage(path)
+  File "C:\Python27\lib\site-packages\psutil\_psmswindows.py", line 95, in get_disk_usage
+    raise OSError(errno.ENOENT, "No such file or directory: '%s'" % path)
+OSError: [Errno 2] No such file or directory: 'E:\'
+02/08/13 16:50:26 INFO:127.0.0.1 - - [08/Feb/2013 16:50:26] "GET /api/ HTTP/1.1" 302 -
+02/08/13 16:50:26 INFO:127.0.0.1 - - [08/Feb/2013 16:50:26] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+02/08/13 16:50:26 INFO:127.0.0.1 - - [08/Feb/2013 16:50:26] "GET /favicon.ico HTTP/1.1" 404 -
+02/08/13 16:51:10 WARNING:C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins
+02/08/13 16:51:10 INFO: * Running on http://0.0.0.0:5693/
+02/08/13 16:51:18 WARNING:Path: 
+02/08/13 16:51:19 ERROR:[Errno 2] No such file or directory: 'E:\'
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 96, in api
+    response = psapi.getter(accessor)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 127, in getter
+    return root.accessor(path)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 28, in accessor
+    return self.run()
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 50, in <lambda>
+    total_size = Node('total_size', method=lambda: ps.disk_usage(mountpoint).total)
+  File "C:\Python27\lib\site-packages\psutil\__init__.py", line 1011, in disk_usage
+    return _psplatform.get_disk_usage(path)
+  File "C:\Python27\lib\site-packages\psutil\_psmswindows.py", line 95, in get_disk_usage
+    raise OSError(errno.ENOENT, "No such file or directory: '%s'" % path)
+OSError: [Errno 2] No such file or directory: 'E:\'
+02/08/13 16:51:19 INFO:127.0.0.1 - - [08/Feb/2013 16:51:19] "GET /api/ HTTP/1.1" 302 -
+02/08/13 16:51:19 INFO:127.0.0.1 - - [08/Feb/2013 16:51:19] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+02/08/13 16:51:19 INFO:127.0.0.1 - - [08/Feb/2013 16:51:19] "GET /favicon.ico HTTP/1.1" 404 -
+02/08/13 16:54:42 ERROR:invalid syntax (psapi.py, line 98)
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\ncpa_listener_windows.py", line 77, in start
+    import listener.server
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 13, in <module>
+    import psapi
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 98
+    if os.path.isdir(x.mountpoint)
+                                 ^
+SyntaxError: invalid syntax
+02/08/13 16:55:06 WARNING:C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins
+02/08/13 16:55:06 INFO: * Running on http://0.0.0.0:5693/
+02/08/13 16:55:12 WARNING:Path: 
+02/08/13 16:55:14 INFO:127.0.0.1 - - [08/Feb/2013 16:55:14] "GET /api/ HTTP/1.1" 200 -
+02/08/13 16:55:14 INFO:127.0.0.1 - - [08/Feb/2013 16:55:14] "GET /favicon.ico HTTP/1.1" 404 -
+02/08/13 16:57:02 WARNING:Path: disk/logical/C://
+02/08/13 16:57:02 ERROR:No node with that name: C:
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 96, in api
+    response = psapi.getter(accessor)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 125, in getter
+    return root.accessor(path)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 25, in accessor
+    return x.accessor(path[1:])
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 25, in accessor
+    return x.accessor(path[1:])
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 26, in accessor
+    raise IndexError('No node with that name: %s' % path[0])
+IndexError: No node with that name: C:
+02/08/13 16:57:02 INFO:127.0.0.1 - - [08/Feb/2013 16:57:02] "GET /api/disk/logical/C:// HTTP/1.1" 302 -
+02/08/13 16:57:02 INFO:127.0.0.1 - - [08/Feb/2013 16:57:02] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+02/08/13 16:57:02 INFO:127.0.0.1 - - [08/Feb/2013 16:57:02] "GET /favicon.ico HTTP/1.1" 404 -
+02/08/13 16:57:11 WARNING:Path: disk/
+02/08/13 16:57:11 INFO:127.0.0.1 - - [08/Feb/2013 16:57:11] "GET /api/disk/ HTTP/1.1" 200 -
+02/08/13 16:57:11 INFO:127.0.0.1 - - [08/Feb/2013 16:57:11] "GET /favicon.ico HTTP/1.1" 404 -
+02/08/13 16:57:16 WARNING:Path: disk/logical/
+02/08/13 16:57:16 INFO:127.0.0.1 - - [08/Feb/2013 16:57:16] "GET /api/disk/logical/ HTTP/1.1" 200 -
+02/08/13 16:57:17 INFO:127.0.0.1 - - [08/Feb/2013 16:57:17] "GET /favicon.ico HTTP/1.1" 404 -
+02/08/13 16:57:41 WARNING:Path: disk/logical/D:
+02/08/13 16:57:41 ERROR:No node with that name: D:
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 96, in api
+    response = psapi.getter(accessor)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 125, in getter
+    return root.accessor(path)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 25, in accessor
+    return x.accessor(path[1:])
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 25, in accessor
+    return x.accessor(path[1:])
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 26, in accessor
+    raise IndexError('No node with that name: %s' % path[0])
+IndexError: No node with that name: D:
+02/08/13 16:57:41 INFO:127.0.0.1 - - [08/Feb/2013 16:57:41] "GET /api/disk/logical/D: HTTP/1.1" 302 -
+02/08/13 16:57:41 INFO:127.0.0.1 - - [08/Feb/2013 16:57:41] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+02/08/13 16:57:42 INFO:127.0.0.1 - - [08/Feb/2013 16:57:42] "GET /favicon.ico HTTP/1.1" 404 -
+02/08/13 16:57:58 WARNING:Path: disk/logical/C:////
+02/08/13 16:57:58 ERROR:No node with that name: C:
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 96, in api
+    response = psapi.getter(accessor)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 125, in getter
+    return root.accessor(path)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 25, in accessor
+    return x.accessor(path[1:])
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 25, in accessor
+    return x.accessor(path[1:])
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 26, in accessor
+    raise IndexError('No node with that name: %s' % path[0])
+IndexError: No node with that name: C:
+02/08/13 16:57:58 INFO:127.0.0.1 - - [08/Feb/2013 16:57:58] "GET /api/disk/logical/C://// HTTP/1.1" 302 -
+02/08/13 16:57:58 INFO:127.0.0.1 - - [08/Feb/2013 16:57:58] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+02/08/13 16:57:58 INFO:127.0.0.1 - - [08/Feb/2013 16:57:58] "GET /favicon.ico HTTP/1.1" 404 -
+02/08/13 17:04:16 WARNING:C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins
+02/08/13 17:04:16 INFO: * Running on http://0.0.0.0:5693/
+02/08/13 17:04:24 WARNING:Path: 
+02/08/13 17:04:25 INFO:127.0.0.1 - - [08/Feb/2013 17:04:25] "GET /api/ HTTP/1.1" 200 -
+02/08/13 17:04:25 INFO:127.0.0.1 - - [08/Feb/2013 17:04:25] "GET /favicon.ico HTTP/1.1" 404 -
+02/08/13 17:08:21 WARNING:C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins
+02/08/13 17:08:21 INFO: * Running on http://0.0.0.0:5693/
+02/08/13 17:08:25 WARNING:Path: 
+02/08/13 17:08:26 ERROR:[Errno 2] No such file or directory: 'C:|'
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 96, in api
+    response = psapi.getter(accessor)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 127, in getter
+    return root.accessor(path)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 29, in accessor
+    return self.run()
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 38, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 34, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 38, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 34, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 38, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 34, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 38, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 34, in walk
+    stat.update(child.run())
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 38, in run
+    return {self.name : self.method()}
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 51, in <lambda>
+    total_size = Node('total_size', method=lambda: ps.disk_usage(mountpoint).total)
+  File "C:\Python27\lib\site-packages\psutil\__init__.py", line 1011, in disk_usage
+    return _psplatform.get_disk_usage(path)
+  File "C:\Python27\lib\site-packages\psutil\_psmswindows.py", line 95, in get_disk_usage
+    raise OSError(errno.ENOENT, "No such file or directory: '%s'" % path)
+OSError: [Errno 2] No such file or directory: 'C:|'
+02/08/13 17:08:26 INFO:127.0.0.1 - - [08/Feb/2013 17:08:26] "GET /api/ HTTP/1.1" 302 -
+02/08/13 17:08:26 INFO:127.0.0.1 - - [08/Feb/2013 17:08:26] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+02/08/13 17:08:26 INFO:127.0.0.1 - - [08/Feb/2013 17:08:26] "GET /favicon.ico HTTP/1.1" 404 -

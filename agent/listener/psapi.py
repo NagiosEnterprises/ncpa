@@ -2,6 +2,7 @@ import psutil as ps
 import os
 import logging
 import inspect
+import re
 
 this_path = inspect.currentframe().f_code.co_filename
 this_dir  = os.path.dirname(this_path)
@@ -45,6 +46,15 @@ def make_disk_nodes(disk_name):
     write_bytes = Node('write_bytes', method=lambda: ps.disk_io_counters(perdisk=True)[disk_name].write_bytes)
     return Node(disk_name, children=(read_time, write_time, read_count, write_count, read_bytes, write_bytes))
 
+def make_mountpoint_nodes(partition_name):
+    mountpoint = partition_name.mountpoint
+    total_size = Node('total_size', method=lambda: ps.disk_usage(mountpoint).total)
+    used = Node('used', method=lambda: ps.disk_usage(mountpoint).used)
+    free = Node('free', method=lambda: ps.disk_usage(mountpoint).free)
+    used_percent = Node('used_percent', method=lambda: ps.disk_usage(mountpoint).percent)
+    mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
+    return Node(mountpoint, children=(total_size, used, free, used_percent))
+    
 def make_if_nodes(if_name):
     bytes_sent = Node('bytes_sent', method=lambda: ps.network_io_counters(pernic=True)[if_name].bytes_sent)
     bytes_recv = Node('bytes_recv', method=lambda: ps.network_io_counters(pernic=True)[if_name].bytes_recv)
@@ -83,9 +93,19 @@ mem_swap = Node('swap', children=(mem_swap_total, mem_swap_free, mem_swap_percen
 
 memory = Node('memory', children=(mem_virt, mem_swap))
 
-disk_children = [make_disk_nodes(x) for x in ps.disk_io_counters(perdisk=True).keys()]
+disk_counters = [make_disk_nodes(x) for x in ps.disk_io_counters(perdisk=True).keys()]
 
-disk = Node('disk', children=disk_children)
+disk_mountpoints = []
+for x in ps.disk_partitions():
+    if os.path.isdir(x.mountpoint):
+        tmp = make_mountpoint_nodes(x)
+        disk_mountpoints.append(tmp)
+    
+
+disk_logical = Node('logical', children=disk_mountpoints)
+disk_physical = Node('phyical', children=disk_counters)
+
+disk = Node('disk', children=(disk_physical, disk_logical))
 
 if_children = [make_if_nodes(x) for x in ps.network_io_counters(pernic=True).keys()]
 
