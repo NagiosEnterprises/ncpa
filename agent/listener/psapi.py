@@ -1,6 +1,12 @@
 import psutil as ps
 import os
 import logging
+import inspect
+
+this_path = inspect.currentframe().f_code.co_filename
+this_dir  = os.path.dirname(this_path)
+plugins   = os.path.abspath("%s/../plugins" % this_dir)
+logging.warning(plugins)
 
 class Node(object):
     
@@ -85,7 +91,7 @@ if_children = [make_if_nodes(x) for x in ps.network_io_counters(pernic=True).key
 
 interface = Node('interface', children=if_children)
 
-plugin = Node('plugin', method=lambda: [x for x in os.listdir('plugins') if os.path.isfile('plugins/%s' % x)])
+plugin = Node('plugin', method=lambda: [os.path.normpath("%s/%s") % (plugins, x) for x in os.listdir(plugins) if os.path.isfile(os.path.normpath('%s/%s') % (plugins, x))])
 
 agent = Node('agent', children=(plugin,))
 

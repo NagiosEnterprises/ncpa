@@ -15,7 +15,7 @@ import pluginapi
 import functools
 
 listener = Flask(__name__)
-listener.debug=True
+# listener.debug=True
 config = None
 
 def requires_auth(f):
@@ -90,8 +90,8 @@ def plugin_api(plugin_name=None, plugin_args=None):
 
 @listener.route('/api/')
 @listener.route('/api/<path:accessor>')
-@requires_auth
 def api(accessor=''):
+    logging.warning("Path: %s" % accessor)
     try:
         response = psapi.getter(accessor)
     except Exception, e:
