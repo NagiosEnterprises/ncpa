@@ -4347,3 +4347,11 @@ IndexError: No node with that name: yancyforprez.sh
 01/24/13 00:40:01 DEBUG:Running process with command line: /bin/sh plugins/yancyforprez.sh None
 01/24/13 00:40:01 INFO:127.0.0.1 - - [24/Jan/2013 00:40:01] "GET /api/agent/plugin/yancyforprez.sh/ HTTP/1.1" 200 -
 01/24/13 00:40:01 INFO:127.0.0.1 - - [24/Jan/2013 00:40:01] "GET /favicon.ico HTTP/1.1" 404 -
+02/08/13 14:16:00 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+02/08/13 14:16:05 INFO: * Running on http://0.0.0.0:5693/
+02/08/13 14:16:05 INFO: * Restarting with reloader
+02/08/13 14:16:11 INFO:127.0.0.1 - - [08/Feb/2013 14:16:11] "GET /api/ HTTP/1.1" 302 -
+02/08/13 14:16:11 INFO:127.0.0.1 - - [08/Feb/2013 14:16:11] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+02/08/13 14:16:12 INFO:127.0.0.1 - - [08/Feb/2013 14:16:12] "GET /favicon.ico HTTP/1.1" 404 -
+02/08/13 14:16:19 INFO:127.0.0.1 - - [08/Feb/2013 14:16:19] "GET /api/?token=brody HTTP/1.1" 200 -
+02/08/13 14:16:20 INFO:127.0.0.1 - - [08/Feb/2013 14:16:20] "GET /favicon.ico HTTP/1.1" 404 -
