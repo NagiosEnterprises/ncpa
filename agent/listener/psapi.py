@@ -7,7 +7,6 @@ import re
 this_path = inspect.currentframe().f_code.co_filename
 this_dir  = os.path.dirname(this_path)
 plugins   = os.path.abspath("%s/../plugins" % this_dir)
-logging.warning(plugins)
 
 class Node(object):
     
@@ -52,8 +51,9 @@ def make_mountpoint_nodes(partition_name):
     used = Node('used', method=lambda: ps.disk_usage(mountpoint).used)
     free = Node('free', method=lambda: ps.disk_usage(mountpoint).free)
     used_percent = Node('used_percent', method=lambda: ps.disk_usage(mountpoint).percent)
-    mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
-    return Node(mountpoint, children=(total_size, used, free, used_percent))
+    device_name = Node('device_name', method=lambda: partition_name.device)
+    safe_mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
+    return Node(safe_mountpoint, children=(total_size, used, free, used_percent, device_name))
     
 def make_if_nodes(if_name):
     bytes_sent = Node('bytes_sent', method=lambda: ps.network_io_counters(pernic=True)[if_name].bytes_sent)
@@ -100,7 +100,6 @@ for x in ps.disk_partitions():
     if os.path.isdir(x.mountpoint):
         tmp = make_mountpoint_nodes(x)
         disk_mountpoints.append(tmp)
-    
 
 disk_logical = Node('logical', children=disk_mountpoints)
 disk_physical = Node('phyical', children=disk_counters)
@@ -124,4 +123,5 @@ root = Node('root', children=(cpu, memory, disk, interface, agent, user))
 
 def getter(accessor=''):
     path = [x for x in accessor.split('/') if x]
+    logging.info(path)
     return root.accessor(path)

@@ -4677,3 +4677,85 @@ OSError: [Errno 2] No such file or directory: 'C:|'
 02/08/13 17:08:26 INFO:127.0.0.1 - - [08/Feb/2013 17:08:26] "GET /api/ HTTP/1.1" 302 -
 02/08/13 17:08:26 INFO:127.0.0.1 - - [08/Feb/2013 17:08:26] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
 02/08/13 17:08:26 INFO:127.0.0.1 - - [08/Feb/2013 17:08:26] "GET /favicon.ico HTTP/1.1" 404 -
+02/12/13 14:37:42 INFO: * Running on http://0.0.0.0:5693/
+02/12/13 14:37:45 WARNING:Path: disk/
+02/12/13 14:37:45 INFO:[u'disk']
+02/12/13 14:37:45 ERROR:[Errno 2] No such file or directory: '|'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 96, in api
+    response = psapi.getter(accessor)
+  File "/tmp/ncpa/agent/listener/psapi.py", line 127, in getter
+    return root.accessor(path)
+  File "/tmp/ncpa/agent/listener/psapi.py", line 25, in accessor
+    return x.accessor(path[1:])
+  File "/tmp/ncpa/agent/listener/psapi.py", line 28, in accessor
+    return self.run()
+  File "/tmp/ncpa/agent/listener/psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "/tmp/ncpa/agent/listener/psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "/tmp/ncpa/agent/listener/psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "/tmp/ncpa/agent/listener/psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "/tmp/ncpa/agent/listener/psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "/tmp/ncpa/agent/listener/psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "/tmp/ncpa/agent/listener/psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "/tmp/ncpa/agent/listener/psapi.py", line 50, in <lambda>
+    total_size = Node('total_size', method=lambda: ps.disk_usage(mountpoint).total)
+  File "/usr/lib/python2.6/site-packages/psutil/__init__.py", line 1011, in disk_usage
+    return _psplatform.get_disk_usage(path)
+  File "/usr/lib/python2.6/site-packages/psutil/_psposix.py", line 102, in get_disk_usage
+    st = os.statvfs(path)
+OSError: [Errno 2] No such file or directory: '|'
+02/12/13 14:37:45 INFO:192.168.5.187 - - [12/Feb/2013 14:37:45] "GET /api/disk/?token=brody HTTP/1.1" 302 -
+02/12/13 14:37:45 INFO:192.168.5.187 - - [12/Feb/2013 14:37:45] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+02/12/13 14:39:18 WARNING:Path: disk/logical/|
+02/12/13 14:39:18 INFO:[u'disk', u'logical', u'|']
+02/12/13 14:39:18 ERROR:[Errno 2] No such file or directory: '|'
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 96, in api
+    response = psapi.getter(accessor)
+  File "/tmp/ncpa/agent/listener/psapi.py", line 127, in getter
+    return root.accessor(path)
+  File "/tmp/ncpa/agent/listener/psapi.py", line 25, in accessor
+    return x.accessor(path[1:])
+  File "/tmp/ncpa/agent/listener/psapi.py", line 25, in accessor
+    return x.accessor(path[1:])
+  File "/tmp/ncpa/agent/listener/psapi.py", line 25, in accessor
+    return x.accessor(path[1:])
+  File "/tmp/ncpa/agent/listener/psapi.py", line 28, in accessor
+    return self.run()
+  File "/tmp/ncpa/agent/listener/psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "/tmp/ncpa/agent/listener/psapi.py", line 33, in walk
+    stat.update(child.run())
+  File "/tmp/ncpa/agent/listener/psapi.py", line 37, in run
+    return {self.name : self.method()}
+  File "/tmp/ncpa/agent/listener/psapi.py", line 50, in <lambda>
+    total_size = Node('total_size', method=lambda: ps.disk_usage(mountpoint).total)
+  File "/usr/lib/python2.6/site-packages/psutil/__init__.py", line 1011, in disk_usage
+    return _psplatform.get_disk_usage(path)
+  File "/usr/lib/python2.6/site-packages/psutil/_psposix.py", line 102, in get_disk_usage
+    st = os.statvfs(path)
+OSError: [Errno 2] No such file or directory: '|'
+02/12/13 14:39:18 INFO:192.168.5.187 - - [12/Feb/2013 14:39:18] "GET /api/disk/logical/|?token=brody HTTP/1.1" 302 -
+02/12/13 14:39:18 INFO:192.168.5.187 - - [12/Feb/2013 14:39:18] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+02/12/13 14:42:30 INFO: * Running on http://0.0.0.0:5693/
+02/12/13 14:42:38 WARNING:Path: disk/
+02/12/13 14:42:38 INFO:[u'disk']
+02/12/13 14:42:38 INFO:192.168.5.187 - - [12/Feb/2013 14:42:38] "GET /api/disk/ HTTP/1.1" 200 -
+02/12/13 14:46:34 WARNING:Path: disk/logical/|
+02/12/13 14:46:34 INFO:[u'disk', u'logical', u'|']
+02/12/13 14:46:34 INFO:192.168.5.187 - - [12/Feb/2013 14:46:34] "GET /api/disk/logical/| HTTP/1.1" 200 -
+02/12/13 14:48:10 INFO: * Running on http://0.0.0.0:5693/
+02/12/13 14:48:13 WARNING:Path: disk/logical/
+02/12/13 14:48:13 INFO:[u'disk', u'logical']
+02/12/13 14:48:13 INFO:192.168.5.187 - - [12/Feb/2013 14:48:13] "GET /api/disk/logical/ HTTP/1.1" 200 -
+02/12/13 14:49:41 INFO: * Running on http://0.0.0.0:5693/
+02/12/13 14:49:42 WARNING:Path: disk/logical/
+02/12/13 14:49:42 INFO:[u'disk', u'logical']
+02/12/13 14:49:42 INFO:192.168.5.187 - - [12/Feb/2013 14:49:42] "GET /api/disk/logical/ HTTP/1.1" 200 -
