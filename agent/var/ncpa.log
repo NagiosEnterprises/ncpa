@@ -4759,3 +4759,34 @@ OSError: [Errno 2] No such file or directory: '|'
 02/12/13 14:49:42 WARNING:Path: disk/logical/
 02/12/13 14:49:42 INFO:[u'disk', u'logical']
 02/12/13 14:49:42 INFO:192.168.5.187 - - [12/Feb/2013 14:49:42] "GET /api/disk/logical/ HTTP/1.1" 200 -
+02/12/13 13:59:58 INFO: * Running on http://0.0.0.0:5693/
+02/12/13 14:00:12 WARNING:Path: disk/
+02/12/13 14:00:12 INFO:[u'disk']
+02/12/13 14:00:12 INFO:127.0.0.1 - - [12/Feb/2013 14:00:12] "GET /api/disk/ HTTP/1.1" 200 -
+02/12/13 14:00:12 INFO:127.0.0.1 - - [12/Feb/2013 14:00:12] "GET /favicon.ico HTTP/1.1" 404 -
+02/12/13 14:00:31 WARNING:Path: disk/F:|/total_size
+02/12/13 14:00:31 INFO:[u'disk', u'F:|', u'total_size']
+02/12/13 14:00:31 ERROR:No node with that name: F:|
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 96, in api
+    response = psapi.getter(accessor)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 127, in getter
+    return root.accessor(path)
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 25, in accessor
+    return x.accessor(path[1:])
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 26, in accessor
+    raise IndexError('No node with that name: %s' % path[0])
+IndexError: No node with that name: F:|
+02/12/13 14:00:31 INFO:127.0.0.1 - - [12/Feb/2013 14:00:31] "GET /api/disk/F:%7C/total_size HTTP/1.1" 302 -
+02/12/13 14:00:31 INFO:127.0.0.1 - - [12/Feb/2013 14:00:31] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+02/12/13 14:00:31 INFO:127.0.0.1 - - [12/Feb/2013 14:00:31] "GET /favicon.ico HTTP/1.1" 404 -
+02/12/13 14:00:36 INFO:127.0.0.1 - - [12/Feb/2013 14:00:36] "GET /favicon.ico HTTP/1.1" 404 -
+02/12/13 14:00:50 WARNING:Path: disk/logical/F:|/free
+02/12/13 14:00:50 INFO:[u'disk', u'logical', u'F:|', u'free']
+02/12/13 14:00:50 INFO:127.0.0.1 - - [12/Feb/2013 14:00:50] "GET /api/disk/logical/F:%7C/free HTTP/1.1" 200 -
+02/12/13 14:00:50 INFO:127.0.0.1 - - [12/Feb/2013 14:00:50] "GET /favicon.ico HTTP/1.1" 404 -
+02/12/13 14:23:37 INFO: * Running on http://0.0.0.0:5693/
+02/12/13 14:23:54 WARNING:Path: disk/logical/F:|/free
+02/12/13 14:23:54 INFO:[u'disk', u'logical', u'F:|', u'free']
+02/12/13 14:23:54 INFO:127.0.0.1 - - [12/Feb/2013 14:23:54] "GET /api/disk/logical/F:%7C/free HTTP/1.1" 200 -
+02/12/13 14:23:54 INFO:127.0.0.1 - - [12/Feb/2013 14:23:54] "GET /favicon.ico HTTP/1.1" 404 -
