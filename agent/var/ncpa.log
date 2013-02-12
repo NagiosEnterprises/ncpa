@@ -4790,3 +4790,8 @@ IndexError: No node with that name: F:|
 02/12/13 14:23:54 INFO:[u'disk', u'logical', u'F:|', u'free']
 02/12/13 14:23:54 INFO:127.0.0.1 - - [12/Feb/2013 14:23:54] "GET /api/disk/logical/F:%7C/free HTTP/1.1" 200 -
 02/12/13 14:23:54 INFO:127.0.0.1 - - [12/Feb/2013 14:23:54] "GET /favicon.ico HTTP/1.1" 404 -
+02/12/13 14:35:50 INFO: * Running on http://0.0.0.0:5693/
+02/12/13 14:36:12 WARNING:Path: disk/logical/F:|/free
+02/12/13 14:36:12 INFO:[u'disk', u'logical', u'F:|', u'free']
+02/12/13 14:36:12 INFO:127.0.0.1 - - [12/Feb/2013 14:36:12] "GET /api/disk/logical/F:%7C/free HTTP/1.1" 200 -
+02/12/13 14:36:12 INFO:127.0.0.1 - - [12/Feb/2013 14:36:12] "GET /favicon.ico HTTP/1.1" 404 -
