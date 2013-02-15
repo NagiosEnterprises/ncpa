@@ -4795,3 +4795,17 @@ IndexError: No node with that name: F:|
 02/12/13 14:36:12 INFO:[u'disk', u'logical', u'F:|', u'free']
 02/12/13 14:36:12 INFO:127.0.0.1 - - [12/Feb/2013 14:36:12] "GET /api/disk/logical/F:%7C/free HTTP/1.1" 200 -
 02/12/13 14:36:12 INFO:127.0.0.1 - - [12/Feb/2013 14:36:12] "GET /favicon.ico HTTP/1.1" 404 -
+02/15/13 15:59:14 INFO: * Running on http://0.0.0.0:5693/
+02/15/13 15:59:37 INFO: * Running on http://0.0.0.0:5693/
+02/15/13 16:00:28 WARNING:Path: 
+02/15/13 16:00:28 INFO:[]
+02/15/13 16:00:29 INFO:127.0.0.1 - - [15/Feb/2013 16:00:29] "GET /api/ HTTP/1.1" 200 -
+02/15/13 16:00:29 INFO:127.0.0.1 - - [15/Feb/2013 16:00:29] "GET /favicon.ico HTTP/1.1" 404 -
+02/15/13 16:01:31 INFO: * Running on http://0.0.0.0:5693/
+02/15/13 16:02:26 WARNING:Path: 
+02/15/13 16:02:26 INFO:[]
+02/15/13 16:02:27 INFO:127.0.0.1 - - [15/Feb/2013 16:02:27] "GET /api/ HTTP/1.1" 200 -
+02/15/13 16:02:27 INFO:127.0.0.1 - - [15/Feb/2013 16:02:27] "GET /favicon.ico HTTP/1.1" 404 -
+02/15/13 16:16:59 INFO: * Running on http://0.0.0.0:5693/
+02/15/13 16:32:03 INFO:C:\Windows\system32\etc\ncpa.cfg
+02/15/13 16:32:03 INFO: * Running on http://0.0.0.0:5693/
