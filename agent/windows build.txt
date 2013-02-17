@@ -1,0 +1,5 @@
+python setup.py bdist_msi
+
+...Run MSI
+
+ncpa_cx_windows.exe --install ncpalistner

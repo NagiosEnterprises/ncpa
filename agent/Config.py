@@ -36,11 +36,11 @@
 #       parameters sessionId and eventTypeId.
 #------------------------------------------------------------------------------
 
-NAME = "cx_FreezeSampleService%s"
-DISPLAY_NAME = "cx_Freeze Sample Service - %s"
+NAME = "NCPA Listener %s"
+DISPLAY_NAME = "NCPA Listener - %s"
 MODULE_NAME = "ncpa_cx_windows"
 CLASS_NAME = "Handler"
-DESCRIPTION = "Sample service description"
+DESCRIPTION = "NCPA HTTP Listener Server"
 AUTO_START = True
 SESSION_CHANGES = False
 

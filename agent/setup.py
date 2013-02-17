@@ -10,14 +10,20 @@
 
 from cx_Freeze import setup, Executable
 
-buildOptions = dict(includes = ["ncpa_cx_windows"])
-executable = Executable("Config.py", base = "Win32Service",
-        targetName = "ncpa_cx_windows.exe")
+includefiles = [ 'var/ncpa.log', 'etc/ncpa.cfg', 'Config.py' ]
+
+buildOptions = dict(includes = ["ncpa_cx_windows"],
+                    include_files = includefiles)
+executable = Executable("Config.py", 
+                        base = "Win32Service",
+                        targetName = "ncpa_cx_windows.exe"
+            )
 
 setup(
-        name = "cx_FreezeSampleService",
+        name = "NCPAListener",
         version = "0.1",
-        description = "Sample cx_Freeze Windows serice",
+        description = "NCPA Listening Daemon",
         executables = [executable],
-        options = dict(build_exe = buildOptions))
+        options = dict(build_exe = buildOptions)
+)
 

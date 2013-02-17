@@ -4809,3 +4809,13 @@ IndexError: No node with that name: F:|
 02/15/13 16:16:59 INFO: * Running on http://0.0.0.0:5693/
 02/15/13 16:32:03 INFO:C:\Windows\system32\etc\ncpa.cfg
 02/15/13 16:32:03 INFO: * Running on http://0.0.0.0:5693/
+02/16/13 17:17:04 ERROR:No module named flask
+Traceback (most recent call last):
+  File "C:\ncpa\agent\ncpa_cx_windows.py", line 60, in start
+    import listener.server
+  File "C:\ncpa\agent\listener\server.py", line 3, in <module>
+    from flask import Flask, render_template, redirect, request, url_for, jsonify, Response
+ImportError: No module named flask
+02/16/13 17:26:15 INFO: * Running on http://0.0.0.0:5693/
+02/16/13 17:28:31 INFO:C:\ncpa\agent\etc/ncpa.cfg
+02/16/13 17:28:31 INFO: * Running on http://0.0.0.0:5693/
