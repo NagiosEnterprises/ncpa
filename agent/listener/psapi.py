@@ -119,7 +119,9 @@ user = Node('user', children=(user_count, user_list))
 root = Node('root', children=(cpu, memory, disk, interface, agent, user))
 
 def getter(accessor='', s_plugins=''):
-    global plugins = s_plugins
+    global plugins
+    logging.debug("Using %s" % s_plugins)
+    plugins = s_plugins
     path = [x for x in accessor.split('/') if x]
     logging.info(path)
     return root.accessor(path)

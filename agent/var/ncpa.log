@@ -4819,3 +4819,25 @@ ImportError: No module named flask
 02/16/13 17:26:15 INFO: * Running on http://0.0.0.0:5693/
 02/16/13 17:28:31 INFO:C:\ncpa\agent\etc/ncpa.cfg
 02/16/13 17:28:31 INFO: * Running on http://0.0.0.0:5693/
+03/06/13 14:20:09 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+03/06/13 14:20:13 INFO: * Running on http://0.0.0.0:5693/
+03/06/13 14:21:43 WARNING:Path: 
+03/06/13 14:21:43 INFO:[]
+03/06/13 14:21:44 INFO:127.0.0.1 - - [06/Mar/2013 14:21:44] "GET /api/ HTTP/1.1" 200 -
+03/06/13 14:21:44 INFO:127.0.0.1 - - [06/Mar/2013 14:21:44] "GET /favicon.ico HTTP/1.1" 404 -
+03/06/13 14:24:17 WARNING:User attempted to restart, var/ncpa_listener.pid still exists, exiting.
+03/06/13 14:24:24 INFO: * Running on http://0.0.0.0:5693/
+03/06/13 14:25:03 INFO: * Running on http://0.0.0.0:5693/
+03/06/13 14:25:20 INFO:127.0.0.1 - - [06/Mar/2013 14:25:20] "GET / HTTP/1.1" 302 -
+03/06/13 14:25:20 INFO:127.0.0.1 - - [06/Mar/2013 14:25:20] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+03/06/13 14:25:20 INFO:127.0.0.1 - - [06/Mar/2013 14:25:20] "GET /favicon.ico HTTP/1.1" 404 -
+03/06/13 14:25:25 DEBUG:Path: 
+03/06/13 14:25:25 INFO:[]
+03/06/13 14:25:26 INFO:127.0.0.1 - - [06/Mar/2013 14:25:26] "GET /api/ HTTP/1.1" 200 -
+03/06/13 14:25:26 INFO:127.0.0.1 - - [06/Mar/2013 14:25:26] "GET /favicon.ico HTTP/1.1" 404 -
+03/06/13 14:25:58 INFO: * Running on http://0.0.0.0:5693/
+03/06/13 14:26:14 DEBUG:Path: 
+03/06/13 14:26:14 INFO:Using plugins/
+03/06/13 14:26:14 INFO:[]
+03/06/13 14:26:15 INFO:127.0.0.1 - - [06/Mar/2013 14:26:15] "GET /api/ HTTP/1.1" 200 -
+03/06/13 14:26:15 INFO:127.0.0.1 - - [06/Mar/2013 14:26:15] "GET /favicon.ico HTTP/1.1" 404 -
