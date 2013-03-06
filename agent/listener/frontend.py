@@ -1,6 +1,7 @@
 import jinja2
 from html import HttpResponse, render_to_response
 import logging
+import os
 
 def handle(request):
     rest = request.directive.split('/frontend', 1)[1]

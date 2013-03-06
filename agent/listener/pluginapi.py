@@ -54,7 +54,8 @@ def execute_plugin(plugin_name, plugin_args, config, *args, **kwargs):
     """
     
     _, extension = os.path.splitext(plugin_name)
-    plugin_name  = 'plugins/%s' % (plugin_name)
+    plugin_name = os.path.join(config.get('plugin directives', 'plugin_path'), plugin_name)
+    plugin_name = '"%s"' % plugin_name
     cmd = []
     try:
         instruction = config.get('plugin directives', extension)
@@ -64,7 +65,7 @@ def execute_plugin(plugin_name, plugin_args, config, *args, **kwargs):
         logging.debug('Executing the plugin with instruction by execution.')
         cmd += get_cmdline_no_instruct(plugin_name, plugin_args)
     
-    logging.debug('Running process with command line: %s',' '.join(cmd))
+    logging.debug('Running process with command line: %s', str(cmd))
     
     running_check = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     running_check.wait()

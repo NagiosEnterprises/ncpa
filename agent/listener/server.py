@@ -13,10 +13,19 @@ import json
 import psapi
 import pluginapi
 import functools
+import jinja2.ext
+# import jinja2
 
-listener = Flask(__name__)
+base_dir = os.path.dirname(sys.path[0])
+tmpl_dir = os.path.join(base_dir, 'listener', 'templates')
+stat_dir = os.path.join(base_dir, 'listener', 'static')
+
+listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
 # listener.debug=True
-config = None
+
+def return_with_cred(template):
+    token = request.args.get('token', '')
+    return render_template(template, token=token)
 
 def requires_auth(f):
     @functools.wraps(f)
@@ -31,8 +40,9 @@ def requires_auth(f):
 @listener.route('/')
 @requires_auth
 def index():
+    logging.warning(tmpl_dir)
     try:
-        return render_template('main.html')
+        return return_with_cred('main.html')
     except Exception, e:
         logging.exception(e)
 
@@ -120,10 +130,3 @@ def command():
         logging.exception(e)
         return redirect(url_for('error', msg=str(e)))
     return generic(request=request)
-
-if __name__ == "__main__":
-    listener.run('0.0.0.0', 5692)
-    url_for('static', filename='chinook.css')
-    url_for('static', filename='jquery-1.8.3.min.js')
-    url_for('static', filename='jquery-ui.css')
-    url_for('static', filename='jquery-ui.js')

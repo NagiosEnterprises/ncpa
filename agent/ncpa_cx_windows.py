@@ -67,7 +67,7 @@ class Handler(object):
         
     # called when the service is starting
     def Initialize(self, configFileName):
-        self.config_filename = self.determine_relative_filename('etc/ncpa.cfg')
+        self.config_filename = self.determine_relative_filename(os.path.join('etc' , 'ncpa.cfg'))
         self.parse_config()
         self.setup_logging()
         self.setup_plugins()

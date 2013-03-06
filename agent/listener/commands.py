@@ -51,14 +51,14 @@ def enumerate_processes(*args, **kwargs):
         num = num - 1
         if num < 0:
             break
-        extracted_procs.append([    proc.username,
-                                    proc.pid,
-                                    proc.get_cpu_percent(),
-                                    proc.get_memory_percent(),
-                                    proc.get_memory_info().vms,
-                                    proc.get_memory_info().rss,
-                                    time.ctime(proc.create_time),
-                                    proc.exe
+        extracted_procs.append([    str(proc.username),
+                                    str(proc.pid),
+                                    str(proc.get_cpu_percent()),
+                                    str(proc.get_memory_percent()),
+                                    str(proc.get_memory_info().vms),
+                                    str(proc.get_memory_info().rss),
+                                    str(time.ctime(proc.create_time)),
+                                    str(proc.exe)
                                 ])
     try:
         sortby = request.args.get('sortby', None)
