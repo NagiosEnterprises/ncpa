@@ -91,9 +91,9 @@ def plugin_api(plugin_name=None, plugin_args=None):
 @listener.route('/api/')
 @listener.route('/api/<path:accessor>')
 def api(accessor=''):
-    logging.warning("Path: %s" % accessor)
+    logging.debug("Path: %s" % accessor)
     try:
-        response = psapi.getter(accessor)
+        response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
     except Exception, e:
         logging.exception(e)
         return redirect(url_for('error', msg='Referencing node that does not exist.'))
