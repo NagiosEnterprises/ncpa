@@ -8,9 +8,13 @@
 # of the same service code -- for example for accessing different databases or
 # using different configuration files.
 
+import sys
 from cx_Freeze import setup, Executable
 
-includefiles = [ 'var/ncpa.log', 'etc/ncpa.cfg', 'Config.py' ]
+if 'bdist_msi' in sys.argv:
+    sys.argv += ['--install-script', 'install.bat']
+
+includefiles = [ 'var/ncpa.log', 'etc/ncpa.cfg', 'Config.py', 'plugins' ]
 
 buildOptions = dict(includes = ["ncpa_cx_windows"],
                     include_files = includefiles)
@@ -25,5 +29,6 @@ setup(
         description = "NCPA Listening Daemon",
         executables = [executable],
         options = dict(build_exe = buildOptions)
+        scripts = [ 'install.bat', ]
 )
 

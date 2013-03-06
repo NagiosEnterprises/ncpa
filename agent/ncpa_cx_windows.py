@@ -32,6 +32,11 @@ class Handler(object):
         self.config = ConfigParser.ConfigParser()
         self.config.read(self.config_filename)
     
+    def setup_plugins(self):
+        plugin_path = self.config.get('plugin directives', 'plugin_path')
+        self.abs_plugin_path = self.determine_relative_filename(plugin_path)
+        self.config.set('plugin directives', 'plugin_path', self.abs_plugin_path)
+    
     def setup_logging(self, *arg, **kwargs):
         '''This should always setup the logger.
         '''
@@ -57,10 +62,6 @@ class Handler(object):
             port = int(self.config.get('listening server', 'port'))
             listener.server.listener.config['iconfig'] = self.config
             listener.server.listener.run(address, port)
-            # url_for('static', filename='chinook.css')
-            # url_for('static', filename='jquery-1.8.3.min.js')
-            # url_for('static', filename='jquery-ui.css')
-            # url_for('static', filename='jquery-ui.js')
         except Exception, e:
             self.logger.exception(e)
         
@@ -69,7 +70,9 @@ class Handler(object):
         self.config_filename = self.determine_relative_filename('etc/ncpa.cfg')
         self.parse_config()
         self.setup_logging()
-        self.logger.info(self.config_filename)
+        self.setup_plugins()
+        self.logger.info("Looking for config at: %s" % self.config_filename)
+        self.logger.info("Looking for plugins at: %s" % self.abs_plugin_path)
 
     # called when the service is starting immediately after Initialize()
     # use this to perform the work of the service; don't forget to set or check
