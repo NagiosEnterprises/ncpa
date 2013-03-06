@@ -1,12 +1,9 @@
 import psutil as ps
 import os
 import logging
-import inspect
 import re
 
-this_path = inspect.currentframe().f_code.co_filename
-this_dir  = os.path.dirname(this_path)
-plugins   = os.path.abspath("%s/../plugins" % this_dir)
+plugins   = ''
 
 class Node(object):
     
@@ -110,7 +107,7 @@ if_children = [make_if_nodes(x) for x in ps.network_io_counters(pernic=True).key
 
 interface = Node('interface', children=if_children)
 
-plugin = Node('plugin', method=lambda: [os.path.basename(x) for x in os.listdir(plugins) if os.path.isfile(os.path.normpath('%s/%s') % (plugins, x))])
+plugin = Node('plugin', method=lambda: [x for x in os.listdir(plugins) if os.path.isfile(os.path.normpath('%s/%s') % (plugins, x))])
 
 agent = Node('agent', children=(plugin,))
 
@@ -121,7 +118,8 @@ user = Node('user', children=(user_count, user_list))
 
 root = Node('root', children=(cpu, memory, disk, interface, agent, user))
 
-def getter(accessor=''):
+def getter(accessor='', s_plugins=''):
+    global plugins = s_plugins
     path = [x for x in accessor.split('/') if x]
     logging.info(path)
     return root.accessor(path)
