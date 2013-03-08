@@ -71,7 +71,7 @@ def execute_plugin(plugin_name, plugin_args, config, *args, **kwargs):
     running_check.wait()
     
     returncode = running_check.returncode
-    stdout = running_check.stdout.read()
+    stdout = ''.join(running_check.stdout.readlines()).replace('\r\n', '\n').replace('\r', '\n')
     
     return {'returncode' : returncode, 'stdout' : stdout}
     

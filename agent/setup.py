@@ -19,19 +19,25 @@ includefiles = [    'var/ncpa.log',
                     ]
 
 if 'bdist_msi' in sys.argv:
-    includefiles = [ 'Config.py', 'start.bat' ]
-    buildOptions = dict(includes = ["ncpa_cx_windows"],
+    includefiles += [ 'Config.py', 'install.bat', 'uninstall.bat' ]
+    
+    buildOptions = dict(includes = ["ncpa_listener_windows"],
                         include_files = includefiles)
-    executable = Executable("Config.py", 
+     
+    listener  = Executable( "ListenerConfig.py", 
                             base = "Win32Service",
-                            targetName = "ncpa_cx_windows.exe"
+                            targetName = "ncpa_listener.exe"
                 )
+    # passive   = Executable( "PassiveConfig.py",
+                            # base = "Win32Server",
+                            # targetName = "ncpa_passive.exe"
+                # )
 
 setup(
-        name = "NCPAListener",
+        name = "NCPA",
         version = "0.2",
-        description = "NCPA Listening Daemon",
-        executables = [executable],
+        description = "Nagios Cross Platform Agent Installer",
+        executables = [listener] #, passive],
         options = dict(build_exe = buildOptions),
 )
 

@@ -38,7 +38,7 @@
 
 NAME = "NCPA Listener %s"
 DISPLAY_NAME = "NCPA Listener - %s"
-MODULE_NAME = "ncpa_cx_windows"
+MODULE_NAME = "ncpa_listener_windows"
 CLASS_NAME = "Handler"
 DESCRIPTION = "NCPA HTTP Listener Server"
 AUTO_START = True
