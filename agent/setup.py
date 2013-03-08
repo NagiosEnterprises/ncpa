@@ -11,24 +11,27 @@
 import sys
 from cx_Freeze import setup, Executable
 
+includefiles = [    'var/ncpa.log', 
+                    'etc/ncpa.cfg',
+                    'plugins',
+                    'listener/templates',
+                    'listener/static'
+                    ]
+
 if 'bdist_msi' in sys.argv:
-    sys.argv += ['--install-script', 'install.bat']
-
-includefiles = [ 'var/ncpa.log', 'etc/ncpa.cfg', 'Config.py', 'plugins', 'listener/templates', 'listener/static' ]
-
-buildOptions = dict(includes = ["ncpa_cx_windows"],
-                    include_files = includefiles)
-executable = Executable("Config.py", 
-                        base = "Win32Service",
-                        targetName = "ncpa_cx_windows.exe"
-            )
+    includefiles = [ 'Config.py', 'start.bat' ]
+    buildOptions = dict(includes = ["ncpa_cx_windows"],
+                        include_files = includefiles)
+    executable = Executable("Config.py", 
+                            base = "Win32Service",
+                            targetName = "ncpa_cx_windows.exe"
+                )
 
 setup(
         name = "NCPAListener",
-        version = "0.1",
+        version = "0.2",
         description = "NCPA Listening Daemon",
         executables = [executable],
         options = dict(build_exe = buildOptions),
-        scripts = [ 'install.bat', ]
 )
 
