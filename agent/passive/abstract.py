@@ -62,10 +62,6 @@ class NagiosHandler(object):
         '''
         This should always setup the logger.
         '''
-        log_config = dict(self.config.items('logging', 1))
-        log_config['level'] = getattr(logging, log_config['log_level'], logging.INFO)
-        del log_config['log_level']
-        logging.basicConfig(**log_config)
         self.logger = logging.getLogger()
     
     def parse_config(self, config, *args, **kwargs):
