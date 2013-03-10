@@ -36,11 +36,11 @@
 #       parameters sessionId and eventTypeId.
 #------------------------------------------------------------------------------
 
-NAME = "NCPA Listener %s"
-DISPLAY_NAME = "NCPA Listener - %s"
+NAME = "NCPA Passive %s"
+DISPLAY_NAME = "NCPA Passive - %s"
 MODULE_NAME = "ncpa_windows"
-CLASS_NAME = "Listener"
-DESCRIPTION = "NCPA HTTP Listener Server"
+CLASS_NAME = "Passive"
+DESCRIPTION = "NCPA Passive Server"
 AUTO_START = True
 SESSION_CHANGES = False
 
