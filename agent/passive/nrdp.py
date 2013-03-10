@@ -48,7 +48,7 @@ class Handler(abstract.NagiosHandler):
         output = self.make_tag('output', str(result.stdout))
         if not result.check_type == 'host':
             servicename = self.make_tag('servicename', result.nag_servicename)
-            checkresul.appendChild(servicename)
+            checkresult.appendChild(servicename)
         checkresult.appendChild(hostname)
         checkresult.appendChild(state)
         checkresult.appendChild(output)
@@ -66,51 +66,46 @@ class Handler(abstract.NagiosHandler):
             checkresults.appendChild(element)
         return doc
     
-    #~ def run(self, *args, **kwargs):
-        #~ '''
-        #~ Sends all the commands to the agent and then submits them
-        #~ via NRDP to Nagios.
-        #~ '''
-        #~ import ConfigParser
-        #~ try:
-            #~ self.send_all_commands()
-            #~ self.submit_to_nagios()
-        #~ except ConfigParser.NoSectionError, e:
-            #~ logger.error('%s -- Exiting out of passive daemon cycle.' % str(e))
-        #~ except ConfigParser.NoOptionError, e:
-            #~ logger.error('%s -- Exiting out of cycle.' % str(e))
-    #~ 
-    #~ def log_result(self, retxml, *args, **kwargs):
-        #~ tree = etree.fromstring(retxml)
-        #~ message = tree.find('./message')
-        #~ meta = tree.find('./meta/output')
-        #~ if message is not None:
-            #~ logger.info('Message from NRDP server: %s' % message.text)
-        #~ else:
-            #~ logger.error('Improper XML returned from NRDP server.')
-        #~ if meta is not None:
-            #~ logger.info('Meta output from NRDP server: %s' % meta.text)
-        #~ else:
-            #~ logger.error('No meta information returned from NRDP server.')
-    #~ 
-    #~ def submit_to_nagios(self, *args, **kwargs):
-        #~ '''
-        #~ Submit the result as XML to the NRDP server.
-        #~ '''
-        #~ self.set_xml_of_checkresults()
-        #~ server = self.config.get('nrdp', 'parent')
-        #~ token = self.config.get('nrdp', 'token')
-        #~ xmldata = etree.tostring(self.checkresults)
-        #~ retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
-        #~ self.log_result(retxml.content)
-        
-if __name__ == "__main__":
-    import ConfigParser
-    conf = ConfigParser.ConfigParser()
-    conf.read('../etc/ncpa.cfg')
-    a = Handler(conf)
-    b = object()
-    b.stdout = 'hi'
-    b.state = 'the state'
-    b.output = 'the output'
-    a.make_hostcheck_xml(b)
+    def run(self, *args, **kwargs):
+        '''
+        Sends all the commands to the agent and then submits them
+        via NRDP to Nagios.
+        '''
+        import ConfigParser
+        try:
+            self.send_all_commands()
+            self.submit_to_nagios()
+        except ConfigParser.NoSectionError, e:
+            logger.error('%s -- Exiting out of passive daemon cycle.' % str(e))
+        except ConfigParser.NoOptionError, e:
+            logger.error('%s -- Exiting out of cycle.' % str(e))
+    
+    def log_result(self, retxml, *args, **kwargs):
+        tree = xml.dom.minidom.parseString(retxml)
+        try:
+            message = [x.firstChild for x in tree.firstChild.childNodes if x.tagName == 'message'][0]
+        except IndexError:
+            message = None
+        try:
+            meta = [z.firstChild for z in [y.tagName for y in tree.firstChild.childNodes if y.tagName == 'meta'] if z.tagName == 'output']
+        except IndexError:
+            meta = None
+        if message is not None:
+            logger.info('Message from NRDP server: %s' % message.nodeValue)
+        else:
+            logger.error('Improper XML returned from NRDP server.')
+        if meta is not None:
+            logger.info('Meta output from NRDP server: %s' % meta.nodeValue)
+        else:
+            logger.error('No meta information returned from NRDP server.')
+    
+    def submit_to_nagios(self, *args, **kwargs):
+        '''
+        Submit the result as XML to the NRDP server.
+        '''
+        self.set_xml_of_checkresults()
+        server = self.config.get('nrdp', 'parent')
+        token = self.config.get('nrdp', 'token')
+        xmldata = etree.tostring(self.checkresults)
+        retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
+        self.log_result(retxml.content)
