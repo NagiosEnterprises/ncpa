@@ -40,10 +40,10 @@ class Base(object):
     def setup_logging(self, *arg, **kwargs):
         '''This should always setup the logger.
         '''
-        log_config = dict(self.config.items('logging', 1))
-        log_config['level'] = getattr(logging, log_config['log_level'], logging.INFO)
-        del log_config['log_level']
-        log_file = log_config['filename']
+        log_config = dict(self.config.items(self.c_type, 1))
+        log_config['level'] = getattr(logging, log_config['loglevel'], logging.INFO)
+        del log_config['loglevel']
+        log_file = log_config['logfile']
         if os.path.isabs(log_file):
             log_config['filename'] = log_file
         else:
@@ -74,8 +74,8 @@ class Listener(Base):
         ''' 
         try:
             import listener.server
-            address = self.config.get('listening server', 'ip')
-            port = int(self.config.get('listening server', 'port'))
+            address = self.config.get('listener', 'ip')
+            port = int(self.config.get('listener', 'port'))
             listener.server.listener.config['iconfig'] = self.config
             listener.server.listener.run(address, port)
         except Exception, e:
@@ -83,6 +83,7 @@ class Listener(Base):
         
     # called when the service is starting
     def Initialize(self, configFileName):
+        self.c_type = 'listener'
         self.config_filename = self.determine_relative_filename(os.path.join('etc' , 'ncpa.cfg'))
         self.parse_config()
         self.setup_logging()
@@ -134,6 +135,7 @@ class Passive(Base):
         
     # called when the service is starting
     def Initialize(self, configFileName):
+        self.c_type = 'passive'
         self.config_filename = self.determine_relative_filename(os.path.join('etc' , 'ncpa.cfg'))
         self.parse_config()
         self.setup_logging()
