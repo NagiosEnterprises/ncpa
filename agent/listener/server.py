@@ -8,7 +8,6 @@ import re
 import ConfigParser
 import os
 import sys
-import processor
 import requests
 import json
 import psapi
@@ -52,16 +51,6 @@ def error(msg=None):
     if not msg:
         msg = 'Error occurred during processing request.'
     return jsonify(error=msg)
-
-@listener.route('/check/')
-@requires_auth
-def check():
-    try:
-        result = processor.check_metric(request.args, listener.config['iconfig'])
-        return jsonify(**result)
-    except Exception, e:
-        logging.exception(e)
-        return redirect(url_for('error', msg=str(e)))
 
 @listener.route('/nrdp/', methods=['GET', 'POST'])
 def nrdp():
