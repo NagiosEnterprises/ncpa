@@ -5,8 +5,6 @@ import xml.dom.minidom
 import logging
 import utils
 
-logger = logging.getLogger()
-
 class NRDPAssociation(abstract.NagiosAssociation):
     '''
     Specialized Association that has NRDP variables.
@@ -59,12 +57,11 @@ class Handler(abstract.NagiosHandler):
         Get XML of all check results in NRDP.
         '''
         doc = xml.dom.minidom.Document()
-        checkresults = doc.createElement('checkresults')
-        doc.appendChild(checkresults)
+        self.checkresults = doc.createElement('checkresults')
+        doc.appendChild(self.checkresults)
         for result in self.ncpa_commands:
             element = self.make_xml(result)
-            checkresults.appendChild(element)
-        return doc
+            self.checkresults.appendChild(element)
     
     def run(self, *args, **kwargs):
         '''
@@ -76,9 +73,9 @@ class Handler(abstract.NagiosHandler):
             self.send_all_commands()
             self.submit_to_nagios()
         except ConfigParser.NoSectionError, e:
-            logger.error('%s -- Exiting out of passive daemon cycle.' % str(e))
+            logging.error('%s -- Exiting out of passive daemon cycle.' % str(e))
         except ConfigParser.NoOptionError, e:
-            logger.error('%s -- Exiting out of cycle.' % str(e))
+            logging.error('%s -- Exiting out of cycle.' % str(e))
     
     def log_result(self, retxml, *args, **kwargs):
         tree = xml.dom.minidom.parseString(retxml)
@@ -91,13 +88,13 @@ class Handler(abstract.NagiosHandler):
         except IndexError:
             meta = None
         if message is not None:
-            logger.info('Message from NRDP server: %s' % message.nodeValue)
+            logging.info('Message from NRDP server: %s' % message.nodeValue)
         else:
-            logger.error('Improper XML returned from NRDP server.')
+            logging.error('Improper XML returned from NRDP server.')
         if meta is not None:
-            logger.info('Meta output from NRDP server: %s' % meta.nodeValue)
+            logging.info('Meta output from NRDP server: %s' % meta.nodeValue)
         else:
-            logger.error('No meta information returned from NRDP server.')
+            logging.error('No meta information returned from NRDP server.')
     
     def submit_to_nagios(self, *args, **kwargs):
         '''
@@ -106,6 +103,6 @@ class Handler(abstract.NagiosHandler):
         self.set_xml_of_checkresults()
         server = self.config.get('nrdp', 'parent')
         token = self.config.get('nrdp', 'token')
-        xmldata = etree.tostring(self.checkresults)
+        xmldata = self.checkresults.toprettyxml()
         retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
         self.log_result(retxml.content)

@@ -4,6 +4,7 @@ from flask import Flask, render_template, redirect, request, url_for, jsonify, R
 import commands
 import logging
 import urllib
+import re
 import ConfigParser
 import os
 import sys
@@ -14,14 +15,14 @@ import psapi
 import pluginapi
 import functools
 import jinja2.ext
-# import jinja2
 
-base_dir = os.path.dirname(sys.path[0])
-tmpl_dir = os.path.join(base_dir, 'listener', 'templates')
-stat_dir = os.path.join(base_dir, 'listener', 'static')
-
-listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
-# listener.debug=True
+if os.name == 'nt': 
+    base_dir = os.path.dirname(sys.path[0])
+    tmpl_dir = os.path.join(base_dir, 'listener', 'templates')
+    stat_dir = os.path.join(base_dir, 'listener', 'static')
+    listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
+else:
+    listener = Flask(__name__)
 
 def return_with_cred(template):
     token = request.args.get('token', '')
@@ -40,7 +41,6 @@ def requires_auth(f):
 @listener.route('/')
 @requires_auth
 def index():
-    logging.warning(tmpl_dir)
     try:
         return return_with_cred('main.html')
     except Exception, e:
@@ -89,6 +89,7 @@ def config():
 
 @listener.route('/api/agent/plugin/<plugin_name>/')
 @listener.route('/api/agent/plugin/<plugin_name>/<path:plugin_args>')
+@requires_auth
 def plugin_api(plugin_name=None, plugin_args=None):
     config = listener.config['iconfig']
     try:
@@ -100,14 +101,48 @@ def plugin_api(plugin_name=None, plugin_args=None):
 
 @listener.route('/api/')
 @listener.route('/api/<path:accessor>')
+@requires_auth
 def api(accessor=''):
-    logging.debug("Path: %s" % accessor)
+    if request.args.get('check'):
+        url = accessor + '?' + urllib.urlencode(request.args)
+        return jsonify({'value' : internal_api(url, listener.config['iconfig'])})
     try:
         response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
     except Exception, e:
         logging.exception(e)
         return redirect(url_for('error', msg='Referencing node that does not exist.'))
     return jsonify({'value' : response})
+
+def internal_api(accessor=None, config=None):
+    accessor_name, accessor_args, plugin_name, plugin_args =  parse_internal_input(accessor)
+    if accessor_name:
+        acc_response = psapi.getter(accessor_name)
+        result = pluginapi.make_plugin_response_from_accessor(acc_response, accessor_args)
+    elif plugin_name:
+        result = pluginapi.execute_plugin(plugin_name, plugin_args, config)
+    return result
+
+def parse_internal_input(accessor):
+    ACCESSOR_REGEX = re.compile('(/api)?/?([^?]+)\??(.*)')
+    PLUGIN_REGEX = re.compile('(/api)?(/?agent/)?plugin/([^/]+)(/(.*))?')
+    
+    accessor_name = None
+    accessor_args = None
+    plugin_name = None
+    plugin_args = None
+    
+    plugin_result = PLUGIN_REGEX.match(accessor)
+    accessor_result = ACCESSOR_REGEX.match(accessor)
+    
+    if plugin_result:
+        logging.debug('Plugin result!')
+        plugin_name = plugin_result.group(3)
+        plugin_args = plugin_result.group(5)
+    elif accessor_result:
+        logging.debug('Accessor result!')
+        accessor_name = accessor_result.group(2)
+        accessor_args = accessor_result.group(3)
+    return accessor_name, accessor_args, plugin_name, plugin_args
 
 @listener.route('/processes/')
 @requires_auth

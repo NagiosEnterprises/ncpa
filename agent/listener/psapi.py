@@ -34,57 +34,57 @@ class Node(object):
         return {self.name : self.method()}
 
 def make_disk_nodes(disk_name):
-    read_time = Node('read_time', method=lambda: ps.disk_io_counters(perdisk=True)[disk_name].read_time)
-    write_time = Node('write_time', method=lambda: ps.disk_io_counters(perdisk=True)[disk_name].write_time)
-    read_count = Node('read_count', method=lambda: ps.disk_io_counters(perdisk=True)[disk_name].read_count)
-    write_count = Node('write_count', method=lambda: ps.disk_io_counters(perdisk=True)[disk_name].write_count)
-    read_bytes = Node('read_bytes', method=lambda: ps.disk_io_counters(perdisk=True)[disk_name].read_bytes)
-    write_bytes = Node('write_bytes', method=lambda: ps.disk_io_counters(perdisk=True)[disk_name].write_bytes)
+    read_time = Node('read_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_time,'ms'))
+    write_time = Node('write_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_time, 'ms'))
+    read_count = Node('read_count', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_count, 'c'))
+    write_count = Node('write_count', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_count, 'c'))
+    read_bytes = Node('read_bytes', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_bytes, 'b'))
+    write_bytes = Node('write_bytes', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_bytes, 'b'))
     return Node(disk_name, children=(read_time, write_time, read_count, write_count, read_bytes, write_bytes))
 
 def make_mountpoint_nodes(partition_name):
     mountpoint = partition_name.mountpoint
-    total_size = Node('total_size', method=lambda: ps.disk_usage(mountpoint).total)
-    used = Node('used', method=lambda: ps.disk_usage(mountpoint).used)
-    free = Node('free', method=lambda: ps.disk_usage(mountpoint).free)
-    used_percent = Node('used_percent', method=lambda: ps.disk_usage(mountpoint).percent)
+    total_size = Node('total_size', method=lambda: (ps.disk_usage(mountpoint).total, 'b'))
+    used = Node('used', method=lambda: (ps.disk_usage(mountpoint).used, 'b'))
+    free = Node('free', method=lambda: (ps.disk_usage(mountpoint).free, 'b'))
+    used_percent = Node('used_percent', method=lambda: (ps.disk_usage(mountpoint).percent, '%'))
     device_name = Node('device_name', method=lambda: partition_name.device)
     safe_mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
     return Node(safe_mountpoint, children=(total_size, used, free, used_percent, device_name))
     
 def make_if_nodes(if_name):
-    bytes_sent = Node('bytes_sent', method=lambda: ps.network_io_counters(pernic=True)[if_name].bytes_sent)
-    bytes_recv = Node('bytes_recv', method=lambda: ps.network_io_counters(pernic=True)[if_name].bytes_recv)
-    packets_sent = Node('packets_sent', method=lambda: ps.network_io_counters(pernic=True)[if_name].packets_sent)
-    packets_recv = Node('packets_recv', method=lambda: ps.network_io_counters(pernic=True)[if_name].packets_recv)
-    errin = Node('errin', method=lambda: ps.network_io_counters(pernic=True)[if_name].errin)
-    errout = Node('errout', method=lambda: ps.network_io_counters(pernic=True)[if_name].errout)
-    dropin = Node('dropin', method=lambda: ps.network_io_counters(pernic=True)[if_name].dropin)
-    dropout = Node('dropout', method=lambda: ps.network_io_counters(pernic=True)[if_name].dropout)
+    bytes_sent = Node('bytes_sent', method=lambda: (ps.network_io_counters(pernic=True)[if_name].bytes_sent, 'b'))
+    bytes_recv = Node('bytes_recv', method=lambda: (ps.network_io_counters(pernic=True)[if_name].bytes_recv, 'b'))
+    packets_sent = Node('packets_sent', method=lambda: (ps.network_io_counters(pernic=True)[if_name].packets_sent, 'c'))
+    packets_recv = Node('packets_recv', method=lambda: (ps.network_io_counters(pernic=True)[if_name].packets_recv, 'c'))
+    errin = Node('errin', method=lambda: (ps.network_io_counters(pernic=True)[if_name].errin, 'c'))
+    errout = Node('errout', method=lambda: (ps.network_io_counters(pernic=True)[if_name].errout, 'c'))
+    dropin = Node('dropin', method=lambda: (ps.network_io_counters(pernic=True)[if_name].dropin, 'c'))
+    dropout = Node('dropout', method=lambda: (ps.network_io_counters(pernic=True)[if_name].dropout, 'c'))
     return Node(if_name, children=(bytes_sent, bytes_recv, packets_sent, packets_recv, errin, errout, dropin, dropout))
 
 #~ CPU Tree
 cpu_count = Node('count', method=lambda: len(ps.cpu_percent(percpu=True)))
-cpu_percent = Node('percentage', method=lambda: ps.cpu_percent(1, percpu=True))
-cpu_user = Node('user', method=lambda: [x.user for x in ps.cpu_times(percpu=True)])
-cpu_system = Node('system', method=lambda: [x.system for x in ps.cpu_times(percpu=True)])
-cpu_idle = Node('idle', method=lambda: [x.idle for x in ps.cpu_times(percpu=True)])
+cpu_percent = Node('percentage', method=lambda: (ps.cpu_percent(1, percpu=True), '%'))
+cpu_user = Node('user', method=lambda: ([x.user for x in ps.cpu_times(percpu=True)], 'ms'))
+cpu_system = Node('system', method=lambda: ([x.system for x in ps.cpu_times(percpu=True)], 'ms'))
+cpu_idle = Node('idle', method=lambda: ([x.idle for x in ps.cpu_times(percpu=True)], 'ms'))
 
 cpu = Node('cpu', children=(cpu_count, cpu_system, cpu_percent, cpu_user, cpu_idle))
 
 #~ Memory Tree
-mem_virt_total = Node('total', method=lambda: ps.virtual_memory().total)
-mem_virt_available = Node('available', method=lambda: ps.virtual_memory().available)
-mem_virt_percent = Node('percent', method=lambda: ps.virtual_memory().percent)
-mem_virt_used = Node('used', method=lambda: ps.virtual_memory().used)
-mem_virt_free = Node('free', method=lambda: ps.virtual_memory().free)
+mem_virt_total = Node('total', method=lambda: (ps.virtual_memory().total, 'b'))
+mem_virt_available = Node('available', method=lambda: (ps.virtual_memory().available, 'b'))
+mem_virt_percent = Node('percent', method=lambda: (ps.virtual_memory().percent, '%'))
+mem_virt_used = Node('used', method=lambda: (ps.virtual_memory().used, 'b'))
+mem_virt_free = Node('free', method=lambda: (ps.virtual_memory().free, 'b'))
 
 mem_virt = Node('virtual', children=(mem_virt_total, mem_virt_available, mem_virt_free, mem_virt_percent, mem_virt_used))
 
-mem_swap_total = Node('total', method=lambda: ps.swap_memory().total)
-mem_swap_percent = Node('percent', method=lambda: ps.swap_memory().percent)
-mem_swap_used = Node('used', method=lambda: ps.swap_memory().used)
-mem_swap_free = Node('free', method=lambda: ps.swap_memory().free)
+mem_swap_total = Node('total', method=lambda: (ps.swap_memory().total, 'b'))
+mem_swap_percent = Node('percent', method=lambda: (ps.swap_memory().percent, '%'))
+mem_swap_used = Node('used', method=lambda: (ps.swap_memory().used, 'b'))
+mem_swap_free = Node('free', method=lambda: (ps.swap_memory().free, 'b'))
 
 mem_swap = Node('swap', children=(mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used))
 

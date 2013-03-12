@@ -62,3 +62,73 @@ class NCPADaemon(object):
         tidily.
         '''
         raise Exception("Instantiation of abstract base class.")
+
+class PosixDaemon(abstract.NCPADaemon):
+    
+    def __init__(self, *args, **kwargs):
+        super(PosixDaemon, self).__init__(*args, **kwargs)
+    
+    def check_pid(self, pidfile, *args, **kwargs):
+        '''
+        Make sure there is no pid file that is designated for
+        this process.
+        '''
+        try:
+            f = open(pidfile)
+            f.close()
+            print '%s still exists, ncpa process must still be running.' % pidfile
+            self.logger.warning('User attempted to restart, %s still exists, exiting.' % pidfile)
+            sys.exit(1)
+        except IOError:
+            return False
+    
+    def write_pid(self, pidfile, pid, *args, **kwargs):
+        '''
+        Write the PID to the ncpa.pid file
+        '''
+        f = open(pidfile, 'w')
+        f.write(str(pid))
+        f.close()
+    
+    def start(self, *args, **kwargs):
+        '''
+        Do the event that daemon is meant to do.
+        '''
+        raise Exception("Instantiation of abstract base class.")
+    
+    def stop(self, pidfile, *args, **kwargs):
+        '''Kill spawned daemon gracefully
+        '''
+        try:
+            f = open(pidfile, 'r')
+        except IOError:
+            print 'No pid file exists at %s. Cannot terminate.' % pidfile
+            sys.exit(1)
+        ncpa_pid = f.read()
+        f.close()
+        try:
+            os.kill(int(ncpa_pid), signal.SIGTERM)
+        except OSError:
+            print 'No process with pid, deleting pid.'
+        else:
+            self.draw_spinner('Terminating')
+        os.remove(pidfile)
+    
+    def reload(self, *args, **kwargs):
+        '''
+        Call start and stop
+        '''
+        self.stop()
+        self.start()
+    
+    def draw_spinner(self, text, *args, **kwargs):
+        print "%s...\\" % text,
+        syms = ['\\', '|', '/', '-']
+        bs = '\b'
+
+        for _ in range(2):
+            for sym in syms:
+                sys.stdout.write("\b%s" % sym)
+                sys.stdout.flush()
+                time.sleep(.15)
+        print ''

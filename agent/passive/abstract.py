@@ -3,6 +3,8 @@ import json
 import socket
 import utils
 import requests
+import urllib
+import listener.server
 
 class NagiosHandler(object):
     '''
@@ -16,39 +18,67 @@ class NagiosHandler(object):
         Does initial such as parsing the config.
         '''
         self.parse_config(config)
-        self.logger.debug('Establishing Nagios handler...')
-        self.logger.debug('Nagios handler established.')
+        logging.debug('Establishing Nagios handler...')
+        logging.debug('Nagios handler established.')
     
     def _parse_commands(self, *args, **kwargs):
         '''
         Grab the commands from the config.
         '''
-        self.logger.debug('Parsing commands...')
+        logging.debug('Parsing commands...')
         commands = dict(self.config.items('passive checks'))
         self.ncpa_commands = []
         for command in commands:
-            self.logger.debug('Parsing new individual command.')
+            logging.debug('Parsing new individual command.')
             host_service = command
             raw_command = commands[command]
             tmp = NCPACommand()
             tmp.set_host_and_service(host_service)
             tmp.parse_command(raw_command)
-            self.logger.debug(tmp)
+            logging.debug(tmp)
             self.ncpa_commands.append(tmp)
+    
+    def get_warn_crit_from_arguments(self, arguments):
+        import optparse
+        import shlex
+        
+        logging.debug('Parsing arguments: %s' % arguments)
+        #~ Must give the arguments a prog name in order for them to work with
+        #~ optparse
+        arguments = str('./xxx ' + arguments)
+        parser = optparse.OptionParser()
+        parser.add_option('-w', '--warning')
+        parser.add_option('-c', '--critical')
+        parser.add_option('-u', '--unit')
+        try:
+            arg_lat = shlex.split(arguments)
+            logging.info(str(arg_lat))
+            options, args = parser.parse_args(arg_lat)
+        except Exception, e:
+            logging.exception(e)
+        warning = options.warning or ''
+        critical = options.critical or ''
+        unit = options.unit or ''
+        return {'warning':warning, 'critical':critical, 'unit':unit}
     
     def send_command(self, ncpa_command, *args, **kwargs):
         '''
         Query the local active agent.
         '''
-        self.logger.debug('Querying agent.')
-        address = self.config.get('passive', 'connect')
-        self.logger.debug('Config states we connect to %s' % address)
-        params = {  'metric'    : ncpa_command.command,
-                    'warning'   : None,
-                    'critical'  : None,
-                    'arguments' : ncpa_command.arguments }
-        received = requests.get(address, params=params, verify=False)
-        return received.content
+        url = ncpa_command.command
+        if ncpa_command.arguments and not 'plugin' in ncpa_command.command:
+            wcu_dict = self.get_warn_crit_from_arguments(ncpa_command.arguments)
+            url += '?' + urllib.urlencode(wcu_dict)
+        if 'plugin' in ncpa_command.command:
+            url += '/' + ncpa_command.arguments
+        response = listener.server.internal_api(url, self.config)
+        logging.warning(response)
+        #~ params = {  'metric'    : ncpa_command.command,
+                    #~ 'warning'   : None,
+                    #~ 'critical'  : None,
+                    #~ 'arguments' : ncpa_command.arguments }
+        #~ received = requests.get(address, params=params, verify=False)
+        return response
         
     def send_all_commands(self, *args, **kwargs):
         '''
@@ -58,26 +88,12 @@ class NagiosHandler(object):
             tmp_result = self.send_command(command)
             command.set_json(tmp_result)
     
-    def setup_logging(self, *arg, **kwargs):
-        '''
-        This should always setup the logger.
-        '''
-        self.logger = logging.getLogger()
-    
     def parse_config(self, config, *args, **kwargs):
         '''
         Grab the commands from the config.
         '''
-        #~ This is for debugging and Handler creation only
-        try:
-            config.sections()
-            obj_config = config
-        except AttributeError:
-            obj_config = utils.PConfigParser()
-            obj_config.read(config)
-        self.config = obj_config
-        self.setup_logging()
-        self.logger.debug('Parsing config...')
+        self.config = config
+        logging.debug('Parsing config...')
         self._parse_commands()
     
     def run(self, *args, **kwargs):
@@ -107,7 +123,6 @@ class NCPACommand(object):
         self.json = None
         self.stdout = None
         self.returncode = None
-        self.logger = logging.getLogger()
     
     def __repr__(self):
         builder  = 'Nagios Hostname: %s -- ' % self.nag_hostname
@@ -124,9 +139,8 @@ class NCPACommand(object):
         return code.
         '''
         self.json = json_data
-        tmp_json = json.loads(json_data)
-        self.stdout = tmp_json.get('stdout', 'Error parsing the JSON.')
-        self.returncode = tmp_json.get('returncode', 'Error parsing the JSON.')
+        self.stdout = json_data.get('stdout', 'Error parsing the JSON.')
+        self.returncode = json_data.get('returncode', 'Error parsing the JSON.')
     
     def set_host_and_service(self, directive, *args, **kwargs):
         '''
@@ -142,7 +156,7 @@ class NCPACommand(object):
             self.check_type = 'host'
         else:
             self.check_type = 'service'
-        self.logger.debug('Setting hostname to %s and servicename to %s' % (self.nag_hostname, self.nag_servicename))
+        logging.debug('Setting hostname to %s and servicename to %s' % (self.nag_hostname, self.nag_servicename))
     
     def parse_result(self, result, *args, **kwargs):
         '''
@@ -161,10 +175,11 @@ class NCPACommand(object):
         Should set self.command to check_memory, anything in a space
         after it should be regarded as arguments.
         '''
-        self.logger.debug('Parsing command: %s' % config_command)
+        logging.debug('Parsing command: %s' % config_command)
         try:
             self.command, self.arguments = config_command.split(' ', 1)
-            self.logger.debug('Command contained arguments.')
+            logging.debug('Command contained arguments.')
         except ValueError:
             self.command = config_command
-            self.logger.debug('Command did not contain arguments. Single directive.')
+            logging.debug('Command did not contain arguments. Single directive.')
+            
