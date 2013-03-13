@@ -5,6 +5,9 @@ import logging
 import time
 import sys
 
+import passive.nrds
+import passive.nrdp
+
 class Passive(simpledaemon.Daemon):
     default_conf = 'etc/ncpa.cfg'
     section = 'passive'
@@ -18,6 +21,7 @@ class Passive(simpledaemon.Daemon):
         - Terminate in a timely fashion
         '''
         handlers = self.config_parser.get('passive', 'handlers').split(',')
+        logging.warning('Ran dis')
         
         for handler in handlers:
             try:

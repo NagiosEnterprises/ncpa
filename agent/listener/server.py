@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import werkzeug.exceptions
 from flask import Flask, render_template, redirect, request, url_for, jsonify, Response
 import commands
 import logging
