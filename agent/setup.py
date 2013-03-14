@@ -11,7 +11,10 @@
 import sys
 from cx_Freeze import setup, Executable
 
-includefiles = [    'var/ncpa.log', 
+sys.argv += ['-p', 'xml']
+
+includefiles = [    'var/ncpa_listener.log', 
+                    'var/ncpa_passive.log',
                     'etc/ncpa.cfg',
                     'plugins',
                     'listener/templates',
@@ -19,9 +22,7 @@ includefiles = [    'var/ncpa.log',
                     'passive'
                     ]
 
-includes = [    'lxml.etree', 
-                'lxml._elementpath' 
-           ]
+includes = ['xml.dom.minidom']
                     
 if 'bdist_msi' in sys.argv:
     includefiles += [ 'install.bat', 'uninstall.bat' ]

@@ -41,7 +41,8 @@ class Base(object):
         '''This should always setup the logger.
         '''
         log_config = dict(self.config.items(self.c_type, 1))
-        log_config['level'] = getattr(logging, log_config['loglevel'], logging.INFO)
+        log_level = log_config.get('loglevel', 'INFO').upper()
+        log_config['level'] = getattr(logging, log_level, logging.INFO)
         del log_config['loglevel']
         log_file = log_config['logfile']
         if os.path.isabs(log_file):
@@ -111,6 +112,7 @@ class Passive(Base):
                 tmp_handler = sys.modules[module_name]
             except ImportError,e:
                 self.logger.error('Could not import module passive.%s, skipping. %s' % (handler, str(e)))
+                self.logger.exception(e)
             else:
                 try:
                     ins_handler = tmp_handler.Handler(self.config)

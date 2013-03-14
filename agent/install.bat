@@ -1,1 +1,2 @@
-ncpa_cx_windows.exe --install ncpalistener
+ncpa_listener.exe --install ncpalistener
+ncpa_passive.exe --install ncpapassive
