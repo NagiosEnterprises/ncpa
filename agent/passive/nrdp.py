@@ -79,22 +79,21 @@ class Handler(abstract.NagiosHandler):
     
     def log_result(self, retxml, *args, **kwargs):
         tree = xml.dom.minidom.parseString(retxml)
+
         try:
-            message = [x.firstChild for x in tree.firstChild.childNodes if x.tagName == 'message'][0]
+            message = tree.getElementsByTagName("message")[0].firstChild.nodeValue
         except IndexError:
-            message = None
+            logging.warning('XML returned did not contain a message, or was malformed.')
+            message = 'Nonexistent'
+
         try:
-            meta = [z.firstChild for z in [y.tagName for y in tree.firstChild.childNodes if y.tagName == 'meta'] if z.tagName == 'output']
+            meta = tree.getElementsByTagName("output")[0].firstChild.nodeValue
         except IndexError:
-            meta = None
-        if message is not None:
-            logging.info('Message from NRDP server: %s' % message.nodeValue)
-        else:
-            logging.error('Improper XML returned from NRDP server.')
-        if meta is not None:
-            logging.info('Meta output from NRDP server: %s' % meta.nodeValue)
-        else:
-            logging.error('No meta information returned from NRDP server.')
+            logging.warning('XML returned did not contain a message, or was malformed.')
+            meta = 'Nonexistent'
+        
+        logging.info('Message from NRDP server: %s' % message)
+        logging.info('Meta output from NRDP server: %s' % meta)
     
     def submit_to_nagios(self, *args, **kwargs):
         '''

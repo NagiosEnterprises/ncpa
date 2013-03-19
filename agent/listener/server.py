@@ -105,8 +105,13 @@ def api(accessor=''):
 def internal_api(accessor=None, config=None):
     accessor_name, accessor_args, plugin_name, plugin_args =  parse_internal_input(accessor)
     if accessor_name:
-        acc_response = psapi.getter(accessor_name)
-        result = pluginapi.make_plugin_response_from_accessor(acc_response, accessor_args)
+        try:
+            acc_response = psapi.getter(accessor_name)
+        except IndexError as e:
+            logging.warning("User request invalid node: %s" % accessor_name)
+            result = { 'returncode' : 3, 'stdout' : 'Invalid entry specified. No known node by %s' % accessor_name}
+        else:
+            result = pluginapi.make_plugin_response_from_accessor(acc_response, accessor_args)
     elif plugin_name:
         result = pluginapi.execute_plugin(plugin_name, plugin_args, config)
     return result

@@ -52,7 +52,7 @@ class NagiosHandler(object):
         parser.add_option('-u', '--unit')
         try:
             arg_lat = shlex.split(arguments)
-            logging.info(str(arg_lat))
+            logging.debug(str(arg_lat))
             options, args = parser.parse_args(arg_lat)
         except Exception, e:
             logging.exception(e)
@@ -72,12 +72,7 @@ class NagiosHandler(object):
         if 'plugin' in ncpa_command.command:
             url += '/' + ncpa_command.arguments
         response = listener.server.internal_api(url, self.config)
-        logging.warning(response)
-        #~ params = {  'metric'    : ncpa_command.command,
-                    #~ 'warning'   : None,
-                    #~ 'critical'  : None,
-                    #~ 'arguments' : ncpa_command.arguments }
-        #~ received = requests.get(address, params=params, verify=False)
+        logging.debug(response)
         return response
         
     def send_all_commands(self, *args, **kwargs):

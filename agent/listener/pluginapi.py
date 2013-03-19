@@ -45,7 +45,10 @@ def get_cmdline_no_instruct(plugin_name, plugin_args):
 
 def make_plugin_response_from_accessor(accessor_response, accessor_args):
     try:
-        processed_args = { k:v for k,v in [x.split('=') for x in accessor_args.split('&')]}
+        tmp = [x.split('=') for x in accessor_args.split('&')]
+        processed_args = {}
+        for k,v in tmp:
+            processed_args[k] = v
     except ValueError, e:
         logging.debug('No argument detected in string %s' % accessor_args)
         processed_args = {}
@@ -57,7 +60,6 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
         returncode = 3
     else:
         result = accessor_response.values()[0]
-        logging.warning("Result: %s" % str(result))
         if not type(result) in [list, tuple]:
             unit = ''
             result = [result]
