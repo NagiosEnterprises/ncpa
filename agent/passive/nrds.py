@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 import requests
 import abstract
-import xmltodict
+import xml.etree.ElementTree as ET
 import utils
 import json
+import logging
 
 class Handler(abstract.NagiosHandler):
     """
@@ -12,13 +13,12 @@ class Handler(abstract.NagiosHandler):
     
     def __init__(self, *args, **kwargs):
         super(Handler, self).__init__(*args, **kwargs)
-        self.token = self.config.get('nrdp', 'token')
-        self.nrdp_url = self.config.get('nrdp', 'parent')
             
     def run(self, *args, **kwargs):
-        if self.updatenrds():
-            self.getconfig()
-        self.known_plugins()
+        if self.config_update_is_required():
+            self.update_config()
+        #~ if self.plugin_update_is_required():
+            #~ self.update_plugins()
         
     def getplugin(self, *args, **kwargs):
         self.plugin_loc = self.config.get('plugin directives', 'plugin_path')
@@ -35,48 +35,61 @@ class Handler(abstract.NagiosHandler):
         with open(self.local_path_location, 'w') as plugin:
             plugin.write(self.url_request.content)
 
-    def getconfig(self, *args, **kwargs):
+    def update_config(self, *args, **kwargs):
         '''Downloads new config to whatever is declared as path
         
         @todo Validate config before saving
         '''
+        nrdp_url = self.config.get('nrdp', 'parent')
         
-        kwargs['configname'] = self.config.get('nrds', 'config_name')
+        get_args = {    'configname': self.config.get('nrds', 'config_name'),
+                        'cmd': 'getconfig',
+                        'os': 'chinook',
+                        'token': self.token }
         
-        kwargs['cmd'] = self.getconfig.__name__
-        kwargs['os']  = 'chinook'
-        kwargs['token'] = self.token
+        url_request = utils.send_request(nrdp_url, **get_args)
+        logging.debug('URL I am requesting: %s' % url_request.url)
         
-        self.url_request = utils.send_request( self.nrdp_url, **kwargs )
-        self.logger.debug('URL I am requesting: %s' % self.url_request.url)
-        
-        if self.url_request.content != "":
-            with open( self.config.file_path , 'w') as config:
+        if url_request.content != "":
+            with open(self.config.file_path , 'w') as config:
                 config.write(self.url_request.content)
                 
-    def updatenrds(self, *args, **kwargs):
-        '''Takes current config version as argument and returns T or F 
-        if new config is available
-
+    def config_update_is_required(self, *args, **kwargs):
+        '''Returns true or false based on value in the config_version
+        variable in the config
+        
         @todo Log results if we do not have this config
         '''
-        kwargs['token'] = self.token
-        kwargs['cmd'] = 'updatenrds'
-        kwargs['os']  = 'chinook'
-        kwargs['configname'] = self.config.get('nrds', 'config_name')
-        kwargs['version'] = self.config.get('nrds', 'config_version')
-
-        self.url_request = utils.send_request(self.nrdp_url, **kwargs)
+        get_args = {    'token':        self.config.get('nrdp', 'token'),
+                        'cmd':          'updatenrds',
+                        'os':           'chinook',
+                        'configname':   self.config.get('nrds', 'config_name'),
+                        'version':      self.config.get('nrds', 'config_version'), }
         
-        self.config_dict = xmltodict.parse(self.url_request.content)
-        self.status      = self.config_dict['result']['status']
+        nrdp_url = self.config.get('nrdp', 'parent')
+        url_request = utils.send_request(nrdp_url, **get_args)
         
-        self.logger.debug('Status number of new config check: %s' % str(self.status))
+        response_xml = ET.fromstring(url_request.content)
+        status_xml = response_xml.findall('./status')
         
-        if self.status == "1":
-            return True
+        if status_xml:
+            status = status_xml[0].text
         else:
+            status = "0"
+        
+        try:
+            status = int(status)
+        except Exception:
+            logging.error("Unrecognized value for NRDS update returned. Got %s, excpected integer." % status)
             return False
+        
+        logging.debug('Value returned for new config: %d' % status)
+        
+        if status == 2:
+            logging.warning("Server does not have a record for %s config." % self.config.get('nrds', 'config_name'))
+            update = 0
+        
+        return bool(status)
             
     def known_plugins(self, *args, **kwargs):
         self.socket = self.config.get('passive', 'connect')

@@ -4,12 +4,13 @@ import simpledaemon
 import logging
 import time
 import sys
+import os
 
 import passive.nrds
 import passive.nrdp
 
 class Passive(simpledaemon.Daemon):
-    default_conf = 'etc/ncpa.cfg'
+    default_conf = os.path.abspath('etc/ncpa.cfg')
     section = 'passive'
     
     def run_all_handlers(self, *args, **kwargs):
@@ -21,7 +22,6 @@ class Passive(simpledaemon.Daemon):
         - Terminate in a timely fashion
         '''
         handlers = self.config_parser.get('passive', 'handlers').split(',')
-        logging.warning('Ran dis')
         
         for handler in handlers:
             try:
@@ -33,6 +33,9 @@ class Passive(simpledaemon.Daemon):
                 logging.error('Could not import module passive.%s, skipping...' % handler)
             else:
                 try:
+                    plugins_abs = os.path.abspath(self.config_parser.get('plugin directives', 'plugin_path'))
+                    self.config_parser.set('plugin directives', 'plugin_path', plugins_abs)
+                    self.config_parser.file_path = os.path.abspath('etc/ncpa.cfg')
                     ins_handler = tmp_handler.Handler(self.config_parser)
                     ins_handler.run()
                     logging.debug('Successfully ran handler %s' % handler)

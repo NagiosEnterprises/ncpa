@@ -19,7 +19,6 @@ class NagiosHandler(object):
         '''
         self.parse_config(config)
         logging.debug('Establishing Nagios handler...')
-        logging.debug('Nagios handler established.')
     
     def _parse_commands(self, *args, **kwargs):
         '''
@@ -35,7 +34,7 @@ class NagiosHandler(object):
             tmp = NCPACommand()
             tmp.set_host_and_service(host_service)
             tmp.parse_command(raw_command)
-            logging.debug(tmp)
+            logging.debug("Command to be run: %s" % tmp)
             self.ncpa_commands.append(tmp)
     
     def get_warn_crit_from_arguments(self, arguments):
@@ -52,7 +51,7 @@ class NagiosHandler(object):
         parser.add_option('-u', '--unit')
         try:
             arg_lat = shlex.split(arguments)
-            logging.debug(str(arg_lat))
+            logging.debug("String args: %s" % str(arg_lat))
             options, args = parser.parse_args(arg_lat)
         except Exception, e:
             logging.exception(e)
@@ -72,7 +71,7 @@ class NagiosHandler(object):
         if 'plugin' in ncpa_command.command:
             url += '/' + ncpa_command.arguments
         response = listener.server.internal_api(url, self.config)
-        logging.debug(response)
+        logging.debug("Reponse from server: %s" % response)
         return response
         
     def send_all_commands(self, *args, **kwargs):
