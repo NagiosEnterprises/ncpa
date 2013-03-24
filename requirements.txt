@@ -1,6 +1,5 @@
 psutil
 requests
-xmltodict
 Jinja2
 flask
-simpledaemon
+simpledaemon==1.0.1
