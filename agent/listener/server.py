@@ -52,6 +52,17 @@ def error(msg=None):
         msg = 'Error occurred during processing request.'
     return jsonify(error=msg)
 
+@listener.route('/testconnect/')
+def testconnect():
+    ncpa_token = listener.config['iconfig'].get('api', 'community_string')
+    token = request.args.get('token', None)
+    if ncpa_token != token:
+        return jsonify({'error': 'Bad token.'})
+    else:
+        return jsonify({'value': 'Success.'})
+        
+
+
 @listener.route('/nrdp/', methods=['GET', 'POST'])
 def nrdp():
     try:
@@ -103,7 +114,7 @@ def api(accessor=''):
     return jsonify({'value' : response})
 
 def internal_api(accessor=None, config=None):
-    accessor_name, accessor_args, plugin_name, plugin_args =  parse_internal_input(accessor)
+    accessor_name, accessor_args, plugin_name, plugin_args, process_name, process_args =  parse_internal_input(accessor)
     if accessor_name:
         try:
             acc_response = psapi.getter(accessor_name)
@@ -114,29 +125,40 @@ def internal_api(accessor=None, config=None):
             result = pluginapi.make_plugin_response_from_accessor(acc_response, accessor_args)
     elif plugin_name:
         result = pluginapi.execute_plugin(plugin_name, plugin_args, config)
+    elif process_name:
+        result = processapi.execute_query(process_name, process_args)
     return result
 
 def parse_internal_input(accessor):
     ACCESSOR_REGEX = re.compile('(/api)?/?([^?]+)\??(.*)')
     PLUGIN_REGEX = re.compile('(/api)?(/?agent/)?plugin/([^/]+)(/(.*))?')
+    PROCESS_REGEX = re.compile('(/api)?(/?process/)?([^/]+)(/(.*))?')
     
     accessor_name = None
     accessor_args = None
     plugin_name = None
     plugin_args = None
+    process_name = None
+    process_args = None
     
     plugin_result = PLUGIN_REGEX.match(accessor)
     accessor_result = ACCESSOR_REGEX.match(accessor)
+    process_result = PROCESS_REGEX(accessor)
     
     if plugin_result:
         logging.debug('Plugin result!')
         plugin_name = plugin_result.group(3)
         plugin_args = plugin_result.group(5)
+    elif process_result:
+        logging.debug('Process result!')
+        process_name = process_result.group(2)
+        process_args = process_result.group(3)
     elif accessor_result:
         logging.debug('Accessor result!')
         accessor_name = accessor_result.group(2)
         accessor_args = accessor_result.group(3)
-    return accessor_name, accessor_args, plugin_name, plugin_args
+        
+    return accessor_name, accessor_args, plugin_name, plugin_args, process_name, process_args
 
 @listener.route('/processes/')
 @requires_auth

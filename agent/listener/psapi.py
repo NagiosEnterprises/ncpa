@@ -15,23 +15,53 @@ class Node(object):
         self.children = children
         self.name = name
     
-    def accessor(self, path):
+    def accessor(self, path, *args, **kwargs):
+        logging.warning('Path: %s' % path)
         if path:
             for x in self.children:
                 if x.name == path[0]:
-                    return x.accessor(path[1:])
+                    return x.accessor(path=path[1:], *args, **kwargs)
             raise IndexError('No node with that name: %s' % path[0])
         else:
-            return self.run()
+            kwargs['path'] = path[:1]
+            return self.run(*args, **kwargs)
     
-    def walk(self):
+    def walk(self, *args, **kwargs):
         stat = {}
         for child in self.children:
-            stat.update(child.run())
+            stat.update(child.run(*args, **kwargs))
         return stat
     
-    def run(self):
-        return {self.name : self.method()}
+    def run(self, *args, **kwargs):
+        try:
+            retval = self.method(*args, **kwargs)
+        except TypeError:
+            retval = self.method()
+        return {self.name : retval}
+
+class LazyNode(Node):
+    
+    def __init__(self, *args, **kwargs):
+        super(LazyNode, self).__init__(*args, **kwargs)
+    
+    def accessor(self, path, *args, **kwargs):
+        return self.run(path, *args, **kwargs)
+    
+    def run(self, path, *args, **kwargs):
+        if path:
+            return {self.name :  self.parse_process(path)}
+        else:
+            return {self.name : []}
+    
+    def parse_process(self, path):
+        desired_proc = path[0].replace('|', '/')
+        metrics = { 'count' : 0 }
+        count = 0
+        for proc in ps.process_iter():
+            if proc.name == desired_proc:
+                metrics['count'] += 1
+        return {desired_proc : metrics}
+        
 
 def make_disk_nodes(disk_name):
     read_time = Node('read_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_time,'ms'))
@@ -114,9 +144,11 @@ agent = Node('agent', children=(plugin,))
 user_count = Node('count', method=lambda: len([x.name for x in ps.get_users()]))
 user_list  = Node('list', method=lambda: [x.name for x in ps.get_users()])
 
+process = LazyNode('process')
+
 user = Node('user', children=(user_count, user_list))
 
-root = Node('root', children=(cpu, memory, disk, interface, agent, user))
+root = Node('root', children=(cpu, memory, disk, interface, agent, user, process))
 
 def getter(accessor='', s_plugins=''):
     global plugins
