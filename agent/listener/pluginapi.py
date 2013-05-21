@@ -5,6 +5,10 @@ import logging
 import shlex
 import re
 import string
+import urlparse
+import tempfile
+import pickle
+import time
 
 def try_both(plugin_name, plugin_args, config):
     """Try both the builtin and named plugin, in that order.
@@ -43,19 +47,36 @@ def get_cmdline_no_instruct(plugin_name, plugin_args):
     """
     return [plugin_name] + shlex.split(plugin_args)
 
+def deltaize_call(keyname, result):
+    filename = "ncpa-%s.tmp" % str(hash(keyname))
+    tmpfile = os.path.join(tempfile.gettempdir(), filename)
+    oresult = result[:]
+    modified = 0
+    
+    try:
+        fresult = open(tmpfile, 'r')
+        modified = os.path.getmtime(tmpfile)
+        oresult = pickle.load(fresult)
+        fresult.close()
+    except:
+        logging.warning('Error opening tmpfile: ', tmpfile)
+        fresult = open(tmpfile, 'w')
+        pickle.dump(result, fresult)
+        fresult.close()
+        return [0 for x in result]
+    
+    delta = time.time() - modified
+    return [(y - x) / delta for x,y in zip(oresult, result)]
+
 def make_plugin_response_from_accessor(accessor_response, accessor_args):
     try:
-        tmp = [x.split('=') for x in accessor_args.split('&')]
-        processed_args = {}
-        for k,v in tmp:
-            processed_args[k] = v
+        processed_args = dict(urlparse.parse_qsl(accessor_args))
     except ValueError, e:
         logging.debug('No argument detected in string %s' % accessor_args)
         processed_args = {}
     except Exception, e:
         logging.exception(e)
         logging.warning('Unabled to process arguments.')
-    logging.warning(accessor_response.values()[0])
     if type(accessor_response.values()[0]) is dict:
         stdout = 'ERROR: Non-node value requested. Requested entire tree.'
         returncode = 3
@@ -74,6 +95,11 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
         warning = processed_args.get('warning')
         critical = processed_args.get('critical')
         s_unit = processed_args.get('unit')
+        delta = processed_args.get('delta')
+        
+        if delta:
+            result = deltaize_call(accessor_response.keys()[0], result)
+        
         if s_unit == 'T':
             factor = 1e12
         elif s_unit == 'G':

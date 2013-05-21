@@ -4,11 +4,16 @@ SYNOPSIS
 
     
 """
-import socket
 import sys
 import optparse
-import json
-import requests
+try:
+    import json
+except:
+    import simplejson as json
+import urllib
+import tempfile
+import time
+import os
 
 def parse_args():
     parser = optparse.OptionParser()
@@ -17,7 +22,7 @@ def parse_args():
     parser.add_option(  "-M","--metric",
                         help="The metric to check, this is defined on client system. This would also be the plugin name in the plugins directory. Do not attach arguments to it, use the -a directive for that.")
     parser.add_option(  "-P","--port",
-                        default=5691,
+                        default=5693,
                         type="int",
                         help="Port to use to connect to the client.")
     parser.add_option(  "-w","--warning",
@@ -28,9 +33,18 @@ def parse_args():
                         default=None,
                         type="str",
                         help="Critical value to be passed for the check.")
-    parser.add_option(  "-a","--arguments",
-                        default="",
-                        type="str")
+    parser.add_option(  "-u", "--unit",
+                        default=None,
+                        help="The unit prefix (M, G, T)")
+    parser.add_option(  "-a", "--arguments",
+                        default=None,
+                        help="Arguments for the plugin to be run. Not necessary unless you're running a custom plugin.")
+    parser.add_option(  "-t", "--token",
+                        default=None,
+                        help="The token for connecting.")
+    parser.add_option(  "-d", "--delta",
+                        action='store_true',
+                        help="Signals that this check is a delta check and a local state will kept.")
     options, args = parser.parse_args()
     
     if not options.hostname:
@@ -42,18 +56,32 @@ def parse_args():
     
     return options
 
-def query_server(host, *args, **kwargs):
-    result = requests.get(host, params=kwargs, verify=False)
-    return result.json()
-
 if __name__ == "__main__":
     options = parse_args()
-    host = 'http://' + options.hostname + ':' + str(options.port)
-    received = query_server(host, **options.__dict__)
-    try:
-        print received['stdout'],
-        sys.exit(received['returncode'])
-    except KeyError:
-        print 'ERROR:', received['error']
-        sys.exit(3)
+    host = 'http://%s:%d/api/%s?%%s' % (options.hostname, options.port, options.metric)
+    gets = {    'arguments' : options.arguments,
+                'warning'   : options.warning,
+                'critical'  : options.critical,
+                'unit'      : options.unit,
+                'token'     : options.token,
+                'delta'     : options.delta,
+                'check'     : 1
+                }
+    gets = dict((k,v) for k,v in gets.iteritems() if v is not None)
+    query = urllib.urlencode(gets)
+    
+    url = host % query
+    
+    filename, fobject = urllib.urlretrieve(url)
+    fileobj = open(filename)
+    
+    rjson = json.load(fileobj)
+    
+    if 'error' in rjson:
+        stdout, returncode = 'UNKNOWN: %s' % rjson['error'], 3
+    else:
+        stdout, returncode = rjson['value']['stdout'], rjson['value']['returncode']
+    
+    print stdout
+    sys.exit(returncode)
 
