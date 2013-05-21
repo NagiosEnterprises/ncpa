@@ -49,18 +49,22 @@ class LazyNode(Node):
     
     def run(self, path, *args, **kwargs):
         if path:
-            return {self.name :  self.parse_process(path)}
+            return self.parse_process(path)
         else:
             return {self.name : []}
     
     def parse_process(self, path):
         desired_proc = path[0].replace('|', '/')
-        metrics = { 'count' : 0 }
+        metrics = {'count' : 0 }
         count = 0
         for proc in ps.process_iter():
             if proc.name == desired_proc:
                 metrics['count'] += 1
-        return {desired_proc : metrics}
+        try:
+            if path[1] == 'count':
+                return {'count' : metrics['count']}
+        except IndexError:
+            return {desired_proc : metrics }
         
 
 def make_disk_nodes(disk_name):

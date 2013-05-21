@@ -55,6 +55,7 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
     except Exception, e:
         logging.exception(e)
         logging.warning('Unabled to process arguments.')
+    logging.warning(accessor_response.values()[0])
     if type(accessor_response.values()[0]) is dict:
         stdout = 'ERROR: Non-node value requested. Requested entire tree.'
         returncode = 3
