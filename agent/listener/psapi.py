@@ -14,6 +14,7 @@ class Node(object):
             self.method = method
         self.children = children
         self.name = name
+        self.lazy = False
     
     def accessor(self, path, *args, **kwargs):
         logging.warning('Path: %s' % path)
@@ -29,10 +30,12 @@ class Node(object):
     def walk(self, *args, **kwargs):
         stat = {}
         for child in self.children:
-            stat.update(child.run(*args, **kwargs))
+            stat.update(child.run(walk=True, *args, **kwargs))
         return stat
     
-    def run(self, *args, **kwargs):
+    def run(self, walk=False, *args, **kwargs):
+        if walk and self.lazy:
+            return {self.name: 'lazy'}
         try:
             retval = self.method(*args, **kwargs)
         except TypeError:
@@ -99,10 +102,11 @@ def make_if_nodes(if_name):
 
 #~ CPU Tree
 cpu_count = Node('count', method=lambda: len(ps.cpu_percent(percpu=True)))
-cpu_percent = Node('percent', method=lambda: (ps.cpu_percent(1, percpu=True), '%'))
+cpu_percent = Node('percent', method=lambda: (ps.cpu_percent(interval=6, percpu=True), '%'))
 cpu_user = Node('user', method=lambda: ([x.user for x in ps.cpu_times(percpu=True)], 'ms'))
 cpu_system = Node('system', method=lambda: ([x.system for x in ps.cpu_times(percpu=True)], 'ms'))
 cpu_idle = Node('idle', method=lambda: ([x.idle for x in ps.cpu_times(percpu=True)], 'ms'))
+cpu_percent.lazy = True
 
 cpu = Node('cpu', children=(cpu_count, cpu_system, cpu_percent, cpu_user, cpu_idle))
 
