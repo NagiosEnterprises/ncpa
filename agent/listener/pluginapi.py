@@ -113,8 +113,11 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
         if 'm' in unit and s_unit:
             factor = factor * 1e3
         result = [round(x/factor, 3) for x in result]
-        warn_lat = [is_within_range(warning, x) for x in result]
-        crit_lat = [is_within_range(critical, x) for x in result]
+        try:
+            warn_lat = [is_within_range(warning, x) for x in result]
+            crit_lat = [is_within_range(critical, x) for x in result]
+        except:
+            return {'returncode': 3, 'stdout': 'Bad Nagios range values'}
         if s_unit:
             unit = s_unit + unit.replace('m', '')
         if any(crit_lat):
@@ -149,36 +152,23 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
         
     return {'returncode':returncode, 'stdout':stdout}
     
-def is_within_range(trange, value):
-        '''
-        Given a string Nagios range code, and a return value from
-        a plugin, returns true if value is withing the range value
-        '''
-        #~ If its blank, return False so that it will never trigger an alert
-        if not trange:
-            return False
-        #~ If its only a number
-        is_match = re.match(r'^(\d+)$', trange)
-        if is_match:
-            tvalue = float(is_match.group(1))
-            return 0 >= value or value >= tvalue
-        #~ If it contains a colon
-        is_match = re.match(r'^(@?)(\d+|~):(\d*)$', trange)
-        if is_match:
-            at = is_match.group(1)
-            try:
-                bottom = float(is_match.group(2))
-            except:
-                bottom = float('-Inf')
-            try:
-                top = float(is_match.group(3))
-            except:
-                top = float('Inf')
-            preliminary = value < bottom or value > top
-            if at:
-                return not preliminary
-            else:
-                return preliminary
+def is_within_range(nagstring, value):
+    if not nagstring:
+        return False
+    import re
+    import operator
+    first_float = r'(?P<first>(-?[0-9]+(\.[0-9]+)?))'
+    second_float= r'(?P<second>(-?[0-9]+(\.[0-9]+)?))'
+    actions = [ (r'^%s$' % first_float,lambda y: (value > float(y.group('first'))) or (value < 0)),
+                (r'^%s:$' % first_float,lambda y: value < float(y.group('first'))),
+                (r'^~:%s$' % first_float,lambda y: value > float(y.group('first'))),
+                (r'^%s:%s$' % (first_float,second_float), lambda y: (value < float(y.group('first'))) or (value > float(y.group('second')))),
+                (r'^@%s:%s$' % (first_float,second_float), lambda y: not((value < float(y.group('first'))) or (value > float(y.group('second')))))]
+    for regstr,func in actions:
+        res = re.match(regstr,nagstring)
+        if res: 
+            return func(res)
+    raise Exception('Improper warning/critical format.')
 
 def execute_plugin(plugin_name, plugin_args, config, *args, **kwargs):
     """

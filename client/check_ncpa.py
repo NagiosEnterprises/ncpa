@@ -45,6 +45,9 @@ def parse_args():
     parser.add_option(  "-d", "--delta",
                         action='store_true',
                         help="Signals that this check is a delta check and a local state will kept.")
+    parser.add_option(  "-v", "--verbose",
+                        action='store_true',
+                        help='Print more verbose error messages.')
     options, args = parser.parse_args()
     
     if not options.hostname:
@@ -56,8 +59,7 @@ def parse_args():
     
     return options
 
-if __name__ == "__main__":
-    options = parse_args()
+def main(options):
     host = 'http://%s:%d/api/%s?%%s' % (options.hostname, options.port, options.metric)
     gets = {    'arguments' : options.arguments,
                 'warning'   : options.warning,
@@ -85,3 +87,16 @@ if __name__ == "__main__":
     print stdout
     sys.exit(returncode)
 
+if __name__ == "__main__":
+    options = parse_args()
+    
+    try:
+        main(options)
+    except Exception, e:
+        if options.verbose:
+            print "And error was encountered:"
+            print e
+            sys.exit(3)
+        else:
+            print 'UNKNOWN: Error occurred while running the plugin.'
+            sys.exit(3)
