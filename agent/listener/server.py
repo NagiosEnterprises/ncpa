@@ -67,7 +67,6 @@ def testconnect():
 def nrdp():
     try:
         forward_to = listener.config['iconfig'].get('nrdp', 'parent')
-        logging.warning(forward_to)
         if request.method == 'get':
             response = requests.get(forward_to, params=request.args)
         else:
@@ -114,11 +113,14 @@ def api(accessor=''):
     return jsonify({'value' : response})
 
 def internal_api(accessor=None, config=None):
+    logging.debug('Accessing internal API with accessor %s', accessor)
     accessor_name, accessor_args, plugin_name, plugin_args =  parse_internal_input(accessor)
     if accessor_name:
         try:
+            logging.debug('Accessing internal API with accessor %s', accessor_name)
             acc_response = psapi.getter(accessor_name)
         except IndexError as e:
+            logging.exception(e)
             logging.warning("User request invalid node: %s" % accessor_name)
             result = { 'returncode' : 3, 'stdout' : 'Invalid entry specified. No known node by %s' % accessor_name}
         else:

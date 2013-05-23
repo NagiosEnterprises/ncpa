@@ -17,7 +17,6 @@ class Node(object):
         self.lazy = False
     
     def accessor(self, path, *args, **kwargs):
-        logging.warning('Path: %s' % path)
         if path:
             for x in self.children:
                 if x.name == path[0]:
@@ -163,5 +162,6 @@ def getter(accessor='', s_plugins=''):
     logging.debug("Using %s" % s_plugins)
     plugins = s_plugins
     path = [x for x in accessor.split('/') if x]
-    logging.info(path)
+    if path[0] == 'api':
+        path = path[1:]
     return root.accessor(path)

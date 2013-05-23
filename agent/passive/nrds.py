@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 import utils
 import json
 import logging
+import os
 
 class Handler(abstract.NagiosHandler):
     """
@@ -16,15 +17,15 @@ class Handler(abstract.NagiosHandler):
             
     def run(self, *args, **kwargs):
         if self.config_update_is_required():
+            logging.debug('Updating my NRDS config...')
             self.update_config()
-        #~ if self.plugin_update_is_required():
-            #~ self.update_plugins()
+        logging.debug('Done with this NRDS iteration.')
         
     def getplugin(self, *args, **kwargs):
         self.plugin_loc = self.config.get('plugin directives', 'plugin_path')
         
         kwargs['cmd'] = self.getplugin.__name__
-        kwargs['os']  = "Chinook"
+        kwargs['os']  = "NCPA"
         kwargs['token'] = self.token
         
         self.url_request = utils.send_request(self.nrdp_url, **kwargs)
@@ -42,17 +43,24 @@ class Handler(abstract.NagiosHandler):
         '''
         nrdp_url = self.config.get('nrdp', 'parent')
         
-        get_args = {    'configname': self.config.get('nrds', 'config_name'),
+        get_args = {    'configname': self.config.get('nrds', 'CONFIG_NAME'),
                         'cmd': 'getconfig',
-                        'os': 'chinook',
-                        'token': self.token }
+                        'os': 'NCPA',
+                        'token': self.config.get('nrds', 'TOKEN') }
         
+        logging.debug('URL I am requesting: %s' % nrdp_url)
         url_request = utils.send_request(nrdp_url, **get_args)
-        logging.debug('URL I am requesting: %s' % url_request.url)
         
         if url_request.content != "":
-            with open(self.config.file_path , 'w') as config:
-                config.write(self.url_request.content)
+            try:
+                with open(self.config.file_path , 'w') as config:
+                    config.write(url_request.content)
+            except IOError:
+                logging.error('Could not rewrite the config. Permissions my be wrong.')
+            else:
+                logging.info('Successfully updated NRDS config.')
+        
+        
                 
     def config_update_is_required(self, *args, **kwargs):
         '''Returns true or false based on value in the config_version
@@ -62,9 +70,11 @@ class Handler(abstract.NagiosHandler):
         '''
         get_args = {    'token':        self.config.get('nrdp', 'token'),
                         'cmd':          'updatenrds',
-                        'os':           'chinook',
-                        'configname':   self.config.get('nrds', 'config_name'),
-                        'version':      self.config.get('nrds', 'config_version'), }
+                        'os':           'NCPA',
+                        'configname':   self.config.get('nrds', 'CONFIG_NAME'),
+                        'version':      self.config.get('nrds', 'CONFIG_VERSION'), }
+        
+        logging.debug('Connecting to NRDS server...')
         
         nrdp_url = self.config.get('nrdp', 'parent')
         url_request = utils.send_request(nrdp_url, **get_args)
@@ -87,7 +97,7 @@ class Handler(abstract.NagiosHandler):
         
         if status == 2:
             logging.warning("Server does not have a record for %s config." % self.config.get('nrds', 'config_name'))
-            update = 0
+            status = 0
         
         return bool(status)
             
@@ -104,12 +114,8 @@ class Handler(abstract.NagiosHandler):
         
         required_plugins = [x[1] for x in self.current_plugins]
         installed_plugins_json = utils.send_request(self.socket, **kwargs).json()
-        #~ self.current_plugins = self.url_request.json()
         
-        #~ builtins = installed_plugins_json['builtins']
         externals = installed_plugins_json['externals'] 
-        
-        #~ index = self.known.index('check_memory')
         
         for plugin in externals:
             for required in required_plugins:

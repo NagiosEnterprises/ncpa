@@ -5,6 +5,8 @@ import utils
 import requests
 import urllib
 import listener.server
+import socket
+import uuid
 
 class NagiosHandler(object):
     '''
@@ -28,10 +30,12 @@ class NagiosHandler(object):
         commands = dict(self.config.items('passive checks'))
         self.ncpa_commands = []
         for command in commands:
+            if '|' not in command:
+                continue 
             logging.debug('Parsing new individual command.')
             host_service = command
             raw_command = commands[command]
-            tmp = NCPACommand()
+            tmp = NCPACommand(self.config)
             tmp.set_host_and_service(host_service)
             tmp.parse_command(raw_command)
             logging.debug("Command to be run: %s" % tmp)
@@ -109,7 +113,7 @@ class NagiosAssociation(object):
 
 class NCPACommand(object):
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, config=None, *args, **kwargs):
         self.nag_hostname = None
         self.nag_servicename = None
         self.command = None
@@ -117,6 +121,7 @@ class NCPACommand(object):
         self.json = None
         self.stdout = None
         self.returncode = None
+        self.config = config
     
     def __repr__(self):
         builder  = 'Nagios Hostname: %s -- ' % self.nag_hostname
@@ -150,6 +155,9 @@ class NCPACommand(object):
             self.check_type = 'host'
         else:
             self.check_type = 'service'
+        if self.nag_hostname in ['%HOSTNAME%', '%hostname%']:
+            self.nag_hostname = self.guess_hostname()
+            logging.info('HOSTNAME was not explicitly declared. Using %s', self.nag_hostname)
         logging.debug('Setting hostname to %s and servicename to %s' % (self.nag_hostname, self.nag_servicename))
     
     def parse_result(self, result, *args, **kwargs):
@@ -177,3 +185,30 @@ class NCPACommand(object):
             self.command = config_command
             logging.debug('Command did not contain arguments. Single directive.')
             
+    def guess_hostname(self):
+        if self.config:
+            try:
+                specified_hostname = config.get('nrdp', 'hostname')
+            except:
+                specified_hostname = ''
+            if specified_hostname:
+                logging.info('Hostname was specified, using that.')
+                return str(specified_hostname)
+        hostname = socket.gethostname()
+        if not 'localhost' in hostname:
+            logging.info('Hostname is being assigned as the domain name of this computer.')
+            return str(hostname)
+        hostname = socket.gethostbyname(socket.gethostname())
+        if not hostname == '127.0.0.1':
+            logging.info('Using  hostnames IP.')
+            return str(hostname)
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(('www.google.com', 0))
+            hostname = s.getsockname()[0]
+            logging.info('Using the socket name returned by connecting to Google.')
+            return str(hostname)
+        except Exception, e:
+            logging.exception(e)
+            logging.info('Could not get an address. Returning MAC address.')
+            return str(uuid.getnode())
