@@ -13,10 +13,11 @@ class Listener(simpledaemon.Daemon):
     def run(self):
         address = self.config_parser.get('listener', 'ip')
         port = int(self.config_parser.get('listener', 'port'))
+        certificate = self.config_parser.get('listener', 'certificate')
         try:
             logging.info('Starting server...')
             listener.server.listener.config['iconfig'] = self.config_parser
-            listener.server.listener.run(address, port)
+            listener.server.listener.run(address, port, ssl_context=certificate)
             flask.url_for('static', filename='jquery-1.8.3.min.js')
             flask.url_for('static', filename='jquery-ui.css')
             flask.url_for('static', filename='jquery-ui.js')

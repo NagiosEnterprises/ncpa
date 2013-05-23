@@ -32,7 +32,7 @@ class Handler(abstract.NagiosHandler):
     def get_plugin(self, plugin, *args, **kwargs):
         nrds_url = self.config.get('nrdp', 'parent')
         plugin_path = self.config.get('plugin directives', 'plugin_path')
-        token = self.config.get('nrdp', 'token')
+        token = self.config.get('nrds', 'TOKEN')
         operating_sys = self.get_os()
         
         getargs = {     'cmd':      'getplugin',
