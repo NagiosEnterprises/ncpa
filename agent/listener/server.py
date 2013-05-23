@@ -60,8 +60,6 @@ def testconnect():
         return jsonify({'error': 'Bad token.'})
     else:
         return jsonify({'value': 'Success.'})
-        
-
 
 @listener.route('/nrdp/', methods=['GET', 'POST'])
 def nrdp():
@@ -116,6 +114,7 @@ def internal_api(accessor=None, config=None):
     logging.debug('Accessing internal API with accessor %s', accessor)
     accessor_name, accessor_args, plugin_name, plugin_args =  parse_internal_input(accessor)
     if accessor_name:
+        print 'Its an accessor'
         try:
             logging.debug('Accessing internal API with accessor %s', accessor_name)
             acc_response = psapi.getter(accessor_name)
@@ -126,6 +125,7 @@ def internal_api(accessor=None, config=None):
         else:
             result = pluginapi.make_plugin_response_from_accessor(acc_response, accessor_args)
     elif plugin_name:
+        print 'its a plugin'
         result = pluginapi.execute_plugin(plugin_name, plugin_args, config)
     return result
 
@@ -150,25 +150,3 @@ def parse_internal_input(accessor):
         accessor_name = accessor_result.group(2)
         accessor_args = accessor_result.group(3)
     return accessor_name, accessor_args, plugin_name, plugin_args
-
-@listener.route('/processes/')
-@requires_auth
-def processes():
-    procs = json.loads(commands.enumerate_processes(request=request))
-    header = procs.get('header', [])
-    procs = procs.get('procs', [])
-    return render_template('processes.html', header=header, procs=procs)
-
-@listener.route('/command/')
-@requires_auth
-def command():
-    logging.debug('Accessing command...')
-    command = request.args.get('command', '')
-    try:
-        logging.debug('Getting function')
-        generic = getattr(commands, command)
-    except Exception, e:
-        logging.debug('We failed.')
-        logging.exception(e)
-        return redirect(url_for('error', msg=str(e)))
-    return generic(request=request)

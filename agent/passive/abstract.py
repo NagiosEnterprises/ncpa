@@ -72,7 +72,7 @@ class NagiosHandler(object):
         if ncpa_command.arguments and not 'plugin' in ncpa_command.command:
             wcu_dict = self.get_warn_crit_from_arguments(ncpa_command.arguments)
             url += '?' + urllib.urlencode(wcu_dict)
-        if 'plugin' in ncpa_command.command:
+        if 'plugin' in ncpa_command.command and ncpa_command.arguments:
             url += '/' + ncpa_command.arguments
         response = listener.server.internal_api(url, self.config)
         logging.debug("Reponse from server: %s" % response)

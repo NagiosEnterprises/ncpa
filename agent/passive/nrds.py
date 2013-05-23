@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 import requests
+import sys
 import abstract
 import xml.etree.ElementTree as ET
 import utils
 import json
+import re
 import logging
 import os
 
@@ -19,22 +21,37 @@ class Handler(abstract.NagiosHandler):
         if self.config_update_is_required():
             logging.debug('Updating my NRDS config...')
             self.update_config()
+        
+        needed_plugins = self.list_missing_plugins()
+        if needed_plugins:
+            logging.debug('We need some plugins. Getting them...')
+            for plugin in needed_plugins:
+                self.get_plugin(plugin)
         logging.debug('Done with this NRDS iteration.')
         
-    def getplugin(self, *args, **kwargs):
-        self.plugin_loc = self.config.get('plugin directives', 'plugin_path')
+    def get_plugin(self, plugin, *args, **kwargs):
+        nrds_url = self.config.get('nrdp', 'parent')
+        plugin_path = self.config.get('plugin directives', 'plugin_path')
+        token = self.config.get('nrdp', 'token')
+        operating_sys = self.get_os()
         
-        kwargs['cmd'] = self.getplugin.__name__
-        kwargs['os']  = "NCPA"
-        kwargs['token'] = self.token
+        getargs = {     'cmd':      'getplugin',
+                        'os':       operating_sys,
+                        'token':    token,
+                        'plugin':   plugin,
+                }
         
-        self.url_request = utils.send_request(self.nrdp_url, **kwargs)
-        self.local_path_location = self.plugin_loc + kwargs['plugin']
+        url_request = utils.send_request(nrds_url, **getargs)
+        local_path_location = os.path.join(plugin_path, plugin)
         
-        self.logger.debug( "downloading plugin to location: %s" % str(self.local_path_location))
+        logging.debug( "Downloading plugin to location: %s" % str(local_path_location))
         
-        with open(self.local_path_location, 'w') as plugin:
-            plugin.write(self.url_request.content)
+        try:
+            with open(local_path_location, 'w') as plugin_file:
+                plugin_file.write(url_request.content)
+                os.chmod(local_path_location, 0775)
+        except IOError:
+            logging.error('Could not write the plugin to %s, perhaps permissions went bad.', local_path_location)
 
     def update_config(self, *args, **kwargs):
         '''Downloads new config to whatever is declared as path
@@ -100,33 +117,34 @@ class Handler(abstract.NagiosHandler):
             status = 0
         
         return bool(status)
-            
-    def known_plugins(self, *args, **kwargs):
-        self.socket = self.config.get('passive', 'connect')
-        self.current_plugins = self.config.items('passive checks')
-        #~ '''@ handel index error'''      
-        #~ for self.plugin_dir in self.current_plugins:
-            #~ self.plugin = self.plugin_dir[1]
-            #~ self.logger.debug('plugin directives I know about: %s' % self.plugin)
-            #~ self.known.append(self.plugin)
+    
+    def get_os(self):
+        plat = sys.platform
         
-        kwargs['command'] = 'enumerate_plugins'
+        if plat == 'darwin' or plat == 'mac':
+            os = 'Darwin'
+        elif 'linux' in plat:
+            os = 'Linux'
+        elif 'aix' in plat:
+            os = 'AIX'
+        elif 'sun' in plat:
+            os = 'SunOS'
+        elif 'win' in plat:
+            os = 'Windows'
+        else:
+            os = 'Generic'
+        return os
         
-        required_plugins = [x[1] for x in self.current_plugins]
-        installed_plugins_json = utils.send_request(self.socket, **kwargs).json()
+    def list_missing_plugins(self, *args, **kwargs):
+        installed_plugins = self.get_installed_plugins()
+        required_plugins = self.get_required_plugins()
+        return required_plugins - installed_plugins
         
-        externals = installed_plugins_json['externals'] 
-        
-        for plugin in externals:
-            for required in required_plugins:
-                if required == plugin:
-                    try:
-                        index = required_plugins.index(plugin)
-                    except IndexError, e:
-                        logging.exception(e)
-                    else:
-                        del required_plugins[index]
-        
-        for to_install in required_plugins:
-            self.logger.warning('Installing %s' % (to_install,))
-            #~ self.getplugin(plugin=to_install)
+    def get_required_plugins(self, *args, **kwargs):
+        passive_checks = self.config.items('passive checks')
+        filtered = [x[1] for x in passive_checks if '|' in x[0] and 'plugin/' in x[1]]
+        PLUGIN_NAME = re.compile(r'plugin/([^/]+).*')
+        return frozenset([PLUGIN_NAME.search(x).group(1) for x in filtered])
+    
+    def get_installed_plugins(self, *args, **kwargs):
+        return frozenset([x for x in os.listdir(self.config.get('plugin directives', 'plugin_path')) if not x.startswith('.')])
