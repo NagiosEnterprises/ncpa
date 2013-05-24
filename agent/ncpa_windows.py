@@ -12,6 +12,9 @@ import logging
 import os
 import time
 import sys
+import filename
+
+DEBUG = 0
 
 class Base(object):
     # no parameters are permitted; all configuration should be placed in the
@@ -25,7 +28,11 @@ class Base(object):
         
         This is meant exclusively for being used with cx_Freeze on Windows.
         '''
-        appdir = os.path.dirname(sys.path[0])
+        global DEBUG
+        if DEBUG == 0:
+            appdir = os.path.dirname(sys.path[0])
+        elif DEBUG == 1:
+            appdir = os.path.dirname(filename.__file__)
         return os.path.join(appdir, file_name)
         
     def parse_config(self, *args, **kwargs):
@@ -78,14 +85,15 @@ class Listener(Base):
             address = self.config.get('listener', 'ip')
             port = int(self.config.get('listener', 'port'))
             listener.server.listener.config['iconfig'] = self.config
+            print 'Running the listener.'
             listener.server.listener.run(address, port)
         except Exception, e:
             self.logger.exception(e)
         
     # called when the service is starting
-    def Initialize(self, configFileName):
+    def Initialize(self, config_file):
         self.c_type = 'listener'
-        self.config_filename = self.determine_relative_filename(os.path.join('etc' , 'ncpa.cfg'))
+        self.config_filename = self.determine_relative_filename(os.path.join('etc', 'ncpa.cfg'))
         self.parse_config()
         self.setup_logging()
         self.setup_plugins()
@@ -136,12 +144,21 @@ class Passive(Base):
             self.logger.exception(e)
         
     # called when the service is starting
-    def Initialize(self, configFileName):
+    def Initialize(self, config_file):
         self.c_type = 'passive'
-        self.config_filename = self.determine_relative_filename(os.path.join('etc' , 'ncpa.cfg'))
+        self.config_filename = self.determine_relative_filename(os.path.join('etc', 'ncpa.cfg'))
         self.parse_config()
         self.setup_logging()
         self.setup_plugins()
         self.logger.info("Looking for config at: %s" % self.config_filename)
         self.logger.info("Looking for plugins at: %s" % self.abs_plugin_path)
         self.logger.info("This is indeed the new one")
+
+if DEBUG == 1:
+    if len(sys.argv) == 3 and sys.argv[1] == 'debug':
+        if sys.argv[2] == 'passive':
+            a = Passive()
+        elif sys.argv[2] == 'listener':
+            a = Listener()
+        a.Initialize(('agent', 'etc', 'ncpa.cfg'))
+        a.Run()

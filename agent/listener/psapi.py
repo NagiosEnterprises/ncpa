@@ -162,6 +162,6 @@ def getter(accessor='', s_plugins=''):
     logging.debug("Using %s" % s_plugins)
     plugins = s_plugins
     path = [x for x in accessor.split('/') if x]
-    if path[0] == 'api':
+    if len(path) > 0  and path[0] == 'api':
         path = path[1:]
     return root.accessor(path)

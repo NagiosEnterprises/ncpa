@@ -9,7 +9,11 @@
 # using different configuration files.
 
 import sys
+import shutil
 from cx_Freeze import setup, Executable
+import os
+
+shutil.rmtree('build', ignore_errors=True)
 
 sys.argv += ['-p', 'xml']
 
@@ -24,8 +28,8 @@ includefiles = [    'var/ncpa_listener.log',
 
 includes = ['xml.dom.minidom']
                     
-if 'bdist_msi' in sys.argv:
-    includefiles += [ 'install.bat', 'uninstall.bat' ]
+if 'bdist_msi' in sys.argv or 'build_exe' in sys.argv:
+    includefiles += ['build_resources/NagiosSoftwareLicense.txt', 'build_resources/field.ini' ]
     
     buildOptions = dict( includes = includes + ["ncpa_windows"],
                          include_files = includefiles)
@@ -47,3 +51,5 @@ setup(
         options = dict(build_exe = buildOptions),
 )
 
+os.rename(os.path.join('build', 'exe.win32-2.7'), os.path.join('build', 'NCPA'))
+shutil.copy('build_resources/ncpa.nsi', 'build/')
