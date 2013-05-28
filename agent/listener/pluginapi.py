@@ -133,7 +133,11 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
         name = label.capitalize()
         stdout = "%s: %s was " % (prefix, name)
         stdout = stdout.replace('|', '/')
-        stdout += ",".join([str(x) + unit for x in result])
+        if delta:
+            psec = '/sec'
+        else:
+            psec = ''
+        stdout += ",".join([str(x) + unit + psec for x in result])
         perfdata = []
         count = 0
         for x in result:
