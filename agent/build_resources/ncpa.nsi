@@ -38,8 +38,39 @@ LangString MUI_TEXT_LICENSE_SUBTITLE "ENGLISH" "NCPA for Windows"
 LangString MUI_INNERTEXT_LICENSE_TOP "ENGLISH" "Software License Agreement"
 !insertmacro MUI_PAGE_LICENSE ".\NCPA\build_resources\NagiosSoftwareLicense.txt"
 # Page components
+Page custom SetCustom
 Page directory
 Page instfiles
+
+Function .onInit
+
+  InitPluginsDir
+	!insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\field.ini" "field.ini"
+	
+	${GetParameters} $R0
+	${GetParameters} $R1
+	${GetParameters} $R2
+	${GetParameters} $R3
+	
+  ClearErrors
+  ${GetOptions} $R0 /NRDP= $0
+	${GetOptions} $R1 /TOKEN= $1
+	${GetOptions} $R2 /CONFIG= $2
+	${GetOptions} $R3 /HOST= $3
+
+FunctionEnd
+
+Function SetCustom
+
+  ;Display the InstallOptions dialog
+	!insertmacro INSTALLOPTIONS_DISPLAY "field.ini"
+	!define CHK_PROXYSETTINGS "Field 6"
+	!insertmacro INSTALLOPTIONS_READ $0 "field.ini" "Field 1" "State"
+	!insertmacro INSTALLOPTIONS_READ $1 "field.ini" "Field 2" "State"
+	!insertmacro INSTALLOPTIONS_READ $2 "field.ini" "Field 3" "State"
+	!insertmacro INSTALLOPTIONS_READ $3 "field.ini" "Field 4" "State"
+
+FunctionEnd
 
 Section # "Create Config.ini"
 	
@@ -53,6 +84,7 @@ Section # "Create Config.ini"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "parent" "$0"
 	WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "TOKEN" "$1"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "token" "$1"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg api "community_string" "$1"
 	WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "PLUGIN_DIR" "plugins/"
 	WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "UPDATE_CONFIG" "1"
 	WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "UPDATE_PLUGINS" "1"
