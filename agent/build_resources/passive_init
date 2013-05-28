@@ -1,0 +1,47 @@
+#!/bin/bash
+#
+# chkconfig: 35 90 12
+# description: NCPA Listener
+#
+# Start the service
+start() {
+        /usr/local/ncpa/ncpa_posix_passive --start
+        echo "Started passive agent..."
+}
+# Restart the service
+stop() {
+        /usr/local/ncpa/ncpa_posix_passive --stop
+        echo "Exited."
+}
+# Get the status
+status() {
+        if [ -f /usr/local/ncpa/var/ncpa_posix_passive.pid];
+        then
+            pid=`cat /usr/local/ncpa/var/ncpa_posix_passive.pid`
+            echo "Process running with PID $pid"
+        else
+            echo "Process is not running."
+        fi
+}
+
+
+### main logic ###
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status
+        ;;
+  restart|reload|condrestart)
+        stop
+        start
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac
+exit 0

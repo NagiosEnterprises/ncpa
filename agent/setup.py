@@ -28,27 +28,27 @@ includefiles = [    'var/ncpa_listener.log',
 
 includes = ['xml.dom.minidom']
                     
-if 'bdist_msi' in sys.argv or 'build_exe' in sys.argv:
-    includefiles += ['build_resources/NagiosSoftwareLicense.txt', 'build_resources/field.ini' ]
-    
-    buildOptions = dict( includes = includes + ["ncpa_windows"],
+includefiles += ['build_resources/NagiosSoftwareLicense.txt', 'build_resources/field.ini' ]
+
+buildOptions = dict( includes = includes + ["ncpa_windows"],
                          include_files = includefiles)
-     
-    listener  = Executable( "ListenerConfig.py", 
+
+listener  = Executable(     "ListenerConfig.py", 
                             base = "Win32Service",
                             targetName = "ncpa_listener.exe"
-                )
-    passive   = Executable( "PassiveConfig.py",
+            )
+
+passive   = Executable(     "PassiveConfig.py",
                             base = "Win32Service",
                             targetName = "ncpa_passive.exe"
-                )
+            )
 
 setup(
-        name = "NCPA",
-        version = "0.3",
-        description = "Nagios Cross Platform Agent Installer",
-        executables = [listener, passive],
-        options = dict(build_exe = buildOptions),
+    name = "NCPA",
+    version = "0.3",
+    description = "Nagios Cross Platform Agent Installer",
+    executables = [listener, passive],
+    options = dict(build_exe = buildOptions),
 )
 
 os.rename(os.path.join('build', 'exe.win32-2.7'), os.path.join('build', 'NCPA'))
