@@ -65,7 +65,7 @@ def deltaize_call(keyname, result):
         fresult.close()
         return [0 for x in result]
     
-    delta = time.time() - modified
+    delta = abs(time.time() - modified)
     return [(y - x) / delta for x,y in zip(oresult, result)]
 
 def make_plugin_response_from_accessor(accessor_response, accessor_args):
