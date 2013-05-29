@@ -1,0 +1,25 @@
+if ! grep '^nagcmd:' /etc/group > /dev/null 2>&1;
+then
+    groupadd nagcmd
+fi
+
+if ! id nagios > /dev/null 2>&1;
+then
+    useradd nagios
+fi
+
+cp /usr/local/ncpa/build_resources/listener_init /etc/init.d/ncpa_listener
+cp /usr/local/ncpa/build_resources/passive_init /etc/init.d/ncpa_passive
+chmod 755 /etc/init.d/ncpa_listener
+chmod 755 /etc/init.d/ncpa_passive
+
+UPDATERC=`which update-rc.d`
+
+$UPDATERC ncpa_listener defaults
+$UPDATERC ncpa_passive defaults
+
+chown nagios.nagcmd /usr/local/ncpa -R
+chmod 775 /usr/local/ncpa -R
+
+/etc/init.d/ncpa_listener start
+/etc/init.d/ncpa_passive start
