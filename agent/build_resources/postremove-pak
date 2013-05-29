@@ -1,0 +1,6 @@
+CHKCONFIG=`which chkconfig`
+$CHKCONFIG --del ncpa_listener
+$CHKCONFIG --del ncpa_passive
+
+rm /etc/init.d/ncpa_listener -f
+rm /etc/init.d/ncpa_passive -f

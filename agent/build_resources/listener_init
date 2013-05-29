@@ -4,8 +4,13 @@
 # description: NCPA Listener
 #
 # Start the service
+BASEDIR=/usr/local/ncpa
+
 start() {
-        /usr/local/ncpa/ncpa_posix_listener --start
+        (
+            cd $BASEDIR
+            $BASEDIR/ncpa_posix_listener --start
+        )
         echo "Started listener..."
 }
 # Restart the service

@@ -61,17 +61,17 @@ setup(  name = "NCPA",
                     ]
 )
 
-os.chdir('build/')
-os.rename('exe.linux-i686-2.6', 'ncpa-1.0')
-
-tar = tarfile.open('ncpa-1.0.tar.gz', 'w:gz')
-tar.add('ncpa-1.0')
-tar.close()
-
-for dir in ['BUILD', 'RPMS', 'SOURCES', 'SPECS', 'SRPMS']:
-    os.makedirs(dir)
-
-shutil.copy('ncpa-1.0.tar.gz', 'SOURCES/')
-shutil.copy('../build_resources/ncpa.spec', 'SPECS/')
-
-os.system('rpmbuild -ba SPECS/ncpa.spec')
+#~ os.chdir('build/')
+#~ os.rename('exe.linux-i686-2.6', 'ncpa-1.0')
+#~ 
+#~ tar = tarfile.open('ncpa-1.0.tar.gz', 'w:gz')
+#~ tar.add('ncpa-1.0')
+#~ tar.close()
+#~ 
+#~ for dir in ['BUILD', 'RPMS', 'SOURCES', 'SPECS', 'SRPMS']:
+    #~ os.makedirs(dir)
+#~ 
+#~ shutil.copy('ncpa-1.0.tar.gz', 'SOURCES/')
+#~ shutil.copy('../build_resources/ncpa.spec', 'SPECS/')
+#~ 
+#~ os.system('rpmbuild -ba SPECS/ncpa.spec')

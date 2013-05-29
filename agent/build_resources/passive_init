@@ -4,8 +4,12 @@
 # description: NCPA Listener
 #
 # Start the service
+BASEDIR=/usr/local/ncpa
 start() {
-        /usr/local/ncpa/ncpa_posix_passive --start
+        (
+            cd $BASEDIR
+            $BASEDIR/ncpa_posix_passive --start
+        )
         echo "Started passive agent..."
 }
 # Restart the service
