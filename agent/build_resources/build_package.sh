@@ -22,5 +22,5 @@ then
                     --exclude=/var,/dev,/tmp \
                     --nodoc \
                     -D \
-                    cp build/exe.linux-i686-2.6 /usr/local/ncpa -r
+                    cp build/exe.linux-i686-2.6/* /usr/local/ncpa/* -r
 fi
