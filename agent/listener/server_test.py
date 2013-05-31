@@ -115,6 +115,30 @@ class APIFunctions(TestServerFunctions):
         rv = self.authorize_url('/cpu/count', check=True, warning=0)
         assert is_valid_result(rv) and stdout_contains(rv, 'WARNING') and returncode_is(rv, 1)
     
+    def test_run_plugin(self):
+        '''Checking ability to run plugins'''
+        TEST_PLUGIN = runpath + '/plugins/test.sh'
+        with open(TEST_PLUGIN, 'w') as plugin:
+            plugin.write('#!/bin/sh\n')
+            plugin.write('echo "$1"\n')
+            plugin.write('exit 2\n')
+        rv = self.authorize_url('/agent/plugin/test.sh/hello')
+        os.remove(TEST_PLUGIN)
+        assert is_valid_result(rv) and stdout_contains(rv, 'hello') and returncode_is(rv, 2)
+    
+    def test_run_plugin_with_rule(self):
+        '''Checking the ability to run plugins with a given rule.'''
+        TEST_PLUGIN = runpath + '/plugins/test.random'
+        with open(TEST_PLUGIN, 'w') as plugin:
+            plugin.write('#!/bin/sh\n')
+            plugin.write('echo "$1"\n')
+            plugin.write('exit 2\n')
+        self.config.set('plugin directives', '.random', '/bin/echo "All is well"')
+        server.listener.config['iconfig'] = self.config
+        rv = self.authorize_url('/agent/plugin/test.random/hello')
+        os.remove(TEST_PLUGIN)
+        assert is_valid_result(rv) and stdout_contains(rv, 'All is well')
+    
 
 if __name__ == '__main__':
     os.chdir(runpath)

@@ -14,6 +14,7 @@ import psapi
 import pluginapi
 import functools
 import jinja2.ext
+import unittest
 
 if os.name == 'nt': 
     base_dir = os.path.dirname(sys.path[0])
@@ -114,7 +115,6 @@ def internal_api(accessor=None, config=None):
     logging.debug('Accessing internal API with accessor %s', accessor)
     accessor_name, accessor_args, plugin_name, plugin_args =  parse_internal_input(accessor)
     if accessor_name:
-        print 'Its an accessor'
         try:
             logging.debug('Accessing internal API with accessor %s', accessor_name)
             acc_response = psapi.getter(accessor_name)
@@ -125,8 +125,9 @@ def internal_api(accessor=None, config=None):
         else:
             result = pluginapi.make_plugin_response_from_accessor(acc_response, accessor_args)
     elif plugin_name:
-        print 'its a plugin'
         result = pluginapi.execute_plugin(plugin_name, plugin_args, config)
+    else:
+        result = {'stdout': 'ERROR: Non-node value requested. Requested a tree.', 'returncode': 3}
     return result
 
 def parse_internal_input(accessor):
