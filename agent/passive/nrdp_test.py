@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 import sys
-sys.path.append('..')
+import os
+runpath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.chdir(runpath)
 import unittest
 import mock
 import nrdp
@@ -11,7 +13,7 @@ class NagiosNRDPTestCase(unittest.TestCase):
     
     def setUp(self):
         conf = ConfigParser.ConfigParser()
-        conf.read('../etc/ncpa.cfg')
+        conf.read('etc/ncpa.cfg')
         
         self.nrdp = nrdp.Handler(conf)
     
