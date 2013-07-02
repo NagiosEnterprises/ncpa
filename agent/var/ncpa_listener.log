@@ -1,183 +1,116 @@
-2013-05-29 10:55:04,257 12076 ERROR failed to start due to an exception
+INFO:root:Looking for config at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\etc\ncpa.cfg
+INFO:root:Looking for plugins at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+INFO:root:This is indeed the new one
+INFO:root:Looking for config at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\etc\ncpa.cfg
+INFO:root:Looking for plugins at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+INFO:root:This is indeed the new one
+INFO:root:Looking for config at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\etc\ncpa.cfg
+INFO:root:Looking for plugins at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+INFO:root:This is indeed the new one
+INFO:werkzeug: * Running on http://0.0.0.0:5693/
+DEBUG:root:Using C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+ERROR:root:list index out of range
 Traceback (most recent call last):
-  File "/usr/lib/python2.6/site-packages/simpledaemon/base.py", line 125, in start
-    self.check_pid_writable()
-  File "/usr/lib/python2.6/site-packages/simpledaemon/base.py", line 282, in check_pid_writable
-    sys.exit(msg)
-SystemExit: unable to write to pidfile var/ncpa_listener.pid
-2013-05-29 10:55:22,031 12235 INFO started
-2013-05-29 10:55:22,031 12235 INFO Starting server...
-2013-05-29 10:55:22,035 12235 INFO  * Running on http://0.0.0.0:5693/
-2013-05-29 10:55:22,037 12235 ERROR [Errno 98] Address already in use
-Traceback (most recent call last):
-  File "./ncpa_posix_listener.py", line 20, in run
-    listener.server.listener.run(address, port)
-  File "/usr/lib/python2.6/site-packages/flask/app.py", line 739, in run
-    run_simple(host, port, self, **options)
-  File "/usr/lib/python2.6/site-packages/werkzeug/serving.py", line 617, in run_simple
-    inner()
-  File "/usr/lib/python2.6/site-packages/werkzeug/serving.py", line 599, in inner
-    passthrough_errors, ssl_context).serve_forever()
-  File "/usr/lib/python2.6/site-packages/werkzeug/serving.py", line 408, in make_server
-    passthrough_errors, ssl_context)
-  File "/usr/lib/python2.6/site-packages/werkzeug/serving.py", line 334, in __init__
-    HTTPServer.__init__(self, (host, int(port)), handler)
-  File "/usr/lib/python2.6/SocketServer.py", line 402, in __init__
-    self.server_bind()
-  File "/usr/lib/python2.6/BaseHTTPServer.py", line 108, in server_bind
-    SocketServer.TCPServer.server_bind(self)
-  File "/usr/lib/python2.6/SocketServer.py", line 413, in server_bind
-    self.socket.bind(self.server_address)
-  File "<string>", line 1, in bind
-error: [Errno 98] Address already in use
-2013-05-29 10:55:22,078 12235 INFO stopped
-2013-05-29 10:55:40,939 12301 INFO started
-2013-05-29 10:55:40,939 12301 INFO Starting server...
-2013-05-29 10:55:40,941 12301 INFO  * Running on http://0.0.0.0:5693/
-2013-05-29 11:00:18,824 12301 ERROR Attempted to generate a URL with the application context being pushed.  This has to be executed 
-Traceback (most recent call last):
-  File "./ncpa_posix_listener.py", line 21, in run
-    flask.url_for('static', filename='jquery-1.8.3.min.js')
-  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 315, in url_for
-    raise RuntimeError('Attempted to generate a URL with the application '
-RuntimeError: Attempted to generate a URL with the application context being pushed.  This has to be executed 
-2013-05-29 11:00:18,827 12301 INFO stopped
-2013-05-29 11:00:21,121 13612 INFO started
-2013-05-29 11:00:21,122 13612 INFO Starting server...
-2013-05-29 11:00:21,125 13612 INFO  * Running on http://0.0.0.0:5693/
-2013-05-29 11:04:12,730 13612 ERROR Attempted to generate a URL with the application context being pushed.  This has to be executed 
-Traceback (most recent call last):
-  File "./ncpa_posix_listener.py", line 21, in run
-    flask.url_for('static', filename='jquery-1.8.3.min.js')
-  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 315, in url_for
-    raise RuntimeError('Attempted to generate a URL with the application '
-RuntimeError: Attempted to generate a URL with the application context being pushed.  This has to be executed 
-2013-05-29 11:04:12,734 13612 INFO stopped
-2013-05-29 11:04:14,982 14645 INFO started
-2013-05-29 11:04:14,983 14645 INFO Starting server...
-2013-05-29 11:04:14,984 14645 INFO  * Running on http://0.0.0.0:5693/
-2013-05-29 11:04:27,594 14645 ERROR Attempted to generate a URL with the application context being pushed.  This has to be executed 
-Traceback (most recent call last):
-  File "./ncpa_posix_listener.py", line 21, in run
-    flask.url_for('static', filename='jquery-1.8.3.min.js')
-  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 315, in url_for
-    raise RuntimeError('Attempted to generate a URL with the application '
-RuntimeError: Attempted to generate a URL with the application context being pushed.  This has to be executed 
-2013-05-29 11:04:27,594 14645 INFO stopped
-2013-05-29 11:05:56,592 15110 INFO started
-2013-05-29 11:05:56,592 15110 INFO Starting server...
-2013-05-29 11:05:56,594 15110 INFO  * Running on http://0.0.0.0:5693/
-2013-05-29 11:06:57,615 15110 INFO 192.168.1.28 - - [29/May/2013 11:06:57] "GET /api?token=brody HTTP/1.1" 301 -
-2013-05-29 11:06:57,625 15110 DEBUG Using plugins/
-2013-05-29 11:06:57,741 15110 INFO 192.168.1.28 - - [29/May/2013 11:06:57] "GET /api/?token=brody HTTP/1.1" 200 -
-2013-05-29 11:06:57,995 15110 INFO 192.168.1.28 - - [29/May/2013 11:06:57] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-29 12:27:58,454 15110 INFO 192.168.1.28 - - [29/May/2013 12:27:58] "GET /api/?token=brod HTTP/1.1" 302 -
-2013-05-29 12:27:58,465 15110 INFO 192.168.1.28 - - [29/May/2013 12:27:58] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
-2013-05-29 12:27:58,544 15110 INFO 192.168.1.28 - - [29/May/2013 12:27:58] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-29 13:19:50,206 15110 DEBUG Using plugins/
-2013-05-29 13:19:50,328 15110 INFO 192.168.1.28 - - [29/May/2013 13:19:50] "GET /api/?token=brody HTTP/1.1" 200 -
-2013-05-29 13:19:50,433 15110 INFO 192.168.1.28 - - [29/May/2013 13:19:50] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-29 13:19:55,867 15110 DEBUG Accessing internal API with accessor ?token=brody&check=true
-2013-05-29 13:19:55,884 15110 ERROR Exception on /api/ [GET]
-Traceback (most recent call last):
-  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1687, in wsgi_app
-    response = self.full_dispatch_request()
-  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1360, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1358, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/usr/lib/python2.6/site-packages/flask/app.py", line 1344, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "/tmp/ncpa/agent/listener/server.py", line 37, in decorated
-    return redirect(url_for('error', msg='Incorrect credentials given.'))
-  File "/tmp/ncpa/agent/listener/server.py", line 105, in api
-    url = accessor + '?' + urllib.urlencode(request.args)
-  File "/tmp/ncpa/agent/listener/server.py", line 130, in internal_api
-    result = pluginapi.execute_plugin(plugin_name, plugin_args, config)
-UnboundLocalError: local variable 'result' referenced before assignment
-2013-05-29 13:19:55,886 15110 INFO 192.168.1.28 - - [29/May/2013 13:19:55] "GET /api/?token=brody&check=true HTTP/1.1" 500 -
-2013-05-29 13:19:55,954 15110 INFO 192.168.1.28 - - [29/May/2013 13:19:55] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-29 13:24:42,562 15110 DEBUG Accessing internal API with accessor cpu/?token=brody&check=true
-2013-05-29 13:24:42,563 15110 DEBUG Accessor result!
-2013-05-29 13:24:42,564 15110 DEBUG Accessing internal API with accessor cpu/
-2013-05-29 13:24:42,565 15110 DEBUG Using 
-2013-05-29 13:24:42,670 15110 INFO 192.168.1.28 - - [29/May/2013 13:24:42] "GET /api/cpu/?token=brody&check=true HTTP/1.1" 200 -
-2013-05-29 13:24:42,791 15110 INFO 192.168.1.28 - - [29/May/2013 13:24:42] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-29 13:25:53,700 15110 ERROR Attempted to generate a URL with the application context being pushed.  This has to be executed 
-Traceback (most recent call last):
-  File "./ncpa_posix_listener.py", line 21, in run
-    flask.url_for('static', filename='jquery-1.8.3.min.js')
-  File "/usr/lib/python2.6/site-packages/flask/helpers.py", line 315, in url_for
-    raise RuntimeError('Attempted to generate a URL with the application '
-RuntimeError: Attempted to generate a URL with the application context being pushed.  This has to be executed 
-2013-05-29 13:25:53,703 15110 INFO stopped
-2013-05-29 13:25:54,568 21438 INFO started
-2013-05-29 13:25:54,568 21438 INFO Starting server...
-2013-05-29 13:25:54,571 21438 INFO  * Running on http://0.0.0.0:5693/
-2013-05-29 13:25:59,761 21438 DEBUG Accessing internal API with accessor ?token=brody&check=true
-2013-05-29 13:25:59,766 21438 INFO 192.168.1.28 - - [29/May/2013 13:25:59] "GET /api/?token=brody&check=true HTTP/1.1" 200 -
-2013-05-29 13:25:59,867 21438 INFO 192.168.1.28 - - [29/May/2013 13:25:59] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-29 13:46:34,687 21438 DEBUG Using plugins/
-2013-05-29 13:46:34,791 21438 INFO 192.168.1.28 - - [29/May/2013 13:46:34] "GET /api/cpu/?token=brody HTTP/1.1" 200 -
-2013-05-29 13:46:34,908 21438 INFO 192.168.1.28 - - [29/May/2013 13:46:34] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-29 13:46:48,913 21438 DEBUG Accessing internal API with accessor cpu/count?token=brody&check=true
-2013-05-29 13:46:48,913 21438 DEBUG Accessor result!
-2013-05-29 13:46:48,913 21438 DEBUG Accessing internal API with accessor cpu/count
-2013-05-29 13:46:48,914 21438 DEBUG Using 
-2013-05-29 13:46:49,016 21438 INFO 192.168.1.28 - - [29/May/2013 13:46:49] "GET /api/cpu/count?token=brody&check=true HTTP/1.1" 200 -
-2013-05-29 13:46:49,106 21438 INFO 192.168.1.28 - - [29/May/2013 13:46:49] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-29 14:01:55,891 21438 DEBUG Using plugins/
-2013-05-29 14:01:55,995 21438 INFO 192.168.1.28 - - [29/May/2013 14:01:55] "GET /api/cpu/?token=brody HTTP/1.1" 200 -
-2013-05-29 14:01:56,104 21438 INFO 192.168.1.28 - - [29/May/2013 14:01:56] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-29 14:18:26,417 21438 DEBUG Using plugins/
-2013-05-29 14:18:26,420 21438 INFO 192.168.1.28 - - [29/May/2013 14:18:26] "GET /api/cpu/system?token=brody HTTP/1.1" 200 -
-2013-05-29 14:18:26,519 21438 INFO 192.168.1.28 - - [29/May/2013 14:18:26] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-29 14:18:45,940 21438 DEBUG Using plugins/
-2013-05-29 14:18:46,043 21438 INFO 192.168.1.28 - - [29/May/2013 14:18:46] "GET /api/cpu/count?token=brody HTTP/1.1" 200 -
-2013-05-29 14:18:46,132 21438 INFO 192.168.1.28 - - [29/May/2013 14:18:46] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-29 14:18:58,176 21438 DEBUG Using plugins/
-2013-05-29 14:18:58,178 21438 INFO 192.168.1.28 - - [29/May/2013 14:18:58] "GET /api/cpu/system?token=brody&warning=1 HTTP/1.1" 200 -
-2013-05-29 14:18:58,293 21438 INFO 192.168.1.28 - - [29/May/2013 14:18:58] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-29 14:19:08,429 21438 DEBUG Accessing internal API with accessor cpu/system?token=brody&warning=1&check=True
-2013-05-29 14:19:08,430 21438 DEBUG Accessor result!
-2013-05-29 14:19:08,431 21438 DEBUG Accessing internal API with accessor cpu/system
-2013-05-29 14:19:08,431 21438 DEBUG Using 
-2013-05-29 14:19:08,435 21438 INFO 192.168.1.28 - - [29/May/2013 14:19:08] "GET /api/cpu/system?token=brody&check=True&warning=1 HTTP/1.1" 200 -
-2013-05-29 14:19:08,513 21438 INFO 192.168.1.28 - - [29/May/2013 14:19:08] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-29 14:19:41,112 21438 DEBUG Accessing internal API with accessor cpu/count?token=brody&warning=1&check=True
-2013-05-29 14:19:41,112 21438 DEBUG Accessor result!
-2013-05-29 14:19:41,113 21438 DEBUG Accessing internal API with accessor cpu/count
-2013-05-29 14:19:41,114 21438 DEBUG Using 
-2013-05-29 14:19:41,219 21438 INFO 192.168.1.28 - - [29/May/2013 14:19:41] "GET /api/cpu/count?token=brody&check=True&warning=1 HTTP/1.1" 200 -
-2013-05-29 14:19:41,321 21438 INFO 192.168.1.28 - - [29/May/2013 14:19:41] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-29 14:19:53,781 21438 DEBUG Accessing internal API with accessor cpu/count?token=brody&warning=0&check=True
-2013-05-29 14:19:53,781 21438 DEBUG Accessor result!
-2013-05-29 14:19:53,782 21438 DEBUG Accessing internal API with accessor cpu/count
-2013-05-29 14:19:53,782 21438 DEBUG Using 
-2013-05-29 14:19:53,885 21438 INFO 192.168.1.28 - - [29/May/2013 14:19:53] "GET /api/cpu/count?token=brody&check=True&warning=0 HTTP/1.1" 200 -
-2013-05-29 14:19:53,985 21438 INFO 192.168.1.28 - - [29/May/2013 14:19:53] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-30 11:28:12,134 21438 INFO 192.168.1.28 - - [30/May/2013 11:28:12] "GET /api/agent HTTP/1.1" 302 -
-2013-05-30 11:28:12,143 21438 INFO 192.168.1.28 - - [30/May/2013 11:28:12] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
-2013-05-30 11:28:12,533 21438 INFO 192.168.1.28 - - [30/May/2013 11:28:12] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-30 11:28:20,980 21438 DEBUG Using plugins/
-2013-05-30 11:28:20,982 21438 INFO 192.168.1.28 - - [30/May/2013 11:28:20] "GET /api/agent/?token=brody HTTP/1.1" 200 -
-2013-05-30 11:28:21,066 21438 INFO 192.168.1.28 - - [30/May/2013 11:28:21] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-30 11:29:06,038 21438 DEBUG Using plugins/
-2013-05-30 11:29:06,039 21438 ERROR No node with that name: yancyforprez.sh
-Traceback (most recent call last):
-  File "/tmp/ncpa/agent/listener/server.py", line 108, in api
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 107, in api
     response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
-  File "/tmp/ncpa/agent/listener/psapi.py", line 167, in getter
-    return root.accessor(path)
-  File "/tmp/ncpa/agent/listener/psapi.py", line 23, in accessor
-    return x.accessor(path=path[1:], *args, **kwargs)
-  File "/tmp/ncpa/agent/listener/psapi.py", line 24, in accessor
-    raise IndexError('No node with that name: %s' % path[0])
-IndexError: No node with that name: yancyforprez.sh
-2013-05-30 11:29:06,043 21438 INFO 192.168.1.28 - - [30/May/2013 11:29:06] "GET /api/agent/yancyforprez.sh/?token=brody HTTP/1.1" 302 -
-2013-05-30 11:29:06,057 21438 INFO 192.168.1.28 - - [30/May/2013 11:29:06] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
-2013-05-30 11:29:06,147 21438 INFO 192.168.1.28 - - [30/May/2013 11:29:06] "GET /favicon.ico HTTP/1.1" 404 -
-2013-05-30 11:29:23,515 21438 DEBUG Executing the plugin with instruction contained in config. Instruction is: /bin/sh $plugin_name $plugin_args
-2013-05-30 11:29:23,518 21438 DEBUG Running process with command line: ['/bin/sh', 'plugins/yancyforprez.sh', 'None']
-2013-05-30 11:29:23,529 21438 INFO 192.168.1.28 - - [30/May/2013 11:29:23] "GET /api/agent/plugin/yancyforprez.sh/?token=brody HTTP/1.1" 200 -
-2013-05-30 11:29:23,592 21438 INFO 192.168.1.28 - - [30/May/2013 11:29:23] "GET /favicon.ico HTTP/1.1" 404 -
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 165, in getter
+    if path[0] == 'api':
+IndexError: list index out of range
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 11:13:41] "GET /api/?token=brody HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 11:13:41] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 11:13:41] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:root:Looking for config at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\etc\ncpa.cfg
+INFO:root:Looking for plugins at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+INFO:root:This is indeed the new one
+INFO:werkzeug: * Running on http://0.0.0.0:5693/
+INFO:root:Looking for config at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\etc\ncpa.cfg
+INFO:root:Looking for plugins at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+INFO:root:This is indeed the new one
+INFO:werkzeug: * Running on http://0.0.0.0:5693/
+INFO:root:Looking for config at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\etc\ncpa.cfg
+INFO:root:Looking for plugins at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+INFO:root:This is indeed the new one
+INFO:werkzeug: * Running on http://0.0.0.0:5693/
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:05:24] "GET /api/ HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:05:24] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:05:24] "GET /favicon.ico HTTP/1.1" 404 -
+DEBUG:root:Using C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+ERROR:root:list index out of range
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 107, in api
+    response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 165, in getter
+    if path[0] == 'api':
+IndexError: list index out of range
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:05:50] "GET /api/?token=brody HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:05:51] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:05:51] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:05:51] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:06:20] "GET /api/ HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:06:20] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:06:20] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:09:57] "GET /error/Incorrect%20credentials%20given. HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:09:57] "GET /favicon.ico HTTP/1.1" 404 -
+DEBUG:root:Using C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+ERROR:root:list index out of range
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 107, in api
+    response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 165, in getter
+    if path[0] == 'api':
+IndexError: list index out of range
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:10:04] "GET /api/?token=brody HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:10:04] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:10:04] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:10:04] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:root:Looking for config at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\etc\ncpa.cfg
+INFO:root:Looking for plugins at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+INFO:root:This is indeed the new one
+INFO:werkzeug: * Running on http://0.0.0.0:5693/
+DEBUG:root:Using C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+ERROR:root:list index out of range
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 107, in api
+    response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 165, in getter
+    if len(path) > 1  and path[0] == 'api':
+IndexError: list index out of range
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:13:34] "GET /api/?token=brody HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:13:34] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:13:34] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:13:35] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:13:37] "GET /favicon.ico HTTP/1.1" 404 -
+DEBUG:root:Using C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:13:43] "GET /api/cpu?token=brody HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:13:43] "GET /favicon.ico HTTP/1.1" 404 -
+DEBUG:root:Using C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:16:37] "GET /api/cpu?token=brody HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:16:37] "GET /favicon.ico HTTP/1.1" 404 -
+DEBUG:root:Using C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:17:01] "GET /api/cpu?token=brody HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:17:01] "GET /favicon.ico HTTP/1.1" 404 -
+DEBUG:root:Using C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:18:22] "GET /api/cpu?token=brody HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:18:22] "GET /favicon.ico HTTP/1.1" 404 -
+DEBUG:root:Using C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+ERROR:root:list index out of range
+Traceback (most recent call last):
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\server.py", line 107, in api
+    response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
+  File "C:\Users\nscott\Documents\SVN\projects\ncpa\agent\listener\psapi.py", line 165, in getter
+    if len(path) > 1  and path[0] == 'api':
+IndexError: list index out of range
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:18:29] "GET /api/?token=brody HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:18:29] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:18:29] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:18:39] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:19:19] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:19:19] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:root:Looking for config at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\etc\ncpa.cfg
+INFO:root:Looking for plugins at: C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+INFO:root:This is indeed the new one
+INFO:werkzeug: * Running on http://0.0.0.0:5693/
+DEBUG:root:Using C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:22:10] "GET /api/?token=brody HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:22:10] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:22:13] "GET /favicon.ico HTTP/1.1" 404 -

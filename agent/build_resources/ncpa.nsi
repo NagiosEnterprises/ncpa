@@ -18,7 +18,10 @@ Name "NCPA Installer"
 
 ;The file to write
 OutFile "NCPA_Installer.exe"
- 
+
+;The icon
+;~ !define MUI_ICON ".\NCPA\build_resources\ncpa.ico"
+
 ;The default installation directory
 InstallDir $PROGRAMFILES32\Nagios\NCPA
 
@@ -44,85 +47,95 @@ Page instfiles
 
 Function .onInit
 
-  InitPluginsDir
-	!insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\field.ini" "field.ini"
+    InitPluginsDir
+    !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\field.ini" "field.ini"
+    !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\quickstart.ini" "quickstart.ini"
 	
-	${GetParameters} $R0
-	${GetParameters} $R1
-	${GetParameters} $R2
-	${GetParameters} $R3
+    ${GetParameters} $R0
+    ${GetParameters} $R1
+    ${GetParameters} $R2
+    ${GetParameters} $R3
 	
-  ClearErrors
-  ${GetOptions} $R0 /NRDP= $0
-	${GetOptions} $R1 /TOKEN= $1
-	${GetOptions} $R2 /CONFIG= $2
-	${GetOptions} $R3 /HOST= $3
+    ClearErrors
+    ${GetOptions} $R0 /NRDP= $0
+    ${GetOptions} $R1 /TOKEN= $1
+    ${GetOptions} $R2 /CONFIG= $2
+    ${GetOptions} $R3 /HOST= $3
 
 FunctionEnd
 
 Function SetCustom
 
-  ;Display the InstallOptions dialog
-	!insertmacro INSTALLOPTIONS_DISPLAY "field.ini"
-	!define CHK_PROXYSETTINGS "Field 6"
-	!insertmacro INSTALLOPTIONS_READ $0 "field.ini" "Field 1" "State"
-	!insertmacro INSTALLOPTIONS_READ $1 "field.ini" "Field 2" "State"
-	!insertmacro INSTALLOPTIONS_READ $2 "field.ini" "Field 3" "State"
-	!insertmacro INSTALLOPTIONS_READ $3 "field.ini" "Field 4" "State"
+    ;Display the InstallOptions dialog
+    !insertmacro INSTALLOPTIONS_DISPLAY "quickstart.ini"
+    ;~ !define CHK_PROXYSETTINGS "Field 6"
+    !insertmacro INSTALLOPTIONS_READ $1 "quickstart.ini" "Field 3" "State"
 
 FunctionEnd
 
+;~ Function SetCustom
+;~ 
+    ;~ ;Display the InstallOptions dialog
+    ;~ !insertmacro INSTALLOPTIONS_DISPLAY "field.ini"
+    ;~ !define CHK_PROXYSETTINGS "Field 6"
+    ;~ !insertmacro INSTALLOPTIONS_READ $0 "field.ini" "Field 1" "State"
+    ;~ !insertmacro INSTALLOPTIONS_READ $1 "field.ini" "Field 2" "State"
+    ;~ !insertmacro INSTALLOPTIONS_READ $2 "field.ini" "Field 3" "State"
+    ;~ !insertmacro INSTALLOPTIONS_READ $3 "field.ini" "Field 4" "State"
+;~ 
+;~ FunctionEnd
+
 Section # "Create Config.ini"
 	
-	SetOutPath $INSTDIR
+    SetOutPath $INSTDIR
 
-	File /r .\NCPA\*.*
+    File /r .\NCPA\*.*
 
-	WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "CONFIG_VERSION" "0"
-	WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "CONFIG_NAME" "$2"
-	WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "URL" "$0"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "CONFIG_VERSION" "0"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "CONFIG_NAME" "$2"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "URL" "$0"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "parent" "$0"
-	WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "TOKEN" "$1"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "TOKEN" "$1"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "token" "$1"
     WriteINIStr $INSTDIR\etc\ncpa.cfg api "community_string" "$1"
-	WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "PLUGIN_DIR" "plugins/"
-	WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "UPDATE_CONFIG" "1"
-	WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "UPDATE_PLUGINS" "1"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "PLUGIN_DIR" "plugins/"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "UPDATE_CONFIG" "1"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "UPDATE_PLUGINS" "1"
 	
-	WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "hostname" "$3"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "hostname" "$3"
 
 SectionEnd
 
 
 Section ""
-  ; ...
+    ; ...
  
-  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "NCPA"
-  WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" \
+    WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "NCPA"
+    WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" \
     "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode"
-  WriteRegStr SHCTX "${UNINST_KEY}" "QuietUninstallString" \
+    WriteRegStr SHCTX "${UNINST_KEY}" "QuietUninstallString" \
     "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
  
-  WriteUninstaller $INSTDIR\uninstall.exe
+    WriteUninstaller $INSTDIR\uninstall.exe
   
-  ReadEnvStr $9 COMSPEC
-  nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --install ncpalistener'
-  nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --install ncpapassive'
+    ReadEnvStr $9 COMSPEC
+    nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --install ncpalistener'
+    nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --install ncpapassive'
  
-  ; ...
+    ; ...
 SectionEnd
 
 Section "Uninstall"
 
     Delete "$INSTDIR\uninstall.exe"
     
-	ReadEnvStr $9 COMSPEC
+    ReadEnvStr $9 COMSPEC
 	
-	nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --uninstall ncpalistener'
+    nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --uninstall ncpalistener'
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --uninstall ncpapassive'
     
     DeleteRegKey SHCTX "${UNINST_KEY}"
     
-	RMDir /r "$INSTDIR"
+    RMDir /r "$INSTDIR"
 	
 SectionEnd

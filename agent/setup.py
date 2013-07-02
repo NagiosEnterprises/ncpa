@@ -28,7 +28,10 @@ includefiles = [    'var/ncpa_listener.log',
 
 includes = ['xml.dom.minidom']
                     
-includefiles += ['build_resources/NagiosSoftwareLicense.txt', 'build_resources/field.ini' ]
+includefiles += [   'build_resources/NagiosSoftwareLicense.txt', 
+                    'build_resources/quickstart.ini',
+                    'build_resources/field.ini', 
+                    'build_resources/ncpa.ico' ]
 
 buildOptions = dict( includes = includes + ["ncpa_windows"],
                          include_files = includefiles)
