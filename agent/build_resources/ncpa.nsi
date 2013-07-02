@@ -1,5 +1,8 @@
 !include "MUI.nsh"
 !include "nsDialogs.nsh"
+!include "winmessages.nsh"
+!include "logiclib.nsh"
+
 !include FileFunc.nsh
 !insertmacro GetParameters
 !insertmacro GetOptions
@@ -12,6 +15,8 @@
 !include "MultiUser.nsh"
 
 !define CONFIG_INI "$INSTDIR\Config.ini"
+
+BrandingText 'Nagios LLC'
 
 ;The name of the installer
 Name "NCPA Installer"
@@ -41,15 +46,15 @@ LangString MUI_TEXT_LICENSE_SUBTITLE "ENGLISH" "NCPA for Windows"
 LangString MUI_INNERTEXT_LICENSE_TOP "ENGLISH" "Software License Agreement"
 !insertmacro MUI_PAGE_LICENSE ".\NCPA\build_resources\NagiosSoftwareLicense.txt"
 # Page components
-Page custom SetCustom
+Page custom SetCustomPage
 Page directory
 Page instfiles
 
 Function .onInit
 
     InitPluginsDir
-    !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\field.ini" "field.ini"
-    !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\quickstart.ini" "quickstart.ini"
+    !insertmacro MUI_INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\field.ini" "field.ini"
+    !insertmacro MUI_INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\quickstart.ini" "quickstart.ini"
 	
     ${GetParameters} $R0
     ${GetParameters} $R1
@@ -64,26 +69,17 @@ Function .onInit
 
 FunctionEnd
 
-Function SetCustom
-
+Function SetCustomPage
+    
     ;Display the InstallOptions dialog
-    !insertmacro INSTALLOPTIONS_DISPLAY "quickstart.ini"
-    ;~ !define CHK_PROXYSETTINGS "Field 6"
-    !insertmacro INSTALLOPTIONS_READ $1 "quickstart.ini" "Field 3" "State"
-
+    !insertmacro MUI_INSTALLOPTIONS_DISPLAY "quickstart.ini"
+    !insertmacro MUI_INSTALLOPTIONS_READ $0 "quickstart.ini" "Field 3" "State"
+    !insertmacro MUI_INSTALLOPTIONS_READ $1 "quickstart.ini" "Field 2" "State"
+    !insertmacro MUI_INSTALLOPTIONS_READ $2 "quickstart.ini" "Field 5" "State"
+    !insertmacro MUI_INSTALLOPTIONS_READ $3 "quickstart.ini" "Field 4" "State"
+    
 FunctionEnd
-
-;~ Function SetCustom
-;~ 
-    ;~ ;Display the InstallOptions dialog
-    ;~ !insertmacro INSTALLOPTIONS_DISPLAY "field.ini"
-    ;~ !define CHK_PROXYSETTINGS "Field 6"
-    ;~ !insertmacro INSTALLOPTIONS_READ $0 "field.ini" "Field 1" "State"
-    ;~ !insertmacro INSTALLOPTIONS_READ $1 "field.ini" "Field 2" "State"
-    ;~ !insertmacro INSTALLOPTIONS_READ $2 "field.ini" "Field 3" "State"
-    ;~ !insertmacro INSTALLOPTIONS_READ $3 "field.ini" "Field 4" "State"
-;~ 
-;~ FunctionEnd
+        
 
 Section # "Create Config.ini"
 	
