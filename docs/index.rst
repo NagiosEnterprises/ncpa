@@ -11,14 +11,15 @@ Contents:
 .. toctree::
    :maxdepth: 2
    
-   installation/installation
+   installation
+   configuration
+   api
+   active
+   passive
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. ~ Indices and tables
+.. ~ ==================
+.. ~ 
+.. ~ * :ref:`genindex`
+.. ~ * :ref:`search`
 
