@@ -46,14 +46,14 @@ LangString MUI_TEXT_LICENSE_SUBTITLE "ENGLISH" "NCPA for Windows"
 LangString MUI_INNERTEXT_LICENSE_TOP "ENGLISH" "Software License Agreement"
 !insertmacro MUI_PAGE_LICENSE ".\NCPA\build_resources\NagiosSoftwareLicense.txt"
 # Page components
-Page custom SetCustomPage
+
+Page custom SetAdvancedInstall
 Page directory
 Page instfiles
 
 Function .onInit
 
     InitPluginsDir
-    !insertmacro MUI_INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\field.ini" "field.ini"
     !insertmacro MUI_INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\quickstart.ini" "quickstart.ini"
 	
     ${GetParameters} $R0
@@ -69,7 +69,7 @@ Function .onInit
 
 FunctionEnd
 
-Function SetCustomPage
+Function SetAdvancedInstall
     
     ;Display the InstallOptions dialog
     !insertmacro MUI_INSTALLOPTIONS_DISPLAY "quickstart.ini"
@@ -79,7 +79,6 @@ Function SetCustomPage
     !insertmacro MUI_INSTALLOPTIONS_READ $3 "quickstart.ini" "Field 4" "State"
     
 FunctionEnd
-        
 
 Section # "Create Config.ini"
 	
