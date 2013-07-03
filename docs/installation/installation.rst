@@ -8,7 +8,13 @@ First and foremost, the following documentation is for a simple install. If you 
 Installing NCPA on Windows
 --------------------------
 
-TODO: Make the Windows Installation Documentation
+First, download the installer to the machine that you wish to install NCPA onto. The NCPA installer can be found at `NCPA's Windows Installer linke <http://assets.nagios.com/downloads/ncpa/ncpa-head.exe>`_. Then navigate to the location that the install was downloaded, and double-click the installer.
+
+After agreeing to the license terms, you will find the configuration screen. This asks you to fill in some of the pertinent information.
+
+.. images:: images/windows_installer.jpg
+
+That was a picture.
 
 Installing NCPA Using RPM Packing
 ---------------------------------
