@@ -136,12 +136,12 @@ This section controls how the passive service behaves, things like what it shoul
 [passive checks]
 ++++++++++++++++
 
-This section does have a hard and fast set of concrete instructions. For information on setting up passive checks, see the section `Setting Up Passive Checks`_.
+This section does have a hard and fast set of concrete instructions. For information on setting up passive checks, see the section :ref:`Setting Up Passive Checks <passive-checks>`.
 
 [plugin directives]
 +++++++++++++++++++
 
-This section is where you can specify both the plugin directory and special operations that should be executed when a given filetype is executed. Some examples for the special directives are given, however for a more in depth explanation of these directives see `Setting Up Special Plugin Instructions`_.
+This section is where you can specify both the plugin directory and special operations that should be executed when a given filetype is executed. Some examples for the special directives are given.
 
 .. glossary::
     

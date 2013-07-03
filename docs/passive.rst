@@ -1,3 +1,5 @@
+.. _passive-checks:
+    
 Passive Checks
 ==============
 

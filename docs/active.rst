@@ -1,3 +1,5 @@
+.. _active-checks:
+    
 Active Checks
 =============
 
