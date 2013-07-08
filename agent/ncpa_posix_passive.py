@@ -43,10 +43,6 @@ class Passive(simpledaemon.Daemon):
                     logging.exception(e)
     
     def run(self):
-        self.read_basic_config()
-        self.run_all_handlers()    
-    
-    def __run(self):
         while True:
             self.read_basic_config()
             try:
@@ -57,4 +53,7 @@ class Passive(simpledaemon.Daemon):
             time.sleep(sleep)
 
 if __name__ == '__main__':
-    Passive().main()
+    try:
+        Passive().main()
+    except Exception, e:
+        logging.exception(e)
