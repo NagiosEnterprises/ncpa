@@ -63,6 +63,11 @@ def login():
     if token != ncpa_token:
         return render_template('login.html', error='Token was invalid.')
 
+@listener.route('/dashboard')
+@requires_auth
+def dashboard():
+    return render_template('dashboard.html')
+
 @listener.route('/logout')
 def logout():
     if session.get('logged', False):

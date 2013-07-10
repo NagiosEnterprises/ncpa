@@ -151,7 +151,7 @@ disk_physical = Node('phyical', children=disk_counters)
 
 disk = Node('disk', children=(disk_physical, disk_logical))
 
-if_children = [make_if_nodes(x) for x in ps.network_io_counters(pernic=True).keys()]
+if_children = [make_if_nodes(x) for x in ps.net_io_counters(pernic=True).keys()]
 
 interface = Node('interface', children=if_children)
 
