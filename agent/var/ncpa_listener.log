@@ -5664,3 +5664,431 @@ TypeError: tuple indices must be integers, not str
 2013-07-10 18:34:25,565 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:25] "GET /api/memory/swap/percent HTTP/1.1" 200 -
 2013-07-10 18:34:25,573 17896 DEBUG Using plugins/
 2013-07-10 18:34:25,575 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:25] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:26,562 17896 DEBUG Using plugins/
+2013-07-10 18:34:26,563 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:26] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:26,569 17896 DEBUG Using plugins/
+2013-07-10 18:34:26,570 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:26] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:27,563 17896 DEBUG Using plugins/
+2013-07-10 18:34:27,564 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:27] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:27,568 17896 DEBUG Using plugins/
+2013-07-10 18:34:27,568 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:27] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:28,565 17896 DEBUG Using plugins/
+2013-07-10 18:34:28,566 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:28] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:28,572 17896 DEBUG Using plugins/
+2013-07-10 18:34:28,573 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:28] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:29,566 17896 DEBUG Using plugins/
+2013-07-10 18:34:29,567 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:29] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:29,571 17896 DEBUG Using plugins/
+2013-07-10 18:34:29,572 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:29] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:30,567 17896 DEBUG Using plugins/
+2013-07-10 18:34:30,568 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:30] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:30,572 17896 DEBUG Using plugins/
+2013-07-10 18:34:30,573 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:30] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:31,581 17896 DEBUG Using plugins/
+2013-07-10 18:34:31,582 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:31] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:31,586 17896 DEBUG Using plugins/
+2013-07-10 18:34:31,587 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:31] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:32,574 17896 DEBUG Using plugins/
+2013-07-10 18:34:32,575 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:32] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:32,579 17896 DEBUG Using plugins/
+2013-07-10 18:34:32,580 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:32] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:33,580 17896 DEBUG Using plugins/
+2013-07-10 18:34:33,581 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:33] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:33,585 17896 DEBUG Using plugins/
+2013-07-10 18:34:33,586 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:33] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:34,588 17896 DEBUG Using plugins/
+2013-07-10 18:34:34,589 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:34] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:34,594 17896 DEBUG Using plugins/
+2013-07-10 18:34:34,595 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:34] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:35,591 17896 DEBUG Using plugins/
+2013-07-10 18:34:35,593 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:35] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:35,599 17896 DEBUG Using plugins/
+2013-07-10 18:34:35,600 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:35] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:36,590 17896 DEBUG Using plugins/
+2013-07-10 18:34:36,591 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:36] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:36,595 17896 DEBUG Using plugins/
+2013-07-10 18:34:36,596 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:36] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:37,592 17896 DEBUG Using plugins/
+2013-07-10 18:34:37,593 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:37] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:37,597 17896 DEBUG Using plugins/
+2013-07-10 18:34:37,598 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:37] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:38,600 17896 DEBUG Using plugins/
+2013-07-10 18:34:38,601 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:38] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:38,606 17896 DEBUG Using plugins/
+2013-07-10 18:34:38,607 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:38] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:39,600 17896 DEBUG Using plugins/
+2013-07-10 18:34:39,601 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:39] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:39,605 17896 DEBUG Using plugins/
+2013-07-10 18:34:39,606 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:39] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:40,611 17896 DEBUG Using plugins/
+2013-07-10 18:34:40,613 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:40] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:40,618 17896 DEBUG Using plugins/
+2013-07-10 18:34:40,619 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:40] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:41,609 17896 DEBUG Using plugins/
+2013-07-10 18:34:41,610 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:41] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:41,614 17896 DEBUG Using plugins/
+2013-07-10 18:34:41,615 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:41] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:42,610 17896 DEBUG Using plugins/
+2013-07-10 18:34:42,611 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:42] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:42,614 17896 DEBUG Using plugins/
+2013-07-10 18:34:42,615 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:42] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:43,611 17896 DEBUG Using plugins/
+2013-07-10 18:34:43,612 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:43] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:43,616 17896 DEBUG Using plugins/
+2013-07-10 18:34:43,617 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:43] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:44,617 17896 DEBUG Using plugins/
+2013-07-10 18:34:44,619 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:44] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:44,632 17896 DEBUG Using plugins/
+2013-07-10 18:34:44,634 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:44] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:45,626 17896 DEBUG Using plugins/
+2013-07-10 18:34:45,628 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:45] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:45,634 17896 DEBUG Using plugins/
+2013-07-10 18:34:45,635 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:45] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:46,630 17896 DEBUG Using plugins/
+2013-07-10 18:34:46,631 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:46] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:46,636 17896 DEBUG Using plugins/
+2013-07-10 18:34:46,637 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:46] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:47,631 17896 DEBUG Using plugins/
+2013-07-10 18:34:47,631 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:47] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:47,636 17896 DEBUG Using plugins/
+2013-07-10 18:34:47,636 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:47] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:48,635 17896 DEBUG Using plugins/
+2013-07-10 18:34:48,638 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:48] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:48,648 17896 DEBUG Using plugins/
+2013-07-10 18:34:48,649 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:48] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:49,636 17896 DEBUG Using plugins/
+2013-07-10 18:34:49,637 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:49] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:49,641 17896 DEBUG Using plugins/
+2013-07-10 18:34:49,642 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:49] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:50,639 17896 DEBUG Using plugins/
+2013-07-10 18:34:50,640 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:50] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:50,645 17896 DEBUG Using plugins/
+2013-07-10 18:34:50,645 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:50] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:51,640 17896 DEBUG Using plugins/
+2013-07-10 18:34:51,641 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:51] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:51,647 17896 DEBUG Using plugins/
+2013-07-10 18:34:51,647 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:51] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:52,641 17896 DEBUG Using plugins/
+2013-07-10 18:34:52,641 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:52] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:52,646 17896 DEBUG Using plugins/
+2013-07-10 18:34:52,646 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:52] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:53,642 17896 DEBUG Using plugins/
+2013-07-10 18:34:53,643 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:53] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:53,647 17896 DEBUG Using plugins/
+2013-07-10 18:34:53,648 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:53] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:54,644 17896 DEBUG Using plugins/
+2013-07-10 18:34:54,644 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:54] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:54,649 17896 DEBUG Using plugins/
+2013-07-10 18:34:54,650 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:54] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:55,646 17896 DEBUG Using plugins/
+2013-07-10 18:34:55,646 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:55] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:55,649 17896 DEBUG Using plugins/
+2013-07-10 18:34:55,650 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:55] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:56,645 17896 DEBUG Using plugins/
+2013-07-10 18:34:56,646 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:56] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:56,650 17896 DEBUG Using plugins/
+2013-07-10 18:34:56,651 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:56] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:57,650 17896 DEBUG Using plugins/
+2013-07-10 18:34:57,651 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:57] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:57,655 17896 DEBUG Using plugins/
+2013-07-10 18:34:57,656 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:57] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:58,649 17896 DEBUG Using plugins/
+2013-07-10 18:34:58,650 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:58] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:34:58,654 17896 DEBUG Using plugins/
+2013-07-10 18:34:58,655 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:58] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:59,651 17896 DEBUG Using plugins/
+2013-07-10 18:34:59,651 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:59] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:34:59,656 17896 DEBUG Using plugins/
+2013-07-10 18:34:59,656 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:34:59] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:00,659 17896 DEBUG Using plugins/
+2013-07-10 18:35:00,660 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:00] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:00,666 17896 DEBUG Using plugins/
+2013-07-10 18:35:00,667 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:00] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:01,660 17896 DEBUG Using plugins/
+2013-07-10 18:35:01,661 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:01] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:01,665 17896 DEBUG Using plugins/
+2013-07-10 18:35:01,666 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:01] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:02,661 17896 DEBUG Using plugins/
+2013-07-10 18:35:02,662 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:02] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:02,667 17896 DEBUG Using plugins/
+2013-07-10 18:35:02,668 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:02] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:03,663 17896 DEBUG Using plugins/
+2013-07-10 18:35:03,663 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:03] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:03,667 17896 DEBUG Using plugins/
+2013-07-10 18:35:03,668 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:03] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:04,664 17896 DEBUG Using plugins/
+2013-07-10 18:35:04,665 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:04] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:04,669 17896 DEBUG Using plugins/
+2013-07-10 18:35:04,670 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:04] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:05,666 17896 DEBUG Using plugins/
+2013-07-10 18:35:05,667 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:05] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:05,671 17896 DEBUG Using plugins/
+2013-07-10 18:35:05,671 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:05] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:06,668 17896 DEBUG Using plugins/
+2013-07-10 18:35:06,669 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:06] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:06,675 17896 DEBUG Using plugins/
+2013-07-10 18:35:06,676 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:06] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:07,670 17896 DEBUG Using plugins/
+2013-07-10 18:35:07,671 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:07] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:07,676 17896 DEBUG Using plugins/
+2013-07-10 18:35:07,677 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:07] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:08,670 17896 DEBUG Using plugins/
+2013-07-10 18:35:08,671 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:08] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:08,676 17896 DEBUG Using plugins/
+2013-07-10 18:35:08,677 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:08] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:09,674 17896 DEBUG Using plugins/
+2013-07-10 18:35:09,675 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:09] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:09,681 17896 DEBUG Using plugins/
+2013-07-10 18:35:09,682 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:09] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:10,730 17896 DEBUG Using plugins/
+2013-07-10 18:35:10,731 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:10] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:10,732 17896 DEBUG Using plugins/
+2013-07-10 18:35:10,733 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:10] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:11,683 17896 DEBUG Using plugins/
+2013-07-10 18:35:11,683 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:11] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:11,688 17896 DEBUG Using plugins/
+2013-07-10 18:35:11,688 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:11] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:12,694 17896 DEBUG Using plugins/
+2013-07-10 18:35:12,695 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:12] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:12,699 17896 DEBUG Using plugins/
+2013-07-10 18:35:12,700 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:12] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:13,695 17896 DEBUG Using plugins/
+2013-07-10 18:35:13,696 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:13] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:13,700 17896 DEBUG Using plugins/
+2013-07-10 18:35:13,701 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:13] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:14,698 17896 DEBUG Using plugins/
+2013-07-10 18:35:14,699 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:14] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:14,703 17896 DEBUG Using plugins/
+2013-07-10 18:35:14,704 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:14] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:15,698 17896 DEBUG Using plugins/
+2013-07-10 18:35:15,699 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:15] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:15,705 17896 DEBUG Using plugins/
+2013-07-10 18:35:15,705 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:15] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:16,702 17896 DEBUG Using plugins/
+2013-07-10 18:35:16,704 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:16] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:16,710 17896 DEBUG Using plugins/
+2013-07-10 18:35:16,711 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:16] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:18,323 17896 DEBUG Using plugins/
+2013-07-10 18:35:18,326 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:18] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:18,327 17896 DEBUG Using plugins/
+2013-07-10 18:35:18,328 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:18] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:20,321 17896 DEBUG Using plugins/
+2013-07-10 18:35:20,324 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:20] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:20,328 17896 DEBUG Using plugins/
+2013-07-10 18:35:20,331 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:20] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:22,316 17896 DEBUG Using plugins/
+2013-07-10 18:35:22,317 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:22] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:22,347 17896 DEBUG Using plugins/
+2013-07-10 18:35:22,347 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:22] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:24,325 17896 DEBUG Using plugins/
+2013-07-10 18:35:24,326 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:24] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:24,330 17896 DEBUG Using plugins/
+2013-07-10 18:35:24,331 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:24] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:26,325 17896 DEBUG Using plugins/
+2013-07-10 18:35:26,327 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:26] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:26,331 17896 DEBUG Using plugins/
+2013-07-10 18:35:26,335 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:26] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:28,319 17896 DEBUG Using plugins/
+2013-07-10 18:35:28,321 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:28] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:28,329 17896 DEBUG Using plugins/
+2013-07-10 18:35:28,330 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:28] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:30,324 17896 DEBUG Using plugins/
+2013-07-10 18:35:30,325 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:30] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:30,327 17896 DEBUG Using plugins/
+2013-07-10 18:35:30,329 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:30] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:32,327 17896 DEBUG Using plugins/
+2013-07-10 18:35:32,330 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:32] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:32,334 17896 DEBUG Using plugins/
+2013-07-10 18:35:32,336 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:32] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:34,326 17896 DEBUG Using plugins/
+2013-07-10 18:35:34,327 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:34] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:34,332 17896 DEBUG Using plugins/
+2013-07-10 18:35:34,337 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:34] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:36,325 17896 DEBUG Using plugins/
+2013-07-10 18:35:36,327 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:36] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:36,332 17896 DEBUG Using plugins/
+2013-07-10 18:35:36,335 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:36] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:38,324 17896 DEBUG Using plugins/
+2013-07-10 18:35:38,326 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:38] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:38,331 17896 DEBUG Using plugins/
+2013-07-10 18:35:38,335 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:38] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:40,323 17896 DEBUG Using plugins/
+2013-07-10 18:35:40,325 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:40] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:40,329 17896 DEBUG Using plugins/
+2013-07-10 18:35:40,334 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:40] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:42,325 17896 DEBUG Using plugins/
+2013-07-10 18:35:42,329 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:42] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:42,334 17896 DEBUG Using plugins/
+2013-07-10 18:35:42,337 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:42] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:44,326 17896 DEBUG Using plugins/
+2013-07-10 18:35:44,327 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:44] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:44,334 17896 DEBUG Using plugins/
+2013-07-10 18:35:44,335 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:44] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:46,325 17896 DEBUG Using plugins/
+2013-07-10 18:35:46,327 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:46] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:46,332 17896 DEBUG Using plugins/
+2013-07-10 18:35:46,335 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:46] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:48,313 17896 DEBUG Using plugins/
+2013-07-10 18:35:48,314 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:48] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:48,315 17896 DEBUG Using plugins/
+2013-07-10 18:35:48,317 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:48] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:50,333 17896 DEBUG Using plugins/
+2013-07-10 18:35:50,334 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:50] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:50,337 17896 DEBUG Using plugins/
+2013-07-10 18:35:50,338 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:50] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:52,323 17896 DEBUG Using plugins/
+2013-07-10 18:35:52,325 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:52] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:52,330 17896 DEBUG Using plugins/
+2013-07-10 18:35:52,335 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:52] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:54,313 17896 DEBUG Using plugins/
+2013-07-10 18:35:54,314 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:54] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:54,315 17896 DEBUG Using plugins/
+2013-07-10 18:35:54,316 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:54] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:56,321 17896 DEBUG Using plugins/
+2013-07-10 18:35:56,323 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:56] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:35:56,327 17896 DEBUG Using plugins/
+2013-07-10 18:35:56,332 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:56] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:58,322 17896 DEBUG Using plugins/
+2013-07-10 18:35:58,324 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:58] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:35:58,328 17896 DEBUG Using plugins/
+2013-07-10 18:35:58,332 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:35:58] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:00,323 17896 DEBUG Using plugins/
+2013-07-10 18:36:00,325 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:00] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:00,326 17896 DEBUG Using plugins/
+2013-07-10 18:36:00,328 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:00] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:02,321 17896 DEBUG Using plugins/
+2013-07-10 18:36:02,323 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:02] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:02,334 17896 DEBUG Using plugins/
+2013-07-10 18:36:02,335 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:02] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:04,342 17896 DEBUG Using plugins/
+2013-07-10 18:36:04,345 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:04] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:04,355 17896 DEBUG Using plugins/
+2013-07-10 18:36:04,358 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:04] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:06,323 17896 DEBUG Using plugins/
+2013-07-10 18:36:06,325 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:06] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:06,328 17896 DEBUG Using plugins/
+2013-07-10 18:36:06,330 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:06] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:08,321 17896 DEBUG Using plugins/
+2013-07-10 18:36:08,326 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:08] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:08,330 17896 DEBUG Using plugins/
+2013-07-10 18:36:08,333 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:08] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:10,314 17896 DEBUG Using plugins/
+2013-07-10 18:36:10,315 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:10] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:10,316 17896 DEBUG Using plugins/
+2013-07-10 18:36:10,317 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:10] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:12,321 17896 DEBUG Using plugins/
+2013-07-10 18:36:12,323 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:12] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:12,328 17896 DEBUG Using plugins/
+2013-07-10 18:36:12,329 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:12] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:14,323 17896 DEBUG Using plugins/
+2013-07-10 18:36:14,326 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:14] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:14,330 17896 DEBUG Using plugins/
+2013-07-10 18:36:14,333 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:14] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:16,322 17896 DEBUG Using plugins/
+2013-07-10 18:36:16,324 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:16] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:16,328 17896 DEBUG Using plugins/
+2013-07-10 18:36:16,333 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:16] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:18,326 17896 DEBUG Using plugins/
+2013-07-10 18:36:18,327 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:18] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:18,329 17896 DEBUG Using plugins/
+2013-07-10 18:36:18,330 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:18] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:20,323 17896 DEBUG Using plugins/
+2013-07-10 18:36:20,326 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:20] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:20,329 17896 DEBUG Using plugins/
+2013-07-10 18:36:20,333 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:20] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:22,321 17896 DEBUG Using plugins/
+2013-07-10 18:36:22,326 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:22] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:22,346 17896 DEBUG Using plugins/
+2013-07-10 18:36:22,347 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:22] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:24,315 17896 DEBUG Using plugins/
+2013-07-10 18:36:24,317 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:24] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:24,328 17896 DEBUG Using plugins/
+2013-07-10 18:36:24,329 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:24] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:26,332 17896 DEBUG Using plugins/
+2013-07-10 18:36:26,335 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:26] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:26,337 17896 DEBUG Using plugins/
+2013-07-10 18:36:26,341 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:26] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:28,321 17896 DEBUG Using plugins/
+2013-07-10 18:36:28,323 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:28] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:28,328 17896 DEBUG Using plugins/
+2013-07-10 18:36:28,331 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:28] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:30,325 17896 DEBUG Using plugins/
+2013-07-10 18:36:30,326 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:30] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:30,328 17896 DEBUG Using plugins/
+2013-07-10 18:36:30,328 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:30] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:32,324 17896 DEBUG Using plugins/
+2013-07-10 18:36:32,329 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:32] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:32,333 17896 DEBUG Using plugins/
+2013-07-10 18:36:32,335 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:32] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:34,338 17896 DEBUG Using plugins/
+2013-07-10 18:36:34,340 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:34] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:34,345 17896 DEBUG Using plugins/
+2013-07-10 18:36:34,347 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:34] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:36,318 17896 DEBUG Using plugins/
+2013-07-10 18:36:36,319 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:36] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:36,324 17896 DEBUG Using plugins/
+2013-07-10 18:36:36,325 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:36] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:38,322 17896 DEBUG Using plugins/
+2013-07-10 18:36:38,324 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:38] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:38,329 17896 DEBUG Using plugins/
+2013-07-10 18:36:38,332 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:38] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:40,322 17896 DEBUG Using plugins/
+2013-07-10 18:36:40,326 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:40] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:40,329 17896 DEBUG Using plugins/
+2013-07-10 18:36:40,333 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:40] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:42,323 17896 DEBUG Using plugins/
+2013-07-10 18:36:42,325 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:42] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:42,327 17896 DEBUG Using plugins/
+2013-07-10 18:36:42,328 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:42] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:44,320 17896 DEBUG Using plugins/
+2013-07-10 18:36:44,322 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:44] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:44,327 17896 DEBUG Using plugins/
+2013-07-10 18:36:44,330 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:44] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:46,323 17896 DEBUG Using plugins/
+2013-07-10 18:36:46,325 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:46] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:46,330 17896 DEBUG Using plugins/
+2013-07-10 18:36:46,332 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:46] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:48,317 17896 DEBUG Using plugins/
+2013-07-10 18:36:48,319 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:48] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:48,323 17896 DEBUG Using plugins/
+2013-07-10 18:36:48,325 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:48] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:50,323 17896 DEBUG Using plugins/
+2013-07-10 18:36:50,326 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:50] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:50,330 17896 DEBUG Using plugins/
+2013-07-10 18:36:50,333 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:50] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:52,320 17896 DEBUG Using plugins/
+2013-07-10 18:36:52,322 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:52] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:52,326 17896 DEBUG Using plugins/
+2013-07-10 18:36:52,330 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:52] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:54,324 17896 DEBUG Using plugins/
+2013-07-10 18:36:54,325 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:54] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:54,327 17896 DEBUG Using plugins/
+2013-07-10 18:36:54,329 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:54] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:56,322 17896 DEBUG Using plugins/
+2013-07-10 18:36:56,324 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:56] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:56,328 17896 DEBUG Using plugins/
+2013-07-10 18:36:56,332 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:56] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:36:58,319 17896 DEBUG Using plugins/
+2013-07-10 18:36:58,320 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:58] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:36:58,322 17896 DEBUG Using plugins/
+2013-07-10 18:36:58,322 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:36:58] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:37:00,318 17896 DEBUG Using plugins/
+2013-07-10 18:37:00,320 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:37:00] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:37:00,327 17896 DEBUG Using plugins/
+2013-07-10 18:37:00,328 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:37:00] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:37:02,323 17896 DEBUG Using plugins/
+2013-07-10 18:37:02,325 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:37:02] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:37:02,329 17896 DEBUG Using plugins/
+2013-07-10 18:37:02,334 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:37:02] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:37:04,319 17896 DEBUG Using plugins/
+2013-07-10 18:37:04,323 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:37:04] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:37:04,326 17896 DEBUG Using plugins/
+2013-07-10 18:37:04,330 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:37:04] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:37:06,312 17896 DEBUG Using plugins/
+2013-07-10 18:37:06,313 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:37:06] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:37:06,318 17896 DEBUG Using plugins/
+2013-07-10 18:37:06,318 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:37:06] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-07-10 18:37:08,326 17896 DEBUG Using plugins/
+2013-07-10 18:37:08,328 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:37:08] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-07-10 18:37:08,333 17896 DEBUG Using plugins/
+2013-07-10 18:37:08,336 17896 INFO 127.0.0.1 - - [10/Jul/2013 18:37:08] "GET /api/memory/swap/percent HTTP/1.1" 200 -
