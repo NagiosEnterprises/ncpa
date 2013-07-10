@@ -114,3 +114,733 @@ DEBUG:root:Using C:\Users\nscott\Documents\SVN\projects\ncpa\agent\plugins/
 INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:22:10] "GET /api/?token=brody HTTP/1.1" 200 -
 INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:22:10] "GET /favicon.ico HTTP/1.1" 404 -
 INFO:werkzeug:127.0.0.1 - - [24/May/2013 13:22:13] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 00:38:21,093 28902 INFO started
+2013-07-10 00:38:21,093 28902 INFO Starting server...
+2013-07-10 00:38:21,096 28902 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 00:38:40,663 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:38:40] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 00:38:40,793 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:38:40] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-07-10 00:38:40,797 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:38:40] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 404 -
+2013-07-10 00:38:40,798 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:38:40] "GET /static/js/jquery-ui.js HTTP/1.1" 404 -
+2013-07-10 00:38:40,799 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:38:40] "GET /static/js/bootstrap.min.js HTTP/1.1" 200 -
+2013-07-10 00:38:40,848 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:38:40] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 00:38:56,880 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:38:56] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 00:38:56,898 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:38:56] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 00:38:56,900 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:38:56] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 404 -
+2013-07-10 00:38:56,901 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:38:56] "GET /static/js/jquery-ui.js HTTP/1.1" 404 -
+2013-07-10 00:38:56,905 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:38:56] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 -
+2013-07-10 00:38:56,923 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:38:56] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 00:39:05,157 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:39:05] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 00:39:05,176 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:39:05] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 404 -
+2013-07-10 00:39:05,177 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:39:05] "GET /static/js/jquery-ui.js HTTP/1.1" 404 -
+2013-07-10 00:39:05,179 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:39:05] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 00:39:05,184 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:39:05] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 -
+2013-07-10 00:39:05,199 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:39:05] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 00:39:51,147 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:39:51] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 00:39:51,162 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:39:51] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 00:39:51,165 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:39:51] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 404 -
+2013-07-10 00:39:51,170 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:39:51] "GET /static/js/jquery-ui.js HTTP/1.1" 404 -
+2013-07-10 00:39:51,172 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:39:51] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 -
+2013-07-10 00:39:51,192 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:39:51] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 00:40:17,820 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:17] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 00:40:17,848 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:17] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 00:40:17,851 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:17] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 404 -
+2013-07-10 00:40:17,853 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:17] "GET /static/js/jquery-ui.js HTTP/1.1" 404 -
+2013-07-10 00:40:17,855 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:17] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 -
+2013-07-10 00:40:17,884 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:17] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 00:40:18,734 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:18] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 00:40:18,751 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:18] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 00:40:18,753 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:18] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 404 -
+2013-07-10 00:40:18,755 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:18] "GET /static/js/jquery-ui.js HTTP/1.1" 404 -
+2013-07-10 00:40:18,757 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:18] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 -
+2013-07-10 00:40:18,778 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:18] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 00:40:44,626 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:44] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 00:40:44,648 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:44] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 00:40:44,653 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:44] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 -
+2013-07-10 00:40:44,657 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:44] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 404 -
+2013-07-10 00:40:44,659 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:44] "GET /static/js/jquery-ui.js HTTP/1.1" 404 -
+2013-07-10 00:40:44,686 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:40:44] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 00:41:22,553 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:41:22] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 00:41:22,577 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:41:22] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 00:41:22,579 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:41:22] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 -
+2013-07-10 00:41:22,582 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:41:22] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 404 -
+2013-07-10 00:41:22,584 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:41:22] "GET /static/js/jquery-ui.js HTTP/1.1" 404 -
+2013-07-10 00:41:22,623 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:41:22] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 00:41:53,752 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:41:53] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 00:41:53,778 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:41:53] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 404 -
+2013-07-10 00:41:53,780 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:41:53] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 00:41:53,782 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:41:53] "GET /static/js/jquery-ui.js HTTP/1.1" 404 -
+2013-07-10 00:41:53,821 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:41:53] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 00:43:11,553 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:43:11] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 00:43:11,574 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:43:11] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 00:43:11,576 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:43:11] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-07-10 00:43:11,577 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:43:11] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 404 -
+2013-07-10 00:43:11,578 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:43:11] "GET /static/js/jquery-ui.js HTTP/1.1" 404 -
+2013-07-10 00:43:11,607 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:43:11] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 00:44:23,752 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:44:23] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 00:44:23,774 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:44:23] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 00:44:23,785 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:44:23] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 404 -
+2013-07-10 00:44:23,787 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:44:23] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 00:44:23,789 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:44:23] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-07-10 00:44:23,820 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:44:23] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 00:44:57,649 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:44:57] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 00:44:57,676 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:44:57] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 00:44:57,685 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:44:57] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 00:44:57,687 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:44:57] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-07-10 00:44:57,689 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:44:57] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 00:44:57,773 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:44:57] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 00:47:47,555 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:47:47] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 00:47:47,582 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:47:47] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 00:47:47,584 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:47:47] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 00:47:47,590 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:47:47] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 00:47:47,593 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:47:47] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 00:47:47,604 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:47:47] "GET /static/img/glyphicons-halflings.png HTTP/1.1" 200 -
+2013-07-10 00:47:47,671 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:47:47] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 00:56:09,016 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:56:09] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 00:56:09,041 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:56:09] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 00:56:09,045 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:56:09] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 00:56:09,047 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:56:09] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 00:56:09,049 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:56:09] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 00:56:09,115 28902 INFO 127.0.0.1 - - [10/Jul/2013 00:56:09] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:12:44,926 28902 ERROR Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+Traceback (most recent call last):
+  File "./ncpa_posix_listener.py", line 21, in run
+    flask.url_for('static', filename='jquery-1.8.3.min.js')
+  File "/usr/lib/python2.7/site-packages/flask/helpers.py", line 258, in url_for
+    raise RuntimeError('Attempted to generate a URL without the '
+RuntimeError: Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+2013-07-10 01:12:44,927 28902 INFO stopped
+2013-07-10 01:12:48,272 29275 INFO started
+2013-07-10 01:12:48,272 29275 INFO Starting server...
+2013-07-10 01:12:48,275 29275 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 01:12:52,229 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:12:52] "GET /?token=brody HTTP/1.1" 200 -
+2013-07-10 01:12:52,262 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:12:52] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 01:12:52,264 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:12:52] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 01:12:52,265 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:12:52] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 01:12:52,267 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:12:52] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 01:12:52,342 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:12:52] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:12:57,055 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:12:57] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:12:57,137 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:12:57] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:13:07,098 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:13:07] "GET /asdfasdf HTTP/1.1" 404 -
+2013-07-10 01:13:07,144 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:13:07] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:13:10,440 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:13:10] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:13:10,517 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:13:10] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:19:01,346 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:19:01] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:19:01,371 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:19:01] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 01:19:01,374 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:19:01] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 01:19:01,378 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:19:01] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 01:19:01,380 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:19:01] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 01:19:01,436 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:19:01] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:19:37,977 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:19:37] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:19:38,073 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:19:38] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:20:08,503 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:20:08] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:20:08,524 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:20:08] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 01:20:08,526 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:20:08] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 01:20:08,530 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:20:08] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 01:20:08,533 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:20:08] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 01:20:08,614 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:20:08] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:26:37,680 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:26:37] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:26:37,705 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:26:37] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 01:26:37,708 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:26:37] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 01:26:37,709 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:26:37] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 01:26:37,715 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:26:37] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 01:26:37,789 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:26:37] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:27:20,013 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:20] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:27:20,037 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:20] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 01:27:20,040 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:20] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 01:27:20,041 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:20] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 01:27:20,043 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:20] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 01:27:20,117 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:20] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:27:36,850 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:36] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:27:36,865 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:36] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 01:27:36,868 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:36] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 01:27:36,880 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:36] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 01:27:36,881 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:36] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 01:27:36,943 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:36] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:27:40,201 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:40] "POST /login HTTP/1.1" 405 -
+2013-07-10 01:27:40,242 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:40] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:27:43,544 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:27:43] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:30:52,574 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:30:52] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:30:52,593 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:30:52] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 01:30:52,594 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:30:52] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 01:30:52,596 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:30:52] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 01:30:52,598 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:30:52] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 01:30:52,683 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:30:52] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:30:57,304 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:30:57] "POST /login HTTP/1.1" 405 -
+2013-07-10 01:30:57,358 29275 INFO 127.0.0.1 - - [10/Jul/2013 01:30:57] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:32:43,183 29275 ERROR Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+Traceback (most recent call last):
+  File "./ncpa_posix_listener.py", line 21, in run
+    flask.url_for('static', filename='jquery-1.8.3.min.js')
+  File "/usr/lib/python2.7/site-packages/flask/helpers.py", line 258, in url_for
+    raise RuntimeError('Attempted to generate a URL without the '
+RuntimeError: Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+2013-07-10 01:32:43,184 29275 INFO stopped
+2013-07-10 01:32:46,769 29502 INFO started
+2013-07-10 01:32:46,770 29502 INFO Starting server...
+2013-07-10 01:32:46,772 29502 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 01:32:52,322 29502 INFO 127.0.0.1 - - [10/Jul/2013 01:32:52] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:32:52,402 29502 INFO 127.0.0.1 - - [10/Jul/2013 01:32:52] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:32:54,839 29502 INFO 127.0.0.1 - - [10/Jul/2013 01:32:54] "POST /login HTTP/1.1" 405 -
+2013-07-10 01:32:54,871 29502 INFO 127.0.0.1 - - [10/Jul/2013 01:32:54] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:32:59,689 29502 INFO 127.0.0.1 - - [10/Jul/2013 01:32:59] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:32:59,780 29502 INFO 127.0.0.1 - - [10/Jul/2013 01:32:59] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:33:26,260 29502 ERROR Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+Traceback (most recent call last):
+  File "./ncpa_posix_listener.py", line 21, in run
+    flask.url_for('static', filename='jquery-1.8.3.min.js')
+  File "/usr/lib/python2.7/site-packages/flask/helpers.py", line 258, in url_for
+    raise RuntimeError('Attempted to generate a URL without the '
+RuntimeError: Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+2013-07-10 01:33:26,261 29502 INFO stopped
+2013-07-10 01:33:27,780 29521 INFO started
+2013-07-10 01:33:27,780 29521 INFO Starting server...
+2013-07-10 01:33:27,783 29521 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 01:33:30,725 29521 INFO 127.0.0.1 - - [10/Jul/2013 01:33:30] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:33:30,816 29521 INFO 127.0.0.1 - - [10/Jul/2013 01:33:30] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:33:34,013 29521 ERROR Exception on /login [POST]
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 49, in login
+    elif request.metho == 'POST':
+  File "/usr/lib/python2.7/site-packages/werkzeug/local.py", line 338, in __getattr__
+    return getattr(self._get_current_object(), name)
+AttributeError: 'Request' object has no attribute 'metho'
+2013-07-10 01:33:34,016 29521 INFO 127.0.0.1 - - [10/Jul/2013 01:33:34] "POST /login HTTP/1.1" 500 -
+2013-07-10 01:33:34,050 29521 INFO 127.0.0.1 - - [10/Jul/2013 01:33:34] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:33:53,849 29521 INFO 127.0.0.1 - - [10/Jul/2013 01:33:53] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:33:53,944 29521 INFO 127.0.0.1 - - [10/Jul/2013 01:33:53] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:33:58,245 29521 ERROR Exception on /login [POST]
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 49, in login
+    elif request.metho == 'POST':
+  File "/usr/lib/python2.7/site-packages/werkzeug/local.py", line 338, in __getattr__
+    return getattr(self._get_current_object(), name)
+AttributeError: 'Request' object has no attribute 'metho'
+2013-07-10 01:33:58,247 29521 INFO 127.0.0.1 - - [10/Jul/2013 01:33:58] "POST /login HTTP/1.1" 500 -
+2013-07-10 01:33:58,296 29521 INFO 127.0.0.1 - - [10/Jul/2013 01:33:58] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:34:13,445 29521 INFO 127.0.0.1 - - [10/Jul/2013 01:34:13] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:34:13,529 29521 INFO 127.0.0.1 - - [10/Jul/2013 01:34:13] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:34:16,019 29521 ERROR Exception on /login [POST]
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 49, in login
+    elif request.method == 'POST':
+  File "/usr/lib/python2.7/site-packages/werkzeug/local.py", line 338, in __getattr__
+    return getattr(self._get_current_object(), name)
+AttributeError: 'Request' object has no attribute 'metho'
+2013-07-10 01:34:16,021 29521 INFO 127.0.0.1 - - [10/Jul/2013 01:34:16] "POST /login HTTP/1.1" 500 -
+2013-07-10 01:34:16,081 29521 INFO 127.0.0.1 - - [10/Jul/2013 01:34:16] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:34:20,356 29521 ERROR Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+Traceback (most recent call last):
+  File "./ncpa_posix_listener.py", line 21, in run
+    flask.url_for('static', filename='jquery-1.8.3.min.js')
+  File "/usr/lib/python2.7/site-packages/flask/helpers.py", line 258, in url_for
+    raise RuntimeError('Attempted to generate a URL without the '
+RuntimeError: Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+2013-07-10 01:34:20,357 29521 INFO stopped
+2013-07-10 01:34:22,547 29551 INFO started
+2013-07-10 01:34:22,547 29551 INFO Starting server...
+2013-07-10 01:34:22,549 29551 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 01:34:27,486 29551 ERROR Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+Traceback (most recent call last):
+  File "./ncpa_posix_listener.py", line 21, in run
+    flask.url_for('static', filename='jquery-1.8.3.min.js')
+  File "/usr/lib/python2.7/site-packages/flask/helpers.py", line 258, in url_for
+    raise RuntimeError('Attempted to generate a URL without the '
+RuntimeError: Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+2013-07-10 01:34:27,486 29551 INFO stopped
+2013-07-10 01:34:33,028 29563 INFO started
+2013-07-10 01:34:33,028 29563 INFO Starting server...
+2013-07-10 01:34:33,031 29563 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 01:34:36,401 29563 INFO 127.0.0.1 - - [10/Jul/2013 01:34:36] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:34:36,489 29563 INFO 127.0.0.1 - - [10/Jul/2013 01:34:36] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:34:39,702 29563 INFO 127.0.0.1 - - [10/Jul/2013 01:34:39] "POST /login HTTP/1.1" 200 -
+2013-07-10 01:34:39,806 29563 INFO 127.0.0.1 - - [10/Jul/2013 01:34:39] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:34:45,599 29563 INFO 127.0.0.1 - - [10/Jul/2013 01:34:45] "POST /login HTTP/1.1" 200 -
+2013-07-10 01:34:45,694 29563 INFO 127.0.0.1 - - [10/Jul/2013 01:34:45] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:34:52,489 29563 INFO 127.0.0.1 - - [10/Jul/2013 01:34:52] "POST /login HTTP/1.1" 302 -
+2013-07-10 01:34:52,494 29563 INFO 127.0.0.1 - - [10/Jul/2013 01:34:52] "GET / HTTP/1.1" 302 -
+2013-07-10 01:34:52,503 29563 INFO 127.0.0.1 - - [10/Jul/2013 01:34:52] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:34:52,597 29563 INFO 127.0.0.1 - - [10/Jul/2013 01:34:52] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:35:21,406 29563 ERROR Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+Traceback (most recent call last):
+  File "./ncpa_posix_listener.py", line 21, in run
+    flask.url_for('static', filename='jquery-1.8.3.min.js')
+  File "/usr/lib/python2.7/site-packages/flask/helpers.py", line 258, in url_for
+    raise RuntimeError('Attempted to generate a URL without the '
+RuntimeError: Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+2013-07-10 01:35:21,408 29563 INFO stopped
+2013-07-10 01:35:26,952 29571 INFO started
+2013-07-10 01:35:26,952 29571 INFO Starting server...
+2013-07-10 01:35:26,954 29571 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 01:35:29,977 29571 DEBUG Parsed token: None
+2013-07-10 01:35:30,004 29571 INFO 127.0.0.1 - - [10/Jul/2013 01:35:30] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:35:30,090 29571 INFO 127.0.0.1 - - [10/Jul/2013 01:35:30] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:35:33,805 29571 DEBUG Parsed token: asdf
+2013-07-10 01:35:33,806 29571 INFO 127.0.0.1 - - [10/Jul/2013 01:35:33] "POST /login HTTP/1.1" 200 -
+2013-07-10 01:35:33,898 29571 INFO 127.0.0.1 - - [10/Jul/2013 01:35:33] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:38:16,639 29571 ERROR Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+Traceback (most recent call last):
+  File "./ncpa_posix_listener.py", line 21, in run
+    flask.url_for('static', filename='jquery-1.8.3.min.js')
+  File "/usr/lib/python2.7/site-packages/flask/helpers.py", line 258, in url_for
+    raise RuntimeError('Attempted to generate a URL without the '
+RuntimeError: Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+2013-07-10 01:38:16,640 29571 INFO stopped
+2013-07-10 01:38:17,726 29581 INFO started
+2013-07-10 01:38:17,726 29581 INFO Starting server...
+2013-07-10 01:38:17,728 29581 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 01:38:22,554 29581 DEBUG Parsed token: None
+2013-07-10 01:38:22,569 29581 INFO 127.0.0.1 - - [10/Jul/2013 01:38:22] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:38:22,671 29581 INFO 127.0.0.1 - - [10/Jul/2013 01:38:22] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:38:27,218 29581 DEBUG Parsed token: asdf
+2013-07-10 01:38:27,220 29581 INFO 127.0.0.1 - - [10/Jul/2013 01:38:27] "POST /login HTTP/1.1" 200 -
+2013-07-10 01:38:27,314 29581 INFO 127.0.0.1 - - [10/Jul/2013 01:38:27] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:38:31,384 29581 DEBUG Parsed token: brody
+2013-07-10 01:38:31,385 29581 ERROR Exception on /login [POST]
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 62, in login
+    session['logged'] = True
+  File "/usr/lib/python2.7/site-packages/werkzeug/local.py", line 341, in __setitem__
+    self._get_current_object()[key] = value
+  File "/usr/lib/python2.7/site-packages/flask/sessions.py", line 126, in _fail
+    raise RuntimeError('the session is unavailable because no secret '
+RuntimeError: the session is unavailable because no secret key was set.  Set the secret_key on the application to something unique and secret.
+2013-07-10 01:38:31,388 29581 INFO 127.0.0.1 - - [10/Jul/2013 01:38:31] "POST /login HTTP/1.1" 500 -
+2013-07-10 01:38:31,439 29581 INFO 127.0.0.1 - - [10/Jul/2013 01:38:31] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:43:10,745 29581 ERROR Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+Traceback (most recent call last):
+  File "./ncpa_posix_listener.py", line 21, in run
+    listener.server.listener.secret_key = os.urandom(24)
+  File "/usr/lib/python2.7/site-packages/flask/helpers.py", line 258, in url_for
+    raise RuntimeError('Attempted to generate a URL without the '
+RuntimeError: Attempted to generate a URL without the application context being pushed. This has to be executed when application context is available.
+2013-07-10 01:43:10,748 29581 INFO stopped
+2013-07-10 01:43:13,612 29649 INFO started
+2013-07-10 01:43:13,612 29649 INFO Starting server...
+2013-07-10 01:43:13,614 29649 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 01:43:20,382 29649 DEBUG Parsed token: None
+2013-07-10 01:43:20,394 29649 INFO 127.0.0.1 - - [10/Jul/2013 01:43:20] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:43:20,482 29649 INFO 127.0.0.1 - - [10/Jul/2013 01:43:20] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:43:24,913 29649 DEBUG Parsed token: brody
+2013-07-10 01:43:24,935 29649 INFO 127.0.0.1 - - [10/Jul/2013 01:43:24] "POST /login HTTP/1.1" 302 -
+2013-07-10 01:43:24,951 29649 INFO 127.0.0.1 - - [10/Jul/2013 01:43:24] "GET / HTTP/1.1" 200 -
+2013-07-10 01:43:25,047 29649 INFO 127.0.0.1 - - [10/Jul/2013 01:43:25] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:46:18,027 29649 INFO 127.0.0.1 - - [10/Jul/2013 01:46:18] "GET /logout HTTP/1.1" 404 -
+2013-07-10 01:46:18,084 29649 INFO 127.0.0.1 - - [10/Jul/2013 01:46:18] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:46:24,099 29649 INFO stopped
+2013-07-10 01:46:25,327 29659 INFO started
+2013-07-10 01:46:25,328 29659 INFO Starting server...
+2013-07-10 01:46:25,329 29659 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 01:46:27,382 29659 INFO 127.0.0.1 - - [10/Jul/2013 01:46:27] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:46:31,651 29659 ERROR Exception on /logout [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1478, in full_dispatch_request
+    response = self.make_response(rv)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1566, in make_response
+    raise ValueError('View function did not return a response')
+ValueError: View function did not return a response
+2013-07-10 01:46:31,655 29659 INFO 127.0.0.1 - - [10/Jul/2013 01:46:31] "GET /logout HTTP/1.1" 500 -
+2013-07-10 01:46:31,718 29659 INFO 127.0.0.1 - - [10/Jul/2013 01:46:31] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:46:45,037 29659 INFO stopped
+2013-07-10 01:46:45,948 29668 INFO started
+2013-07-10 01:46:45,948 29668 INFO Starting server...
+2013-07-10 01:46:45,950 29668 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 01:46:49,508 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:46:49] "GET / HTTP/1.1" 302 -
+2013-07-10 01:46:49,517 29668 DEBUG Parsed token: None
+2013-07-10 01:46:49,527 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:46:49] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:46:49,611 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:46:49] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:46:53,391 29668 DEBUG Parsed token: brody
+2013-07-10 01:46:53,394 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:46:53] "POST /login HTTP/1.1" 302 -
+2013-07-10 01:46:53,408 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:46:53] "GET / HTTP/1.1" 200 -
+2013-07-10 01:46:53,504 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:46:53] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:46:56,141 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:46:56] "GET /logout HTTP/1.1" 302 -
+2013-07-10 01:46:56,150 29668 DEBUG Parsed token: None
+2013-07-10 01:46:56,153 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:46:56] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:46:56,256 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:46:56] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:49:24,703 29668 DEBUG Parsed token: None
+2013-07-10 01:49:24,717 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:49:24] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:49:24,757 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:49:24] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 01:49:24,763 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:49:24] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 01:49:24,859 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:49:24] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:49:50,745 29668 DEBUG Parsed token: None
+2013-07-10 01:49:50,755 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:49:50] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:49:50,786 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:49:50] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 01:49:50,792 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:49:50] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 01:49:50,799 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:49:50] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 01:49:50,810 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:49:50] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 01:49:50,900 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:49:50] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:50:04,277 29668 DEBUG Parsed token: None
+2013-07-10 01:50:04,283 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:50:04] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:50:04,299 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:50:04] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 01:50:04,302 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:50:04] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 01:50:04,307 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:50:04] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 01:50:04,312 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:50:04] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 01:50:04,401 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:50:04] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:53:28,900 29668 DEBUG Parsed token: None
+2013-07-10 01:53:28,915 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:53:28] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:53:28,935 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:53:28] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 01:53:28,938 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:53:28] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 01:53:28,943 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:53:28] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 01:53:28,948 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:53:28] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 01:53:29,040 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:53:29] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:53:47,999 29668 DEBUG Parsed token: None
+2013-07-10 01:53:48,016 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:53:48] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:53:48,041 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:53:48] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 01:53:48,050 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:53:48] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 01:53:48,059 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:53:48] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 01:53:48,062 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:53:48] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 01:53:48,138 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:53:48] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:55:49,276 29668 DEBUG Parsed token: asdf
+2013-07-10 01:55:49,290 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:55:49] "POST /login HTTP/1.1" 200 -
+2013-07-10 01:55:49,382 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:55:49] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:55:55,479 29668 DEBUG Parsed token: brody
+2013-07-10 01:55:55,482 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:55:55] "POST /login HTTP/1.1" 302 -
+2013-07-10 01:55:55,494 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:55:55] "GET / HTTP/1.1" 200 -
+2013-07-10 01:55:55,606 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:55:55] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:55:58,008 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:55:58] "GET /logout HTTP/1.1" 302 -
+2013-07-10 01:55:58,017 29668 DEBUG Parsed token: None
+2013-07-10 01:55:58,019 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:55:58] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:55:58,119 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:55:58] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:56:58,730 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:56:58] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:57:02,831 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:02] "GET / HTTP/1.1" 302 -
+2013-07-10 01:57:02,835 29668 DEBUG Parsed token: None
+2013-07-10 01:57:02,836 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:02] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:57:02,933 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:02] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:57:07,682 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:07] "GET /logout HTTP/1.1" 302 -
+2013-07-10 01:57:07,691 29668 DEBUG Parsed token: None
+2013-07-10 01:57:07,693 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:07] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:57:07,793 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:07] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:57:15,593 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:15] "GET / HTTP/1.1" 302 -
+2013-07-10 01:57:15,602 29668 DEBUG Parsed token: None
+2013-07-10 01:57:15,605 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:15] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:57:15,705 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:15] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:57:19,298 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:19] "GET /dashboard HTTP/1.1" 404 -
+2013-07-10 01:57:19,363 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:19] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:57:20,614 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:20] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:57:24,046 29668 DEBUG Parsed token: brody
+2013-07-10 01:57:24,050 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:24] "POST /login HTTP/1.1" 302 -
+2013-07-10 01:57:24,062 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:24] "GET / HTTP/1.1" 200 -
+2013-07-10 01:57:24,146 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:24] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:57:27,493 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:27] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:57:31,325 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:31] "GET /logout HTTP/1.1" 302 -
+2013-07-10 01:57:31,334 29668 DEBUG Parsed token: None
+2013-07-10 01:57:31,337 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:31] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:57:31,437 29668 INFO 127.0.0.1 - - [10/Jul/2013 01:57:31] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:58:22,450 29668 INFO stopped
+2013-07-10 01:58:24,739 29702 INFO started
+2013-07-10 01:58:24,740 29702 INFO Starting server...
+2013-07-10 01:58:24,741 29702 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 01:58:27,606 29702 DEBUG Parsed token: None
+2013-07-10 01:58:27,638 29702 INFO 127.0.0.1 - - [10/Jul/2013 01:58:27] "GET /login HTTP/1.1" 200 -
+2013-07-10 01:58:27,747 29702 INFO 127.0.0.1 - - [10/Jul/2013 01:58:27] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:58:31,419 29702 DEBUG Parsed token: brody
+2013-07-10 01:58:31,442 29702 INFO 127.0.0.1 - - [10/Jul/2013 01:58:31] "POST /login HTTP/1.1" 302 -
+2013-07-10 01:58:31,453 29702 INFO 127.0.0.1 - - [10/Jul/2013 01:58:31] "GET / HTTP/1.1" 200 -
+2013-07-10 01:58:31,540 29702 INFO 127.0.0.1 - - [10/Jul/2013 01:58:31] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:58:36,672 29702 INFO 127.0.0.1 - - [10/Jul/2013 01:58:36] "GET /logout HTTP/1.1" 200 -
+2013-07-10 01:58:36,773 29702 INFO 127.0.0.1 - - [10/Jul/2013 01:58:36] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:58:59,644 29702 INFO 127.0.0.1 - - [10/Jul/2013 01:58:59] "GET /logout HTTP/1.1" 200 -
+2013-07-10 01:58:59,684 29702 INFO 127.0.0.1 - - [10/Jul/2013 01:58:59] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 01:58:59,690 29702 INFO 127.0.0.1 - - [10/Jul/2013 01:58:59] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 01:58:59,697 29702 INFO 127.0.0.1 - - [10/Jul/2013 01:58:59] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 01:58:59,706 29702 INFO 127.0.0.1 - - [10/Jul/2013 01:58:59] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 01:58:59,785 29702 INFO 127.0.0.1 - - [10/Jul/2013 01:58:59] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 01:59:47,310 29702 INFO stopped
+2013-07-10 01:59:48,417 29713 INFO started
+2013-07-10 01:59:48,418 29713 INFO Starting server...
+2013-07-10 01:59:48,419 29713 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 01:59:51,368 29713 ERROR Exception on /logout [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 69, in logout
+    if session['logged']:
+  File "/usr/lib/python2.7/site-packages/werkzeug/local.py", line 368, in <lambda>
+    __getitem__ = lambda x, i: x._get_current_object()[i]
+KeyError: 'logged'
+2013-07-10 01:59:51,374 29713 INFO 127.0.0.1 - - [10/Jul/2013 01:59:51] "GET /logout HTTP/1.1" 500 -
+2013-07-10 01:59:51,437 29713 INFO 127.0.0.1 - - [10/Jul/2013 01:59:51] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 02:00:14,776 29713 INFO stopped
+2013-07-10 02:00:15,948 29723 INFO started
+2013-07-10 02:00:15,948 29723 INFO Starting server...
+2013-07-10 02:00:15,950 29723 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 02:00:18,365 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:00:18] "GET /logout HTTP/1.1" 302 -
+2013-07-10 02:00:18,368 29723 DEBUG Parsed token: None
+2013-07-10 02:00:18,380 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:00:18] "GET /login HTTP/1.1" 200 -
+2013-07-10 02:00:18,464 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:00:18] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 02:00:31,521 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:00:31] "GET / HTTP/1.1" 302 -
+2013-07-10 02:00:31,538 29723 DEBUG Parsed token: None
+2013-07-10 02:00:31,538 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:00:31] "GET /login HTTP/1.1" 200 -
+2013-07-10 02:00:31,627 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:00:31] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 02:00:40,029 29723 DEBUG Parsed token: brody
+2013-07-10 02:00:40,033 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:00:40] "POST /login HTTP/1.1" 302 -
+2013-07-10 02:00:40,053 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:00:40] "GET / HTTP/1.1" 200 -
+2013-07-10 02:00:40,148 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:00:40] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 02:03:59,761 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:03:59] "GET /logout HTTP/1.1" 200 -
+2013-07-10 02:03:59,859 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:03:59] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 02:04:07,706 29723 DEBUG Using plugins/
+2013-07-10 02:04:07,825 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:04:07] "GET /api/?token=brody HTTP/1.1" 200 -
+2013-07-10 02:04:07,884 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:04:07] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 02:15:22,433 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:15:22] "GET /api/ HTTP/1.1" 302 -
+2013-07-10 02:15:22,442 29723 DEBUG Parsed token: None
+2013-07-10 02:15:22,444 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:15:22] "GET /login HTTP/1.1" 200 -
+2013-07-10 02:15:22,538 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:15:22] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 02:16:18,902 29723 DEBUG Parsed token: brody
+2013-07-10 02:16:18,906 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:16:18] "POST /login HTTP/1.1" 302 -
+2013-07-10 02:16:18,920 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:16:18] "GET / HTTP/1.1" 200 -
+2013-07-10 02:16:19,011 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:16:19] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 02:19:16,821 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:19:16] "GET / HTTP/1.1" 200 -
+2013-07-10 02:19:16,864 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:19:16] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 02:19:16,871 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:19:16] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 02:19:16,873 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:19:16] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 02:19:16,876 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:19:16] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 02:19:16,952 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:19:16] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 02:26:18,415 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:26:18] "GET / HTTP/1.1" 200 -
+2013-07-10 02:26:18,429 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:26:18] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 02:26:18,435 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:26:18] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 02:26:18,438 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:26:18] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 02:26:18,443 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:26:18] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 02:26:18,525 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:26:18] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 02:27:18,080 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:27:18] "GET / HTTP/1.1" 200 -
+2013-07-10 02:27:18,177 29723 INFO 127.0.0.1 - - [10/Jul/2013 02:27:18] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 02:37:45,942 29723 INFO stopped
+2013-07-10 02:39:32,189 29997 INFO started
+2013-07-10 02:39:32,189 29997 INFO Starting server...
+2013-07-10 02:39:32,191 29997 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 02:39:36,192 29997 INFO 127.0.0.1 - - [10/Jul/2013 02:39:36] "GET / HTTP/1.1" 302 -
+2013-07-10 02:39:36,211 29997 INFO 127.0.0.1 - - [10/Jul/2013 02:39:36] "GET /login HTTP/1.1" 200 -
+2013-07-10 02:39:36,301 29997 INFO 127.0.0.1 - - [10/Jul/2013 02:39:36] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 02:39:40,178 29997 INFO 127.0.0.1 - - [10/Jul/2013 02:39:40] "POST /login HTTP/1.1" 302 -
+2013-07-10 02:39:40,186 29997 INFO 127.0.0.1 - - [10/Jul/2013 02:39:40] "GET / HTTP/1.1" 200 -
+2013-07-10 02:39:40,268 29997 INFO 127.0.0.1 - - [10/Jul/2013 02:39:40] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 02:39:49,235 29997 INFO 127.0.0.1 - - [10/Jul/2013 02:39:49] "GET / HTTP/1.1" 200 -
+2013-07-10 02:39:49,318 29997 INFO 127.0.0.1 - - [10/Jul/2013 02:39:49] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:01:35,979 29997 INFO stopped
+2013-07-10 03:01:36,937 30172 INFO started
+2013-07-10 03:01:36,937 30172 INFO Starting server...
+2013-07-10 03:01:36,939 30172 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 03:01:44,336 30172 INFO 127.0.0.1 - - [10/Jul/2013 03:01:44] "GET /api HTTP/1.1" 301 -
+2013-07-10 03:01:44,342 30172 INFO 127.0.0.1 - - [10/Jul/2013 03:01:44] "GET /api/ HTTP/1.1" 302 -
+2013-07-10 03:01:44,360 30172 INFO 127.0.0.1 - - [10/Jul/2013 03:01:44] "GET /login HTTP/1.1" 200 -
+2013-07-10 03:01:44,448 30172 INFO 127.0.0.1 - - [10/Jul/2013 03:01:44] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:01:47,156 30172 INFO 127.0.0.1 - - [10/Jul/2013 03:01:47] "POST /login HTTP/1.1" 302 -
+2013-07-10 03:01:47,166 30172 INFO 127.0.0.1 - - [10/Jul/2013 03:01:47] "GET / HTTP/1.1" 200 -
+2013-07-10 03:01:47,261 30172 INFO 127.0.0.1 - - [10/Jul/2013 03:01:47] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:01:50,931 30172 INFO 127.0.0.1 - - [10/Jul/2013 03:01:50] "GET /api HTTP/1.1" 301 -
+2013-07-10 03:01:50,944 30172 DEBUG Using plugins/
+2013-07-10 03:01:51,064 30172 INFO 127.0.0.1 - - [10/Jul/2013 03:01:51] "GET /api/ HTTP/1.1" 200 -
+2013-07-10 03:01:51,104 30172 INFO 127.0.0.1 - - [10/Jul/2013 03:01:51] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:04:13,515 30172 INFO stopped
+2013-07-10 03:04:14,207 30188 INFO started
+2013-07-10 03:04:14,207 30188 INFO Starting server...
+2013-07-10 03:04:14,209 30188 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 03:04:18,812 30188 INFO 127.0.0.1 - - [10/Jul/2013 03:04:18] "GET / HTTP/1.1" 302 -
+2013-07-10 03:04:18,833 30188 INFO 127.0.0.1 - - [10/Jul/2013 03:04:18] "GET /login HTTP/1.1" 200 -
+2013-07-10 03:04:18,918 30188 INFO 127.0.0.1 - - [10/Jul/2013 03:04:18] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:04:23,183 30188 INFO 127.0.0.1 - - [10/Jul/2013 03:04:23] "POST /login HTTP/1.1" 302 -
+2013-07-10 03:04:23,192 30188 DEBUG Using plugins/
+2013-07-10 03:04:23,207 30188 INFO 127.0.0.1 - - [10/Jul/2013 03:04:23] "GET / HTTP/1.1" 200 -
+2013-07-10 03:04:23,281 30188 INFO 127.0.0.1 - - [10/Jul/2013 03:04:23] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:05:10,149 30188 INFO stopped
+2013-07-10 03:05:10,896 30202 INFO started
+2013-07-10 03:05:10,896 30202 INFO Starting server...
+2013-07-10 03:05:10,898 30202 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 03:05:13,235 30202 INFO 127.0.0.1 - - [10/Jul/2013 03:05:13] "GET / HTTP/1.1" 302 -
+2013-07-10 03:05:13,256 30202 INFO 127.0.0.1 - - [10/Jul/2013 03:05:13] "GET /login HTTP/1.1" 200 -
+2013-07-10 03:05:13,348 30202 INFO 127.0.0.1 - - [10/Jul/2013 03:05:13] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:05:17,510 30202 INFO 127.0.0.1 - - [10/Jul/2013 03:05:17] "POST /login HTTP/1.1" 302 -
+2013-07-10 03:05:17,520 30202 DEBUG Accessing internal API with accessor /api/system/system
+2013-07-10 03:05:17,522 30202 DEBUG Accessor result!
+2013-07-10 03:05:17,522 30202 DEBUG Accessing internal API with accessor system/system
+2013-07-10 03:05:17,523 30202 DEBUG Using 
+2013-07-10 03:05:17,531 30202 ERROR Exception on / [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 44, in decorated
+    return f(*args, **kwargs)
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 89, in index
+    info = make_info_dict()
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 81, in make_info_dict
+    print internal_api('/api/system/system')
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 172, in internal_api
+    result = pluginapi.make_plugin_response_from_accessor(acc_response, accessor_args)
+  File "/home/nscott/Development/ncpa/agent/listener/pluginapi.py", line 115, in make_plugin_response_from_accessor
+    result = [round(x/factor, 3) for x in result]
+TypeError: unsupported operand type(s) for /: 'str' and 'int'
+2013-07-10 03:05:17,534 30202 INFO 127.0.0.1 - - [10/Jul/2013 03:05:17] "GET / HTTP/1.1" 500 -
+2013-07-10 03:05:17,584 30202 INFO 127.0.0.1 - - [10/Jul/2013 03:05:17] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:05:43,607 30202 INFO stopped
+2013-07-10 03:05:44,213 30216 INFO started
+2013-07-10 03:05:44,214 30216 INFO Starting server...
+2013-07-10 03:05:44,215 30216 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 03:05:46,207 30216 INFO 127.0.0.1 - - [10/Jul/2013 03:05:46] "GET / HTTP/1.1" 302 -
+2013-07-10 03:05:46,230 30216 INFO 127.0.0.1 - - [10/Jul/2013 03:05:46] "GET /login HTTP/1.1" 200 -
+2013-07-10 03:05:46,316 30216 INFO 127.0.0.1 - - [10/Jul/2013 03:05:46] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:05:53,597 30216 INFO 127.0.0.1 - - [10/Jul/2013 03:05:53] "POST /login HTTP/1.1" 302 -
+2013-07-10 03:05:53,607 30216 DEBUG Accessing internal API with accessor /api/system/processor
+2013-07-10 03:05:53,609 30216 DEBUG Accessor result!
+2013-07-10 03:05:53,609 30216 DEBUG Accessing internal API with accessor system/processor
+2013-07-10 03:05:53,610 30216 DEBUG Using 
+2013-07-10 03:05:53,616 30216 ERROR Exception on / [GET]
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/lib/python2.7/site-packages/flask/app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 44, in decorated
+    return f(*args, **kwargs)
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 89, in index
+    info = make_info_dict()
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 81, in make_info_dict
+    print internal_api('/api/system/processor')
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 172, in internal_api
+    result = pluginapi.make_plugin_response_from_accessor(acc_response, accessor_args)
+  File "/home/nscott/Development/ncpa/agent/listener/pluginapi.py", line 115, in make_plugin_response_from_accessor
+    result = [round(x/factor, 3) for x in result]
+TypeError: unsupported operand type(s) for /: 'str' and 'int'
+2013-07-10 03:05:53,619 30216 INFO 127.0.0.1 - - [10/Jul/2013 03:05:53] "GET / HTTP/1.1" 500 -
+2013-07-10 03:05:53,661 30216 INFO 127.0.0.1 - - [10/Jul/2013 03:05:53] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:10:06,796 30216 INFO stopped
+2013-07-10 03:10:07,451 30249 INFO started
+2013-07-10 03:10:07,451 30249 INFO Starting server...
+2013-07-10 03:10:07,453 30249 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 03:10:12,158 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:10:12] "GET / HTTP/1.1" 302 -
+2013-07-10 03:10:12,178 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:10:12] "GET /login HTTP/1.1" 200 -
+2013-07-10 03:10:12,263 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:10:12] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:10:14,863 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:10:14] "POST /login HTTP/1.1" 302 -
+2013-07-10 03:10:14,889 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:10:14] "GET / HTTP/1.1" 200 -
+2013-07-10 03:10:14,991 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:10:14] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:11:49,053 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:11:49] "GET / HTTP/1.1" 200 -
+2013-07-10 03:11:49,088 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:11:49] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 03:11:49,092 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:11:49] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 03:11:49,100 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:11:49] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 03:11:49,102 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:11:49] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 03:11:49,173 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:11:49] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:15:11,325 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:11] "GET / HTTP/1.1" 200 -
+2013-07-10 03:15:11,357 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:11] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 03:15:11,362 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:11] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 03:15:11,365 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:11] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 03:15:11,370 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:11] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 03:15:11,450 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:11] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:15:30,875 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:30] "GET / HTTP/1.1" 200 -
+2013-07-10 03:15:30,891 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:30] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 03:15:30,897 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:30] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 03:15:30,916 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:30] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 03:15:30,920 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:30] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 03:15:31,004 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:31] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:15:52,077 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:52] "GET / HTTP/1.1" 200 -
+2013-07-10 03:15:52,104 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:52] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 03:15:52,107 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:52] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 03:15:52,115 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:52] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 03:15:52,118 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:52] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 03:15:52,195 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:15:52] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:17:38,527 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:17:38] "GET / HTTP/1.1" 200 -
+2013-07-10 03:17:38,556 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:17:38] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 03:17:38,559 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:17:38] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 03:17:38,561 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:17:38] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 03:17:38,569 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:17:38] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 03:17:38,657 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:17:38] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:17:51,198 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:17:51] "GET / HTTP/1.1" 200 -
+2013-07-10 03:17:51,220 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:17:51] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 03:17:51,225 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:17:51] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 03:17:51,230 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:17:51] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 03:17:51,233 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:17:51] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 03:17:51,317 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:17:51] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:18:55,903 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:18:55] "GET /api HTTP/1.1" 301 -
+2013-07-10 03:18:55,907 30249 DEBUG Using plugins/
+2013-07-10 03:18:56,021 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:18:56] "GET /api/ HTTP/1.1" 200 -
+2013-07-10 03:18:56,073 30249 INFO 127.0.0.1 - - [10/Jul/2013 03:18:56] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:22:47,911 30249 INFO stopped
+2013-07-10 03:22:48,516 30301 INFO started
+2013-07-10 03:22:48,517 30301 INFO Starting server...
+2013-07-10 03:22:48,518 30301 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 03:22:52,407 30301 INFO 127.0.0.1 - - [10/Jul/2013 03:22:52] "GET / HTTP/1.1" 302 -
+2013-07-10 03:22:52,424 30301 INFO 127.0.0.1 - - [10/Jul/2013 03:22:52] "GET /login HTTP/1.1" 200 -
+2013-07-10 03:22:52,504 30301 INFO 127.0.0.1 - - [10/Jul/2013 03:22:52] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:22:56,153 30301 INFO 127.0.0.1 - - [10/Jul/2013 03:22:56] "POST /login HTTP/1.1" 302 -
+2013-07-10 03:22:56,170 30301 INFO 127.0.0.1 - - [10/Jul/2013 03:22:56] "GET / HTTP/1.1" 200 -
+2013-07-10 03:22:56,253 30301 INFO 127.0.0.1 - - [10/Jul/2013 03:22:56] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:26:21,698 30301 INFO stopped
+2013-07-10 03:26:22,340 30316 INFO started
+2013-07-10 03:26:22,341 30316 INFO Starting server...
+2013-07-10 03:26:22,342 30316 INFO  * Running on http://0.0.0.0:5693/
+2013-07-10 03:27:00,641 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:27:00] "GET / HTTP/1.1" 302 -
+2013-07-10 03:27:00,671 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:27:00] "GET /login HTTP/1.1" 200 -
+2013-07-10 03:27:00,776 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:27:00] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:27:03,445 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:27:03] "POST /login HTTP/1.1" 302 -
+2013-07-10 03:27:03,465 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:27:03] "GET / HTTP/1.1" 200 -
+2013-07-10 03:27:03,554 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:27:03] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:29:45,176 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:29:45] "GET / HTTP/1.1" 200 -
+2013-07-10 03:29:45,210 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:29:45] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-07-10 03:29:45,215 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:29:45] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-07-10 03:29:45,225 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:29:45] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-07-10 03:29:45,230 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:29:45] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-07-10 03:29:45,323 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:29:45] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:29:46,551 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:29:46] "GET /dashboard HTTP/1.1" 404 -
+2013-07-10 03:29:46,600 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:29:46] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:29:48,643 30316 INFO 127.0.0.1 - - [10/Jul/2013 03:29:48] "GET /favicon.ico HTTP/1.1" 404 -
+2013-07-10 03:35:45,325 30316 INFO stopped

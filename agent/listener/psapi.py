@@ -2,6 +2,8 @@ import psutil as ps
 import os
 import logging
 import re
+import platform
+import sys
 
 plugins   = ''
 
@@ -67,7 +69,6 @@ class LazyNode(Node):
                 return {'count' : metrics['count']}
         except IndexError:
             return {desired_proc : metrics }
-        
 
 def make_disk_nodes(disk_name):
     read_time = Node('read_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_time,'ms'))
@@ -98,6 +99,16 @@ def make_if_nodes(if_name):
     dropin = Node('dropin', method=lambda: (ps.network_io_counters(pernic=True)[if_name].dropin, 'c'))
     dropout = Node('dropout', method=lambda: (ps.network_io_counters(pernic=True)[if_name].dropout, 'c'))
     return Node(if_name, children=(bytes_sent, bytes_recv, packets_sent, packets_recv, errin, errout, dropin, dropout))
+
+#~ Sys Tree
+sys_system = Node('system', method=lambda: platform.uname()[0])
+sys_node = Node('node', method=lambda: platform.uname()[1])
+sys_release = Node('release', method=lambda: platform.uname()[2])
+sys_version = Node('version', method=lambda: platform.uname()[3])
+sys_machine = Node('machine', method=lambda: platform.uname()[4])
+sys_processor = Node('processor', method=lambda: platform.uname()[5])
+
+system = Node('system', children=(sys_system, sys_node, sys_release, sys_version, sys_machine, sys_processor))
 
 #~ CPU Tree
 cpu_count = Node('count', method=lambda: len(ps.cpu_percent(percpu=True)))
@@ -155,7 +166,7 @@ process = LazyNode('process')
 
 user = Node('user', children=(user_count, user_list))
 
-root = Node('root', children=(cpu, memory, disk, interface, agent, user, process))
+root = Node('root', children=(cpu, memory, disk, interface, agent, user, process, system))
 
 def getter(accessor='', s_plugins=''):
     global plugins

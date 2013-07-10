@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from flask import Flask, render_template, redirect, request, url_for, jsonify, Response
+from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session
 import commands
 import logging
 import urllib
@@ -8,6 +8,7 @@ import re
 import ConfigParser
 import os
 import sys
+import platform
 import requests
 import json
 import psapi
@@ -15,6 +16,10 @@ import pluginapi
 import functools
 import jinja2.ext
 import unittest
+import datetime
+
+__VERSION__ = 1.0
+__STARTED__ = datetime.datetime.now()
 
 if os.name == 'nt': 
     base_dir = os.path.dirname(sys.path[0])
@@ -24,25 +29,69 @@ if os.name == 'nt':
 else:
     listener = Flask(__name__)
 
-def return_with_cred(template):
-    token = request.args.get('token', '')
-    return render_template(template, token=token)
-
 def requires_auth(f):
     @functools.wraps(f)
     def decorated(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
         token = request.args.get('token', None)
-        if token != ncpa_token:
+        
+        if session.get('logged', False):
+            pass
+        elif token == None:
+            return redirect(url_for('login'))
+        elif token != ncpa_token:
             return redirect(url_for('error', msg='Incorrect credentials given.'))
         return f(*args, **kwargs)
     return decorated
 
+@listener.route('/login', methods=['GET', 'POST'])
+def login():
+    ncpa_token = listener.config['iconfig'].get('api', 'community_string')
+    
+    if request.method == 'GET':
+        token = request.args.get('token', None)
+    elif request.method == 'POST':
+        token = request.form.get('token', None)
+    else:
+        token = None
+    
+    if token == None:
+        return render_template('login.html')
+    if token == ncpa_token:
+        session['logged'] = True
+        return redirect(url_for('index'))
+    if token != ncpa_token:
+        return render_template('login.html', error='Token was invalid.')
+
+@listener.route('/logout')
+def logout():
+    if session.get('logged', False):
+        session['logged'] = False
+        return render_template('login.html', info='Successfully logged out.')
+    else:
+        return redirect(url_for('login'))
+
+def make_info_dict():
+    global __VERSION__
+    global __STARTED__
+    
+    now = datetime.datetime.now()
+    uptime = str(now - __STARTED__)
+    
+    return {'version': __VERSION__,
+            'uptime': uptime,
+            'processor': platform.uname()[5],
+            'node': platform.uname()[1],
+            'system': platform.uname()[0],
+            'release': platform.uname()[2],
+            'version': platform.uname()[3] }
+
 @listener.route('/')
 @requires_auth
 def index():
+    info = make_info_dict()
     try:
-        return return_with_cred('main.html')
+        return render_template('main.html', **info)
     except Exception, e:
         logging.exception(e)
 

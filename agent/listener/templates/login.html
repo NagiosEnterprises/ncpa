@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class='hero-unit'>
+	<form class='form-signin' action='/login' method='post'>
+		<h4 class='form-signin-heading'>Login</h2>
+		<hr />
+		{% if info %}
+			<p class='text-info'>{{ info }}</p>
+		{% endif %}
+		{% if error %}
+			<p class='text-error'>{{ error }}</p>
+		{% endif %}
+		<input {% if error %}id='inputError'{% endif %}type='text' class='input-block-level' name='token' placeholder='token' />
+		<button class='btn' type='submit'>Sign In</button>
+	</form>
+</div>
+{% endblock %}
+

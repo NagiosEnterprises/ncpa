@@ -1,20 +1,35 @@
 <html>
     <head>
-        <link rel='stylesheet' href='/static/chinook.css' />
-        <link rel='stylesheet' href='/static/jquery-ui.css' />
-        <script src='/static/jquery-1.8.3.min.js'></script>
-        <script src='/static/jquery-ui.js'></script>
-        <script>
-            $(document).ready(function() {
-                $('#tabs').tabs();
-                $('#config').load('/config/?token={{ token }}')
-            });
-        </script>
+        <link rel='stylesheet' href='/static/css/bootstrap.css' />
+        <link rel='stylesheet' href='/static/css/bootstrap-responsive.css' />
+        <title>NCPA Web Interface</title>
     </head>
     <body>
-        <div id='bodywrapper'>
-            {% block content %}
+        <div class='navbar navbar-inverse navbar-fixed-top'>
+			<div class='navbar-inner'>
+				<div class='container'>
+					<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class='brand' href='#'>NCPA Interface</a>
+					<div class="nav-collapse collapse">
+						<ul class="nav">
+							<li class="active"><a href="/">Home</a></li>
+							<li><a href="/dashboard">Dashboard</a></li>
+							<li><a href="/logout">Logout</a></li>
+							<li><a href="/help">Help</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+        </div>
+        <div class='container'>
+			{% block content %}
             {% endblock %}
         </div>
+        <script src='/static/js/jquery-1.8.3.min.js'></script>
+        <script src='/static/js/bootstrap.js'></script>
     </body>
 </html>

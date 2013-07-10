@@ -85,6 +85,7 @@ class Listener(Base):
             address = self.config.get('listener', 'ip')
             port = int(self.config.get('listener', 'port'))
             listener.server.listener.config['iconfig'] = self.config
+            listener.server.listener.secret_key = os.urandom(24)
             print 'Running the listener.'
             listener.server.listener.run(address, port)
         except Exception, e:

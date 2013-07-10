@@ -1,33 +1,55 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{{ super() }}
-<div id='tabs'>
-    <ul>
-        <li><a href='#system'>System Info</a></li>
-        <li><a href='#network'>Network Surrounding</a></li>
-        <li><a href='#config'>Config</a></li>
-        <li><a href='#processes'>Processes</a></li>
-    </ul>
-    <div id='#system'>
-        <div id='system'>
-            System stuff will go here
-        </div>
-    </div>
-    <div id='#processes'>
-        <div id='processes'>
-            <a href='/processes/?token={{ token }}&skip=30&sortby=MEM'>Watch Processes</a>
-        </div>
-    </div>
-    <div id='#network'>
-        <div id='network'>
-            Nmap and latest neighbors
-        </div>
-    </div>
-    <div id='#config'>
-        <div id='config'>
-            Config
-        </div>
-    </div>
+<div class='well'>
+	<table class='table'>
+		<thead>
+			<tr>
+				<th>Agent Information</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Version</td>
+				<td>{{ version }}</td>
+			</tr>
+			<tr>
+				<td>Agent Uptime</td>
+				<td>{{ uptime }}</td>
+			</tr>
+		</tbody>
+	</table>
+	<br />
+	<table class='table'>
+		<thead>
+			<tr>
+				<th>System Information</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Processor Type</td>
+				<td>{{ processor }}</td>
+			</tr>
+			<tr>
+				<td>Node Name</td>
+				<td>{{ node }}</td>
+			</tr>
+			<tr>
+				<td>Version</td>
+				<td>{{ version }}</td>
+			</tr>
+			<tr>
+				<td>System</td>
+				<td>{{ system }}</td>
+			</tr>
+			<tr>
+				<td>Release</td>
+				<td>{{ release }}</td>
+			</tr>
+		</tbody>
+	</table>
+	<br />
+	<a href='/dashboard' class='btn btn-primary btn-large'>See Live Stats</a>
 </div>
 {% endblock %}
