@@ -90,14 +90,14 @@ def make_mountpoint_nodes(partition_name):
     return Node(safe_mountpoint, children=(total_size, used, free, used_percent, device_name))
     
 def make_if_nodes(if_name):
-    bytes_sent = Node('bytes_sent', method=lambda: (ps.network_io_counters(pernic=True)[if_name].bytes_sent, 'b'))
-    bytes_recv = Node('bytes_recv', method=lambda: (ps.network_io_counters(pernic=True)[if_name].bytes_recv, 'b'))
-    packets_sent = Node('packets_sent', method=lambda: (ps.network_io_counters(pernic=True)[if_name].packets_sent, 'c'))
-    packets_recv = Node('packets_recv', method=lambda: (ps.network_io_counters(pernic=True)[if_name].packets_recv, 'c'))
-    errin = Node('errin', method=lambda: (ps.network_io_counters(pernic=True)[if_name].errin, 'c'))
-    errout = Node('errout', method=lambda: (ps.network_io_counters(pernic=True)[if_name].errout, 'c'))
-    dropin = Node('dropin', method=lambda: (ps.network_io_counters(pernic=True)[if_name].dropin, 'c'))
-    dropout = Node('dropout', method=lambda: (ps.network_io_counters(pernic=True)[if_name].dropout, 'c'))
+    bytes_sent = Node('bytes_sent', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_sent, 'b'))
+    bytes_recv = Node('bytes_recv', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_recv, 'b'))
+    packets_sent = Node('packets_sent', method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_sent, 'c'))
+    packets_recv = Node('packets_recv', method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_recv, 'c'))
+    errin = Node('errin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errin, 'c'))
+    errout = Node('errout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errout, 'c'))
+    dropin = Node('dropin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropin, 'c'))
+    dropout = Node('dropout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropout, 'c'))
     return Node(if_name, children=(bytes_sent, bytes_recv, packets_sent, packets_recv, errin, errout, dropin, dropout))
 
 #~ Sys Tree
@@ -112,7 +112,7 @@ system = Node('system', children=(sys_system, sys_node, sys_release, sys_version
 
 #~ CPU Tree
 cpu_count = Node('count', method=lambda: len(ps.cpu_percent(percpu=True)))
-cpu_percent = Node('percent', method=lambda: (ps.cpu_percent(interval=6, percpu=True), '%'))
+cpu_percent = Node('percent', method=lambda: (ps.cpu_percent(interval=.1, percpu=True), '%'))
 cpu_user = Node('user', method=lambda: ([x.user for x in ps.cpu_times(percpu=True)], 'ms'))
 cpu_system = Node('system', method=lambda: ([x.system for x in ps.cpu_times(percpu=True)], 'ms'))
 cpu_idle = Node('idle', method=lambda: ([x.idle for x in ps.cpu_times(percpu=True)], 'ms'))
@@ -159,7 +159,7 @@ plugin = Node('plugin', method=lambda: [x for x in os.listdir(plugins) if os.pat
 
 agent = Node('agent', children=(plugin,))
 
-user_count = Node('count', method=lambda: len([x.name for x in ps.get_users()]))
+user_count = Node('count', method=lambda: (len([x.name for x in ps.get_users()]), 'c'))
 user_list  = Node('list', method=lambda: [x.name for x in ps.get_users()])
 
 process = LazyNode('process')

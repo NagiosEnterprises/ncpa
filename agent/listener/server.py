@@ -66,7 +66,11 @@ def login():
 @listener.route('/dashboard')
 @requires_auth
 def dashboard():
-    return render_template('dashboard.html')
+    myjson = api('disk/logical', raw=True)
+    disks = myjson.get('logical').keys()
+    myjson = api('interface/', raw=True)
+    interfaces = myjson.get('interface').keys()
+    return render_template('dashboard.html', disks=disks, interfaces=interfaces)
 
 @listener.route('/logout')
 def logout():
@@ -154,7 +158,7 @@ def plugin_api(plugin_name=None, plugin_args=None):
 @listener.route('/api/')
 @listener.route('/api/<path:accessor>')
 @requires_auth
-def api(accessor=''):
+def api(accessor='', raw=False):
     if request.args.get('check'):
         url = accessor + '?' + urllib.urlencode(request.args)
         return jsonify({'value' : internal_api(url, listener.config['iconfig'])})
@@ -163,7 +167,10 @@ def api(accessor=''):
     except Exception, e:
         logging.exception(e)
         return redirect(url_for('error', msg='Referencing node that does not exist.'))
-    return jsonify({'value' : response})
+    if raw:
+        return response
+    else:
+        return jsonify({'value' : response})
 
 def internal_api(accessor=None, config=None):
     logging.debug('Accessing internal API with accessor %s', accessor)
