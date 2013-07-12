@@ -44,17 +44,17 @@ To test your installation see `Testing Your Installation`_.
 Installing NCPA Using RPM Packing
 ---------------------------------
 
-First thing that must be done is acquiring the RPM package. The latest RPM package can be found at `NCPA's RPM link <http://assets.nagios.com/downloads/ncpa/ncpa-head.rpm>`_. Download this to **the machine you would like to monitor**, do not download this to your personal workstation or your Nagios server.
+First thing that must be done is acquiring the RPM package. The latest RPM package can be found at `NCPA's RPM link <http://assets.nagios.com/downloads/ncpa/ncpa.i386.rpm>`_. Download this to **the machine you would like to monitor**, do not download this to your personal workstation or your Nagios server.
 
 Using the command line it would look something like this:
 ::
     
     cd /tmp
-    wget http://assets.nagios.com/downloads/ncpa/ncpa-head.rpm
+    wget http://assets.nagios.com/downloads/ncpa/ncpa.i386.rpm
 
 Now that we have our RPM on our system, we simply need to use our package manager to install it. Many commonly used package managers have the ability to install a local package. However, in this example we will the rpm command. If you are using something like *yum* or *zypper* you can use that as well::
     
-    rpm -ivh ncpa-head.rpm
+    rpm -ivh --nomd5 --nodeps ncpa-head.rpm
 
 Now the NCPA services are installed and started.
 
@@ -63,13 +63,13 @@ To test your installation see `Testing Your Installation`_.
 Installing NCPA Using DEB Packaging
 -----------------------------------
 
-This section is largely the same. The DEB package must be downloaded to the server you want to monitor, and then it needs to be installed. The latest DEB package is located `NCPA's DEB link <http://assets.nagios.com/downloads/ncpa/ncpa-head.deb>`_, and we will download it using the command line in this example, however you can download it using your user interface, but just keep in mind where you downloaded it to.
+This section is largely the same. The DEB package must be downloaded to the server you want to monitor, and then it needs to be installed. The latest DEB package is located `NCPA's DEB link <http://assets.nagios.com/downloads/ncpa/ncpa.i386.deb>`_, and we will download it using the command line in this example, however you can download it using your user interface, but just keep in mind where you downloaded it to.
 
 Using the command line it would look something like this:
 ::
     
     cd /tmp
-    wget http://assets.nagios.com/downloads/ncpa/ncpa-head.deb
+    wget http://assets.nagios.com/downloads/ncpa/ncpa.i386.deb
 
 Now that we have the DEB on our system, we simply need to install it. You can use any package manager you are comfortable with, but for the sake of portability, this example will use *dpkg* to install this particular package.
 
@@ -77,7 +77,7 @@ Now that we have the DEB on our system, we simply need to install it. You can us
 
 ::
     
-    dpkg -i ncpa-head.deb
+    dpkg -i ncpa.i386.deb
 
 Now the NCPA services are installed and started.
 
@@ -103,21 +103,21 @@ Where <agent's IP> and <token> should be substituted for your agent's IP and tok
     
     --- snip ---
     {
-  "value": {
-    "root": {
-      "process": [], 
-      "user": {
-        "count": 1, 
-        "list": [
-          "nscott"
-        ]
-      }, 
-      "memory": {
-        "swap": {
-          "used": [
-            8245542912, 
-            "b"
-          ],
+        "value": {
+            "root": {
+                "process": [], 
+                "user": {
+                    "count": 1, 
+                    "list": [
+                    "nscott"
+                    ]
+                }, 
+                "memory": {
+                "swap": {
+                "used": [
+                    8245542912, 
+                    "b"
+                ],
     --- snip ---
 
 This means your installation is working! You can now proceed.

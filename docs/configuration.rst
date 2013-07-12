@@ -7,6 +7,8 @@ If you wish to send passive results, you will also need to add these passive che
 
 This document is meant to be a reference as to what these directives mean, not necessarily a friendly way to define them.
 
+One last item that should be noted as that you do not need to restart the NCPA server upon changing any of the configuration used by the passive agent. Every time the passive agent wakes up, it reparses its configuration file. However, for the active agent, there are some items that are parsed once at service start, mainly the section named '[listener]'.
+
 Config File Location
 --------------------
 

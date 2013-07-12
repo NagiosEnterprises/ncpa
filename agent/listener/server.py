@@ -14,7 +14,9 @@ import json
 import psapi
 import pluginapi
 import functools
+import jinja2
 import jinja2.ext
+import re
 import unittest
 import datetime
 
@@ -23,9 +25,10 @@ __STARTED__ = datetime.datetime.now()
 
 if os.name == 'nt': 
     base_dir = os.path.dirname(sys.path[0])
-    tmpl_dir = os.path.join(base_dir, 'listener', 'templates')
-    stat_dir = os.path.join(base_dir, 'listener', 'static')
+    tmpl_dir = os.path.join(base_dir, 'agent', 'listener', 'templates')
+    stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
+    listener.jinja_loader = jinja2.FileSystemLoader(tmpl_dir)
 else:
     listener = Flask(__name__)
 
@@ -67,10 +70,18 @@ def login():
 @requires_auth
 def dashboard():
     myjson = api('disk/logical', raw=True)
-    disks = myjson.get('logical').keys()
+    disks = [ { 'safe': re.sub(r'[^a-zA-Z0-9]', '', x), 
+                'raw': x } for x in myjson.get('logical').keys() ]
     myjson = api('interface/', raw=True)
-    interfaces = myjson.get('interface').keys()
-    return render_template('dashboard.html', disks=disks, interfaces=interfaces)
+    interfaces = [ {'safe': re.sub(r'[^a-zA-Z0-9]', '', x), 
+                    'raw': x } for x in myjson.get('interface').keys() if 'Local' in x or 'Loopback' in x]
+    myjson = api('cpu/count', raw=True)
+    cpucount = myjson.get('count', 0)
+    
+    return render_template( 'dashboard.html',
+                            disks=disks,
+                            interfaces=interfaces,
+                            cpucount=cpucount)
 
 @listener.route('/logout')
 def logout():
@@ -103,7 +114,7 @@ def index():
         return render_template('main.html', **info)
     except Exception, e:
         logging.exception(e)
-
+        
 @listener.route('/error/')
 @listener.route('/error/<msg>')
 def error(msg=None):

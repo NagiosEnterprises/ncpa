@@ -44,6 +44,7 @@ graphs.push({   'address': '/api/cpu/percent',
                 'width': d_width,
                 'update_duration': 1000,
                 'transition_duration': 1000,
+                'count': {{cpucount}},
                 'ydomain': 100 });
                 
 graphs.push({   'address': '/api/user/count',
@@ -57,10 +58,10 @@ graphs.push({   'address': '/api/user/count',
                 'ydomain': 100 });
 
 {% for disk in disks %}
-graphs.push({   'address': '/api/disk/logical/{{disk}}/used_percent',
+graphs.push({   'address': '/api/disk/logical/{{disk.get("raw")}}/used_percent',
                 'accessor': 'used_percent',
-                'id': '{{disk|replace("|","")|replace(" ","")}}percent',
-                'val': '{{disk|replace("|","")|replace(" ","")}}val',
+                'id': '{{disk.get("safe")}}percent',
+                'val': '{{disk.get("safe")}}val',
                 'height': d_height,
                 'width': d_width,
                 'update_duration': 1000,
@@ -68,11 +69,12 @@ graphs.push({   'address': '/api/disk/logical/{{disk}}/used_percent',
                 'ydomain': 100 });
 {% endfor %}
 
+
 {% for interface in interfaces %}
-graphs.push({   'address': '/api/interface/{{interface}}/bytes_recv',
+graphs.push({   'address': '/api/interface/{{interface.get("raw")}}/bytes_recv',
                 'accessor': 'bytes_recv',
-                'id': '{{interface|replace(" ","")}}inbound',
-                'val': '{{interface|replace(" ","")}}valinbound',
+                'id': '{{interface.get("safe")}}inbound',
+                'val': '{{interface.get("safe")}}valinbound',
                 'height': d_height,
                 'width': d_width,
                 'update_duration': 1000,
@@ -81,10 +83,10 @@ graphs.push({   'address': '/api/interface/{{interface}}/bytes_recv',
                 'scale': 'linear',
                 'ydomain': 100 });
                 
-graphs.push({   'address': '/api/interface/{{interface}}/bytes_sent',
+graphs.push({   'address': '/api/interface/{{interface.get("raw")}}/bytes_sent',
                 'accessor': 'bytes_sent',
-                'id': '{{interface|replace(" ","")}}outbound',
-                'val': '{{interface|replace(" ","")}}valoutbound',
+                'id': '{{interface.get("safe")}}outbound',
+                'val': '{{interface.get("safe")}}valoutbound',
                 'height': d_height,
                 'width': d_width,
                 'update_duration': 1000,
@@ -192,6 +194,21 @@ function display_graph(graphinfo, update_delay, transition_delay) {
         
         observed = d.value[graphinfo.accessor][0];
         
+        if(Object.prototype.toString.call(observed) === '[object Array]') {
+            var total = 0;
+            for(var i=0; i<observed.length; i++) {
+                total += observed[i];
+            }
+            observed = total;
+        }
+        
+        if(graphinfo.count != undefined && graphinfo.count != 0) {
+            observed = observed / graphinfo.count;
+            if(observed.toFixed) {
+                observed = observed.toFixed(2);
+            }
+        }
+        
         if(graphinfo.delta == 1) {
             if(graphinfo.oldvalue == undefined) {
                 newval = 0;
@@ -203,6 +220,7 @@ function display_graph(graphinfo, update_delay, transition_delay) {
             }
             graphinfo.oldvalue = observed;
         }
+        
         else {
             newval = observed;
         }
@@ -256,10 +274,10 @@ $(document).ready(function() {
             <div class='row'>
         {% endif %}
         <div class='span5' style='width:500px'>
-            <h4>{{ disk|replace("|","/")|truncate(10,'...') }} Usage % - 
-                <span id='{{disk|replace("|","")|replace(" ","")}}val'></span>%
+            <h4>{{ disk.get("raw")|replace("|","/")|truncate(10,'...') }} Usage % - 
+                <span id='{{disk.get("safe")}}val'></span>%
             </h4><hr />
-            <span id='{{disk|replace("|","")|replace(" ","")}}percent'></span>
+            <span id='{{disk.get("safe")}}percent'></span>
         </div>
         {% if loop.index is even %}
             </div>
@@ -271,21 +289,28 @@ $(document).ready(function() {
     {% endif %}
 </div>
 
+
 <div class='well'>
     <h3>Network Interfaces</h3>
     <hr />
     {% for interface in interfaces %}
     <div class='row'>
-        <div class='span5' style='width:500px'><h4>{{interface|truncate(10,'...')}} Inbound - <span id='{{interface|replace(" ","")}}valinbound'></span>Mb/sec</h4><hr />
-            <span id='{{interface|replace(" ","")}}inbound'></span>
+        <div class='span5' style='width:500px'>
+            <h4>{{interface.get("raw")|e|truncate(10,'...')}} Inbound - 
+            <span id='{{interface.get("safe")}}valinbound'></span>Mb/sec</h4><hr />
+            <span id='{{interface.get("safe")}}inbound'></span>
         </div>
-        <div class='span5' style='width:500px'><h4>{{interface|truncate(10,'...')}} Outbound - <span id='{{interface|replace(" ","")}}valoutbound'></span>Mb/sec</h4><hr />
-            <span id='{{interface|replace(" ","")}}outbound'></span>
+        <div class='span5' style='width:500px'>
+            <h4>{{interface.get("raw")|e|truncate(10,'...')}} Outbound - 
+            <span id='{{interface.get("safe")}}valoutbound'></span>Mb/sec</h4><hr />
+            <span id='{{interface.get("safe")}}outbound'></span>
         </div>
     </div>
     {% endfor %}
 </div>
+
 <div class='row'>
     <div class='span10'></div>
 </div>
+
 {% endblock %}
