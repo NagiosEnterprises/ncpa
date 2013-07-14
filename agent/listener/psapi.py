@@ -90,14 +90,14 @@ def make_mountpoint_nodes(partition_name):
     return Node(safe_mountpoint, children=(total_size, used, free, used_percent, device_name))
     
 def make_if_nodes(if_name):
-    bytes_sent = Node('bytes_sent', method=lambda: (ps.network_io_counters(pernic=True)[if_name].bytes_sent, 'b'))
-    bytes_recv = Node('bytes_recv', method=lambda: (ps.network_io_counters(pernic=True)[if_name].bytes_recv, 'b'))
-    packets_sent = Node('packets_sent', method=lambda: (ps.network_io_counters(pernic=True)[if_name].packets_sent, 'c'))
-    packets_recv = Node('packets_recv', method=lambda: (ps.network_io_counters(pernic=True)[if_name].packets_recv, 'c'))
-    errin = Node('errin', method=lambda: (ps.network_io_counters(pernic=True)[if_name].errin, 'c'))
-    errout = Node('errout', method=lambda: (ps.network_io_counters(pernic=True)[if_name].errout, 'c'))
-    dropin = Node('dropin', method=lambda: (ps.network_io_counters(pernic=True)[if_name].dropin, 'c'))
-    dropout = Node('dropout', method=lambda: (ps.network_io_counters(pernic=True)[if_name].dropout, 'c'))
+    bytes_sent = Node('bytes_sent', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_sent, 'b'))
+    bytes_recv = Node('bytes_recv', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_recv, 'b'))
+    packets_sent = Node('packets_sent', method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_sent, 'c'))
+    packets_recv = Node('packets_recv', method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_recv, 'c'))
+    errin = Node('errin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errin, 'c'))
+    errout = Node('errout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errout, 'c'))
+    dropin = Node('dropin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropin, 'c'))
+    dropout = Node('dropout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropout, 'c'))
     return Node(if_name, children=(bytes_sent, bytes_recv, packets_sent, packets_recv, errin, errout, dropin, dropout))
 
 #~ Sys Tree
@@ -151,7 +151,7 @@ disk_physical = Node('phyical', children=disk_counters)
 
 disk = Node('disk', children=(disk_physical, disk_logical))
 
-if_children = [make_if_nodes(x) for x in ps.network_io_counters(pernic=True).keys()]
+if_children = [make_if_nodes(x) for x in ps.net_io_counters(pernic=True).keys()]
 
 interface = Node('interface', children=if_children)
 

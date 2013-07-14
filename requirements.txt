@@ -1,5 +1,5 @@
-psutil==0.7.1
+psutil
 requests
 Jinja2
 flask
-simpledaemon==1.0.1
+simpledaemon

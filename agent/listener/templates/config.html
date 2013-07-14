@@ -1,26 +1,149 @@
-<div class='CSSTableGenerator'>
-    <table>
-    <tr>
-        <td colspan='999'>Chinook Config</td>
-    </tr>
-    {% for section, value in config.items() %}
-        <tr class='section'>
-            <td colspan='999'>
-                {{ section|upper }}
-            </td>
-        </tr>
-        {% for key, entry in value.items() %}
-            <tr class='subsection'>
-            {% if key != '__name__' %}
-                <td class='label jright'>
-                    <label for='key'>{{ key|capitalize }}</label>
-                </td>
-                <td class='value'>
-                    <input name='key' type='text' value='{{ entry }}'/>
-                </td>
-            {% endif %}
-            </tr>
-        {% endfor %}
-    {% endfor %}
-    </table>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class='alert alert-info'>Some entries are grayed out, which means they cannot be edited. This is due to possible complications if done from the web interface.</div>
+
+<div class='tabbable'>
+    <ul class='nav nav-tabs'>
+        <li class='active'>
+            <a href='#listener' data-toggle='tab'>Listener Daemon</a>
+        </li>
+        <li>
+            <a href='#passive' data-toggle='tab'>Passive Daemon</a>
+        </li>
+        <li>
+            <a href='#api' data-toggle='tab'>API</a>
+        </li>
+        <li>
+            <a href='#nrdp' data-toggle='tab'>NRDP</a>
+        </li>
+        <li>
+            <a href='#nrds' data-toggle='tab'>NRDS</a>
+        </li>
+        <li>
+            <a href='#checks' data-toggle='tab'>Passive Checks</a>
+        </li>
+        <li>
+            <a href='#directives' data-toggle='tab'>Plugin Directives</a>
+        </li>
+    </ul>
+    <form class='form-horizontal'>
+        <div class='tab-content'>
+            <div class='tab-pane active' id='listener'>
+                <div>
+                    # for id, description in (  ['ip', 'Listening IP'],
+                                                ['port', 'Listening Port'],
+                                                ['uid', 'User'],
+                                                ['gid', 'Group'],
+                                                ['pidfile', 'PID File Address'],
+                                                ['logfile', 'Log File Address'],
+                                                ['loglevel', 'Log Level'],
+                                                ['certificate', 'SSL Certificate']):
+                    <div class='control-group'>
+                        <label class='control-label' for='listener|{{ id }}'>{{ description }}</label>
+                        <div class='controls'>
+                            <input type='text' class='input' id='listener|{{ id  }}' placeholder='{{ config.get("listener").get(id) }}' readonly>
+                        </div>
+                    </div>
+                    # endfor
+                </div>
+            </div> <!-- Closes listener -->
+            <div class='tab-pane' id='passive'>
+                <div>
+                    # for id, description, accessibility in (   ['sleep', 'Sleep Interval', ''],
+                                                                ['handlers', 'Activated Handlers', ''],
+                                                                ['uid', 'User', 'readonly'],
+                                                                ['gid', 'Group', 'readonly'],
+                                                                ['pidfile', 'PID File Address', 'readonly'],
+                                                                ['logfile', 'Log File Address', 'readonly'],
+                                                                ['loglevel', 'Log Level', 'readonly']):
+                    <div class='control-group'>
+                        <label class='control-label' for='passive|{{ id }}'>{{ description }}</label>
+                        <div class='controls'>
+                            <input type='text' class='input' name='passive|{{ id }}' id='passive|{{ id  }}' value='{{ config.get("passive").get(id) }}' {{ accessibility }}>
+                        </div>
+                    </div>
+                    # endfor
+                </div>
+            </div> <!-- Closes passive -->
+            <div class='tab-pane' id='api'>
+                <div>
+                    # for id, description in (['community_string', 'Token'],):
+                    <div class='control-group'>
+                        <label class='control-label' for='api|{{ id }}'>{{ description }}</label>
+                        <div class='controls'>
+                            <input type='text' class='input' name='api|{{ id }}' id='api|{{ id  }}' value='{{ config.get("api").get(id) }}'>
+                        </div>
+                    </div>
+                    # endfor
+                </div>
+            </div> <!-- Closes api -->
+            <div class='tab-pane' id='nrdp'>
+                <div>
+                    # for id, description in (  ['hostname', 'Hostname'],
+                                                ['parent', 'NRDP Server'],
+                                                ['token', 'Token for NRDP Server']):
+                    <div class='control-group'>
+                        <label class='control-label' for='nrdp|{{ id }}'>{{ description }}</label>
+                        <div class='controls'>
+                            <input type='text' class='input' name='nrdp|{{ id  }}' id='nrdp|{{ id  }}' value='{{ config.get("nrdp").get(id) }}'>
+                        </div>
+                    </div>
+                    # endfor
+                </div>
+            </div>
+            <div class='tab-pane' id='nrds'>
+                <div>
+                    # for id, description, accessibility in (   ['config_name', 'Config Name', ''],
+                                                                ['config_version', 'Config Version Number', ''],
+                                                                ['url', 'NRDS URL', ''],
+                                                                ['config_os', 'OS Type', 'readonly'],
+                                                                ['token', 'NRDS Token', '']):
+                    <div class='control-group'>
+                        <label class='control-label' for='nrdp|{{ id }}'>{{ description }}</label>
+                        <div class='controls'>
+                            <input type='text' class='input' name='nrds|{{ id  }}' id='nrds|{{ id  }}' value='{{ config.get("nrds").get(id) }}' {{ accessibility }}>
+                        </div>
+                    </div>
+                    # endfor
+                    # for id, description in (  ['update_config', 'Update Config?'],
+                                                ['update_plugins', 'Update Plugins?']):
+                    <div class='control-group'>
+                        <div class='controls'>
+                            <label class='checkbox'>
+                                <input type='checkbox' name='nrds|{{ id }}' id='nrds|{{ id  }}' {% if config.get("nrds").get(id) == '1' %}checked{% endif %}>{{ description }}
+                            </label>
+                        </div>
+                    </div>
+                    # endfor
+                </div>
+            </div>
+            <div class='tab-pane' id='checks'>
+                <p>{{ config.get('passive checks') }}</p>
+            </div>
+            <div class='tab-pane' id='directives'>
+                <div>
+                    # for id, description, accessibility in (   ['plugin_path', 'Plugin Directory', 'readonly'],):
+                    <div class='control-group'>
+                        <label class='control-label' for='directives|{{ id }}'>{{ description }}</label>
+                        <div class='controls'>
+                            <input type='text' class='input' name='directives|{{ id  }}' id='directives|{{ id  }}' value='{{ config.get("plugin directives").get(id) }}' {{ accessibility }}>
+                        </div>
+                    </div>
+                    # endfor
+                    <h5>Suffix Expressions</h5>
+                    <hr />
+                    # for entry in config.get("plugin directives").keys() if entry.startswith('.'):
+                        <div class='controls controls-row'>
+                            <input class='span1' type='text' name='directives|suffix|{{entry}}' id='directives|suffix|{{entry}}' value='{{entry}}'>
+                            <input class='span6' type='text' name='directives|exec|{{entry}}' id='directives|exec|{{entry}}' value='{{config.get("plugin directives").get(entry)}}'>
+                            <button style='margin-left:10px;' class='btn btn-danger btn-mini'>-</button>
+                        </div>
+                        <br />
+                    # endfor 
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
+{% endblock %}

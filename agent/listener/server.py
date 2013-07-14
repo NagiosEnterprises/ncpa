@@ -32,6 +32,8 @@ if os.name == 'nt':
 else:
     listener = Flask(__name__)
 
+listener.jinja_env.line_statement_prefix = '#'
+
 def requires_auth(f):
     @functools.wraps(f)
     def decorated(*args, **kwargs):
@@ -74,7 +76,7 @@ def dashboard():
                 'raw': x } for x in myjson.get('logical').keys() ]
     myjson = api('interface/', raw=True)
     interfaces = [ {'safe': re.sub(r'[^a-zA-Z0-9]', '', x), 
-                    'raw': x } for x in myjson.get('interface').keys() if 'Local' in x or 'Loopback' in x]
+                    'raw': x } for x in myjson.get('interface').keys() ]
     myjson = api('cpu/count', raw=True)
     cpucount = myjson.get('count', 0)
     
@@ -82,6 +84,11 @@ def dashboard():
                             disks=disks,
                             interfaces=interfaces,
                             cpucount=cpucount)
+
+@listener.route('/config', methods=['GET', 'POST'])
+@requires_auth
+def config():
+	return render_template('config.html', **{'config' : listener.config['iconfig'].__dict__['_sections']})
 
 @listener.route('/logout')
 def logout():
@@ -145,14 +152,14 @@ def nrdp():
         logging.exception(e)
         return redirect(url_for('error', msg=str(e)))
 
-@listener.route('/config/')
-@requires_auth
-def config():
-    try:
-        return render_template('config.html', **{'config' : listener.config['iconfig'].__dict__['_sections']})
-    except Exception, e:
-        logging.exception(e)
-        return redirect(url_for('error', msg=str(e)))
+#~ @listener.route('/config/')
+#~ @requires_auth
+#~ def config():
+    #~ try:
+        #~ return render_template('config.html', **{'config' : listener.config['iconfig'].__dict__['_sections']})
+    #~ except Exception, e:
+        #~ logging.exception(e)
+        #~ return redirect(url_for('error', msg=str(e)))
 
 @listener.route('/api/agent/plugin/<plugin_name>/')
 @listener.route('/api/agent/plugin/<plugin_name>/<path:plugin_args>')
