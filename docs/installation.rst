@@ -1,21 +1,24 @@
 NCPA Installation
 =================
 
-NCPA is packaged for all of its target platforms, and is the one portion of NCPA that cannot be truly platform agnostic. However, packaging for NCPA allows for quick and easy installation on all target platforms and this documentation will give examples and on how to install NCPA.
+NCPA is packaged for all of its target platforms, including Windows, Linux RPM and DEB packaging as well as tarballs for some of the less common operating systems. Packaging is the one portion of NCPA that cannot be truly platform agnostic. However, packaging for NCPA allows for quick and easy installation on all target platforms and this documentation will give examples and on how to install NCPA.
 
 First and foremost, the following documentation is for a simple install. If you have a complex environment, you can and probably should skip these. What you should know however, is that there are no gotchas involved with installing NCPA.
 
 Installing NCPA on Windows
 --------------------------
 
-First, download the installer to the machine that you wish to install NCPA onto. The NCPA installer can be found at `NCPA's Windows Installer link <http://assets.nagios.com/downloads/ncpa/ncpa-head.exe>`_. Then navigate to the location that the install was downloaded, and double-click the installer.
+First, download the installer to the machine that you wish to install NCPA onto. The NCPA installer can be found at `NCPA's Windows Installer link <http://assets.nagios.com/downloads/ncpa/ncpa-head.exe>`_. 
 
-After agreeing to the license terms, you will find the configuration screen. This asks you to fill in some of the pertinent information.
+Graphical Install
++++++++++++++++++
+
+Navigate to the location that the install was downloaded, and double-click the installer. After agreeing to the license terms, you will find the configuration screen. This asks you to fill in some of the pertinent information.
 
 .. image:: images/windows_installer.jpg
     :align: center
 
-What do these mean? Well, here is the lowdown: **If you are only using this agent for actively polling by Nagios, you only need to enter the token and click 'Next' with no adverse effects**. If you are setting up the agent to send passive results back to Nagios, you'll need to fill the rest out.
+The first thing you will see is the Active Specifications section. **NCPA can be used as an active agent by simply entering a token into the text box and clicking "Next."**  You must remember this token, and enter it when configuring the device within the Nagios interface.  If you are setting up the agent to send passive results back to Nagios, addtional information about its specifications, as well as the "Token" field are below.
 
 .. glossary::
     
@@ -35,8 +38,33 @@ The following are absolutely not necessary to fill out to get an active agent up
     Config Name
         This is the NRDS config name that the agent will request when contacting the NRDS server.
 
-.. note:: None of these values are set in stone and can easily be changed at a later date.
+Silent Install
+++++++++++++++
 
+The installer also supports a silent install, which would definitely be handy if you're a ninja systems admin! There are four specifications currently supported by the NCPA installer, which are all analogs to the directives in the GUI installer.
+
+All of the following are to be used as such::
+    
+    /*directive* **value**
+
+while being used on the command line.
+
+.. glossary
+    
+    NRDP
+        This specifies the NRDP URL to use.
+    
+    TOKEN
+        The token that will be used to access the agent's API and web interface.
+    
+    HOST
+        The host that the passive agent will report back as.
+    
+    CONFIG
+        The name of the NRDS config the agent will be associated with.
+
+.. note:: For both install methods, none of the values are set in stone and can easily be changed at a later date.
+    
 Now the NCPA services are installed and started.
 
 To test your installation see `Testing Your Installation`_.
