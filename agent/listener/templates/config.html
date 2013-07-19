@@ -1,5 +1,37 @@
 {% extends 'base.html' %}
 
+{% block headerjs %}
+<script>
+$(document).ready(function() {
+    
+    $('#savethisrule').click(function() {
+        var inputSuffix = $('#inputSuffix').val();
+        var inputDirective = $('#inputDirective').val();
+        
+        var s_inputSuffix = inputSuffix.replace('.', '');
+        
+        alert(s_inputSuffix);
+        
+        var html = "" +
+"<div id='" + s_inputSuffix + "' class='controls controls-row'>" +
+    "<div class='input-append'>" +
+        "<input class='span2' type='text' name='directives|suffix|" + inputSuffix + "' id='directives|suffix|" + inputSuffix + "' value='" + inputSuffix + "'>" +
+        "<input class='span6' type='text' name='directives|exec|" + inputSuffix + "' id='directives|exec|" + inputSuffix + "' value='" + inputDirective + "'>" +
+        "<a href='#' class='btn btn-danger' onclick='$(\"#" + s_inputSuffix + "\").remove();'>" +
+            "<i class='icon-remove'></i>" +
+        "</a>" +
+    "</div>" +
+"</div>" +
+"<br />";
+        
+        alert(html);
+        
+        $('#addnewrule').before(html);
+    });
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <div class='alert alert-info'>Some entries are grayed out, which means they cannot be edited. This is due to possible complications if done from the web interface.</div>
 
@@ -119,13 +151,23 @@
                 </div>
             </div>
             <div class='tab-pane' id='checks'>
-                <p>{{ config.get('passive checks') }}</p>
+                <div>
+                <h3>Specify Passive Checks</h3>
+                <hr />
+                # for check in config.get('passive checks') if check != '__name__'
+                    <div class='controls controls-row'>
+                        <input type='text' class='span4' id='passivecheck|{{loop.index}}' name='passivecheck|name|{{loop.index}}' value='{{check}}'>
+                        <input type='text' class='span6' id='passivecheck|{{loop.index}}' name='passivecheck|exec|{{loop.index}}' value="{{config.get('passive checks').get(check)}}">
+                    </div>
+                    <br />
+                # endfor 
+                </div>
             </div>
             <div class='tab-pane' id='directives'>
                 <div>
                     # for id, description, accessibility in (   ['plugin_path', 'Plugin Directory', 'readonly'],):
                     <div class='control-group'>
-                        <label class='control-label' for='directives|{{ id }}'>{{ description }}</label>
+                        <label class='control-label' for='passivecheck|{{ id }}'>{{ description }}</label>
                         <div class='controls'>
                             <input type='text' class='input' name='directives|{{ id  }}' id='directives|{{ id  }}' value='{{ config.get("plugin directives").get(id) }}' {{ accessibility }}>
                         </div>
@@ -134,16 +176,55 @@
                     <h5>Suffix Expressions</h5>
                     <hr />
                     # for entry in config.get("plugin directives").keys() if entry.startswith('.'):
-                        <div class='controls controls-row'>
-                            <input class='span1' type='text' name='directives|suffix|{{entry}}' id='directives|suffix|{{entry}}' value='{{entry}}'>
-                            <input class='span6' type='text' name='directives|exec|{{entry}}' id='directives|exec|{{entry}}' value='{{config.get("plugin directives").get(entry)}}'>
-                            <button style='margin-left:10px;' class='btn btn-danger btn-mini'>-</button>
+                        {% set s_entry = entry.replace('.', '') %}
+                        <div id='{{ s_entry }}' class='controls controls-row'>
+                            <div class='input-append'>
+                                <input class='span2' type='text' name='directives|suffix|{{entry}}' id='directives|suffix|{{entry}}' value='{{entry}}'>
+                                <input class='span6' type='text' name='directives|exec|{{entry}}' id='directives|exec|{{entry}}' value='{{config.get("plugin directives").get(entry)}}'>
+                                <a href='#' class='btn btn-danger' onclick='alert("{{s_entry}}");$("#{{s_entry}}").remove();'><i class='icon-remove'></i></a>
+                            </div>
                         </div>
                         <br />
                     # endfor 
+                    <div id='addnewrule' class='controls controls-row'>
+                        <a  href='#addrule' 
+                            class='btn btn-success'
+                            data-toggle='modal'>
+                            <i class="icon-plus"></i> Add New Rule</a>
+                    </div>
                 </div>
             </div>
         </div>
     </form>
+</div>
+<hr />
+<a href='#' class='btn btn-primary'>Save</a>
+<a href='#' class='btn'>Cancel</a>
+
+<div id='addrule' class='modal modal-large hide fade' tabindex='-1' role='dialog' aria-labelledby='addrulelabel' aria-hidden='true'>
+    <div class='modal-header'>
+        <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>
+        <h3 id='addrulelabel'>Add A New Rule</h3>
+    </div>
+    <div class='modal-body'>
+        <form class='form-horizontal'>
+            <div class='control-group'>
+                <label class='control-label' for='inputSuffix'>Suffix</label>
+                <div class='controls'>
+                    <input type='text' class='input-small' id='inputSuffix'>
+                </div>
+            </div>
+            <div class='control-group'>
+                <label class='control-label' for='inputDirective'>Directive</label>
+                <div class='controls'>
+                    <input type='text' class='input-xlarge' id='inputDirective'>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class='modal-footer'>
+        <a class='btn' data-dismiss='modal' aria-hidden='true'>Cancel</a>
+        <a id='savethisrule' class='btn btn-primary'>Save</a>
+    </div>
 </div>
 {% endblock %}
