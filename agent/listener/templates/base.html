@@ -3,6 +3,7 @@
     <head>
         <link rel='stylesheet' href='/static/css/bootstrap.css' />
         <link rel='stylesheet' href='/static/css/bootstrap-responsive.css' />
+        <link rel='stylesheet' href='/static/css/navigator.css' />
         <title>NCPA Web Interface</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="NCPA Frontend">
@@ -25,9 +26,10 @@
 					<a class='brand' href='#'>NCPA Interface</a>
 					<div class="nav-collapse collapse">
 						<ul class="nav">
-							<li class="active"><a href="/">Home</a></li>
-							<li><a href="/dashboard">Dashboard</a></li>
-							<li><a href="/config">Configuration</a></li>
+							<li id="home-nav"><a href="/">Home</a></li>
+							<li id="dashboard-nav"><a href="/dashboard">Dashboard</a></li>
+							<li id="config-nav"><a href="/config">Configuration</a></li>
+							<li id="navigator-nav"><a href="/navigator">Navigator</a></li>
 							<li><a href="/logout">Logout</a></li>
 							<li><a href="/help">Help</a></li>
 						</ul>

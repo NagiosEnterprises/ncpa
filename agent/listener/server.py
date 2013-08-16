@@ -85,10 +85,15 @@ def dashboard():
                             interfaces=interfaces,
                             cpucount=cpucount)
 
+@listener.route('/navigator')
+@requires_auth
+def navigator():
+    return render_template('navigator.html')
+
 @listener.route('/config', methods=['GET', 'POST'])
 @requires_auth
 def config():
-	return render_template('config.html', **{'config' : listener.config['iconfig'].__dict__['_sections']})
+    return render_template('config.html', **{'config' : listener.config['iconfig'].__dict__['_sections']})
 
 @listener.route('/logout')
 def logout():

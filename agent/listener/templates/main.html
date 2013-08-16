@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
+{% block headerjs %}
+<script>
+$(document).ready(function() {
+	$('#home-nav').addClass('active');
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <div class='well'>
 	<table class='table'>

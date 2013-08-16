@@ -236,6 +236,8 @@ function display_graph(graphinfo, update_delay, transition_delay) {
 }
 
 $(document).ready(function() {
+    $('#dashboard-nav').addClass('active');
+    
     for(var i=0; i<graphs.length; i++) {
         display_graph(graphs[i], graphs[i].update_duration, graphs[i].transition_duration);
     }
