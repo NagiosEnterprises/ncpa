@@ -14,7 +14,7 @@
     
 var d_height = 180;
 var d_width = 400;
-var intervals = []
+var intervals = [];
 
 var graphs = {}
 
@@ -61,8 +61,8 @@ graphs['cmu'].push({ 	'address': '/api/user/count',
 						'transition_duration': 1000,
 						'ydomain': 100 });
 
-{% for disk in disks %}
 graphs['disk'] = []
+{% for disk in disks %}
 graphs['disk'].push({   'address': '/api/disk/logical/{{disk.get("raw")}}/used_percent',
 						'accessor': 'used_percent',
 						'id': '{{disk.get("safe")}}percent',
@@ -74,9 +74,8 @@ graphs['disk'].push({   'address': '/api/disk/logical/{{disk.get("raw")}}/used_p
 						'ydomain': 100 });
 {% endfor %}
 
-
-{% for interface in interfaces %}
 graphs['interface'] = [];
+{% for interface in interfaces %}
 graphs['interface'].push({ 	'address': '/api/interface/{{interface.get("raw")}}/bytes_recv',
 							'accessor': 'bytes_recv',
 							'id': '{{interface.get("safe")}}inbound',
@@ -106,7 +105,7 @@ graphs['interface'].push({	'address': '/api/interface/{{interface.get("raw")}}/b
 function display_graph(graphinfo, update_delay, transition_delay) {
     
     var margin = 0;
-    
+    $('#' + graphinfo.id).empty();
     // create an SVG element inside the #graph div that fills 100% of the div
     var graph = d3.select('#' + graphinfo.id)
                     .append("svg")
@@ -192,7 +191,7 @@ function display_graph(graphinfo, update_delay, transition_delay) {
             .attr("transform", "translate(" + x(0) + ")"); // animate a slide to the left back to x(0) pixels to reveal the new value
     }
         
-    setInterval(function() {
+    intervals.push(setInterval(function() {
         var req = new XMLHttpRequest();
         req.open('GET', graphinfo.address, false);
         req.send();
@@ -238,13 +237,17 @@ function display_graph(graphinfo, update_delay, transition_delay) {
         }
             
         update_graph(graphinfo.val, newval); }
-    , update_delay);
+    , update_delay));
 }
 
 function load_section(name) {
+	
 	var sections = graphs[name];
-	for(var i=0; i<99999; i++) {
-
+	for(var i=0, l=intervals.length; i<l; i++) {
+		clearInterval(intervals[i]);
+	}
+	
+	intervals = [];
 	
 	for(var i=0, l=sections.length; i<l; i++) {
 		display_graph(sections[i], sections[i].update_duration, sections[i].transition_duration);
@@ -254,6 +257,11 @@ function load_section(name) {
 $(document).ready(function() {
     $('#dashboard-nav').addClass('active');
     
+    $('.graph-toggle').click(function() {
+		var graph_section = $(this).attr('data-load');
+		load_section(graph_section);
+	});
+    
     load_section('cmu');
 });
 
@@ -261,72 +269,76 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
-<div class='well'>
-    <h3>CPU/Memory/Users</h3>
-    <hr />
-    <div class='row'>
-        <div class='span5' style='width:500px'><h4>Memory Usage % - <span id='memoryval'></span>%</h4><hr />
-            <span id='memorypercent'></span>
-        </div>
-        <div class='span5' style='width:500px'><h4>Swap Usage % - <span id='swapval'></span>%</h4></h4><hr />
-            <span id='swappercent'></span>
-        </div>
-    </div>
-    <div class='row'>
-        <div class='span5' style='width:500px'><h4>CPU Usage % - <span id='cpuval'></span>%</h4><hr />
-            <span id='cpupercent'></span>
-        </div>
-        <div class='span5' style='width:500px'><h4>User Count - <span id='userval'></span></h4><hr />
-            <span id='usercount'></span>
-        </div>
-    </div>
+<div class='tabbable tabs-left'>
+	<ul class='nav nav-tabs'>
+		<li class='active'><a href='#cmu' class='graph-toggle' data-toggle='tab' data-load='cmu'>CPU/Memory/Users</a></li>
+		<li><a href="#disk" class='graph-toggle' data-toggle='tab' data-load='disk'>Disks</a></li>
+		<li><a href="#interface" class='graph-toggle' data-toggle='tab' data-load='interface'>Interfaces</a></li>
+	</ul>
+	<div class='tab-content'>
+		<div id='cmu' class='tab-pane active'>
+			<h3>CPU/Memory/Users</h3>
+			<hr />
+			<div class='row'>
+				<div class='span5' style='width:400px'><h4>Memory Usage % - <span id='memoryval'></span>%</h4><hr />
+					<span id='memorypercent'></span>
+				</div>
+				<div class='span5' style='width:400px'><h4>Swap Usage % - <span id='swapval'></span>%</h4></h4><hr />
+					<span id='swappercent'></span>
+				</div>
+			</div>
+			<div class='row'>
+				<div class='span5' style='width:400px'><h4>CPU Usage % - <span id='cpuval'></span>%</h4><hr />
+					<span id='cpupercent'></span>
+				</div>
+				<div class='span5' style='width:400px'><h4>User Count - <span id='userval'></span></h4><hr />
+					<span id='usercount'></span>
+				</div>
+			</div>
+		</div>
+
+		<div id='disk' class='tab-pane'>
+			<h3>Disks</h3>
+			<hr />
+			{% for disk in disks %}
+				{% if loop.index is odd %}
+					<div class='row'>
+				{% endif %}
+				<div class='span5' style='width:400px'>
+					<h4>{{ disk.get("raw")|replace("|","/")|truncate(10,'...') }} Usage % - 
+						<span id='{{disk.get("safe")}}val'></span>%
+					</h4><hr />
+					<span id='{{disk.get("safe")}}percent'></span>
+				</div>
+				{% if loop.index is even %}
+					</div>
+				{% endif %}
+			{% endfor %}
+			
+			{% if disks|count is odd %}
+			</div>
+			{% endif %}
+		</div>
+
+
+		<div id='interface' class='tab-pane'>
+			<h3>Network Interfaces</h3>
+			<hr />
+			{% for interface in interfaces %}
+			<div class='row'>
+				<div class='span5' style='width:400px'>
+					<h4>{{interface.get("raw")|e|truncate(10,'...')}} Inbound - 
+					<span id='{{interface.get("safe")}}valinbound'></span>Mb/sec</h4><hr />
+					<span id='{{interface.get("safe")}}inbound'></span>
+				</div>
+				<div class='span5' style='width:500px'>
+					<h4>{{interface.get("raw")|e|truncate(10,'...')}} Outbound - 
+					<span id='{{interface.get("safe")}}valoutbound'></span>Mb/sec</h4><hr />
+					<span id='{{interface.get("safe")}}outbound'></span>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
 </div>
-
-<div class='well'>
-    <h3>Disks</h3>
-    <hr />
-    {% for disk in disks %}
-        {% if loop.index is odd %}
-            <div class='row'>
-        {% endif %}
-        <div class='span5' style='width:500px'>
-            <h4>{{ disk.get("raw")|replace("|","/")|truncate(10,'...') }} Usage % - 
-                <span id='{{disk.get("safe")}}val'></span>%
-            </h4><hr />
-            <span id='{{disk.get("safe")}}percent'></span>
-        </div>
-        {% if loop.index is even %}
-            </div>
-        {% endif %}
-    {% endfor %}
-    
-    {% if disks|count is odd %}
-    </div>
-    {% endif %}
-</div>
-
-
-<div class='well'>
-    <h3>Network Interfaces</h3>
-    <hr />
-    {% for interface in interfaces %}
-    <div class='row'>
-        <div class='span5' style='width:500px'>
-            <h4>{{interface.get("raw")|e|truncate(10,'...')}} Inbound - 
-            <span id='{{interface.get("safe")}}valinbound'></span>Mb/sec</h4><hr />
-            <span id='{{interface.get("safe")}}inbound'></span>
-        </div>
-        <div class='span5' style='width:500px'>
-            <h4>{{interface.get("raw")|e|truncate(10,'...')}} Outbound - 
-            <span id='{{interface.get("safe")}}valoutbound'></span>Mb/sec</h4><hr />
-            <span id='{{interface.get("safe")}}outbound'></span>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-
-<div class='row'>
-    <div class='span10'></div>
-</div>
-
 {% endblock %}
