@@ -14,86 +14,92 @@
     
 var d_height = 180;
 var d_width = 400;
+var intervals = []
 
-var graphs = []
-graphs.push({   'address': '/api/memory/swap/percent',
-                'accessor': 'percent',
-                'id': 'swappercent',
-                'val': 'swapval',
-                'height': d_height,
-                'width': d_width,
-                'update_duration': 1000,
-                'transition_duration': 1000,
-                'ydomain': 100 });
+var graphs = {}
+
+graphs['cmu'] = [];
+
+graphs['cmu'].push({	'address': '/api/memory/swap/percent',
+						'accessor': 'percent',
+						'id': 'swappercent',
+						'val': 'swapval',
+						'height': d_height,
+						'width': d_width,
+						'update_duration': 1000,
+						'transition_duration': 1000,
+						'ydomain': 100 });
                 
-graphs.push({   'address': '/api/memory/virtual/percent',
-                'accessor': 'percent',
-                'id': 'memorypercent',
-                'val': 'memoryval',
-                'height': d_height,
-                'width': d_width,
-                'update_duration': 1000,
-                'transition_duration': 1000,
-                'ydomain': 100 });
+graphs['cmu'].push({	'address': '/api/memory/virtual/percent',
+						'accessor': 'percent',
+						'id': 'memorypercent',
+						'val': 'memoryval',
+						'height': d_height,
+						'width': d_width,
+						'update_duration': 1000,
+						'transition_duration': 1000,
+						'ydomain': 100 });
                 
-graphs.push({   'address': '/api/cpu/percent',
-                'accessor': 'percent',
-                'id': 'cpupercent',
-                'val': 'cpuval',
-                'height': d_height,
-                'width': d_width,
-                'update_duration': 1000,
-                'transition_duration': 1000,
-                'count': {{cpucount}},
-                'ydomain': 100 });
+graphs['cmu'].push({    'address': '/api/cpu/percent',
+						'accessor': 'percent',
+						'id': 'cpupercent',
+						'val': 'cpuval',
+						'height': d_height,
+						'width': d_width,
+						'update_duration': 1000,
+						'transition_duration': 1000,
+						'count': {{cpucount}},
+						'ydomain': 100 });
                 
-graphs.push({   'address': '/api/user/count',
-                'accessor': 'count',
-                'id': 'usercount',
-                'val': 'userval',
-                'height': d_height,
-                'width': d_width,
-                'update_duration': 1000,
-                'transition_duration': 1000,
-                'ydomain': 100 });
+graphs['cmu'].push({ 	'address': '/api/user/count',
+						'accessor': 'count',
+						'id': 'usercount',
+						'val': 'userval',
+						'height': d_height,
+						'width': d_width,
+						'update_duration': 1000,
+						'transition_duration': 1000,
+						'ydomain': 100 });
 
 {% for disk in disks %}
-graphs.push({   'address': '/api/disk/logical/{{disk.get("raw")}}/used_percent',
-                'accessor': 'used_percent',
-                'id': '{{disk.get("safe")}}percent',
-                'val': '{{disk.get("safe")}}val',
-                'height': d_height,
-                'width': d_width,
-                'update_duration': 1000,
-                'transition_duration': 1000,
-                'ydomain': 100 });
+graphs['disk'] = []
+graphs['disk'].push({   'address': '/api/disk/logical/{{disk.get("raw")}}/used_percent',
+						'accessor': 'used_percent',
+						'id': '{{disk.get("safe")}}percent',
+						'val': '{{disk.get("safe")}}val',
+						'height': d_height,
+						'width': d_width,
+						'update_duration': 1000,
+						'transition_duration': 1000,
+						'ydomain': 100 });
 {% endfor %}
 
 
 {% for interface in interfaces %}
-graphs.push({   'address': '/api/interface/{{interface.get("raw")}}/bytes_recv',
-                'accessor': 'bytes_recv',
-                'id': '{{interface.get("safe")}}inbound',
-                'val': '{{interface.get("safe")}}valinbound',
-                'height': d_height,
-                'width': d_width,
-                'update_duration': 1000,
-                'transition_duration': 1000,
-                'delta': 1,
-                'scale': 'linear',
-                'ydomain': 100 });
+graphs['interface'] = [];
+graphs['interface'].push({ 	'address': '/api/interface/{{interface.get("raw")}}/bytes_recv',
+							'accessor': 'bytes_recv',
+							'id': '{{interface.get("safe")}}inbound',
+							'val': '{{interface.get("safe")}}valinbound',
+							'height': d_height,
+							'width': d_width,
+							'update_duration': 1000,
+							'transition_duration': 1000,
+							'delta': 1,
+							'scale': 'linear',
+							'ydomain': 100 });
                 
-graphs.push({   'address': '/api/interface/{{interface.get("raw")}}/bytes_sent',
-                'accessor': 'bytes_sent',
-                'id': '{{interface.get("safe")}}outbound',
-                'val': '{{interface.get("safe")}}valoutbound',
-                'height': d_height,
-                'width': d_width,
-                'update_duration': 1000,
-                'transition_duration': 1000,
-                'delta': 1,
-                'scale': 'linear',
-                'ydomain': 100 });
+graphs['interface'].push({	'address': '/api/interface/{{interface.get("raw")}}/bytes_sent',
+							'accessor': 'bytes_sent',
+							'id': '{{interface.get("safe")}}outbound',
+							'val': '{{interface.get("safe")}}valoutbound',
+							'height': d_height,
+							'width': d_width,
+							'update_duration': 1000,
+							'transition_duration': 1000,
+							'delta': 1,
+							'scale': 'linear',
+							'ydomain': 100 });
 {% endfor %}
 
 
@@ -235,12 +241,20 @@ function display_graph(graphinfo, update_delay, transition_delay) {
     , update_delay);
 }
 
+function load_section(name) {
+	var sections = graphs[name];
+	for(var i=0; i<99999; i++) {
+
+	
+	for(var i=0, l=sections.length; i<l; i++) {
+		display_graph(sections[i], sections[i].update_duration, sections[i].transition_duration);
+	}
+}
+
 $(document).ready(function() {
     $('#dashboard-nav').addClass('active');
     
-    for(var i=0; i<graphs.length; i++) {
-        display_graph(graphs[i], graphs[i].update_duration, graphs[i].transition_duration);
-    }
+    load_section('cmu');
 });
 
 </script>
