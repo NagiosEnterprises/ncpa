@@ -112,7 +112,7 @@ system = Node('system', children=(sys_system, sys_node, sys_release, sys_version
 
 #~ CPU Tree
 cpu_count = Node('count', method=lambda: len(ps.cpu_percent(percpu=True)))
-cpu_percent = Node('percent', method=lambda: (ps.cpu_percent(interval=.1, percpu=True), '%'))
+cpu_percent = Node('percent', method=lambda: (ps.cpu_percent(interval=1, percpu=True), '%'))
 cpu_user = Node('user', method=lambda: ([x.user for x in ps.cpu_times(percpu=True)], 'ms'))
 cpu_system = Node('system', method=lambda: ([x.system for x in ps.cpu_times(percpu=True)], 'ms'))
 cpu_idle = Node('idle', method=lambda: ([x.idle for x in ps.cpu_times(percpu=True)], 'ms'))

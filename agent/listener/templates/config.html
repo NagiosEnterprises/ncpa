@@ -65,6 +65,7 @@ $(document).ready(function() {
         <div class='tab-content'>
             <div class='tab-pane active' id='listener'>
                 <div>
+                    <h4>Listener Daemon Settings</h4><br />
                     # for id, description in (  ['ip', 'Listening IP'],
                                                 ['port', 'Listening Port'],
                                                 ['uid', 'User'],
@@ -84,6 +85,7 @@ $(document).ready(function() {
             </div> <!-- Closes listener -->
             <div class='tab-pane' id='passive'>
                 <div>
+                    <h4>Passive Daemon Settings</h4><br />
                     # for id, description, accessibility in (   ['sleep', 'Sleep Interval', ''],
                                                                 ['handlers', 'Activated Handlers', ''],
                                                                 ['uid', 'User', 'readonly'],
@@ -102,6 +104,7 @@ $(document).ready(function() {
             </div> <!-- Closes passive -->
             <div class='tab-pane' id='api'>
                 <div>
+                    <h4>API Settings</h4><br />
                     # for id, description in (['community_string', 'Token'],):
                     <div class='control-group'>
                         <label class='control-label' for='api|{{ id }}'>{{ description }}</label>
@@ -114,6 +117,7 @@ $(document).ready(function() {
             </div> <!-- Closes api -->
             <div class='tab-pane' id='nrdp'>
                 <div>
+                    <h4>NRDP Settings</h4><br />
                     # for id, description in (  ['hostname', 'Hostname'],
                                                 ['parent', 'NRDP Server'],
                                                 ['token', 'Token for NRDP Server']):
@@ -128,6 +132,7 @@ $(document).ready(function() {
             </div>
             <div class='tab-pane' id='nrds'>
                 <div>
+                    <h4>NRDS Settings</h4><br />
                     # for id, description, accessibility in (   ['config_name', 'Config Name', ''],
                                                                 ['config_version', 'Config Version Number', ''],
                                                                 ['url', 'NRDS URL', ''],
@@ -154,8 +159,7 @@ $(document).ready(function() {
             </div>
             <div class='tab-pane' id='checks'>
                 <div>
-                <h3>Specify Passive Checks</h3>
-                <hr />
+                <h4>Passive Check Settings</h4><br />
                 # for check in config.get('passive checks') if check != '__name__'
                     <div class='controls controls-row'>
                         <input type='text' class='span4' id='passivecheck|{{loop.index}}' name='passivecheck|name|{{loop.index}}' value='{{check}}'>
@@ -167,6 +171,7 @@ $(document).ready(function() {
             </div>
             <div class='tab-pane' id='directives'>
                 <div>
+                    <h4>Plugin Directorives</h4><br />
                     # for id, description, accessibility in (   ['plugin_path', 'Plugin Directory', 'readonly'],):
                     <div class='control-group'>
                         <label class='control-label' for='passivecheck|{{ id }}'>{{ description }}</label>
