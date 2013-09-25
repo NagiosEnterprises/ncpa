@@ -37,6 +37,7 @@ class Base(object):
         
     def parse_config(self, *args, **kwargs):
         self.config = ConfigParser.ConfigParser()
+        self.config.optionxform = str
         self.config.read(self.config_filename)
     
     def setup_plugins(self):
@@ -84,6 +85,7 @@ class Listener(Base):
             import listener.server
             address = self.config.get('listener', 'ip')
             port = int(self.config.get('listener', 'port'))
+            listener.server.listener.config_file = self.config_filename
             listener.server.listener.config['iconfig'] = self.config
             listener.server.listener.secret_key = os.urandom(24)
             print 'Running the listener.'

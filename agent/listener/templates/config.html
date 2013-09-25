@@ -1,34 +1,86 @@
 {% extends 'base.html' %}
 
+{% block headercss %}
+<link rel='stylesheet' href='/static/css/configuration.css' />
+{% endblock %}
+
 {% block headerjs %}
 <script>
+function add_to_directive_list(i, d) {
+    
+    var ta = $('#plugin-directives');
+    var s_inputSuffix = i.replace('.', '');
+    
+    var div = $('<div>', {class: 'controls controls-row directive', id: s_inputSuffix});
+    
+    var inp_suffix = $('<input>', {     class: 'span2', 
+                                        type: 'text', 
+                                        name: 'directives|suffix|' + i,
+                                        value: i });
+    
+    var inp = $('<div>', {class: 'input-append input-directive'});
+    var inp_directive = $('<input>', {  class: 'span6',
+                                        type: 'text',
+                                        name: 'directives|exec|' + i,
+                                        value: d });
+                                        
+    
+    var btn = $('<button>', {   class: 'btn btn-danger',
+                                type: 'button' });
+    btn.click(function() {div.remove() });
+    $('<i>', {class: 'icon-remove'}).appendTo(btn);
+    btn.appendTo(inp);
+    
+    inp_suffix.appendTo(div);
+    inp_directive.appendTo(inp);
+    inp.appendTo(div);
+    ta.append(div);
+}
+
+function load_plugin_directives() {
+    var api_url = '/config';
+    var api_data = {section: 'plugin directives'};
+    
+    $.getJSON(api_url, api_data, function(data) {
+        
+        var directives = {}
+        // For each item that starts with a ., append it to the command
+        // list.
+        $.each(data, function(i, d) {
+            if(i[0] == '.') {
+                add_to_directive_list(i, d);
+            }
+        });
+    });
+    
+}
+
+function do_save_config() {
+    var form_values = $('#config-form').serializeArray();
+    var api_url = '/config';
+    
+    $.post(api_url, form_values, function(data) {
+        console.log(data);
+    });
+}
+
 $(document).ready(function() {
     
     $('#config-nav').addClass('active');
+    
+    $('#directive-container').hide();
+    load_plugin_directives();
+    $('#directive-container').show();
     
     $('#savethisrule').click(function() {
         var inputSuffix = $('#inputSuffix').val();
         var inputDirective = $('#inputDirective').val();
         
-        var s_inputSuffix = inputSuffix.replace('.', '');
-        
-        alert(s_inputSuffix);
-        
-        var html = "" +
-"<div id='" + s_inputSuffix + "' class='controls controls-row'>" +
-    "<div class='input-append'>" +
-        "<input class='span2' type='text' name='directives|suffix|" + inputSuffix + "' id='directives|suffix|" + inputSuffix + "' value='" + inputSuffix + "'>" +
-        "<input class='span6' type='text' name='directives|exec|" + inputSuffix + "' id='directives|exec|" + inputSuffix + "' value='" + inputDirective + "'>" +
-        "<a href='#' class='btn btn-danger' onclick='$(\"#" + s_inputSuffix + "\").remove();'>" +
-            "<i class='icon-remove'></i>" +
-        "</a>" +
-    "</div>" +
-"</div>" +
-"<br />";
-        
-        alert(html);
-        
-        $('#addnewrule').before(html);
+        add_to_directive_list(inputSuffix, inputDirective);
+    });
+    
+    $('#savethisconfig').click(function() {
+        do_save_config();
     });
 });
 </script>
@@ -61,7 +113,7 @@ $(document).ready(function() {
             <a href='#directives' data-toggle='tab'>Plugin Directives</a>
         </li>
     </ul>
-    <form class='form-horizontal'>
+    <form class='form-horizontal' id='config-form'>
         <div class='tab-content'>
             <div class='tab-pane active' id='listener'>
                 <div>
@@ -77,7 +129,7 @@ $(document).ready(function() {
                     <div class='control-group'>
                         <label class='control-label' for='listener|{{ id }}'>{{ description }}</label>
                         <div class='controls'>
-                            <input type='text' class='input' id='listener|{{ id  }}' placeholder='{{ config.get("listener").get(id) }}' readonly>
+                            <input type='text' class='input' name='listener|{{ id }}' id='listener|{{ id  }}' placeholder='{{ config.get("listener").get(id) }}' readonly>
                         </div>
                     </div>
                     # endfor
@@ -159,19 +211,19 @@ $(document).ready(function() {
             </div>
             <div class='tab-pane' id='checks'>
                 <div>
-                <h4>Passive Check Settings</h4><br />
-                # for check in config.get('passive checks') if check != '__name__'
-                    <div class='controls controls-row'>
-                        <input type='text' class='span4' id='passivecheck|{{loop.index}}' name='passivecheck|name|{{loop.index}}' value='{{check}}'>
-                        <input type='text' class='span6' id='passivecheck|{{loop.index}}' name='passivecheck|exec|{{loop.index}}' value="{{config.get('passive checks').get(check)}}">
-                    </div>
-                    <br />
-                # endfor 
+                    <h4>Passive Check Settings</h4><br />
+                    # for check in config.get('passive checks') if check != '__name__'
+                        <div class='controls controls-row'>
+                            <input type='text' class='span4' id='passivecheck|{{loop.index}}' name='passivecheck|name|{{loop.index}}' value='{{check}}'>
+                            <input type='text' class='span6' id='passivecheck|{{loop.index}}' name='passivecheck|exec|{{loop.index}}' value="{{config.get('passive checks').get(check)}}">
+                        </div>
+                        <br />
+                    # endfor 
                 </div>
             </div>
             <div class='tab-pane' id='directives'>
                 <div>
-                    <h4>Plugin Directorives</h4><br />
+                    <h4>Plugin Directives</h4><br />
                     # for id, description, accessibility in (   ['plugin_path', 'Plugin Directory', 'readonly'],):
                     <div class='control-group'>
                         <label class='control-label' for='passivecheck|{{ id }}'>{{ description }}</label>
@@ -182,22 +234,14 @@ $(document).ready(function() {
                     # endfor
                     <h5>Suffix Expressions</h5>
                     <hr />
-                    # for entry in config.get("plugin directives").keys() if entry.startswith('.'):
-                        {% set s_entry = entry.replace('.', '') %}
-                        <div id='{{ s_entry }}' class='controls controls-row'>
-                            <div class='input-append'>
-                                <input class='span2' type='text' name='directives|suffix|{{entry}}' id='directives|suffix|{{entry}}' value='{{entry}}'>
-                                <input class='span6' type='text' name='directives|exec|{{entry}}' id='directives|exec|{{entry}}' value='{{config.get("plugin directives").get(entry)}}'>
-                                <a href='#' class='btn btn-danger' onclick='alert("{{s_entry}}");$("#{{s_entry}}").remove();'><i class='icon-remove'></i></a>
-                            </div>
+                    <div id='directive-container'>
+                        <div id='plugin-directives'></div>
+                        <div id='addnewrule' class='controls controls-row'>
+                            <a  href='#addrule' 
+                                class='btn btn-success'
+                                data-toggle='modal'>
+                                <i class="icon-plus"></i> Add New Rule</a>
                         </div>
-                        <br />
-                    # endfor 
-                    <div id='addnewrule' class='controls controls-row'>
-                        <a  href='#addrule' 
-                            class='btn btn-success'
-                            data-toggle='modal'>
-                            <i class="icon-plus"></i> Add New Rule</a>
                     </div>
                 </div>
             </div>
@@ -205,8 +249,8 @@ $(document).ready(function() {
     </form>
 </div>
 <hr />
-<a href='#' class='btn btn-primary'>Save</a>
-<a href='#' class='btn'>Cancel</a>
+<button type='button' id='savethisconfig' class='btn btn-primary'>Save</button>
+<button type='button' class='btn'>Cancel</button>
 
 <div id='addrule' class='modal modal-large hide fade' tabindex='-1' role='dialog' aria-labelledby='addrulelabel' aria-hidden='true'>
     <div class='modal-header'>
@@ -231,7 +275,7 @@ $(document).ready(function() {
     </div>
     <div class='modal-footer'>
         <a class='btn' data-dismiss='modal' aria-hidden='true'>Cancel</a>
-        <a id='savethisrule' class='btn btn-primary'>Save</a>
+        <a id='savethisrule' data-dismiss='modal' class='btn btn-primary'>Save</a>
     </div>
 </div>
 {% endblock %}

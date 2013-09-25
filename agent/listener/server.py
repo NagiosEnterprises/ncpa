@@ -93,6 +93,15 @@ def navigator():
 @listener.route('/config', methods=['GET', 'POST'])
 @requires_auth
 def config():
+    if request.method == 'POST':
+        return save_config(request.form, listener.config_filename)
+    
+    section = request.args.get('section')
+    if section:
+        try:
+            return jsonify(**listener.config['iconfig'].__dict__['_sections'][section])
+        except Exception, e:
+            logging.exception(e)
     return render_template('config.html', **{'config' : listener.config['iconfig'].__dict__['_sections']})
 
 @listener.route('/logout')
@@ -157,15 +166,6 @@ def nrdp():
         logging.exception(e)
         return redirect(url_for('error', msg=str(e)))
 
-#~ @listener.route('/config/')
-#~ @requires_auth
-#~ def config():
-    #~ try:
-        #~ return render_template('config.html', **{'config' : listener.config['iconfig'].__dict__['_sections']})
-    #~ except Exception, e:
-        #~ logging.exception(e)
-        #~ return redirect(url_for('error', msg=str(e)))
-
 @listener.route('/api/agent/plugin/<plugin_name>/')
 @listener.route('/api/agent/plugin/<plugin_name>/<path:plugin_args>')
 @requires_auth
@@ -212,6 +212,56 @@ def internal_api(accessor=None, config=None):
         result = pluginapi.execute_plugin(plugin_name, plugin_args, config)
     else:
         result = {'stdout': 'ERROR: Non-node value requested. Requested a tree.', 'returncode': 3}
+    return result
+
+def save_config(dconfig, writeto):
+    
+    viv = vivicate_dict(dconfig)
+    config = ConfigParser.ConfigParser()
+    
+    #~ Do the normal sections
+    for s in ['listener', 'passive', 'nrdp', 'nrds', 'api']:
+        config.add_section(s)
+        for t in viv[s]:
+            config.set(s, t, viv[s][t])
+    
+    #~ Do the plugin directives
+    directives = viv['directives']
+    config.add_section('plugin directives')
+    
+    config.set('plugin directives', 'plugin_path', directives['plugin_path'])
+    del directives['plugin_path']
+    
+    dkeys = [x for x in directives.keys() if 'suffix|' in x]
+    for x in dkeys:
+        _, suffix = x.split('|')
+        config.set('plugin directives', suffix, directives['exec|' + suffix])
+    
+    pchecks = viv['passivecheck']
+    config.add_section('passive checks')
+    
+    pkeys = [x for x in pchecks.keys() if 'name|' in x]
+    for x in pkeys:
+        _, pid = x.split('name|', 1)
+        config.set('passive checks', pchecks[x], pchecks['exec|' + pid])
+    
+    new = open(writeto, 'w')
+    config.write(new)
+    
+    return config
+
+def vivicate_dict(d, delimiter='|'):
+    result = {}
+    for x in d:
+        if delimiter in x:
+            key, value = x.split(delimiter, 1)
+            if key in result:
+                result[key][value] = d[x]
+            else:
+                result[key] = {value: d[x]}
+        else:
+            result[x] = d[x]
+    
     return result
 
 def parse_internal_input(accessor):

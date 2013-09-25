@@ -4,6 +4,7 @@ import ConfigParser
 import json
 import os
 import urllib
+import pickle
 
 curpath = os.getcwd()
 runpath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -79,6 +80,32 @@ class TestLoginFunctions(TestServerFunctions):
         rv = self.authorize_url('/', self.token + 's')
         assert is_json(rv) and not has_no_errors(rv)
     
+
+class SaveConfig(unittest.TestCase):
+    
+    def setUp(self):
+        f = open('/tmp/test.pkl')
+        self.config = pickle.load(f)
+        f.close()
+    
+    def tearDown(self):
+        del self.config
+    
+    def test_vivicate_dict(self):
+        test = {'a|b|c': [0]}
+        expected = {'a': {'b|c': [0]}}
+        result = server.vivicate_dict(test)
+        assert result == expected
+    
+    def test_save_config_simple(self):
+        conf = server.save_config(self.config, '/tmp/test.cfg')
+        assert conf.has_section('listener')
+        assert conf.has_section('passive')
+        assert conf.has_section('nrdp')
+        assert conf.has_section('api')
+        assert conf.has_section('nrds')
+        assert conf.has_section('passive checks')
+        assert conf.has_section('plugin directives')
 
 class APIFunctions(TestServerFunctions):
     

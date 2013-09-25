@@ -6,6 +6,9 @@ import time
 import flask
 import os
 import listener.server
+import ConfigParser as configparser
+
+DEBUG = True
 
 class Listener(simpledaemon.Daemon):
     default_conf = 'etc/ncpa.cfg'
@@ -17,6 +20,7 @@ class Listener(simpledaemon.Daemon):
         certificate = self.config_parser.get('listener', 'certificate')
         try:
             logging.info('Starting server...')
+            listener.server.listener.config_filename = 'etc/ncpa.cfg'
             listener.server.listener.config['iconfig'] = self.config_parser
             listener.server.listener.secret_key = os.urandom(24)
             listener.server.listener.run(address, port)
