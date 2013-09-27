@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import simpledaemon
+import ncpadaemon
 import logging
 import time
 import sys
@@ -10,7 +10,7 @@ import passive.nrds
 import passive.nrdp
 
 
-class Passive(simpledaemon.Daemon):
+class Passive(ncpadaemon.Daemon):
     default_conf = os.path.abspath('etc/ncpa.cfg')
     section = 'passive'
     
