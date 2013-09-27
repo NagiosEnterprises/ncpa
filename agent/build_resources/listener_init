@@ -1,9 +1,22 @@
 #!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          scriptname
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start daemon at boot time
+# Description:       Enable service provided by daemon.
+### END INIT INFO
+
+
 #
 # chkconfig: 35 90 12
 # description: NCPA Listener
 #
 # Start the service
+
 BASEDIR=/usr/local/ncpa
 
 start() {
