@@ -14,7 +14,10 @@ start() {
 }
 # Restart the service
 stop() {
-        /usr/local/ncpa/ncpa_posix_passive --stop
+        (
+            cd $BASEDIR
+            $BASEDIR/ncpa_posix_passive --stop
+        )
         echo "Exited."
 }
 # Get the status

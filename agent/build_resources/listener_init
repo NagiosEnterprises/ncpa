@@ -15,8 +15,11 @@ start() {
 }
 # Restart the service
 stop() {
-        /usr/local/ncpa/ncpa_posix_listener --stop
-        echo "Exited."
+        (
+            cd $BASEDIR
+            /usr/local/ncpa/ncpa_posix_listener --stop
+            echo "Exited."
+        )   
 }
 # Get the status
 status() {

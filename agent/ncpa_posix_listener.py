@@ -27,7 +27,11 @@ class Listener(ncpadaemon.Daemon):
             listener.server.listener.config_filename = 'etc/ncpa.cfg'
             listener.server.listener.config['iconfig'] = self.config_parser
             listener.server.listener.secret_key = os.urandom(24)
-            listener.server.listener.run(address, port, ssl_context=self.config_parser.get('listener', 'certificate'))
+            try:
+                listener.server.listener.run(address, port, ssl_context=self.config_parser.get('listener', 'certificate'))
+            except Exception, e:
+                logging.exception(e)
+                listener.server.listener.run(address, port)
         except Exception, e:
             logging.exception(e)
 

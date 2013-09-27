@@ -88,8 +88,7 @@ class Listener(Base):
             listener.server.listener.config_file = self.config_filename
             listener.server.listener.config['iconfig'] = self.config
             listener.server.listener.secret_key = os.urandom(24)
-            print 'Running the listener.'
-            listener.server.listener.run(address, port)
+            listener.server.listener.run(address, port, ssl_context=self.config.get('listener', 'certificate'))
         except Exception, e:
             self.logger.exception(e)
         
@@ -154,7 +153,7 @@ class Passive(Base):
         self.setup_logging()
         self.setup_plugins()
         self.logger.info("Looking for config at: %s" % self.config_filename)
-        self.logger.info("Looking for plugins at: %s" % self.abs_plugin_path)
+        self.logger.info("Looking for plugins at: %s" % self.config.get('plugin directives', 'plugin_path'))
         self.logger.info("This is indeed the new one")
 
 if DEBUG == 1:
