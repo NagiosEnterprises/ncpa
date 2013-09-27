@@ -47,9 +47,9 @@ All of the following are to be used as such::
     
     /*directive* **value**
 
-while being used on the command line.
+while being used on the command line. The following are the names of the directives that are available for a silent install.
 
-.. glossary
+.. glossary::
     
     NRDP
         This specifies the NRDP URL to use.

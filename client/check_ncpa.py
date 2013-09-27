@@ -60,7 +60,7 @@ def parse_args():
     return options
 
 def main(options):
-    host = 'https://%s:%d/api/%s?%%s' % (options.hostname, options.port, options.metric)
+    host = 'http://%s:%d/api/%s?%%s' % (options.hostname, options.port, options.metric)
     gets = {    'arguments' : options.arguments,
                 'warning'   : options.warning,
                 'critical'  : options.critical,

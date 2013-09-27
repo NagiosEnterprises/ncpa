@@ -94,7 +94,8 @@ def navigator():
 @requires_auth
 def config():
     if request.method == 'POST':
-        return save_config(request.form, listener.config_filename)
+        config = save_config(request.form, listener.config_filename)
+        
     
     section = request.args.get('section')
     if section:

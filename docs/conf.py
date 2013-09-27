@@ -98,7 +98,7 @@ html_theme = 'bootstrap'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {'bootswatch_theme' : 'readable'}
+html_theme_options = {'bootswatch_theme' : 'spacelab'}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #~ html_theme_path = ['_themes']
