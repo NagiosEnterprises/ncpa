@@ -38,7 +38,10 @@ if os.name == 'nt':
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
     listener.jinja_loader = jinja2.FileSystemLoader(tmpl_dir)
 else:
-    listener = Flask(__name__)
+    tmpl_dir = os.path.join('usr', 'local', 'ncpa', 'listener', 'templates')
+    stat_dir = os.path.join('usr', 'local', 'ncpa', 'listener', 'static')
+    listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
+    listener.jinja_loader = jinja2.FileSystemLoader('/usr/local/ncpa/listener/
 
 listener.jinja_env.line_statement_prefix = '#'
 
