@@ -25,8 +25,16 @@ __STARTED__ = datetime.datetime.now()
 
 if os.name == 'nt': 
     base_dir = os.path.dirname(sys.path[0])
-    tmpl_dir = os.path.join(base_dir, 'agent', 'listener', 'templates')
-    stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
+    
+    tmpl_dir = os.path.join(base_dir, 'listener', 'templates')
+    if(not os.path.isdir(tmpl_dir)):
+        tmpl_dir = os.path.join(base_dir, 'agent', 'listener', 'templates')
+    
+    stat_dir = os.path.join(base_dir, 'listener', 'static')
+    if(not os.path.isdir(stat_dir)):
+        stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
+    
+    logging.info("Looking for templates at: %s" % tmpl_dir)
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
     listener.jinja_loader = jinja2.FileSystemLoader(tmpl_dir)
 else:
