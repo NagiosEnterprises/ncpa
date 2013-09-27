@@ -60,7 +60,7 @@ def parse_args():
     return options
 
 def main(options):
-    host = 'http://%s:%d/api/%s?%%s' % (options.hostname, options.port, options.metric)
+    host = 'https://%s:%d/api/%s?%%s' % (options.hostname, options.port, options.metric)
     gets = {    'arguments' : options.arguments,
                 'warning'   : options.warning,
                 'critical'  : options.critical,
@@ -77,7 +77,10 @@ def main(options):
     filename, fobject = urllib.urlretrieve(url)
     fileobj = open(filename)
     
-    rjson = json.load(fileobj)
+    try:
+        rjson = json.load(fileobj)
+    except Exception, e:
+        stdout, returncode = 'UNKNOWN: %s' % str(e), 3
     
     if 'error' in rjson:
         stdout, returncode = 'UNKNOWN: %s' % rjson['error'], 3

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction to the API &mdash; NCPA 0.6 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-2.3.2/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.2/spacelab/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-2.3.2/css/bootstrap-responsive.min.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-2.3.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="NCPA 0.6 documentation" href="index.html" />
+    <link rel="next" title="Active Checks" href="active.html" />
+    <link rel="prev" title="NCPA Configuration" href="configuration.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+
+        <a class="brand" href="index.html">NCPA</a>
+        <span class="navbar-text pull-left"><b>0.6</b></span>
+
+        <div class="nav-collapse">
+          <ul class="nav">
+            <li class="divider-vertical"></li>
+            
+              <li class="dropdown globaltoc-container">
+  <a href="index.html"
+     class="dropdown-toggle"
+     data-toggle="dropdown">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+    ><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">NCPA Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">NCPA Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Introduction to the API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="active.html">Active Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="passive.html">Passive Checks</a></li>
+</ul>
+</ul>
+</li>
+              <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"><ul>
+<li><a class="reference internal" href="#">Introduction to the API</a><ul>
+<li><a class="reference internal" href="#looking-at-the-tree">Looking at the tree</a></li>
+<li><a class="reference internal" href="#accessing-specific-items-in-the-tree">Accessing specific items in the tree</a></li>
+<li><a class="reference internal" href="#getting-nagios-return-results">Getting Nagios return results</a></li>
+<li><a class="reference internal" href="#using-nagios-plugins">Using Nagios Plugins</a></li>
+<li><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+            
+            
+              
+  <li><a href="configuration.html"
+         title="previous chapter">&laquo; NCPA Configuration</a></li>
+  <li><a href="active.html"
+         title="next chapter">Active Checks &raquo;</a></li>
+            
+            
+              <li>
+  <a href="_sources/api.txt"
+     rel="nofollow">Source</a></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-search pull-right" action="search.html" method="get">
+  <input type="text" name="q" class="search-query" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="container">
+  
+  <div class="section" id="introduction-to-the-api">
+<span id="introduction-api"></span><h1>Introduction to the API<a class="headerlink" href="#introduction-to-the-api" title="Permalink to this headline">¶</a></h1>
+<p>These words might sound a bit daunting, but its really quite simple.</p>
+<p>NCPA was designed to make it easy for adminstrators to setup checks, troubleshoot and test new checks and keep the options for running these checks very flexible.</p>
+<p>Let us try out a quick example to illustrate what this means. In these following examples I will be running my checks against ncpaserver, so when addresses are used, substitute the IP of your NCPA agent&#8217;s computer in for ncpaserver, as well as the NCPA agents token for the token that I will use.</p>
+<div class="section" id="looking-at-the-tree">
+<h2>Looking at the tree<a class="headerlink" href="#looking-at-the-tree" title="Permalink to this headline">¶</a></h2>
+<p>Open up your web browser, and navigate to:</p>
+<div class="highlight-python"><pre>http://ncpaserver:5693/api/?token=brody</pre>
+</div>
+<p>This returns:</p>
+<div class="highlight-python"><pre>--- snip ---
+{
+"value": {
+  "root": {
+    "process": [],
+    "user": {
+      "count": 1,
+      "list": [
+        "nscott"
+      ]
+    },
+    "memory": {
+      "swap": {
+        "used": [
+          8245542912,
+          "b"
+        ],
+--- snip ---</pre>
+</div>
+<p>Looks like a very large list. If you take a close look at this list, you&#8217;ll see that amongst all the weird characters, there are actual numbers and descriptions of those numbers. This format is JSON, and those who are familiar with accessing APIs should be familiar with it.</p>
+</div>
+<div class="section" id="accessing-specific-items-in-the-tree">
+<h2>Accessing specific items in the tree<a class="headerlink" href="#accessing-specific-items-in-the-tree" title="Permalink to this headline">¶</a></h2>
+<p>So notice that there is a &#8220;memory&#8221; string. Let us amend our address a bit and see what comes out. Try:</p>
+<div class="highlight-python"><pre>http://ncpaserver:5693/api/memory?token=brody</pre>
+</div>
+<p>This returns:</p>
+<div class="highlight-python"><pre>&lt;snip&gt;
+"value": {
+    "memory": {
+      "swap": {
+        "used": [
+          8202797056,
+          "b"
+        ],
+        "total": [
+          17087578112,
+          "b"
+        ],
+        "percent": [
+          48.0,
+          "%"
+        ],
+        "free": [
+          8884781056,
+          "b"
+        ]
+      },
+      "virtual": {
+        "available": [
+&lt;snip&gt;</pre>
+</div>
+<p>It cut out everything except all the items that had to do with memory. This is because the API is a tree we explicitly specified we wanted only the &#8220;memory&#8221; branch. We did this by adding the memory item in the URL.</p>
+<div class="topic">
+<p class="topic-title first">Accessible Branches</p>
+<p>There are a few selectable branches in the main root of the tree, they are:</p>
+<ul class="simple">
+<li>memory</li>
+<li>interface</li>
+<li>agent</li>
+<li>cpu</li>
+<li>disk</li>
+<li>agent</li>
+</ul>
+<p>These are meant to provide a platform independent way of accessing basic metrics on a server that are most oftenly monitored. These are not run from plugins, these are built into the NCPA program itself.</p>
+<p>Each of these branches contains its own metrics. Some of these metrics are enumerated upon NCPA server startup. For instance, disks and interfaces will be enumerates and will be listed in this tree as well.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Accessing disks is indicated with the pipe | character, rather than the / or \ character to avoid escaping issues.</p>
+</div>
+<p>So hopefully, you&#8217;re noticing whats going on here. To be overt, we can pare down the information to the actual metric we want in much the same way that we specify the file we want to a computer. We specify a path and then we access that file or directory. The individual metrics we wish to find (CPU Usage, Memory Usage, etc) are the files, while the general groupings (CPU, Memory) are the directories, in this analogy.</p>
+<p>So now let us make a bigger leap and actually grab a specific memory metric. Let us grab the the percent of real memory used. If you look at the tree, you&#8217;d notice that the accessor URL is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">api</span><span class="o">/</span><span class="n">memory</span><span class="o">/</span><span class="n">virtual</span><span class="o">/</span><span class="n">available</span>
+</pre></div>
+</div>
+<p>So let us try plugging that in to our ncpaserver:</p>
+<div class="highlight-python"><pre>http://ncpaserver:5693/api/memory/virtual/available?token=brody</pre>
+</div>
+<p>This returns:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">&quot;available&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="mi">1115017216</span><span class="p">,</span>
+      <span class="s">&quot;b&quot;</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>So we see that we have exactly 1115017216 bytes of available RAM.</p>
+<p>Take this method that we&#8217;ve done, going through the tree one thing at a time to find other metrics.</p>
+</div>
+<div class="section" id="getting-nagios-return-results">
+<h2>Getting Nagios return results<a class="headerlink" href="#getting-nagios-return-results" title="Permalink to this headline">¶</a></h2>
+<p>Well its all well and good that we can pull these numbers, but what we it would pretty cool if we could turn these into Nagios return results. Now that we&#8217;ve spoke about accessing these items, lets talk about what we can do with these.</p>
+<p>When you are working on a metric, rather than a group of metrics, you can turn it into a Nagios result very easily. This API supports quite a bit of specifications using GET or POST variables, to illustrate that, let us turn the above RAM number into a Nagios return results.</p>
+<p>We are going to add &amp;warning=60&amp;critical=80&amp;check=true onto the end of the above URL. If you&#8217;re familiar with URLs, you&#8217;ll see that this is specifying GET variables passed to the server. If you&#8217;re unfamiliar with URLs, you just learned something!:</p>
+<div class="highlight-python"><pre>http://ncpaserver:5693/api/memory/virtual/available?token=brody&amp;warning=1&amp;critical=2&amp;check=true</pre>
+</div>
+<p>Returns:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">&quot;returncode&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s">&quot;stdout&quot;</span><span class="p">:</span> <span class="s">&quot;CRITICAL: Available was 1112682496.0b|&#39;available_0&#39;=1112682496.0b;1;2&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This is the JSON for dump to Nagios. We see it has its return code, and its standard out that will be the status information for a service.</p>
+<p>Its kind of ugly though, I&#8217;d rather that number be in GB. So add &amp;unit=G to the end of the request:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">&quot;returncode&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s">&quot;stdout&quot;</span><span class="p">:</span> <span class="s">&quot;WARNING: Available was 1.114Gb|&#39;available_0&#39;=1.114Gb;1;2&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>There thats better, much more human readable.</p>
+<div class="topic">
+<p class="topic-title first">Nagios Check Result Specifiers</p>
+<p>So there are a couple things we can tack onto the end of the request URL to get what we want out our check</p>
+<dl class="glossary docutils">
+<dt id="term-check">check</dt>
+<dd>Set to true if you&#8217;d like to result to be transformed into a check result rather than just raw data.</dd>
+<dt id="term-warning">warning</dt>
+<dd>Specify the Nagios warning threshold.*</dd>
+<dt id="term-critical">critical</dt>
+<dd>Specify the Nagios critical threshold.*</dd>
+<dt id="term-unit">unit</dt>
+<dd>Expects K (for kilo), M (for mega), G (for giga) and T (for tera).</dd>
+<dt id="term-delta">delta</dt>
+<dd>There are some results that simply counters. Specifically, the interface counters simply count the bytes that pass through the interface. Set delta=1 for the NCPA server to calculate the change in the counter divided by the amount of time that has past since last check (bytes/sec).</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="using-nagios-plugins">
+<h2>Using Nagios Plugins<a class="headerlink" href="#using-nagios-plugins" title="Permalink to this headline">¶</a></h2>
+<p>Using existing Nagios plugins is not an issue either. In fact we can list all the plugins that are installed on the system by accessing the address:</p>
+<div class="highlight-python"><pre>http://ncpaserver:5693/api/agent/plugin</pre>
+</div>
+<p>This returns:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">&quot;plugin&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s">&quot;check_msmq.vbs&quot;</span><span class="p">,</span>
+      <span class="s">&quot;test.vbs&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Which shows all of the plugins that are installed. Now if we want to execute those plugins, we follow the same logic as we did above (for the non-plugin metrics). One new introduction is for plugins that take arguments. Simply separate them with the forward slashes. So for instance, to pass one argument to my test.vbs script, I would call:</p>
+<div class="highlight-python"><pre>http://ncpaserver:5693/api/agent/plugin/test.vbs/"First Arg"?token=brody</pre>
+</div>
+<p>Which shows us the output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">&quot;returncode&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s">&quot;stdout&quot;</span><span class="p">:</span> <span class="s">&quot;This worked! First Arg</span><span class="se">\n</span><span class="s">&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Which is what our script is supposed to do, return 2 and print &#8220;This Worked!&#8221; along with the first argument.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For plugins, the Check Result Specified do not apply. The result specified will work only for NCPA tree results.</p>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>Using the API is simple, and will be useful to access your own checks later. While intimate knowledge is certainly not necessary, it does give a strange feeling of power.</p>
+</div>
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2013, Nicholas Scott.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2b2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
