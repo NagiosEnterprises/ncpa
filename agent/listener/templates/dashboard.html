@@ -192,51 +192,53 @@ function display_graph(graphinfo, update_delay, transition_delay) {
     }
         
     intervals.push(setInterval(function() {
-        var req = new XMLHttpRequest();
-        req.open('GET', graphinfo.address, false);
-        req.send();
-        d = $.parseJSON(req.responseText);
         
-        observed = d.value[graphinfo.accessor][0];
+        $.getJSON(graphinfo.address, function(d) {
+        //req.open('GET', graphinfo.address, false);
+        //req.send();
+        //d = $.parseJSON(req.responseText);
         
-        if(Object.prototype.toString.call(observed) === '[object Array]') {
-            var total = 0;
-            for(var i=0; i<observed.length; i++) {
-                total += observed[i];
-            }
-            observed = total;
-        }
-        
-        if(graphinfo.count != undefined && graphinfo.count != 0) {
-            observed = observed / graphinfo.count;
-            if(observed.toFixed) {
-                observed = observed.toFixed(2);
-            }
-        }
-        
-        if(graphinfo.delta == 1) {
-            if(graphinfo.oldvalue == undefined) {
-                newval = 0;
-            }
-            else {
-                //~ console.log(observed)
-                dydx = (parseFloat(observed) - graphinfo.oldvalue) / (graphinfo.update_duration / 1000)
-                newval = dydx / 1e6
-            }
-            graphinfo.oldvalue = observed;
-        }
-        
-        else {
-            newval = observed;
-        }
-        
-        data.push(newval); // add a new element to the array (we're just taking the number we just shifted off the front and appending to the end)
-        
-        if(data.length > 60) {
-            data.splice(0,1)
-        }
+            observed = d.value[graphinfo.accessor][0];
             
-        update_graph(graphinfo.val, newval); }
+            if(Object.prototype.toString.call(observed) === '[object Array]') {
+                var total = 0;
+                for(var i=0; i<observed.length; i++) {
+                    total += observed[i];
+                }
+                observed = total;
+            }
+            
+            if(graphinfo.count != undefined && graphinfo.count != 0) {
+                observed = observed / graphinfo.count;
+                if(observed.toFixed) {
+                    observed = observed.toFixed(2);
+                }
+            }
+            
+            if(graphinfo.delta == 1) {
+                if(graphinfo.oldvalue == undefined) {
+                    newval = 0;
+                }
+                else {
+                    //~ console.log(observed)
+                    dydx = (parseFloat(observed) - graphinfo.oldvalue) / (graphinfo.update_duration / 1000)
+                    newval = dydx / 1e6
+                }
+                graphinfo.oldvalue = observed;
+            }
+            
+            else {
+                newval = observed;
+            }
+            
+            data.push(newval); // add a new element to the array (we're just taking the number we just shifted off the front and appending to the end)
+            
+            if(data.length > 60) {
+                data.splice(0,1)
+            }
+                
+            update_graph(graphinfo.val, newval);
+        })       }
     , update_delay));
 }
 
