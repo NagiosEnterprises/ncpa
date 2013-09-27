@@ -123,7 +123,7 @@ Once you have these pieces of information you can attempt to connect to the web 
 
 ::
     
-    http://<agent's IP>:5693/api/?token=<token>
+    https://<agent's IP>:5693/api/?token=<token>
 
 Where <agent's IP> and <token> should be substituted for your agent's IP and token, respectively. You should see something that looks like
 
