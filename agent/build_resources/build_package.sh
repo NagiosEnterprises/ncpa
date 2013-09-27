@@ -20,6 +20,7 @@ then
     cp build_resources/postremove-pak-deb postremove-pak
     cp build_resources/description-pak .
     checkinstall    --pkgname=ncpa \
+                    --install=no \
                     --strip=no \
                     --stripso=no \
                     --exclude=/var,/dev,/tmp \
