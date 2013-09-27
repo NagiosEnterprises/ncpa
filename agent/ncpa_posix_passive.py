@@ -9,18 +9,19 @@ import os
 import passive.nrds
 import passive.nrdp
 
+
 class Passive(simpledaemon.Daemon):
     default_conf = os.path.abspath('etc/ncpa.cfg')
     section = 'passive'
     
     def run_all_handlers(self, *args, **kwargs):
-        '''Will run all handlers that exist.
-        
+        """Will run all handlers that exist.
+
         The handler must:
         - Have a config header entry
         - Abide by the handler API set forth by passive.abstract.NagiosHandler
         - Terminate in a timely fashion
-        '''
+        """
         handlers = self.config_parser.get('passive', 'handlers').split(',')
         
         for handler in handlers:

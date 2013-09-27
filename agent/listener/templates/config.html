@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block headercss %}
+{{ super() }}
 <link rel='stylesheet' href='/static/css/configuration.css' />
 {% endblock %}
 
@@ -28,7 +29,7 @@ function add_to_directive_list(i, d) {
     var btn = $('<button>', {   class: 'btn btn-danger',
                                 type: 'button' });
     btn.click(function() {div.remove() });
-    $('<i>', {class: 'icon-remove'}).appendTo(btn);
+    $('<i>', {class: 'icon-remove icon-white'}).appendTo(btn);
     btn.appendTo(inp);
     
     inp_suffix.appendTo(div);
@@ -129,7 +130,7 @@ $(document).ready(function() {
                     <div class='control-group'>
                         <label class='control-label' for='listener|{{ id }}'>{{ description }}</label>
                         <div class='controls'>
-                            <input type='text' class='input' name='listener|{{ id }}' id='listener|{{ id  }}' placeholder='{{ config.get("listener").get(id) }}' readonly>
+                            <input type='text' class='input' name='listener|{{ id }}' id='listener|{{ id  }}' value='{{ config.get("listener").get(id) }}' readonly>
                         </div>
                     </div>
                     # endfor
@@ -240,7 +241,7 @@ $(document).ready(function() {
                             <a  href='#addrule' 
                                 class='btn btn-success'
                                 data-toggle='modal'>
-                                <i class="icon-plus"></i> Add New Rule</a>
+                                <i class="icon-plus icon-white"></i> Add New Rule</a>
                         </div>
                     </div>
                 </div>

@@ -10,6 +10,7 @@ import tempfile
 import pickle
 import time
 
+
 def try_both(plugin_name, plugin_args, config):
     """Try both the builtin and named plugin, in that order.
     """
@@ -17,6 +18,7 @@ def try_both(plugin_name, plugin_args, config):
         execute_plugin(plugin_name, plugin_args, config)
     except:
         execute_named(plugin_name, plugin_args)
+
 
 def get_cmdline_instruct(plugin_name, plugin_args, instruction):
     """
@@ -41,11 +43,13 @@ def get_cmdline_instruct(plugin_name, plugin_args, instruction):
     
     return command
 
+
 def get_cmdline_no_instruct(plugin_name, plugin_args):
     """
     Execute the script normally, with no special considerations.
     """
     return [plugin_name] + shlex.split(plugin_args)
+
 
 def deltaize_call(keyname, result):
     filename = "ncpa-%s.tmp" % str(hash(keyname))
@@ -68,6 +72,7 @@ def deltaize_call(keyname, result):
     delta = time.time() - modified
     return [abs((x - y) / delta) for x,y in zip(oresult, result)]
 
+
 def make_plugin_response_from_accessor(accessor_response, accessor_args):
     try:
         processed_args = dict(urlparse.parse_qsl(accessor_args))
@@ -75,6 +80,7 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
         logging.debug('No argument detected in string %s' % accessor_args)
         processed_args = {}
     except Exception, e:
+        processed_args = {}
         logging.exception(e)
         logging.warning('Unabled to process arguments.')
     if type(accessor_response.values()[0]) is dict:
@@ -111,7 +117,7 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
         else:
             factor = 1
         if 'm' in unit and s_unit:
-            factor = factor * 1e3
+            factor *= 1e3
         result = [round(x/factor, 3) for x in result]
         try:
             warn_lat = [is_within_range(warning, x) for x in result]
@@ -163,16 +169,17 @@ def is_within_range(nagstring, value):
     import operator
     first_float = r'(?P<first>(-?[0-9]+(\.[0-9]+)?))'
     second_float= r'(?P<second>(-?[0-9]+(\.[0-9]+)?))'
-    actions = [ (r'^%s$' % first_float,lambda y: (value > float(y.group('first'))) or (value < 0)),
-                (r'^%s:$' % first_float,lambda y: value < float(y.group('first'))),
-                (r'^~:%s$' % first_float,lambda y: value > float(y.group('first'))),
-                (r'^%s:%s$' % (first_float,second_float), lambda y: (value < float(y.group('first'))) or (value > float(y.group('second')))),
-                (r'^@%s:%s$' % (first_float,second_float), lambda y: not((value < float(y.group('first'))) or (value > float(y.group('second')))))]
-    for regstr,func in actions:
+    actions = [(r'^%s$' % first_float, lambda y: (value > float(y.group('first'))) or (value < 0)),
+               (r'^%s:$' % first_float, lambda y: value < float(y.group('first'))),
+               (r'^~:%s$' % first_float, lambda y: value > float(y.group('first'))),
+               (r'^%s:%s$' % (first_float, second_float), lambda y: (value < float(y.group('first'))) or (value > float(y.group('second')))),
+               (r'^@%s:%s$' % (first_float, second_float), lambda y: not((value < float(y.group('first'))) or (value > float(y.group('second')))))]
+    for regstr, func in actions:
         res = re.match(regstr,nagstring)
         if res: 
             return func(res)
     raise Exception('Improper warning/critical format.')
+
 
 def execute_plugin(plugin_name, plugin_args, config, *args, **kwargs):
     """
@@ -205,5 +212,5 @@ def execute_plugin(plugin_name, plugin_args, config, *args, **kwargs):
     returncode = running_check.returncode
     stdout = ''.join(running_check.stdout.readlines()).replace('\r\n', '\n').replace('\r', '\n')
     
-    return {'returncode' : returncode, 'stdout' : stdout}
-    
+    return {'returncode': returncode, 'stdout': stdout}
+

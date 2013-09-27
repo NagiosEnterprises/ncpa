@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 
-import simpledaemon
 import logging
-import time
-import flask
 import os
+
+import ncpadaemon
 import listener.server
-import ConfigParser as configparser
+
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 DEBUG = True
 
-class Listener(simpledaemon.Daemon):
+
+class Listener(ncpadaemon.Daemon):
     default_conf = 'etc/ncpa.cfg'
     section = 'listener'
     
@@ -23,7 +27,7 @@ class Listener(simpledaemon.Daemon):
             listener.server.listener.config_filename = 'etc/ncpa.cfg'
             listener.server.listener.config['iconfig'] = self.config_parser
             listener.server.listener.secret_key = os.urandom(24)
-            listener.server.listener.run(address, port)
+            listener.server.listener.run(address, port, ssl_context=self.config_parser.get('listener', 'certificate'))
         except Exception, e:
             logging.exception(e)
 

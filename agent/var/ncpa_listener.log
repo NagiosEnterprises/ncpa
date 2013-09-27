@@ -2383,3 +2383,542 @@ ValueError: View function did not return a response
 2013-09-25 18:12:14,006 3689 DEBUG Accessing internal API with accessor memory/virtual/percent
 2013-09-25 18:12:14,007 3689 DEBUG Using 
 2013-09-25 18:12:14,007 3689 INFO 127.0.0.1 - - [25/Sep/2013 18:12:14] "GET /api/memory/virtual/percent?token=brody&warning=50&critical=80&check=1 HTTP/1.0" 200 -
+2013-09-26 10:32:04,189 4054 INFO started
+2013-09-26 10:32:04,190 4054 INFO Starting server...
+2013-09-26 10:32:04,232 4054 INFO  * Running on http://0.0.0.0:5693/
+2013-09-26 10:32:13,927 4054 INFO stopped
+2013-09-26 11:10:14,751 6129 INFO started
+2013-09-26 11:10:14,751 6129 INFO Starting server...
+2013-09-26 11:10:14,771 6129 INFO  * Running on http://0.0.0.0:5693/
+2013-09-26 11:10:33,879 6129 INFO stopped
+2013-09-26 11:12:38,613 6156 INFO started
+2013-09-26 11:12:38,616 6156 INFO Starting server...
+2013-09-26 11:12:38,618 6156 INFO  * Running on http://0.0.0.0:5693/
+2013-09-26 11:12:44,907 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:44] "GET / HTTP/1.1" 302 -
+2013-09-26 11:12:44,954 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:44] "GET /login HTTP/1.1" 200 -
+2013-09-26 11:12:45,264 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:45] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-26 11:12:45,304 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:45] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-26 11:12:45,307 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:45] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-26 11:12:45,329 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:45] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-26 11:12:45,348 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:45] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-26 11:12:45,592 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:45] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-26 11:12:48,355 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:48] "POST /login HTTP/1.1" 302 -
+2013-09-26 11:12:48,381 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:48] "GET / HTTP/1.1" 200 -
+2013-09-26 11:12:48,681 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:48] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-26 11:12:51,260 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:51] "GET /config HTTP/1.1" 200 -
+2013-09-26 11:12:51,403 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:51] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-09-26 11:12:51,538 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:51] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-26 11:12:51,640 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:51] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-26 11:12:55,227 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:12:55] "GET /static/img/glyphicons-halflings.png HTTP/1.1" 200 -
+2013-09-26 11:13:09,180 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:13:09] "POST /config HTTP/1.1" 200 -
+2013-09-26 11:13:14,236 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:13:14] "GET / HTTP/1.1" 200 -
+2013-09-26 11:13:14,496 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:13:14] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-26 11:13:15,398 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:13:15] "GET /config HTTP/1.1" 200 -
+2013-09-26 11:13:15,575 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:13:15] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-26 11:13:15,753 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:13:15] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-26 11:14:43,805 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:14:43] "GET /config HTTP/1.1" 200 -
+2013-09-26 11:14:44,005 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:14:44] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-09-26 11:14:44,010 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:14:44] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-09-26 11:14:44,014 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:14:44] "GET /static/css/configuration.css HTTP/1.1" 304 -
+2013-09-26 11:14:44,024 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:14:44] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-09-26 11:14:44,028 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:14:44] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-09-26 11:14:44,049 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:14:44] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 -
+2013-09-26 11:14:44,258 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:14:44] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-26 11:14:44,367 6156 INFO 127.0.0.1 - - [26/Sep/2013 11:14:44] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-26 12:57:00,861 6156 INFO 127.0.0.1 - - [26/Sep/2013 12:57:00] "GET /static/img/glyphicons-halflings-white.png HTTP/1.1" 200 -
+2013-09-26 12:57:37,765 6156 INFO 127.0.0.1 - - [26/Sep/2013 12:57:37] "POST /config HTTP/1.1" 200 -
+2013-09-26 12:57:40,467 6156 INFO 127.0.0.1 - - [26/Sep/2013 12:57:40] "GET /config HTTP/1.1" 200 -
+2013-09-26 12:57:41,446 6156 INFO 127.0.0.1 - - [26/Sep/2013 12:57:41] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-26 12:57:41,775 6156 INFO 127.0.0.1 - - [26/Sep/2013 12:57:41] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-26 12:58:13,964 6156 INFO 127.0.0.1 - - [26/Sep/2013 12:58:13] "POST /config HTTP/1.1" 200 -
+2013-09-26 13:19:50,739 6156 INFO stopped
+2013-09-27 09:35:25,073 2364 ERROR failed to start due to an exception
+Traceback (most recent call last):
+  File "/home/nscott/checkouts/ncpa/agent/simpledaemon.py", line 145, in start
+    self.set_uid()
+  File "/home/nscott/checkouts/ncpa/agent/simpledaemon.py", line 215, in set_uid
+    (self.gid, err.errno, err.strerror))
+SystemExit: can't setgid(10): 1, Operation not permitted
+2013-09-27 09:36:40,700 2492 INFO started
+2013-09-27 09:36:40,700 2492 INFO Starting server...
+2013-09-27 09:36:40,733 2492 INFO  * Running on http://0.0.0.0:5693/
+2013-09-27 09:36:55,455 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:36:55] "GET /api/memory/swap/percent?token=brody HTTP/1.1" 200 -
+2013-09-27 09:36:55,714 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:36:55] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 09:37:39,954 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:39] "GET / HTTP/1.1" 302 -
+2013-09-27 09:37:40,010 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:40] "GET /login HTTP/1.1" 200 -
+2013-09-27 09:37:40,211 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:40] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-09-27 09:37:40,214 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:40] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-09-27 09:37:40,215 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:40] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-09-27 09:37:40,217 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:40] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-09-27 09:37:40,219 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:40] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 -
+2013-09-27 09:37:40,469 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:40] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 09:37:42,593 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:42] "POST /login HTTP/1.1" 302 -
+2013-09-27 09:37:42,628 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:42] "GET / HTTP/1.1" 200 -
+2013-09-27 09:37:42,835 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:42] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 09:37:48,513 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:48] "GET /config HTTP/1.1" 200 -
+2013-09-27 09:37:48,618 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:48] "GET /static/css/configuration.css HTTP/1.1" 304 -
+2013-09-27 09:37:48,729 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:48] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-27 09:37:48,790 2492 INFO 127.0.0.1 - - [27/Sep/2013 09:37:48] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 09:54:35,359 2492 INFO stopped
+2013-09-27 09:54:37,303 2762 INFO started
+2013-09-27 09:54:37,303 2762 INFO Starting server...
+2013-09-27 09:54:37,304 2762 INFO  * Running on http://0.0.0.0:5693/
+2013-09-27 09:54:40,742 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:54:40] "GET /config HTTP/1.1" 302 -
+2013-09-27 09:54:40,765 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:54:40] "GET /login HTTP/1.1" 200 -
+2013-09-27 09:54:40,998 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:54:40] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 09:54:42,998 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:54:42] "POST /login HTTP/1.1" 302 -
+2013-09-27 09:54:43,021 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:54:43] "GET / HTTP/1.1" 200 -
+2013-09-27 09:54:43,222 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:54:43] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 09:55:27,289 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:55:27] "GET / HTTP/1.1" 200 -
+2013-09-27 09:55:27,607 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:55:27] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 09:56:06,478 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:56:06] "GET / HTTP/1.1" 200 -
+2013-09-27 09:56:06,629 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:56:06] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-09-27 09:56:06,633 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:56:06] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-09-27 09:56:06,636 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:56:06] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-09-27 09:56:06,640 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:56:06] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-09-27 09:56:06,651 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:56:06] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 -
+2013-09-27 09:56:06,803 2762 INFO 127.0.0.1 - - [27/Sep/2013 09:56:06] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:04:15,781 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:04:15] "GET / HTTP/1.1" 200 -
+2013-09-27 10:04:15,898 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:04:15] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-09-27 10:04:15,903 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:04:15] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-09-27 10:04:15,907 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:04:15] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-09-27 10:04:15,913 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:04:15] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-09-27 10:04:15,920 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:04:15] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 -
+2013-09-27 10:04:16,075 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:04:16] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:04:17,064 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:04:17] "GET / HTTP/1.1" 200 -
+2013-09-27 10:04:17,148 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:04:17] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-09-27 10:04:17,153 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:04:17] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-09-27 10:04:17,163 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:04:17] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-09-27 10:04:17,169 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:04:17] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-09-27 10:04:17,176 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:04:17] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 -
+2013-09-27 10:04:17,257 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:04:17] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:05:43,976 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:43] "GET / HTTP/1.1" 200 -
+2013-09-27 10:05:44,070 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:44] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-09-27 10:05:44,086 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:44] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-09-27 10:05:44,110 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:44] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:05:44,119 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:44] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-09-27 10:05:44,123 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:44] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-09-27 10:05:44,127 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:44] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 -
+2013-09-27 10:05:44,279 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:44] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:05:45,312 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:45] "GET / HTTP/1.1" 200 -
+2013-09-27 10:05:45,396 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:45] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-09-27 10:05:45,401 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:45] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-09-27 10:05:45,405 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:45] "GET /static/css/ncpa.css HTTP/1.1" 304 -
+2013-09-27 10:05:45,411 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:45] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-09-27 10:05:45,415 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:45] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-09-27 10:05:45,421 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:45] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 -
+2013-09-27 10:05:45,504 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:45] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:05:46,666 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:46] "GET / HTTP/1.1" 200 -
+2013-09-27 10:05:46,776 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:46] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2013-09-27 10:05:46,785 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:46] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2013-09-27 10:05:46,793 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:46] "GET /static/css/ncpa.css HTTP/1.1" 304 -
+2013-09-27 10:05:46,801 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:46] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2013-09-27 10:05:46,809 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:46] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2013-09-27 10:05:46,817 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:46] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 -
+2013-09-27 10:05:46,930 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:05:46] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:06:22,298 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:06:22] "GET / HTTP/1.1" 200 -
+2013-09-27 10:06:22,463 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:06:22] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:06:22,470 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:06:22] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:06:22,474 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:06:22] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:06:22,492 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:06:22] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:06:22,496 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:06:22] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:06:22,499 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:06:22] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:06:22,752 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:06:22] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:08:50,042 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:50] "GET / HTTP/1.1" 200 -
+2013-09-27 10:08:50,206 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:50] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:08:50,212 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:50] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:08:50,218 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:50] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:08:50,223 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:50] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:08:50,238 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:50] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:08:50,241 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:50] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:08:50,484 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:50] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:08:52,324 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:52] "GET /config HTTP/1.1" 200 -
+2013-09-27 10:08:52,462 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:52] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:08:52,472 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:52] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:08:52,477 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:52] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:08:52,483 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:52] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-09-27 10:08:52,494 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:52] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:08:52,501 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:52] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:08:52,504 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:52] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:08:52,677 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:52] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-27 10:08:52,751 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:52] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:08:54,308 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:54] "GET /dashboard HTTP/1.1" 200 -
+2013-09-27 10:08:54,466 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:54] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:08:54,472 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:54] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:08:54,478 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:54] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:08:54,488 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:54] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:08:54,495 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:54] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:08:54,499 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:54] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:08:54,755 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:54] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:08:55,723 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:55] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-09-27 10:08:55,760 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:55] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-09-27 10:08:56,774 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:56] "GET /api/cpu/percent HTTP/1.1" 200 -
+2013-09-27 10:08:56,808 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:56] "GET /api/user/count HTTP/1.1" 200 -
+2013-09-27 10:08:56,816 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:56] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-09-27 10:08:56,823 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:56] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-09-27 10:08:57,833 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:57] "GET /api/cpu/percent HTTP/1.1" 200 -
+2013-09-27 10:08:57,864 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:57] "GET /api/user/count HTTP/1.1" 200 -
+2013-09-27 10:08:57,876 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:57] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-09-27 10:08:57,885 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:57] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-09-27 10:08:58,897 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:58] "GET /api/cpu/percent HTTP/1.1" 200 -
+2013-09-27 10:08:58,923 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:58] "GET /api/user/count HTTP/1.1" 200 -
+2013-09-27 10:08:58,935 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:58] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-09-27 10:08:58,941 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:58] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-09-27 10:08:59,951 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:08:59] "GET /api/cpu/percent HTTP/1.1" 200 -
+2013-09-27 10:09:00,003 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:00] "GET / HTTP/1.1" 200 -
+2013-09-27 10:09:00,009 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:00] "GET /api/user/count HTTP/1.1" 200 -
+2013-09-27 10:09:00,021 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:00] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2013-09-27 10:09:00,034 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:00] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2013-09-27 10:09:01,046 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:01] "GET /api/cpu/percent HTTP/1.1" 200 -
+2013-09-27 10:09:01,238 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:01] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:09:01,244 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:01] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:09:01,251 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:01] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:09:01,265 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:01] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:09:01,269 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:01] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:09:01,274 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:01] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:09:01,504 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:01] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:09:23,009 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:23] "GET /config HTTP/1.1" 200 -
+2013-09-27 10:09:23,190 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:23] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:09:23,209 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:23] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:09:23,215 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:23] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:09:23,233 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:23] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-09-27 10:09:23,236 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:23] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:09:23,239 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:23] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:09:23,243 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:23] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:09:23,450 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:23] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-27 10:09:23,547 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:23] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:09:27,353 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:27] "POST /config HTTP/1.1" 200 -
+2013-09-27 10:09:29,962 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:29] "GET /dashboard HTTP/1.1" 200 -
+2013-09-27 10:09:30,221 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:30] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:09:30,227 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:30] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:09:30,235 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:30] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:09:30,246 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:30] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:09:30,251 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:30] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:09:30,266 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:30] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:09:30,491 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:30] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:09:31,408 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:31] "GET /config HTTP/1.1" 200 -
+2013-09-27 10:09:31,536 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:31] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:09:31,543 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:31] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:09:31,548 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:31] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:09:31,554 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:31] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-09-27 10:09:31,566 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:31] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:09:31,570 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:31] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:09:31,572 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:31] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:09:31,741 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:31] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-27 10:09:31,824 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:31] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:09:48,068 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:09:48] "GET /static/img/glyphicons-halflings-white.png HTTP/1.1" 200 -
+2013-09-27 10:10:07,073 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:07] "POST /config HTTP/1.1" 200 -
+2013-09-27 10:10:08,944 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:08] "GET /dashboard HTTP/1.1" 200 -
+2013-09-27 10:10:09,173 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:09] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:10:09,186 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:09] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:10:09,192 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:09] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:10:09,202 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:09] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:10:09,212 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:09] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:10:09,220 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:09] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:10:09,524 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:09] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:10:10,227 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:10] "GET /config HTTP/1.1" 200 -
+2013-09-27 10:10:10,367 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:10] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:10:10,378 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:10] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:10:10,383 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:10] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:10:10,396 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:10] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-09-27 10:10:10,398 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:10] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:10:10,405 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:10] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:10:10,409 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:10] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:10:10,619 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:10] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-27 10:10:10,710 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:10] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:10:12,826 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:10:12] "GET /static/img/glyphicons-halflings-white.png HTTP/1.1" 200 -
+2013-09-27 10:11:13,956 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:13] "GET / HTTP/1.1" 200 -
+2013-09-27 10:11:14,128 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:14] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:11:14,139 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:14] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:11:14,144 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:14] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:11:14,161 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:14] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:11:14,166 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:14] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:11:14,175 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:14] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:11:14,461 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:14] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:11:14,929 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:14] "GET /config HTTP/1.1" 200 -
+2013-09-27 10:11:15,068 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:15] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:11:15,078 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:15] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:11:15,087 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:15] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:11:15,101 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:15] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-09-27 10:11:15,109 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:15] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:11:15,112 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:15] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:11:15,117 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:15] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:11:15,317 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:15] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-27 10:11:15,404 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:15] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:11:17,863 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:17] "GET /static/img/glyphicons-halflings-white.png HTTP/1.1" 200 -
+2013-09-27 10:11:48,733 2762 INFO 127.0.0.1 - - [27/Sep/2013 10:11:48] "POST /config HTTP/1.1" 200 -
+2013-09-27 10:24:39,737 2762 INFO stopped
+2013-09-27 10:28:37,606 3404 INFO started
+2013-09-27 10:28:37,606 3404 INFO Starting server...
+2013-09-27 10:28:37,607 3404 INFO  * Running on http://0.0.0.0:5693/
+2013-09-27 10:28:42,583 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:42] "GET /config HTTP/1.1" 302 -
+2013-09-27 10:28:42,607 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:42] "GET /login HTTP/1.1" 200 -
+2013-09-27 10:28:42,845 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:42] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:28:42,849 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:42] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:28:42,852 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:42] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:28:42,864 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:42] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:28:42,883 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:42] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:28:42,885 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:42] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:28:43,154 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:43] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:28:44,941 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:44] "POST /login HTTP/1.1" 302 -
+2013-09-27 10:28:44,979 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:44] "GET / HTTP/1.1" 200 -
+2013-09-27 10:28:45,184 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:45] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:28:45,191 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:45] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:28:45,195 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:45] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:28:45,210 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:45] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:28:45,225 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:45] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:28:45,235 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:45] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:28:45,515 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:45] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:28:46,478 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:46] "GET /config HTTP/1.1" 200 -
+2013-09-27 10:28:46,661 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:46] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:28:46,669 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:46] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:28:46,678 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:46] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:28:46,704 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:46] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-09-27 10:28:46,708 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:46] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:28:46,714 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:46] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:28:46,718 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:46] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:28:46,987 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:46] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-27 10:28:47,109 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:47] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:28:51,912 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:28:51] "GET /static/img/glyphicons-halflings-white.png HTTP/1.1" 200 -
+2013-09-27 10:29:17,627 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:29:17] "POST /config HTTP/1.1" 200 -
+2013-09-27 10:29:20,271 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:29:20] "GET /config HTTP/1.1" 200 -
+2013-09-27 10:29:20,443 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:29:20] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:29:20,449 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:29:20] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:29:20,454 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:29:20] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:29:20,497 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:29:20] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-09-27 10:29:20,500 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:29:20] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:29:20,511 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:29:20] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:29:20,520 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:29:20] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:29:20,725 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:29:20] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-27 10:29:20,855 3404 INFO 127.0.0.1 - - [27/Sep/2013 10:29:20] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:43:43,695 3404 INFO stopped
+2013-09-27 10:43:58,568 3478 INFO started
+2013-09-27 10:43:58,568 3478 INFO Starting server...
+2013-09-27 10:43:58,570 3478 INFO  * Running on http://0.0.0.0:5693/
+2013-09-27 10:44:01,758 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:01] "GET /config HTTP/1.1" 302 -
+2013-09-27 10:44:01,793 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:01] "GET /login HTTP/1.1" 200 -
+2013-09-27 10:44:02,011 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:02] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:44:02,014 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:02] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:44:02,018 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:02] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:44:02,020 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:02] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:44:02,039 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:02] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:44:02,047 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:02] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:44:02,340 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:02] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:44:04,667 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:04] "POST /login HTTP/1.1" 302 -
+2013-09-27 10:44:04,685 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:04] "GET / HTTP/1.1" 200 -
+2013-09-27 10:44:04,850 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:04] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:44:04,857 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:04] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:44:04,862 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:04] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:44:04,890 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:04] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:44:04,895 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:04] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:44:04,903 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:04] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:44:05,157 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:05] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:44:05,898 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:05] "GET /config HTTP/1.1" 200 -
+2013-09-27 10:44:06,125 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:06] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:44:06,132 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:06] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:44:06,142 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:06] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:44:06,166 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:06] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-09-27 10:44:06,176 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:06] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:44:06,178 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:06] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:44:06,188 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:06] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:44:06,448 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:06] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-27 10:44:06,575 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:06] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:44:08,570 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:08] "GET /static/img/glyphicons-halflings-white.png HTTP/1.1" 200 -
+2013-09-27 10:44:11,082 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:44:11] "POST /config HTTP/1.1" 200 -
+2013-09-27 10:45:19,721 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:19] "GET /dashboard HTTP/1.1" 200 -
+2013-09-27 10:45:19,969 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:19] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:45:19,975 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:19] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:45:19,980 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:19] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:45:19,994 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:19] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:45:20,010 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:20] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:45:20,015 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:20] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:45:20,316 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:20] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:45:20,839 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:20] "GET /config HTTP/1.1" 200 -
+2013-09-27 10:45:21,011 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:21] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:45:21,020 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:21] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:45:21,035 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:21] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:45:21,048 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:21] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-09-27 10:45:21,064 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:21] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:45:21,068 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:21] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:45:21,073 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:21] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:45:21,361 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:21] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-27 10:45:21,495 3478 INFO 127.0.0.1 - - [27/Sep/2013 10:45:21] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:47:12,749 3478 INFO stopped
+2013-09-27 10:47:17,257 3500 INFO started
+2013-09-27 10:47:17,258 3500 INFO Starting server...
+2013-09-27 10:47:17,259 3500 INFO  * Running on http://0.0.0.0:5693/
+2013-09-27 10:47:20,181 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:20] "GET / HTTP/1.1" 302 -
+2013-09-27 10:47:20,215 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:20] "GET /login HTTP/1.1" 200 -
+2013-09-27 10:47:20,537 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:20] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:47:20,542 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:20] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:47:20,544 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:20] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:47:20,563 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:20] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:47:20,580 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:20] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:47:20,585 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:20] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:47:20,923 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:20] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:47:23,005 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:23] "POST /login HTTP/1.1" 302 -
+2013-09-27 10:47:23,044 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:23] "GET / HTTP/1.1" 200 -
+2013-09-27 10:47:23,250 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:23] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:47:23,265 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:23] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:47:23,270 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:23] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:47:23,276 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:23] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:47:23,290 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:23] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:47:23,300 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:23] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:47:23,551 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:23] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:47:24,475 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:24] "GET /config HTTP/1.1" 200 -
+2013-09-27 10:47:24,711 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:24] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:47:24,724 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:24] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:47:24,734 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:24] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:47:24,768 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:24] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-09-27 10:47:24,778 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:24] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:47:24,781 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:24] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:47:24,787 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:24] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:47:25,054 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:25] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-27 10:47:25,159 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:25] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:47:34,631 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:34] "POST /config HTTP/1.1" 200 -
+2013-09-27 10:47:36,597 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:36] "GET /config HTTP/1.1" 200 -
+2013-09-27 10:47:36,833 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:36] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:47:36,842 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:36] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:47:36,850 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:36] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:47:36,891 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:36] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-09-27 10:47:36,894 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:36] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:47:36,900 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:36] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:47:36,907 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:36] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:47:37,172 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:37] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-27 10:47:37,303 3500 INFO 127.0.0.1 - - [27/Sep/2013 10:47:37] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:48:19,125 3500 INFO stopped
+2013-09-27 10:51:55,502 3565 INFO started
+2013-09-27 10:51:55,502 3565 INFO Starting server...
+2013-09-27 10:51:55,503 3565 INFO  * Running on http://0.0.0.0:5693/
+2013-09-27 10:51:58,078 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:51:58] "GET /config HTTP/1.1" 302 -
+2013-09-27 10:51:58,115 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:51:58] "GET /login HTTP/1.1" 200 -
+2013-09-27 10:51:58,384 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:51:58] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:51:58,390 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:51:58] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:51:58,398 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:51:58] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:51:58,414 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:51:58] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:51:58,434 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:51:58] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:51:58,437 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:51:58] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:51:58,790 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:51:58] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:52:00,823 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:00] "POST /login HTTP/1.1" 302 -
+2013-09-27 10:52:00,841 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:00] "GET / HTTP/1.1" 200 -
+2013-09-27 10:52:01,065 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:01] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:52:01,071 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:01] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:52:01,079 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:01] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:52:01,092 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:01] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:52:01,105 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:01] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:52:01,110 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:01] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:52:01,365 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:01] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:52:12,656 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:12] "GET /config HTTP/1.1" 200 -
+2013-09-27 10:52:12,900 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:12] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:52:12,908 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:12] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:52:12,921 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:12] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:52:12,945 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:12] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-09-27 10:52:12,964 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:12] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:52:12,975 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:12] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:52:12,979 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:12] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:52:13,231 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:13] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-27 10:52:13,325 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:13] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:52:45,534 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:45] "GET /help HTTP/1.1" 404 -
+2013-09-27 10:52:45,907 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:45] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:52:49,233 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:49] "GET /config HTTP/1.1" 200 -
+2013-09-27 10:52:49,446 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:49] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:52:49,454 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:49] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:52:49,458 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:49] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:52:49,465 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:49] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-09-27 10:52:49,472 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:49] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:52:49,497 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:49] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:52:49,501 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:49] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:52:49,785 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:49] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-09-27 10:52:49,909 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:49] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:52:59,781 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:59] "GET /navigator HTTP/1.1" 200 -
+2013-09-27 10:52:59,943 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:59] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:52:59,959 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:59] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:52:59,965 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:52:59] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:53:00,006 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:00] "GET /static/css/navigator.css HTTP/1.1" 200 -
+2013-09-27 10:53:00,023 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:00] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:53:00,032 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:00] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:53:00,043 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:00] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:53:00,229 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:00] "GET /api HTTP/1.1" 301 -
+2013-09-27 10:53:00,412 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:00] "GET /api/ HTTP/1.1" 200 -
+2013-09-27 10:53:00,418 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:00] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:53:00,473 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:00] "GET /static/img/glyphicons-halflings.png HTTP/1.1" 200 -
+2013-09-27 10:53:01,801 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:01] "GET / HTTP/1.1" 200 -
+2013-09-27 10:53:01,983 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:01] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:53:01,995 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:01] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:53:02,004 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:02] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:53:02,026 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:02] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:53:02,030 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:02] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:53:02,038 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:02] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:53:02,321 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:02] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:53:13,601 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:13] "GET /navigator HTTP/1.1" 200 -
+2013-09-27 10:53:13,768 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:13] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:53:13,776 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:13] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:53:13,794 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:13] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:53:13,825 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:13] "GET /static/css/navigator.css HTTP/1.1" 200 -
+2013-09-27 10:53:13,839 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:13] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:53:13,842 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:13] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:53:13,848 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:13] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:53:14,072 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:14] "GET /api HTTP/1.1" 301 -
+2013-09-27 10:53:14,252 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:14] "GET /api/ HTTP/1.1" 200 -
+2013-09-27 10:53:14,258 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:14] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:53:14,292 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:14] "GET /static/img/glyphicons-halflings.png HTTP/1.1" 200 -
+2013-09-27 10:53:36,698 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:36] "GET / HTTP/1.1" 200 -
+2013-09-27 10:53:36,900 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:36] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:53:36,907 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:36] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:53:36,912 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:36] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:53:36,926 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:36] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:53:36,947 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:36] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:53:36,957 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:36] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:53:37,217 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:37] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:53:40,891 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:40] "GET /api HTTP/1.1" 301 -
+2013-09-27 10:53:41,018 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:41] "GET /api/ HTTP/1.1" 200 -
+2013-09-27 10:53:41,234 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:41] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:53:45,285 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:45] "GET / HTTP/1.1" 200 -
+2013-09-27 10:53:45,470 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:45] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:53:45,487 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:45] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:53:45,503 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:45] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:53:45,514 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:45] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:53:45,528 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:45] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:53:45,540 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:45] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:53:45,767 3565 INFO 127.0.0.1 - - [27/Sep/2013 10:53:45] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:53:59,378 3565 INFO stopped
+2013-09-27 10:55:20,226 3615 INFO started
+2013-09-27 10:55:20,226 3615 INFO Starting server...
+2013-09-27 10:55:20,228 3615 INFO  * Running on http://0.0.0.0:5693/
+2013-09-27 10:55:28,161 3615 ERROR 127.0.0.1 - - [27/Sep/2013 10:55:28] code 400, message Bad request syntax ("\x16\x03\x01\x00}\x01\x00\x00y\x03\x02RE\xaap\x9b\xaf\xf0B\x14\x95\xad\x98\xb8l\xe5\xa2\xf4\xf8\xd3\xa5b!'\xcb\xfb\xab\xb8\x92\x9b\xcf\x00\x89\x00\x00(\x00\x88\x00\x87\x009\x008\x00\x84\x005\x00E\x00D\x00f\x003\x002\x00\x96\x00A\x00\x05\x00\x04\x00/\x00\x16\x00\x13\xfe\xff\x00")
+2013-09-27 10:55:28,161 3615 INFO 127.0.0.1 - - [27/Sep/2013 10:55:28] " }  yRE™põØBï≠ò∏lÂ¢Ù¯”•b!'À˚´∏íõœ â  ( à á 9 8 Ñ 5 E D f 3 2 ñ A   /  ˛ˇ " 400 -
+2013-09-27 10:55:28,163 3615 ERROR 127.0.0.1 - - [27/Sep/2013 10:55:28] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00}\x01\x00\x00y\x03\x02RE\xaap>\x10\xba\xd5\\\xa0\xf8\xb4\x18\xc9\xf46\xa9r&8\x10\xdc\xaa\x04u\xc3')
+2013-09-27 10:55:28,163 3615 INFO 127.0.0.1 - - [27/Sep/2013 10:55:28] " }  yRE™p>∫’\†¯¥…Ù6©r&8‹™u√	ôW·Î  ( à á 9 8 Ñ 5 E D f 3 2 ñ A   /  ˛ˇ " 400 -
+2013-09-27 10:55:28,163 3615 ERROR 127.0.0.1 - - [27/Sep/2013 10:55:28] code 400, message Bad request syntax ('\x16\x03\x01\x00}\x01\x00\x00y\x03\x02RE\xaap\xc5Q\x19x\xbb)\xdcd\x17{-\xecg\xe6\x02\x8b?\x87\x1c\x8ay\xa4!\xf6\xbe\x892H\x00\x00(\x00\x88\x00\x87\x009\x008\x00\x84\x005\x00E\x00D\x00f\x003\x002\x00\x96\x00A\x00\x05\x00\x04\x00/\x00\x16\x00\x13\xfe\xff\x00')
+2013-09-27 10:55:28,164 3615 INFO 127.0.0.1 - - [27/Sep/2013 10:55:28] " }  yRE™p≈Qxª)‹d{-ÏgÊã?áäy§!ˆæâ2H  ( à á 9 8 Ñ 5 E D f 3 2 ñ A   /  ˛ˇ " 400 -
+2013-09-27 10:55:28,295 3615 ERROR 127.0.0.1 - - [27/Sep/2013 10:55:28] code 400, message Bad request version ('\x9er\xca\xb3\x00\x00(\x00\x88\x00\x87\x009\x008\x00\x84\x005\x00E\x00D\x00f\x003\x002\x00\x96\x00A\x00\x05\x00\x04\x00/\x00\x16\x00\x13\xfe\xff\x00')
+2013-09-27 10:55:28,295 3615 INFO 127.0.0.1 - - [27/Sep/2013 10:55:28] " }  yRE™pÌŒÛﬁí)“Î˜jÇ·Ñvó=ÒZCûr ≥  ( à á 9 8 Ñ 5 E D f 3 2 ñ A   /  ˛ˇ " 400 -
+2013-09-27 10:55:28,296 3615 ERROR 127.0.0.1 - - [27/Sep/2013 10:55:28] code 400, message Bad request syntax ('\x16\x03\x01\x00}\x01\x00\x00y\x03\x01RE\xaap_?9\x88[x\x1cg\xad\xef\xfe\xf5W\xa8\x7fk,\x9b\x90a\xb3L\x11\xfdy\x8a\xf7e\x00\x00(\x00\x88\x00\x87\x009\x008\x00\x84\x005\x00E\x00D\x00f\x003\x002\x00\x96\x00A\x00\x05\x00\x04\x00/\x00\x16\x00\x13\xfe\xff\x00')
+2013-09-27 10:55:28,297 3615 INFO 127.0.0.1 - - [27/Sep/2013 10:55:28] " }  yRE™p_?9à[xg≠Ô˛ıW®k,õêa≥L˝yä˜e  ( à á 9 8 Ñ 5 E D f 3 2 ñ A   /  ˛ˇ " 400 -
+2013-09-27 10:55:28,298 3615 ERROR 127.0.0.1 - - [27/Sep/2013 10:55:28] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x00\x00U\x01\x00\x00Q\x03\x00RE\xaap\xc0\xb48pP\xf4C\xd2\xec\x83BS\xe6Oi\x80*L2\xcc')
+2013-09-27 10:55:28,298 3615 INFO 127.0.0.1 - - [27/Sep/2013 10:55:28] "  U  Q RE™p¿¥8pPÙC“ÏÉBSÊOiÄ*L2Ã∑{€¯È  * ˇ à á 9 8 Ñ 5 E D f 3 2 ñ A   /  ˛ˇ " 400 -
+2013-09-27 10:55:36,042 3615 INFO stopped
+2013-09-27 10:57:26,113 3641 INFO started
+2013-09-27 10:57:26,113 3641 INFO Starting server...
+2013-09-27 10:57:26,115 3641 INFO  * Running on https://0.0.0.0:5693/
+2013-09-27 10:57:32,652 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:32] "GET / HTTP/1.1" 302 -
+2013-09-27 10:57:32,689 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:32] "GET /login HTTP/1.1" 200 -
+2013-09-27 10:57:32,998 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:32] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:57:33,021 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:33] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:57:33,068 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:33] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:57:33,114 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:33] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:57:33,163 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:33] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:57:33,191 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:33] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:57:33,463 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:33] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:57:36,216 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:36] "POST /login HTTP/1.1" 302 -
+2013-09-27 10:57:36,253 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:36] "GET / HTTP/1.1" 200 -
+2013-09-27 10:57:36,466 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:36] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-09-27 10:57:36,494 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:36] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-09-27 10:57:36,538 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:36] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-09-27 10:57:36,548 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:36] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-09-27 10:57:36,559 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:36] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-09-27 10:57:36,576 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:36] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-09-27 10:57:36,844 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:36] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 10:57:45,587 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:45] "GET /help HTTP/1.1" 404 -
+2013-09-27 10:57:45,840 3641 INFO 127.0.0.1 - - [27/Sep/2013 10:57:45] "GET /favicon.ico HTTP/1.1" 404 -
+2013-09-27 11:06:52,381 3641 INFO stopped
