@@ -60,7 +60,8 @@ def parse_args():
     return options
 
 def main(options):
-    host = 'https://%s:%d/api/%s?%%s' % (options.hostname, options.port, options.metric)
+    url_tmpl = '%s://%s:%d/api/%s?%%s'
+    host = url_tmpl % ('https', options.hostname, options.port, options.metric)
     gets = {    'arguments' : options.arguments,
                 'warning'   : options.warning,
                 'critical'  : options.critical,
@@ -74,12 +75,22 @@ def main(options):
     
     url = host % query
     
-    filename, fobject = urllib.urlretrieve(url)
-    fileobj = open(filename)
+    try:
+        filename, fobject = urllib.urlretrieve(url)
+        fileobj = open(filename)
+    except:
+        if options.verbose:
+            'Resorting to http...'
+        host = url_tmpl % ('http', options.hostname, options.port, options.metric)
+        url = host % query
+        filename, fobject = urllib.urlretrieve(url)
+        fileobj = open(filename)
     
     try:
         rjson = json.load(fileobj)
     except Exception, e:
+        if options.verbose:
+            print 'Unable to parse json output'
         stdout, returncode = 'UNKNOWN: %s' % str(e), 3
     
     if 'error' in rjson:
