@@ -88,7 +88,10 @@ def main(options):
         stdout, returncode = rjson['value']['stdout'], rjson['value']['returncode']
     
     print stdout
-    sys.exit(returncode)
+    
+    if options.verbose:
+        print type(returncode)
+    sys.exit(int(returncode))
 
 if __name__ == "__main__":
     options = parse_args()
