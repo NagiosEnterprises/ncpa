@@ -147,4 +147,5 @@ class Handler(abstract.NagiosHandler):
         return frozenset([PLUGIN_NAME.search(x).group(1) for x in filtered])
     
     def get_installed_plugins(self, *args, **kwargs):
+        logging.warning(self.config.get('plugin directives', 'plugin_path'))
         return frozenset([x for x in os.listdir(self.config.get('plugin directives', 'plugin_path')) if not x.startswith('.')])
