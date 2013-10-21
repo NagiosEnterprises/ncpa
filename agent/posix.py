@@ -27,7 +27,7 @@ includefiles = [    'var/ncpa_listener.log',
                     'passive'
                     ]
 
-includes = ['xml.dom.minidom']
+includes = ['xml.dom.minidom', 'OpenSSL']
                     
 includefiles += [   'build_resources/NagiosSoftwareLicense.txt',
                     'build_resources/listener_init',
