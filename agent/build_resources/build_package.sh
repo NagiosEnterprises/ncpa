@@ -11,7 +11,7 @@ then
                     --pakdir=. \
                     --nodoc \
                     --maintainer=nscott@nagios.com \
-                    --pkglicense='Nagios Open Source License' 
+                    --pkglicense='Nagios Open Source License' \
                     -R \
                     cp build/exe.linux-i686-2.6 /usr/local/ncpa -r
 fi
