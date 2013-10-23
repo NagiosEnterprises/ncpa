@@ -4,6 +4,7 @@ import logging
 import re
 import platform
 import sys
+import psextensions
 
 plugins   = ''
 
@@ -53,11 +54,16 @@ class LazyNode(Node):
     
     def run(self, path, *args, **kwargs):
         if path:
-            return self.parse_process(path)
+            return self.parse_query(path)
         else:
             return {self.name : []}
+
+class ProcessNode(LazyNode):
     
-    def parse_process(self, path):
+    def __init__(self, *args, **kwargs):
+        super(ProcessNode, self).__init__(*args, **kwargs)
+    
+    def parse_query(self, path):
         desired_proc = path[0].replace('|', '/')
         metrics = {'count' : 0 }
         count = 0
@@ -69,6 +75,23 @@ class LazyNode(Node):
                 return {'count' : metrics['count']}
         except IndexError:
             return {desired_proc : metrics }
+
+class ServiceNode(LazyNode):
+    
+    def __init__(self, *args, **kwargs):
+        super(ServiceNode, self).__init__(*args, **kwargs)
+    
+    def parse_query(self, path):
+        desired_service = path[0].replace('|', '/')
+        
+        try:
+            desired_state = path[1]
+        else:
+            desired_state = 'running'
+        
+        services = psextensions.get_services()
+        
+        return {desired_service: services[desired_service] == desired_state}    
 
 def make_disk_nodes(disk_name):
     read_time = Node('read_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_time,'ms'))
@@ -162,7 +185,7 @@ agent = Node('agent', children=(plugin,))
 user_count = Node('count', method=lambda: (len([x.name for x in ps.get_users()]), 'c'))
 user_list  = Node('list', method=lambda: [x.name for x in ps.get_users()])
 
-process = LazyNode('process')
+process = ProcessNode('process')
 
 user = Node('user', children=(user_count, user_list))
 
