@@ -36,6 +36,7 @@ def get_services():
                 script = os.path.join(INIT_DIR, f)
                 service = subprocess.Popen([script, 'status'], stdout=devnull, stderr=devnull)
                 status = service.wait()
+                print status
                 if status == 0:
                     status = 'running'
                 else:

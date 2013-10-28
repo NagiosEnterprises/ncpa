@@ -74,6 +74,8 @@ def deltaize_call(keyname, result):
 
 
 def make_plugin_response_from_accessor(accessor_response, accessor_args):
+    #~ First look at the GET and POST arguments to see what we are 
+    #~ going to use for our warning/critical
     try:
         processed_args = dict(urlparse.parse_qsl(accessor_args))
     except ValueError, e:
@@ -83,6 +85,9 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
         processed_args = {}
         logging.exception(e)
         logging.warning('Unabled to process arguments.')
+    
+    #~ We need to have [{dictionary: value}] structure, so if it isn't that
+    #~ we need to throw a warning
     if type(accessor_response.values()[0]) is dict:
         stdout = 'ERROR: Non-node value requested. Requested entire tree.'
         returncode = 3
@@ -96,8 +101,16 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
         except IndexError:
             unit = ''
         result = result[0]
-        if not type(result) in [list, tuple]:
+        
+        if type(result) == bool:
+            bool_name = accessor_response.keys()[0]
+            if result:
+                return {'returncode': 0, 'stdout': "%s's status was as expected." % bool_name}
+            else:
+                return {'returncode': 2, 'stdout': "%s's status was not as expected." % bool_name}
+        elif not type(result) in [list, tuple]:
             result = [result]
+        
         warning = processed_args.get('warning')
         critical = processed_args.get('critical')
         s_unit = processed_args.get('unit')
