@@ -10,17 +10,15 @@ def get_services():
     
     if environment.SERVICE_TYPE == 'Windows':
         status = tempfile.TemporaryFile()
-        services = subprocess.Popen(['sc', 'query'], stdout=status)
-        services.wait()
+        service = subprocess.Popen(['sc', 'query', 'type=', 'service', 'state=', 'all'], stdout=status)
+        service.wait()
         status.seek(0)
-        
-        service_name = None
-        status = None
         
         for line in status.readlines():
             l = line.strip()
+            print l
             if l.startswith('SERVICE_NAME'):
-                service_name = l.split(maxpslit=1)[0]
+                service_name = l.split(' ', 1)[1]
             if l.startswith('STATE'):
                 if 'RUNNING' in l:
                     status = 'running'

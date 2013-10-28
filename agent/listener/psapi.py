@@ -81,6 +81,12 @@ class ServiceNode(LazyNode):
     def __init__(self, *args, **kwargs):
         super(ServiceNode, self).__init__(*args, **kwargs)
     
+    def run(self, path, *args, **kwargs):
+        if path:
+            return self.parse_query(path)
+        else:
+            return {self.name: psextensions.get_services()}
+    
     def parse_query(self, path):
         desired_service = path[0].replace('|', '/')
         
@@ -90,12 +96,11 @@ class ServiceNode(LazyNode):
             desired_state = None
         
         services = psextensions.get_services()
-        print services
         
         if desired_state:
-            return {desired_service: services[desired_service] == desired_state}
+            return {desired_service: services.get(desired_service, 'Service not found') == desired_state}
         else:
-            return {desired_service: services[desired_service]}
+            return {desired_service: services.get(desired_service, 'Service not found')}
 
 def make_disk_nodes(disk_name):
     read_time = Node('read_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_time,'ms'))
