@@ -86,12 +86,16 @@ class ServiceNode(LazyNode):
         
         try:
             desired_state = path[1]
-        else:
-            desired_state = 'running'
+        except IndexError:
+            desired_state = None
         
         services = psextensions.get_services()
+        print services
         
-        return {desired_service: services[desired_service] == desired_state}    
+        if desired_state:
+            return {desired_service: services[desired_service] == desired_state}
+        else:
+            return {desired_service: services[desired_service]}
 
 def make_disk_nodes(disk_name):
     read_time = Node('read_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_time,'ms'))
@@ -186,10 +190,11 @@ user_count = Node('count', method=lambda: (len([x.name for x in ps.get_users()])
 user_list  = Node('list', method=lambda: [x.name for x in ps.get_users()])
 
 process = ProcessNode('process')
+service = ServiceNode('service')
 
 user = Node('user', children=(user_count, user_list))
 
-root = Node('root', children=(cpu, memory, disk, interface, agent, user, process, system))
+root = Node('root', children=(cpu, memory, disk, interface, agent, user, process, service, system))
 
 def getter(accessor='', s_plugins=''):
     global plugins
