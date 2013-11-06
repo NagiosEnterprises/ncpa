@@ -1,10 +1,10 @@
 .PHONY: build
 build: clean
-	python2.6  posix.py build_exe
+	python  posix.py build_exe
 	cp build_resources/build_package.sh .
 
 install:
-	mv build/exe.linux-i686-2.6 /usr/local/ncpa
+	mv build/exe.linux-* /usr/local/ncpa
 
 clean:
 	rm dist -rf
