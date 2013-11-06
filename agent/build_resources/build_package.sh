@@ -1,9 +1,11 @@
+#!/bin/bash
+
 if [ "$1" == "rpm" ] || [ "$2" == "rpm" ];
 then
     cp build_resources/postinstall-pak .
     cp build_resources/postremove-pak .
     cp build_resources/description-pak .
-    cp build_resources/NagiosSoftwareLicense.txt build/exe.linux-i686-2.6/
+    cp build_resources/NagiosSoftwareLicense.txt build/exe.linux-*/
     checkinstall    --pkgname=ncpa \
                     --strip=no \
                     --stripso=no \
@@ -13,7 +15,7 @@ then
                     --maintainer=nscott@nagios.com \
                     --pkglicense='Nagios Open Source License' \
                     -R \
-                    cp build/exe.linux-i686-2.6 /usr/local/ncpa -r
+                    cp build/exe.linux-* /usr/local/ncpa -r
 fi
 
 if [ "$1" == "pkg" ] || [ "$2" == "pkg" ];
@@ -22,7 +24,7 @@ then
     cp build_resources/postinstall-pak-deb postinstall-pak
     cp build_resources/postremove-pak-deb postremove-pak
     cp build_resources/description-pak .
-    cp build_resources/NagiosSoftwareLicense.txt build/exe.linux-i686-2.6/
+    cp build_resources/NagiosSoftwareLicense.txt build/exe.linux-*/
     checkinstall    --pkgname=ncpa \
                     --install=no \
                     --strip=no \
@@ -33,5 +35,5 @@ then
                     --nodoc \
                     --pakdir=. \
                     -D \
-                    cp build/exe.linux-i686-2.6 /usr/local/ncpa -r
+                    cp build/exe.linux-* /usr/local/ncpa -r
 fi
