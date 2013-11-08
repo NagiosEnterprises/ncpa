@@ -222,6 +222,7 @@ def api(accessor='', raw=False):
         url = accessor + '?' + urllib.urlencode(request.args)
         return jsonify({'value': internal_api(url, listener.config['iconfig'])})
     try:
+        print accessor 
         response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
     except Exception, e:
         logging.exception(e)

@@ -42,5 +42,23 @@ def get_services():
                 else:
                     status = 'stopped'
                 services[f] = status
-    
+
+    if environment.SERVICE_TYPE == 'Darwin':
+        cmd = 'launchctl'
+        tmp = tempfile.TemporaryFile()
+
+        service = subprocess.Popen([cmd, 'list'], stdout=tmp)
+        service.wait()
+
+        tmp.seek(0)
+        # The first line is the header
+        tmp.readline()
+
+        for line in tmp.readlines():
+            pid, status, label = line.split()
+            if pid == '-':
+                services[label] = 'stopped'
+            elif status == '-':
+                services[label] = 'running'
+
     return services
