@@ -18,7 +18,7 @@ Using check_ncpa.py
 
 Once check_ncpa.py is installed in the nagios/libexec directory, you can use it like you would any other plugin. This is where knowing the tree comes in handy. You'll need to specify the path in the tree that you'd like to access. So if we were interested in getting the CPU Usage (percent-wise) of our NCPA agent, we would run the check_ncpa.py as follows::
     
-    ./check_ncpa.py -H ncpaserver -t brody api/cpu/percent
+    ./check_ncpa.py -H ncpaserver -t brody cpu/percent
 
 Returns::
     
@@ -26,7 +26,11 @@ Returns::
 
 Which is the CPU usage on each core of the system!
 
-.. note:: In the above example I specified *api/cpu/percent* as the address. The *api/* portion is completely optional and the URL without it would work just fine.
+It should also be noted that you can specify a tree to view using check_ncpa.py. Say you are in the fairly common environment of a terminal without the luxury of a web browser, or the browser is simply too bothersome to bring up. You can use check_ncpa.py's --list command to have it list, rather than run a check, on a particular node::
+
+    ./check_ncpa.py -H ncpaserver -t brody -M cpu --list
+
+Will return a tree representing all of the values you can monitor via NCPA under the cpu tree. To look at everything you could possibly monitor, simply omit the -M flag and its argument.
 
 Specifying Arguments
 --------------------
@@ -43,5 +47,5 @@ Are identical calls. Either way, calling::
     
     ./check_ncpa.py --help
 
-exists and is helpful. It might even solve a head scratchers.
+exists and is helpful. It might even solve a few head scratchers.
     

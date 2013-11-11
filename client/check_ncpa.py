@@ -11,66 +11,68 @@ try:
 except:
     import simplejson as json
 import urllib
-import tempfile
-import time
-import os
+
+
+def pretty(d, indent=0, indenter='    '):
+    for key, value in d.iteritems():
+        print indenter * indent + str(key), ':',
+        if isinstance(value, dict):
+            print ''
+            pretty(value, indent+1, indenter)
+        else:
+            print str(value)
+
 
 def parse_args():
     parser = optparse.OptionParser()
-    parser.add_option(  "-H","--hostname",
-                        help="The hostname to be connected to." )
-    parser.add_option(  "-M","--metric",
-                        help="The metric to check, this is defined on client system. This would also be the plugin name in the plugins directory. Do not attach arguments to it, use the -a directive for that.")
-    parser.add_option(  "-P","--port",
-                        default=5693,
-                        type="int",
-                        help="Port to use to connect to the client.")
-    parser.add_option(  "-w","--warning",
-                        default=None,
-                        type="str",
-                        help="Warning value to be passed for the check.")
-    parser.add_option(  "-c","--critical",
-                        default=None,
-                        type="str",
-                        help="Critical value to be passed for the check.")
-    parser.add_option(  "-u", "--unit",
-                        default=None,
-                        help="The unit prefix (M, G, T)")
-    parser.add_option(  "-a", "--arguments",
-                        default=None,
-                        help="Arguments for the plugin to be run. Not necessary unless you're running a custom plugin.")
-    parser.add_option(  "-t", "--token",
-                        default=None,
-                        help="The token for connecting.")
-    parser.add_option(  "-d", "--delta",
-                        action='store_true',
-                        help="Signals that this check is a delta check and a local state will kept.")
-    parser.add_option(  "-v", "--verbose",
-                        action='store_true',
-                        help='Print more verbose error messages.')
-    options, args = parser.parse_args()
+    parser.add_option("-H", "--hostname", help="The hostname to be connected to.")
+    parser.add_option("-M", "--metric", default='',
+                      help="The metric to check, this is defined on client system. This would also be the plugin name "
+                           "in the plugins directory. Do not attach arguments to it, use the -a directive for that.")
+    parser.add_option("-P", "--port", default=5693, type="int",
+                      help="Port to use to connect to the client.")
+    parser.add_option("-w", "--warning", default=None, type="str",
+                      help="Warning value to be passed for the check.")
+    parser.add_option("-c", "--critical", default=None, type="str",
+                      help="Critical value to be passed for the check.")
+    parser.add_option("-u", "--unit", default=None,
+                      help="The unit prefix (M, G, T)")
+    parser.add_option("-a", "--arguments", default=None,
+                      help="Arguments for the plugin to be run. Not necessary unless you're running a custom plugin.")
+    parser.add_option("-t", "--token", default=None,
+                      help="The token for connecting.")
+    parser.add_option("-d", "--delta", action='store_true',
+                      help="Signals that this check is a delta check and a local state will kept.")
+    parser.add_option("-l", "--list", action='store_true',
+                      help="List all values under a given node. Do not perform a check.")
+    parser.add_option("-v", "--verbose", action='store_true',
+                      help='Print more verbose error messages.')
+    input_options, _ = parser.parse_args()
     
-    if not options.hostname:
+    if not input_options.hostname:
         parser.print_help()
         parser.error("Hostname is required for use.")
-    if not options.metric:
-        parser.print_help()
-        parser.error("Metric is required.")
     
-    return options
+    return input_options
 
-def main(options):
-    url_tmpl = '%s://%s:%d/api/%s?%%s'
-    host = url_tmpl % ('https', options.hostname, options.port, options.metric)
-    gets = {    'arguments' : options.arguments,
-                'warning'   : options.warning,
-                'critical'  : options.critical,
-                'unit'      : options.unit,
-                'token'     : options.token,
-                'delta'     : options.delta,
-                'check'     : 1
+
+def main(o):
+    host = 'https://%s:%d/api/%s?%%s' % (o.hostname, o.port, o.metric)
+
+    if not o.list:
+        gets = {'arguments': o.arguments,
+                'warning': o.warning,
+                'critical': o.critical,
+                'unit': o.unit,
+                'token': o.token,
+                'delta': o.delta,
+                'check': 1
                 }
-    gets = dict((k,v) for k,v in gets.iteritems() if v is not None)
+    else:
+        gets = {'token': o.token,
+                'unit': o.unit}
+
+    gets = dict((k, v) for k, v in gets.iteritems() if v is not None)
     query = urllib.urlencode(gets)
     
     url = host % query
@@ -92,17 +94,17 @@ def main(options):
         if options.verbose:
             print 'Unable to parse json output'
         stdout, returncode = 'UNKNOWN: %s' % str(e), 3
-    
-    if 'error' in rjson:
-        stdout, returncode = 'UNKNOWN: %s' % rjson['error'], 3
+
+    if o.list:
+        pretty(rjson['value'])
     else:
-        stdout, returncode = rjson['value']['stdout'], rjson['value']['returncode']
-    
-    print stdout
-    
-    if options.verbose:
-        print type(returncode)
-    sys.exit(int(returncode))
+        if 'error' in rjson:
+            stdout, returncode = 'UNKNOWN: %s' % rjson['error'], 3
+        else:
+            stdout, returncode = rjson['value']['stdout'], rjson['value']['returncode']
+
+        print stdout
+        sys.exit(returncode)
 
 if __name__ == "__main__":
     options = parse_args()
