@@ -1,6 +1,6 @@
 .PHONY: build
 build: clean
-	python  posix.py build_exe
+	python2.6 posix.py build_exe
 	cp build_resources/build_package.sh .
 
 install:
@@ -16,3 +16,4 @@ clean:
 	rm build_package.sh -f
 	rm *.tgz -f
 	rm *.deb -f
+	rm *.rpm -f

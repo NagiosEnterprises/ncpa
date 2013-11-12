@@ -1,3 +1,11 @@
+
+  
+  
+ 
+  
+ 
+
+
 <!DOCTYPE html>
 
 
@@ -9,10 +17,8 @@
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/bootstrap-2.3.2/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.2/spacelab/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/spacelab/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="_static/bootstrap-2.3.2/css/bootstrap-responsive.min.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -28,7 +34,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/js/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="_static/bootstrap-2.3.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.0.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="NCPA 0.6 documentation" href="index.html" />
     <link rel="next" title="NCPA Configuration" href="configuration.html" />
@@ -41,22 +47,23 @@
   </head>
   <body>
 
-  <div id="navbar" class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-      <div class="container">
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
         <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-        <button class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
+        <a class="navbar-brand" href="index.html">NCPA</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.6</b></span>
+      </div>
 
-        <a class="brand" href="index.html">NCPA</a>
-        <span class="navbar-text pull-left"><b>0.6</b></span>
-
-        <div class="nav-collapse">
-          <ul class="nav">
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
             <li class="divider-vertical"></li>
+            
             
               <li class="dropdown globaltoc-container">
   <a href="index.html"
@@ -72,7 +79,8 @@
 </ul>
 </ul>
 </li>
-              <li class="dropdown">
+              
+                <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Page <b class="caret"></b></a>
   <ul class="dropdown-menu localtoc"><ul>
 <li><a class="reference internal" href="#">NCPA Installation</a><ul>
@@ -89,36 +97,46 @@
 </ul>
 </ul>
 </li>
+              
             
             
               
+                
   <li><a href="index.html"
-         title="previous chapter">&laquo; NCPA Documentation</a></li>
+         title="Previous Chapter: NCPA Documentation">&laquo; NCPA Documentati...</a></li>
   <li><a href="configuration.html"
-         title="next chapter">NCPA Configuration &raquo;</a></li>
+         title="Next Chapter: NCPA Configuration">NCPA Configurati... &raquo;</a></li>
+              
+            
+            
             
             
               <li>
+<div id="sourcelink">
   <a href="_sources/installation.txt"
-     rel="nofollow">Source</a></li>
+     rel="nofollow">Source</a>
+</div></li>
             
           </ul>
 
           
             
-<form class="navbar-search pull-right" action="search.html" method="get">
-  <input type="text" name="q" class="search-query" placeholder="Search" />
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
   <input type="hidden" name="check_keywords" value="yes" />
   <input type="hidden" name="area" value="default" />
 </form>
           
         </div>
-      </div>
     </div>
   </div>
 
 <div class="container">
-  
+  <div class="row">
+    <div class="col-md-12">
+      
   <div class="section" id="ncpa-installation">
 <h1>NCPA Installation<a class="headerlink" href="#ncpa-installation" title="Permalink to this headline">¶</a></h1>
 <p>NCPA is packaged for all of its target platforms, including Windows, Linux RPM and DEB packaging as well as tarballs for some of the less common operating systems. Packaging is the one portion of NCPA that cannot be truly platform agnostic. However, packaging for NCPA allows for quick and easy installation on all target platforms and this documentation will give examples and on how to install NCPA.</p>
@@ -235,6 +253,9 @@ wget http://assets.nagios.com/downloads/ncpa/ncpa.i386.deb</pre>
 </div>
 
 
+    </div>
+      
+  </div>
 </div>
 <footer class="footer">
   <div class="container">
@@ -244,7 +265,7 @@ wget http://assets.nagios.com/downloads/ncpa/ncpa.i386.deb</pre>
     </p>
     <p>
         &copy; Copyright 2013, Nicholas Scott.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2b2.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2b3.<br/>
     </p>
   </div>
 </footer>

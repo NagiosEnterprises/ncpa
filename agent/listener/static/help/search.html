@@ -1,3 +1,11 @@
+
+  
+  
+ 
+  
+ 
+
+
 <!DOCTYPE html>
 
 
@@ -9,10 +17,8 @@
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/bootstrap-2.3.2/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.2/spacelab/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/spacelab/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="_static/bootstrap-2.3.2/css/bootstrap-responsive.min.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -29,7 +35,7 @@
     <script type="text/javascript" src="_static/searchtools.js"></script>
     <script type="text/javascript" src="_static/js/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="_static/bootstrap-2.3.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.0.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="NCPA 0.6 documentation" href="index.html" />
   <script type="text/javascript">
@@ -45,22 +51,23 @@
   </head>
   <body>
 
-  <div id="navbar" class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-      <div class="container">
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
         <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-        <button class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
+        <a class="navbar-brand" href="index.html">NCPA</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.6</b></span>
+      </div>
 
-        <a class="brand" href="index.html">NCPA</a>
-        <span class="navbar-text pull-left"><b>0.6</b></span>
-
-        <div class="nav-collapse">
-          <ul class="nav">
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
             <li class="divider-vertical"></li>
+            
             
               <li class="dropdown globaltoc-container">
   <a href="index.html"
@@ -76,13 +83,19 @@
 </ul>
 </ul>
 </li>
-              <li class="dropdown">
+              
+                <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Page <b class="caret"></b></a>
   <ul class="dropdown-menu localtoc"></ul>
 </li>
+              
             
             
               
+                
+              
+            
+            
             
             
               <li></li>
@@ -93,12 +106,13 @@
             
           
         </div>
-      </div>
     </div>
   </div>
 
 <div class="container">
-  
+  <div class="row">
+    <div class="col-md-12">
+      
   <h1 id="search-documentation">Search</h1>
   <div id="fallback" class="admonition warning">
   <script type="text/javascript">$('#fallback').hide();</script>
@@ -125,6 +139,9 @@
   
   </div>
 
+    </div>
+      
+  </div>
 </div>
 <footer class="footer">
   <div class="container">
@@ -134,7 +151,7 @@
     </p>
     <p>
         &copy; Copyright 2013, Nicholas Scott.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2b2.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2b3.<br/>
     </p>
   </div>
 </footer>

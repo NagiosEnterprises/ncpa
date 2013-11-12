@@ -9,12 +9,12 @@
 # Description:       Enable NCPA listener.
 ### END INIT INFO
 
-BASEDIR=/usr/local/ncpa
+BASEDIR="/usr/local/ncpa"
 
 start() {
         (
             cd $BASEDIR
-            $BASEDIR/ncpa_posix_listener --start
+            ./ncpa_posix_listener --start
         )
         echo "Started listener..."
 }
@@ -22,7 +22,7 @@ start() {
 stop() {
         (
             cd $BASEDIR
-            /usr/local/ncpa/ncpa_posix_listener --stop
+            ./ncpa/ncpa_posix_listener --stop
             echo "Exited."
         )   
 }
