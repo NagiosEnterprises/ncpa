@@ -1,0 +1,47 @@
+[listener]
+uid = nagios 
+certificate = adhoc
+loglevel = info
+ip = 0.0.0.0
+gid = nagcmd
+logfile = var/ncpa_listener.log
+port = 5693
+pidfile = var/ncpa_listener.pid
+
+[passive]
+uid = nagios
+handlers = nrds
+loglevel = info
+gid = nagcmd
+sleep = 300
+logfile = var/ncpa_passive.log
+pidfile = var/ncpa_passive.pid
+
+[nrdp]
+token ={token}
+hostname =
+parent =
+
+[nrds]
+url =
+CONFIG_VERSION =0
+token ={token}
+CONFIG_NAME =
+CONFIG_OS = None
+PLUGIN_DIR=plugins/
+UPDATE_CONFIG=1
+UPDATE_PLUGINS=1
+
+[api]
+community_string ={token}
+
+[plugin directives]
+plugin_path = plugins/
+{plugins}
+[passive checks]
+%HOSTNAME%|cpu usage = /cpu/percent --warning 20 --critical 30
+%HOSTNAME%|swap usage = /memory/swap/percent --warning 40 --critical 80
+%HOSTNAME%|memory usage = /memory/virtual/percent --warning 60 --critical 80
+
+
+
