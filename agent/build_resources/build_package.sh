@@ -1,6 +1,8 @@
 #!/bin/bash
 
 VERSION=`python2.6 -c 'import listener.server as a;print a.__VERSION__'`
+rm -rf /usr/local/ncpa
+mkdir -p /usr/local/ncpa
 
 if [ "$1" == "rpm" ] || [ "$2" == "rpm" ];
 then
@@ -40,6 +42,7 @@ then
     cp build_resources/description-pak .
     cp build_resources/NagiosSoftwareLicense.txt build/exe.linux-*/
     mv build/exe.linux-* build-pkg
+    mkdir /usr/local/ncpa
     checkinstall    --pkgname=ncpa \
                     --install=no \
                     --strip=no \
@@ -52,5 +55,5 @@ then
                     --nodoc \
                     -D \
                     -y \
-                    mv build/* /usr/local/ncpa/ -r
+                    cp build-pkg/* /usr/local/ncpa/ -r
 fi
