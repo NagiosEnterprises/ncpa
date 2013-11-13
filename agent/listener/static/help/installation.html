@@ -1,4 +1,5 @@
 
+
   
   
  
@@ -22,7 +23,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '',
         VERSION:     '0.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -226,7 +227,7 @@ wget http://assets.nagios.com/downloads/ncpa/ncpa.i386.deb</pre>
 <li>The token specified under [api] community_string (This is the <em>token</em> field in the Windows Installer)</li>
 </ul>
 <p>Once you have these pieces of information you can attempt to connect to the web interface.</p>
-<div class="highlight-python"><pre>http://&lt;agent's IP&gt;:5693/api/?token=&lt;token&gt;</pre>
+<div class="highlight-python"><pre>https://&lt;agent's IP&gt;:5693/api/?token=&lt;token&gt;</pre>
 </div>
 <p>Where &lt;agent&#8217;s IP&gt; and &lt;token&gt; should be substituted for your agent&#8217;s IP and token, respectively. You should see something that looks like</p>
 <div class="highlight-python"><pre>--- snip ---
@@ -265,7 +266,7 @@ wget http://assets.nagios.com/downloads/ncpa/ncpa.i386.deb</pre>
     </p>
     <p>
         &copy; Copyright 2013, Nicholas Scott.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2b3.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.<br/>
     </p>
   </div>
 </footer>

@@ -1,4 +1,5 @@
 
+
   
   
  
@@ -22,7 +23,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '',
         VERSION:     '0.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -150,16 +151,16 @@
 <div class="section" id="using-check-ncpa-py">
 <h2>Using check_ncpa.py<a class="headerlink" href="#using-check-ncpa-py" title="Permalink to this headline">¶</a></h2>
 <p>Once check_ncpa.py is installed in the nagios/libexec directory, you can use it like you would any other plugin. This is where knowing the tree comes in handy. You&#8217;ll need to specify the path in the tree that you&#8217;d like to access. So if we were interested in getting the CPU Usage (percent-wise) of our NCPA agent, we would run the check_ncpa.py as follows:</p>
-<div class="highlight-python"><pre>./check_ncpa.py -H ncpaserver -t brody api/cpu/percent</pre>
+<div class="highlight-python"><pre>./check_ncpa.py -H ncpaserver -t brody cpu/percent</pre>
 </div>
 <p>Returns:</p>
 <div class="highlight-python"><pre>OK: Percent was 6.8%,0.0%,7.5%,0.0%,5.5%,0.1%,7.0%,0.0%|'percent_0'=6.8% 'percent_1'=0.0% 'percent_2'=7.5% 'percent_3'=0.0% 'percent_4'=5.5% 'percent_5'=0.1% 'percent_6'=7.0% 'percent_7'=0.0%</pre>
 </div>
 <p>Which is the CPU usage on each core of the system!</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In the above example I specified <em>api/cpu/percent</em> as the address. The <em>api/</em> portion is completely optional and the URL without it would work just fine.</p>
+<p>It should also be noted that you can specify a tree to view using check_ncpa.py. Say you are in the fairly common environment of a terminal without the luxury of a web browser, or the browser is simply too bothersome to bring up. You can use check_ncpa.py&#8217;s &#8211;list command to have it list, rather than run a check, on a particular node:</p>
+<div class="highlight-python"><pre>./check_ncpa.py -H ncpaserver -t brody -M cpu --list</pre>
 </div>
+<p>Will return a tree representing all of the values you can monitor via NCPA under the cpu tree. To look at everything you could possibly monitor, simply omit the -M flag and its argument.</p>
 </div>
 <div class="section" id="specifying-arguments">
 <h2>Specifying Arguments<a class="headerlink" href="#specifying-arguments" title="Permalink to this headline">¶</a></h2>
@@ -172,7 +173,7 @@
 <p>Are identical calls. Either way, calling:</p>
 <div class="highlight-python"><pre>./check_ncpa.py --help</pre>
 </div>
-<p>exists and is helpful. It might even solve a head scratchers.</p>
+<p>exists and is helpful. It might even solve a few head scratchers.</p>
 </div>
 </div>
 
@@ -189,7 +190,7 @@
     </p>
     <p>
         &copy; Copyright 2013, Nicholas Scott.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2b3.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.<br/>
     </p>
   </div>
 </footer>
