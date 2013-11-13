@@ -18,7 +18,6 @@ then
                     --pkgversion="$VERSION" \
                     --pakdir=. \
                     --nodoc \
-                    --inspect \
                     --maintainer=nscott@nagios.com \
                     --pkglicense='Nagios Open Source License' \
                     -R \
