@@ -1,9 +1,13 @@
+password_count = 0
 def check():
-    global final_token, final_plugins
+    global final_token, final_plugins, password_count
     copylines = False
     nsc_cfg = file("NSC.ini")
     for line in nsc_cfg:
-        if "password=" in line:
+        if "password=" in line and password_count != 3:
+            password_count += 1
+        if "password=" in line and password_count == 3:
+            password_count += 1
             store_line = line
             final_token = store_line[9:]
         if "[External Scripts]" in line:
