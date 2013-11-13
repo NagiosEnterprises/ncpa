@@ -8,6 +8,7 @@ then
     cp build_resources/postremove-pak .
     cp build_resources/description-pak .
     cp build_resources/NagiosSoftwareLicense.txt build/exe.linux-*/
+    mv build/exe.linux-* build-pkg
     checkinstall    --pkgname=ncpa \
                     --install=no \
                     --strip=no \
@@ -21,7 +22,7 @@ then
                     --pkglicense='Nagios Open Source License' \
                     -R \
                     -y \
-                    cp build/exe.linux-* /usr/local/ncpa -r
+                    cp build-pkg/* /usr/local/ncpa -r
 fi
 
 if [ "$1" == "pkg" ] || [ "$2" == "pkg" ];
