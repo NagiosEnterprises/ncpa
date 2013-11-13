@@ -18,6 +18,7 @@ then
                     --pkgversion="$VERSION" \
                     --pakdir=. \
                     --nodoc \
+                    --inspect \
                     --maintainer=nscott@nagios.com \
                     --pkglicense='Nagios Open Source License' \
                     -R \
@@ -28,6 +29,13 @@ fi
 if [ "$1" == "pkg" ] || [ "$2" == "pkg" ];
 then
     echo "Moving deb installs to current dir..."
+    ARCH=`arch`
+    if [ "$ARCH" == "x86_64" ];
+    then
+        ARCH="amd64"
+    else
+        ARCH="i386"
+    fi
     cp build_resources/postinstall-pak-deb postinstall-pak
     cp build_resources/postremove-pak-deb postremove-pak
     cp build_resources/description-pak .
@@ -35,7 +43,7 @@ then
     checkinstall    --pkgname=ncpa \
                     --install=no \
                     --strip=no \
-                    --arch=`arch` \
+                    --arch=$ARCH \
                     --maintainer=nscott@nagios.com \
                     --pkgversion="$VERSION" \
                     --pkglicense='Nagios Open Source License' \

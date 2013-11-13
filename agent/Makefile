@@ -14,6 +14,7 @@ clean:
 	rm postremove-pak -f
 	rm description-pak -f
 	rm build_package.sh -f
+	rm build-pkg -rf
 	rm *.tgz -f
 	rm *.deb -f
 	rm *.rpm -f
