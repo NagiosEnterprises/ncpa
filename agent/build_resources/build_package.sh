@@ -39,6 +39,7 @@ then
     cp build_resources/postremove-pak-deb postremove-pak
     cp build_resources/description-pak .
     cp build_resources/NagiosSoftwareLicense.txt build/exe.linux-*/
+    mv build/exe.linux-* build-pkg
     checkinstall    --pkgname=ncpa \
                     --install=no \
                     --strip=no \
@@ -51,5 +52,5 @@ then
                     --nodoc \
                     -D \
                     -y \
-                    cp build/exe.linux-* /usr/local/ncpa -r
+                    mv build/* /usr/local/ncpa/ -r
 fi
