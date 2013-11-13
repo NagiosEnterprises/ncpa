@@ -41,7 +41,6 @@ then
                     --stripso=no \
                     --exclude=/var,/dev,/tmp \
                     --nodoc \
-                    --pakdir=. \
                     -D \
                     -y \
                     cp build/exe.linux-* /usr/local/ncpa -r
