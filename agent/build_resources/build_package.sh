@@ -11,6 +11,7 @@ then
     cp build_resources/description-pak .
     cp build_resources/NagiosSoftwareLicense.txt build/exe.linux-*/
     mv build/exe.linux-* build-pkg
+    mkdir -p build-pkg/plugins
     checkinstall    --pkgname=ncpa \
                     --install=no \
                     --strip=no \
@@ -42,6 +43,7 @@ then
     cp build_resources/description-pak .
     cp build_resources/NagiosSoftwareLicense.txt build/exe.linux-*/
     mv build/exe.linux-* build-pkg
+    mkdir -p build-pkg/plugins
     mkdir /usr/local/ncpa
     checkinstall    --pkgname=ncpa \
                     --install=no \
