@@ -16,7 +16,6 @@ def get_services():
         
         for line in status.readlines():
             l = line.strip()
-            print l
             if l.startswith('SERVICE_NAME'):
                 service_name = l.split(' ', 1)[1]
             if l.startswith('STATE'):
@@ -36,7 +35,6 @@ def get_services():
                 script = os.path.join(INIT_DIR, f)
                 service = subprocess.Popen([script, 'status'], stdout=devnull, stderr=devnull)
                 status = service.wait()
-                print status
                 if status == 0:
                     status = 'running'
                 else:
