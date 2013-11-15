@@ -5,6 +5,10 @@ NCPA is packaged for all of its target platforms, including Windows, Linux RPM a
 
 First and foremost, the following documentation is for a simple install. If you have a complex environment, you can and probably should skip these. What you should know however, is that there are no gotchas involved with installing NCPA.
 
+.. note::
+
+    It is not specified in any of the following instructions, but it is implied that you will may need to adjust your firewall for NCPA as it is using a non-standard port (5693). Please keep this in mind as your progress and have it be the first thing that is checked when the initial install does not appear to work.
+
 Installing NCPA on Windows
 --------------------------
 
@@ -72,17 +76,28 @@ To test your installation see `Testing Your Installation`_.
 Installing NCPA Using RPM Packing
 ---------------------------------
 
-First thing that must be done is acquiring the RPM package. The latest RPM package can be found at `NCPA's RPM link <http://assets.nagios.com/downloads/ncpa/ncpa.i386.rpm>`_. Download this to **the machine you would like to monitor**, do not download this to your personal workstation or your Nagios server.
+First thing that must be done is acquiring the RPM package. The latest RPM package can be found Nagios's assets site. Please choose the correct package from the following list of RPM-using distributions. Note these are links.
 
-Using the command line it would look something like this:
-::
-    
-    cd /tmp
-    wget http://assets.nagios.com/downloads/ncpa/ncpa.i386.rpm
+
+* CentOS 5
+    * `32-bit <http://assets.nagios.com/downloads/ncpa/ncpa-head.el5.i686.rpm>`_ 
+    * `64-bit <http://assets.nagios.com/downloads/ncpa/ncpa-head.el5.x86_64.rpm>`_
+
+* CentOS 6
+    * `32-bit <http://assets.nagios.com/downloads/ncpa/ncpa-head.el6.i686.rpm>`_ 
+    * `64-bit <http://assets.nagios.com/downloads/ncpa/ncpa-head.el6.x86_64.rpm>`_
+
+* SuSe
+    * `32-bit <http://assets.nagios.com/downloads/ncpa/ncpa-head.os12.i686.rpm>`_
+    * `64-bit <http://assets.nagios.com/downloads/ncpa/ncpa-head.os12.x86_64.rpm>`_
+
+.. note:: These RPMs should cover the bases for your systems, if these do not work for your particular system, help make the project better by volunteering for a build!
+
+Download these to **the machine you would like to monitor**, do not download these to your personal workstation or your Nagios server.
 
 Now that we have our RPM on our system, we simply need to use our package manager to install it. Many commonly used package managers have the ability to install a local package. However, in this example we will the rpm command. If you are using something like *yum* or *zypper* you can use that as well::
     
-    rpm -ivh --nomd5 --nodeps ncpa-head.rpm
+    rpm -ivh --nomd5 <path to the NCPA RPM>
 
 Now the NCPA services are installed and started.
 
@@ -91,21 +106,17 @@ To test your installation see `Testing Your Installation`_.
 Installing NCPA Using DEB Packaging
 -----------------------------------
 
-This section is largely the same. The DEB package must be downloaded to the server you want to monitor, and then it needs to be installed. The latest DEB package is located `NCPA's DEB link <http://assets.nagios.com/downloads/ncpa/ncpa.i386.deb>`_, and we will download it using the command line in this example, however you can download it using your user interface, but just keep in mind where you downloaded it to.
+This section is largely the same. The DEB package must be downloaded to the server you want to monitor, and then it needs to be installed. The latest DEB package is located as follows
 
-Using the command line it would look something like this:
-::
-    
-    cd /tmp
-    wget http://assets.nagios.com/downloads/ncpa/ncpa.i386.deb
+* Debian/Ubuntu
+    * `32-bit <http://assets.nagios.com/downloads/ncpa/ncpa-head.db7.i686.deb>`_
+    * `64-bit <http://assets.nagios.com/downloads/ncpa/ncpa-head.db7.amd64.deb>`_
 
 Now that we have the DEB on our system, we simply need to install it. You can use any package manager you are comfortable with, but for the sake of portability, this example will use *dpkg* to install this particular package.
 
-.. warning::  For those installing this on a 64-bit Debian-based system, this DEB package is a 32-bit package, for the sake of simplicity. This means that you will need to install the *ia32-libs* package, which is not included in this NCPA distribution, in order to run properly. If there is demand for a 64-bit package, this will be rolled into the NCPA packaging.
-
-::
+To install it, simply use apt-get or dpkg. The following example shows how to do it with dpkg::
     
-    dpkg -i ncpa.i386.deb
+    dpkg -i <path to the NCPA deb>
 
 Now the NCPA services are installed and started.
 
@@ -113,6 +124,10 @@ To test your installation see `Testing Your Installation`_.
 
 Testing Your Installation
 -------------------------
+
+.. warning::
+
+    As noted previous at the top of this page, if you get an error when trying to access this page immediately after installation, make sure your firewall is allowing traffic through on port 5693.
 
 To ensure that installation was successful, try accessing the web interface of the agent. In order to this you will need to know
 

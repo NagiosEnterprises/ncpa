@@ -14,7 +14,7 @@ Looking at the tree
 
 Open up your web browser, and navigate to::
     
-    http://ncpaserver:5693/api/?token=brody
+    https://ncpaserver:5693/api/?token=brody
 
 This returns::
     
@@ -44,7 +44,7 @@ Accessing specific items in the tree
 
 So notice that there is a "memory" string. Let us amend our address a bit and see what comes out. Try::
     
-    http://ncpaserver:5693/api/memory?token=brody
+    https://ncpaserver:5693/api/memory?token=brody
 
 This returns::
     
@@ -85,12 +85,14 @@ It cut out everything except all the items that had to do with memory. This is b
     * cpu
     * disk
     * agent
+    * process
+    * services
     
     These are meant to provide a platform independent way of accessing basic metrics on a server that are most oftenly monitored. These are not run from plugins, these are built into the NCPA program itself.
     
     Each of these branches contains its own metrics. Some of these metrics are enumerated upon NCPA server startup. For instance, disks and interfaces will be enumerates and will be listed in this tree as well.
 
-.. warning:: Accessing disks is indicated with the pipe | character, rather than the / or \\ character to avoid escaping issues.
+.. caution:: Accessing disks is indicated with the pipe | character, rather than the / or \\ character to avoid escaping issues. Keep this in mind when writing queries. The | character is a special character in bash, so you will generally have to wrap it in single quotes when using it as an argument to avoid problems. 
 
 So hopefully, you're noticing whats going on here. To be overt, we can pare down the information to the actual metric we want in much the same way that we specify the file we want to a computer. We specify a path and then we access that file or directory. The individual metrics we wish to find (CPU Usage, Memory Usage, etc) are the files, while the general groupings (CPU, Memory) are the directories, in this analogy.
 
@@ -100,7 +102,7 @@ So now let us make a bigger leap and actually grab a specific memory metric. Let
 
 So let us try plugging that in to our ncpaserver::
     
-    http://ncpaserver:5693/api/memory/virtual/available?token=brody
+    https://ncpaserver:5693/api/memory/virtual/available?token=brody
 
 This returns::
     
@@ -126,7 +128,7 @@ When you are working on a metric, rather than a group of metrics, you can turn i
 
 We are going to add &warning=60&critical=80&check=true onto the end of the above URL. If you're familiar with URLs, you'll see that this is specifying GET variables passed to the server. If you're unfamiliar with URLs, you just learned something!::
     
-    http://ncpaserver:5693/api/memory/virtual/available?token=brody&warning=1&critical=2&check=true
+    https://ncpaserver:5693/api/memory/virtual/available?token=brody&warning=1&critical=2&check=true
 
 Returns::
     
@@ -176,7 +178,7 @@ Using Nagios Plugins
 
 Using existing Nagios plugins is not an issue either. In fact we can list all the plugins that are installed on the system by accessing the address::
     
-    http://ncpaserver:5693/api/agent/plugin
+    https://ncpaserver:5693/api/agent/plugin
 
 This returns::
     
@@ -191,7 +193,7 @@ This returns::
 
 Which shows all of the plugins that are installed. Now if we want to execute those plugins, we follow the same logic as we did above (for the non-plugin metrics). One new introduction is for plugins that take arguments. Simply separate them with the forward slashes. So for instance, to pass one argument to my test.vbs script, I would call::
     
-    http://ncpaserver:5693/api/agent/plugin/test.vbs/"First Arg"?token=brody
+    https://ncpaserver:5693/api/agent/plugin/test.vbs/"First Arg"?token=brody
 
 Which shows us the output::
     

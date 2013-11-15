@@ -9,9 +9,16 @@ Running active checks against the NCPA agent is trivial and follows in someone s
 
 .. note:: Because of the design of NCPA, it makes it **very** easy to use your own methods to collect this data.
 
-.. note:: If you encounter problems with check_ncpa.py, enable -v when calling to enable verbose logging of problems.
-
 Specifying these checks will take some familiarity with the API tree. For on that see the documentation on the :ref:`API tree <introduction-api>`.
+
+Getting check_ncpa.py
+---------------------
+
+check_ncpa.py is hosted on Nagios's assets server. Please download it from the following link:
+
+    `check_ncpa.py <http://assets.nagios.com/downloads/ncpa/check_ncpa.py>`_
+
+This file must exist on your Nagios server in order to use any of the following directives.
 
 Using check_ncpa.py
 -------------------
@@ -25,6 +32,8 @@ Returns::
     OK: Percent was 6.8%,0.0%,7.5%,0.0%,5.5%,0.1%,7.0%,0.0%|'percent_0'=6.8% 'percent_1'=0.0% 'percent_2'=7.5% 'percent_3'=0.0% 'percent_4'=5.5% 'percent_5'=0.1% 'percent_6'=7.0% 'percent_7'=0.0%
 
 Which is the CPU usage on each core of the system!
+
+.. warning:: If you encounter problems with check_ncpa.py, enable -v when calling to enable verbose logging of problems.
 
 It should also be noted that you can specify a tree to view using check_ncpa.py. Say you are in the fairly common environment of a terminal without the luxury of a web browser, or the browser is simply too bothersome to bring up. You can use check_ncpa.py's --list command to have it list, rather than run a check, on a particular node::
 
