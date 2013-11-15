@@ -6,3 +6,4 @@ simpledaemon
 PyOpenSSL
 sphinx
 sphinx-bootstrap-theme
+rq
