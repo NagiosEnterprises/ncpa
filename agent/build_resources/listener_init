@@ -22,7 +22,7 @@ start() {
 stop() {
         (
             cd $BASEDIR
-            ./ncpa/ncpa_posix_listener --stop
+            ./ncpa_posix_listener --stop
             echo "Exited."
         )   
 }
