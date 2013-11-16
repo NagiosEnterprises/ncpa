@@ -1,4 +1,4 @@
-NCPA Configuration
+Configuration
 ==================
 
 NCPA should work out of the box, however to tailor it to your specific needs, and for security reasons, you should at least change the API's community string. 

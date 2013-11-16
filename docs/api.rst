@@ -1,6 +1,6 @@
 .. _introduction-api:
     
-Introduction to the API
+The API
 =======================
 
 These words might sound a bit daunting, but its really quite simple.

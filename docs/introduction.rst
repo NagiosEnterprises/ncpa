@@ -16,3 +16,8 @@ Why use NCPA?
 -------------
 
 NCPA seeks to be an abstraction between the sysadmin and the system. People monitor servers because servers are running important services, the required knowledge of OS is secondary to the real point of monitoring, and is simply a necessary detail that must be known. With NCPA, the goal is that after installation, it is completely transparent between Mac OS, Linux, Windows, etc. Once you can depend on this abstraction barrier you can monitor your system without regard to the operating system, you can leverage these abstract ideas against all of your systems, not just servers using NRPE versus NSClient++. Obviously, this is an optimistic situation, but that is the goal.
+
+Can I use NCPA with Nagios Core?
+--------------------------------
+
+Absolutely. There is absolutely nothing restricting that. This product is not bound to Nagios XI.
