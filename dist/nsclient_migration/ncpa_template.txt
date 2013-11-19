@@ -38,10 +38,9 @@ community_string ={token}
 [plugin directives]
 plugin_path = plugins/
 {plugins}
+
 [passive checks]
-%HOSTNAME%|cpu usage = /cpu/percent --warning 20 --critical 30
-%HOSTNAME%|swap usage = /memory/swap/percent --warning 40 --critical 80
-%HOSTNAME%|memory usage = /memory/virtual/percent --warning 60 --critical 80
+{checks}
 
 
 
