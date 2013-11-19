@@ -122,6 +122,30 @@ Now the NCPA services are installed and started.
 
 To test your installation see `Testing Your Installation`_.
 
+Install NCPA on Mac OS X
+------------------------
+
+.. note::
+
+    The install process on Mac OS X is still experimental. If you would like to help make this process better, please get in contact with the author (whose address can be found at the bottom of the page.)
+
+Download the `DMG here <https://assets.nagios.com/downloads/ncpa/ncpa-head.dmg>`_ . Now to continue through this part, you will need to log in as root, as at last as a user who can run commands as root. Then, depending on where you installed it (I will assume you downloaded it to your /tmp directory.)::
+
+    cd /tmp
+    hdituil attach /tmp/ncpa-head.dmg
+    zsh /Volumes/NCPAInstall/ncpa/install.sh
+
+What this script does is
+    * Creates the folder /usr/local/ncpa if it does not exist
+    * Moves all necessary files there
+    * Sets the owner of /usr/local/ncpa to nagios:nagcmd
+    * Sets the mode of /usr/local/ncpa to 775
+    * Creates the group nagcmd if it does not exist
+    * Creates the user nagios if it does not exist
+    * Starts the listener daemon
+
+If any of this fails, you will need to do the steps manually. The steps that may fail most off are adding users and groups. If they do, add the user 'nagios' and make sure the user 'nagcmd' exists and that 'nagios' is in the user 'nagcmd'.
+
 Testing Your Installation
 -------------------------
 

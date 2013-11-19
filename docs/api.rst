@@ -208,6 +208,50 @@ Which is what our script is supposed to do, return 2 and print "This Worked!" al
 
 .. note:: For plugins, the Check Result Specified do not apply. The result specified will work only for NCPA tree results.
 
+Monitoring Services
+-------------------
+
+Monitoring services is easy with NCPA. You can see the existing services and their current status. Its under the service tree::
+
+    https://ncpaserver:5693/api/service
+
+This should give you a list of all the services on your system. Now if you would like to see a specific service, such as 'ALG' in our instance, try::
+
+    https://ncpaserver:5693/api/service/ALG
+    
+    {
+        "value": {
+            "ALG": "stopped"
+        }
+    }
+
+This will return whether or not the service is running. You can short-circuit this and add running or stopped to get it to return true or false::
+
+    https://ncpaserver:5693/api/service/ALG/stopped
+    
+    {
+        "value": {
+            "ALG": true
+        }
+    }
+
+Now what this does is allows us to use it as a check::
+
+    https://ncpaserver:5693/api/service/ALG/stopped?check=True
+    
+    {
+        "value": {
+            "returncode": 0, 
+            "stdout": "ALG's status was as expected."
+        }
+    }
+
+Using this particular address is how you will check to see if a service is running or not. If you're using check_ncpa.py simply use the address::
+
+    service/ALG/stopped
+
+For your metric (-M), and you will get the return value you want.
+    
 Conclusion
 ----------
 
