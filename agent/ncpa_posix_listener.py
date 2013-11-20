@@ -15,7 +15,7 @@ DEBUG = True
 
 
 class Listener(ncpadaemon.Daemon):
-    default_conf = 'etc/ncpa.cfg'
+    default_conf = os.path.abspath(os.path.join(os.path.dirname(__file__), 'etc', 'ncpa.cfg'))
     section = 'listener'
     
     def run(self):

@@ -13,6 +13,7 @@ import time
 
 def try_both(plugin_name, plugin_args, config):
     """Try both the builtin and named plugin, in that order.
+
     """
     try:
         execute_plugin(plugin_name, plugin_args, config)
@@ -21,8 +22,7 @@ def try_both(plugin_name, plugin_args, config):
 
 
 def get_cmdline_instruct(plugin_name, plugin_args, instruction):
-    """
-    Execute with special instructions.
+    """Execute with special instructions.
     
     TODO - Investigate better parameter passing
     
@@ -31,6 +31,7 @@ def get_cmdline_instruct(plugin_name, plugin_args, instruction):
     
     EXAMPLE instruction (VBS):
     wscript $plugin_name $plugin_args
+
     """
     template = string.Template(instruction)
     named    = template.substitute(plugin_name=plugin_name, plugin_args=plugin_args)
@@ -45,10 +46,15 @@ def get_cmdline_instruct(plugin_name, plugin_args, instruction):
 
 
 def get_cmdline_no_instruct(plugin_name, plugin_args):
+    """Execute the script normally, with no special considerations.
+    
     """
-    Execute the script normally, with no special considerations.
-    """
-    return [plugin_name] + shlex.split(plugin_args)
+    logging.debug('Doing %s %s', plugin_name, plugin_args)
+    if not plugin_args is None:
+        extra = shlex.split(plugin_args)
+    else:
+        extra = []
+    return [plugin_name] + []
 
 
 def deltaize_call(keyname, result):
@@ -207,7 +213,7 @@ def execute_plugin(plugin_name, plugin_args, config, *args, **kwargs):
     
     _, extension = os.path.splitext(plugin_name)
     plugin_name = os.path.join(config.get('plugin directives', 'plugin_path'), plugin_name)
-    plugin_name = '"%s"' % plugin_name
+    plugin_name = '%s' % plugin_name
     cmd = []
     try:
         instruction = config.get('plugin directives', extension)
@@ -219,7 +225,7 @@ def execute_plugin(plugin_name, plugin_args, config, *args, **kwargs):
     
     logging.debug('Running process with command line: %s', str(cmd))
     
-    running_check = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    running_check = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     running_check.wait()
     
     returncode = running_check.returncode

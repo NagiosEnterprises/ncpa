@@ -111,8 +111,8 @@ class Daemon(object):
 
         self.logmaxmb = int(cp.get(self.section, 'logmaxmb'))
         self.logbackups = int(cp.get(self.section, 'logbackups'))
-        self.pidfile = cp.get(self.section, 'pidfile')
-        self.logfile = cp.get(self.section, 'logfile')
+        self.pidfile = os.path.abspath(os.path.join(os.path.dirname(__file__), cp.get(self.section, 'pidfile')))
+        self.logfile = os.path.abspath(os.path.join(os.path.dirname(__file__), cp.get(self.section, 'logfile')))
         self.loglevel = cp.get(self.section, 'loglevel')
 
     def on_sigterm(self, signalnum, frame):
