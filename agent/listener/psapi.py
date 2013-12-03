@@ -9,7 +9,7 @@ import psextensions
 plugins   = ''
 
 class Node(object):
-    
+
     def __init__(self, name, method=None, children=[], *args, **kwargs):
         if method == None:
             self.method = self.walk
@@ -18,7 +18,7 @@ class Node(object):
         self.children = children
         self.name = name
         self.lazy = False
-    
+
     def accessor(self, path, *args, **kwargs):
         if path:
             for x in self.children:
@@ -28,13 +28,13 @@ class Node(object):
         else:
             kwargs['path'] = path[:1]
             return self.run(*args, **kwargs)
-    
+
     def walk(self, *args, **kwargs):
         stat = {}
         for child in self.children:
             stat.update(child.run(walk=True, *args, **kwargs))
         return stat
-    
+
     def run(self, walk=False, *args, **kwargs):
         if walk and self.lazy:
             return {self.name: 'lazy'}
@@ -45,13 +45,13 @@ class Node(object):
         return {self.name : retval}
 
 class LazyNode(Node):
-    
+
     def __init__(self, *args, **kwargs):
         super(LazyNode, self).__init__(*args, **kwargs)
-    
+
     def accessor(self, path, *args, **kwargs):
         return self.run(path, *args, **kwargs)
-    
+
     def run(self, path, *args, **kwargs):
         if path:
             return self.parse_query(path)
@@ -59,10 +59,10 @@ class LazyNode(Node):
             return {self.name : []}
 
 class ProcessNode(LazyNode):
-    
+
     def __init__(self, *args, **kwargs):
         super(ProcessNode, self).__init__(*args, **kwargs)
-    
+
     def parse_query(self, path):
         desired_proc = path[0].replace('|', '/')
         metrics = {'count' : 0 }
@@ -77,26 +77,29 @@ class ProcessNode(LazyNode):
             return {desired_proc : metrics }
 
 class ServiceNode(LazyNode):
-    
+
     def __init__(self, *args, **kwargs):
         super(ServiceNode, self).__init__(*args, **kwargs)
-    
+
     def run(self, path, *args, **kwargs):
         if path:
             return self.parse_query(path)
         else:
-            return {self.name: psextensions.get_services()}
-    
+            try:
+                return {self.name: psextensions.get_services()}
+            except Exception, e:
+                return {self.name: 'Error getting services: %s' % str(e)}
+
     def parse_query(self, path):
         desired_service = path[0].replace('|', '/')
-        
+
         try:
             desired_state = path[1]
         except IndexError:
             desired_state = None
-        
+
         services = psextensions.get_services()
-        
+
         if desired_state:
             return {desired_service: services.get(desired_service, 'Service not found') == desired_state}
         else:
@@ -120,7 +123,7 @@ def make_mountpoint_nodes(partition_name):
     device_name = Node('device_name', method=lambda: partition_name.device)
     safe_mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
     return Node(safe_mountpoint, children=(total_size, used, free, used_percent, device_name))
-    
+
 def make_if_nodes(if_name):
     bytes_sent = Node('bytes_sent', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_sent, 'b'))
     bytes_recv = Node('bytes_recv', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_recv, 'b'))
