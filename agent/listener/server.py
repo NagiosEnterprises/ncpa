@@ -16,12 +16,14 @@ import jinja2.ext
 import datetime
 import re
 
-__VERSION__ = 1.1
+__VERSION__ = 1.2
 __STARTED__ = datetime.datetime.now()
 
 
 base_dir = os.path.dirname(sys.path[0])
 
+#~ The following if statement is a workaround that is allowing us to run this in debug mode, rather than a hard coded
+#~ location.
 
 if os.name == 'nt':
     tmpl_dir = os.path.join(base_dir, 'listener', 'templates')
@@ -60,7 +62,7 @@ def requires_auth(f):
         elif token is None:
             return redirect(url_for('login'))
         elif token != ncpa_token:
-            return redirect(url_for('error', msg='Incorrect credentials given.'))
+            return error(msg='Incorrect credentials given.')
         return f(*args, **kwargs)
 
     return decorated
@@ -194,7 +196,7 @@ def nrdp():
         return resp
     except Exception, e:
         logging.exception(e)
-        return redirect(url_for('error', msg=str(e)))
+        return error(msg=str(e))
 
 
 @listener.route('/api/agent/plugin/<plugin_name>/')
@@ -206,7 +208,7 @@ def plugin_api(plugin_name=None, plugin_args=None):
         response = pluginapi.execute_plugin(plugin_name, plugin_args, config)
     except Exception, e:
         logging.exception(e)
-        return redirect(url_for('error', msg='Error running plugin.'))
+        return error(msg='Error running plugin.')
     return jsonify({'value': response})
 
 
@@ -222,7 +224,7 @@ def api(accessor='', raw=False):
         response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
     except Exception, e:
         logging.exception(e)
-        return redirect(url_for('error', msg='Referencing node that does not exist.'))
+        return error(msg='Referencing node that does not exist.')
     if raw:
         return response
     else:
