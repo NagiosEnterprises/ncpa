@@ -1,24 +1,20 @@
 #!/usr/bin/env python
 
 from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session
-import commands
 import logging
 import urllib
-import re
 import ConfigParser
 import os
 import sys
 import platform
 import requests
-import json
 import psapi
 import pluginapi
 import functools
 import jinja2
 import jinja2.ext
-import re
-import unittest
 import datetime
+import re
 
 __VERSION__ = 1.1
 __STARTED__ = datetime.datetime.now()
@@ -31,11 +27,11 @@ if os.name == 'nt':
     tmpl_dir = os.path.join(base_dir, 'listener', 'templates')
     if(not os.path.isdir(tmpl_dir)):
         tmpl_dir = os.path.join(base_dir, 'agent', 'listener', 'templates')
-    
+
     stat_dir = os.path.join(base_dir, 'listener', 'static')
     if(not os.path.isdir(stat_dir)):
         stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
-    
+
     logging.info("Looking for templates at: %s" % tmpl_dir)
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
     listener.jinja_loader = jinja2.FileSystemLoader(tmpl_dir)
@@ -43,11 +39,11 @@ else:
     tmpl_dir = os.path.join(base_dir, 'agent', 'listener', 'templates')
     if(not os.path.isdir(tmpl_dir)):
         tmpl_dir = os.path.join('/usr', 'local', 'ncpa', 'listener', 'templates')
-    
+
     stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
     if(not os.path.isdir(stat_dir)):
         stat_dir = os.path.join('/usr', 'local', 'ncpa', 'listener', 'static')
-    
+
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
 
 listener.jinja_env.line_statement_prefix = '#'
@@ -222,7 +218,7 @@ def api(accessor='', raw=False):
         url = accessor + '?' + urllib.urlencode(request.args)
         return jsonify({'value': internal_api(url, listener.config['iconfig'])})
     try:
-        print accessor 
+        print accessor
         response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
     except Exception, e:
         logging.exception(e)
@@ -259,9 +255,7 @@ def save_config(dconfig, writeto):
 
     #~ Do the normal sections
     for s in ['listener', 'passive', 'nrdp', 'nrds', 'api']:
-        print 'Doing %s...' % s
         config.add_section(s)
-        print 'Setting %s' % str(viv[s])
         for t in viv[s]:
             config.set(s, t, viv[s][t])
 
