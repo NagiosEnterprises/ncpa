@@ -8,30 +8,30 @@
 {% block headerjs %}
 <script>
 function add_to_directive_list(i, d) {
-    
+
     var ta = $('#plugin-directives');
     var s_inputSuffix = i.replace('.', '');
-    
+
     var div = $('<div>', {class: 'controls controls-row directive', id: s_inputSuffix});
-    
-    var inp_suffix = $('<input>', {     class: 'span2', 
-                                        type: 'text', 
+
+    var inp_suffix = $('<input>', {     class: 'span2',
+                                        type: 'text',
                                         name: 'directives|suffix|' + i,
                                         value: i });
-    
+
     var inp = $('<div>', {class: 'input-append input-directive'});
     var inp_directive = $('<input>', {  class: 'span6',
                                         type: 'text',
                                         name: 'directives|exec|' + i,
                                         value: d });
-                                        
-    
+
+
     var btn = $('<button>', {   class: 'btn btn-danger',
                                 type: 'button' });
     btn.click(function() {div.remove() });
     $('<i>', {class: 'icon-remove icon-white'}).appendTo(btn);
     btn.appendTo(inp);
-    
+
     inp_suffix.appendTo(div);
     inp_directive.appendTo(inp);
     inp.appendTo(div);
@@ -41,9 +41,9 @@ function add_to_directive_list(i, d) {
 function load_plugin_directives() {
     var api_url = '/config';
     var api_data = {section: 'plugin directives'};
-    
+
     $.getJSON(api_url, api_data, function(data) {
-        
+
         var directives = {}
         // For each item that starts with a ., append it to the command
         // list.
@@ -53,33 +53,33 @@ function load_plugin_directives() {
             }
         });
     });
-    
+
 }
 
 function do_save_config() {
     var form_values = $('#config-form').serializeArray();
     var api_url = '/config';
-    
+
     $.post(api_url, form_values, function(data) {
         console.log(data);
     });
 }
 
 $(document).ready(function() {
-    
+
     $('#config-nav').addClass('active');
-    
+
     $('#directive-container').hide();
     load_plugin_directives();
     $('#directive-container').show();
-    
+
     $('#savethisrule').click(function() {
         var inputSuffix = $('#inputSuffix').val();
         var inputDirective = $('#inputDirective').val();
-        
+
         add_to_directive_list(inputSuffix, inputDirective);
     });
-    
+
     $('#savethisconfig').click(function() {
         do_save_config();
     });
@@ -88,6 +88,7 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
+<div class='alert alert-warning'>This feature is currently in beta and may show some strange behavior.</div>
 <div class='alert alert-info'>Some entries are grayed out, which means they cannot be edited. This is due to possible complications if done from the web interface.</div>
 
 <div class='tabbable'>
@@ -219,7 +220,7 @@ $(document).ready(function() {
                             <input type='text' class='span6' id='passivecheck|{{loop.index}}' name='passivecheck|exec|{{loop.index}}' value="{{config.get('passive checks').get(check)}}">
                         </div>
                         <br />
-                    # endfor 
+                    # endfor
                 </div>
             </div>
             <div class='tab-pane' id='directives'>
@@ -238,7 +239,7 @@ $(document).ready(function() {
                     <div id='directive-container'>
                         <div id='plugin-directives'></div>
                         <div id='addnewrule' class='controls controls-row'>
-                            <a  href='#addrule' 
+                            <a  href='#addrule'
                                 class='btn btn-success'
                                 data-toggle='modal'>
                                 <i class="icon-plus icon-white"></i> Add New Rule</a>
