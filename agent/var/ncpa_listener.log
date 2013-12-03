@@ -3104,3 +3104,82 @@ SystemExit: unable to write to pidfile var/ncpa_listener.pid
 2013-10-08 11:08:56,087 3361 INFO 192.168.5.73 - - [08/Oct/2013 11:08:56] "GET /api/disk/logical/|/used_percent?token=mytoken&warning=70&critical=90&check=1 HTTP/1.0" 200 -
 2013-10-08 11:09:08,007 3361 INFO 192.168.5.73 - - [08/Oct/2013 11:09:08] "GET /api/interface/lo/bytes_recv?token=mytoken&warning=10&critical=100&delta=True&check=1&unit=M HTTP/1.0" 200 -
 2013-10-08 11:09:28,490 3361 INFO 192.168.5.73 - - [08/Oct/2013 11:09:28] "GET /api/disk/logical/|boot/used_percent?token=mytoken&warning=70&critical=90&check=1 HTTP/1.0" 200 -
+2013-12-03 01:02:32,951 14243 INFO started
+2013-12-03 01:02:32,951 14243 INFO Starting server...
+2013-12-03 01:02:32,955 14243 INFO  * Running on https://0.0.0.0:5693/
+2013-12-03 01:02:50,776 14243 INFO stopped
+2013-12-03 01:03:05,393 14299 INFO started
+2013-12-03 01:03:05,393 14299 INFO Starting server...
+2013-12-03 01:03:05,395 14299 INFO  * Running on https://0.0.0.0:5693/
+2013-12-03 01:03:11,117 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:03:11] "GET / HTTP/1.1" 302 -
+2013-12-03 01:03:11,150 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:03:11] "GET /login HTTP/1.1" 200 -
+2013-12-03 01:03:11,370 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:03:11] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-12-03 01:03:11,379 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:03:11] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-12-03 01:03:11,387 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:03:11] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-12-03 01:03:11,399 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:03:11] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-12-03 01:03:11,422 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:03:11] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-12-03 01:03:11,433 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:03:11] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-12-03 01:03:11,834 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:03:11] "GET /favicon.ico HTTP/1.1" 404 -
+2013-12-03 01:03:14,530 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:03:14] "POST /login HTTP/1.1" 302 -
+2013-12-03 01:03:14,548 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:03:14] "GET / HTTP/1.1" 200 -
+2013-12-03 01:03:18,513 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:03:18] "GET /config HTTP/1.1" 200 -
+2013-12-03 01:03:18,653 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:03:18] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2013-12-03 01:03:18,779 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:03:18] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2013-12-03 01:06:42,594 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:06:42] "GET /api HTTP/1.1" 301 -
+2013-12-03 01:06:42,725 14299 ERROR [Errno 13] Permission denied
+Traceback (most recent call last):
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 222, in api
+    response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
+  File "/home/nscott/Development/ncpa/agent/listener/psapi.py", line 211, in getter
+    return root.accessor(path)
+  File "/home/nscott/Development/ncpa/agent/listener/psapi.py", line 30, in accessor
+    return self.run(*args, **kwargs)
+  File "/home/nscott/Development/ncpa/agent/listener/psapi.py", line 42, in run
+    retval = self.method(*args, **kwargs)
+  File "/home/nscott/Development/ncpa/agent/listener/psapi.py", line 35, in walk
+    stat.update(child.run(walk=True, *args, **kwargs))
+  File "/home/nscott/Development/ncpa/agent/listener/psapi.py", line 88, in run
+    return {self.name: psextensions.get_services()}
+  File "/home/nscott/Development/ncpa/agent/listener/psextensions.py", line 36, in get_services
+    service = subprocess.Popen([script, 'status'], stdout=devnull, stderr=devnull)
+  File "/usr/lib/python2.7/subprocess.py", line 679, in __init__
+    errread, errwrite)
+  File "/usr/lib/python2.7/subprocess.py", line 1249, in _execute_child
+    raise child_exception
+OSError: [Errno 13] Permission denied
+2013-12-03 01:06:42,729 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:06:42] "GET /api/ HTTP/1.1" 302 -
+2013-12-03 01:06:42,741 14299 INFO 127.0.0.1 - - [03/Dec/2013 01:06:42] "GET /error/Referencing%20node%20that%20does%20not%20exist. HTTP/1.1" 200 -
+2013-12-03 01:09:25,780 14299 INFO stopped
+2013-12-03 01:09:26,719 14340 INFO started
+2013-12-03 01:09:26,720 14340 INFO Starting server...
+2013-12-03 01:09:26,722 14340 INFO  * Running on https://0.0.0.0:5693/
+2013-12-03 01:09:41,841 14340 INFO stopped
+2013-12-03 01:09:43,081 14347 INFO started
+2013-12-03 01:09:43,081 14347 INFO Starting server...
+2013-12-03 01:09:43,083 14347 INFO  * Running on https://0.0.0.0:5693/
+2013-12-03 01:09:50,489 14347 INFO 127.0.0.1 - - [03/Dec/2013 01:09:50] "GET / HTTP/1.1" 302 -
+2013-12-03 01:09:50,520 14347 INFO 127.0.0.1 - - [03/Dec/2013 01:09:50] "GET /login HTTP/1.1" 200 -
+2013-12-03 01:09:53,970 14347 INFO 127.0.0.1 - - [03/Dec/2013 01:09:53] "POST /login HTTP/1.1" 302 -
+2013-12-03 01:09:53,988 14347 INFO 127.0.0.1 - - [03/Dec/2013 01:09:53] "GET / HTTP/1.1" 200 -
+2013-12-03 01:09:56,262 14347 INFO 127.0.0.1 - - [03/Dec/2013 01:09:56] "GET /api HTTP/1.1" 301 -
+2013-12-03 01:09:56,397 14347 INFO 127.0.0.1 - - [03/Dec/2013 01:09:56] "GET /api/ HTTP/1.1" 200 -
+2013-12-03 01:29:16,186 14347 INFO stopped
+2013-12-03 01:29:17,086 14443 INFO started
+2013-12-03 01:29:17,086 14443 INFO Starting server...
+2013-12-03 01:29:17,089 14443 INFO  * Running on https://0.0.0.0:5693/
+2013-12-03 01:29:35,420 14443 INFO 127.0.0.1 - - [03/Dec/2013 01:29:35] "GET / HTTP/1.1" 302 -
+2013-12-03 01:29:35,447 14443 INFO 127.0.0.1 - - [03/Dec/2013 01:29:35] "GET /login HTTP/1.1" 200 -
+2013-12-03 01:29:38,244 14443 INFO 127.0.0.1 - - [03/Dec/2013 01:29:38] "POST /login HTTP/1.1" 302 -
+2013-12-03 01:29:38,262 14443 INFO 127.0.0.1 - - [03/Dec/2013 01:29:38] "GET / HTTP/1.1" 200 -
+2013-12-03 01:29:40,186 14443 INFO 127.0.0.1 - - [03/Dec/2013 01:29:40] "GET /api HTTP/1.1" 301 -
+2013-12-03 01:29:40,317 14443 INFO 127.0.0.1 - - [03/Dec/2013 01:29:40] "GET /api/ HTTP/1.1" 200 -
+2013-12-03 01:29:43,550 14443 ERROR No node with that name: bingo
+Traceback (most recent call last):
+  File "/home/nscott/Development/ncpa/agent/listener/server.py", line 224, in api
+    response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
+  File "/home/nscott/Development/ncpa/agent/listener/psapi.py", line 214, in getter
+    return root.accessor(path)
+  File "/home/nscott/Development/ncpa/agent/listener/psapi.py", line 27, in accessor
+    raise IndexError('No node with that name: %s' % path[0])
+IndexError: No node with that name: bingo
+2013-12-03 01:29:43,552 14443 INFO 127.0.0.1 - - [03/Dec/2013 01:29:43] "GET /api/bingo HTTP/1.1" 200 -
