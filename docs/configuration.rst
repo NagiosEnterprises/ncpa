@@ -1,13 +1,13 @@
 Configuration
 ==================
 
-NCPA should work out of the box, however to tailor it to your specific needs, and for security reasons, you should at least change the API's community string. 
+NCPA should work out of the box. However to tailor it to your specific needs, and for security reasons, you should at least change the API's community string. 
 
-If you wish to send passive results, you will also need to add these passive checks to the configuration file and to change where they send these results to.
+If you wish to send passive results, you will also need to specify additional information related to passive checks to the configuration file. 
 
 This document is meant to be a reference as to what these directives mean, not necessarily a friendly way to define them.
 
-One last item that should be noted as that you do not need to restart the NCPA server upon changing any of the configuration used by the passive agent. Every time the passive agent wakes up, it reparses its configuration file. However, for the active agent, there are some items that are parsed once at service start, mainly the section named '[listener]'.
+One last item that should be noted is that you do not need to restart the NCPA server upon changing any of the configuration used by the passive agent. Every time the passive agent wakes up, it reparses its configuration file. However, for the active agent there are some items that are parsed once at service start, mainly the section named '[listener]'.  For this reason you should restart the NCPA service if you want to reflect the changes made for active checks.
 
 Config File Location
 --------------------
@@ -22,11 +22,11 @@ Windows keeps this file at::
     
     C:\Program Files (x86)\Nagios\NCPA\etc\ncpa.cfg
 
-Linux/\*IX keeps this file at::
+Linux keeps this file at::
     
     /usr/local/ncpa/etc/ncpa.cfg
 
-Once you have this file, you can start editing it. This file is a standard INI file.
+Once you have located this file, you can start editing it. This file is a standard INI file.
 
 Config File Directives
 ----------------------
@@ -45,10 +45,10 @@ This section controls your active agent settings, ie: How you actively connect t
 .. glossary::
     
     ip
-        This determines what IP the agent will listen on. By default, it will listen on 0.0.0.0, which means it will listen on all interfaces and all name references. Specify this if you would only like the agent listen on a specific IP or name.
+        This determines what IP the agent will listen on. By default, it will listen on 0.0.0.0, which means it will listen on all interfaces and all name references. Specify this if you would only like the agent to listen on a specific IP or name.
     
     port
-        This specifies the TCP port the NCPA server will bind to.
+        This specifies the TCP port the NCPA server will bind to. 
     
     uid
         Determines which user the NCPA server will run as.
@@ -57,13 +57,13 @@ This section controls your active agent settings, ie: How you actively connect t
         Determines the group by which the NCPA server will run as.
     
     pidfile
-        The named file location where PID file for the NCPA server will be stored and maintained.
+        The named file location where the PID file for the NCPA server will be stored and maintained.
     
     logfile
         The named file location where the log file for the NCPA server will be stored.
     
     certificate
-        EXPERIMENTAL. Allows you specify the filename for the SSL certificate you wish to use with the NCPA server. If left adhoc, a new certificate will be generated and used for the server.
+        EXPERIMENTAL. Allows you to specify the filename for the SSL certificate you wish to use with the NCPA server. If left adhoc, a new certificate will be generated and used for the server.
 
 [api]
 +++++
@@ -78,24 +78,24 @@ This section controls how the API is accessed, and currently sports only one ite
 [passive]
 +++++++++
 
-This section controls how the passive service behaves, things like what it should do and how often it should do them. 
+This section controls how the passive service behaves. It will specify things such as what it should do and how often it should be done. 
 
 .. glossary::
     
     sleep
-        The time in seconds which the service will sleep for. Upon waking up, the service will check to see if it has anything to do, then it will sleep again for the specified time.
+        The time in seconds which the service will wait until running again. Upon waking up, the service will check to see if it has anything to do.  If it has nothing to do it will sleep again for the specified time.
     
     handlers
-        This is where the magic happens with the NCPA passive agent. Handlers are items that are run whenever the passive daemon wakes up. The currently supported handlers are nrds and nrdp. This handlers list should be a comma-delimited list of handlers that are to be run. To run both nrds and nrdp handlers, this entry would be *nrds,nrdp*. More information is provided about what each of these handlers do under the `[nrds]`_ and `[nrdp]`_ sections, respectively.
+        This is where the magic happens with the NCPA passive agent. Handlers are items that are run whenever the passive daemon wakes up. The currently supported handlers are nrds and nrdp. This handlers list should be a comma-delimited list of handlers that are to be run. To run both nrds and nrdp handlers, this entry would be *handlers = nrds,nrdp*. More information is provided about what each of these handlers do under the `[nrds]`_ and `[nrdp]`_ sections, respectively.
     
     uid
-        Determines which user the NCPA passive service will run as.
+        Determines which user the NCPA passive service will run as during execution.
     
     gid
-        Determines the group by which the NCPA passive service will run as.
+        Determines the group by which the NCPA passive service will run as during execution.
     
     pidfile
-        The named file location where PID file for the NCPA passive service will be stored and maintained.
+        The named file location where the PID file for the NCPA passive service will be stored and maintained.
     
     logfile
         The named file location where the log file for the NCPA passive service will be stored.
@@ -103,12 +103,12 @@ This section controls how the passive service behaves, things like what it shoul
 [nrdp]
 ++++++
 
-*nrdp* must be present in the passive handlers declaration to send any results back to the Nagios server. This section dicatates where NRDP results will be sent back to, and what tokens will be used.
+The value *nrdp* must be present in the passive handlers declaration (above) to send any results back to the Nagios server. This section dicatates where NRDP results will be sent, and what tokens will be used.
 
 .. glossary::
     
     parent
-        The server of which the Nagios results should be sent back to. The wording on this may seem a bit confusing, but this is for a reason. The NCPA agent can also function as a NRDP forwarder, where if you sent NRDP results to the NCPA listener's IP with the proper token, it will forward the NRDP check results to its parent, or this directive. This allows for you to have a chain of NRDP forwards if firewall contraints are incredibly heavy.
+        The IP address of the Nagios server to which the passive check results should be sent. The wording on this may seem a bit confusing, but this is for a reason. The NCPA agent can also function as a NRDP forwarder. If you sent NRDP results to the NCPA listener's IP with the proper token, it will forward the NRDP check results to its parent, or this directive. This allows for you to have a chain of NRDP forwards if firewall contraints are incredibly heavy.
     
     token
         The token to use to access its parent. Need not be the same as the token NCPA uses for its own server.
@@ -116,18 +116,18 @@ This section controls how the passive service behaves, things like what it shoul
 [nrds]
 ++++++
 
-*nrds*  must be present in handlers delcaration in order to pull down any new configuration. `NRDS <http://exchange.nagios.org/directory/Addons/Components/Nagios-Remote-Data-Sender-(NRDS)/details>`_ is a slick way to manage your configuration files. Many of these directives are boilerplate. The interesting directives are identified in the following. For more information on NRDS see the above link for further definitions of these terms.
+The value *nrds* must be present in the passive handler declaration (above) in order to pull down any new configuration. `NRDS <http://exchange.nagios.org/directory/Addons/Components/Nagios-Remote-Data-Sender-(NRDS)/details>`_ is a slick way to manage your configuration files. Many of these directives are boilerplate. The interesting directives are identified in the following. For more information on NRDS see the above link for further definitions of these terms.
 
 .. glossary::
     
     CONFIG_NAME
-        This is the name that the NCPA passive service will query for updates as. 
+        This is the name that the NCPA passive service will query for updates and is set up in Nagios XI. 
     
     TOKEN
         The token the NCPA passive service will use when connecting to the NRDS server.
     
     URL
-        The URL to be queries for NRDS information.
+        The URL to be queried for NRDS information.
     
     UPDATE_CONFIG
         If this is set to 1, then the config will be updated automatically when a new config becomes available. If anything else, it will not be updated.
@@ -143,7 +143,7 @@ This section does have a hard and fast set of concrete instructions. For informa
 [plugin directives]
 +++++++++++++++++++
 
-This section is where you can specify both the plugin directory and special operations that should be executed when a given filetype is executed. Some examples for the special directives are given.
+This section is where you can specify both the plugin directory and special operations that should be executed when a given filetype is executed as part of a service check. Some examples for the special directives are given.
 
 .. glossary::
     
