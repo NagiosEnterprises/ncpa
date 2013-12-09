@@ -1,7 +1,7 @@
 Installation
 =================
 
-NCPA is packaged for all of its target platforms, including Windows, Linux RPM and DEB packaging as well as tarballs for some of the less common operating systems. Packaging is the one portion of NCPA that cannot be truly platform agnostic. However, packaging for NCPA allows for quick and easy installation on all target platforms and this documentation will give examples and on how to install NCPA.
+NCPA is packaged for all of its target platforms, including Windows, Linux RPM and DEB packaging as well as tarballs for some of the less common operating systems. Packaging is the one portion of NCPA that cannot be truly platform agnostic. However, packaging for NCPA allows for quick and easy installation on all target platforms and this documentation will give examples on how to install NCPA.
 
 First and foremost, the following documentation is for a simple install. If you have a complex environment, you can and probably should skip these. What you should know however, is that there are no gotchas involved with installing NCPA.
 
@@ -26,7 +26,7 @@ The first thing you will see is the Active Specifications section. **NCPA can be
 
 .. glossary::
     
-    token
+    Token
         This is the token that the NCPA agent will use as its form of authentication. You will need this token when setting up Nagios to monitor this agent.
 
 The following are absolutely not necessary to fill out to get an active agent up and running on your system. These are for specifying parameters for the passive agent.
@@ -34,22 +34,26 @@ The following are absolutely not necessary to fill out to get an active agent up
 .. glossary::
 
     NRDP URL
-        This is the URL that the NCPA passive agent will send its check results back to. This is not necessary if you simply want an active agent.
+        This is the URL that the NCPA passive agent will send its check results. This is not necessary if you simply want an active agent.
     
     Hostname
-        This is the hostname that the agent will report back to Nagios as.
+        This is the hostname that the agent will report back to Nagios as and has to be set up within Nagios.
     
     Config Name
         This is the NRDS config name that the agent will request when contacting the NRDS server.
+
+.. note::
+
+    If you are using pasive checks, the initial install will use the same Token for NRDP, NRDS and the NCPA api.  If you want to change the value of any of these tokens you will need to edit the ncpa.cfg.  See the Configuation section for additional information.
 
 Silent Install
 ++++++++++++++
 
 The installer also supports a silent install, which would definitely be handy if you're a ninja systems admin! There are four specifications currently supported by the NCPA installer, which are all analogs to the directives in the GUI installer.
 
-All of the following are to be used as such::
+All of the following are to be used as such
     
-    /*directive* **value**
+/*directive* **value**
 
 while being used on the command line. The following are the names of the directives that are available for a silent install.
 
@@ -76,7 +80,7 @@ To test your installation see `Testing Your Installation`_.
 Installing NCPA Using RPM Packing
 ---------------------------------
 
-First thing that must be done is acquiring the RPM package. The latest RPM package can be found Nagios's assets site. Please choose the correct package from the following list of RPM-using distributions. Note these are links.
+First thing that must be done is acquiring the RPM package. The latest RPM package can be found on Nagios's assets site. Please choose the correct package from the following list of RPM-using distributions. Note these are links.
 
 
 * CentOS 5
@@ -101,6 +105,15 @@ Now that we have our RPM on our system, we simply need to use our package manage
 
 Now the NCPA services are installed and started.
 
+You will need to modify /usr/local/ncpa/etc/ncpa.cfg to specify a community string in the [api] section and set it to your token.
+
+[api]
+community_string=XXXXXX
+
+After making changes to the ncpa.cfg, restart the ncpa_listener for the changes to take affect.
+
+/etc/init.d/ncpa_listener restart
+
 To test your installation see `Testing Your Installation`_.
 
 Installing NCPA Using DEB Packaging
@@ -120,6 +133,15 @@ To install it, simply use apt-get or dpkg. The following example shows how to do
 
 Now the NCPA services are installed and started.
 
+You will need to modify /usr/local/ncpa/etc/ncpa.cfg to specify a community string in the [api] section and set it to your token.
+
+[api]
+community_string=XXXXXX
+
+After making changes to the ncpa.cfg, restart the ncpa_listener for the changes to take affect.
+
+/etc/init.d/ncpa_listener restart
+
 To test your installation see `Testing Your Installation`_.
 
 Install NCPA on Mac OS X
@@ -129,7 +151,7 @@ Install NCPA on Mac OS X
 
     The install process on Mac OS X is still experimental. If you would like to help make this process better, please get in contact with the author (whose address can be found at the bottom of the page.)
 
-Download the `DMG here <https://assets.nagios.com/downloads/ncpa/ncpa-head.dmg>`_ . Now to continue through this part, you will need to log in as root, as at last as a user who can run commands as root. Then, depending on where you installed it (I will assume you downloaded it to your /tmp directory.)::
+Download the `DMG here <https://assets.nagios.com/downloads/ncpa/ncpa-head.dmg>`_ . Now to continue through this part, you will need to log in as root, or at least as a user who can run commands as root. Then, depending on where you installed it (I will assume you downloaded it to your /tmp directory.)run the following commands::
 
     cd /tmp
     hdituil attach /tmp/ncpa-head.dmg
@@ -144,14 +166,14 @@ What this script does is
     * Creates the user nagios if it does not exist
     * Starts the listener daemon
 
-If any of this fails, you will need to do the steps manually. The steps that may fail most off are adding users and groups. If they do, add the user 'nagios' and make sure the user 'nagcmd' exists and that 'nagios' is in the user 'nagcmd'.
+If any of this fails, you will need to do the steps manually. The steps that may fail most often are adding users and groups. If they do, add the user 'nagios' and make sure the user 'nagcmd' exists and that 'nagios' is in the user 'nagcmd'.
 
 Testing Your Installation
 -------------------------
 
 .. warning::
 
-    As noted previous at the top of this page, if you get an error when trying to access this page immediately after installation, make sure your firewall is allowing traffic through on port 5693.
+    As noted previously at the top of this page, if you get an error when trying to access this page immediately after installation, make sure your firewall is allowing traffic through on port 5693.
 
 To ensure that installation was successful, try accessing the web interface of the agent. In order to this you will need to know
 
@@ -162,29 +184,11 @@ Once you have these pieces of information you can attempt to connect to the web 
 
 ::
     
-    https://<agent's IP>:5693/api/?token=<token>
+    https://<agent's IP>:5693
 
-Where <agent's IP> and <token> should be substituted for your agent's IP and token, respectively. You should see something that looks like
+Where <agent's IP> should be substituted for your agent's IP address.  When you access the web interface of NCPA you should be asked to provide the token from above.
 
-::
-    
-    --- snip ---
-    {
-        "value": {
-            "root": {
-                "process": [], 
-                "user": {
-                    "count": 1, 
-                    "list": [
-                    "nscott"
-                    ]
-                }, 
-                "memory": {
-                "swap": {
-                "used": [
-                    8245542912, 
-                    "b"
-                ],
-    --- snip ---
+.. image:: images/NCPA_Login.jpg
+    :align: center
 
 This means your installation is working! You can now proceed.
