@@ -49,12 +49,9 @@ def get_cmdline_no_instruct(plugin_name, plugin_args):
     """Execute the script normally, with no special considerations.
     
     """
-    logging.debug('Doing %s %s', plugin_name, plugin_args)
+    logging.debug('Assembling plugin as plugin name: %s, arguments: %s', plugin_name, plugin_args)
     if not plugin_args is None:
-        extra = shlex.split(plugin_args)
-    else:
-        extra = []
-    return [plugin_name] + []
+        plugin_name += shlex.split(plugin_args)
 
 
 def deltaize_call(keyname, result):
