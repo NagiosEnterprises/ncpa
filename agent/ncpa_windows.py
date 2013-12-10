@@ -101,7 +101,6 @@ class Listener(Base):
         self.setup_plugins()
         self.logger.info("Looking for config at: %s" % self.config_filename)
         self.logger.info("Looking for plugins at: %s" % self.abs_plugin_path)
-        self.logger.info("This is indeed the new one")
 
 class Passive(Base):
     
@@ -154,7 +153,6 @@ class Passive(Base):
         self.setup_plugins()
         self.logger.info("Looking for config at: %s" % self.config_filename)
         self.logger.info("Looking for plugins at: %s" % self.config.get('plugin directives', 'plugin_path'))
-        self.logger.info("This is indeed the new one")
 
 if DEBUG == 1:
     if len(sys.argv) == 3 and sys.argv[1] == 'debug':

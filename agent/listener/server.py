@@ -204,6 +204,9 @@ def nrdp():
 @requires_auth
 def plugin_api(plugin_name=None, plugin_args=None):
     config = listener.config['iconfig']
+    if plugin_args:
+        logging.info(plugin_args)
+        plugin_args = [urllib.unquote(x) for x in plugin_args.split('/')]
     try:
         response = pluginapi.execute_plugin(plugin_name, plugin_args, config)
     except Exception, e:
@@ -220,7 +223,6 @@ def api(accessor='', raw=False):
         url = accessor + '?' + urllib.urlencode(request.args)
         return jsonify({'value': internal_api(url, listener.config['iconfig'])})
     try:
-        print accessor
         response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
     except Exception, e:
         logging.exception(e)
@@ -247,7 +249,8 @@ def internal_api(accessor=None, listener_config=None):
     elif plugin_name:
         result = pluginapi.execute_plugin(plugin_name, plugin_args, listener_config)
     else:
-        result = {'stdout': 'ERROR: Non-node value requested. Requested a tree.', 'returncode': 3}
+        result = {'stdout': 'ERROR: Non-node value requested. Requested a tree.', 
+                  'returncode': 3}
     return result
 
 
