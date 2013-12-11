@@ -3,28 +3,15 @@ import os
 import ConfigParser
 import logging
 import shlex
-import re
-import string
 import urlparse
 import tempfile
 import pickle
 import time
+import re
 
 
-def try_both(plugin_name, plugin_args, config):
-    """Try both the builtin and named plugin, in that order.
-
-    """
-    try:
-        execute_plugin(plugin_name, plugin_args, config)
-    except:
-        execute_named(plugin_name, plugin_args)
-
-
-def get_cmdline_instruct(plugin_name, plugin_args, instruction):
+def get_cmdline(plugin_name, plugin_args, instruction):
     """Execute with special instructions.
-    
-    TODO - Investigate better parameter passing
     
     EXAMPLE instruction (Powershell):
     powershell -ExecutionPolicy Unrestricted $plugin_name $plugin_args
@@ -45,45 +32,48 @@ def get_cmdline_instruct(plugin_name, plugin_args, instruction):
     return command
 
 
-def get_cmdline_no_instruct(plugin_name, plugin_args):
-    """Execute the script normally, with no special considerations.
-    
+def deltaize_call(key_name, result):
+    """Saves the results from this run of the check to be checked later.
+
     """
-    command = [plugin_name]
-    if plugin_args:
-        for x in plugin_args:
-            command.append(x)
-    return command
-
-
-def deltaize_call(keyname, result):
-    filename = "ncpa-%s.tmp" % str(hash(keyname))
+    #Get our temp file filename to save our results too.
+    filename = "ncpa-%s.tmp" % str(hash(key_name))
     tmpfile = os.path.join(tempfile.gettempdir(), filename)
-    oresult = result[:]
-    modified = 0
-    
-    try:
-        fresult = open(tmpfile, 'r')
-        modified = os.path.getmtime(tmpfile)
-        oresult = pickle.load(fresult)
-        fresult.close()
-    except:
-        logging.warning('Error opening tmpfile: ', tmpfile)
-        fresult = open(tmpfile, 'w')
-        pickle.dump(result, fresult)
-        fresult.close()
-        return [0 for x in result]
-    
-    delta = time.time() - modified
-    return [abs((x - y) / delta) for x,y in zip(oresult, result)]
+
+    if os.path.isfile(tmpfile):
+        #If the file exists, we extract the data from it and save it to our loaded_result
+        #variable.
+        result_file = open(tmpfile, 'r')
+        loaded_result = pickle.load(result_file)
+        result_file.close()
+        last_modified = os.path.getmtime(tmpfile)
+    else:
+        #Otherwise load the loaded_result and last_modified with values that will cause zeros
+        #to show up.
+        loaded_result = result
+        last_modified = 0
+
+    #Update the pickled data
+    logging.debug('Updating pickle for %s. filename is %s.' % (key_name, tmpfile))
+    result_file = open(tmpfile, 'w')
+    pickle.dump(result, result_file)
+    result_file.close()
+
+    #Calcluate the return value and return it
+    delta = time.time() - last_modified
+    return [abs((x - y) / delta) for x, y in zip(loaded_result, result)]
 
 
 def make_plugin_response_from_accessor(accessor_response, accessor_args):
+    """This function is a monster and needs to be broken up and rewritten
+
+    """
+    # TODO: Rewrite this beast.
     #~ First look at the GET and POST arguments to see what we are 
     #~ going to use for our warning/critical
     try:
         processed_args = dict(urlparse.parse_qsl(accessor_args))
-    except ValueError, e:
+    except ValueError:
         logging.debug('No argument detected in string %s' % accessor_args)
         processed_args = {}
     except Exception, e:
@@ -178,51 +168,80 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
         perfdata = ' '.join(perfdata)
         stdout = "%s|%s" % (stdout, perfdata)
         
-    return {'returncode':returncode, 'stdout':stdout}
-    
-def is_within_range(nagstring, value):
-    if not nagstring:
+    return {'returncode': returncode, 'stdout': stdout}
+
+
+def is_within_range(nagios_range, value):
+    """Returns False if the given value will raise an alert for the given
+    nagios_range.
+
+    """
+    #First off, we must ensure that the range exists, otherwise just return (not warning or critical.)
+    if not nagios_range:
         return False
-    import re
-    import operator
+
+    #Next make sure the value is a number of some sort
+    value = float(value)
+
+    #Setup our regular expressions to parse the Nagios ranges
     first_float = r'(?P<first>(-?[0-9]+(\.[0-9]+)?))'
-    second_float= r'(?P<second>(-?[0-9]+(\.[0-9]+)?))'
+    second_float = r'(?P<second>(-?[0-9]+(\.[0-9]+)?))'
+
+    #The following is a list of regular expression => function. If the regular expression matches
+    #then run the function. The function is a comparison involving value.
     actions = [(r'^%s$' % first_float, lambda y: (value > float(y.group('first'))) or (value < 0)),
                (r'^%s:$' % first_float, lambda y: value < float(y.group('first'))),
                (r'^~:%s$' % first_float, lambda y: value > float(y.group('first'))),
                (r'^%s:%s$' % (first_float, second_float), lambda y: (value < float(y.group('first'))) or (value > float(y.group('second')))),
                (r'^@%s:%s$' % (first_float, second_float), lambda y: not((value < float(y.group('first'))) or (value > float(y.group('second')))))]
-    for regstr, func in actions:
-        res = re.match(regstr,nagstring)
+
+    #For each of the previous list items, run the regular expression, and if the regular expression
+    #finds a match, run the function and return its comparison result.
+    for regex_string, func in actions:
+        res = re.match(regex_string, nagios_range)
         if res: 
             return func(res)
+
+    #If none of the items matches, the warning/critical format was bogus! Sound the alarms!
     raise Exception('Improper warning/critical format.')
 
 
-def execute_plugin(plugin_name, plugin_args, config, *args, **kwargs):
+def get_plugin_instructions(plugin_name, config):
+    """Returns the instruction to use for the given plugin.
+    If nothing exists for the suffix, then simply return the basic
+
+    $plugin_name $plugin_args
+
     """
-    Runs custom scripts that MUST be located in the scripts subdirectory
+    _, extension = os.path.splitext(plugin_name)
+    try:
+        return config.get('plugin directives', extension)
+    except ConfigParser.NoOptionError:
+        return '$plugin_name $plugin_args'
+
+
+def execute_plugin(plugin_name, plugin_args, config):
+    """Runs custom scripts that MUST be located in the scripts subdirectory
     of the executable
     
     """
-    _, extension = os.path.splitext(plugin_name)
-    plugin_name = os.path.join(config.get('plugin directives', 'plugin_path'), plugin_name)
-    cmd = []
-    try:
-        instruction = config.get('plugin directives', extension)
-        logging.debug('Executing the plugin with instruction contained in config. Instruction is: %s', instruction)
-        cmd += get_cmdline_instruct(plugin_name, plugin_args, instruction)
-    except ConfigParser.NoOptionError:
-        logging.debug('Executing the plugin with instruction by execution.')
-        cmd += get_cmdline_no_instruct(plugin_name, plugin_args)
+    #Assemble our absolute plugin file name for calling
+    plugin_path = config.get('plugin directives', 'plugin_path')
+    plugin_abs_path = os.path.join(plugin_path, plugin_name)
+
+    #Get any special instructions from the config for executing the plugin
+    instructions = get_plugin_instructions(plugin_abs_path, config)
+
+    #Make our command line
+    cmd = get_cmdline(plugin_abs_path, plugin_args, instructions)
     
     logging.debug('Running process with command line: `%s`', ' '.join(cmd))
     
     running_check = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     running_check.wait()
-    
+
     returncode = running_check.returncode
-    stdout = ''.join(running_check.stdout.readlines()).replace('\r\n', '\n').replace('\r', '\n')
+    stdout = ''.join(running_check.stdout.readlines()).replace('\r\n', '\n').replace('\r', '\n').trim()
     
     return {'returncode': returncode, 'stdout': stdout}
 
