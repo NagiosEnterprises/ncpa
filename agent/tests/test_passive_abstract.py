@@ -1,19 +1,35 @@
 import unittest
+import os
+import sys
+import ConfigParser
+
+sys.path.append(os.path.dirname(__file__) + '/..')
+from passive.abstract import *
+
 
 class TestNagiosHandler(unittest.TestCase):
-    def test___init__(self):
-        # nagios_handler = NagiosHandler(config, *args, **kwargs)
-        assert False # TODO: implement your test here
-
     def test_get_warn_crit_from_arguments(self):
-        # nagios_handler = NagiosHandler(config, *args, **kwargs)
-        # self.assertEqual(expected, nagios_handler.get_warn_crit_from_arguments(arguments))
-        assert False # TODO: implement your test here
+        test_string = '-w 10 -c 5'
+        result = NagiosHandler.get_warn_crit_from_arguments(test_string)
 
-    def test_parse_config(self):
-        # nagios_handler = NagiosHandler(config, *args, **kwargs)
-        # self.assertEqual(expected, nagios_handler.parse_config(config, *args, **kwargs))
-        assert False # TODO: implement your test here
+        self.assertEqual(result['warning'], '10')
+        self.assertEqual(result['critical'], '5')
+
+        test_string = '--warning 10 --critical 5'
+        result = NagiosHandler.get_warn_crit_from_arguments(test_string)
+
+        self.assertEqual(result['warning'], '10')
+        self.assertEqual(result['critical'], '5')
+
+    def test__parse_commands(self):
+        test_config = ConfigParser.ConfigParser()
+        test_config.add_section('passive checks')
+        test_config.set('passive checks', 'a|b', 'bingo')
+        test_config.set('passive checks', 'a|c', 'bongo')
+        test_config.set('passive checks', 'ac', 'jingle')
+
+        nh = NagiosHandler(test_config)
+        self.assertEqual(len(nh.ncpa_commands), 2)
 
     def test_run(self):
         # nagios_handler = NagiosHandler(config, *args, **kwargs)
@@ -30,10 +46,6 @@ class TestNagiosHandler(unittest.TestCase):
         # self.assertEqual(expected, nagios_handler.send_command(ncpa_command, *args, **kwargs))
         assert False # TODO: implement your test here
 
-class TestNagiosAssociation(unittest.TestCase):
-    def test___init__(self):
-        # nagios_association = NagiosAssociation(*args, **kwargs)
-        assert False # TODO: implement your test here
 
 class TestNCPACommand(unittest.TestCase):
     def test___init__(self):
