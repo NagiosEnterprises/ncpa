@@ -12,7 +12,6 @@ import psapi
 import pluginapi
 import functools
 import jinja2
-import jinja2.ext
 import datetime
 import re
 
@@ -27,11 +26,11 @@ base_dir = os.path.dirname(sys.path[0])
 
 if os.name == 'nt':
     tmpl_dir = os.path.join(base_dir, 'listener', 'templates')
-    if(not os.path.isdir(tmpl_dir)):
+    if not os.path.isdir(tmpl_dir):
         tmpl_dir = os.path.join(base_dir, 'agent', 'listener', 'templates')
 
     stat_dir = os.path.join(base_dir, 'listener', 'static')
-    if(not os.path.isdir(stat_dir)):
+    if not os.path.isdir(stat_dir):
         stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
 
     logging.info("Looking for templates at: %s" % tmpl_dir)
@@ -39,11 +38,11 @@ if os.name == 'nt':
     listener.jinja_loader = jinja2.FileSystemLoader(tmpl_dir)
 else:
     tmpl_dir = os.path.join(base_dir, 'agent', 'listener', 'templates')
-    if(not os.path.isdir(tmpl_dir)):
+    if not os.path.isdir(tmpl_dir):
         tmpl_dir = os.path.join('/usr', 'local', 'ncpa', 'listener', 'templates')
 
     stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
-    if(not os.path.isdir(stat_dir)):
+    if not os.path.isdir(stat_dir):
         stat_dir = os.path.join('/usr', 'local', 'ncpa', 'listener', 'static')
 
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
@@ -91,19 +90,19 @@ def login():
 @listener.route('/dashboard')
 @requires_auth
 def dashboard():
-    myjson = api('disk/logical', raw=True)
+    my_json = api('disk/logical', raw=True)
     disks = [{'safe': re.sub(r'[^a-zA-Z0-9]', '', x),
-              'raw': x} for x in myjson.get('logical').keys()]
-    myjson = api('interface/', raw=True)
+              'raw': x} for x in my_json.get('logical').keys()]
+    my_json = api('interface/', raw=True)
     interfaces = [{'safe': re.sub(r'[^a-zA-Z0-9]', '', x),
-                   'raw': x} for x in myjson.get('interface').keys()]
-    myjson = api('cpu/count', raw=True)
-    cpucount = myjson.get('count', 0)
+                   'raw': x} for x in my_json.get('interface').keys()]
+    my_json = api('cpu/count', raw=True)
+    cpu_count = my_json.get('count', 0)
 
     return render_template('dashboard.html',
                            disks=disks,
                            interfaces=interfaces,
-                           cpucount=cpucount)
+                           cpucount=cpu_count)
 
 
 @listener.route('/navigator')
@@ -211,7 +210,7 @@ def plugin_api(plugin_name=None, plugin_args=None):
         response = pluginapi.execute_plugin(plugin_name, plugin_args, config)
     except Exception, e:
         logging.exception(e)
-        return error(msg='Error running plugin.')
+        return error(msg='Error running plugin: %s' % str(e))
     return jsonify({'value': response})
 
 
