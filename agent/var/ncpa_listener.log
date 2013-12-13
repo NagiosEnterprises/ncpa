@@ -1,0 +1,36 @@
+2013-12-10 20:55:37,319 5526 INFO started
+2013-12-10 20:55:37,320 5526 INFO Starting server...
+2013-12-10 20:55:37,323 5526 INFO  * Running on https://0.0.0.0:5693/
+2013-12-10 20:56:50,671 5601 INFO started
+2013-12-10 20:56:50,672 5601 INFO Starting server...
+2013-12-10 20:56:50,674 5601 INFO  * Running on https://0.0.0.0:5693/
+2013-12-10 20:56:57,378 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:56:57] "GET / HTTP/1.1" 302 -
+2013-12-10 20:56:57,408 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:56:57] "GET /login HTTP/1.1" 200 -
+2013-12-10 20:56:57,627 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:56:57] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2013-12-10 20:56:57,652 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:56:57] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2013-12-10 20:56:57,669 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:56:57] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2013-12-10 20:56:57,678 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:56:57] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2013-12-10 20:56:57,704 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:56:57] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2013-12-10 20:56:57,712 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:56:57] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2013-12-10 20:56:58,140 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:56:58] "GET /favicon.ico HTTP/1.1" 404 -
+2013-12-10 20:57:00,924 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:57:00] "POST /login HTTP/1.1" 200 -
+2013-12-10 20:57:05,887 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:57:05] "POST /login HTTP/1.1" 302 -
+2013-12-10 20:57:05,907 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:57:05] "GET / HTTP/1.1" 200 -
+2013-12-10 20:57:17,945 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:57:17] "GET /api/cpu/count HTTP/1.1" 200 -
+2013-12-10 20:57:23,497 5601 ERROR No node with that name: count&delta=1
+Traceback (most recent call last):
+  File "/home/nscott/ncpa/agent/listener/server.py", line 226, in api
+    response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 214, in getter
+    return root.accessor(path)
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 26, in accessor
+    return x.accessor(path=path[1:], *args, **kwargs)
+  File "/home/nscott/ncpa/agent/listener/psapi.py", line 27, in accessor
+    raise IndexError('No node with that name: %s' % path[0])
+IndexError: No node with that name: count&delta=1
+2013-12-10 20:57:23,500 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:57:23] "GET /api/cpu/count&delta=1 HTTP/1.1" 200 -
+2013-12-10 20:57:28,995 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:57:28] "GET /api/cpu/count?delta=1 HTTP/1.1" 200 -
+2013-12-10 20:57:41,379 5601 INFO Did not have delta info for count, creating /tmp/ncpa-2126421856.tmp.
+2013-12-10 20:57:41,381 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:57:41] "GET /api/cpu/count?delta=1&check=True HTTP/1.1" 200 -
+2013-12-10 20:58:14,333 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:58:14] "GET /api/cpu/count?delta=1&check=True HTTP/1.1" 200 -
+2013-12-10 21:22:14,860 5601 INFO stopped

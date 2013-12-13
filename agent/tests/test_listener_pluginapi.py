@@ -79,8 +79,25 @@ class TestGetPluginInstructions(unittest.TestCase):
 
 class TestExecutePlugin(unittest.TestCase):
     def test_execute_plugin(self):
-        # self.assertEqual(expected, execute_plugin(plugin_name, plugin_args, config, *args, **kwargs))
-        assert False # TODO: implement your test here
+        test_plugin_filename = os.path.join(tempfile.gettempdir(), 'testing_plugin.sh')
+        test_plugin_fd = open(test_plugin_filename, 'w')
+        test_plugin_fd.write('#!/bin/sh\n')
+        test_plugin_fd.write('echo hi $1\n')
+        test_plugin_fd.write('exit 1')
+        test_plugin_fd.close()
+
+        os.chmod(test_plugin_filename, 0777)
+
+        config = ConfigParser.ConfigParser()
+        config.add_section('plugin directives')
+        config.set('plugin directives', 'plugin_path', tempfile.gettempdir())
+
+        result = execute_plugin('testing_plugin.sh', ['hi'], config)
+        os.unlink(test_plugin_filename)
+
+        expected = {'returncode': 1, 'stdout': 'hi hi'}
+        self.assertEqual(result, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
