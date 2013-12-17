@@ -11,7 +11,7 @@ try:
 except:
     import simplejson as json
 import urllib
-
+import shlex
 
 def pretty(d, indent=0, indenter='    '):
     for key, value in d.iteritems():
@@ -57,11 +57,15 @@ def parse_args():
 
 
 def main(o):
-    host = 'https://%s:%d/api/%s?%%s' % (o.hostname, o.port, o.metric)
+    if o.arguments:
+        arguments = '/'.join([urllib.quote(x, '').replace('%', '%%') for x in shlex.split(o.arguments)])
+    else:
+        arguments = ''
+
+    host = 'https://%s:%d/api/%s/%s?%%s' % (o.hostname, o.port, o.metric, arguments)
 
     if not o.list:
-        gets = {'arguments': o.arguments,
-                'warning': o.warning,
+        gets = {'warning': o.warning,
                 'critical': o.critical,
                 'unit': o.unit,
                 'token': o.token,
@@ -74,13 +78,13 @@ def main(o):
 
     gets = dict((k, v) for k, v in gets.iteritems() if v is not None)
     query = urllib.urlencode(gets)
-    
     url = host % query
     
     try:
         filename, fobject = urllib.urlretrieve(url)
         fileobj = open(filename)
-    except:
+    except Exception, e:
+        raise e
         if options.verbose:
             'Resorting to http...'
         host = url_tmpl % ('http', options.hostname, options.port, options.metric)
@@ -114,7 +118,7 @@ if __name__ == "__main__":
     except Exception, e:
         if options.verbose:
             print "And error was encountered:"
-            print e
+            print str(e)
             sys.exit(3)
         else:
             print 'UNKNOWN: Error occurred while running the plugin.'
