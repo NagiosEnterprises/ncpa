@@ -98,8 +98,13 @@ def get_host_part_from_options(options, use_https=True, **kwargs):
         metric = options.metric
     else:
         metric = ''
+
+    if options.arguments:
+        arguments = '/' + '/'.join([x for x in shlex.split(options.arguments)])
+    else:
+        arguments = ''
     
-    return '%s://%s:%d/api/%s' % (protocol, hostname, port, metric)
+    return '%s://%s:%d/api/%s%s' % (protocol, hostname, port, metric, arguments)
     
 def get_arguments_from_options(options, **kwargs):
     """Returns the http query arguments. If there is a list variable specified,

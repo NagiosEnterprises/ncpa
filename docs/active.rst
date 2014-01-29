@@ -54,13 +54,18 @@ Specifying Arguments for NCPA Builtins
 
 You can use the builtin --warning, --critical, etc of check_ncpa.py, or you can simply bundle those into the check address::
     
-    ./check_ncpa.py -H ncpaserver -t brody cpu/percent --warning 10
+    ./check_ncpa.py -H ncpaserver -t brody -M cpu/percent --warning 10
 
-and::
-    
-    ./check_ncpa.py -H ncpaserver -t brody cpu/percent&warning=10
+.. warning::
 
-Are identical calls.
+    Please note that NCPA use the | character when referring to file system. For example, on a Windows machine,
+    the C:\ drive is referred to as C:|. This is to avoid escaping issues. However, it should be noted that | is
+    a special character in sh (the shell). In order to get around this, when you are specifying disks, use single
+    quotes around your disk call, example.
+
+    ./check_ncpa.py -H ncpaserver -t brody -M 'disk/logical/C:|'
+
+    So that the shell does not interpret it.
 
 Specifying Arguments for Plugins Run by NCPA
 --------------------------------------------
@@ -78,6 +83,23 @@ we would run something like::
 In order to run this properly with NCPA you would call check_ncpa.py like so::
 
     ./check_ncpa.py -H ncpaserver -t brody agent/plugin/test.sh -a "-t 'one argument' -b 'another argument'"
+
+Notice that items with spaces are wrapped in quotes. There is some shell splitting that goes on under
+the hood with NCPA, so the quotes are important if you need to keep the spaces. Lets take
+a look at what can happen.
+
+How NCPA actually processes these it by calling the URL as follows::
+
+    https://ncpaserver/api/agent/plugin/test.sh/-t/one argument/-b/another argument
+
+You can also call it this way if you please, however I believe most people prefer
+the -a method as it keeps some of the dirty details hidden away. Now if you remove
+the quotes around 'one argument in the above example call, it woul actually call::
+
+    https://ncpaserver/api/agent/plugin/test.sh/-t/one/argument/-b/another argument
+
+See the difference? It interprets as if it were the shell, so wrap the arguments
+that need to maintain spaces in quotes.
 
 When All Else Fails...
 ----------------------
