@@ -34,3 +34,49 @@ IndexError: No node with that name: count&delta=1
 2013-12-10 20:57:41,381 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:57:41] "GET /api/cpu/count?delta=1&check=True HTTP/1.1" 200 -
 2013-12-10 20:58:14,333 5601 INFO 127.0.0.1 - - [10/Dec/2013 20:58:14] "GET /api/cpu/count?delta=1&check=True HTTP/1.1" 200 -
 2013-12-10 21:22:14,860 5601 INFO stopped
+2014-01-28 21:00:03,647 29962 INFO started
+2014-01-28 21:00:03,648 29962 INFO Starting server...
+2014-01-28 21:00:03,649 29962 INFO  * Running on https://0.0.0.0:5693/
+2014-01-28 21:00:06,408 29962 INFO stopped
+2014-01-28 21:00:10,847 29979 INFO started
+2014-01-28 21:00:10,847 29979 INFO Starting server...
+2014-01-28 21:00:10,849 29979 INFO  * Running on https://0.0.0.0:5693/
+2014-01-28 21:00:14,698 29979 INFO stopped
+2014-01-28 21:06:06,205 31618 INFO started
+2014-01-28 21:06:06,205 31618 INFO Starting server...
+2014-01-28 21:06:06,207 31618 INFO  * Running on https://0.0.0.0:5693/
+2014-01-28 21:08:25,553 31618 INFO stopped
+2014-01-28 21:08:30,053 32316 INFO started
+2014-01-28 21:08:30,053 32316 INFO Starting server...
+2014-01-28 21:08:30,055 32316 INFO  * Running on https://0.0.0.0:5693/
+2014-01-28 21:08:33,711 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:08:33] "GET / HTTP/1.1" 302 -
+2014-01-28 21:08:33,795 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:08:33] "GET /login HTTP/1.1" 200 -
+2014-01-28 21:08:33,935 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:08:33] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2014-01-28 21:08:33,945 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:08:33] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2014-01-28 21:08:34,000 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:08:34] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2014-01-28 21:08:34,005 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:08:34] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2014-01-28 21:08:34,012 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:08:34] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2014-01-28 21:08:40,096 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:08:40] "GET /favicon.ico HTTP/1.1" 404 -
+2014-01-28 21:08:58,697 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:08:58] "POST /login HTTP/1.1" 302 -
+2014-01-28 21:08:58,769 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:08:58] "GET / HTTP/1.1" 200 -
+2014-01-28 21:08:58,906 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:08:58] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2014-01-28 21:09:04,511 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:09:04] "GET /api/agent HTTP/1.1" 200 -
+2014-01-28 21:09:07,385 32316 ERROR No node with that name: plugins
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/listener/server.py", line 225, in api
+    response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
+  File "/tmp/ncpa/agent/listener/psapi.py", line 214, in getter
+    return root.accessor(path)
+  File "/tmp/ncpa/agent/listener/psapi.py", line 26, in accessor
+    return x.accessor(path=path[1:], *args, **kwargs)
+  File "/tmp/ncpa/agent/listener/psapi.py", line 27, in accessor
+    raise IndexError('No node with that name: %s' % path[0])
+IndexError: No node with that name: plugins
+2014-01-28 21:09:07,387 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:09:07] "GET /api/agent/plugins HTTP/1.1" 200 -
+2014-01-28 21:09:18,497 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:09:18] "GET /api/agent/plugin/test.sh HTTP/1.1" 301 -
+2014-01-28 21:09:18,570 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:09:18] "GET /api/agent/plugin/test.sh/ HTTP/1.1" 200 -
+2014-01-28 21:09:27,377 32316 INFO hi
+2014-01-28 21:09:27,385 32316 INFO 192.168.5.16 - - [28/Jan/2014 21:09:27] "GET /api/agent/plugin/test.sh/hi HTTP/1.1" 200 -
+2014-01-28 21:10:23,439 32316 INFO 127.0.0.1 - - [28/Jan/2014 21:10:23] "GET /api//?token=mytoken HTTP/1.0" 404 -
+2014-01-28 21:10:30,311 32316 INFO 127.0.0.1 - - [28/Jan/2014 21:10:30] "GET /api//?token=mytoken HTTP/1.0" 404 -
+2014-01-28 22:24:28,971 32316 INFO stopped
