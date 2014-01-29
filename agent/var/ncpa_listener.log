@@ -80,3 +80,125 @@ IndexError: No node with that name: plugins
 2014-01-28 21:10:23,439 32316 INFO 127.0.0.1 - - [28/Jan/2014 21:10:23] "GET /api//?token=mytoken HTTP/1.0" 404 -
 2014-01-28 21:10:30,311 32316 INFO 127.0.0.1 - - [28/Jan/2014 21:10:30] "GET /api//?token=mytoken HTTP/1.0" 404 -
 2014-01-28 22:24:28,971 32316 INFO stopped
+2014-01-29 03:58:59,218 3277 INFO started
+2014-01-29 03:58:59,218 3277 INFO Starting server...
+2014-01-29 03:58:59,220 3277 INFO  * Running on https://0.0.0.0:5693/
+2014-01-29 03:59:00,665 3277 INFO stopped
+2014-01-29 03:59:08,806 3402 INFO started
+2014-01-29 03:59:08,806 3402 INFO Starting server...
+2014-01-29 03:59:08,808 3402 INFO  * Running on https://0.0.0.0:5693/
+2014-01-29 03:59:27,569 3402 INFO 172.16.47.1 - - [29/Jan/2014 03:59:27] "GET / HTTP/1.1" 302 -
+2014-01-29 03:59:27,587 3402 INFO 172.16.47.1 - - [29/Jan/2014 03:59:27] "GET /login HTTP/1.1" 200 -
+2014-01-29 03:59:27,725 3402 INFO 172.16.47.1 - - [29/Jan/2014 03:59:27] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2014-01-29 03:59:27,758 3402 INFO 172.16.47.1 - - [29/Jan/2014 03:59:27] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2014-01-29 03:59:27,765 3402 INFO 172.16.47.1 - - [29/Jan/2014 03:59:27] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2014-01-29 03:59:27,771 3402 INFO 172.16.47.1 - - [29/Jan/2014 03:59:27] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2014-01-29 03:59:27,782 3402 INFO 172.16.47.1 - - [29/Jan/2014 03:59:27] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2014-01-29 03:59:27,793 3402 INFO 172.16.47.1 - - [29/Jan/2014 03:59:27] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2014-01-29 03:59:27,926 3402 INFO 172.16.47.1 - - [29/Jan/2014 03:59:27] "GET /favicon.ico HTTP/1.1" 404 -
+2014-01-29 03:59:30,503 3402 INFO 172.16.47.1 - - [29/Jan/2014 03:59:30] "POST /login HTTP/1.1" 302 -
+2014-01-29 03:59:30,514 3402 INFO 172.16.47.1 - - [29/Jan/2014 03:59:30] "GET / HTTP/1.1" 200 -
+2014-01-29 03:59:42,329 3402 ERROR No node with that name: percentage
+Traceback (most recent call last):
+  File "/root/Development/ncpa/agent/listener/server.py", line 225, in api
+    response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
+  File "/root/Development/ncpa/agent/listener/psapi.py", line 214, in getter
+    return root.accessor(path)
+  File "/root/Development/ncpa/agent/listener/psapi.py", line 26, in accessor
+    return x.accessor(path=path[1:], *args, **kwargs)
+  File "/root/Development/ncpa/agent/listener/psapi.py", line 27, in accessor
+    raise IndexError('No node with that name: %s' % path[0])
+IndexError: No node with that name: percentage
+2014-01-29 03:59:42,331 3402 INFO 172.16.47.1 - - [29/Jan/2014 03:59:42] "GET /api/cpu/percentage HTTP/1.1" 200 -
+2014-01-29 03:59:47,761 3402 INFO 172.16.47.1 - - [29/Jan/2014 03:59:47] "GET /api/cpu/percent HTTP/1.1" 200 -
+2014-01-29 03:59:56,289 3402 ERROR No node with that name: percent&check=1
+Traceback (most recent call last):
+  File "/root/Development/ncpa/agent/listener/server.py", line 225, in api
+    response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
+  File "/root/Development/ncpa/agent/listener/psapi.py", line 214, in getter
+    return root.accessor(path)
+  File "/root/Development/ncpa/agent/listener/psapi.py", line 26, in accessor
+    return x.accessor(path=path[1:], *args, **kwargs)
+  File "/root/Development/ncpa/agent/listener/psapi.py", line 27, in accessor
+    raise IndexError('No node with that name: %s' % path[0])
+IndexError: No node with that name: percent&check=1
+2014-01-29 03:59:56,290 3402 INFO 172.16.47.1 - - [29/Jan/2014 03:59:56] "GET /api/cpu/percent&check=1 HTTP/1.1" 200 -
+2014-01-29 04:00:00,543 3402 INFO 172.16.47.1 - - [29/Jan/2014 04:00:00] "GET /api/cpu/percent?check=1 HTTP/1.1" 200 -
+2014-01-29 04:00:11,410 3402 INFO 172.16.47.1 - - [29/Jan/2014 04:00:11] "GET /api/cpu/ HTTP/1.1" 200 -
+2014-01-29 04:16:49,473 3402 INFO 127.0.0.1 - - [29/Jan/2014 04:16:49] "GET /api//cpu?check=1 HTTP/1.0" 404 -
+2014-01-29 04:17:42,295 3402 INFO 127.0.0.1 - - [29/Jan/2014 04:17:42] "GET /api//cpu?check=1 HTTP/1.0" 404 -
+2014-01-29 04:18:27,181 3402 INFO 127.0.0.1 - - [29/Jan/2014 04:18:27] "GET /api//cpu?check=1 HTTP/1.0" 404 -
+2014-01-29 04:19:10,158 3402 INFO 127.0.0.1 - - [29/Jan/2014 04:19:10] "GET /api//cpu?check=1 HTTP/1.0" 404 -
+2014-01-29 04:19:23,068 3402 INFO 127.0.0.1 - - [29/Jan/2014 04:19:23] "GET /api//cpu?check=1 HTTP/1.0" 404 -
+2014-01-29 04:20:05,357 3402 INFO 127.0.0.1 - - [29/Jan/2014 04:20:05] "GET /api//cpu?check=1 HTTP/1.0" 404 -
+2014-01-29 04:21:06,438 3402 INFO stopped
+2014-01-29 04:21:07,553 5406 INFO started
+2014-01-29 04:21:07,553 5406 INFO Starting server...
+2014-01-29 04:21:07,555 5406 INFO  * Running on https://0.0.0.0:5693/
+2014-01-29 04:21:19,928 5406 INFO 172.16.47.1 - - [29/Jan/2014 04:21:19] "GET / HTTP/1.1" 302 -
+2014-01-29 04:21:19,949 5406 INFO 172.16.47.1 - - [29/Jan/2014 04:21:19] "GET /login HTTP/1.1" 200 -
+2014-01-29 04:21:20,091 5406 INFO 172.16.47.1 - - [29/Jan/2014 04:21:20] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2014-01-29 04:21:20,114 5406 INFO 172.16.47.1 - - [29/Jan/2014 04:21:20] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2014-01-29 04:21:20,123 5406 INFO 172.16.47.1 - - [29/Jan/2014 04:21:20] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2014-01-29 04:21:20,128 5406 INFO 172.16.47.1 - - [29/Jan/2014 04:21:20] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2014-01-29 04:21:20,138 5406 INFO 172.16.47.1 - - [29/Jan/2014 04:21:20] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2014-01-29 04:21:20,149 5406 INFO 172.16.47.1 - - [29/Jan/2014 04:21:20] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2014-01-29 04:21:22,651 5406 INFO 172.16.47.1 - - [29/Jan/2014 04:21:22] "POST /login HTTP/1.1" 302 -
+2014-01-29 04:21:22,665 5406 INFO 172.16.47.1 - - [29/Jan/2014 04:21:22] "GET / HTTP/1.1" 200 -
+2014-01-29 04:21:34,065 5406 INFO 172.16.47.1 - - [29/Jan/2014 04:21:34] "GET /api//cpu?check=1 HTTP/1.1" 404 -
+2014-01-29 04:21:43,627 5406 INFO 172.16.47.1 - - [29/Jan/2014 04:21:43] "GET /api/cpu?check=1 HTTP/1.1" 200 -
+2014-01-29 04:24:08,914 5406 INFO 172.16.47.1 - - [29/Jan/2014 04:24:08] "GET /api/ HTTP/1.1" 200 -
+2014-01-29 04:25:30,110 5406 INFO 127.0.0.1 - - [29/Jan/2014 04:25:30] "GET /api/cpu?token=mytoken&check=1 HTTP/1.0" 200 -
+2014-01-29 04:25:59,932 5406 INFO 127.0.0.1 - - [29/Jan/2014 04:25:59] "GET /api/cpu?token=mytoken HTTP/1.0" 200 -
+2014-01-29 04:26:32,308 5406 INFO 127.0.0.1 - - [29/Jan/2014 04:26:32] "GET /api/?token=mytoken HTTP/1.0" 200 -
+2014-01-29 04:27:45,217 5406 INFO 127.0.0.1 - - [29/Jan/2014 04:27:45] "GET /api/cpu/percent?token=mytoken&check=1 HTTP/1.0" 200 -
+2014-01-29 04:28:02,094 5406 INFO 127.0.0.1 - - [29/Jan/2014 04:28:02] "GET /api/cpu/count?token=mytoken&check=1 HTTP/1.0" 200 -
+2014-01-29 04:28:11,048 5406 INFO 127.0.0.1 - - [29/Jan/2014 04:28:11] "GET /api/cpu/count?token=mytoken&warning=1&check=1 HTTP/1.0" 200 -
+2014-01-29 04:28:14,651 5406 INFO 127.0.0.1 - - [29/Jan/2014 04:28:14] "GET /api/cpu/count?token=mytoken&warning=2&check=1 HTTP/1.0" 200 -
+2014-01-29 04:28:17,894 5406 INFO 127.0.0.1 - - [29/Jan/2014 04:28:17] "GET /api/cpu/count?token=mytoken&warning=0&check=1 HTTP/1.0" 200 -
+2014-01-29 04:30:09,863 5406 INFO 127.0.0.1 - - [29/Jan/2014 04:30:09] "GET /api/cpu/count?token=mytoken&warning=2&check=1 HTTP/1.0" 200 -
+2014-01-29 04:30:19,094 5406 INFO 127.0.0.1 - - [29/Jan/2014 04:30:19] "GET /api/cpu/count?token=mytoken&warning=%3A2&check=1 HTTP/1.0" 200 -
+2014-01-29 04:30:26,568 5406 INFO 127.0.0.1 - - [29/Jan/2014 04:30:26] "GET /api/cpu/count?token=mytoken&warning=%402&check=1 HTTP/1.0" 200 -
+2014-01-29 04:30:32,013 5406 INFO 127.0.0.1 - - [29/Jan/2014 04:30:32] "GET /api/cpu/count?token=mytoken&warning=%402%3A&check=1 HTTP/1.0" 200 -
+2014-01-29 04:32:08,374 5406 INFO stopped
+2014-01-29 04:32:22,551 6564 INFO started
+2014-01-29 04:32:22,551 6564 INFO Starting server...
+2014-01-29 04:32:22,553 6564 INFO  * Running on https://0.0.0.0:5693/
+2014-01-29 04:33:01,049 6564 INFO 127.0.0.1 - - [29/Jan/2014 04:33:01] "GET /api/agent/plugin/test.sh/hi?check=1 HTTP/1.0" 302 -
+2014-01-29 04:33:01,063 6564 INFO 127.0.0.1 - - [29/Jan/2014 04:33:01] "GET /login HTTP/1.0" 200 -
+2014-01-29 04:36:49,517 6564 INFO 127.0.0.1 - - [29/Jan/2014 04:36:49] "GET /api/agent/plugin/test.sh/hi?check=1 HTTP/1.0" 302 -
+2014-01-29 04:36:49,521 6564 INFO 127.0.0.1 - - [29/Jan/2014 04:36:49] "GET /login HTTP/1.0" 200 -
+2014-01-29 04:37:10,482 6564 INFO 127.0.0.1 - - [29/Jan/2014 04:37:10] "GET /api/agent/plugin/test.sh/hi?check=1 HTTP/1.0" 302 -
+2014-01-29 04:37:10,486 6564 INFO 127.0.0.1 - - [29/Jan/2014 04:37:10] "GET /login HTTP/1.0" 200 -
+2014-01-29 04:37:28,918 6564 INFO 172.16.47.1 - - [29/Jan/2014 04:37:28] "GET /api/agent/plugin/test.sh/hi?check=1 HTTP/1.1" 302 -
+2014-01-29 04:37:28,926 6564 INFO 172.16.47.1 - - [29/Jan/2014 04:37:28] "GET /login HTTP/1.1" 200 -
+2014-01-29 04:37:29,051 6564 INFO 172.16.47.1 - - [29/Jan/2014 04:37:29] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2014-01-29 04:37:29,073 6564 INFO 172.16.47.1 - - [29/Jan/2014 04:37:29] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2014-01-29 04:37:29,081 6564 INFO 172.16.47.1 - - [29/Jan/2014 04:37:29] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2014-01-29 04:37:29,086 6564 INFO 172.16.47.1 - - [29/Jan/2014 04:37:29] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2014-01-29 04:37:29,099 6564 INFO 172.16.47.1 - - [29/Jan/2014 04:37:29] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2014-01-29 04:37:29,115 6564 INFO 172.16.47.1 - - [29/Jan/2014 04:37:29] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2014-01-29 04:37:32,005 6564 INFO 172.16.47.1 - - [29/Jan/2014 04:37:32] "POST /login HTTP/1.1" 302 -
+2014-01-29 04:37:32,017 6564 INFO 172.16.47.1 - - [29/Jan/2014 04:37:32] "GET / HTTP/1.1" 200 -
+2014-01-29 04:37:48,583 6564 DEBUG Using plugins/
+2014-01-29 04:37:49,111 6564 INFO 172.16.47.1 - - [29/Jan/2014 04:37:49] "GET /api/ HTTP/1.1" 200 -
+2014-01-29 04:37:55,429 6564 INFO hi
+2014-01-29 04:37:55,429 6564 DEBUG Running process with command line: `/bin/sh plugins/test.sh hi`
+2014-01-29 04:37:55,434 6564 INFO 172.16.47.1 - - [29/Jan/2014 04:37:55] "GET /api/agent/plugin/test.sh/hi?check=1 HTTP/1.1" 200 -
+2014-01-29 04:38:26,282 6564 INFO 172.16.47.1 - - [29/Jan/2014 04:38:26] "GET /api/agent/plugin/test.sh?check=1 HTTP/1.1" 301 -
+2014-01-29 04:38:26,291 6564 DEBUG Running process with command line: `/bin/sh plugins/test.sh $plugin_args`
+2014-01-29 04:38:26,295 6564 INFO 172.16.47.1 - - [29/Jan/2014 04:38:26] "GET /api/agent/plugin/test.sh/?check=1 HTTP/1.1" 200 -
+2014-01-29 04:40:31,275 6564 INFO 127.0.0.1 - - [29/Jan/2014 04:40:31] "GET /api/agent/plugin/test.sh/hi?check=1 HTTP/1.0" 302 -
+2014-01-29 04:40:31,280 6564 INFO 127.0.0.1 - - [29/Jan/2014 04:40:31] "GET /login HTTP/1.0" 200 -
+2014-01-29 04:41:38,651 6564 INFO hi
+2014-01-29 04:41:38,651 6564 DEBUG Running process with command line: `/bin/sh plugins/test.sh hi`
+2014-01-29 04:41:38,655 6564 INFO 127.0.0.1 - - [29/Jan/2014 04:41:38] "GET /api/agent/plugin/test.sh/hi?token=mytoken&check=1 HTTP/1.0" 200 -
+2014-01-29 04:41:49,857 6564 INFO hi/there
+2014-01-29 04:41:49,858 6564 DEBUG Running process with command line: `/bin/sh plugins/test.sh hi there`
+2014-01-29 04:41:49,862 6564 INFO 127.0.0.1 - - [29/Jan/2014 04:41:49] "GET /api/agent/plugin/test.sh/hi/there?token=mytoken&check=1 HTTP/1.0" 200 -
+2014-01-29 04:46:16,033 6564 INFO hi/there
+2014-01-29 04:46:16,033 6564 DEBUG Running process with command line: `/bin/sh plugins/test.sh hi there`
+2014-01-29 04:46:16,037 6564 INFO 127.0.0.1 - - [29/Jan/2014 04:46:16] "GET /api/agent/plugin/test.sh/hi/there?token=mytoken&check=1 HTTP/1.0" 200 -
+2014-01-29 04:46:21,791 6564 INFO hi/there
+2014-01-29 04:46:21,791 6564 DEBUG Running process with command line: `/bin/sh plugins/test.sh hi there`
+2014-01-29 04:46:21,795 6564 INFO 127.0.0.1 - - [29/Jan/2014 04:46:21] "GET /api/agent/plugin/test.sh/hi/there?token=mytoken&check=1 HTTP/1.0" 200 -

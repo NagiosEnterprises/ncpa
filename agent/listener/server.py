@@ -15,7 +15,7 @@ import jinja2
 import datetime
 import re
 
-__VERSION__ = 1.2
+__VERSION__ = 1.3
 __STARTED__ = datetime.datetime.now()
 
 
