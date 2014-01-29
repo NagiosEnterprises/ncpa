@@ -43,18 +43,46 @@ It should also be noted that you can use check_ncpa.py to return a tree represen
 
 This command will return a tree representing all of the values you can monitor via NCPA under the cpu tree. To look at everything you could possibly monitor, simply omit the -M flag and its argument.
 
-Specifying Arguments
---------------------
+Specifying Arguments for NCPA Builtins
+--------------------------------------
+
+.. note::
+
+    What is a NCPA builtin? Its a metric that is bundled with NCPA. For example,
+    if you have a plugin you are using NCPA to execute, that is **not** a
+    builtin.
 
 You can use the builtin --warning, --critical, etc of check_ncpa.py, or you can simply bundle those into the check address::
     
-    ./check_ncpa.py -H ncpaserver -t brody api/cpu/percent --warning 10
+    ./check_ncpa.py -H ncpaserver -t brody cpu/percent --warning 10
 
 and::
     
-    ./check_ncpa.py -H ncpaserver -t brody api/cpu/percent&warning=10
+    ./check_ncpa.py -H ncpaserver -t brody cpu/percent&warning=10
 
-Are identical calls. Either way, calling::
+Are identical calls.
+
+Specifying Arguments for Plugins Run by NCPA
+--------------------------------------------
+
+In order to specify arguments plugins that NCPA will be running, you must use
+the -a flag when calling check_ncpa.py. You can also use the long argument
+for the -a flag, which is --arguments.
+
+Let us imagine we are going to run the test.sh plugin installed on our NCPA
+server. If we were running the test.sh plugin on our server with NCPA installed
+we would run something like::
+
+    /path/to/ncpa/plugins/test.sh -t 'one argument' -b 'another argument'
+
+In order to run this properly with NCPA you would call check_ncpa.py like so::
+
+    ./check_ncpa.py -H ncpaserver -t brody agent/plugin/test.sh -a "-t 'one argument' -b 'another argument'"
+
+When All Else Fails...
+----------------------
+
+Either way, calling::
     
     ./check_ncpa.py --help
 

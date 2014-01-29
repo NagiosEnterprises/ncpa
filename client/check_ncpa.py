@@ -12,6 +12,7 @@ except:
     import simplejson as json
 import urllib
 import shlex
+import re
 
 def pretty(d, indent=0, indenter=' '*4):
     info_str = ''
@@ -68,9 +69,7 @@ def parse_args():
         parser.error('No metric given, if you want to list all possible items '
                      'use --list.')
 
-    while options.metric.startswith('/'):
-        options.metric = options.metric[1:]
-         
+    options.metric = re.sub(r'^/?(api/)?', '', options.metric)
     
     return options
 
