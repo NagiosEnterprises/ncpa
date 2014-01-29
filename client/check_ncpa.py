@@ -22,13 +22,14 @@ def pretty(d, indent=0, indenter='    '):
         else:
             print str(value)
 
-
 def parse_args():
     parser = optparse.OptionParser()
     parser.add_option("-H", "--hostname", help="The hostname to be connected to.")
     parser.add_option("-M", "--metric", default='',
-                      help="The metric to check, this is defined on client system. This would also be the plugin name "
-                           "in the plugins directory. Do not attach arguments to it, use the -a directive for that.")
+                      help="The metric to check, this is defined on client "
+                           "system. This would also be the plugin name in the "
+                           "plugins directory. Do not attach arguments to it, "
+                           "use the -a directive for that.")
     parser.add_option("-P", "--port", default=5693, type="int",
                       help="Port to use to connect to the client.")
     parser.add_option("-w", "--warning", default=None, type="str",
@@ -38,13 +39,16 @@ def parse_args():
     parser.add_option("-u", "--unit", default=None,
                       help="The unit prefix (M, G, T)")
     parser.add_option("-a", "--arguments", default=None,
-                      help="Arguments for the plugin to be run. Not necessary unless you're running a custom plugin.")
+                      help="Arguments for the plugin to be run. Not necessary "
+                           "unless you're running a custom plugin.")
     parser.add_option("-t", "--token", default=None,
                       help="The token for connecting.")
     parser.add_option("-d", "--delta", action='store_true',
-                      help="Signals that this check is a delta check and a local state will kept.")
+                      help="Signals that this check is a delta check and a "
+                           "local state will kept.")
     parser.add_option("-l", "--list", action='store_true',
-                      help="List all values under a given node. Do not perform a check.")
+                      help="List all values under a given node. Do not perform "
+                           "a check.")
     parser.add_option("-v", "--verbose", action='store_true',
                       help='Print more verbose error messages.')
     input_options, _ = parser.parse_args()
@@ -55,71 +59,100 @@ def parse_args():
     
     return input_options
 
+#~ The following are all helper functions. I would normally split these out into
+#~ a new module but this needs to be portable.
 
-def main(o):
-    if o.arguments:
-        arguments = '/'.join([urllib.quote(x, '').replace('%', '%%') for x in shlex.split(o.arguments)])
+def get_url_from_options(options, **kwargs):
+    host_part = get_host_part_from_options(options, **kwargs)
+    arguments = get_arguments_from_options(options, **kwargs)
+    
+    return '%s?%s' % (host_part, arguments)
+
+def get_host_part_from_options(options, use_https=True, **kwargs):
+    """Gets the address that will be queries for the JSON.
+    
+    """
+    if use_https:
+        protocol = 'https'
     else:
-        arguments = ''
-
-    host = 'https://%s:%d/api/%s/%s?%%s' % (o.hostname, o.port, o.metric, arguments)
-
-    if not o.list:
-        gets = {'warning': o.warning,
-                'critical': o.critical,
-                'unit': o.unit,
-                'token': o.token,
-                'delta': o.delta,
-                'check': 1
-                }
+        protocol = 'http'
+    
+    hostname = options.hostname
+    port = options.port
+    
+    if not options.metric is None:
+        metric = options.metric
     else:
-        gets = {'token': o.token,
-                'unit': o.unit}
+        metric = ''
+    
+    return '%s://%s:%d/api/%s' % (protocol, hostname, port, metric)
+    
+def get_arguments_from_options(options, **kwargs):
+    """Returns the http query arguments. If there is a list variable specified,
+    it will return the arguments necessary to query for a list.
+    
+    """
+    arguments = {'token': options.token,
+                 'unit': options.unit}
+    if not options.list:
+        arguments['warning'] = options.warning
+        arguments['critical'] = options.critical
+        arguments['delta'] = options.delta
+        arguments['check'] = 1
+    
+    #~ Encode the items in the dictionary that are not None
+    return urllib.urlencode(dict((k, v) for k, v in arguments.iteritems() if v))
 
-    gets = dict((k, v) for k, v in gets.iteritems() if v is not None)
-    query = urllib.urlencode(gets)
-    url = host % query
+#~ The following function simply call the helper functions.
+
+def get_json(options):
+    """Get the page given by the options. This will call down the url and
+    encode its finding into a Python object (from JSON). If it fails to pull
+    the page down using HTTPS, it will attempt HTTP.
+    
+    """
+    url = get_url_from_options(options)
     
     try:
-        filename, fobject = urllib.urlretrieve(url)
-        fileobj = open(filename)
-    except Exception, e:
-        raise e
-        if options.verbose:
-            'Resorting to http...'
-        host = url_tmpl % ('http', options.hostname, options.port, options.metric)
-        url = host % query
-        filename, fobject = urllib.urlretrieve(url)
-        fileobj = open(filename)
+        filename, _ = urllib.urlretrieve(url)
+    except Exception, ex:
+        url = get_url_from_options(options, use_https=False)
+        filename, _ = urllib.urlretrieve(url)
+    
+    return json.load(filename)
+
+def run_check(info_json):
+    """Run a check against the remote host.
+    
+    """
+    address = get_address_from_options(options)
+    arguments = get_arguments_from_options(options)
+    pass    
+    
+def show_list(info_json):
+    """Show the list of avaiable options.
+    
+    """
+    address = get_address_from_options(options)
+    arguments = get_arguments_from_options(options)
+    pass
+
+def main():
+    options = parse_args()
+    info_json = get_json(options)
     
     try:
-        rjson = json.load(fileobj)
-    except Exception, e:
-        if options.verbose:
-            print 'Unable to parse json output'
-        stdout, returncode = 'UNKNOWN: %s' % str(e), 3
-
-    if o.list:
-        pretty(rjson['value'])
-    else:
-        if 'error' in rjson:
-            stdout, returncode = 'UNKNOWN: %s' % rjson['error'], 3
+        if options.list:
+            return show_list(options)
         else:
-            stdout, returncode = rjson['value']['stdout'], rjson['value']['returncode']
-
-        print stdout
-        sys.exit(returncode)
+            return run_check(options)
+    except Exception, e:
+        if options.verbose:
+            return 'An error occurred:' + str(e), 3
+        else:
+            return 'UNKNOWN: Error occurred while running the plugin. Use the verbose flag for more details.', 3
 
 if __name__ == "__main__":
-    options = parse_args()
-    
-    try:
-        main(options)
-    except Exception, e:
-        if options.verbose:
-            print "And error was encountered:"
-            print str(e)
-            sys.exit(3)
-        else:
-            print 'UNKNOWN: Error occurred while running the plugin.'
-            sys.exit(3)
+    stdout, returncode = main()
+    print stdout
+    sys.exit(returncode)
