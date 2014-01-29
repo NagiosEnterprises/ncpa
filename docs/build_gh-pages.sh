@@ -5,7 +5,7 @@ make html
 rm -rf /tmp/ncpa-doc-building
 mkdir /tmp/ncpa-doc-building
 
-cp _build/html/* /tmp/ncpa-doc-building/ -r
+/bin/cp _build/html/* /tmp/ncpa-doc-building/ -r
 
 cd ..
 git checkout gh-pages
