@@ -202,3 +202,235 @@ IndexError: No node with that name: percent&check=1
 2014-01-29 04:46:21,791 6564 INFO hi/there
 2014-01-29 04:46:21,791 6564 DEBUG Running process with command line: `/bin/sh plugins/test.sh hi there`
 2014-01-29 04:46:21,795 6564 INFO 127.0.0.1 - - [29/Jan/2014 04:46:21] "GET /api/agent/plugin/test.sh/hi/there?token=mytoken&check=1 HTTP/1.0" 200 -
+2014-01-29 05:13:22,278 6564 DEBUG Running process with command line: `/bin/sh plugins/test.sh $plugin_args`
+2014-01-29 05:13:22,283 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:13:22] "GET /api/agent/plugin/test.sh/?check=1 HTTP/1.1" 200 -
+2014-01-29 05:14:43,342 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:14:43] "GET / HTTP/1.1" 200 -
+2014-01-29 05:14:43,448 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:14:43] "GET /static/css/ncpa.css HTTP/1.1" 200 -
+2014-01-29 05:14:43,455 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:14:43] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 200 -
+2014-01-29 05:14:43,463 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:14:43] "GET /static/css/bootstrap.css HTTP/1.1" 200 -
+2014-01-29 05:14:43,472 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:14:43] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 200 -
+2014-01-29 05:14:43,484 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:14:43] "GET /static/js/bootstrap.js HTTP/1.1" 200 -
+2014-01-29 05:14:43,494 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:14:43] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 -
+2014-01-29 05:14:45,338 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:14:45] "GET /config HTTP/1.1" 200 -
+2014-01-29 05:14:45,420 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:14:45] "GET /static/css/configuration.css HTTP/1.1" 200 -
+2014-01-29 05:14:45,505 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:14:45] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2014-01-29 05:15:36,447 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:15:36] "GET /config HTTP/1.1" 200 -
+2014-01-29 05:15:36,543 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:15:36] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2014-01-29 05:15:36,552 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:15:36] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2014-01-29 05:15:36,558 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:15:36] "GET /static/css/ncpa.css HTTP/1.1" 304 -
+2014-01-29 05:15:36,567 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:15:36] "GET /static/css/configuration.css HTTP/1.1" 304 -
+2014-01-29 05:15:36,573 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:15:36] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2014-01-29 05:15:36,580 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:15:36] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2014-01-29 05:15:36,585 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:15:36] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 -
+2014-01-29 05:15:36,656 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:15:36] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2014-01-29 05:15:41,107 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:15:41] "GET /static/img/glyphicons-halflings-white.png HTTP/1.1" 200 -
+2014-01-29 05:16:33,966 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:16:33] "GET /config HTTP/1.1" 200 -
+2014-01-29 05:16:34,074 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:16:34] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2014-01-29 05:16:34,079 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:16:34] "GET /static/css/ncpa.css HTTP/1.1" 304 -
+2014-01-29 05:16:34,085 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:16:34] "GET /static/css/configuration.css HTTP/1.1" 304 -
+2014-01-29 05:16:34,090 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:16:34] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2014-01-29 05:16:34,094 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:16:34] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2014-01-29 05:16:34,100 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:16:34] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2014-01-29 05:16:34,106 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:16:34] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 -
+2014-01-29 05:16:34,175 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:16:34] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2014-01-29 05:17:15,706 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:17:15] "GET /config HTTP/1.1" 200 -
+2014-01-29 05:17:15,815 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:17:15] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2014-01-29 05:17:15,821 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:17:15] "GET /static/css/ncpa.css HTTP/1.1" 304 -
+2014-01-29 05:17:15,825 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:17:15] "GET /static/css/configuration.css HTTP/1.1" 304 -
+2014-01-29 05:17:15,830 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:17:15] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2014-01-29 05:17:15,836 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:17:15] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2014-01-29 05:17:15,841 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:17:15] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2014-01-29 05:17:15,847 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:17:15] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 -
+2014-01-29 05:17:15,918 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:17:15] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2014-01-29 05:18:02,416 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:02] "GET /config HTTP/1.1" 200 -
+2014-01-29 05:18:02,557 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:02] "GET /static/css/configuration.css HTTP/1.1" 304 -
+2014-01-29 05:18:02,574 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:02] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2014-01-29 05:18:02,586 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:02] "GET /static/css/ncpa.css HTTP/1.1" 304 -
+2014-01-29 05:18:02,599 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:02] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2014-01-29 05:18:02,609 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:02] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2014-01-29 05:18:02,621 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:02] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2014-01-29 05:18:02,637 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:02] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 -
+2014-01-29 05:18:02,693 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:02] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2014-01-29 05:18:35,106 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:35] "GET /config HTTP/1.1" 200 -
+2014-01-29 05:18:35,215 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:35] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2014-01-29 05:18:35,221 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:35] "GET /static/css/ncpa.css HTTP/1.1" 304 -
+2014-01-29 05:18:35,226 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:35] "GET /static/css/configuration.css HTTP/1.1" 304 -
+2014-01-29 05:18:35,231 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:35] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2014-01-29 05:18:35,237 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:35] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2014-01-29 05:18:35,241 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:35] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2014-01-29 05:18:35,247 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:35] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 -
+2014-01-29 05:18:35,319 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:18:35] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2014-01-29 05:19:29,746 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:29] "GET /config HTTP/1.1" 200 -
+2014-01-29 05:19:29,858 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:29] "GET /static/css/bootstrap-responsive.css HTTP/1.1" 304 -
+2014-01-29 05:19:29,863 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:29] "GET /static/css/ncpa.css HTTP/1.1" 304 -
+2014-01-29 05:19:29,868 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:29] "GET /static/css/configuration.css HTTP/1.1" 304 -
+2014-01-29 05:19:29,872 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:29] "GET /static/css/bootstrap.css HTTP/1.1" 304 -
+2014-01-29 05:19:29,879 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:29] "GET /static/js/jquery-1.8.3.min.js HTTP/1.1" 304 -
+2014-01-29 05:19:29,884 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:29] "GET /static/js/bootstrap.js HTTP/1.1" 304 -
+2014-01-29 05:19:29,889 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:29] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 -
+2014-01-29 05:19:29,961 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:29] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2014-01-29 05:19:41,253 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:41] "GET /static/help/index.html HTTP/1.1" 200 -
+2014-01-29 05:19:41,344 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:41] "GET /static/help/_static/basic.css HTTP/1.1" 200 -
+2014-01-29 05:19:41,365 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:41] "GET /static/help/_static/pygments.css HTTP/1.1" 200 -
+2014-01-29 05:19:41,383 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:41] "GET /static/help/_static/bootstrap-sphinx.css HTTP/1.1" 200 -
+2014-01-29 05:19:41,409 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:41] "GET /static/help/_static/jquery.js HTTP/1.1" 200 -
+2014-01-29 05:19:41,426 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:41] "GET /static/help/_static/underscore.js HTTP/1.1" 200 -
+2014-01-29 05:19:41,432 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:41] "GET /static/help/_static/doctools.js HTTP/1.1" 200 -
+2014-01-29 05:19:41,439 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:41] "GET /static/help/_static/js/jquery-1.9.1.min.js HTTP/1.1" 200 -
+2014-01-29 05:19:41,451 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:41] "GET /static/help/_static/bootstrap-sphinx.js HTTP/1.1" 200 -
+2014-01-29 05:19:41,459 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:41] "GET /static/help/_static/js/jquery-fix.js HTTP/1.1" 200 -
+2014-01-29 05:19:41,463 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:41] "GET /static/help/_static/bootstrap-3.0.0/js/bootstrap.min.js HTTP/1.1" 404 -
+2014-01-29 05:19:49,188 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:49] "GET /config HTTP/1.1" 200 -
+2014-01-29 05:19:49,273 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:19:49] "GET /config?section=plugin+directives HTTP/1.1" 200 -
+2014-01-29 05:20:00,086 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:00] "GET / HTTP/1.1" 200 -
+2014-01-29 05:20:03,044 6564 DEBUG Using plugins/
+2014-01-29 05:20:03,045 6564 DEBUG Using plugins/
+2014-01-29 05:20:03,047 6564 DEBUG Using plugins/
+2014-01-29 05:20:03,174 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:03] "GET /dashboard HTTP/1.1" 200 -
+2014-01-29 05:20:04,281 6564 DEBUG Using plugins/
+2014-01-29 05:20:04,284 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:04] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2014-01-29 05:20:04,292 6564 DEBUG Using plugins/
+2014-01-29 05:20:04,294 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:04] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2014-01-29 05:20:04,303 6564 DEBUG Using plugins/
+2014-01-29 05:20:05,306 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:05] "GET /api/cpu/percent HTTP/1.1" 200 -
+2014-01-29 05:20:05,309 6564 DEBUG Using plugins/
+2014-01-29 05:20:05,311 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:05] "GET /api/user/count HTTP/1.1" 200 -
+2014-01-29 05:20:05,320 6564 DEBUG Using plugins/
+2014-01-29 05:20:05,322 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:05] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2014-01-29 05:20:05,326 6564 DEBUG Using plugins/
+2014-01-29 05:20:05,328 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:05] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2014-01-29 05:20:06,280 6564 DEBUG Using plugins/
+2014-01-29 05:20:06,282 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:06] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2014-01-29 05:20:06,288 6564 DEBUG Using plugins/
+2014-01-29 05:20:06,291 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:06] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2014-01-29 05:20:06,296 6564 DEBUG Using plugins/
+2014-01-29 05:20:07,299 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:07] "GET /api/cpu/percent HTTP/1.1" 200 -
+2014-01-29 05:20:07,303 6564 DEBUG Using plugins/
+2014-01-29 05:20:07,304 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:07] "GET /api/user/count HTTP/1.1" 200 -
+2014-01-29 05:20:07,311 6564 DEBUG Using plugins/
+2014-01-29 05:20:07,313 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:07] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2014-01-29 05:20:07,317 6564 DEBUG Using plugins/
+2014-01-29 05:20:07,319 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:07] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2014-01-29 05:20:08,280 6564 DEBUG Using plugins/
+2014-01-29 05:20:08,282 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:08] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2014-01-29 05:20:08,287 6564 DEBUG Using plugins/
+2014-01-29 05:20:08,288 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:08] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2014-01-29 05:20:08,297 6564 DEBUG Using plugins/
+2014-01-29 05:20:09,299 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:09] "GET /api/cpu/percent HTTP/1.1" 200 -
+2014-01-29 05:20:09,304 6564 DEBUG Using plugins/
+2014-01-29 05:20:09,304 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:09] "GET /api/user/count HTTP/1.1" 200 -
+2014-01-29 05:20:09,313 6564 DEBUG Using plugins/
+2014-01-29 05:20:09,314 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:09] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2014-01-29 05:20:09,319 6564 DEBUG Using plugins/
+2014-01-29 05:20:09,320 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:09] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2014-01-29 05:20:10,279 6564 DEBUG Using plugins/
+2014-01-29 05:20:10,283 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:10] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2014-01-29 05:20:10,288 6564 DEBUG Using plugins/
+2014-01-29 05:20:10,290 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:10] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2014-01-29 05:20:10,299 6564 DEBUG Using plugins/
+2014-01-29 05:20:11,301 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:11] "GET /api/cpu/percent HTTP/1.1" 200 -
+2014-01-29 05:20:11,305 6564 DEBUG Using plugins/
+2014-01-29 05:20:11,307 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:11] "GET /api/user/count HTTP/1.1" 200 -
+2014-01-29 05:20:11,313 6564 DEBUG Using plugins/
+2014-01-29 05:20:11,315 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:11] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2014-01-29 05:20:11,318 6564 DEBUG Using plugins/
+2014-01-29 05:20:11,320 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:11] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2014-01-29 05:20:12,280 6564 DEBUG Using plugins/
+2014-01-29 05:20:12,283 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:12] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2014-01-29 05:20:12,293 6564 DEBUG Using plugins/
+2014-01-29 05:20:12,295 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:12] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2014-01-29 05:20:12,299 6564 DEBUG Using plugins/
+2014-01-29 05:20:13,302 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:13] "GET /api/cpu/percent HTTP/1.1" 200 -
+2014-01-29 05:20:13,307 6564 DEBUG Using plugins/
+2014-01-29 05:20:13,308 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:13] "GET /api/user/count HTTP/1.1" 200 -
+2014-01-29 05:20:13,316 6564 DEBUG Using plugins/
+2014-01-29 05:20:13,318 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:13] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2014-01-29 05:20:13,322 6564 DEBUG Using plugins/
+2014-01-29 05:20:13,324 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:13] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2014-01-29 05:20:14,283 6564 DEBUG Using plugins/
+2014-01-29 05:20:14,285 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:14] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2014-01-29 05:20:14,290 6564 DEBUG Using plugins/
+2014-01-29 05:20:14,292 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:14] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2014-01-29 05:20:14,300 6564 DEBUG Using plugins/
+2014-01-29 05:20:15,302 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:15] "GET /api/cpu/percent HTTP/1.1" 200 -
+2014-01-29 05:20:15,306 6564 DEBUG Using plugins/
+2014-01-29 05:20:15,308 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:15] "GET /api/user/count HTTP/1.1" 200 -
+2014-01-29 05:20:15,316 6564 DEBUG Using plugins/
+2014-01-29 05:20:15,317 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:15] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2014-01-29 05:20:15,322 6564 DEBUG Using plugins/
+2014-01-29 05:20:15,324 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:15] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2014-01-29 05:20:16,281 6564 DEBUG Using plugins/
+2014-01-29 05:20:16,284 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:16] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2014-01-29 05:20:16,290 6564 DEBUG Using plugins/
+2014-01-29 05:20:16,292 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:16] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2014-01-29 05:20:16,300 6564 DEBUG Using plugins/
+2014-01-29 05:20:17,303 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:17] "GET /api/cpu/percent HTTP/1.1" 200 -
+2014-01-29 05:20:17,307 6564 DEBUG Using plugins/
+2014-01-29 05:20:17,308 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:17] "GET /api/user/count HTTP/1.1" 200 -
+2014-01-29 05:20:17,316 6564 DEBUG Using plugins/
+2014-01-29 05:20:17,318 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:17] "GET /api/memory/swap/percent HTTP/1.1" 200 -
+2014-01-29 05:20:17,322 6564 DEBUG Using plugins/
+2014-01-29 05:20:17,324 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:17] "GET /api/memory/virtual/percent HTTP/1.1" 200 -
+2014-01-29 05:20:18,604 6564 DEBUG Using plugins/
+2014-01-29 05:20:18,606 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:18] "GET /api/disk/logical/%7Cboot/used_percent HTTP/1.1" 200 -
+2014-01-29 05:20:18,612 6564 DEBUG Using plugins/
+2014-01-29 05:20:18,613 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:18] "GET /api/disk/logical/%7C/used_percent HTTP/1.1" 200 -
+2014-01-29 05:20:19,603 6564 DEBUG Using plugins/
+2014-01-29 05:20:19,605 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:19] "GET /api/disk/logical/%7Cboot/used_percent HTTP/1.1" 200 -
+2014-01-29 05:20:19,608 6564 DEBUG Using plugins/
+2014-01-29 05:20:19,610 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:19] "GET /api/disk/logical/%7C/used_percent HTTP/1.1" 200 -
+2014-01-29 05:20:20,602 6564 DEBUG Using plugins/
+2014-01-29 05:20:20,603 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:20] "GET /api/disk/logical/%7Cboot/used_percent HTTP/1.1" 200 -
+2014-01-29 05:20:20,609 6564 DEBUG Using plugins/
+2014-01-29 05:20:20,611 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:20] "GET /api/disk/logical/%7C/used_percent HTTP/1.1" 200 -
+2014-01-29 05:20:22,037 6564 DEBUG Using plugins/
+2014-01-29 05:20:22,041 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:22] "GET /api/interface/lo/bytes_recv HTTP/1.1" 200 -
+2014-01-29 05:20:22,048 6564 DEBUG Using plugins/
+2014-01-29 05:20:22,052 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:22] "GET /api/interface/lo/bytes_sent HTTP/1.1" 200 -
+2014-01-29 05:20:22,060 6564 DEBUG Using plugins/
+2014-01-29 05:20:22,062 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:22] "GET /api/interface/eth0/bytes_recv HTTP/1.1" 200 -
+2014-01-29 05:20:22,068 6564 DEBUG Using plugins/
+2014-01-29 05:20:22,069 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:22] "GET /api/interface/eth0/bytes_sent HTTP/1.1" 200 -
+2014-01-29 05:20:23,036 6564 DEBUG Using plugins/
+2014-01-29 05:20:23,037 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:23] "GET /api/interface/lo/bytes_recv HTTP/1.1" 200 -
+2014-01-29 05:20:23,046 6564 DEBUG Using plugins/
+2014-01-29 05:20:23,048 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:23] "GET /api/interface/lo/bytes_sent HTTP/1.1" 200 -
+2014-01-29 05:20:23,053 6564 DEBUG Using plugins/
+2014-01-29 05:20:23,054 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:23] "GET /api/interface/eth0/bytes_recv HTTP/1.1" 200 -
+2014-01-29 05:20:23,058 6564 DEBUG Using plugins/
+2014-01-29 05:20:23,060 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:23] "GET /api/interface/eth0/bytes_sent HTTP/1.1" 200 -
+2014-01-29 05:20:24,036 6564 DEBUG Using plugins/
+2014-01-29 05:20:24,038 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:24] "GET /api/interface/lo/bytes_recv HTTP/1.1" 200 -
+2014-01-29 05:20:24,047 6564 DEBUG Using plugins/
+2014-01-29 05:20:24,049 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:24] "GET /api/interface/lo/bytes_sent HTTP/1.1" 200 -
+2014-01-29 05:20:24,055 6564 DEBUG Using plugins/
+2014-01-29 05:20:24,056 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:24] "GET /api/interface/eth0/bytes_recv HTTP/1.1" 200 -
+2014-01-29 05:20:24,060 6564 DEBUG Using plugins/
+2014-01-29 05:20:24,063 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:24] "GET /api/interface/eth0/bytes_sent HTTP/1.1" 200 -
+2014-01-29 05:20:25,047 6564 DEBUG Using plugins/
+2014-01-29 05:20:25,049 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:25] "GET /api/interface/lo/bytes_recv HTTP/1.1" 200 -
+2014-01-29 05:20:25,054 6564 DEBUG Using plugins/
+2014-01-29 05:20:25,057 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:25] "GET /api/interface/lo/bytes_sent HTTP/1.1" 200 -
+2014-01-29 05:20:25,061 6564 DEBUG Using plugins/
+2014-01-29 05:20:25,064 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:25] "GET /api/interface/eth0/bytes_recv HTTP/1.1" 200 -
+2014-01-29 05:20:25,071 6564 DEBUG Using plugins/
+2014-01-29 05:20:25,073 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:25] "GET /api/interface/eth0/bytes_sent HTTP/1.1" 200 -
+2014-01-29 05:20:26,044 6564 DEBUG Using plugins/
+2014-01-29 05:20:26,047 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:26] "GET /api/interface/lo/bytes_recv HTTP/1.1" 200 -
+2014-01-29 05:20:26,052 6564 DEBUG Using plugins/
+2014-01-29 05:20:26,054 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:26] "GET /api/interface/lo/bytes_sent HTTP/1.1" 200 -
+2014-01-29 05:20:26,058 6564 DEBUG Using plugins/
+2014-01-29 05:20:26,060 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:26] "GET /api/interface/eth0/bytes_recv HTTP/1.1" 200 -
+2014-01-29 05:20:26,066 6564 DEBUG Using plugins/
+2014-01-29 05:20:26,068 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:26] "GET /api/interface/eth0/bytes_sent HTTP/1.1" 200 -
+2014-01-29 05:20:27,043 6564 DEBUG Using plugins/
+2014-01-29 05:20:27,044 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:27] "GET /api/interface/lo/bytes_recv HTTP/1.1" 200 -
+2014-01-29 05:20:27,051 6564 DEBUG Using plugins/
+2014-01-29 05:20:27,053 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:27] "GET /api/interface/lo/bytes_sent HTTP/1.1" 200 -
+2014-01-29 05:20:27,058 6564 DEBUG Using plugins/
+2014-01-29 05:20:27,061 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:27] "GET /api/interface/eth0/bytes_recv HTTP/1.1" 200 -
+2014-01-29 05:20:27,066 6564 DEBUG Using plugins/
+2014-01-29 05:20:27,068 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:27] "GET /api/interface/eth0/bytes_sent HTTP/1.1" 200 -
+2014-01-29 05:20:27,822 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:27] "GET /api HTTP/1.1" 301 -
+2014-01-29 05:20:27,830 6564 DEBUG Using plugins/
+2014-01-29 05:20:28,398 6564 INFO 172.16.47.1 - - [29/Jan/2014 05:20:28] "GET /api/ HTTP/1.1" 200 -
