@@ -12,6 +12,7 @@ except:
     import simplejson as json
 import urllib
 import shlex
+import re
 
 def pretty(d, indent=0, indenter=' '*4):
     info_str = ''
@@ -68,9 +69,7 @@ def parse_args():
         parser.error('No metric given, if you want to list all possible items '
                      'use --list.')
 
-    while options.metric.startswith('/'):
-        options.metric = options.metric[1:]
-         
+    options.metric = re.sub(r'^/?(api/)?', '', options.metric)
     
     return options
 
@@ -99,8 +98,13 @@ def get_host_part_from_options(options, use_https=True, **kwargs):
         metric = options.metric
     else:
         metric = ''
+
+    if options.arguments:
+        arguments = '/' + '/'.join([x for x in shlex.split(options.arguments)])
+    else:
+        arguments = ''
     
-    return '%s://%s:%d/api/%s' % (protocol, hostname, port, metric)
+    return '%s://%s:%d/api/%s%s' % (protocol, hostname, port, metric, arguments)
     
 def get_arguments_from_options(options, **kwargs):
     """Returns the http query arguments. If there is a list variable specified,

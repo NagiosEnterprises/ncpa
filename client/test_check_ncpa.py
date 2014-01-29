@@ -74,9 +74,5 @@ class Test(unittest.TestCase):
         self.assertEquals(str, type(url))
         self.assertTrue(is_valid_url(url))
 
-    def test_pretty(self):
-        example = {'hi': {'Bingo': 0, 'Bongo': 1}}
-        print check_ncpa.pretty(example)
-
 if __name__ == '__main__':
     unittest.main()
