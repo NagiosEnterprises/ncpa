@@ -59,6 +59,10 @@ def parse_args():
         parser.print_help()
         parser.error("Hostname is required for use.")
 
+    if not options.token:
+        parser.print_help()
+        parser.error("A token is most definitely required.")
+
     if not options.metric and not options.list:
         parser.print_help()
         parser.error('No metric given, if you want to list all possible items '
@@ -122,17 +126,22 @@ def get_json(options):
     the page down using HTTPS, it will attempt HTTP.
     
     """
-    url = get_url_from_options(options)
+    url = get_url_from_options(options, verbose=options.verbose)
+
+    if options.verbose:
+        print 'Connecting to: ' + url
     
-    if True:
-    #~ try:
+    try:
         filename, _ = urllib.urlretrieve(url)
         f = open(filename)
-        #~ print f.readlines()
-    #~ except Exception, ex:
-        #~ url = get_url_from_options(options, use_https=False)
-        #~ filename, _ = urllib.urlretrieve(url)
-        #~ f = open(filename)
+    except Exception, ex:
+        url = get_url_from_options(options, use_https=False)
+        filename, _ = urllib.urlretrieve(url)
+        f = open(filename)
+
+    if options.verbose:
+        print 'File returned contained:\n' + ''.join(f.readlines())
+        f.seek(0)
     
     return json.load(f)['value']
 
@@ -149,10 +158,9 @@ def show_list(info_json):
     return pretty(info_json), 0
 
 def main():
-    options = parse_args()
-    info_json = get_json(options)
-    
     try:
+        options = parse_args()
+        info_json = get_json(options)
         if options.list:
             return show_list(info_json)
         else:
