@@ -13,14 +13,16 @@ except:
 import urllib
 import shlex
 
-def pretty(d, indent=0, indenter='    '):
+def pretty(d, indent=0, indenter=' '*4):
+    info_str = ''
     for key, value in d.iteritems():
-        print indenter * indent + str(key), ':',
+        info_str += indenter * indent + str(key)
         if isinstance(value, dict):
-            print ''
-            pretty(value, indent+1, indenter)
+            info_str += '/\n'
+            info_str += pretty(value, indent+1, indenter)
         else:
-            print str(value)
+            info_str += ': ' + str(value) + '\n'
+    return info_str
 
 def parse_args():
     parser = optparse.OptionParser()
@@ -51,13 +53,22 @@ def parse_args():
                            "a check.")
     parser.add_option("-v", "--verbose", action='store_true',
                       help='Print more verbose error messages.')
-    input_options, _ = parser.parse_args()
+    options, _ = parser.parse_args()
     
-    if not input_options.hostname:
+    if not options.hostname:
         parser.print_help()
         parser.error("Hostname is required for use.")
+
+    if not options.metric and not options.list:
+        parser.print_help()
+        parser.error('No metric given, if you want to list all possible items '
+                     'use --list.')
+
+    while options.metric.startswith('/'):
+        options.metric = options.metric[1:]
+         
     
-    return input_options
+    return options
 
 #~ The following are all helper functions. I would normally split these out into
 #~ a new module but this needs to be portable.
@@ -113,29 +124,29 @@ def get_json(options):
     """
     url = get_url_from_options(options)
     
-    try:
+    if True:
+    #~ try:
         filename, _ = urllib.urlretrieve(url)
-    except Exception, ex:
-        url = get_url_from_options(options, use_https=False)
-        filename, _ = urllib.urlretrieve(url)
+        f = open(filename)
+        #~ print f.readlines()
+    #~ except Exception, ex:
+        #~ url = get_url_from_options(options, use_https=False)
+        #~ filename, _ = urllib.urlretrieve(url)
+        #~ f = open(filename)
     
-    return json.load(filename)
+    return json.load(f)['value']
 
 def run_check(info_json):
     """Run a check against the remote host.
     
     """
-    address = get_address_from_options(options)
-    arguments = get_arguments_from_options(options)
-    pass    
+    return info_json['stdout'], info_json['returncode']
     
 def show_list(info_json):
     """Show the list of avaiable options.
     
     """
-    address = get_address_from_options(options)
-    arguments = get_arguments_from_options(options)
-    pass
+    return pretty(info_json), 0
 
 def main():
     options = parse_args()
@@ -143,9 +154,9 @@ def main():
     
     try:
         if options.list:
-            return show_list(options)
+            return show_list(info_json)
         else:
-            return run_check(options)
+            return run_check(info_json)
     except Exception, e:
         if options.verbose:
             return 'An error occurred:' + str(e), 3

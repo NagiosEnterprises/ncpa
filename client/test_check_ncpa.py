@@ -35,12 +35,13 @@ class Test(unittest.TestCase):
         self.c_options.port = 1025
     
     def test_run_check(self):
-        results = check_ncpa.run_check(self.c_options)
-        
+        results = check_ncpa.run_check({'returncode': 0, 'stdout': 'Hi'})
         self.assertEquals(len(results), 2)
+        self.assertEquals(results, ('Hi', 0))
     
     def test_show_list(self):
-        self.assertFalse('Test is not implemented.')
+        results = check_ncpa.show_list({'Bingo': 'bongo'})
+        self.assertEquals(len(results), 2)
     
     #~ Non-TDD tests, just development correctness tests
     
@@ -72,6 +73,10 @@ class Test(unittest.TestCase):
         url = check_ncpa.get_url_from_options(self.c_options)
         self.assertEquals(str, type(url))
         self.assertTrue(is_valid_url(url))
+
+    def test_pretty(self):
+        example = {'hi': {'Bingo': 0, 'Bongo': 1}}
+        print check_ncpa.pretty(example)
 
 if __name__ == '__main__':
     unittest.main()
