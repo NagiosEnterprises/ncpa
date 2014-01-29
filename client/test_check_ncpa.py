@@ -9,7 +9,7 @@ import re
 # The module to be tested
 import check_ncpa
 
-#~ Djano URL validator
+#~ Django URL validator
 def is_valid_url(url):
     regex = re.compile(
         r'^https?://'
