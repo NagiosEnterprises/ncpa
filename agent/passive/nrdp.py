@@ -5,16 +5,6 @@ import xml.dom.minidom
 import logging
 import utils
 
-class NRDPAssociation(abstract.NagiosAssociation):
-    '''
-    Specialized Association that has NRDP variables.
-    '''
-    
-    def __init__(self, *args, **kwargs):
-        super(NRDPAssociation, self).__init__(*args, **kwargs)
-        self.server_address = kwargs.get('server_address', None)
-        self.token = kwargs.get('token', None)
-
 class Handler(abstract.NagiosHandler):
     '''
     NRDP Handler.
