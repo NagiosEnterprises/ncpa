@@ -12,6 +12,7 @@ import logging
 import os
 import time
 import sys
+import jinja2.ext # DO NOT REMOVE THIS, THIS FORCES cx_Freeze to include the library
 import filename
 
 DEBUG = 0
