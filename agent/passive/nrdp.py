@@ -20,7 +20,7 @@ class Handler(abstract.NagiosHandler):
             for k,v in zip(tagattr.keys(), tagattr.values()):
                 element.setAttribute(str(k), str(v))
         if text:
-            textnode = doc.createTextNode(text)
+            textnode = doc.createTextNode(text.strip())
             element.appendChild(textnode)
         return element
         
@@ -30,7 +30,7 @@ class Handler(abstract.NagiosHandler):
         Return the XML node for a host check
         '''
         doc = xml.dom.minidom.Document()
-        checkresult = self.make_tag('checkresult', attr={'type':result.check_type})
+        checkresult = self.make_tag('checkresult', tagattr={'type':result.check_type})
         hostname = self.make_tag('hostname', str(result.nag_hostname))
         state = self.make_tag('state', str(result.returncode))
         output = self.make_tag('output', str(result.stdout))
@@ -46,12 +46,12 @@ class Handler(abstract.NagiosHandler):
         '''
         Get XML of all check results in NRDP.
         '''
-        doc = xml.dom.minidom.Document()
-        self.checkresults = doc.createElement('checkresults')
-        doc.appendChild(self.checkresults)
+        self.doc = xml.dom.minidom.Document()
+        checkresults = self.doc.createElement('checkresults')
+        self.doc.appendChild(checkresults)
         for result in self.ncpa_commands:
             element = self.make_xml(result)
-            self.checkresults.appendChild(element)
+            checkresults.appendChild(element)
     
     def run(self, *args, **kwargs):
         '''
@@ -92,6 +92,7 @@ class Handler(abstract.NagiosHandler):
         self.set_xml_of_checkresults()
         server = self.config.get('nrdp', 'parent')
         token = self.config.get('nrdp', 'token')
-        xmldata = self.checkresults.toprettyxml()
+        xmldata = self.doc.toxml()
+        logging.debug('XML to be submitted: %s', xmldata)
         retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
         self.log_result(retxml.content)

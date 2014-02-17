@@ -1,0 +1,1138 @@
+2014-02-10 12:33:04,166 30094 ERROR failed to start due to an exception
+Traceback (most recent call last):
+  File "/root/Development/ncpa/agent/ncpadaemon.py", line 148, in start
+    self.check_pid_writable()
+  File "/root/Development/ncpa/agent/ncpadaemon.py", line 309, in check_pid_writable
+    sys.exit(msg)
+SystemExit: unable to write to pidfile /root/Development/ncpa/agent/var/ncpa_passive.pid
+2014-02-10 12:48:25,403 1419 ERROR failed to start due to an exception
+Traceback (most recent call last):
+  File "/root/Development/ncpa/agent/ncpadaemon.py", line 148, in start
+    self.check_pid_writable()
+  File "/root/Development/ncpa/agent/ncpadaemon.py", line 309, in check_pid_writable
+    sys.exit(msg)
+SystemExit: unable to write to pidfile /root/Development/ncpa/agent/var/ncpa_passive.pid
+2014-02-11 09:16:28,110 12661 ERROR failed to start due to an exception
+Traceback (most recent call last):
+  File "/root/Development/ncpa/agent/ncpadaemon.py", line 148, in start
+    self.check_pid_writable()
+  File "/root/Development/ncpa/agent/ncpadaemon.py", line 309, in check_pid_writable
+    sys.exit(msg)
+SystemExit: unable to write to pidfile /root/Development/ncpa/agent/var/ncpa_passive.pid
+2014-02-11 09:19:46,799 13442 INFO started
+2014-02-11 09:19:46,800 13442 DEBUG Parsing config...
+2014-02-11 09:19:46,800 13442 DEBUG Parsing commands...
+2014-02-11 09:19:46,800 13442 DEBUG Parsing new individual command.
+2014-02-11 09:19:46,801 13442 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:19:46,801 13442 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-11 09:19:46,801 13442 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-11 09:19:46,801 13442 DEBUG Command contained arguments.
+2014-02-11 09:19:46,801 13442 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:19:46,801 13442 DEBUG Parsing new individual command.
+2014-02-11 09:19:46,801 13442 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:19:46,802 13442 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-11 09:19:46,802 13442 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-11 09:19:46,802 13442 DEBUG Command contained arguments.
+2014-02-11 09:19:46,802 13442 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-11 09:19:46,802 13442 DEBUG Parsing new individual command.
+2014-02-11 09:19:46,802 13442 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:19:46,802 13442 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-11 09:19:46,802 13442 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-11 09:19:46,803 13442 DEBUG Command contained arguments.
+2014-02-11 09:19:46,803 13442 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:19:46,803 13442 DEBUG Establishing Nagios handler...
+2014-02-11 09:19:46,803 13442 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-11 09:19:46,804 13442 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-11 09:19:46,804 13442 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-11 09:19:46,805 13442 DEBUG Accessor result!
+2014-02-11 09:19:46,805 13442 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-11 09:19:46,805 13442 DEBUG Using 
+2014-02-11 09:19:46,806 13442 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 27.7%|'percent_0'=27.7%;60;80"}
+2014-02-11 09:19:46,806 13442 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-11 09:19:46,807 13442 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-11 09:19:46,807 13442 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-11 09:19:46,807 13442 DEBUG Accessor result!
+2014-02-11 09:19:46,807 13442 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-11 09:19:46,808 13442 DEBUG Using 
+2014-02-11 09:19:47,810 13442 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;20;30"}
+2014-02-11 09:19:47,810 13442 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-11 09:19:47,810 13442 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-11 09:19:47,810 13442 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-11 09:19:47,811 13442 DEBUG Accessor result!
+2014-02-11 09:19:47,811 13442 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-11 09:19:47,811 13442 DEBUG Using 
+2014-02-11 09:19:47,811 13442 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-11 09:19:47,861 13442 INFO Starting new HTTP connection (1): localhost
+2014-02-11 09:19:47,900 13442 DEBUG "GET /nrdp/?token=nagiosxi&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09memory+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+27.7%25%7C%27percent_0%27%3D27.7%25%3B60%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09cpu+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B20%3B30%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09swap+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B40%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%3C%2Fcheckresults%3E%0A HTTP/1.1" 200 111
+2014-02-11 09:19:47,901 13442 DEBUG hitting url with payload: http://localhost/nrdp/?token=nagiosxi&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09memory+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+27.7%25%7C%27percent_0%27%3D27.7%25%3B60%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09cpu+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B20%3B30%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09swap+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B40%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%3C%2Fcheckresults%3E%0A
+2014-02-11 09:19:47,901 13442 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>-1</status>
+  <message>BAD TOKEN</message>
+</result>
+
+2014-02-11 09:19:47,922 13442 WARNING XML returned did not contain a message, or was malformed.
+2014-02-11 09:19:47,922 13442 INFO Message from NRDP server: BAD TOKEN
+2014-02-11 09:19:47,922 13442 INFO Meta output from NRDP server: Nonexistent
+2014-02-11 09:19:47,922 13442 DEBUG Successfully ran handler nrdp
+2014-02-11 09:24:48,001 13442 DEBUG Parsing config...
+2014-02-11 09:24:48,001 13442 DEBUG Parsing commands...
+2014-02-11 09:24:48,002 13442 DEBUG Parsing new individual command.
+2014-02-11 09:24:48,002 13442 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:24:48,002 13442 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-11 09:24:48,002 13442 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-11 09:24:48,003 13442 DEBUG Command contained arguments.
+2014-02-11 09:24:48,003 13442 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:24:48,003 13442 DEBUG Parsing new individual command.
+2014-02-11 09:24:48,003 13442 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:24:48,003 13442 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-11 09:24:48,004 13442 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-11 09:24:48,004 13442 DEBUG Command contained arguments.
+2014-02-11 09:24:48,004 13442 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-11 09:24:48,004 13442 DEBUG Parsing new individual command.
+2014-02-11 09:24:48,004 13442 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:24:48,004 13442 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-11 09:24:48,004 13442 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-11 09:24:48,004 13442 DEBUG Command contained arguments.
+2014-02-11 09:24:48,004 13442 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:24:48,005 13442 DEBUG Establishing Nagios handler...
+2014-02-11 09:24:48,005 13442 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-11 09:24:48,006 13442 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-11 09:24:48,007 13442 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-11 09:24:48,007 13442 DEBUG Accessor result!
+2014-02-11 09:24:48,007 13442 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-11 09:24:48,007 13442 DEBUG Using 
+2014-02-11 09:24:48,008 13442 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 30.1%|'percent_0'=30.1%;60;80"}
+2014-02-11 09:24:48,008 13442 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-11 09:24:48,009 13442 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-11 09:24:48,010 13442 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-11 09:24:48,010 13442 DEBUG Accessor result!
+2014-02-11 09:24:48,010 13442 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-11 09:24:48,010 13442 DEBUG Using 
+2014-02-11 09:24:49,012 13442 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;20;30"}
+2014-02-11 09:24:49,012 13442 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-11 09:24:49,013 13442 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-11 09:24:49,013 13442 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-11 09:24:49,013 13442 DEBUG Accessor result!
+2014-02-11 09:24:49,014 13442 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-11 09:24:49,014 13442 DEBUG Using 
+2014-02-11 09:24:49,014 13442 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-11 09:24:49,016 13442 INFO Starting new HTTP connection (1): localhost
+2014-02-11 09:24:49,023 13442 DEBUG "GET /nrdp/?token=brody&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09memory+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+30.1%25%7C%27percent_0%27%3D30.1%25%3B60%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09cpu+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B20%3B30%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09swap+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B40%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%3C%2Fcheckresults%3E%0A HTTP/1.1" 200 170
+2014-02-11 09:24:49,024 13442 DEBUG hitting url with payload: http://localhost/nrdp/?token=brody&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09memory+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+30.1%25%7C%27percent_0%27%3D30.1%25%3B60%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09cpu+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B20%3B30%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09swap+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B40%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%3C%2Fcheckresults%3E%0A
+2014-02-11 09:24:49,024 13442 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-11 09:24:49,025 13442 INFO Message from NRDP server: OK
+2014-02-11 09:24:49,026 13442 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-11 09:24:49,027 13442 DEBUG Successfully ran handler nrdp
+2014-02-11 09:29:49,075 13442 DEBUG Parsing config...
+2014-02-11 09:29:49,076 13442 DEBUG Parsing commands...
+2014-02-11 09:29:49,076 13442 DEBUG Parsing new individual command.
+2014-02-11 09:29:49,076 13442 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:29:49,076 13442 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-11 09:29:49,076 13442 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-11 09:29:49,076 13442 DEBUG Command contained arguments.
+2014-02-11 09:29:49,076 13442 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:29:49,076 13442 DEBUG Parsing new individual command.
+2014-02-11 09:29:49,076 13442 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:29:49,076 13442 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-11 09:29:49,077 13442 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-11 09:29:49,077 13442 DEBUG Command contained arguments.
+2014-02-11 09:29:49,077 13442 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-11 09:29:49,077 13442 DEBUG Parsing new individual command.
+2014-02-11 09:29:49,077 13442 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:29:49,078 13442 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-11 09:29:49,078 13442 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-11 09:29:49,078 13442 DEBUG Command contained arguments.
+2014-02-11 09:29:49,078 13442 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:29:49,078 13442 DEBUG Establishing Nagios handler...
+2014-02-11 09:29:49,078 13442 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-11 09:29:49,079 13442 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-11 09:29:49,079 13442 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-11 09:29:49,079 13442 DEBUG Accessor result!
+2014-02-11 09:29:49,080 13442 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-11 09:29:49,080 13442 DEBUG Using 
+2014-02-11 09:29:49,080 13442 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 30.0%|'percent_0'=30.0%;60;80"}
+2014-02-11 09:29:49,080 13442 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-11 09:29:49,081 13442 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-11 09:29:49,081 13442 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-11 09:29:49,081 13442 DEBUG Accessor result!
+2014-02-11 09:29:49,082 13442 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-11 09:29:49,082 13442 DEBUG Using 
+2014-02-11 09:29:50,084 13442 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;20;30"}
+2014-02-11 09:29:50,084 13442 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-11 09:29:50,085 13442 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-11 09:29:50,085 13442 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-11 09:29:50,085 13442 DEBUG Accessor result!
+2014-02-11 09:29:50,085 13442 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-11 09:29:50,085 13442 DEBUG Using 
+2014-02-11 09:29:50,086 13442 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-11 09:29:50,089 13442 INFO Starting new HTTP connection (1): localhost
+2014-02-11 09:29:50,093 13442 DEBUG "GET /nrdp/?token=brody&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09memory+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+30.0%25%7C%27percent_0%27%3D30.0%25%3B60%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09cpu+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B20%3B30%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09swap+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B40%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%3C%2Fcheckresults%3E%0A HTTP/1.1" 200 170
+2014-02-11 09:29:50,093 13442 DEBUG hitting url with payload: http://localhost/nrdp/?token=brody&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09memory+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+30.0%25%7C%27percent_0%27%3D30.0%25%3B60%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09cpu+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B20%3B30%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09swap+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B40%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%3C%2Fcheckresults%3E%0A
+2014-02-11 09:29:50,094 13442 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-11 09:29:50,094 13442 INFO Message from NRDP server: OK
+2014-02-11 09:29:50,095 13442 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-11 09:29:50,095 13442 DEBUG Successfully ran handler nrdp
+2014-02-11 09:32:02,855 13442 INFO stopped
+2014-02-11 09:33:55,357 16893 INFO started
+2014-02-11 09:33:55,358 16893 DEBUG Parsing config...
+2014-02-11 09:33:55,358 16893 DEBUG Parsing commands...
+2014-02-11 09:33:55,358 16893 DEBUG Parsing new individual command.
+2014-02-11 09:33:55,358 16893 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:33:55,358 16893 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-11 09:33:55,358 16893 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-11 09:33:55,359 16893 DEBUG Command contained arguments.
+2014-02-11 09:33:55,359 16893 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:33:55,359 16893 DEBUG Parsing new individual command.
+2014-02-11 09:33:55,359 16893 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:33:55,359 16893 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-11 09:33:55,359 16893 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-11 09:33:55,359 16893 DEBUG Command contained arguments.
+2014-02-11 09:33:55,360 16893 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-11 09:33:55,360 16893 DEBUG Parsing new individual command.
+2014-02-11 09:33:55,360 16893 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:33:55,360 16893 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-11 09:33:55,360 16893 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-11 09:33:55,360 16893 DEBUG Command contained arguments.
+2014-02-11 09:33:55,360 16893 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:33:55,360 16893 DEBUG Establishing Nagios handler...
+2014-02-11 09:33:55,361 16893 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-11 09:33:55,361 16893 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-11 09:33:55,362 16893 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-11 09:33:55,362 16893 DEBUG Accessor result!
+2014-02-11 09:33:55,362 16893 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-11 09:33:55,363 16893 DEBUG Using 
+2014-02-11 09:33:55,363 16893 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 30.1%|'percent_0'=30.1%;60;80"}
+2014-02-11 09:33:55,364 16893 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-11 09:33:55,364 16893 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-11 09:33:55,364 16893 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-11 09:33:55,364 16893 DEBUG Accessor result!
+2014-02-11 09:33:55,364 16893 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-11 09:33:55,365 16893 DEBUG Using 
+2014-02-11 09:33:56,366 16893 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;20;30"}
+2014-02-11 09:33:56,366 16893 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-11 09:33:56,367 16893 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-11 09:33:56,367 16893 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-11 09:33:56,367 16893 DEBUG Accessor result!
+2014-02-11 09:33:56,368 16893 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-11 09:33:56,368 16893 DEBUG Using 
+2014-02-11 09:33:56,368 16893 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-11 09:33:56,377 16893 INFO Starting new HTTP connection (1): localhost
+2014-02-11 09:33:56,381 16893 DEBUG "GET /nrdp/?token=brody&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09memory+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+30.1%25%7C%27percent_0%27%3D30.1%25%3B60%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09cpu+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B20%3B30%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09swap+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B40%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%3C%2Fcheckresults%3E%0A HTTP/1.1" 200 170
+2014-02-11 09:33:56,382 16893 DEBUG hitting url with payload: http://localhost/nrdp/?token=brody&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09memory+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+30.1%25%7C%27percent_0%27%3D30.1%25%3B60%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09cpu+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B20%3B30%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09swap+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B40%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%3C%2Fcheckresults%3E%0A
+2014-02-11 09:33:56,382 16893 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-11 09:33:56,384 16893 INFO Message from NRDP server: OK
+2014-02-11 09:33:56,385 16893 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-11 09:33:56,385 16893 DEBUG Successfully ran handler nrdp
+2014-02-11 09:36:07,208 16893 INFO stopped
+2014-02-11 09:36:09,334 17517 INFO started
+2014-02-11 09:36:09,335 17517 DEBUG Parsing config...
+2014-02-11 09:36:09,335 17517 DEBUG Parsing commands...
+2014-02-11 09:36:09,335 17517 DEBUG Parsing new individual command.
+2014-02-11 09:36:09,335 17517 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:36:09,336 17517 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-11 09:36:09,336 17517 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-11 09:36:09,336 17517 DEBUG Command contained arguments.
+2014-02-11 09:36:09,336 17517 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:36:09,336 17517 DEBUG Parsing new individual command.
+2014-02-11 09:36:09,336 17517 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:36:09,336 17517 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-11 09:36:09,337 17517 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-11 09:36:09,337 17517 DEBUG Command contained arguments.
+2014-02-11 09:36:09,337 17517 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-11 09:36:09,337 17517 DEBUG Parsing new individual command.
+2014-02-11 09:36:09,337 17517 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:36:09,337 17517 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-11 09:36:09,338 17517 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-11 09:36:09,338 17517 DEBUG Command contained arguments.
+2014-02-11 09:36:09,338 17517 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:36:09,338 17517 DEBUG Establishing Nagios handler...
+2014-02-11 09:36:09,338 17517 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-11 09:36:09,339 17517 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-11 09:36:09,339 17517 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-11 09:36:09,340 17517 DEBUG Accessor result!
+2014-02-11 09:36:09,340 17517 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-11 09:36:09,340 17517 DEBUG Using 
+2014-02-11 09:36:09,341 17517 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 30.1%|'percent_0'=30.1%;60;80"}
+2014-02-11 09:36:09,341 17517 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-11 09:36:09,342 17517 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-11 09:36:09,342 17517 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-11 09:36:09,343 17517 DEBUG Accessor result!
+2014-02-11 09:36:09,343 17517 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-11 09:36:09,343 17517 DEBUG Using 
+2014-02-11 09:36:10,345 17517 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;20;30"}
+2014-02-11 09:36:10,345 17517 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-11 09:36:10,345 17517 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-11 09:36:10,346 17517 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-11 09:36:10,346 17517 DEBUG Accessor result!
+2014-02-11 09:36:10,346 17517 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-11 09:36:10,346 17517 DEBUG Using 
+2014-02-11 09:36:10,347 17517 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-11 09:36:10,356 17517 INFO Starting new HTTP connection (1): localhost
+2014-02-11 09:36:10,361 17517 DEBUG "POST /nrdp/?token=brody&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09memory+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+30.1%25%7C%27percent_0%27%3D30.1%25%3B60%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09cpu+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B20%3B30%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09swap+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B40%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%3C%2Fcheckresults%3E%0A HTTP/1.1" 200 170
+2014-02-11 09:36:10,361 17517 DEBUG hitting url with payload: http://localhost/nrdp/?token=brody&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09memory+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+30.1%25%7C%27percent_0%27%3D30.1%25%3B60%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09cpu+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B20%3B30%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09swap+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B40%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%3C%2Fcheckresults%3E%0A
+2014-02-11 09:36:10,361 17517 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-11 09:36:10,363 17517 INFO Message from NRDP server: OK
+2014-02-11 09:36:10,363 17517 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-11 09:36:10,363 17517 DEBUG Successfully ran handler nrdp
+2014-02-11 09:38:19,036 17517 INFO stopped
+2014-02-11 09:38:21,123 18020 INFO started
+2014-02-11 09:38:21,124 18020 DEBUG Parsing config...
+2014-02-11 09:38:21,124 18020 DEBUG Parsing commands...
+2014-02-11 09:38:21,124 18020 DEBUG Parsing new individual command.
+2014-02-11 09:38:21,124 18020 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:38:21,125 18020 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-11 09:38:21,125 18020 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-11 09:38:21,125 18020 DEBUG Command contained arguments.
+2014-02-11 09:38:21,125 18020 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:38:21,125 18020 DEBUG Parsing new individual command.
+2014-02-11 09:38:21,125 18020 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:38:21,126 18020 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-11 09:38:21,126 18020 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-11 09:38:21,126 18020 DEBUG Command contained arguments.
+2014-02-11 09:38:21,126 18020 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-11 09:38:21,126 18020 DEBUG Parsing new individual command.
+2014-02-11 09:38:21,126 18020 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:38:21,127 18020 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-11 09:38:21,127 18020 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-11 09:38:21,127 18020 DEBUG Command contained arguments.
+2014-02-11 09:38:21,127 18020 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:38:21,127 18020 DEBUG Establishing Nagios handler...
+2014-02-11 09:38:21,127 18020 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-11 09:38:21,128 18020 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-11 09:38:21,129 18020 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-11 09:38:21,129 18020 DEBUG Accessor result!
+2014-02-11 09:38:21,130 18020 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-11 09:38:21,130 18020 DEBUG Using 
+2014-02-11 09:38:21,131 18020 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 30.5%|'percent_0'=30.5%;60;80"}
+2014-02-11 09:38:21,131 18020 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-11 09:38:21,131 18020 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-11 09:38:21,132 18020 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-11 09:38:21,132 18020 DEBUG Accessor result!
+2014-02-11 09:38:21,132 18020 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-11 09:38:21,132 18020 DEBUG Using 
+2014-02-11 09:38:22,134 18020 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;20;30"}
+2014-02-11 09:38:22,134 18020 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-11 09:38:22,135 18020 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-11 09:38:22,135 18020 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-11 09:38:22,135 18020 DEBUG Accessor result!
+2014-02-11 09:38:22,135 18020 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-11 09:38:22,135 18020 DEBUG Using 
+2014-02-11 09:38:22,136 18020 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-11 09:38:22,145 18020 INFO Starting new HTTP connection (1): localhost
+2014-02-11 09:38:22,149 18020 DEBUG "POST /nrdp/?token=brody&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09memory+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+30.5%25%7C%27percent_0%27%3D30.5%25%3B60%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09cpu+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B20%3B30%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09swap+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B40%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%3C%2Fcheckresults%3E%0A HTTP/1.1" 200 170
+2014-02-11 09:38:22,150 18020 DEBUG hitting url with payload: http://localhost/nrdp/?token=brody&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09memory+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+30.5%25%7C%27percent_0%27%3D30.5%25%3B60%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09cpu+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B20%3B30%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09swap+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B40%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%3C%2Fcheckresults%3E%0A
+2014-02-11 09:38:22,150 18020 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-11 09:38:22,152 18020 INFO Message from NRDP server: OK
+2014-02-11 09:38:22,153 18020 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-11 09:38:22,153 18020 DEBUG Successfully ran handler nrdp
+2014-02-11 09:38:40,729 18020 INFO stopped
+2014-02-11 09:38:41,808 18079 INFO started
+2014-02-11 09:38:41,809 18079 DEBUG Parsing config...
+2014-02-11 09:38:41,809 18079 DEBUG Parsing commands...
+2014-02-11 09:38:41,810 18079 DEBUG Parsing new individual command.
+2014-02-11 09:38:41,810 18079 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:38:41,810 18079 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-11 09:38:41,810 18079 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-11 09:38:41,810 18079 DEBUG Command contained arguments.
+2014-02-11 09:38:41,810 18079 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:38:41,811 18079 DEBUG Parsing new individual command.
+2014-02-11 09:38:41,811 18079 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:38:41,811 18079 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-11 09:38:41,811 18079 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-11 09:38:41,811 18079 DEBUG Command contained arguments.
+2014-02-11 09:38:41,811 18079 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-11 09:38:41,811 18079 DEBUG Parsing new individual command.
+2014-02-11 09:38:41,812 18079 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:38:41,812 18079 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-11 09:38:41,812 18079 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-11 09:38:41,812 18079 DEBUG Command contained arguments.
+2014-02-11 09:38:41,812 18079 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:38:41,812 18079 DEBUG Establishing Nagios handler...
+2014-02-11 09:38:41,813 18079 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-11 09:38:41,813 18079 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-11 09:38:41,814 18079 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-11 09:38:41,815 18079 DEBUG Accessor result!
+2014-02-11 09:38:41,815 18079 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-11 09:38:41,815 18079 DEBUG Using 
+2014-02-11 09:38:41,816 18079 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 30.6%|'percent_0'=30.6%;60;80"}
+2014-02-11 09:38:41,816 18079 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-11 09:38:41,817 18079 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-11 09:38:41,817 18079 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-11 09:38:41,818 18079 DEBUG Accessor result!
+2014-02-11 09:38:41,818 18079 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-11 09:38:41,818 18079 DEBUG Using 
+2014-02-11 09:38:42,820 18079 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 1.0%|'percent_0'=1.0%;20;30"}
+2014-02-11 09:38:42,820 18079 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-11 09:38:42,820 18079 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-11 09:38:42,821 18079 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-11 09:38:42,821 18079 DEBUG Accessor result!
+2014-02-11 09:38:42,821 18079 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-11 09:38:42,821 18079 DEBUG Using 
+2014-02-11 09:38:42,822 18079 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-11 09:38:42,832 18079 INFO Starting new HTTP connection (1): localhost
+2014-02-11 09:38:42,838 18079 DEBUG "POST /nrdp/?token=brody&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09memory+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+30.6%25%7C%27percent_0%27%3D30.6%25%3B60%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09cpu+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+1.0%25%7C%27percent_0%27%3D1.0%25%3B20%3B30%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09swap+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B40%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%3C%2Fcheckresults%3E%0A HTTP/1.1" 200 170
+2014-02-11 09:38:42,838 18079 DEBUG hitting url with payload: http://localhost/nrdp/?token=brody&cmd=submitcheck&XMLDATA=%3Ccheckresults%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09memory+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+30.6%25%7C%27percent_0%27%3D30.6%25%3B60%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09cpu+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+1.0%25%7C%27percent_0%27%3D1.0%25%3B20%3B30%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%09%3Ccheckresult%3E%0A%09%09%3Cservicename%3E%0A%09%09%09swap+usage%0A%09%09%3C%2Fservicename%3E%0A%09%09%3Chostname%3E%0A%09%09%09DreamTheater%0A%09%09%3C%2Fhostname%3E%0A%09%09%3Cstate%3E%0A%09%09%090%0A%09%09%3C%2Fstate%3E%0A%09%09%3Coutput%3E%0A%09%09%09OK%3A+Percent+was+0.0%25%7C%27percent_0%27%3D0.0%25%3B40%3B80%0A%09%09%3C%2Foutput%3E%0A%09%3C%2Fcheckresult%3E%0A%3C%2Fcheckresults%3E%0A
+2014-02-11 09:38:42,839 18079 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-11 09:38:42,841 18079 INFO Message from NRDP server: OK
+2014-02-11 09:38:42,841 18079 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-11 09:38:42,841 18079 DEBUG Successfully ran handler nrdp
+2014-02-11 09:39:47,583 18079 INFO stopped
+2014-02-11 09:39:48,458 18382 INFO started
+2014-02-11 09:39:48,459 18382 DEBUG Parsing config...
+2014-02-11 09:39:48,459 18382 DEBUG Parsing commands...
+2014-02-11 09:39:48,459 18382 DEBUG Parsing new individual command.
+2014-02-11 09:39:48,459 18382 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:39:48,459 18382 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-11 09:39:48,459 18382 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-11 09:39:48,460 18382 DEBUG Command contained arguments.
+2014-02-11 09:39:48,460 18382 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:39:48,460 18382 DEBUG Parsing new individual command.
+2014-02-11 09:39:48,460 18382 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:39:48,460 18382 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-11 09:39:48,460 18382 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-11 09:39:48,460 18382 DEBUG Command contained arguments.
+2014-02-11 09:39:48,461 18382 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-11 09:39:48,461 18382 DEBUG Parsing new individual command.
+2014-02-11 09:39:48,461 18382 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:39:48,461 18382 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-11 09:39:48,461 18382 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-11 09:39:48,461 18382 DEBUG Command contained arguments.
+2014-02-11 09:39:48,461 18382 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:39:48,462 18382 DEBUG Establishing Nagios handler...
+2014-02-11 09:39:48,462 18382 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-11 09:39:48,462 18382 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-11 09:39:48,463 18382 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-11 09:39:48,464 18382 DEBUG Accessor result!
+2014-02-11 09:39:48,464 18382 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-11 09:39:48,464 18382 DEBUG Using 
+2014-02-11 09:39:48,465 18382 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 32.3%|'percent_0'=32.3%;60;80"}
+2014-02-11 09:39:48,465 18382 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-11 09:39:48,466 18382 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-11 09:39:48,466 18382 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-11 09:39:48,466 18382 DEBUG Accessor result!
+2014-02-11 09:39:48,466 18382 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-11 09:39:48,467 18382 DEBUG Using 
+2014-02-11 09:39:49,468 18382 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;20;30"}
+2014-02-11 09:39:49,468 18382 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-11 09:39:49,470 18382 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-11 09:39:49,470 18382 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-11 09:39:49,470 18382 DEBUG Accessor result!
+2014-02-11 09:39:49,470 18382 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-11 09:39:49,470 18382 DEBUG Using 
+2014-02-11 09:39:49,471 18382 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-11 09:39:49,472 18382 ERROR request() got an unexpected keyword argument 'payload'
+Traceback (most recent call last):
+  File "./ncpa_posix_passive.py", line 41, in run_all_handlers
+    ins_handler.run()
+  File "/root/Development/ncpa/agent/passive/nrdp.py", line 64, in run
+    self.submit_to_nagios()
+  File "/root/Development/ncpa/agent/passive/nrdp.py", line 97, in submit_to_nagios
+    retxml = utils.send_request(url=server, token=token, XMLDATA=xmldata, cmd='submitcheck')
+  File "/root/Development/ncpa/agent/passive/utils.py", line 15, in send_request
+    r = requests.post(url, payload=kwargs, verify=False, allow_redirects=True)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 88, in post
+    return request('post', url, data=data, **kwargs)
+  File "/usr/lib/python2.6/site-packages/requests/api.py", line 44, in request
+    return session.request(method=method, url=url, **kwargs)
+TypeError: request() got an unexpected keyword argument 'payload'
+2014-02-11 09:40:34,668 18382 INFO stopped
+2014-02-11 09:40:36,572 18593 INFO started
+2014-02-11 09:40:36,573 18593 DEBUG Parsing config...
+2014-02-11 09:40:36,573 18593 DEBUG Parsing commands...
+2014-02-11 09:40:36,573 18593 DEBUG Parsing new individual command.
+2014-02-11 09:40:36,573 18593 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:40:36,573 18593 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-11 09:40:36,574 18593 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-11 09:40:36,574 18593 DEBUG Command contained arguments.
+2014-02-11 09:40:36,574 18593 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:40:36,574 18593 DEBUG Parsing new individual command.
+2014-02-11 09:40:36,574 18593 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:40:36,574 18593 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-11 09:40:36,574 18593 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-11 09:40:36,575 18593 DEBUG Command contained arguments.
+2014-02-11 09:40:36,575 18593 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-11 09:40:36,575 18593 DEBUG Parsing new individual command.
+2014-02-11 09:40:36,575 18593 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:40:36,575 18593 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-11 09:40:36,575 18593 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-11 09:40:36,575 18593 DEBUG Command contained arguments.
+2014-02-11 09:40:36,576 18593 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:40:36,576 18593 DEBUG Establishing Nagios handler...
+2014-02-11 09:40:36,576 18593 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-11 09:40:36,577 18593 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-11 09:40:36,577 18593 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-11 09:40:36,578 18593 DEBUG Accessor result!
+2014-02-11 09:40:36,578 18593 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-11 09:40:36,578 18593 DEBUG Using 
+2014-02-11 09:40:36,579 18593 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 32.2%|'percent_0'=32.2%;60;80"}
+2014-02-11 09:40:36,579 18593 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-11 09:40:36,580 18593 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-11 09:40:36,580 18593 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-11 09:40:36,580 18593 DEBUG Accessor result!
+2014-02-11 09:40:36,581 18593 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-11 09:40:36,581 18593 DEBUG Using 
+2014-02-11 09:40:37,583 18593 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;20;30"}
+2014-02-11 09:40:37,583 18593 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-11 09:40:37,584 18593 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-11 09:40:37,584 18593 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-11 09:40:37,584 18593 DEBUG Accessor result!
+2014-02-11 09:40:37,584 18593 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-11 09:40:37,584 18593 DEBUG Using 
+2014-02-11 09:40:37,585 18593 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-11 09:40:37,593 18593 INFO Starting new HTTP connection (1): localhost
+2014-02-11 09:40:37,598 18593 DEBUG "POST /nrdp/ HTTP/1.1" 200 170
+2014-02-11 09:40:37,599 18593 DEBUG hitting url with payload: http://localhost/nrdp/
+2014-02-11 09:40:37,599 18593 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-11 09:40:37,601 18593 INFO Message from NRDP server: OK
+2014-02-11 09:40:37,601 18593 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-11 09:40:37,601 18593 DEBUG Successfully ran handler nrdp
+2014-02-11 09:43:03,052 18593 INFO stopped
+2014-02-11 09:43:04,707 19294 INFO started
+2014-02-11 09:43:04,708 19294 DEBUG Parsing config...
+2014-02-11 09:43:04,708 19294 DEBUG Parsing commands...
+2014-02-11 09:43:04,708 19294 DEBUG Parsing new individual command.
+2014-02-11 09:43:04,709 19294 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:43:04,709 19294 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-11 09:43:04,709 19294 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-11 09:43:04,709 19294 DEBUG Command contained arguments.
+2014-02-11 09:43:04,709 19294 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:43:04,709 19294 DEBUG Parsing new individual command.
+2014-02-11 09:43:04,709 19294 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:43:04,709 19294 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-11 09:43:04,709 19294 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-11 09:43:04,710 19294 DEBUG Command contained arguments.
+2014-02-11 09:43:04,710 19294 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-11 09:43:04,710 19294 DEBUG Parsing new individual command.
+2014-02-11 09:43:04,710 19294 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-11 09:43:04,710 19294 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-11 09:43:04,710 19294 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-11 09:43:04,711 19294 DEBUG Command contained arguments.
+2014-02-11 09:43:04,711 19294 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-11 09:43:04,711 19294 DEBUG Establishing Nagios handler...
+2014-02-11 09:43:04,711 19294 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-11 09:43:04,712 19294 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-11 09:43:04,712 19294 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-11 09:43:04,713 19294 DEBUG Accessor result!
+2014-02-11 09:43:04,713 19294 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-11 09:43:04,714 19294 DEBUG Using 
+2014-02-11 09:43:04,714 19294 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 32.4%|'percent_0'=32.4%;60;80"}
+2014-02-11 09:43:04,714 19294 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-11 09:43:04,715 19294 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-11 09:43:04,715 19294 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-11 09:43:04,715 19294 DEBUG Accessor result!
+2014-02-11 09:43:04,716 19294 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-11 09:43:04,716 19294 DEBUG Using 
+2014-02-11 09:43:05,718 19294 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;20;30"}
+2014-02-11 09:43:05,718 19294 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-11 09:43:05,718 19294 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-11 09:43:05,719 19294 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-11 09:43:05,719 19294 DEBUG Accessor result!
+2014-02-11 09:43:05,719 19294 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-11 09:43:05,719 19294 DEBUG Using 
+2014-02-11 09:43:05,719 19294 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-11 09:43:05,728 19294 INFO Starting new HTTP connection (1): localhost
+2014-02-11 09:43:05,733 19294 DEBUG "POST /nrdp/ HTTP/1.1" 200 170
+2014-02-11 09:43:05,734 19294 DEBUG hitting url with payload: http://localhost/nrdp/
+2014-02-11 09:43:05,735 19294 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-11 09:43:05,737 19294 INFO Message from NRDP server: OK
+2014-02-11 09:43:05,737 19294 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-11 09:43:05,737 19294 DEBUG Successfully ran handler nrdp
+2014-02-17 18:45:15,079 19294 INFO stopped
+2014-02-17 18:45:15,977 19557 INFO started
+2014-02-17 18:45:15,978 19557 DEBUG Parsing config...
+2014-02-17 18:45:15,979 19557 DEBUG Parsing commands...
+2014-02-17 18:45:15,979 19557 DEBUG Parsing new individual command.
+2014-02-17 18:45:15,979 19557 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 18:45:15,979 19557 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-17 18:45:15,979 19557 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-17 18:45:15,979 19557 DEBUG Command contained arguments.
+2014-02-17 18:45:15,979 19557 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 18:45:15,979 19557 DEBUG Parsing new individual command.
+2014-02-17 18:45:15,979 19557 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 18:45:15,980 19557 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-17 18:45:15,980 19557 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-17 18:45:15,980 19557 DEBUG Command contained arguments.
+2014-02-17 18:45:15,980 19557 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-17 18:45:15,980 19557 DEBUG Parsing new individual command.
+2014-02-17 18:45:15,980 19557 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 18:45:15,980 19557 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-17 18:45:15,981 19557 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-17 18:45:15,981 19557 DEBUG Command contained arguments.
+2014-02-17 18:45:15,981 19557 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 18:45:15,981 19557 DEBUG Establishing Nagios handler...
+2014-02-17 18:45:15,981 19557 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-17 18:45:15,982 19557 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-17 18:45:15,982 19557 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-17 18:45:15,983 19557 DEBUG Accessor result!
+2014-02-17 18:45:15,983 19557 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-17 18:45:15,983 19557 DEBUG Using 
+2014-02-17 18:45:15,984 19557 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 32.3%|'percent_0'=32.3%;60;80"}
+2014-02-17 18:45:15,984 19557 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-17 18:45:15,985 19557 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-17 18:45:15,985 19557 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-17 18:45:15,985 19557 DEBUG Accessor result!
+2014-02-17 18:45:15,985 19557 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-17 18:45:15,985 19557 DEBUG Using 
+2014-02-17 18:45:16,987 19557 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;20;30"}
+2014-02-17 18:45:16,987 19557 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-17 18:45:16,988 19557 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-17 18:45:16,988 19557 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-17 18:45:16,988 19557 DEBUG Accessor result!
+2014-02-17 18:45:16,988 19557 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-17 18:45:16,989 19557 DEBUG Using 
+2014-02-17 18:45:16,989 19557 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-17 18:45:16,997 19557 INFO Starting new HTTP connection (1): localhost
+2014-02-17 18:45:17,002 19557 DEBUG "POST /nrdp/ HTTP/1.1" 200 170
+2014-02-17 18:45:17,003 19557 DEBUG hitting url with payload: http://localhost/nrdp/
+2014-02-17 18:45:17,003 19557 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-17 18:45:17,005 19557 INFO Message from NRDP server: OK
+2014-02-17 18:45:17,005 19557 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-17 18:45:17,005 19557 DEBUG Successfully ran handler nrdp
+2014-02-17 18:48:41,176 19557 INFO stopped
+2014-02-17 18:48:42,412 20367 INFO started
+2014-02-17 18:48:42,413 20367 DEBUG Parsing config...
+2014-02-17 18:48:42,413 20367 DEBUG Parsing commands...
+2014-02-17 18:48:42,413 20367 DEBUG Parsing new individual command.
+2014-02-17 18:48:42,414 20367 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 18:48:42,414 20367 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-17 18:48:42,414 20367 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-17 18:48:42,414 20367 DEBUG Command contained arguments.
+2014-02-17 18:48:42,414 20367 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 18:48:42,414 20367 DEBUG Parsing new individual command.
+2014-02-17 18:48:42,415 20367 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 18:48:42,415 20367 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-17 18:48:42,415 20367 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-17 18:48:42,415 20367 DEBUG Command contained arguments.
+2014-02-17 18:48:42,415 20367 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-17 18:48:42,415 20367 DEBUG Parsing new individual command.
+2014-02-17 18:48:42,415 20367 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 18:48:42,416 20367 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-17 18:48:42,416 20367 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-17 18:48:42,416 20367 DEBUG Command contained arguments.
+2014-02-17 18:48:42,416 20367 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 18:48:42,416 20367 DEBUG Establishing Nagios handler...
+2014-02-17 18:48:42,416 20367 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-17 18:48:42,417 20367 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-17 18:48:42,418 20367 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-17 18:48:42,419 20367 DEBUG Accessor result!
+2014-02-17 18:48:42,419 20367 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-17 18:48:42,419 20367 DEBUG Using 
+2014-02-17 18:48:42,420 20367 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 32.4%|'percent_0'=32.4%;60;80"}
+2014-02-17 18:48:42,420 20367 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-17 18:48:42,421 20367 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-17 18:48:42,421 20367 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-17 18:48:42,421 20367 DEBUG Accessor result!
+2014-02-17 18:48:42,421 20367 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-17 18:48:42,421 20367 DEBUG Using 
+2014-02-17 18:48:43,423 20367 DEBUG Response from server: {'returncode': 1, 'stdout': "WARNING: Percent was 27.3%|'percent_0'=27.3%;20;30"}
+2014-02-17 18:48:43,423 20367 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-17 18:48:43,424 20367 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-17 18:48:43,424 20367 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-17 18:48:43,424 20367 DEBUG Accessor result!
+2014-02-17 18:48:43,425 20367 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-17 18:48:43,425 20367 DEBUG Using 
+2014-02-17 18:48:43,425 20367 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-17 18:48:43,434 20367 INFO Starting new HTTP connection (1): localhost
+2014-02-17 18:48:43,439 20367 DEBUG "POST /nrdp/ HTTP/1.1" 200 170
+2014-02-17 18:48:43,439 20367 DEBUG hitting url with payload: http://localhost/nrdp/
+2014-02-17 18:48:43,439 20367 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-17 18:48:43,441 20367 INFO Message from NRDP server: OK
+2014-02-17 18:48:43,441 20367 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-17 18:48:43,442 20367 DEBUG Successfully ran handler nrdp
+2014-02-17 18:51:24,600 20367 INFO stopped
+2014-02-17 18:51:25,453 21096 INFO started
+2014-02-17 18:51:25,454 21096 DEBUG Parsing config...
+2014-02-17 18:51:25,454 21096 DEBUG Parsing commands...
+2014-02-17 18:51:25,455 21096 DEBUG Parsing new individual command.
+2014-02-17 18:51:25,455 21096 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 18:51:25,455 21096 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-17 18:51:25,455 21096 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-17 18:51:25,456 21096 DEBUG Command contained arguments.
+2014-02-17 18:51:25,456 21096 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 18:51:25,456 21096 DEBUG Parsing new individual command.
+2014-02-17 18:51:25,456 21096 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 18:51:25,456 21096 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-17 18:51:25,457 21096 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-17 18:51:25,457 21096 DEBUG Command contained arguments.
+2014-02-17 18:51:25,457 21096 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-17 18:51:25,457 21096 DEBUG Parsing new individual command.
+2014-02-17 18:51:25,457 21096 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 18:51:25,457 21096 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-17 18:51:25,458 21096 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-17 18:51:25,458 21096 DEBUG Command contained arguments.
+2014-02-17 18:51:25,458 21096 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 18:51:25,458 21096 DEBUG Establishing Nagios handler...
+2014-02-17 18:51:25,458 21096 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-17 18:51:25,459 21096 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-17 18:51:25,459 21096 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-17 18:51:25,460 21096 DEBUG Accessor result!
+2014-02-17 18:51:25,460 21096 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-17 18:51:25,461 21096 DEBUG Using 
+2014-02-17 18:51:25,461 21096 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 32.3%|'percent_0'=32.3%;60;80"}
+2014-02-17 18:51:25,462 21096 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-17 18:51:25,462 21096 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-17 18:51:25,463 21096 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-17 18:51:25,463 21096 DEBUG Accessor result!
+2014-02-17 18:51:25,463 21096 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-17 18:51:25,463 21096 DEBUG Using 
+2014-02-17 18:51:26,465 21096 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 1.0%|'percent_0'=1.0%;20;30"}
+2014-02-17 18:51:26,466 21096 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-17 18:51:26,466 21096 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-17 18:51:26,466 21096 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-17 18:51:26,466 21096 DEBUG Accessor result!
+2014-02-17 18:51:26,467 21096 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-17 18:51:26,467 21096 DEBUG Using 
+2014-02-17 18:51:26,467 21096 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-17 18:51:26,518 21096 INFO Starting new HTTP connection (1): localhost
+2014-02-17 18:51:26,523 21096 DEBUG "POST /nrdp/ HTTP/1.1" 200 170
+2014-02-17 18:51:26,524 21096 DEBUG hitting url with payload: http://localhost/nrdp/
+2014-02-17 18:51:26,524 21096 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-17 18:51:26,526 21096 INFO Message from NRDP server: OK
+2014-02-17 18:51:26,526 21096 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-17 18:51:26,526 21096 DEBUG Successfully ran handler nrdp
+2014-02-17 18:51:48,084 21096 INFO stopped
+2014-02-17 18:51:48,997 21162 INFO started
+2014-02-17 18:51:48,998 21162 DEBUG Parsing config...
+2014-02-17 18:51:48,998 21162 DEBUG Parsing commands...
+2014-02-17 18:51:48,998 21162 DEBUG Parsing new individual command.
+2014-02-17 18:51:48,998 21162 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 18:51:48,998 21162 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-17 18:51:48,999 21162 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-17 18:51:48,999 21162 DEBUG Command contained arguments.
+2014-02-17 18:51:48,999 21162 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 18:51:48,999 21162 DEBUG Parsing new individual command.
+2014-02-17 18:51:48,999 21162 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 18:51:48,999 21162 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-17 18:51:48,999 21162 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-17 18:51:49,000 21162 DEBUG Command contained arguments.
+2014-02-17 18:51:49,000 21162 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-17 18:51:49,000 21162 DEBUG Parsing new individual command.
+2014-02-17 18:51:49,000 21162 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 18:51:49,000 21162 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-17 18:51:49,000 21162 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-17 18:51:49,000 21162 DEBUG Command contained arguments.
+2014-02-17 18:51:49,001 21162 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 18:51:49,001 21162 DEBUG Establishing Nagios handler...
+2014-02-17 18:51:49,001 21162 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-17 18:51:49,001 21162 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-17 18:51:49,002 21162 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-17 18:51:49,003 21162 DEBUG Accessor result!
+2014-02-17 18:51:49,003 21162 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-17 18:51:49,003 21162 DEBUG Using 
+2014-02-17 18:51:49,005 21162 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 32.2%|'percent_0'=32.2%;60;80"}
+2014-02-17 18:51:49,005 21162 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-17 18:51:49,006 21162 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-17 18:51:49,006 21162 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-17 18:51:49,006 21162 DEBUG Accessor result!
+2014-02-17 18:51:49,006 21162 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-17 18:51:49,006 21162 DEBUG Using 
+2014-02-17 18:51:50,008 21162 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 5.9%|'percent_0'=5.9%;20;30"}
+2014-02-17 18:51:50,008 21162 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-17 18:51:50,009 21162 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-17 18:51:50,009 21162 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-17 18:51:50,009 21162 DEBUG Accessor result!
+2014-02-17 18:51:50,009 21162 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-17 18:51:50,009 21162 DEBUG Using 
+2014-02-17 18:51:50,010 21162 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-17 18:51:50,018 21162 INFO Starting new HTTP connection (1): localhost
+2014-02-17 18:51:50,023 21162 DEBUG "POST /nrdp/ HTTP/1.1" 200 170
+2014-02-17 18:51:50,024 21162 DEBUG hitting url with payload: http://localhost/nrdp/
+2014-02-17 18:51:50,024 21162 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-17 18:51:50,026 21162 INFO Message from NRDP server: OK
+2014-02-17 18:51:50,026 21162 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-17 18:51:50,026 21162 DEBUG Successfully ran handler nrdp
+2014-02-17 18:52:16,762 21162 INFO stopped
+2014-02-17 19:45:05,847 21498 INFO started
+2014-02-17 19:45:05,848 21498 DEBUG Parsing config...
+2014-02-17 19:45:05,848 21498 DEBUG Parsing commands...
+2014-02-17 19:45:05,848 21498 DEBUG Parsing new individual command.
+2014-02-17 19:45:05,848 21498 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:45:05,849 21498 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-17 19:45:05,849 21498 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-17 19:45:05,849 21498 DEBUG Command contained arguments.
+2014-02-17 19:45:05,849 21498 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 19:45:05,849 21498 DEBUG Parsing new individual command.
+2014-02-17 19:45:05,849 21498 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:45:05,849 21498 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-17 19:45:05,849 21498 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-17 19:45:05,849 21498 DEBUG Command contained arguments.
+2014-02-17 19:45:05,850 21498 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-17 19:45:05,850 21498 DEBUG Parsing new individual command.
+2014-02-17 19:45:05,850 21498 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:45:05,850 21498 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-17 19:45:05,850 21498 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-17 19:45:05,851 21498 DEBUG Command contained arguments.
+2014-02-17 19:45:05,851 21498 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 19:45:05,851 21498 DEBUG Establishing Nagios handler...
+2014-02-17 19:45:05,851 21498 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-17 19:45:05,851 21498 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-17 19:45:05,852 21498 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-17 19:45:05,853 21498 DEBUG Accessor result!
+2014-02-17 19:45:05,853 21498 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-17 19:45:05,853 21498 DEBUG Using 
+2014-02-17 19:45:05,854 21498 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 32.3%|'percent_0'=32.3%;60;80"}
+2014-02-17 19:45:05,854 21498 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-17 19:45:05,855 21498 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-17 19:45:05,855 21498 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-17 19:45:05,855 21498 DEBUG Accessor result!
+2014-02-17 19:45:05,855 21498 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-17 19:45:05,856 21498 DEBUG Using 
+2014-02-17 19:45:06,857 21498 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;20;30"}
+2014-02-17 19:45:06,857 21498 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-17 19:45:06,858 21498 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-17 19:45:06,858 21498 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-17 19:45:06,859 21498 DEBUG Accessor result!
+2014-02-17 19:45:06,859 21498 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-17 19:45:06,859 21498 DEBUG Using 
+2014-02-17 19:45:06,859 21498 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-17 19:45:06,868 21498 INFO Starting new HTTP connection (1): localhost
+2014-02-17 19:45:06,873 21498 DEBUG "POST /nrdp/ HTTP/1.1" 200 170
+2014-02-17 19:45:06,874 21498 DEBUG hitting url with payload: http://localhost/nrdp/
+2014-02-17 19:45:06,874 21498 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-17 19:45:06,876 21498 INFO Message from NRDP server: OK
+2014-02-17 19:45:06,876 21498 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-17 19:45:06,877 21498 DEBUG Successfully ran handler nrdp
+2014-02-17 19:46:38,649 21498 INFO stopped
+2014-02-17 19:46:39,732 21857 INFO started
+2014-02-17 19:46:39,732 21857 DEBUG Parsing config...
+2014-02-17 19:46:39,733 21857 DEBUG Parsing commands...
+2014-02-17 19:46:39,733 21857 DEBUG Parsing new individual command.
+2014-02-17 19:46:39,733 21857 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:46:39,733 21857 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-17 19:46:39,733 21857 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-17 19:46:39,733 21857 DEBUG Command contained arguments.
+2014-02-17 19:46:39,733 21857 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 19:46:39,733 21857 DEBUG Parsing new individual command.
+2014-02-17 19:46:39,734 21857 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:46:39,734 21857 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-17 19:46:39,734 21857 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-17 19:46:39,734 21857 DEBUG Command contained arguments.
+2014-02-17 19:46:39,734 21857 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-17 19:46:39,734 21857 DEBUG Parsing new individual command.
+2014-02-17 19:46:39,735 21857 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:46:39,735 21857 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-17 19:46:39,735 21857 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-17 19:46:39,735 21857 DEBUG Command contained arguments.
+2014-02-17 19:46:39,735 21857 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 19:46:39,735 21857 DEBUG Establishing Nagios handler...
+2014-02-17 19:46:39,735 21857 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-17 19:46:39,736 21857 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-17 19:46:39,736 21857 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-17 19:46:39,737 21857 DEBUG Accessor result!
+2014-02-17 19:46:39,737 21857 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-17 19:46:39,737 21857 DEBUG Using 
+2014-02-17 19:46:39,738 21857 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 32.3%|'percent_0'=32.3%;60;80"}
+2014-02-17 19:46:39,738 21857 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-17 19:46:39,739 21857 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-17 19:46:39,739 21857 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-17 19:46:39,739 21857 DEBUG Accessor result!
+2014-02-17 19:46:39,739 21857 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-17 19:46:39,739 21857 DEBUG Using 
+2014-02-17 19:46:40,741 21857 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;20;30"}
+2014-02-17 19:46:40,741 21857 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-17 19:46:40,742 21857 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-17 19:46:40,742 21857 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-17 19:46:40,742 21857 DEBUG Accessor result!
+2014-02-17 19:46:40,743 21857 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-17 19:46:40,743 21857 DEBUG Using 
+2014-02-17 19:46:40,743 21857 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-17 19:46:40,752 21857 INFO Starting new HTTP connection (1): localhost
+2014-02-17 19:46:40,757 21857 DEBUG "POST /nrdp/ HTTP/1.1" 200 170
+2014-02-17 19:46:40,758 21857 DEBUG hitting url with payload: http://localhost/nrdp/
+2014-02-17 19:46:40,758 21857 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-17 19:46:40,760 21857 INFO Message from NRDP server: OK
+2014-02-17 19:46:40,760 21857 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-17 19:46:40,760 21857 DEBUG Successfully ran handler nrdp
+2014-02-17 19:50:30,107 21857 INFO stopped
+2014-02-17 19:50:45,875 22951 INFO started
+2014-02-17 19:50:45,876 22951 DEBUG Parsing config...
+2014-02-17 19:50:45,876 22951 DEBUG Parsing commands...
+2014-02-17 19:50:45,876 22951 DEBUG Parsing new individual command.
+2014-02-17 19:50:45,877 22951 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:50:45,877 22951 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-17 19:50:45,877 22951 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-17 19:50:45,877 22951 DEBUG Command contained arguments.
+2014-02-17 19:50:45,877 22951 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 19:50:45,877 22951 DEBUG Parsing new individual command.
+2014-02-17 19:50:45,878 22951 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:50:45,878 22951 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-17 19:50:45,878 22951 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-17 19:50:45,878 22951 DEBUG Command contained arguments.
+2014-02-17 19:50:45,878 22951 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-17 19:50:45,878 22951 DEBUG Parsing new individual command.
+2014-02-17 19:50:45,878 22951 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:50:45,878 22951 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-17 19:50:45,879 22951 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-17 19:50:45,879 22951 DEBUG Command contained arguments.
+2014-02-17 19:50:45,879 22951 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 19:50:45,879 22951 DEBUG Establishing Nagios handler...
+2014-02-17 19:50:45,879 22951 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-17 19:50:45,880 22951 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-17 19:50:45,880 22951 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-17 19:50:45,881 22951 DEBUG Accessor result!
+2014-02-17 19:50:45,881 22951 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-17 19:50:45,882 22951 DEBUG Using 
+2014-02-17 19:50:45,883 22951 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 32.6%|'percent_0'=32.6%;60;80"}
+2014-02-17 19:50:45,883 22951 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-17 19:50:45,883 22951 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-17 19:50:45,884 22951 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-17 19:50:45,884 22951 DEBUG Accessor result!
+2014-02-17 19:50:45,884 22951 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-17 19:50:45,884 22951 DEBUG Using 
+2014-02-17 19:50:46,886 22951 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 1.0%|'percent_0'=1.0%;20;30"}
+2014-02-17 19:50:46,886 22951 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-17 19:50:46,887 22951 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-17 19:50:46,887 22951 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-17 19:50:46,888 22951 DEBUG Accessor result!
+2014-02-17 19:50:46,888 22951 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-17 19:50:46,888 22951 DEBUG Using 
+2014-02-17 19:50:46,888 22951 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-17 19:50:46,899 22951 INFO Starting new HTTP connection (1): localhost
+2014-02-17 19:50:46,904 22951 DEBUG "POST /nrdp/ HTTP/1.1" 200 170
+2014-02-17 19:50:46,905 22951 DEBUG hitting url with payload: http://localhost/nrdp/
+2014-02-17 19:50:46,905 22951 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-17 19:50:46,907 22951 INFO Message from NRDP server: OK
+2014-02-17 19:50:46,907 22951 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-17 19:50:46,907 22951 DEBUG Successfully ran handler nrdp
+2014-02-17 19:51:37,023 22951 INFO stopped
+2014-02-17 19:51:38,092 23152 INFO started
+2014-02-17 19:51:38,093 23152 DEBUG Parsing config...
+2014-02-17 19:51:38,093 23152 DEBUG Parsing commands...
+2014-02-17 19:51:38,093 23152 DEBUG Parsing new individual command.
+2014-02-17 19:51:38,093 23152 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:51:38,094 23152 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-17 19:51:38,094 23152 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-17 19:51:38,094 23152 DEBUG Command contained arguments.
+2014-02-17 19:51:38,094 23152 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 19:51:38,094 23152 DEBUG Parsing new individual command.
+2014-02-17 19:51:38,094 23152 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:51:38,094 23152 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-17 19:51:38,095 23152 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-17 19:51:38,095 23152 DEBUG Command contained arguments.
+2014-02-17 19:51:38,095 23152 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-17 19:51:38,095 23152 DEBUG Parsing new individual command.
+2014-02-17 19:51:38,095 23152 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:51:38,095 23152 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-17 19:51:38,095 23152 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-17 19:51:38,096 23152 DEBUG Command contained arguments.
+2014-02-17 19:51:38,096 23152 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 19:51:38,096 23152 DEBUG Establishing Nagios handler...
+2014-02-17 19:51:38,096 23152 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-17 19:51:38,097 23152 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-17 19:51:38,097 23152 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-17 19:51:38,098 23152 DEBUG Accessor result!
+2014-02-17 19:51:38,099 23152 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-17 19:51:38,099 23152 DEBUG Using 
+2014-02-17 19:51:38,100 23152 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 32.6%|'percent_0'=32.6%;60;80"}
+2014-02-17 19:51:38,100 23152 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-17 19:51:38,101 23152 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-17 19:51:38,101 23152 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-17 19:51:38,101 23152 DEBUG Accessor result!
+2014-02-17 19:51:38,101 23152 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-17 19:51:38,101 23152 DEBUG Using 
+2014-02-17 19:51:39,103 23152 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 1.0%|'percent_0'=1.0%;20;30"}
+2014-02-17 19:51:39,103 23152 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-17 19:51:39,104 23152 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-17 19:51:39,104 23152 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-17 19:51:39,104 23152 DEBUG Accessor result!
+2014-02-17 19:51:39,105 23152 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-17 19:51:39,105 23152 DEBUG Using 
+2014-02-17 19:51:39,105 23152 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-17 19:51:39,114 23152 INFO Starting new HTTP connection (1): localhost
+2014-02-17 19:51:39,119 23152 DEBUG "POST /nrdp/ HTTP/1.1" 200 170
+2014-02-17 19:51:39,120 23152 DEBUG hitting url with payload: http://localhost/nrdp/
+2014-02-17 19:51:39,121 23152 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-17 19:51:39,123 23152 INFO Message from NRDP server: OK
+2014-02-17 19:51:39,123 23152 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-17 19:51:39,123 23152 DEBUG Successfully ran handler nrdp
+2014-02-17 19:52:52,972 23152 INFO stopped
+2014-02-17 19:55:03,254 24069 INFO started
+2014-02-17 19:55:03,255 24069 DEBUG Parsing config...
+2014-02-17 19:55:03,255 24069 DEBUG Parsing commands...
+2014-02-17 19:55:03,255 24069 DEBUG Parsing new individual command.
+2014-02-17 19:55:03,255 24069 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:55:03,255 24069 DEBUG Setting hostname to DreamTheater and servicename to memory usage
+2014-02-17 19:55:03,255 24069 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-02-17 19:55:03,255 24069 DEBUG Command contained arguments.
+2014-02-17 19:55:03,256 24069 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 19:55:03,256 24069 DEBUG Parsing new individual command.
+2014-02-17 19:55:03,256 24069 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:55:03,256 24069 DEBUG Setting hostname to DreamTheater and servicename to cpu usage
+2014-02-17 19:55:03,256 24069 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-02-17 19:55:03,256 24069 DEBUG Command contained arguments.
+2014-02-17 19:55:03,257 24069 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-02-17 19:55:03,257 24069 DEBUG Parsing new individual command.
+2014-02-17 19:55:03,257 24069 DEBUG Using the config directive for the hostname: DreamTheater
+2014-02-17 19:55:03,257 24069 DEBUG Setting hostname to DreamTheater and servicename to swap usage
+2014-02-17 19:55:03,257 24069 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-02-17 19:55:03,257 24069 DEBUG Command contained arguments.
+2014-02-17 19:55:03,257 24069 DEBUG Command to be run: Nagios Hostname: DreamTheater -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-02-17 19:55:03,258 24069 DEBUG Establishing Nagios handler...
+2014-02-17 19:55:03,258 24069 DEBUG Parsing arguments: --warning 60 --critical 80
+2014-02-17 19:55:03,258 24069 DEBUG String args: ['./xxx', '--warning', '60', '--critical', '80']
+2014-02-17 19:55:03,259 24069 DEBUG Accessing internal API with accessor /memory/virtual/percent?warning=60&critical=80&unit=
+2014-02-17 19:55:03,260 24069 DEBUG Accessor result!
+2014-02-17 19:55:03,260 24069 DEBUG Accessing internal API with accessor memory/virtual/percent
+2014-02-17 19:55:03,260 24069 DEBUG Using 
+2014-02-17 19:55:03,261 24069 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 32.9%|'percent_0'=32.9%;60;80"}
+2014-02-17 19:55:03,261 24069 DEBUG Parsing arguments: --warning 20 --critical 30
+2014-02-17 19:55:03,262 24069 DEBUG String args: ['./xxx', '--warning', '20', '--critical', '30']
+2014-02-17 19:55:03,262 24069 DEBUG Accessing internal API with accessor /cpu/percent?warning=20&critical=30&unit=
+2014-02-17 19:55:03,262 24069 DEBUG Accessor result!
+2014-02-17 19:55:03,262 24069 DEBUG Accessing internal API with accessor cpu/percent
+2014-02-17 19:55:03,263 24069 DEBUG Using 
+2014-02-17 19:55:04,264 24069 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;20;30"}
+2014-02-17 19:55:04,265 24069 DEBUG Parsing arguments: --warning 40 --critical 80
+2014-02-17 19:55:04,265 24069 DEBUG String args: ['./xxx', '--warning', '40', '--critical', '80']
+2014-02-17 19:55:04,265 24069 DEBUG Accessing internal API with accessor /memory/swap/percent?warning=40&critical=80&unit=
+2014-02-17 19:55:04,266 24069 DEBUG Accessor result!
+2014-02-17 19:55:04,266 24069 DEBUG Accessing internal API with accessor memory/swap/percent
+2014-02-17 19:55:04,266 24069 DEBUG Using 
+2014-02-17 19:55:04,267 24069 DEBUG Response from server: {'returncode': 0, 'stdout': "OK: Percent was 0.0%|'percent_0'=0.0%;40;80"}
+2014-02-17 19:55:04,268 24069 DEBUG XML to be submitted: <?xml version="1.0" ?>
+<checkresults><checkresult type="service"><servicename>memory usage</servicename><hostname>DreamTheater</hostname><state>0</state><output>OK: Percent was 32.9%|'percent_0'=32.9%;60;80</output></checkresult><checkresult type="service"><servicename>cpu usage</servicename><hostname>DreamTheater</hostname><state>0</state><output>OK: Percent was 0.0%|'percent_0'=0.0%;20;30</output></checkresult><checkresult type="service"><servicename>swap usage</servicename><hostname>DreamTheater</hostname><state>0</state><output>OK: Percent was 0.0%|'percent_0'=0.0%;40;80</output></checkresult></checkresults>
+2014-02-17 19:55:04,277 24069 INFO Starting new HTTP connection (1): localhost
+2014-02-17 19:55:04,282 24069 DEBUG "POST /nrdp/ HTTP/1.1" 200 170
+2014-02-17 19:55:04,282 24069 DEBUG hitting url with payload: http://localhost/nrdp/
+2014-02-17 19:55:04,282 24069 DEBUG content response from payload: <?xml version="1.0" encoding="utf-8"?>
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>3 checks processed.</output>
+    </meta>
+</result>
+
+2014-02-17 19:55:04,284 24069 INFO Message from NRDP server: OK
+2014-02-17 19:55:04,285 24069 INFO Meta output from NRDP server: 3 checks processed.
+2014-02-17 19:55:04,285 24069 DEBUG Successfully ran handler nrdp
+2014-02-17 19:55:13,664 24069 INFO stopped
