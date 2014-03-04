@@ -14,6 +14,8 @@ import urllib
 import shlex
 import re
 
+__VERSION__ = 0.1
+
 def pretty(d, indent=0, indenter=' '*4):
     info_str = ''
     for key, value in d.iteritems():
@@ -54,17 +56,22 @@ def parse_args():
                            "a check.")
     parser.add_option("-v", "--verbose", action='store_true',
                       help='Print more verbose error messages.')
+    parser.add_option("-V", "--version", action='store_true',
+                      help='Print version number of plugin.')
     options, _ = parser.parse_args()
     
-    if not options.hostname:
+    if options.version:
+        pass # we just want to return
+    
+    elif not options.hostname:
         parser.print_help()
         parser.error("Hostname is required for use.")
 
-    if not options.token:
+    elif not options.token:
         parser.print_help()
         parser.error("A token is most definitely required.")
 
-    if not options.metric and not options.list:
+    elif not options.metric and not options.list:
         parser.print_help()
         parser.error('No metric given, if you want to list all possible items '
                      'use --list.')
@@ -164,6 +171,12 @@ def show_list(info_json):
 def main():
     try:
         options = parse_args()
+        
+        if options.version:
+            global __VERSION__
+            stdout = 'The version of this plugin is %.1f' % __VERSION__
+            return stdout, 0
+        
         info_json = get_json(options)
         if options.list:
             return show_list(info_json)
