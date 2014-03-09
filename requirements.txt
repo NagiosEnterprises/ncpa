@@ -2,9 +2,6 @@ psutil
 requests
 Jinja2
 flask
-simpledaemon
 PyOpenSSL
 sphinx
 sphinx-bootstrap-theme
-rq
-
