@@ -18,7 +18,7 @@ import pwd
 import signal
 import sys
 import time
-
+import filename
 
 class Daemon(object):
     """Daemon base class"""
@@ -32,8 +32,9 @@ class Daemon(object):
         """
         if not hasattr(self, 'default_conf'):
             # Grabs the filename that the Daemon subclass resides in...
-            self.daemon_file = sys.modules[self.__class__.__module__].__file__
-            self.default_conf = self.daemon_file.rpartition('.')[0] + '.conf'
+            #self.daemon_file = sys.modules[self.__class__.__module__].__file__
+            #self.default_conf = self.daemon_file.rpartition('.')[0] + '.conf'
+            pass
         if not hasattr(self, 'section'):
             self.section = 'daemon'
 
@@ -111,8 +112,8 @@ class Daemon(object):
 
         self.logmaxmb = int(cp.get(self.section, 'logmaxmb'))
         self.logbackups = int(cp.get(self.section, 'logbackups'))
-        self.pidfile = os.path.abspath(os.path.join(os.path.dirname(__file__), cp.get(self.section, 'pidfile')))
-        self.logfile = os.path.abspath(os.path.join(os.path.dirname(__file__), cp.get(self.section, 'logfile')))
+        self.pidfile = os.path.abspath(os.path.join(filename.get_dirname_file(), cp.get(self.section, 'pidfile')))
+        self.logfile = os.path.abspath(os.path.join(filename.get_dirname_file(), cp.get(self.section, 'logfile')))
         self.loglevel = cp.get(self.section, 'loglevel')
 
     def on_sigterm(self, signalnum, frame):
