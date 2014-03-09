@@ -8,6 +8,7 @@ def make_rpm():
     os.system('rpmdev-setuptree')
     os.system('cp ncpa-%s.tar.gz ~/rpmbuild/SOURCES/' % version)
     os.system('cp ncpa.spec ~/rpmbuild/SPECS/ -f')
+    os.system('QA_RPATHS=$[ 0x0002 ] rpmbuild -ba ~/rpmbuild/SPECS/ncpa.spec')
 
 def make_deb():
     pass
