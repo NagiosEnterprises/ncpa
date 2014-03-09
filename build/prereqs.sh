@@ -24,11 +24,13 @@ cd /tmp
 wget "http://www.python.org/ftp/python/$PYTHONVER/$PYTHONVER.tgz'
 tar xf $PYTHONVER.tgz
 cd $PYTHONVER
-./configure
+./configure --enable-shared
 make
 make altinstall
 cd ..
 rm -rf $PYTHONVER*
+echo '/usr/local/lib' >> /etc/ld.so.conf
+ldconfig
 
 # Install pip
 wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py
