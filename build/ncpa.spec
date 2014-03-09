@@ -50,8 +50,10 @@ chkconfig --level 3,5 --add ncpa_passive
 %files
 %defattr(0775,nagios,nagcmd,-)
 /usr/local/ncpa/_bisect.cpython-33m.so
-/usr/local/ncpa/_cffi_backend.cpython-33m.so
 /usr/local/ncpa/_codecs_cn.cpython-33m.so
+/usr/local/ncpa/OpenSSL.SSL.so
+/usr/local/ncpa/OpenSSL.crypto.so
+/usr/local/ncpa/OpenSSL.rand.so
 /usr/local/ncpa/_codecs_hk.cpython-33m.so
 /usr/local/ncpa/_codecs_iso2022.cpython-33m.so
 /usr/local/ncpa/_codecs_jp.cpython-33m.so

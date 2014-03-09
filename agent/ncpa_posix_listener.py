@@ -6,14 +6,10 @@ import ncpadaemon
 import listener.server
 import filename
 import werkzeug.serving
+import configparser
 
 # All of the includes below are dummy includes so that cx_Freeze catches them
 import jinja2.ext
-
-try:
-    import configparser
-except ImportError:
-    import configparser as configparser
 
 class Listener(ncpadaemon.Daemon):
     default_conf = os.path.abspath(os.path.join(filename.get_dirname_file(), 'etc', 'ncpa.cfg'))
