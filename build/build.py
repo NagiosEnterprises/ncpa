@@ -9,6 +9,7 @@ else:
     build_target = 'posix.py'
 
 os.chdir(os.path.join(script_dir, '..', 'agent'))
+os.system('find . -type d -name __pycache__ -exec rm -rf {} \;')
 
 version_file = open('../VERSION.md', 'r')
 __VERSION__ = '%.1f' % float(version_file.readlines()[0])
