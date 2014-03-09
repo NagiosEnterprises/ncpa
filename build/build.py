@@ -1,9 +1,9 @@
 import os
 import sys
 
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.abspath(os.path.dirname(__file__))
 
-if sys.platform == 'nt':
+if sys.platform.startswith('win'):
     build_target = 'setup.py'
 else:
     build_target = 'posix.py'
@@ -28,9 +28,10 @@ os.system('mv _build/html ../agent/build/*/listener/static/help')
 
 os.chdir('../agent')
 
-if sys.platfrom != 'nt':
+if not sys.platform.startswith('win'):
+    os.system('rm -rf /tmp/ncpa-%s' % __VERSION__)
     os.mkdir('/tmp/ncpa-%s' % __VERSION__)
     os.system('cp build/*/* /tmp/ncpa-%s -rf' % __VERSION__)
-
-    os.system('tar zcvf ../build/ncpa-%s.tar.gz /tmp/ncpa-%s' % (__VERSION__, __VERSION__)) 
-    os.system('rm -rf /tmp/ncpa-%s' % __VERSION__)
+    os.chdir('/tmp')
+    os.system('tar zcvf %s/ncpa-%s.tar.gz ncpa-%s' % (script_dir, __VERSION__, __VERSION__)) 
+    print('%s/ncpa-%s.tar.gz' % (script_dir, __VERSION__))
