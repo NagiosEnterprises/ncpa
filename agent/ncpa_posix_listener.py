@@ -2,7 +2,7 @@
 
 import logging
 import os
-
+import jinja.ext
 import ncpadaemon
 import listener.server
 
