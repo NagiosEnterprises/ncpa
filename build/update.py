@@ -8,8 +8,8 @@ script_dir = os.path.dirname(__file__)
 
 os.chdir(os.path.join(script_dir, '..'))
 
-os.system('git pull origin ' % git_tag)
-os.system('git checkout %s' % git_tag)
+os.system('git pull origin "%s"' % git_tag)
+os.system('git checkout "%s"' % git_tag)
 os.system('pip3.3 install -r requirements.txt --upgrade')
 
 
