@@ -21,6 +21,13 @@ log.close()
 
 os.system('python3.3 %s build_exe' % build_target)
 
+os.chdir('../docs')
+
+os.system('make html')
+os.system('mv _build/html ../agent/build/*/listener/static/help')
+
+os.chdir('../agent')
+
 if sys.platfrom != 'nt':
     os.mkdir('/tmp/ncpa-%s' % __VERSION__)
     os.system('cp build/*/* /tmp/ncpa-%s -rf' % __VERSION__)
