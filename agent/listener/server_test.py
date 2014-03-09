@@ -1,9 +1,9 @@
 import unittest
-import server
-import ConfigParser
+from . import server
+import configparser
 import json
 import os
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import pickle
 
 curpath = os.getcwd()
@@ -44,7 +44,7 @@ def returncode_is(data, item):
 class TestServerFunctions(unittest.TestCase):
     
     def setUp(self):
-        self.config = ConfigParser.ConfigParser()
+        self.config = configparser.ConfigParser()
         self.config.read('../agent/etc/ncpa.cfg')
         self.token = self.config.get('api', 'community_string')
         server.listener.config['TESTING'] = True
@@ -65,7 +65,7 @@ class TestServerFunctions(unittest.TestCase):
         if token == None:
             token = self.token
         kwargs['token'] = token
-        get_parms = urllib.urlencode(kwargs)
+        get_parms = urllib.parse.urlencode(kwargs)
         return self.app.get('%s?%s' % (url, get_parms), follow_redirects=True).data
 
 class TestLoginFunctions(TestServerFunctions):

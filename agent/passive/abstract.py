@@ -1,7 +1,7 @@
 import logging
 import json
 import platform
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import listener.server
 import optparse
 import shlex
@@ -59,7 +59,7 @@ class NagiosHandler(object):
             arg_lat = shlex.split(arguments)
             logging.debug("String args: %s" % str(arg_lat))
             options, args = parser.parse_args(arg_lat)
-        except Exception, e:
+        except Exception as e:
             logging.exception(e)
         warning = options.warning or ''
         critical = options.critical or ''
@@ -73,7 +73,7 @@ class NagiosHandler(object):
         url = ncpa_command.command
         if ncpa_command.arguments and not 'plugin' in ncpa_command.command:
             wcu_dict = NagiosHandler.get_warn_crit_from_arguments(ncpa_command.arguments)
-            url += '?' + urllib.urlencode(wcu_dict)
+            url += '?' + urllib.parse.urlencode(wcu_dict)
         if 'plugin' in ncpa_command.command and ncpa_command.arguments:
             url += '/' + ncpa_command.arguments
         response = listener.server.internal_api(url, self.config)

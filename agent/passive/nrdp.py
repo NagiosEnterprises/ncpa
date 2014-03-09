@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-import abstract
+from . import abstract
 import xml.dom.minidom
 import logging
-import utils
+from . import utils
 
 class Handler(abstract.NagiosHandler):
     '''
@@ -17,7 +17,7 @@ class Handler(abstract.NagiosHandler):
         doc = xml.dom.minidom.Document()
         element = doc.createElement(tagname)
         if tagattr:
-            for k,v in zip(tagattr.keys(), tagattr.values()):
+            for k,v in zip(list(tagattr.keys()), list(tagattr.values())):
                 element.setAttribute(str(k), str(v))
         if text:
             textnode = doc.createTextNode(text)
@@ -58,13 +58,13 @@ class Handler(abstract.NagiosHandler):
         Sends all the commands to the agent and then submits them
         via NRDP to Nagios.
         '''
-        import ConfigParser
+        import configparser
         try:
             self.send_all_commands()
             self.submit_to_nagios()
-        except ConfigParser.NoSectionError, e:
+        except configparser.NoSectionError as e:
             logging.error('%s -- Exiting out of passive daemon cycle.' % str(e))
-        except ConfigParser.NoOptionError, e:
+        except configparser.NoOptionError as e:
             logging.error('%s -- Exiting out of cycle.' % str(e))
     
     def log_result(self, retxml, *args, **kwargs):
