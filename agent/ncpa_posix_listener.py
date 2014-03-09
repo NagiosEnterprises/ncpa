@@ -9,9 +9,9 @@ import listener.server
 try:
     import configparser
 except ImportError:
-    import ConfigParser as configparser
+    import configparser as configparser
 
-DEBUG = True
+#DEBUG = True
 
 
 class Listener(ncpadaemon.Daemon):
@@ -29,10 +29,10 @@ class Listener(ncpadaemon.Daemon):
             listener.server.listener.secret_key = os.urandom(24)
             try:
                 listener.server.listener.run(address, port, ssl_context=self.config_parser.get('listener', 'certificate'))
-            except Exception, e:
+            except Exception as e:
                 logging.exception(e)
                 listener.server.listener.run(address, port)
-        except Exception, e:
+        except Exception as e:
             logging.exception(e)
 
 if __name__ == '__main__':

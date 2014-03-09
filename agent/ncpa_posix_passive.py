@@ -40,7 +40,7 @@ class Passive(ncpadaemon.Daemon):
                     ins_handler = tmp_handler.Handler(self.config_parser)
                     ins_handler.run()
                     logging.debug('Successfully ran handler %s' % handler)
-                except Exception, e:
+                except Exception as e:
                     logging.exception(e)
     
     def run(self):
@@ -48,7 +48,7 @@ class Passive(ncpadaemon.Daemon):
             self.read_basic_config()
             try:
                 self.run_all_handlers()
-            except Exception, e:
+            except Exception as e:
                 logging.exception(e)
             sleep = int(self.config_parser.get('passive', 'sleep'))
             time.sleep(sleep)
@@ -56,5 +56,5 @@ class Passive(ncpadaemon.Daemon):
 if __name__ == '__main__':
     try:
         Passive().main()
-    except Exception, e:
+    except Exception as e:
         logging.exception(e)

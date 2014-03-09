@@ -8,7 +8,7 @@ VERSION = (1, 3, 0)
 try:
     import configparser
 except ImportError:
-    import ConfigParser as configparser
+    import configparser as configparser
 import errno
 import grp
 import logging
@@ -105,7 +105,7 @@ class Daemon(object):
         self.config_parser = cp
 
         try:
-            self.uid, self.gid = map(int, get_uid_gid(cp, self.section))
+            self.uid, self.gid = list(map(int, get_uid_gid(cp, self.section)))
         except ValueError as e:
             sys.exit(str(e))
 

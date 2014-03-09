@@ -4,7 +4,7 @@ import logging
 import re
 import platform
 import sys
-import psextensions
+from . import psextensions
 
 plugins   = ''
 
@@ -87,7 +87,7 @@ class ServiceNode(LazyNode):
         else:
             try:
                 return {self.name: psextensions.get_services()}
-            except Exception, e:
+            except Exception as e:
                 return {self.name: 'Error getting services: %s' % str(e)}
 
     def parse_query(self, path):
@@ -173,7 +173,7 @@ mem_swap = Node('swap', children=(mem_swap_total, mem_swap_free, mem_swap_percen
 
 memory = Node('memory', children=(mem_virt, mem_swap))
 
-disk_counters = [make_disk_nodes(x) for x in ps.disk_io_counters(perdisk=True).keys()]
+disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
 
 disk_mountpoints = []
 for x in ps.disk_partitions():
@@ -186,7 +186,7 @@ disk_physical = Node('phyical', children=disk_counters)
 
 disk = Node('disk', children=(disk_physical, disk_logical))
 
-if_children = [make_if_nodes(x) for x in ps.net_io_counters(pernic=True).keys()]
+if_children = [make_if_nodes(x) for x in list(ps.net_io_counters(pernic=True).keys())]
 
 interface = Node('interface', children=if_children)
 

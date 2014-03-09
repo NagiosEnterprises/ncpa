@@ -10,7 +10,7 @@ try:
     import json
 except:
     import simplejson as json
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import shlex
 import re
 
@@ -18,7 +18,7 @@ __VERSION__ = 0.1
 
 def pretty(d, indent=0, indenter=' '*4):
     info_str = ''
-    for key, value in d.iteritems():
+    for key, value in list(d.items()):
         info_str += indenter * indent + str(key)
         if isinstance(value, dict):
             info_str += '/\n'
@@ -127,7 +127,7 @@ def get_arguments_from_options(options, **kwargs):
         arguments['check'] = 1
     
     #~ Encode the items in the dictionary that are not None
-    return urllib.urlencode(dict((k, v) for k, v in arguments.iteritems() if v))
+    return urllib.parse.urlencode(dict((k, v) for k, v in list(arguments.items()) if v))
 
 #~ The following function simply call the helper functions.
 
@@ -140,18 +140,18 @@ def get_json(options):
     url = get_url_from_options(options, verbose=options.verbose)
 
     if options.verbose:
-        print 'Connecting to: ' + url
+        print(('Connecting to: ' + url))
     
     try:
-        filename, _ = urllib.urlretrieve(url)
+        filename, _ = urllib.request.urlretrieve(url)
         f = open(filename)
-    except Exception, ex:
+    except Exception as ex:
         url = get_url_from_options(options, use_https=False)
-        filename, _ = urllib.urlretrieve(url)
+        filename, _ = urllib.request.urlretrieve(url)
         f = open(filename)
 
     if options.verbose:
-        print 'File returned contained:\n' + ''.join(f.readlines())
+        print(('File returned contained:\n' + ''.join(f.readlines())))
         f.seek(0)
     
     return json.load(f)['value']
@@ -182,7 +182,7 @@ def main():
             return show_list(info_json)
         else:
             return run_check(info_json)
-    except Exception, e:
+    except Exception as e:
         if options.verbose:
             return 'An error occurred:' + str(e), 3
         else:
@@ -190,5 +190,5 @@ def main():
 
 if __name__ == "__main__":
     stdout, returncode = main()
-    print stdout
+    print(stdout)
     sys.exit(returncode)

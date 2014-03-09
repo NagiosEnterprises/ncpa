@@ -1,9 +1,9 @@
 import subprocess
 import os
-import ConfigParser
+import configparser
 import logging
 import shlex
-import urlparse
+import urllib.parse
 import tempfile
 import pickle
 import time
@@ -72,22 +72,22 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
     #~ First look at the GET and POST arguments to see what we are 
     #~ going to use for our warning/critical
     try:
-        processed_args = dict(urlparse.parse_qsl(accessor_args))
+        processed_args = dict(urllib.parse.parse_qsl(accessor_args))
     except ValueError:
         logging.debug('No argument detected in string %s' % accessor_args)
         processed_args = {}
-    except Exception, e:
+    except Exception as e:
         processed_args = {}
         logging.exception(e)
         logging.warning('Unabled to process arguments.')
     
     #~ We need to have [{dictionary: value}] structure, so if it isn't that
     #~ we need to throw a warning
-    if type(accessor_response.values()[0]) is dict:
+    if type(list(accessor_response.values())[0]) is dict:
         stdout = 'ERROR: Non-node value requested. Requested entire tree.'
         returncode = 3
     else:
-        result = accessor_response.values()[0]
+        result = list(accessor_response.values())[0]
         if not type(result) in [list, tuple]:
             unit = ''
             result = [result]
@@ -98,7 +98,7 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
         result = result[0]
         
         if type(result) == bool:
-            bool_name = accessor_response.keys()[0]
+            bool_name = list(accessor_response.keys())[0]
             if result:
                 return {'returncode': 0, 'stdout': "%s's status was as expected." % bool_name}
             else:
@@ -112,7 +112,7 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
         delta = processed_args.get('delta')
         
         if delta:
-            result = deltaize_call(accessor_response.keys()[0], result)
+            result = deltaize_call(list(accessor_response.keys())[0], result)
         
         if s_unit == 'T':
             factor = 1e12
@@ -143,7 +143,7 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
         else:
             returncode = 0
             prefix = 'OK'
-        label = accessor_response.keys()[0]
+        label = list(accessor_response.keys())[0]
         name = label.capitalize()
         stdout = "%s: %s was " % (prefix, name)
         stdout = stdout.replace('|', '/')
@@ -216,7 +216,7 @@ def get_plugin_instructions(plugin_name, config):
     _, extension = os.path.splitext(plugin_name)
     try:
         return config.get('plugin directives', extension)
-    except ConfigParser.NoOptionError:
+    except configparser.NoOptionError:
         return '$plugin_name $plugin_args'
 
 

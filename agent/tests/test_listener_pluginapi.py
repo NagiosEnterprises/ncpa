@@ -1,6 +1,6 @@
 import unittest
 import os
-import ConfigParser
+import configparser
 import sys
 import tempfile
 
@@ -68,7 +68,7 @@ class TestIsWithinRange(unittest.TestCase):
 
 class TestGetPluginInstructions(unittest.TestCase):
     def test_get_plugin_instructions(self):
-        mock_config = ConfigParser.ConfigParser()
+        mock_config = configparser.ConfigParser()
         mock_config.add_section('plugin directives')
         mock_config.set('plugin directives', '.exe', 'cmd /c $plugin_name $plugin_args')
         mock_plugin = 'test.exe'
@@ -86,9 +86,9 @@ class TestExecutePlugin(unittest.TestCase):
         test_plugin_fd.write('exit 1')
         test_plugin_fd.close()
 
-        os.chmod(test_plugin_filename, 0777)
+        os.chmod(test_plugin_filename, 0o777)
 
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.add_section('plugin directives')
         config.set('plugin directives', 'plugin_path', tempfile.gettempdir())
 

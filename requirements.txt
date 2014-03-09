@@ -2,6 +2,6 @@ psutil
 requests
 Jinja2
 flask
-PyOpenSSL
 sphinx
 sphinx-bootstrap-theme
+git+git://github.com/jessaustin/werkzeug.git@socket-fix
