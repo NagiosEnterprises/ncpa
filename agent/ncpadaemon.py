@@ -5,10 +5,7 @@ python application on Unix systems.
 
 VERSION = (1, 3, 0)
 
-try:
-    import configparser
-except ImportError:
-    import configparser as configparser
+import configparser
 import errno
 import grp
 import logging
