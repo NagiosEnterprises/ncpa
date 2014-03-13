@@ -16,6 +16,9 @@ elif ! which make > /dev/null;
 elif ! /sbin/ldconfig -p | grep ffi > /dev/null;
     echo 'must have libffi installed to continue.'
     exit 1
+elif ! /sbin/ldconfig -p | grep ssl > /dev/null;
+    echo 'must have openssl installed to continue.'
+    exit 1
 fi
 
 # Build a Python for the system, regardless of whether or not it exists
