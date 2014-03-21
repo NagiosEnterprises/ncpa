@@ -10,11 +10,14 @@ try:
     import json
 except:
     import simplejson as json
-import urllib.request, urllib.parse, urllib.error
+try:
+    import urllib.request, urllib.parse, urllib.error
+except ImportError:
+    import urllib
 import shlex
 import re
 
-__VERSION__ = 0.1
+__VERSION__ = 0.2
 
 def pretty(d, indent=0, indenter=' '*4):
     info_str = ''
@@ -125,9 +128,14 @@ def get_arguments_from_options(options, **kwargs):
         arguments['critical'] = options.critical
         arguments['delta'] = options.delta
         arguments['check'] = 1
-    
+
+    try:
+        urlencode = urllib.parse.urlencode
+    except AttributeError:
+        urlencode = urllib.urlencode
+
     #~ Encode the items in the dictionary that are not None
-    return urllib.parse.urlencode(dict((k, v) for k, v in list(arguments.items()) if v))
+    return urlencode(dict((k, v) for k, v in list(arguments.items()) if v))
 
 #~ The following function simply call the helper functions.
 
@@ -142,12 +150,18 @@ def get_json(options):
     if options.verbose:
         print(('Connecting to: ' + url))
     
+    # Add Python2 vs Python3 support
     try:
-        filename, _ = urllib.request.urlretrieve(url)
+        urlretrieve = urllib.request.urlretrieve
+    except AttributeError:
+        urlretrieve = urllib.urlretrieve
+
+    try:
+        filename, _ = urlretrieve(url)
         f = open(filename)
-    except Exception as ex:
+    except IOError:
         url = get_url_from_options(options, use_https=False)
-        filename, _ = urllib.request.urlretrieve(url)
+        filename, _ = urlretrieve(url)
         f = open(filename)
 
     if options.verbose:
