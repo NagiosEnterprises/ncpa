@@ -12,7 +12,7 @@ def wait_for_next_log():
     c = wmi.WMI()
     w = c.watch_for(notification_type='Creation', wmi_class='Win32_NTLogEvent')
     event = w()
-    print event.wmi_property()
+    print((event.wmi_property()))
     #~ logging.debug('%s in %s log: %s' % (event.Type, event.Logfile, event.Message)
 
 def translate_level_to_syslog(event):
@@ -29,7 +29,7 @@ def translate_level_to_syslog(event):
     
     try:
         translated = translations[event]
-    except KeyError, e:
+    except KeyError as e:
         logging.exception(e)
         translated = 0
     

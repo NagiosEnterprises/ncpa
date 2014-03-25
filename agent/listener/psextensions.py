@@ -1,4 +1,4 @@
-import environment
+from . import environment
 import subprocess
 import tempfile
 import os

@@ -5,10 +5,7 @@ python application on Unix systems.
 
 VERSION = (1, 3, 0)
 
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
+import configparser
 import errno
 import grp
 import logging
@@ -18,7 +15,7 @@ import pwd
 import signal
 import sys
 import time
-
+import filename
 
 class Daemon(object):
     """Daemon base class"""
@@ -32,8 +29,9 @@ class Daemon(object):
         """
         if not hasattr(self, 'default_conf'):
             # Grabs the filename that the Daemon subclass resides in...
-            self.daemon_file = sys.modules[self.__class__.__module__].__file__
-            self.default_conf = self.daemon_file.rpartition('.')[0] + '.conf'
+            #self.daemon_file = sys.modules[self.__class__.__module__].__file__
+            #self.default_conf = self.daemon_file.rpartition('.')[0] + '.conf'
+            pass
         if not hasattr(self, 'section'):
             self.section = 'daemon'
 
@@ -105,14 +103,14 @@ class Daemon(object):
         self.config_parser = cp
 
         try:
-            self.uid, self.gid = map(int, get_uid_gid(cp, self.section))
+            self.uid, self.gid = list(map(int, get_uid_gid(cp, self.section)))
         except ValueError as e:
             sys.exit(str(e))
 
         self.logmaxmb = int(cp.get(self.section, 'logmaxmb'))
         self.logbackups = int(cp.get(self.section, 'logbackups'))
-        self.pidfile = os.path.abspath(os.path.join(os.path.dirname(__file__), cp.get(self.section, 'pidfile')))
-        self.logfile = os.path.abspath(os.path.join(os.path.dirname(__file__), cp.get(self.section, 'logfile')))
+        self.pidfile = os.path.abspath(os.path.join(filename.get_dirname_file(), cp.get(self.section, 'pidfile')))
+        self.logfile = os.path.abspath(os.path.join(filename.get_dirname_file(), cp.get(self.section, 'logfile')))
         self.loglevel = cp.get(self.section, 'loglevel')
 
     def on_sigterm(self, signalnum, frame):

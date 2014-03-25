@@ -10,13 +10,18 @@ try:
     import json
 except:
     import simplejson as json
-import urllib
+try:
+    import urllib.request, urllib.parse, urllib.error
+except ImportError:
+    import urllib
 import shlex
 import re
 
+__VERSION__ = 0.2
+
 def pretty(d, indent=0, indenter=' '*4):
     info_str = ''
-    for key, value in d.iteritems():
+    for key, value in list(d.items()):
         info_str += indenter * indent + str(key)
         if isinstance(value, dict):
             info_str += '/\n'
@@ -54,17 +59,22 @@ def parse_args():
                            "a check.")
     parser.add_option("-v", "--verbose", action='store_true',
                       help='Print more verbose error messages.')
+    parser.add_option("-V", "--version", action='store_true',
+                      help='Print version number of plugin.')
     options, _ = parser.parse_args()
     
-    if not options.hostname:
+    if options.version:
+        pass # we just want to return
+    
+    elif not options.hostname:
         parser.print_help()
         parser.error("Hostname is required for use.")
 
-    if not options.token:
+    elif not options.token:
         parser.print_help()
         parser.error("A token is most definitely required.")
 
-    if not options.metric and not options.list:
+    elif not options.metric and not options.list:
         parser.print_help()
         parser.error('No metric given, if you want to list all possible items '
                      'use --list.')
@@ -118,9 +128,14 @@ def get_arguments_from_options(options, **kwargs):
         arguments['critical'] = options.critical
         arguments['delta'] = options.delta
         arguments['check'] = 1
-    
+
+    try:
+        urlencode = urllib.parse.urlencode
+    except AttributeError:
+        urlencode = urllib.urlencode
+
     #~ Encode the items in the dictionary that are not None
-    return urllib.urlencode(dict((k, v) for k, v in arguments.iteritems() if v))
+    return urlencode(dict((k, v) for k, v in list(arguments.items()) if v))
 
 #~ The following function simply call the helper functions.
 
@@ -133,18 +148,24 @@ def get_json(options):
     url = get_url_from_options(options, verbose=options.verbose)
 
     if options.verbose:
-        print 'Connecting to: ' + url
+        print(('Connecting to: ' + url))
     
+    # Add Python2 vs Python3 support
     try:
-        filename, _ = urllib.urlretrieve(url)
+        urlretrieve = urllib.request.urlretrieve
+    except AttributeError:
+        urlretrieve = urllib.urlretrieve
+
+    try:
+        filename, _ = urlretrieve(url)
         f = open(filename)
-    except Exception, ex:
+    except IOError:
         url = get_url_from_options(options, use_https=False)
-        filename, _ = urllib.urlretrieve(url)
+        filename, _ = urlretrieve(url)
         f = open(filename)
 
     if options.verbose:
-        print 'File returned contained:\n' + ''.join(f.readlines())
+        print(('File returned contained:\n' + ''.join(f.readlines())))
         f.seek(0)
     
     return json.load(f)['value']
@@ -164,12 +185,18 @@ def show_list(info_json):
 def main():
     try:
         options = parse_args()
+        
+        if options.version:
+            global __VERSION__
+            stdout = 'The version of this plugin is %.1f' % __VERSION__
+            return stdout, 0
+        
         info_json = get_json(options)
         if options.list:
             return show_list(info_json)
         else:
             return run_check(info_json)
-    except Exception, e:
+    except Exception as e:
         if options.verbose:
             return 'An error occurred:' + str(e), 3
         else:
@@ -177,5 +204,5 @@ def main():
 
 if __name__ == "__main__":
     stdout, returncode = main()
-    print stdout
+    print(stdout)
     sys.exit(returncode)
