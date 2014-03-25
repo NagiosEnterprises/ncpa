@@ -6,13 +6,13 @@ runpath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(runpath)
 import unittest
 import mock
-import nrdp
-import ConfigParser
+from . import nrdp
+import configparser
 
 class NagiosNRDPTestCase(unittest.TestCase):
     
     def setUp(self):
-        conf = ConfigParser.ConfigParser()
+        conf = configparser.ConfigParser()
         conf.read('etc/ncpa.cfg')
         
         self.nrdp = nrdp.Handler(conf)

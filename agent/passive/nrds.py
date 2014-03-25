@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import requests
 import sys
-import abstract
+from . import abstract
 import xml.etree.ElementTree as ET
-import utils
+from . import utils
 import json
 import re
 import logging
@@ -49,7 +49,7 @@ class Handler(abstract.NagiosHandler):
         try:
             with open(local_path_location, 'w') as plugin_file:
                 plugin_file.write(url_request.content)
-                os.chmod(local_path_location, 0775)
+                os.chmod(local_path_location, 0o775)
         except IOError:
             logging.error('Could not write the plugin to %s, perhaps permissions went bad.', local_path_location)
 

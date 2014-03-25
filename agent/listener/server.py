@@ -2,20 +2,20 @@
 
 from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session
 import logging
-import urllib
-import ConfigParser
+import urllib.request, urllib.parse, urllib.error
+import configparser
 import os
 import sys
 import platform
 import requests
-import psapi
-import pluginapi
+from . import psapi
+from . import pluginapi
 import functools
 import jinja2
 import datetime
 import re
 
-__VERSION__ = 1.3
+__VERSION__ = 1.4
 __STARTED__ = datetime.datetime.now()
 
 
@@ -92,10 +92,10 @@ def login():
 def dashboard():
     my_json = api('disk/logical', raw=True)
     disks = [{'safe': re.sub(r'[^a-zA-Z0-9]', '', x),
-              'raw': x} for x in my_json.get('logical').keys()]
+              'raw': x} for x in list(my_json.get('logical').keys())]
     my_json = api('interface/', raw=True)
     interfaces = [{'safe': re.sub(r'[^a-zA-Z0-9]', '', x),
-                   'raw': x} for x in my_json.get('interface').keys()]
+                   'raw': x} for x in list(my_json.get('interface').keys())]
     my_json = api('cpu/count', raw=True)
     cpu_count = my_json.get('count', 0)
 
@@ -125,7 +125,7 @@ def config():
     if section:
         try:
             return jsonify(**listener.config['iconfig'].__dict__['_sections'][section])
-        except Exception, e:
+        except Exception as e:
             logging.exception(e)
     return render_template('config.html', **{'config': listener.config['iconfig'].__dict__['_sections']})
 
@@ -161,7 +161,7 @@ def index():
     info = make_info_dict()
     try:
         return render_template('main.html', **info)
-    except Exception, e:
+    except Exception as e:
         logging.exception(e)
 
 
@@ -193,7 +193,7 @@ def nrdp():
             response = requests.post(forward_to, params=request.form)
         resp = Response(response.content, 200, mimetype=response.headers['content-type'])
         return resp
-    except Exception, e:
+    except Exception as e:
         logging.exception(e)
         return error(msg=str(e))
 
@@ -205,10 +205,10 @@ def plugin_api(plugin_name=None, plugin_args=None):
     config = listener.config['iconfig']
     if plugin_args:
         logging.info(plugin_args)
-        plugin_args = [urllib.unquote(x) for x in plugin_args.split('/')]
+        plugin_args = [urllib.parse.unquote(x) for x in plugin_args.split('/')]
     try:
         response = pluginapi.execute_plugin(plugin_name, plugin_args, config)
-    except Exception, e:
+    except Exception as e:
         logging.exception(e)
         return error(msg='Error running plugin: %s' % str(e))
     return jsonify({'value': response})
@@ -219,11 +219,11 @@ def plugin_api(plugin_name=None, plugin_args=None):
 @requires_auth
 def api(accessor='', raw=False):
     if request.args.get('check'):
-        url = accessor + '?' + urllib.urlencode(request.args)
+        url = accessor + '?' + urllib.parse.urlencode(request.args)
         return jsonify({'value': internal_api(url, listener.config['iconfig'])})
     try:
         response = psapi.getter(accessor, listener.config['iconfig'].get('plugin directives', 'plugin_path'))
-    except Exception, e:
+    except Exception as e:
         logging.exception(e)
         return error(msg='Referencing node that does not exist.')
     if raw:
@@ -255,7 +255,7 @@ def internal_api(accessor=None, listener_config=None):
 
 def save_config(dconfig, writeto):
     viv = vivicate_dict(dconfig)
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
 
     #~ Do the normal sections
     for s in ['listener', 'passive', 'nrdp', 'nrds', 'api']:
@@ -270,7 +270,7 @@ def save_config(dconfig, writeto):
     config.set('plugin directives', 'plugin_path', directives['plugin_path'])
     del directives['plugin_path']
 
-    dkeys = [x for x in directives.keys() if 'suffix|' in x]
+    dkeys = [x for x in list(directives.keys()) if 'suffix|' in x]
     for x in dkeys:
         _, suffix = x.split('|')
         config.set('plugin directives', suffix, directives['exec|' + suffix])
@@ -278,7 +278,7 @@ def save_config(dconfig, writeto):
     pchecks = viv['passivecheck']
     config.add_section('passive checks')
 
-    pkeys = [x for x in pchecks.keys() if 'name|' in x]
+    pkeys = [x for x in list(pchecks.keys()) if 'name|' in x]
     for x in pkeys:
         _, pid = x.split('name|', 1)
         config.set('passive checks', pchecks[x], pchecks['exec|' + pid])

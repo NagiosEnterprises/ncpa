@@ -1,4 +1,4 @@
-import re, ConfigParser
+import re, configparser
 
 def getPassword():
     global nscparser, final_token
@@ -100,17 +100,17 @@ def getPassiveChecks():
 
 def main():
     global nscparser, final_token, final_plugins, final_passive
-    nscparser = ConfigParser.ConfigParser()
+    nscparser = configparser.ConfigParser()
     nscparser.read("NSC.ini")
     
     getPassword()
     getPluginDirectives()
     getPassiveChecks()
     
-    print "Some stuff:"
-    print final_token + "\n"
-    print final_plugins + "\n"
-    print final_passive + "\n"
+    print("Some stuff:")
+    print((final_token + "\n"))
+    print((final_plugins + "\n"))
+    print((final_passive + "\n"))
 main()
 
 

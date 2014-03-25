@@ -7,7 +7,7 @@ are called.
 
 import cx_Logging
 import cx_Threads
-import ConfigParser
+import configparser
 import logging
 import os
 import time
@@ -37,7 +37,7 @@ class Base(object):
         return os.path.join(appdir, file_name)
         
     def parse_config(self, *args, **kwargs):
-        self.config = ConfigParser.ConfigParser()
+        self.config = configparser.ConfigParser()
         self.config.optionxform = str
         self.config.read(self.config_filename)
     
@@ -90,7 +90,7 @@ class Listener(Base):
             listener.server.listener.config['iconfig'] = self.config
             listener.server.listener.secret_key = os.urandom(24)
             listener.server.listener.run(address, port, ssl_context=self.config.get('listener', 'certificate'))
-        except Exception, e:
+        except Exception as e:
             self.logger.exception(e)
         
     # called when the service is starting
@@ -120,7 +120,7 @@ class Passive(Base):
                 module_name = 'passive.%s' % handler
                 __import__(module_name)
                 tmp_handler = sys.modules[module_name]
-            except ImportError,e:
+            except ImportError as e:
                 self.logger.error('Could not import module passive.%s, skipping. %s' % (handler, str(e)))
                 self.logger.exception(e)
             else:
@@ -128,7 +128,7 @@ class Passive(Base):
                     ins_handler = tmp_handler.Handler(self.config)
                     ins_handler.run()
                     self.logger.debug('Successfully ran handler %s' % handler)
-                except Exception, e:
+                except Exception as e:
                     self.logger.exception(e)
     
     def start(self):
@@ -142,7 +142,7 @@ class Passive(Base):
                 self.parse_config()
                 wait_time = int(self.config.get('passive', 'sleep'))
                 time.sleep(wait_time)
-        except Exception, e:
+        except Exception as e:
             self.logger.exception(e)
         
     # called when the service is starting

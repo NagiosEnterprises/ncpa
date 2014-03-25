@@ -1,7 +1,7 @@
 import unittest
 import os
 import sys
-import ConfigParser
+import configparser
 
 sys.path.append(os.path.dirname(__file__) + '/..')
 from passive.abstract import *
@@ -22,7 +22,7 @@ class TestNagiosHandler(unittest.TestCase):
         self.assertEqual(result['critical'], '5')
 
     def test__parse_commands(self):
-        test_config = ConfigParser.ConfigParser()
+        test_config = configparser.ConfigParser()
         test_config.add_section('passive checks')
         test_config.set('passive checks', 'a|b', 'bingo')
         test_config.set('passive checks', 'a|c', 'bongo')

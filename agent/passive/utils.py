@@ -1,15 +1,15 @@
 import requests
-import ConfigParser
+import configparser
 import logging
 
-class PConfigParser(ConfigParser.ConfigParser):
+class PConfigParser(configparser.ConfigParser):
     
     def __init__(self, *args, **kwargs):
-        ConfigParser.ConfigParser.__init__(self, *args, **kwargs)
+        configparser.ConfigParser.__init__(self, *args, **kwargs)
     
     def read(self, file_path, *args, **kwargs):
         self.file_path = file_path
-        ConfigParser.ConfigParser.read(self, file_path, *args, **kwargs)
+        configparser.ConfigParser.read(self, file_path, *args, **kwargs)
 
 def send_request(url, *args, **kwargs):
     r = requests.post(url, data=kwargs, verify=False, allow_redirects=True)
