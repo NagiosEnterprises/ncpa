@@ -1,17 +1,17 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.4
 
 import ncpadaemon
 import logging
 import time
 import sys
 import os
-
+import filename
 import passive.nrds
 import passive.nrdp
 
 
 class Passive(ncpadaemon.Daemon):
-    default_conf = os.path.abspath('etc/ncpa.cfg')
+    default_conf = os.path.abspath(os.path.join(filename.get_dirname_file(), 'etc', 'ncpa.cfg')) 
     section = 'passive'
     
     def run_all_handlers(self, *args, **kwargs):
