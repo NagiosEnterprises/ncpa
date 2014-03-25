@@ -238,7 +238,7 @@ class Daemon(object):
         try:
             level = int(self.loglevel)
         except ValueError:
-            level = int(logging.getLevelName(self.loglevel.upper()))
+            level = getattr(logging, self.loglevel.upper())
 
         handlers = []
         if self.logfile:

@@ -1,0 +1,624 @@
+2014-03-25 20:26:41,872 45997 ERROR failed to start due to an exception
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/ncpadaemon.py", line 146, in start
+    self.check_pid_writable()
+  File "/tmp/ncpa/agent/ncpadaemon.py", line 308, in check_pid_writable
+    sys.exit(msg)
+SystemExit: unable to write to pidfile /tmp/ncpa/agent/var/ncpa_passive.pid
+2014-03-25 20:27:15,055 46191 INFO started
+2014-03-25 20:27:15,056 46191 ERROR Could not import module passive., skipping...
+2014-03-25 20:27:21,261 46191 INFO stopped
+2014-03-25 20:27:32,360 46264 INFO started
+2014-03-25 20:27:32,365 46264 DEBUG Parsing config...
+2014-03-25 20:27:32,365 46264 DEBUG Parsing commands...
+2014-03-25 20:27:32,366 46264 DEBUG Parsing new individual command.
+2014-03-25 20:27:32,366 46264 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:27:32,366 46264 DEBUG Setting hostname to yourhostname and servicename to swap usage
+2014-03-25 20:27:32,366 46264 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-03-25 20:27:32,366 46264 DEBUG Command contained arguments.
+2014-03-25 20:27:32,367 46264 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:27:32,367 46264 DEBUG Parsing new individual command.
+2014-03-25 20:27:32,367 46264 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:27:32,367 46264 DEBUG Setting hostname to yourhostname and servicename to cpu usage
+2014-03-25 20:27:32,367 46264 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-03-25 20:27:32,367 46264 DEBUG Command contained arguments.
+2014-03-25 20:27:32,367 46264 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-03-25 20:27:32,368 46264 DEBUG Parsing new individual command.
+2014-03-25 20:27:32,368 46264 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:27:32,368 46264 DEBUG Setting hostname to yourhostname and servicename to memory usage
+2014-03-25 20:27:32,369 46264 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-03-25 20:27:32,369 46264 DEBUG Command contained arguments.
+2014-03-25 20:27:32,369 46264 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:27:32,370 46264 DEBUG Establishing Nagios handler...
+2014-03-25 20:27:32,370 46264 DEBUG Connecting to NRDS server...
+2014-03-25 20:27:32,392 46264 ERROR Invalid URL 'yourparent': No schema supplied. Perhaps you meant http://yourparent?
+Traceback (most recent call last):
+  File "./ncpa_posix_passive.py", line 41, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 21, in run
+    if self.config_update_is_required():
+  File "/tmp/ncpa/agent/passive/nrds.py", line 97, in config_update_is_required
+    url_request = utils.send_request(nrdp_url, **get_args)
+  File "/tmp/ncpa/agent/passive/utils.py", line 15, in send_request
+    r = requests.post(url, data=kwargs, verify=False, allow_redirects=True)
+  File "/usr/local/lib/python3.4/site-packages/requests/api.py", line 88, in post
+    return request('post', url, data=data, **kwargs)
+  File "/usr/local/lib/python3.4/site-packages/requests/api.py", line 44, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/local/lib/python3.4/site-packages/requests/sessions.py", line 349, in request
+    prep = self.prepare_request(req)
+  File "/usr/local/lib/python3.4/site-packages/requests/sessions.py", line 287, in prepare_request
+    hooks=merge_hooks(request.hooks, self.hooks),
+  File "/usr/local/lib/python3.4/site-packages/requests/models.py", line 287, in prepare
+    self.prepare_url(url, params)
+  File "/usr/local/lib/python3.4/site-packages/requests/models.py", line 338, in prepare_url
+    "Perhaps you meant http://{0}?".format(url))
+requests.exceptions.MissingSchema: Invalid URL 'yourparent': No schema supplied. Perhaps you meant http://yourparent?
+2014-03-25 20:31:11,363 46264 INFO stopped
+2014-03-25 20:38:00,550 48788 INFO started
+2014-03-25 20:38:00,551 48788 DEBUG Parsing config...
+2014-03-25 20:38:00,552 48788 DEBUG Parsing commands...
+2014-03-25 20:38:00,552 48788 DEBUG Parsing new individual command.
+2014-03-25 20:38:00,552 48788 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:38:00,552 48788 DEBUG Setting hostname to yourhostname and servicename to memory usage
+2014-03-25 20:38:00,552 48788 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-03-25 20:38:00,553 48788 DEBUG Command contained arguments.
+2014-03-25 20:38:00,553 48788 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:38:00,553 48788 DEBUG Parsing new individual command.
+2014-03-25 20:38:00,553 48788 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:38:00,553 48788 DEBUG Setting hostname to yourhostname and servicename to cpu usage
+2014-03-25 20:38:00,553 48788 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-03-25 20:38:00,553 48788 DEBUG Command contained arguments.
+2014-03-25 20:38:00,554 48788 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-03-25 20:38:00,554 48788 DEBUG Parsing new individual command.
+2014-03-25 20:38:00,554 48788 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:38:00,554 48788 DEBUG Setting hostname to yourhostname and servicename to swap usage
+2014-03-25 20:38:00,554 48788 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-03-25 20:38:00,554 48788 DEBUG Command contained arguments.
+2014-03-25 20:38:00,555 48788 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:38:00,555 48788 DEBUG Establishing Nagios handler...
+2014-03-25 20:38:00,555 48788 DEBUG Connecting to NRDS server...
+2014-03-25 20:38:00,558 48788 ERROR Invalid URL 'yourparent': No schema supplied. Perhaps you meant http://yourparent?
+Traceback (most recent call last):
+  File "./ncpa_posix_passive.py", line 41, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 21, in run
+    if self.config_update_is_required():
+  File "/tmp/ncpa/agent/passive/nrds.py", line 97, in config_update_is_required
+    url_request = utils.send_request(nrdp_url, **get_args)
+  File "/tmp/ncpa/agent/passive/utils.py", line 15, in send_request
+    r = requests.post(url, data=kwargs, verify=False, allow_redirects=True)
+  File "/usr/local/lib/python3.4/site-packages/requests/api.py", line 88, in post
+    return request('post', url, data=data, **kwargs)
+  File "/usr/local/lib/python3.4/site-packages/requests/api.py", line 44, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/local/lib/python3.4/site-packages/requests/sessions.py", line 349, in request
+    prep = self.prepare_request(req)
+  File "/usr/local/lib/python3.4/site-packages/requests/sessions.py", line 287, in prepare_request
+    hooks=merge_hooks(request.hooks, self.hooks),
+  File "/usr/local/lib/python3.4/site-packages/requests/models.py", line 287, in prepare
+    self.prepare_url(url, params)
+  File "/usr/local/lib/python3.4/site-packages/requests/models.py", line 338, in prepare_url
+    "Perhaps you meant http://{0}?".format(url))
+requests.exceptions.MissingSchema: Invalid URL 'yourparent': No schema supplied. Perhaps you meant http://yourparent?
+2014-03-25 20:38:55,189 48788 INFO stopped
+2014-03-25 20:38:56,343 49035 INFO started
+2014-03-25 20:38:56,345 49035 DEBUG Parsing config...
+2014-03-25 20:38:56,345 49035 DEBUG Parsing commands...
+2014-03-25 20:38:56,345 49035 DEBUG Parsing new individual command.
+2014-03-25 20:38:56,345 49035 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:38:56,345 49035 DEBUG Setting hostname to yourhostname and servicename to cpu usage
+2014-03-25 20:38:56,345 49035 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-03-25 20:38:56,346 49035 DEBUG Command contained arguments.
+2014-03-25 20:38:56,346 49035 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-03-25 20:38:56,346 49035 DEBUG Parsing new individual command.
+2014-03-25 20:38:56,346 49035 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:38:56,346 49035 DEBUG Setting hostname to yourhostname and servicename to swap usage
+2014-03-25 20:38:56,346 49035 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-03-25 20:38:56,346 49035 DEBUG Command contained arguments.
+2014-03-25 20:38:56,347 49035 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:38:56,347 49035 DEBUG Parsing new individual command.
+2014-03-25 20:38:56,347 49035 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:38:56,347 49035 DEBUG Setting hostname to yourhostname and servicename to memory usage
+2014-03-25 20:38:56,347 49035 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-03-25 20:38:56,347 49035 DEBUG Command contained arguments.
+2014-03-25 20:38:56,348 49035 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:38:56,348 49035 DEBUG Establishing Nagios handler...
+2014-03-25 20:38:56,348 49035 DEBUG Connecting to NRDS server...
+2014-03-25 20:38:56,355 49035 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 20:38:56,360 49035 DEBUG "POST /nrdp HTTP/1.1" 301 313
+2014-03-25 20:38:56,367 49035 DEBUG "GET /nrdp/ HTTP/1.1" 200 1243
+2014-03-25 20:38:56,367 49035 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 20:38:56,367 49035 DEBUG content response from payload: b'\t<strong>Submit Nagios Command:</strong><br>\n\t<form action="" method="get">\n\t<input type="hidden" name="cmd" value="submitcmd">\n\tToken: <input type="text" name="token" value="" size="15"><br>\n\tCommand: <input type="text" name="command" size="50" value="DISABLE_HOST_NOTIFICATIONS;somehost"><br>\n\t<input type="submit" name="btnSubmit" value="Submit Command">\n\t</form>\n\t\n\t<hr>\n\t\n\t<strong>Submit Check Data</strong><br>\n\t<form action="" method="post">\n\t<input type="hidden" name="cmd" value="submitcheck">\n\tToken: <input type="text" name="token" value="" size="15"><br>\n\tCheck Data:<br>\n<textarea cols="80" rows="15" name="XMLDATA">\n&lt;?xml version=\'1.0\'?&gt; \n&lt;checkresults&gt;\n\t&lt;checkresult type=\'host\'&gt;\n\t\t&lt;hostname&gt;somehost&lt;/hostname&gt;\n\t\t&lt;state&gt;0&lt;/state&gt;\n\t\t&lt;output&gt;Everything looks okay!|perfdata&lt;/output&gt;\n\t&lt;/checkresult&gt;\n\t&lt;checkresult type=\'service\'&gt;\n\t\t&lt;hostname&gt;somehost&lt;/hostname&gt;\n\t\t&lt;servicename&gt;someservice&lt;/servicename&gt;\n\t\t&lt;state&gt;1&lt;/state&gt;\n\t\t&lt;output&gt;WARNING: Danger Will Robinson!|perfdata&lt;/output&gt;\n\t&lt;/checkresult&gt;\n&lt;/checkresults&gt;\n</textarea><br>\n\t<input type="submit" name="btnSubmit" value="Submit Check Data">\n\t</form>\n'
+2014-03-25 20:38:56,368 49035 ERROR junk after document element: line 1, column 40
+Traceback (most recent call last):
+  File "./ncpa_posix_passive.py", line 41, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 21, in run
+    if self.config_update_is_required():
+  File "/tmp/ncpa/agent/passive/nrds.py", line 98, in config_update_is_required
+    response_xml = ET.fromstring(url_request.content)
+  File "/usr/local/lib/python3.4/xml/etree/ElementTree.py", line 1325, in XML
+    parser.feed(text)
+  File "<string>", line None
+xml.etree.ElementTree.ParseError: junk after document element: line 1, column 40
+2014-03-25 20:43:49,269 49035 INFO stopped
+2014-03-25 20:43:50,993 50262 INFO started
+2014-03-25 20:43:50,995 50262 DEBUG Parsing config...
+2014-03-25 20:43:50,995 50262 DEBUG Parsing commands...
+2014-03-25 20:43:50,999 50262 DEBUG Parsing new individual command.
+2014-03-25 20:43:50,999 50262 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:43:50,999 50262 DEBUG Setting hostname to yourhostname and servicename to swap usage
+2014-03-25 20:43:50,999 50262 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-03-25 20:43:51,000 50262 DEBUG Command contained arguments.
+2014-03-25 20:43:51,000 50262 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:43:51,000 50262 DEBUG Parsing new individual command.
+2014-03-25 20:43:51,000 50262 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:43:51,000 50262 DEBUG Setting hostname to yourhostname and servicename to memory usage
+2014-03-25 20:43:51,000 50262 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-03-25 20:43:51,001 50262 DEBUG Command contained arguments.
+2014-03-25 20:43:51,001 50262 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:43:51,001 50262 DEBUG Parsing new individual command.
+2014-03-25 20:43:51,001 50262 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:43:51,001 50262 DEBUG Setting hostname to yourhostname and servicename to cpu usage
+2014-03-25 20:43:51,001 50262 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-03-25 20:43:51,001 50262 DEBUG Command contained arguments.
+2014-03-25 20:43:51,002 50262 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-03-25 20:43:51,002 50262 DEBUG Establishing Nagios handler...
+2014-03-25 20:43:51,002 50262 DEBUG Connecting to NRDS server...
+2014-03-25 20:43:51,017 50262 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 20:43:51,055 50262 DEBUG "POST /nrdp/ HTTP/1.1" 200 1156
+2014-03-25 20:43:51,056 50262 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 20:43:51,056 50262 DEBUG content response from payload: b'<?xml version="1.0" encoding="utf-8"?>\n<result>\n  <status>1</status>\n  <message>Version 0.3 available</message>\n    <meta>\n       <output></output>\n    </meta>\n  <config>\nCONFIG_VERSION=0.3\nCONFIG_OS=Windows (64-bit)\nCONFIG_NAME=win7\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nPLUGIN_DIR=C:\\Program Files\\Nagios\\NRDS_Win\\plugins\nSEND_NRDP=\nTMPDIR=\nCOMMAND_PREFIX=\nLOG_FILE=C:\\Program Files\\Nagios\\NRDS_Win\\logs\\NRDS_Debug.log\nIGNORE_SSL_CERTIFICATE_ERRORS=1\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n\ncommand[__HOST__] = $PLUGIN_DIR$\\check_winping.exe -H 127.0.0.1 --warning 200,40% --critical 400,80%\ncommand[nrpe_winprocess] = $PLUGIN_DIR$\\check_winprocess.exe --warning 100 --critical 150\ncommand[nrpe_process] = $PLUGIN_DIR$\\cpuload_nrpe_nt.exe 70 90\ncommand[nrpe_diskspace] = $PLUGIN_DIR$\\check_pdm.exe --disk --drive C: -w 97.5 -c 99.5\ncommand[nrpe_eventlog] = $PLUGIN_DIR$\\eventlog_nrpe_nt.exe -m 7200\ncommand[nrpe_memload] = $PLUGIN_DIR$\\check_pdm.exe --memory -w 90 -c 99\ncommand[nrpe_physical_mem] = $PLUGIN_DIR$\\check_pdm.exe --memory pagefile -w 80 -c 95\ncommand[nrpe_service] = $PLUGIN_DIR$\\service_nrpe_nt.exe "DNS Client"\n\n\n  </config>\n</result>\n'
+2014-03-25 20:43:51,057 50262 DEBUG Value returned for new config: 1
+2014-03-25 20:43:51,057 50262 DEBUG Updating my NRDS config...
+2014-03-25 20:43:51,057 50262 DEBUG URL I am requesting: http://192.168.4.114/nrdp/
+2014-03-25 20:43:51,059 50262 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 20:43:51,068 50262 DEBUG "POST /nrdp/ HTTP/1.1" 200 963
+2014-03-25 20:43:51,069 50262 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 20:43:51,069 50262 DEBUG content response from payload: b'CONFIG_VERSION=0.3\nCONFIG_OS=Windows (64-bit)\nCONFIG_NAME=win7\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nPLUGIN_DIR=C:\\Program Files\\Nagios\\NRDS_Win\\plugins\nSEND_NRDP=\nTMPDIR=\nCOMMAND_PREFIX=\nLOG_FILE=C:\\Program Files\\Nagios\\NRDS_Win\\logs\\NRDS_Debug.log\nIGNORE_SSL_CERTIFICATE_ERRORS=1\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n\ncommand[__HOST__] = $PLUGIN_DIR$\\check_winping.exe -H 127.0.0.1 --warning 200,40% --critical 400,80%\ncommand[nrpe_winprocess] = $PLUGIN_DIR$\\check_winprocess.exe --warning 100 --critical 150\ncommand[nrpe_process] = $PLUGIN_DIR$\\cpuload_nrpe_nt.exe 70 90\ncommand[nrpe_diskspace] = $PLUGIN_DIR$\\check_pdm.exe --disk --drive C: -w 97.5 -c 99.5\ncommand[nrpe_eventlog] = $PLUGIN_DIR$\\eventlog_nrpe_nt.exe -m 7200\ncommand[nrpe_memload] = $PLUGIN_DIR$\\check_pdm.exe --memory -w 90 -c 99\ncommand[nrpe_physical_mem] = $PLUGIN_DIR$\\check_pdm.exe --memory pagefile -w 80 -c 95\ncommand[nrpe_service] = $PLUGIN_DIR$\\service_nrpe_nt.exe "DNS Client"\n\n\n'
+2014-03-25 20:43:51,069 50262 ERROR must be str, not bytes
+Traceback (most recent call last):
+  File "./ncpa_posix_passive.py", line 41, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 23, in run
+    self.update_config()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 73, in update_config
+    config.write(url_request.content)
+TypeError: must be str, not bytes
+2014-03-25 20:46:52,892 50262 INFO stopped
+2014-03-25 20:49:12,151 51641 ERROR failed to start due to an exception
+Traceback (most recent call last):
+  File "/tmp/ncpa/agent/ncpadaemon.py", line 146, in start
+    self.check_pid_writable()
+  File "/tmp/ncpa/agent/ncpadaemon.py", line 307, in check_pid_writable
+    sys.exit(msg)
+SystemExit: unable to write to pidfile /tmp/ncpa/agent/var/ncpa_passive.pid
+2014-03-25 20:49:21,912 51652 INFO started
+2014-03-25 20:49:21,915 51652 ERROR Could not import module passive., skipping...
+2014-03-25 20:49:30,586 51652 INFO stopped
+2014-03-25 20:49:31,655 51698 INFO started
+2014-03-25 20:49:31,657 51698 DEBUG Parsing config...
+2014-03-25 20:49:31,657 51698 DEBUG Parsing commands...
+2014-03-25 20:49:31,657 51698 DEBUG Parsing new individual command.
+2014-03-25 20:49:31,657 51698 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:49:31,657 51698 DEBUG Setting hostname to yourhostname and servicename to swap usage
+2014-03-25 20:49:31,658 51698 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-03-25 20:49:31,658 51698 DEBUG Command contained arguments.
+2014-03-25 20:49:31,658 51698 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:49:31,658 51698 DEBUG Parsing new individual command.
+2014-03-25 20:49:31,658 51698 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:49:31,658 51698 DEBUG Setting hostname to yourhostname and servicename to cpu usage
+2014-03-25 20:49:31,659 51698 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-03-25 20:49:31,659 51698 DEBUG Command contained arguments.
+2014-03-25 20:49:31,659 51698 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-03-25 20:49:31,659 51698 DEBUG Parsing new individual command.
+2014-03-25 20:49:31,659 51698 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:49:31,659 51698 DEBUG Setting hostname to yourhostname and servicename to memory usage
+2014-03-25 20:49:31,659 51698 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-03-25 20:49:31,660 51698 DEBUG Command contained arguments.
+2014-03-25 20:49:31,660 51698 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:49:31,660 51698 DEBUG Establishing Nagios handler...
+2014-03-25 20:49:31,660 51698 DEBUG Connecting to NRDS server...
+2014-03-25 20:49:31,663 51698 ERROR Invalid URL 'None/': No schema supplied. Perhaps you meant http://None/?
+Traceback (most recent call last):
+  File "./ncpa_posix_passive.py", line 41, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 28, in run
+    if self.config_update_is_required():
+  File "/tmp/ncpa/agent/passive/nrds.py", line 102, in config_update_is_required
+    url_request = utils.send_request(nrdp_url, **get_args)
+  File "/tmp/ncpa/agent/passive/utils.py", line 15, in send_request
+    r = requests.post(url, data=kwargs, verify=False, allow_redirects=True)
+  File "/usr/local/lib/python3.4/site-packages/requests/api.py", line 88, in post
+    return request('post', url, data=data, **kwargs)
+  File "/usr/local/lib/python3.4/site-packages/requests/api.py", line 44, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/local/lib/python3.4/site-packages/requests/sessions.py", line 349, in request
+    prep = self.prepare_request(req)
+  File "/usr/local/lib/python3.4/site-packages/requests/sessions.py", line 287, in prepare_request
+    hooks=merge_hooks(request.hooks, self.hooks),
+  File "/usr/local/lib/python3.4/site-packages/requests/models.py", line 287, in prepare
+    self.prepare_url(url, params)
+  File "/usr/local/lib/python3.4/site-packages/requests/models.py", line 338, in prepare_url
+    "Perhaps you meant http://{0}?".format(url))
+requests.exceptions.MissingSchema: Invalid URL 'None/': No schema supplied. Perhaps you meant http://None/?
+2014-03-25 20:50:02,698 51698 INFO stopped
+2014-03-25 20:50:04,078 51908 INFO started
+2014-03-25 20:50:04,081 51908 DEBUG Parsing config...
+2014-03-25 20:50:04,081 51908 DEBUG Parsing commands...
+2014-03-25 20:50:04,081 51908 DEBUG Parsing new individual command.
+2014-03-25 20:50:04,081 51908 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:50:04,081 51908 DEBUG Setting hostname to yourhostname and servicename to memory usage
+2014-03-25 20:50:04,081 51908 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-03-25 20:50:04,083 51908 DEBUG Command contained arguments.
+2014-03-25 20:50:04,083 51908 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:50:04,083 51908 DEBUG Parsing new individual command.
+2014-03-25 20:50:04,083 51908 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:50:04,083 51908 DEBUG Setting hostname to yourhostname and servicename to swap usage
+2014-03-25 20:50:04,083 51908 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-03-25 20:50:04,083 51908 DEBUG Command contained arguments.
+2014-03-25 20:50:04,083 51908 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:50:04,085 51908 DEBUG Parsing new individual command.
+2014-03-25 20:50:04,085 51908 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:50:04,085 51908 DEBUG Setting hostname to yourhostname and servicename to cpu usage
+2014-03-25 20:50:04,085 51908 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-03-25 20:50:04,085 51908 DEBUG Command contained arguments.
+2014-03-25 20:50:04,085 51908 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-03-25 20:50:04,087 51908 DEBUG Establishing Nagios handler...
+2014-03-25 20:50:04,087 51908 DEBUG Connecting to NRDS server...
+2014-03-25 20:50:04,098 51908 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 20:50:04,108 51908 DEBUG "POST /nrdp/ HTTP/1.1" 200 1156
+2014-03-25 20:50:04,108 51908 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 20:50:04,108 51908 DEBUG content response from payload: b'<?xml version="1.0" encoding="utf-8"?>\n<result>\n  <status>1</status>\n  <message>Version 0.3 available</message>\n    <meta>\n       <output></output>\n    </meta>\n  <config>\nCONFIG_VERSION=0.3\nCONFIG_OS=Windows (64-bit)\nCONFIG_NAME=win7\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nPLUGIN_DIR=C:\\Program Files\\Nagios\\NRDS_Win\\plugins\nSEND_NRDP=\nTMPDIR=\nCOMMAND_PREFIX=\nLOG_FILE=C:\\Program Files\\Nagios\\NRDS_Win\\logs\\NRDS_Debug.log\nIGNORE_SSL_CERTIFICATE_ERRORS=1\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n\ncommand[__HOST__] = $PLUGIN_DIR$\\check_winping.exe -H 127.0.0.1 --warning 200,40% --critical 400,80%\ncommand[nrpe_winprocess] = $PLUGIN_DIR$\\check_winprocess.exe --warning 100 --critical 150\ncommand[nrpe_process] = $PLUGIN_DIR$\\cpuload_nrpe_nt.exe 70 90\ncommand[nrpe_diskspace] = $PLUGIN_DIR$\\check_pdm.exe --disk --drive C: -w 97.5 -c 99.5\ncommand[nrpe_eventlog] = $PLUGIN_DIR$\\eventlog_nrpe_nt.exe -m 7200\ncommand[nrpe_memload] = $PLUGIN_DIR$\\check_pdm.exe --memory -w 90 -c 99\ncommand[nrpe_physical_mem] = $PLUGIN_DIR$\\check_pdm.exe --memory pagefile -w 80 -c 95\ncommand[nrpe_service] = $PLUGIN_DIR$\\service_nrpe_nt.exe "DNS Client"\n\n\n  </config>\n</result>\n'
+2014-03-25 20:50:04,109 51908 DEBUG Value returned for new config: 1
+2014-03-25 20:50:04,109 51908 DEBUG Updating my NRDS config...
+2014-03-25 20:50:04,109 51908 DEBUG URL I am requesting: http://192.168.4.114/nrdp/
+2014-03-25 20:50:04,111 51908 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 20:50:04,119 51908 DEBUG "POST /nrdp/ HTTP/1.1" 200 963
+2014-03-25 20:50:04,120 51908 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 20:50:04,120 51908 DEBUG content response from payload: b'CONFIG_VERSION=0.3\nCONFIG_OS=Windows (64-bit)\nCONFIG_NAME=win7\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nPLUGIN_DIR=C:\\Program Files\\Nagios\\NRDS_Win\\plugins\nSEND_NRDP=\nTMPDIR=\nCOMMAND_PREFIX=\nLOG_FILE=C:\\Program Files\\Nagios\\NRDS_Win\\logs\\NRDS_Debug.log\nIGNORE_SSL_CERTIFICATE_ERRORS=1\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n\ncommand[__HOST__] = $PLUGIN_DIR$\\check_winping.exe -H 127.0.0.1 --warning 200,40% --critical 400,80%\ncommand[nrpe_winprocess] = $PLUGIN_DIR$\\check_winprocess.exe --warning 100 --critical 150\ncommand[nrpe_process] = $PLUGIN_DIR$\\cpuload_nrpe_nt.exe 70 90\ncommand[nrpe_diskspace] = $PLUGIN_DIR$\\check_pdm.exe --disk --drive C: -w 97.5 -c 99.5\ncommand[nrpe_eventlog] = $PLUGIN_DIR$\\eventlog_nrpe_nt.exe -m 7200\ncommand[nrpe_memload] = $PLUGIN_DIR$\\check_pdm.exe --memory -w 90 -c 99\ncommand[nrpe_physical_mem] = $PLUGIN_DIR$\\check_pdm.exe --memory pagefile -w 80 -c 95\ncommand[nrpe_service] = $PLUGIN_DIR$\\service_nrpe_nt.exe "DNS Client"\n\n\n'
+2014-03-25 20:50:04,120 51908 ERROR must be str, not bytes
+Traceback (most recent call last):
+  File "./ncpa_posix_passive.py", line 41, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 30, in run
+    self.update_config()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 79, in update_config
+    config.write(url_request.content)
+TypeError: must be str, not bytes
+2014-03-25 20:50:20,049 51908 INFO stopped
+2014-03-25 20:53:13,625 52639 INFO started
+2014-03-25 20:53:13,627 52639 DEBUG Parsing config...
+2014-03-25 20:53:13,627 52639 DEBUG Parsing commands...
+2014-03-25 20:53:13,627 52639 DEBUG Parsing new individual command.
+2014-03-25 20:53:13,628 52639 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:53:13,628 52639 DEBUG Setting hostname to yourhostname and servicename to memory usage
+2014-03-25 20:53:13,628 52639 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-03-25 20:53:13,628 52639 DEBUG Command contained arguments.
+2014-03-25 20:53:13,628 52639 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:53:13,628 52639 DEBUG Parsing new individual command.
+2014-03-25 20:53:13,629 52639 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:53:13,629 52639 DEBUG Setting hostname to yourhostname and servicename to cpu usage
+2014-03-25 20:53:13,629 52639 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-03-25 20:53:13,629 52639 DEBUG Command contained arguments.
+2014-03-25 20:53:13,629 52639 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-03-25 20:53:13,629 52639 DEBUG Parsing new individual command.
+2014-03-25 20:53:13,629 52639 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:53:13,630 52639 DEBUG Setting hostname to yourhostname and servicename to swap usage
+2014-03-25 20:53:13,630 52639 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-03-25 20:53:13,630 52639 DEBUG Command contained arguments.
+2014-03-25 20:53:13,630 52639 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:53:13,631 52639 DEBUG Establishing Nagios handler...
+2014-03-25 20:53:13,631 52639 DEBUG Connecting to NRDS server...
+2014-03-25 20:53:13,637 52639 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 20:53:13,644 52639 DEBUG "POST /nrdp/ HTTP/1.1" 200 1156
+2014-03-25 20:53:13,644 52639 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 20:53:13,645 52639 DEBUG content response from payload: b'<?xml version="1.0" encoding="utf-8"?>\n<result>\n  <status>1</status>\n  <message>Version 0.3 available</message>\n    <meta>\n       <output></output>\n    </meta>\n  <config>\nCONFIG_VERSION=0.3\nCONFIG_OS=Windows (64-bit)\nCONFIG_NAME=win7\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nPLUGIN_DIR=C:\\Program Files\\Nagios\\NRDS_Win\\plugins\nSEND_NRDP=\nTMPDIR=\nCOMMAND_PREFIX=\nLOG_FILE=C:\\Program Files\\Nagios\\NRDS_Win\\logs\\NRDS_Debug.log\nIGNORE_SSL_CERTIFICATE_ERRORS=1\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n\ncommand[__HOST__] = $PLUGIN_DIR$\\check_winping.exe -H 127.0.0.1 --warning 200,40% --critical 400,80%\ncommand[nrpe_winprocess] = $PLUGIN_DIR$\\check_winprocess.exe --warning 100 --critical 150\ncommand[nrpe_process] = $PLUGIN_DIR$\\cpuload_nrpe_nt.exe 70 90\ncommand[nrpe_diskspace] = $PLUGIN_DIR$\\check_pdm.exe --disk --drive C: -w 97.5 -c 99.5\ncommand[nrpe_eventlog] = $PLUGIN_DIR$\\eventlog_nrpe_nt.exe -m 7200\ncommand[nrpe_memload] = $PLUGIN_DIR$\\check_pdm.exe --memory -w 90 -c 99\ncommand[nrpe_physical_mem] = $PLUGIN_DIR$\\check_pdm.exe --memory pagefile -w 80 -c 95\ncommand[nrpe_service] = $PLUGIN_DIR$\\service_nrpe_nt.exe "DNS Client"\n\n\n  </config>\n</result>\n'
+2014-03-25 20:53:13,645 52639 DEBUG Value returned for new config: 1
+2014-03-25 20:53:13,645 52639 DEBUG Updating my NRDS config...
+2014-03-25 20:53:13,645 52639 DEBUG URL I am requesting: http://192.168.4.114/nrdp/
+2014-03-25 20:53:13,647 52639 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 20:53:13,652 52639 DEBUG "POST /nrdp/ HTTP/1.1" 200 963
+2014-03-25 20:53:13,653 52639 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 20:53:13,653 52639 DEBUG content response from payload: b'CONFIG_VERSION=0.3\nCONFIG_OS=Windows (64-bit)\nCONFIG_NAME=win7\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nPLUGIN_DIR=C:\\Program Files\\Nagios\\NRDS_Win\\plugins\nSEND_NRDP=\nTMPDIR=\nCOMMAND_PREFIX=\nLOG_FILE=C:\\Program Files\\Nagios\\NRDS_Win\\logs\\NRDS_Debug.log\nIGNORE_SSL_CERTIFICATE_ERRORS=1\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n\ncommand[__HOST__] = $PLUGIN_DIR$\\check_winping.exe -H 127.0.0.1 --warning 200,40% --critical 400,80%\ncommand[nrpe_winprocess] = $PLUGIN_DIR$\\check_winprocess.exe --warning 100 --critical 150\ncommand[nrpe_process] = $PLUGIN_DIR$\\cpuload_nrpe_nt.exe 70 90\ncommand[nrpe_diskspace] = $PLUGIN_DIR$\\check_pdm.exe --disk --drive C: -w 97.5 -c 99.5\ncommand[nrpe_eventlog] = $PLUGIN_DIR$\\eventlog_nrpe_nt.exe -m 7200\ncommand[nrpe_memload] = $PLUGIN_DIR$\\check_pdm.exe --memory -w 90 -c 99\ncommand[nrpe_physical_mem] = $PLUGIN_DIR$\\check_pdm.exe --memory pagefile -w 80 -c 95\ncommand[nrpe_service] = $PLUGIN_DIR$\\service_nrpe_nt.exe "DNS Client"\n\n\n'
+2014-03-25 20:53:13,654 52639 ERROR not well-formed (invalid token): line 1, column 14
+Traceback (most recent call last):
+  File "./ncpa_posix_passive.py", line 41, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 30, in run
+    self.update_config()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 77, in update_config
+    response_xml = ET.fromstring(url_request.content)
+  File "/usr/local/lib/python3.4/xml/etree/ElementTree.py", line 1325, in XML
+    parser.feed(text)
+  File "<string>", line None
+xml.etree.ElementTree.ParseError: not well-formed (invalid token): line 1, column 14
+2014-03-25 20:54:00,593 52639 INFO stopped
+2014-03-25 20:54:02,840 52764 INFO started
+2014-03-25 20:54:02,843 52764 DEBUG Parsing config...
+2014-03-25 20:54:02,843 52764 DEBUG Parsing commands...
+2014-03-25 20:54:02,843 52764 DEBUG Parsing new individual command.
+2014-03-25 20:54:02,844 52764 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:54:02,847 52764 DEBUG Setting hostname to yourhostname and servicename to swap usage
+2014-03-25 20:54:02,847 52764 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-03-25 20:54:02,847 52764 DEBUG Command contained arguments.
+2014-03-25 20:54:02,847 52764 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:54:02,847 52764 DEBUG Parsing new individual command.
+2014-03-25 20:54:02,847 52764 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:54:02,848 52764 DEBUG Setting hostname to yourhostname and servicename to cpu usage
+2014-03-25 20:54:02,848 52764 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-03-25 20:54:02,848 52764 DEBUG Command contained arguments.
+2014-03-25 20:54:02,848 52764 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-03-25 20:54:02,848 52764 DEBUG Parsing new individual command.
+2014-03-25 20:54:02,849 52764 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:54:02,849 52764 DEBUG Setting hostname to yourhostname and servicename to memory usage
+2014-03-25 20:54:02,849 52764 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-03-25 20:54:02,849 52764 DEBUG Command contained arguments.
+2014-03-25 20:54:02,849 52764 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:54:02,849 52764 DEBUG Establishing Nagios handler...
+2014-03-25 20:54:02,850 52764 DEBUG Connecting to NRDS server...
+2014-03-25 20:54:02,861 52764 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 20:54:02,870 52764 DEBUG "POST /nrdp/ HTTP/1.1" 200 1156
+2014-03-25 20:54:02,871 52764 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 20:54:02,871 52764 DEBUG content response from payload: b'<?xml version="1.0" encoding="utf-8"?>\n<result>\n  <status>1</status>\n  <message>Version 0.3 available</message>\n    <meta>\n       <output></output>\n    </meta>\n  <config>\nCONFIG_VERSION=0.3\nCONFIG_OS=Windows (64-bit)\nCONFIG_NAME=win7\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nPLUGIN_DIR=C:\\Program Files\\Nagios\\NRDS_Win\\plugins\nSEND_NRDP=\nTMPDIR=\nCOMMAND_PREFIX=\nLOG_FILE=C:\\Program Files\\Nagios\\NRDS_Win\\logs\\NRDS_Debug.log\nIGNORE_SSL_CERTIFICATE_ERRORS=1\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n\ncommand[__HOST__] = $PLUGIN_DIR$\\check_winping.exe -H 127.0.0.1 --warning 200,40% --critical 400,80%\ncommand[nrpe_winprocess] = $PLUGIN_DIR$\\check_winprocess.exe --warning 100 --critical 150\ncommand[nrpe_process] = $PLUGIN_DIR$\\cpuload_nrpe_nt.exe 70 90\ncommand[nrpe_diskspace] = $PLUGIN_DIR$\\check_pdm.exe --disk --drive C: -w 97.5 -c 99.5\ncommand[nrpe_eventlog] = $PLUGIN_DIR$\\eventlog_nrpe_nt.exe -m 7200\ncommand[nrpe_memload] = $PLUGIN_DIR$\\check_pdm.exe --memory -w 90 -c 99\ncommand[nrpe_physical_mem] = $PLUGIN_DIR$\\check_pdm.exe --memory pagefile -w 80 -c 95\ncommand[nrpe_service] = $PLUGIN_DIR$\\service_nrpe_nt.exe "DNS Client"\n\n\n  </config>\n</result>\n'
+2014-03-25 20:54:02,872 52764 DEBUG Value returned for new config: 1
+2014-03-25 20:54:02,872 52764 DEBUG Updating my NRDS config...
+2014-03-25 20:54:02,872 52764 DEBUG URL I am requesting: http://192.168.4.114/nrdp/
+2014-03-25 20:54:02,876 52764 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 20:54:02,884 52764 DEBUG "POST /nrdp/ HTTP/1.1" 200 963
+2014-03-25 20:54:02,884 52764 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 20:54:02,885 52764 DEBUG content response from payload: b'CONFIG_VERSION=0.3\nCONFIG_OS=Windows (64-bit)\nCONFIG_NAME=win7\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nPLUGIN_DIR=C:\\Program Files\\Nagios\\NRDS_Win\\plugins\nSEND_NRDP=\nTMPDIR=\nCOMMAND_PREFIX=\nLOG_FILE=C:\\Program Files\\Nagios\\NRDS_Win\\logs\\NRDS_Debug.log\nIGNORE_SSL_CERTIFICATE_ERRORS=1\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n\ncommand[__HOST__] = $PLUGIN_DIR$\\check_winping.exe -H 127.0.0.1 --warning 200,40% --critical 400,80%\ncommand[nrpe_winprocess] = $PLUGIN_DIR$\\check_winprocess.exe --warning 100 --critical 150\ncommand[nrpe_process] = $PLUGIN_DIR$\\cpuload_nrpe_nt.exe 70 90\ncommand[nrpe_diskspace] = $PLUGIN_DIR$\\check_pdm.exe --disk --drive C: -w 97.5 -c 99.5\ncommand[nrpe_eventlog] = $PLUGIN_DIR$\\eventlog_nrpe_nt.exe -m 7200\ncommand[nrpe_memload] = $PLUGIN_DIR$\\check_pdm.exe --memory -w 90 -c 99\ncommand[nrpe_physical_mem] = $PLUGIN_DIR$\\check_pdm.exe --memory pagefile -w 80 -c 95\ncommand[nrpe_service] = $PLUGIN_DIR$\\service_nrpe_nt.exe "DNS Client"\n\n\n'
+2014-03-25 20:54:02,885 52764 ERROR must be str, not bytes
+Traceback (most recent call last):
+  File "./ncpa_posix_passive.py", line 41, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 30, in run
+    self.update_config()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 80, in update_config
+    config.write(url_request.content)
+TypeError: must be str, not bytes
+2014-03-25 20:55:47,145 52764 INFO stopped
+2014-03-25 20:55:48,733 53244 INFO started
+2014-03-25 20:55:48,734 53244 DEBUG Parsing config...
+2014-03-25 20:55:48,734 53244 DEBUG Parsing commands...
+2014-03-25 20:55:48,734 53244 DEBUG Parsing new individual command.
+2014-03-25 20:55:48,735 53244 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:55:48,736 53244 DEBUG Setting hostname to yourhostname and servicename to swap usage
+2014-03-25 20:55:48,736 53244 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-03-25 20:55:48,736 53244 DEBUG Command contained arguments.
+2014-03-25 20:55:48,736 53244 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:55:48,736 53244 DEBUG Parsing new individual command.
+2014-03-25 20:55:48,736 53244 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:55:48,737 53244 DEBUG Setting hostname to yourhostname and servicename to memory usage
+2014-03-25 20:55:48,738 53244 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-03-25 20:55:48,738 53244 DEBUG Command contained arguments.
+2014-03-25 20:55:48,738 53244 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:55:48,738 53244 DEBUG Parsing new individual command.
+2014-03-25 20:55:48,738 53244 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:55:48,738 53244 DEBUG Setting hostname to yourhostname and servicename to cpu usage
+2014-03-25 20:55:48,739 53244 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-03-25 20:55:48,740 53244 DEBUG Command contained arguments.
+2014-03-25 20:55:48,740 53244 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-03-25 20:55:48,740 53244 DEBUG Establishing Nagios handler...
+2014-03-25 20:55:48,740 53244 DEBUG Connecting to NRDS server...
+2014-03-25 20:55:48,752 53244 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 20:55:48,762 53244 DEBUG "POST /nrdp/ HTTP/1.1" 200 1156
+2014-03-25 20:55:48,763 53244 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 20:55:48,763 53244 DEBUG content response from payload: b'<?xml version="1.0" encoding="utf-8"?>\n<result>\n  <status>1</status>\n  <message>Version 0.3 available</message>\n    <meta>\n       <output></output>\n    </meta>\n  <config>\nCONFIG_VERSION=0.3\nCONFIG_OS=Windows (64-bit)\nCONFIG_NAME=win7\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nPLUGIN_DIR=C:\\Program Files\\Nagios\\NRDS_Win\\plugins\nSEND_NRDP=\nTMPDIR=\nCOMMAND_PREFIX=\nLOG_FILE=C:\\Program Files\\Nagios\\NRDS_Win\\logs\\NRDS_Debug.log\nIGNORE_SSL_CERTIFICATE_ERRORS=1\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n\ncommand[__HOST__] = $PLUGIN_DIR$\\check_winping.exe -H 127.0.0.1 --warning 200,40% --critical 400,80%\ncommand[nrpe_winprocess] = $PLUGIN_DIR$\\check_winprocess.exe --warning 100 --critical 150\ncommand[nrpe_process] = $PLUGIN_DIR$\\cpuload_nrpe_nt.exe 70 90\ncommand[nrpe_diskspace] = $PLUGIN_DIR$\\check_pdm.exe --disk --drive C: -w 97.5 -c 99.5\ncommand[nrpe_eventlog] = $PLUGIN_DIR$\\eventlog_nrpe_nt.exe -m 7200\ncommand[nrpe_memload] = $PLUGIN_DIR$\\check_pdm.exe --memory -w 90 -c 99\ncommand[nrpe_physical_mem] = $PLUGIN_DIR$\\check_pdm.exe --memory pagefile -w 80 -c 95\ncommand[nrpe_service] = $PLUGIN_DIR$\\service_nrpe_nt.exe "DNS Client"\n\n\n  </config>\n</result>\n'
+2014-03-25 20:55:48,763 53244 DEBUG Value returned for new config: 1
+2014-03-25 20:55:48,764 53244 DEBUG Updating my NRDS config...
+2014-03-25 20:55:48,764 53244 DEBUG URL I am requesting: http://192.168.4.114/nrdp/
+2014-03-25 20:55:48,767 53244 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 20:55:48,774 53244 DEBUG "POST /nrdp/ HTTP/1.1" 200 963
+2014-03-25 20:55:48,775 53244 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 20:55:48,775 53244 DEBUG content response from payload: b'CONFIG_VERSION=0.3\nCONFIG_OS=Windows (64-bit)\nCONFIG_NAME=win7\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nPLUGIN_DIR=C:\\Program Files\\Nagios\\NRDS_Win\\plugins\nSEND_NRDP=\nTMPDIR=\nCOMMAND_PREFIX=\nLOG_FILE=C:\\Program Files\\Nagios\\NRDS_Win\\logs\\NRDS_Debug.log\nIGNORE_SSL_CERTIFICATE_ERRORS=1\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n\ncommand[__HOST__] = $PLUGIN_DIR$\\check_winping.exe -H 127.0.0.1 --warning 200,40% --critical 400,80%\ncommand[nrpe_winprocess] = $PLUGIN_DIR$\\check_winprocess.exe --warning 100 --critical 150\ncommand[nrpe_process] = $PLUGIN_DIR$\\cpuload_nrpe_nt.exe 70 90\ncommand[nrpe_diskspace] = $PLUGIN_DIR$\\check_pdm.exe --disk --drive C: -w 97.5 -c 99.5\ncommand[nrpe_eventlog] = $PLUGIN_DIR$\\eventlog_nrpe_nt.exe -m 7200\ncommand[nrpe_memload] = $PLUGIN_DIR$\\check_pdm.exe --memory -w 90 -c 99\ncommand[nrpe_physical_mem] = $PLUGIN_DIR$\\check_pdm.exe --memory pagefile -w 80 -c 95\ncommand[nrpe_service] = $PLUGIN_DIR$\\service_nrpe_nt.exe "DNS Client"\n\n\n'
+2014-03-25 20:55:48,775 53244 INFO Successfully updated NRDS config.
+2014-03-25 20:55:48,775 53244 WARNING /tmp/ncpa/agent/plugins
+2014-03-25 20:55:48,776 53244 ERROR [Errno 2] No such file or directory: '/tmp/ncpa/agent/plugins'
+Traceback (most recent call last):
+  File "./ncpa_posix_passive.py", line 41, in run_all_handlers
+    ins_handler.run()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 31, in run
+    needed_plugins = self.list_missing_plugins()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 145, in list_missing_plugins
+    installed_plugins = self.get_installed_plugins()
+  File "/tmp/ncpa/agent/passive/nrds.py", line 157, in get_installed_plugins
+    return frozenset([x for x in os.listdir(self.config.get('plugin directives', 'plugin_path')) if not x.startswith('.')])
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/ncpa/agent/plugins'
+2014-03-25 20:56:07,700 53244 INFO stopped
+2014-03-25 20:56:22,754 53391 INFO started
+2014-03-25 20:56:22,755 53391 DEBUG Parsing config...
+2014-03-25 20:56:22,755 53391 DEBUG Parsing commands...
+2014-03-25 20:56:22,756 53391 DEBUG Parsing new individual command.
+2014-03-25 20:56:22,756 53391 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:56:22,756 53391 DEBUG Setting hostname to yourhostname and servicename to swap usage
+2014-03-25 20:56:22,756 53391 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-03-25 20:56:22,756 53391 DEBUG Command contained arguments.
+2014-03-25 20:56:22,756 53391 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:56:22,757 53391 DEBUG Parsing new individual command.
+2014-03-25 20:56:22,757 53391 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:56:22,757 53391 DEBUG Setting hostname to yourhostname and servicename to cpu usage
+2014-03-25 20:56:22,757 53391 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-03-25 20:56:22,757 53391 DEBUG Command contained arguments.
+2014-03-25 20:56:22,757 53391 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-03-25 20:56:22,758 53391 DEBUG Parsing new individual command.
+2014-03-25 20:56:22,758 53391 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 20:56:22,758 53391 DEBUG Setting hostname to yourhostname and servicename to memory usage
+2014-03-25 20:56:22,758 53391 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-03-25 20:56:22,758 53391 DEBUG Command contained arguments.
+2014-03-25 20:56:22,758 53391 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 20:56:22,759 53391 DEBUG Establishing Nagios handler...
+2014-03-25 20:56:22,759 53391 DEBUG Connecting to NRDS server...
+2014-03-25 20:56:22,765 53391 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 20:56:22,772 53391 DEBUG "POST /nrdp/ HTTP/1.1" 200 1156
+2014-03-25 20:56:22,773 53391 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 20:56:22,773 53391 DEBUG content response from payload: b'<?xml version="1.0" encoding="utf-8"?>\n<result>\n  <status>1</status>\n  <message>Version 0.3 available</message>\n    <meta>\n       <output></output>\n    </meta>\n  <config>\nCONFIG_VERSION=0.3\nCONFIG_OS=Windows (64-bit)\nCONFIG_NAME=win7\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nPLUGIN_DIR=C:\\Program Files\\Nagios\\NRDS_Win\\plugins\nSEND_NRDP=\nTMPDIR=\nCOMMAND_PREFIX=\nLOG_FILE=C:\\Program Files\\Nagios\\NRDS_Win\\logs\\NRDS_Debug.log\nIGNORE_SSL_CERTIFICATE_ERRORS=1\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n\ncommand[__HOST__] = $PLUGIN_DIR$\\check_winping.exe -H 127.0.0.1 --warning 200,40% --critical 400,80%\ncommand[nrpe_winprocess] = $PLUGIN_DIR$\\check_winprocess.exe --warning 100 --critical 150\ncommand[nrpe_process] = $PLUGIN_DIR$\\cpuload_nrpe_nt.exe 70 90\ncommand[nrpe_diskspace] = $PLUGIN_DIR$\\check_pdm.exe --disk --drive C: -w 97.5 -c 99.5\ncommand[nrpe_eventlog] = $PLUGIN_DIR$\\eventlog_nrpe_nt.exe -m 7200\ncommand[nrpe_memload] = $PLUGIN_DIR$\\check_pdm.exe --memory -w 90 -c 99\ncommand[nrpe_physical_mem] = $PLUGIN_DIR$\\check_pdm.exe --memory pagefile -w 80 -c 95\ncommand[nrpe_service] = $PLUGIN_DIR$\\service_nrpe_nt.exe "DNS Client"\n\n\n  </config>\n</result>\n'
+2014-03-25 20:56:22,773 53391 DEBUG Value returned for new config: 1
+2014-03-25 20:56:22,774 53391 DEBUG Updating my NRDS config...
+2014-03-25 20:56:22,774 53391 DEBUG URL I am requesting: http://192.168.4.114/nrdp/
+2014-03-25 20:56:22,776 53391 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 20:56:22,782 53391 DEBUG "POST /nrdp/ HTTP/1.1" 200 963
+2014-03-25 20:56:22,782 53391 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 20:56:22,783 53391 DEBUG content response from payload: b'CONFIG_VERSION=0.3\nCONFIG_OS=Windows (64-bit)\nCONFIG_NAME=win7\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nPLUGIN_DIR=C:\\Program Files\\Nagios\\NRDS_Win\\plugins\nSEND_NRDP=\nTMPDIR=\nCOMMAND_PREFIX=\nLOG_FILE=C:\\Program Files\\Nagios\\NRDS_Win\\logs\\NRDS_Debug.log\nIGNORE_SSL_CERTIFICATE_ERRORS=1\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n\ncommand[__HOST__] = $PLUGIN_DIR$\\check_winping.exe -H 127.0.0.1 --warning 200,40% --critical 400,80%\ncommand[nrpe_winprocess] = $PLUGIN_DIR$\\check_winprocess.exe --warning 100 --critical 150\ncommand[nrpe_process] = $PLUGIN_DIR$\\cpuload_nrpe_nt.exe 70 90\ncommand[nrpe_diskspace] = $PLUGIN_DIR$\\check_pdm.exe --disk --drive C: -w 97.5 -c 99.5\ncommand[nrpe_eventlog] = $PLUGIN_DIR$\\eventlog_nrpe_nt.exe -m 7200\ncommand[nrpe_memload] = $PLUGIN_DIR$\\check_pdm.exe --memory -w 90 -c 99\ncommand[nrpe_physical_mem] = $PLUGIN_DIR$\\check_pdm.exe --memory pagefile -w 80 -c 95\ncommand[nrpe_service] = $PLUGIN_DIR$\\service_nrpe_nt.exe "DNS Client"\n\n\n'
+2014-03-25 20:56:22,783 53391 INFO Successfully updated NRDS config.
+2014-03-25 20:56:22,783 53391 WARNING /tmp/ncpa/agent/plugins
+2014-03-25 20:56:22,784 53391 DEBUG Done with this NRDS iteration.
+2014-03-25 20:56:22,784 53391 DEBUG Successfully ran handler nrds
+2014-03-25 20:56:27,160 53391 INFO stopped
+2014-03-25 21:06:54,875 55954 INFO started
+2014-03-25 21:06:54,876 55954 DEBUG Parsing config...
+2014-03-25 21:06:54,876 55954 DEBUG Parsing commands...
+2014-03-25 21:06:54,877 55954 DEBUG Parsing new individual command.
+2014-03-25 21:06:54,877 55954 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 21:06:54,877 55954 DEBUG Setting hostname to yourhostname and servicename to swap usage
+2014-03-25 21:06:54,877 55954 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-03-25 21:06:54,877 55954 DEBUG Command contained arguments.
+2014-03-25 21:06:54,877 55954 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 21:06:54,877 55954 DEBUG Parsing new individual command.
+2014-03-25 21:06:54,878 55954 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 21:06:54,878 55954 DEBUG Setting hostname to yourhostname and servicename to cpu usage
+2014-03-25 21:06:54,878 55954 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-03-25 21:06:54,878 55954 DEBUG Command contained arguments.
+2014-03-25 21:06:54,878 55954 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-03-25 21:06:54,878 55954 DEBUG Parsing new individual command.
+2014-03-25 21:06:54,879 55954 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 21:06:54,879 55954 DEBUG Setting hostname to yourhostname and servicename to memory usage
+2014-03-25 21:06:54,879 55954 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-03-25 21:06:54,879 55954 DEBUG Command contained arguments.
+2014-03-25 21:06:54,879 55954 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 21:06:54,879 55954 DEBUG Establishing Nagios handler...
+2014-03-25 21:06:54,879 55954 DEBUG Connecting to NRDS server...
+2014-03-25 21:06:54,886 55954 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 21:06:54,892 55954 DEBUG "POST /nrdp/ HTTP/1.1" 200 1356
+2014-03-25 21:06:54,893 55954 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 21:06:54,893 55954 DEBUG content response from payload: b'<?xml version="1.0" encoding="utf-8"?>\n<result>\n  <status>1</status>\n  <message>Version 0.1 available</message>\n    <meta>\n       <output></output>\n    </meta>\n  <config>\n\n[listener]\nip = 0.0.0.0\nport = 5693\nuid = nagios \ngid = nagcmd\npidfile = var/ncpa_listener.pid\nlogfile = var/ncpa_listener.log\nloglevel = info\n\n[api]\ncommunity_string = nagiosxi\n\n[passive]\nsleep = 300\nhandlers = nrdp\nuid =\ngid =\npidfile = var/ncpa_passive.pid\nlogfile = var/ncpa_passive.log\nloglevel = info\n\n[nrdp]\nparent = http://192.168.4.114/nrdp/\ntoken = nagiosxi\n\n[nrds]\n# Most of this is required to maintain compatability with NRDS\n# and is not actually referred to by the NCPA agent.\nCONFIG_VERSION=0.1\nCONFIG_OS=NCPA\nCONFIG_NAME=NCPA1\nLOG_FILE=BUILTIN\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nCOMMAND_PREFIX=UNUSED\nSEND_NRDP=BUILTIN\nTMPDIR=BUILTIN\nPLUGIN_DIR=plugins/\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n[passive checks]\n%HOSTNAME%|CPU Usage = api/cpu/percent --warning 20 --critical 30\n%HOSTNAME%|Memory Usage = api/memory/virtual/percent --warning 60 --critical 80\n%HOSTNAME%|Swap Usage = api/memory/swap/percent --warning 40 --critical 80\n\n\n[plugin directives]\nplugin_path = plugins/\n.vbs = cscript $plugin_name $plugin_args //NoLogo\n.ps1 = powershell -ExecutionPolicy Unrestricted $plugin_name $plugin_args\n.sh = /bin/sh $plugin_name $plugin_args  </config>\n</result>\n'
+2014-03-25 21:06:54,893 55954 DEBUG Value returned for new config: 1
+2014-03-25 21:06:54,893 55954 DEBUG Updating my NRDS config...
+2014-03-25 21:06:54,893 55954 DEBUG URL I am requesting: http://192.168.4.114/nrdp/
+2014-03-25 21:06:54,895 55954 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 21:06:54,900 55954 DEBUG "POST /nrdp/ HTTP/1.1" 200 1163
+2014-03-25 21:06:54,901 55954 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 21:06:54,901 55954 DEBUG content response from payload: b'\n[listener]\nip = 0.0.0.0\nport = 5693\nuid = nagios \ngid = nagcmd\npidfile = var/ncpa_listener.pid\nlogfile = var/ncpa_listener.log\nloglevel = info\n\n[api]\ncommunity_string = nagiosxi\n\n[passive]\nsleep = 300\nhandlers = nrdp\nuid =\ngid =\npidfile = var/ncpa_passive.pid\nlogfile = var/ncpa_passive.log\nloglevel = info\n\n[nrdp]\nparent = http://192.168.4.114/nrdp/\ntoken = nagiosxi\n\n[nrds]\n# Most of this is required to maintain compatability with NRDS\n# and is not actually referred to by the NCPA agent.\nCONFIG_VERSION=0.1\nCONFIG_OS=NCPA\nCONFIG_NAME=NCPA1\nLOG_FILE=BUILTIN\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nCOMMAND_PREFIX=UNUSED\nSEND_NRDP=BUILTIN\nTMPDIR=BUILTIN\nPLUGIN_DIR=plugins/\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n[passive checks]\n%HOSTNAME%|CPU Usage = api/cpu/percent --warning 20 --critical 30\n%HOSTNAME%|Memory Usage = api/memory/virtual/percent --warning 60 --critical 80\n%HOSTNAME%|Swap Usage = api/memory/swap/percent --warning 40 --critical 80\n\n\n[plugin directives]\nplugin_path = plugins/\n.vbs = cscript $plugin_name $plugin_args //NoLogo\n.ps1 = powershell -ExecutionPolicy Unrestricted $plugin_name $plugin_args\n.sh = /bin/sh $plugin_name $plugin_args'
+2014-03-25 21:06:54,901 55954 INFO Successfully updated NRDS config.
+2014-03-25 21:06:54,901 55954 WARNING /tmp/ncpa/agent/plugins
+2014-03-25 21:06:54,902 55954 DEBUG Done with this NRDS iteration.
+2014-03-25 21:06:54,903 55954 DEBUG Successfully ran handler nrds
+2014-03-25 21:06:59,867 55954 INFO stopped
+2014-03-25 21:07:40,444 56152 INFO started
+2014-03-25 21:07:40,445 56152 DEBUG Parsing config...
+2014-03-25 21:07:40,446 56152 DEBUG Parsing commands...
+2014-03-25 21:07:40,446 56152 DEBUG Parsing new individual command.
+2014-03-25 21:07:40,446 56152 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 21:07:40,446 56152 DEBUG Setting hostname to yourhostname and servicename to cpu usage
+2014-03-25 21:07:40,446 56152 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-03-25 21:07:40,447 56152 DEBUG Command contained arguments.
+2014-03-25 21:07:40,447 56152 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-03-25 21:07:40,447 56152 DEBUG Parsing new individual command.
+2014-03-25 21:07:40,447 56152 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 21:07:40,447 56152 DEBUG Setting hostname to yourhostname and servicename to memory usage
+2014-03-25 21:07:40,447 56152 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-03-25 21:07:40,447 56152 DEBUG Command contained arguments.
+2014-03-25 21:07:40,448 56152 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 21:07:40,448 56152 DEBUG Parsing new individual command.
+2014-03-25 21:07:40,448 56152 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 21:07:40,448 56152 DEBUG Setting hostname to yourhostname and servicename to swap usage
+2014-03-25 21:07:40,448 56152 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-03-25 21:07:40,448 56152 DEBUG Command contained arguments.
+2014-03-25 21:07:40,449 56152 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 21:07:40,449 56152 DEBUG Establishing Nagios handler...
+2014-03-25 21:07:40,449 56152 DEBUG Connecting to NRDS server...
+2014-03-25 21:07:40,455 56152 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 21:07:40,461 56152 DEBUG "POST /nrdp/ HTTP/1.1" 200 1356
+2014-03-25 21:07:40,462 56152 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 21:07:40,462 56152 DEBUG content response from payload: b'<?xml version="1.0" encoding="utf-8"?>\n<result>\n  <status>1</status>\n  <message>Version 0.1 available</message>\n    <meta>\n       <output></output>\n    </meta>\n  <config>\n\n[listener]\nip = 0.0.0.0\nport = 5693\nuid = nagios \ngid = nagcmd\npidfile = var/ncpa_listener.pid\nlogfile = var/ncpa_listener.log\nloglevel = info\n\n[api]\ncommunity_string = nagiosxi\n\n[passive]\nsleep = 300\nhandlers = nrdp\nuid =\ngid =\npidfile = var/ncpa_passive.pid\nlogfile = var/ncpa_passive.log\nloglevel = info\n\n[nrdp]\nparent = http://192.168.4.114/nrdp/\ntoken = nagiosxi\n\n[nrds]\n# Most of this is required to maintain compatability with NRDS\n# and is not actually referred to by the NCPA agent.\nCONFIG_VERSION=0.1\nCONFIG_OS=NCPA\nCONFIG_NAME=NCPA1\nLOG_FILE=BUILTIN\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nCOMMAND_PREFIX=UNUSED\nSEND_NRDP=BUILTIN\nTMPDIR=BUILTIN\nPLUGIN_DIR=plugins/\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n[passive checks]\n%HOSTNAME%|CPU Usage = api/cpu/percent --warning 20 --critical 30\n%HOSTNAME%|Memory Usage = api/memory/virtual/percent --warning 60 --critical 80\n%HOSTNAME%|Swap Usage = api/memory/swap/percent --warning 40 --critical 80\n\n\n[plugin directives]\nplugin_path = plugins/\n.vbs = cscript $plugin_name $plugin_args //NoLogo\n.ps1 = powershell -ExecutionPolicy Unrestricted $plugin_name $plugin_args\n.sh = /bin/sh $plugin_name $plugin_args  </config>\n</result>\n'
+2014-03-25 21:07:40,462 56152 DEBUG Value returned for new config: 1
+2014-03-25 21:07:40,462 56152 DEBUG Updating my NRDS config...
+2014-03-25 21:07:40,463 56152 DEBUG URL I am requesting: http://192.168.4.114/nrdp/
+2014-03-25 21:07:40,464 56152 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 21:07:40,469 56152 DEBUG "POST /nrdp/ HTTP/1.1" 200 1163
+2014-03-25 21:07:40,469 56152 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 21:07:40,470 56152 DEBUG content response from payload: b'\n[listener]\nip = 0.0.0.0\nport = 5693\nuid = nagios \ngid = nagcmd\npidfile = var/ncpa_listener.pid\nlogfile = var/ncpa_listener.log\nloglevel = info\n\n[api]\ncommunity_string = nagiosxi\n\n[passive]\nsleep = 300\nhandlers = nrdp\nuid =\ngid =\npidfile = var/ncpa_passive.pid\nlogfile = var/ncpa_passive.log\nloglevel = info\n\n[nrdp]\nparent = http://192.168.4.114/nrdp/\ntoken = nagiosxi\n\n[nrds]\n# Most of this is required to maintain compatability with NRDS\n# and is not actually referred to by the NCPA agent.\nCONFIG_VERSION=0.1\nCONFIG_OS=NCPA\nCONFIG_NAME=NCPA1\nLOG_FILE=BUILTIN\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nCOMMAND_PREFIX=UNUSED\nSEND_NRDP=BUILTIN\nTMPDIR=BUILTIN\nPLUGIN_DIR=plugins/\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n[passive checks]\n%HOSTNAME%|CPU Usage = api/cpu/percent --warning 20 --critical 30\n%HOSTNAME%|Memory Usage = api/memory/virtual/percent --warning 60 --critical 80\n%HOSTNAME%|Swap Usage = api/memory/swap/percent --warning 40 --critical 80\n\n\n[plugin directives]\nplugin_path = plugins/\n.vbs = cscript $plugin_name $plugin_args //NoLogo\n.ps1 = powershell -ExecutionPolicy Unrestricted $plugin_name $plugin_args\n.sh = /bin/sh $plugin_name $plugin_args'
+2014-03-25 21:07:40,470 56152 INFO Successfully updated NRDS config.
+2014-03-25 21:07:40,470 56152 WARNING /tmp/ncpa/agent/plugins
+2014-03-25 21:07:40,471 56152 DEBUG Done with this NRDS iteration.
+2014-03-25 21:07:40,471 56152 DEBUG Successfully ran handler nrds
+2014-03-25 21:07:42,482 56152 INFO stopped
+2014-03-25 21:11:19,961 57097 INFO started
+2014-03-25 21:11:19,967 57097 DEBUG Parsing config...
+2014-03-25 21:11:19,967 57097 DEBUG Parsing commands...
+2014-03-25 21:11:19,967 57097 DEBUG Parsing new individual command.
+2014-03-25 21:11:19,967 57097 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 21:11:19,967 57097 DEBUG Setting hostname to yourhostname and servicename to memory usage
+2014-03-25 21:11:19,968 57097 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-03-25 21:11:19,968 57097 DEBUG Command contained arguments.
+2014-03-25 21:11:19,968 57097 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 21:11:19,968 57097 DEBUG Parsing new individual command.
+2014-03-25 21:11:19,968 57097 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 21:11:19,968 57097 DEBUG Setting hostname to yourhostname and servicename to cpu usage
+2014-03-25 21:11:19,969 57097 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-03-25 21:11:19,969 57097 DEBUG Command contained arguments.
+2014-03-25 21:11:19,969 57097 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-03-25 21:11:19,969 57097 DEBUG Parsing new individual command.
+2014-03-25 21:11:19,969 57097 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 21:11:19,969 57097 DEBUG Setting hostname to yourhostname and servicename to swap usage
+2014-03-25 21:11:19,969 57097 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-03-25 21:11:19,971 57097 DEBUG Command contained arguments.
+2014-03-25 21:11:19,971 57097 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 21:11:19,971 57097 DEBUG Establishing Nagios handler...
+2014-03-25 21:11:19,971 57097 DEBUG Connecting to NRDS server...
+2014-03-25 21:11:19,983 57097 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 21:11:19,990 57097 DEBUG "POST /nrdp/ HTTP/1.1" 200 1356
+2014-03-25 21:11:19,990 57097 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 21:11:19,991 57097 DEBUG content response from payload: b'<?xml version="1.0" encoding="utf-8"?>\n<result>\n  <status>1</status>\n  <message>Version 0.1 available</message>\n    <meta>\n       <output></output>\n    </meta>\n  <config>\n\n[listener]\nip = 0.0.0.0\nport = 5693\nuid = nagios \ngid = nagcmd\npidfile = var/ncpa_listener.pid\nlogfile = var/ncpa_listener.log\nloglevel = info\n\n[api]\ncommunity_string = nagiosxi\n\n[passive]\nsleep = 300\nhandlers = nrdp\nuid =\ngid =\npidfile = var/ncpa_passive.pid\nlogfile = var/ncpa_passive.log\nloglevel = info\n\n[nrdp]\nparent = http://192.168.4.114/nrdp/\ntoken = nagiosxi\n\n[nrds]\n# Most of this is required to maintain compatability with NRDS\n# and is not actually referred to by the NCPA agent.\nCONFIG_VERSION=0.1\nCONFIG_OS=NCPA\nCONFIG_NAME=NCPA1\nLOG_FILE=BUILTIN\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nCOMMAND_PREFIX=UNUSED\nSEND_NRDP=BUILTIN\nTMPDIR=BUILTIN\nPLUGIN_DIR=plugins/\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n[passive checks]\n%HOSTNAME%|CPU Usage = api/cpu/percent --warning 20 --critical 30\n%HOSTNAME%|Memory Usage = api/memory/virtual/percent --warning 60 --critical 80\n%HOSTNAME%|Swap Usage = api/memory/swap/percent --warning 40 --critical 80\n\n\n[plugin directives]\nplugin_path = plugins/\n.vbs = cscript $plugin_name $plugin_args //NoLogo\n.ps1 = powershell -ExecutionPolicy Unrestricted $plugin_name $plugin_args\n.sh = /bin/sh $plugin_name $plugin_args  </config>\n</result>\n'
+2014-03-25 21:11:19,991 57097 DEBUG Value returned for new config: 1
+2014-03-25 21:11:19,992 57097 DEBUG Updating my NRDS config...
+2014-03-25 21:11:19,992 57097 DEBUG URL I am requesting: http://192.168.4.114/nrdp/
+2014-03-25 21:11:19,997 57097 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 21:11:20,004 57097 DEBUG "POST /nrdp/ HTTP/1.1" 200 1163
+2014-03-25 21:11:20,004 57097 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 21:11:20,005 57097 DEBUG content response from payload: b'\n[listener]\nip = 0.0.0.0\nport = 5693\nuid = nagios \ngid = nagcmd\npidfile = var/ncpa_listener.pid\nlogfile = var/ncpa_listener.log\nloglevel = info\n\n[api]\ncommunity_string = nagiosxi\n\n[passive]\nsleep = 300\nhandlers = nrdp\nuid =\ngid =\npidfile = var/ncpa_passive.pid\nlogfile = var/ncpa_passive.log\nloglevel = info\n\n[nrdp]\nparent = http://192.168.4.114/nrdp/\ntoken = nagiosxi\n\n[nrds]\n# Most of this is required to maintain compatability with NRDS\n# and is not actually referred to by the NCPA agent.\nCONFIG_VERSION=0.1\nCONFIG_OS=NCPA\nCONFIG_NAME=NCPA1\nLOG_FILE=BUILTIN\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nCOMMAND_PREFIX=UNUSED\nSEND_NRDP=BUILTIN\nTMPDIR=BUILTIN\nPLUGIN_DIR=plugins/\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n[passive checks]\n%HOSTNAME%|CPU Usage = api/cpu/percent --warning 20 --critical 30\n%HOSTNAME%|Memory Usage = api/memory/virtual/percent --warning 60 --critical 80\n%HOSTNAME%|Swap Usage = api/memory/swap/percent --warning 40 --critical 80\n\n\n[plugin directives]\nplugin_path = plugins/\n.vbs = cscript $plugin_name $plugin_args //NoLogo\n.ps1 = powershell -ExecutionPolicy Unrestricted $plugin_name $plugin_args\n.sh = /bin/sh $plugin_name $plugin_args'
+2014-03-25 21:11:20,005 57097 INFO Successfully updated NRDS config.
+2014-03-25 21:11:20,005 57097 WARNING /tmp/ncpa/agent/plugins
+2014-03-25 21:11:20,005 57097 DEBUG Done with this NRDS iteration.
+2014-03-25 21:11:20,006 57097 DEBUG Successfully ran handler nrds
+2014-03-25 21:11:22,273 57097 INFO stopped
+2014-03-25 21:12:32,988 57396 INFO started
+2014-03-25 21:12:32,993 57396 DEBUG Parsing config...
+2014-03-25 21:12:32,993 57396 DEBUG Parsing commands...
+2014-03-25 21:12:32,993 57396 DEBUG Parsing new individual command.
+2014-03-25 21:12:32,993 57396 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 21:12:32,993 57396 DEBUG Setting hostname to yourhostname and servicename to swap usage
+2014-03-25 21:12:32,994 57396 DEBUG Parsing command: /memory/swap/percent --warning 40 --critical 80
+2014-03-25 21:12:32,994 57396 DEBUG Command contained arguments.
+2014-03-25 21:12:32,994 57396 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: swap usage -- Command: /memory/swap/percent -- Arguments: --warning 40 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 21:12:32,994 57396 DEBUG Parsing new individual command.
+2014-03-25 21:12:32,994 57396 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 21:12:32,994 57396 DEBUG Setting hostname to yourhostname and servicename to cpu usage
+2014-03-25 21:12:32,994 57396 DEBUG Parsing command: /cpu/percent --warning 20 --critical 30
+2014-03-25 21:12:32,996 57396 DEBUG Command contained arguments.
+2014-03-25 21:12:32,996 57396 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: cpu usage -- Command: /cpu/percent -- Arguments: --warning 20 --critical 30 -- Stdout: None -- Return Code: None
+2014-03-25 21:12:32,996 57396 DEBUG Parsing new individual command.
+2014-03-25 21:12:32,996 57396 DEBUG Using the config directive for the hostname: yourhostname
+2014-03-25 21:12:32,996 57396 DEBUG Setting hostname to yourhostname and servicename to memory usage
+2014-03-25 21:12:32,996 57396 DEBUG Parsing command: /memory/virtual/percent --warning 60 --critical 80
+2014-03-25 21:12:32,996 57396 DEBUG Command contained arguments.
+2014-03-25 21:12:32,998 57396 DEBUG Command to be run: Nagios Hostname: yourhostname -- Nagios Servicename: memory usage -- Command: /memory/virtual/percent -- Arguments: --warning 60 --critical 80 -- Stdout: None -- Return Code: None
+2014-03-25 21:12:32,998 57396 DEBUG Establishing Nagios handler...
+2014-03-25 21:12:32,998 57396 DEBUG Connecting to NRDS server...
+2014-03-25 21:12:33,009 57396 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 21:12:33,015 57396 DEBUG "POST /nrdp/ HTTP/1.1" 200 1356
+2014-03-25 21:12:33,016 57396 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 21:12:33,016 57396 DEBUG content response from payload: b'<?xml version="1.0" encoding="utf-8"?>\n<result>\n  <status>1</status>\n  <message>Version 0.1 available</message>\n    <meta>\n       <output></output>\n    </meta>\n  <config>\n\n[listener]\nip = 0.0.0.0\nport = 5693\nuid = nagios \ngid = nagcmd\npidfile = var/ncpa_listener.pid\nlogfile = var/ncpa_listener.log\nloglevel = info\n\n[api]\ncommunity_string = nagiosxi\n\n[passive]\nsleep = 300\nhandlers = nrdp\nuid =\ngid =\npidfile = var/ncpa_passive.pid\nlogfile = var/ncpa_passive.log\nloglevel = info\n\n[nrdp]\nparent = http://192.168.4.114/nrdp/\ntoken = nagiosxi\n\n[nrds]\n# Most of this is required to maintain compatability with NRDS\n# and is not actually referred to by the NCPA agent.\nCONFIG_VERSION=0.1\nCONFIG_OS=NCPA\nCONFIG_NAME=NCPA1\nLOG_FILE=BUILTIN\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nCOMMAND_PREFIX=UNUSED\nSEND_NRDP=BUILTIN\nTMPDIR=BUILTIN\nPLUGIN_DIR=plugins/\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n[passive checks]\n%HOSTNAME%|CPU Usage = api/cpu/percent --warning 20 --critical 30\n%HOSTNAME%|Memory Usage = api/memory/virtual/percent --warning 60 --critical 80\n%HOSTNAME%|Swap Usage = api/memory/swap/percent --warning 40 --critical 80\n\n\n[plugin directives]\nplugin_path = plugins/\n.vbs = cscript $plugin_name $plugin_args //NoLogo\n.ps1 = powershell -ExecutionPolicy Unrestricted $plugin_name $plugin_args\n.sh = /bin/sh $plugin_name $plugin_args  </config>\n</result>\n'
+2014-03-25 21:12:33,016 57396 DEBUG Value returned for new config: 1
+2014-03-25 21:12:33,016 57396 DEBUG Updating my NRDS config...
+2014-03-25 21:12:33,016 57396 DEBUG URL I am requesting: http://192.168.4.114/nrdp/
+2014-03-25 21:12:33,019 57396 INFO Starting new HTTP connection (1): 192.168.4.114
+2014-03-25 21:12:33,025 57396 DEBUG "POST /nrdp/ HTTP/1.1" 200 1163
+2014-03-25 21:12:33,025 57396 DEBUG hitting url with payload: http://192.168.4.114/nrdp/
+2014-03-25 21:12:33,025 57396 DEBUG content response from payload: b'\n[listener]\nip = 0.0.0.0\nport = 5693\nuid = nagios \ngid = nagcmd\npidfile = var/ncpa_listener.pid\nlogfile = var/ncpa_listener.log\nloglevel = info\n\n[api]\ncommunity_string = nagiosxi\n\n[passive]\nsleep = 300\nhandlers = nrdp\nuid =\ngid =\npidfile = var/ncpa_passive.pid\nlogfile = var/ncpa_passive.log\nloglevel = info\n\n[nrdp]\nparent = http://192.168.4.114/nrdp/\ntoken = nagiosxi\n\n[nrds]\n# Most of this is required to maintain compatability with NRDS\n# and is not actually referred to by the NCPA agent.\nCONFIG_VERSION=0.1\nCONFIG_OS=NCPA\nCONFIG_NAME=NCPA1\nLOG_FILE=BUILTIN\nURL=http://192.168.4.114/nrdp/\nTOKEN=nagiosxi\nCOMMAND_PREFIX=UNUSED\nSEND_NRDP=BUILTIN\nTMPDIR=BUILTIN\nPLUGIN_DIR=plugins/\nUPDATE_CONFIG=1\nUPDATE_PLUGINS=1\n\n[passive checks]\n%HOSTNAME%|CPU Usage = api/cpu/percent --warning 20 --critical 30\n%HOSTNAME%|Memory Usage = api/memory/virtual/percent --warning 60 --critical 80\n%HOSTNAME%|Swap Usage = api/memory/swap/percent --warning 40 --critical 80\n\n\n[plugin directives]\nplugin_path = plugins/\n.vbs = cscript $plugin_name $plugin_args //NoLogo\n.ps1 = powershell -ExecutionPolicy Unrestricted $plugin_name $plugin_args\n.sh = /bin/sh $plugin_name $plugin_args'
+2014-03-25 21:12:33,025 57396 INFO Successfully updated NRDS config.
+2014-03-25 21:12:33,026 57396 WARNING /tmp/ncpa/agent/plugins
+2014-03-25 21:12:33,026 57396 DEBUG Done with this NRDS iteration.
+2014-03-25 21:12:33,026 57396 DEBUG Successfully ran handler nrds
+2014-03-25 21:12:35,194 57396 INFO stopped
