@@ -1,7 +1,7 @@
 PYTHONVER = 'python3.5'
 PIPVER = 'pip3.5'
 
-.PHONY: build_exe build_doc update_packages update_git
+.PHONY: build_exe build_doc update_packages update_git build_rpm
 
 build_exe: build_doc
 	cd ../agent && $(PYTHONVER) posix.py build_exe
@@ -15,3 +15,6 @@ update_packages:
 
 update_git:
 	git pull origin master
+
+build_rpm: update_git update_packages build_exe
+	echo 'Building rpm'
