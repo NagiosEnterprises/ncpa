@@ -4,6 +4,7 @@ PIPVER = 'pip3.5'
 .PHONY: build_exe build_doc update_packages update_git build_rpm
 
 build_exe: build_doc
+	echo -n '' > ../agent/var/ncpa_{listener,passive}.log
 	cd ../agent && $(PYTHONVER) posix.py build_exe
 	mv ../docs/_build/html ../agent/build/*/listener/static/help	
 
