@@ -3,6 +3,7 @@ requests
 Jinja2
 flask
 sphinx
+docutils
 pyOpenSSL==0.12
 sphinx-bootstrap-theme
 git+git://github.com/jessaustin/werkzeug.git@socket-fix

@@ -1,5 +1,6 @@
-PYTHONVER = 'python3.5'
-PIPVER = 'pip3.5'
+PYTHONVER = python3.5
+PIPVER = pip3.5
+SPHINXBUILD = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION.md)
 INSTALLTARGET = /usr/local/ncpa/
 
@@ -12,7 +13,7 @@ build_exe: build_doc
 	mv ../docs/_build/html ../agent/build/*/listener/static/help	
 
 build_doc: 
-	cd ../docs && make html
+	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBUILD)" html
 
 update_packages:
 	$(PIPVER) install -r ../requirements.txt --upgrade
