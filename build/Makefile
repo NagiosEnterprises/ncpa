@@ -7,6 +7,7 @@ INSTALLTARGET = /usr/local/ncpa/
 .PHONY: build_exe build_doc update_packages update_git build_rpm build_spec
 
 build_exe: build_doc
+	mkdir -p ../agent/{plugins,var} 
 	echo -n '' > ../agent/var/ncpa_passive.log
 	echo -n '' > ../agent/var/ncpa_listener.log
 	cd ../agent && $(PYTHONVER) posix.py build_exe
