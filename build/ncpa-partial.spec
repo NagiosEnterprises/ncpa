@@ -22,11 +22,7 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/etc/init.d/
 cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/ 
-rm -rf %{buildroot}/usr/local/ncpa/passive/__init__.pyc
-rm -rf %{buildroot}/usr/local/ncpa/passive/__init__.pyo
-rm -rf %{buildroot}/usr/local/ncpa/passive/utils.pyc
-rm -rf %{buildroot}/usr/local/ncpa/passive/utils.pyo
-
+chown nagios.nagcmd %{buildroot}/usr/local/ncpa -R
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/listener_init %{buildroot}/etc/init.d/ncpa_listener
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{buildroot}/etc/init.d/ncpa_passive
 
