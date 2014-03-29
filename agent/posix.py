@@ -23,8 +23,7 @@ includefiles = ['var/ncpa_listener.log',
                 'etc/ncpa.cfg',
                 'plugins',
                 'listener/templates',
-                'listener/static',
-                'passive']
+                'listener/static']
 
 # It does not appear the cx_Freeze honors the package directive
 includes = ['xml.dom.minidom', 
