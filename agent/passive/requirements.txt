@@ -1,4 +1,0 @@
-send_nsca
-netsyslog
-wmi
-pywin32
