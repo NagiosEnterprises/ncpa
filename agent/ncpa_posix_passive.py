@@ -22,12 +22,12 @@ class Passive(ncpadaemon.Daemon):
         - Abide by the handler API set forth by passive.abstract.NagiosHandler
         - Terminate in a timely fashion
         """
-        handlers = self.config_parser.get(u'passive', u'handlers').split(u',')
+        handlers = self.config_parser.get('passive', 'handlers').split(',')
         
         for handler in handlers:
             try:
                 handler = handler.strip()
-                module_name = u'passive.%s' % handler
+                module_name = 'passive.%s' % handler
                 __import__(module_name)
                 tmp_handler = sys.modules[module_name]
             except ImportError:
