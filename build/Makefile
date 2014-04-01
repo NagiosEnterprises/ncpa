@@ -1,5 +1,5 @@
-PYTHONVER = python3.5
-PIPVER = pip3.5
+PYTHONVER = python2.7
+PIPVER = pip2.7
 SPHINXBUILD = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION.md)
 INSTALLTARGET = /usr/local/ncpa/
