@@ -18,7 +18,7 @@ import datetime
 import re
 from io import open
 
-__VERSION__ = 1.4
+__VERSION__ = 1.5
 __STARTED__ = datetime.datetime.now()
 
 
