@@ -5,6 +5,10 @@ import xml.dom.minidom
 import logging
 from . import utils
 from itertools import izip
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser
 
 class Handler(abstract.NagiosHandler):
     u'''
@@ -59,7 +63,6 @@ class Handler(abstract.NagiosHandler):
         Sends all the commands to the agent and then submits them
         via NRDP to Nagios.
         '''
-        import ConfigParser
         try:
             self.send_all_commands()
             self.submit_to_nagios()
