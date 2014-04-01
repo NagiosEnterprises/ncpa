@@ -1,14 +1,16 @@
 import logging
 import json
 import platform
-import urllib.request, urllib.parse, urllib.error
+import urllib2, urllib
+import urllib2, urllib, urlparse
+import urllib2, urllib
 import listener.server
 import optparse
 import shlex
 
 
 class NagiosHandler(object):
-    """These are intended for use to handle passive activities.
+    u"""These are intended for use to handle passive activities.
     
     Provides common functions that would be necessary for
     periodic activities that get kicked off by the passive NCPA
@@ -16,7 +18,7 @@ class NagiosHandler(object):
 
     """
     def __init__(self, config, *args, **kwargs):
-        """Does initial such as parsing the config.
+        u"""Does initial such as parsing the config.
 
         """
         self.ncpa_commands = None
@@ -24,64 +26,64 @@ class NagiosHandler(object):
 
         self.parse_config(config)
 
-        logging.debug('Establishing Nagios handler...')
+        logging.debug(u'Establishing Nagios handler...')
     
     def _parse_commands(self, *args, **kwargs):
-        """Grab the commands from the config.
+        u"""Grab the commands from the config.
 
         """
-        logging.debug('Parsing commands...')
-        commands = dict(self.config.items('passive checks'))
+        logging.debug(u'Parsing commands...')
+        commands = dict(self.config.items(u'passive checks'))
         self.ncpa_commands = []
         for command in commands:
-            if '|' not in command:
+            if u'|' not in command:
                 continue 
-            logging.debug('Parsing new individual command.')
+            logging.debug(u'Parsing new individual command.')
             host_service = command
             raw_command = commands[command]
             tmp = NCPACommand(self.config)
             tmp.set_host_and_service(host_service)
             tmp.parse_command(raw_command)
-            logging.debug("Command to be run: %s" % tmp)
+            logging.debug(u"Command to be run: %s" % tmp)
             self.ncpa_commands.append(tmp)
 
     @staticmethod
     def get_warn_crit_from_arguments(arguments):
-        logging.debug('Parsing arguments: %s' % arguments)
+        logging.debug(u'Parsing arguments: %s' % arguments)
         #~ Must give the arguments a prog name in order for them to work with
         #~ optparse
-        arguments = str('./xxx ' + arguments)
+        arguments = unicode(u'./xxx ' + arguments)
         parser = optparse.OptionParser()
-        parser.add_option('-w', '--warning')
-        parser.add_option('-c', '--critical')
-        parser.add_option('-u', '--unit')
+        parser.add_option(u'-w', u'--warning')
+        parser.add_option(u'-c', u'--critical')
+        parser.add_option(u'-u', u'--unit')
         try:
             arg_lat = shlex.split(arguments)
-            logging.debug("String args: %s" % str(arg_lat))
+            logging.debug(u"String args: %s" % unicode(arg_lat))
             options, args = parser.parse_args(arg_lat)
-        except Exception as e:
+        except Exception, e:
             logging.exception(e)
-        warning = options.warning or ''
-        critical = options.critical or ''
-        unit = options.unit or ''
-        return {'warning': warning, 'critical': critical, 'unit': unit}
+        warning = options.warning or u''
+        critical = options.critical or u''
+        unit = options.unit or u''
+        return {u'warning': warning, u'critical': critical, u'unit': unit}
     
     def send_command(self, ncpa_command, *args, **kwargs):
-        """Query the local active agent.
+        u"""Query the local active agent.
 
         """
         url = ncpa_command.command
-        if ncpa_command.arguments and not 'plugin' in ncpa_command.command:
+        if ncpa_command.arguments and not u'plugin' in ncpa_command.command:
             wcu_dict = NagiosHandler.get_warn_crit_from_arguments(ncpa_command.arguments)
-            url += '?' + urllib.parse.urlencode(wcu_dict)
-        if 'plugin' in ncpa_command.command and ncpa_command.arguments:
-            url += '/' + ncpa_command.arguments
+            url += u'?' + urllib.urlencode(wcu_dict)
+        if u'plugin' in ncpa_command.command and ncpa_command.arguments:
+            url += u'/' + ncpa_command.arguments
         response = listener.server.internal_api(url, self.config)
-        logging.debug("Response from server: %s" % response)
+        logging.debug(u"Response from server: %s" % response)
         return response
         
     def send_all_commands(self, *args, **kwargs):
-        """Sends all commands
+        u"""Sends all commands
 
         """
         for command in self.ncpa_commands:
@@ -89,15 +91,15 @@ class NagiosHandler(object):
             command.set_json(tmp_result)
     
     def parse_config(self, config, *args, **kwargs):
-        """Grab the commands from the config.
+        u"""Grab the commands from the config.
 
         """
         self.config = config
-        logging.debug('Parsing config...')
+        logging.debug(u'Parsing config...')
         self._parse_commands()
     
     def run(self, *args, **kwargs):
-        """This item is a convenience method to consist with the API of a
+        u"""This item is a convenience method to consist with the API of a
         handler that is expected to exist in order to be called
         generically.
 
@@ -119,25 +121,25 @@ class NCPACommand(object):
         self.config = config
 
     def __repr__(self):
-        builder  = 'Nagios Hostname: %s -- ' % self.nag_hostname
-        builder += 'Nagios Servicename: %s -- ' % self.nag_servicename 
-        builder += 'Command: %s -- ' % self.command
-        builder += 'Arguments: %s -- ' % self.arguments
-        builder += 'Stdout: %s -- ' % self.stdout
-        builder += 'Return Code: %s' % str(self.returncode)
+        builder  = u'Nagios Hostname: %s -- ' % self.nag_hostname
+        builder += u'Nagios Servicename: %s -- ' % self.nag_servicename 
+        builder += u'Command: %s -- ' % self.command
+        builder += u'Arguments: %s -- ' % self.arguments
+        builder += u'Stdout: %s -- ' % self.stdout
+        builder += u'Return Code: %s' % unicode(self.returncode)
         return builder
     
     def set_json(self, json_data, *args, **kwargs):
-        """Accepts the returned JSON and turns it into the stdout and
+        u"""Accepts the returned JSON and turns it into the stdout and
         return code.
 
         """
         self.json = json_data
-        self.stdout = json_data.get('stdout', 'Error parsing the JSON.')
-        self.returncode = json_data.get('returncode', 'Error parsing the JSON.')
+        self.stdout = json_data.get(u'stdout', u'Error parsing the JSON.')
+        self.returncode = json_data.get(u'returncode', u'Error parsing the JSON.')
     
     def set_host_and_service(self, directive, *args, **kwargs):
-        """Given the directive name in the config, such as:
+        u"""Given the directive name in the config, such as:
 
         localhost|CPU Usage
 
@@ -145,25 +147,25 @@ class NCPACommand(object):
         CPU Usage, respectively.
 
         """
-        self.nag_hostname, self.nag_servicename = directive.split('|')
-        if self.nag_servicename == '__HOST__':
-            self.check_type = 'host'
+        self.nag_hostname, self.nag_servicename = directive.split(u'|')
+        if self.nag_servicename == u'__HOST__':
+            self.check_type = u'host'
         else:
-            self.check_type = 'service'
-        if self.nag_hostname in ['%HOSTNAME%', '%hostname%']:
+            self.check_type = u'service'
+        if self.nag_hostname in [u'%HOSTNAME%', u'%hostname%']:
             self.nag_hostname = self.guess_hostname()
-        logging.debug('Setting hostname to %s and servicename to %s' % (self.nag_hostname, self.nag_servicename))
+        logging.debug(u'Setting hostname to %s and servicename to %s' % (self.nag_hostname, self.nag_servicename))
     
     def parse_result(self, result, *args, **kwargs):
-        """Parse the json result.
+        u"""Parse the json result.
 
         """
         parsed_result = json.loads(result)
-        self.stdout = parsed_result.get('stdout', 3)
-        self.returncode = parsed_result.get('returncode', 'An error occurred parsing the JSON')
+        self.stdout = parsed_result.get(u'stdout', 3)
+        self.returncode = parsed_result.get(u'returncode', u'An error occurred parsing the JSON')
     
     def parse_command(self, config_command, *args, **kwargs):
-        """Parses the actual command from the config file. Example
+        u"""Parses the actual command from the config file. Example
         
         check_memory
         
@@ -171,19 +173,19 @@ class NCPACommand(object):
         after it should be regarded as arguments.
 
         """
-        logging.debug('Parsing command: %s' % config_command)
+        logging.debug(u'Parsing command: %s' % config_command)
         try:
-            self.command, self.arguments = config_command.split(' ', 1)
-            logging.debug('Command contained arguments.')
+            self.command, self.arguments = config_command.split(u' ', 1)
+            logging.debug(u'Command contained arguments.')
         except ValueError:
             self.command = config_command
-            logging.debug('Command did not contain arguments. Single directive.')
+            logging.debug(u'Command did not contain arguments. Single directive.')
             
     def guess_hostname(self):
         try:
-            hostname = self.config.get('nrdp', 'hostname')
-            logging.debug('Using the config directive for the hostname: %s' % hostname)
+            hostname = self.config.get(u'nrdp', u'hostname')
+            logging.debug(u'Using the config directive for the hostname: %s' % hostname)
         except:
             hostname = platform.node()
-            logging.debug('Using the platform node name: %s' % hostname)
+            logging.debug(u'Using the platform node name: %s' % hostname)
         return hostname

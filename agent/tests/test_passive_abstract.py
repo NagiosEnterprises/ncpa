@@ -1,32 +1,32 @@
 import unittest
 import os
 import sys
-import configparser
+import ConfigParser
 
-sys.path.append(os.path.dirname(__file__) + '/..')
+sys.path.append(os.path.dirname(__file__) + u'/..')
 from passive.abstract import *
 
 
 class TestNagiosHandler(unittest.TestCase):
     def test_get_warn_crit_from_arguments(self):
-        test_string = '-w 10 -c 5'
+        test_string = u'-w 10 -c 5'
         result = NagiosHandler.get_warn_crit_from_arguments(test_string)
 
-        self.assertEqual(result['warning'], '10')
-        self.assertEqual(result['critical'], '5')
+        self.assertEqual(result[u'warning'], u'10')
+        self.assertEqual(result[u'critical'], u'5')
 
-        test_string = '--warning 10 --critical 5'
+        test_string = u'--warning 10 --critical 5'
         result = NagiosHandler.get_warn_crit_from_arguments(test_string)
 
-        self.assertEqual(result['warning'], '10')
-        self.assertEqual(result['critical'], '5')
+        self.assertEqual(result[u'warning'], u'10')
+        self.assertEqual(result[u'critical'], u'5')
 
     def test__parse_commands(self):
-        test_config = configparser.ConfigParser()
-        test_config.add_section('passive checks')
-        test_config.set('passive checks', 'a|b', 'bingo')
-        test_config.set('passive checks', 'a|c', 'bongo')
-        test_config.set('passive checks', 'ac', 'jingle')
+        test_config = ConfigParser.ConfigParser()
+        test_config.add_section(u'passive checks')
+        test_config.set(u'passive checks', u'a|b', u'bingo')
+        test_config.set(u'passive checks', u'a|c', u'bongo')
+        test_config.set(u'passive checks', u'ac', u'jingle')
 
         nh = NagiosHandler(test_config)
         self.assertEqual(len(nh.ncpa_commands), 2)
@@ -82,5 +82,5 @@ class TestNCPACommand(unittest.TestCase):
         # self.assertEqual(expected, n_cpa_command.set_json(json_data, *args, **kwargs))
         assert False # TODO: implement your test here
 
-if __name__ == '__main__':
+if __name__ == u'__main__':
     unittest.main()

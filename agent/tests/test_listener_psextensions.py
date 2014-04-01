@@ -5,5 +5,5 @@ class TestGetServices(unittest.TestCase):
         # self.assertEqual(expected, get_services())
         assert False # TODO: implement your test here
 
-if __name__ == '__main__':
+if __name__ == u'__main__':
     unittest.main()

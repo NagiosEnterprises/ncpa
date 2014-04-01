@@ -1,4 +1,4 @@
-__author__ = 'nscott'
+__author__ = u'nscott'
 
 import os
 import sys

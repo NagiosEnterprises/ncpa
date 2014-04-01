@@ -15,5 +15,5 @@ class TestSendRequest(unittest.TestCase):
         # self.assertEqual(expected, send_request(url, *args, **kwargs))
         assert False # TODO: implement your test here
 
-if __name__ == '__main__':
+if __name__ == u'__main__':
     unittest.main()

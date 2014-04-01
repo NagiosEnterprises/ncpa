@@ -1,4 +1,4 @@
-"""
+u"""
 Implements a simple service using cx_Freeze.
 
 See below for more information on what methods must be implemented and how they
@@ -7,7 +7,7 @@ are called.
 
 import cx_Logging
 import cx_Threads
-import configparser
+import ConfigParser
 import logging
 import os
 import time
@@ -21,11 +21,11 @@ class Base(object):
     # no parameters are permitted; all configuration should be placed in the
     # configuration file and handled in the Initialize() method
     def __init__(self):
-        cx_Logging.Info("creating handler instance")
+        cx_Logging.Info(u"creating handler instance")
         self.stopEvent = cx_Threads.Event()
     
     def determine_relative_filename(self, file_name, *args, **kwargs):
-        '''Gets the relative pathname of the executable being run.
+        u'''Gets the relative pathname of the executable being run.
         
         This is meant exclusively for being used with cx_Freeze on Windows.
         '''
@@ -37,27 +37,27 @@ class Base(object):
         return os.path.join(appdir, file_name)
         
     def parse_config(self, *args, **kwargs):
-        self.config = configparser.ConfigParser()
-        self.config.optionxform = str
+        self.config = ConfigParser.ConfigParser()
+        self.config.optionxform = unicode
         self.config.read(self.config_filename)
     
     def setup_plugins(self):
-        plugin_path = self.config.get('plugin directives', 'plugin_path')
+        plugin_path = self.config.get(u'plugin directives', u'plugin_path')
         self.abs_plugin_path = self.determine_relative_filename(plugin_path)
-        self.config.set('plugin directives', 'plugin_path', self.abs_plugin_path)
+        self.config.set(u'plugin directives', u'plugin_path', self.abs_plugin_path)
     
     def setup_logging(self, *arg, **kwargs):
-        '''This should always setup the logger.
+        u'''This should always setup the logger.
         '''
         log_config = dict(self.config.items(self.c_type, 1))
-        log_level = log_config.get('loglevel', 'INFO').upper()
-        log_config['level'] = getattr(logging, log_level, logging.INFO)
-        del log_config['loglevel']
-        log_file = log_config['logfile']
+        log_level = log_config.get(u'loglevel', u'INFO').upper()
+        log_config[u'level'] = getattr(logging, log_level, logging.INFO)
+        del log_config[u'loglevel']
+        log_file = log_config[u'logfile']
         if os.path.isabs(log_file):
-            log_config['filename'] = log_file
+            log_config[u'filename'] = log_file
         else:
-            log_config['filename'] = self.determine_relative_filename(log_file)
+            log_config[u'filename'] = self.determine_relative_filename(log_file)
         logging.basicConfig(**log_config)
         self.logger = logging.getLogger()
     
@@ -66,73 +66,73 @@ class Base(object):
     # for the stop event or the service GUI will not respond to requests to
     # stop the service
     def Run(self):
-        cx_Logging.Info("running service....")
+        cx_Logging.Info(u"running service....")
         self.start()
         self.stopEvent.Wait()
 
     # called when the service is being stopped by the service manager GUI
     def Stop(self):
-        cx_Logging.Info("stopping service...")
+        cx_Logging.Info(u"stopping service...")
         self.stopEvent.Set()
     
 class Listener(Base):
     
     def start(self):
-        '''Kickoff the TCP Server
+        u'''Kickoff the TCP Server
         
         @todo Integrate this with the Windows code. It shares so much...and gains so little
         ''' 
         try:
             import listener.server
-            address = self.config.get('listener', 'ip')
-            port = int(self.config.get('listener', 'port'))
+            address = self.config.get(u'listener', u'ip')
+            port = int(self.config.get(u'listener', u'port'))
             listener.server.listener.config_file = self.config_filename
-            listener.server.listener.config['iconfig'] = self.config
+            listener.server.listener.config[u'iconfig'] = self.config
             listener.server.listener.secret_key = os.urandom(24)
-            listener.server.listener.run(address, port, ssl_context=self.config.get('listener', 'certificate'))
-        except Exception as e:
+            listener.server.listener.run(address, port, ssl_context=self.config.get(u'listener', u'certificate'))
+        except Exception, e:
             self.logger.exception(e)
         
     # called when the service is starting
     def Initialize(self, config_file):
-        self.c_type = 'listener'
-        self.config_filename = self.determine_relative_filename(os.path.join('etc', 'ncpa.cfg'))
+        self.c_type = u'listener'
+        self.config_filename = self.determine_relative_filename(os.path.join(u'etc', u'ncpa.cfg'))
         self.parse_config()
         self.setup_logging()
         self.setup_plugins()
-        self.logger.info("Looking for config at: %s" % self.config_filename)
-        self.logger.info("Looking for plugins at: %s" % self.abs_plugin_path)
+        self.logger.info(u"Looking for config at: %s" % self.config_filename)
+        self.logger.info(u"Looking for plugins at: %s" % self.abs_plugin_path)
 
 class Passive(Base):
     
     def run_all_handlers(self, *args, **kwargs):
-        '''Will run all handlers that exist.
+        u'''Will run all handlers that exist.
         
         The handler must:
         - Have a config header entry
         - Abide by the handler API set forth by passive.abstract.NagiosHandler
         - Terminate in a timely fashion
         '''
-        handlers = self.config.get('passive', 'handlers').split(',')
+        handlers = self.config.get(u'passive', u'handlers').split(u',')
         
         for handler in handlers:
             try:
-                module_name = 'passive.%s' % handler
+                module_name = u'passive.%s' % handler
                 __import__(module_name)
                 tmp_handler = sys.modules[module_name]
-            except ImportError as e:
-                self.logger.error('Could not import module passive.%s, skipping. %s' % (handler, str(e)))
+            except ImportError, e:
+                self.logger.error(u'Could not import module passive.%s, skipping. %s' % (handler, unicode(e)))
                 self.logger.exception(e)
             else:
                 try:
                     ins_handler = tmp_handler.Handler(self.config)
                     ins_handler.run()
-                    self.logger.debug('Successfully ran handler %s' % handler)
-                except Exception as e:
+                    self.logger.debug(u'Successfully ran handler %s' % handler)
+                except Exception, e:
                     self.logger.exception(e)
     
     def start(self):
-        '''Kickoff the TCP Server
+        u'''Kickoff the TCP Server
         
         @todo Integrate this with the Windows code. It shares so much...and gains so little
         ''' 
@@ -140,26 +140,26 @@ class Passive(Base):
             while True:
                 self.run_all_handlers()
                 self.parse_config()
-                wait_time = int(self.config.get('passive', 'sleep'))
+                wait_time = int(self.config.get(u'passive', u'sleep'))
                 time.sleep(wait_time)
-        except Exception as e:
+        except Exception, e:
             self.logger.exception(e)
         
     # called when the service is starting
     def Initialize(self, config_file):
-        self.c_type = 'passive'
-        self.config_filename = self.determine_relative_filename(os.path.join('etc', 'ncpa.cfg'))
+        self.c_type = u'passive'
+        self.config_filename = self.determine_relative_filename(os.path.join(u'etc', u'ncpa.cfg'))
         self.parse_config()
         self.setup_logging()
         self.setup_plugins()
-        self.logger.info("Looking for config at: %s" % self.config_filename)
-        self.logger.info("Looking for plugins at: %s" % self.config.get('plugin directives', 'plugin_path'))
+        self.logger.info(u"Looking for config at: %s" % self.config_filename)
+        self.logger.info(u"Looking for plugins at: %s" % self.config.get(u'plugin directives', u'plugin_path'))
 
 if DEBUG == 1:
-    if len(sys.argv) == 3 and sys.argv[1] == 'debug':
-        if sys.argv[2] == 'passive':
+    if len(sys.argv) == 3 and sys.argv[1] == u'debug':
+        if sys.argv[2] == u'passive':
             a = Passive()
-        elif sys.argv[2] == 'listener':
+        elif sys.argv[2] == u'listener':
             a = Listener()
-        a.Initialize(('agent', 'etc', 'ncpa.cfg'))
+        a.Initialize((u'agent', u'etc', u'ncpa.cfg'))
         a.Run()

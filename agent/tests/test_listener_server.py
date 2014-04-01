@@ -85,5 +85,5 @@ class TestParseInternalInput(unittest.TestCase):
         # self.assertEqual(expected, parse_internal_input(accessor))
         assert False # TODO: implement your test here
 
-if __name__ == '__main__':
+if __name__ == u'__main__':
     unittest.main()
