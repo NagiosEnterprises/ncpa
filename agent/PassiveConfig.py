@@ -36,11 +36,11 @@
 #       parameters sessionId and eventTypeId.
 #------------------------------------------------------------------------------
 
-NAME = "NCPA Passive %s"
-DISPLAY_NAME = "NCPA Passive - %s"
-MODULE_NAME = "ncpa_windows"
-CLASS_NAME = "Passive"
-DESCRIPTION = "NCPA Passive Server"
+NAME = u"NCPA Passive %s"
+DISPLAY_NAME = u"NCPA Passive - %s"
+MODULE_NAME = u"ncpa_windows"
+CLASS_NAME = u"Passive"
+DESCRIPTION = u"NCPA Passive Server"
 AUTO_START = True
 SESSION_CHANGES = False
 

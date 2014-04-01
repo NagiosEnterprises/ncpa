@@ -13,47 +13,47 @@ import shutil
 from cx_Freeze import setup, Executable
 import os
 
-shutil.rmtree('build', ignore_errors=True)
+shutil.rmtree(u'build', ignore_errors=True)
 
-sys.argv += ['-p', 'xml']
+sys.argv += [u'-p', u'xml']
 
-includefiles = [    'var/ncpa_listener.log', 
-                    'var/ncpa_passive.log',
-                    'etc/ncpa.cfg',
-                    'plugins',
-                    'listener/templates',
-                    'listener/static',
-                    'passive'
+includefiles = [    u'var/ncpa_listener.log', 
+                    u'var/ncpa_passive.log',
+                    u'etc/ncpa.cfg',
+                    u'plugins',
+                    u'listener/templates',
+                    u'listener/static',
+                    u'passive'
                     ]
 
-includes = ['xml.dom.minidom']
+includes = [u'xml.dom.minidom']
                     
-includefiles += [   'build_resources/NagiosSoftwareLicense.txt', 
-                    'build_resources/quickstart.ini',
-                    'build_resources/basic.ini',
-                    'build_resources/pickpath.ini',
-                    'build_resources/ncpa.ico' ]
+includefiles += [   u'build_resources/NagiosSoftwareLicense.txt', 
+                    u'build_resources/quickstart.ini',
+                    u'build_resources/basic.ini',
+                    u'build_resources/pickpath.ini',
+                    u'build_resources/ncpa.ico' ]
 
-buildOptions = dict( includes = includes + ["ncpa_windows"],
+buildOptions = dict( includes = includes + [u"ncpa_windows"],
                          include_files = includefiles)
 
-listener  = Executable(     "ListenerConfig.py", 
-                            base = "Win32Service",
-                            targetName = "ncpa_listener.exe"
+listener  = Executable(     u"ListenerConfig.py", 
+                            base = u"Win32Service",
+                            targetName = u"ncpa_listener.exe"
             )
 
-passive   = Executable(     "PassiveConfig.py",
-                            base = "Win32Service",
-                            targetName = "ncpa_passive.exe"
+passive   = Executable(     u"PassiveConfig.py",
+                            base = u"Win32Service",
+                            targetName = u"ncpa_passive.exe"
             )
 
 setup(
-    name = "NCPA",
-    version = "0.3",
-    description = "Nagios Cross Platform Agent Installer",
+    name = u"NCPA",
+    version = u"0.3",
+    description = u"Nagios Cross Platform Agent Installer",
     executables = [listener, passive],
     options = dict(build_exe = buildOptions),
 )
 
-os.rename(os.path.join('build', 'exe.win32-2.7'), os.path.join('build', 'NCPA'))
-shutil.copy('build_resources/ncpa.nsi', 'build/')
+os.rename(os.path.join(u'build', u'exe.win32-2.7'), os.path.join(u'build', u'NCPA'))
+shutil.copy(u'build_resources/ncpa.nsi', u'build/')

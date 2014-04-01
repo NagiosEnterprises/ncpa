@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import with_statement
 import requests
 import sys
 from . import abstract
@@ -8,9 +9,10 @@ import json
 import re
 import logging
 import os
+from io import open
 
 class Handler(abstract.NagiosHandler):
-    """
+    u"""
     api for nrds config management
     """
 
@@ -18,107 +20,107 @@ class Handler(abstract.NagiosHandler):
         super(Handler, self).__init__(*args, **kwargs)
 
     def get_nrds_url(self):
-        nrds_url = self.config.get('nrds', 'url')
-        if nrds_url.endswith('/'):
+        nrds_url = self.config.get(u'nrds', u'url')
+        if nrds_url.endswith(u'/'):
             return nrds_url
         else:
-            return nrds_url + '/'
+            return nrds_url + u'/'
 
     def run(self, *args, **kwargs):
         if self.config_update_is_required():
-            logging.debug('Updating my NRDS config...')
+            logging.debug(u'Updating my NRDS config...')
             self.update_config()
         needed_plugins = self.list_missing_plugins()
         if needed_plugins:
-            logging.debug('We need some plugins. Getting them...')
+            logging.debug(u'We need some plugins. Getting them...')
             for plugin in needed_plugins:
                 self.get_plugin(plugin)
-        logging.debug('Done with this NRDS iteration.')
+        logging.debug(u'Done with this NRDS iteration.')
 
     def get_plugin(self, plugin, *args, **kwargs):
         nrds_url = self.get_nrds_url()
-        plugin_path = self.config.get('plugin directives', 'plugin_path')
-        token = self.config.get('nrds', 'token')
+        plugin_path = self.config.get(u'plugin directives', u'plugin_path')
+        token = self.config.get(u'nrds', u'token')
         operating_sys = self.get_os()
 
-        getargs = {'cmd': 'getplugin',
-                   'os': operating_sys,
-                   'token': token,
-                   'plugin':   plugin}
+        getargs = {u'cmd': u'getplugin',
+                   u'os': operating_sys,
+                   u'token': token,
+                   u'plugin':   plugin}
 
         url_request = utils.send_request(nrds_url, **getargs)
         local_path_location = os.path.join(plugin_path, plugin)
 
-        logging.debug( "Downloading plugin to location: %s" % str(local_path_location))
+        logging.debug( u"Downloading plugin to location: %s" % unicode(local_path_location))
 
         try:
-            with open(local_path_location, 'w') as plugin_file:
+            with open(local_path_location, u'w') as plugin_file:
                 plugin_file.write(url_request.content)
-                os.chmod(local_path_location, 0o775)
+                os.chmod(local_path_location, 0775)
         except IOError:
-            logging.error('Could not write the plugin to %s, perhaps permissions went bad.', local_path_location)
+            logging.error(u'Could not write the plugin to %s, perhaps permissions went bad.', local_path_location)
 
     def update_config(self, *args, **kwargs):
-        '''Downloads new config to whatever is declared as path
+        u'''Downloads new config to whatever is declared as path
 
         @todo Validate config before saving
         '''
         nrds_url = self.get_nrds_url()
-        get_args = {'configname': self.config.get('nrds', 'CONFIG_NAME'),
-                    'cmd': 'getconfig',
-                    'os': 'NCPA',
-                    'token': self.config.get('nrds', 'token') }
+        get_args = {u'configname': self.config.get(u'nrds', u'CONFIG_NAME'),
+                    u'cmd': u'getconfig',
+                    u'os': u'NCPA',
+                    u'token': self.config.get(u'nrds', u'token') }
 
 
-        logging.debug('URL I am requesting: %s' % nrds_url)
+        logging.debug(u'URL I am requesting: %s' % nrds_url)
         url_request = utils.send_request(nrds_url, **get_args)
 
-        if url_request.content != "":
+        if url_request.content != u"":
             try:
-                with open(self.config.file_path, 'wb') as config:
+                with open(self.config.file_path, u'wb') as config:
                     config.write(url_request.content)
             except IOError:
-                logging.error('Could not rewrite the config. Permissions my be wrong.')
+                logging.error(u'Could not rewrite the config. Permissions my be wrong.')
             else:
-                logging.info('Successfully updated NRDS config.')
+                logging.info(u'Successfully updated NRDS config.')
 
 
 
     def config_update_is_required(self, *args, **kwargs):
-        '''Returns true or false based on value in the config_version
+        u'''Returns true or false based on value in the config_version
         variable in the config
 
         @todo Log results if we do not have this config
         '''
-        get_args = {'token': self.config.get('nrds', 'token'),
-                    'cmd': 'updatenrds',
-                    'os': 'NCPA',
-                    'configname': self.config.get('nrds', 'CONFIG_NAME'),
-                    'version': self.config.get('nrds', 'CONFIG_VERSION'), }
+        get_args = {u'token': self.config.get(u'nrds', u'token'),
+                    u'cmd': u'updatenrds',
+                    u'os': u'NCPA',
+                    u'configname': self.config.get(u'nrds', u'CONFIG_NAME'),
+                    u'version': self.config.get(u'nrds', u'CONFIG_VERSION'), }
 
-        logging.debug('Connecting to NRDS server...')
+        logging.debug(u'Connecting to NRDS server...')
 
         nrdp_url = self.get_nrds_url()
         url_request = utils.send_request(nrdp_url, **get_args)
 
         response_xml = ET.fromstring(url_request.content)
-        status_xml = response_xml.findall('./status')
+        status_xml = response_xml.findall(u'./status')
 
         if status_xml:
             status = status_xml[0].text
         else:
-            status = "0"
+            status = u"0"
 
         try:
             status = int(status)
         except Exception:
-            logging.error("Unrecognized value for NRDS update returned. Got %s, excpected integer." % status)
+            logging.error(u"Unrecognized value for NRDS update returned. Got %s, excpected integer." % status)
             return False
 
-        logging.debug('Value returned for new config: %d' % status)
+        logging.debug(u'Value returned for new config: %d' % status)
 
         if status == 2:
-            logging.warning("Server does not have a record for %s config." % self.config.get('nrds', 'config_name'))
+            logging.warning(u"Server does not have a record for %s config." % self.config.get(u'nrds', u'config_name'))
             status = 0
 
         return bool(status)
@@ -126,18 +128,18 @@ class Handler(abstract.NagiosHandler):
     def get_os(self):
         plat = sys.platform
 
-        if plat == 'darwin' or plat == 'mac':
-            os = 'Darwin'
-        elif 'linux' in plat:
-            os = 'Linux'
-        elif 'aix' in plat:
-            os = 'AIX'
-        elif 'sun' in plat:
-            os = 'SunOS'
-        elif 'win' in plat:
-            os = 'Windows'
+        if plat == u'darwin' or plat == u'mac':
+            os = u'Darwin'
+        elif u'linux' in plat:
+            os = u'Linux'
+        elif u'aix' in plat:
+            os = u'AIX'
+        elif u'sun' in plat:
+            os = u'SunOS'
+        elif u'win' in plat:
+            os = u'Windows'
         else:
-            os = 'Generic'
+            os = u'Generic'
         return os
 
     def list_missing_plugins(self, *args, **kwargs):
@@ -146,11 +148,11 @@ class Handler(abstract.NagiosHandler):
         return required_plugins - installed_plugins
 
     def get_required_plugins(self, *args, **kwargs):
-        passive_checks = self.config.items('passive checks')
-        filtered = [x[1] for x in passive_checks if '|' in x[0] and 'plugin/' in x[1]]
-        PLUGIN_NAME = re.compile(r'plugin/([^/]+).*')
+        passive_checks = self.config.items(u'passive checks')
+        filtered = [x[1] for x in passive_checks if u'|' in x[0] and u'plugin/' in x[1]]
+        PLUGIN_NAME = re.compile(ur'plugin/([^/]+).*')
         return frozenset([PLUGIN_NAME.search(x).group(1) for x in filtered])
 
     def get_installed_plugins(self, *args, **kwargs):
-        logging.warning(self.config.get('plugin directives', 'plugin_path'))
-        return frozenset([x for x in os.listdir(self.config.get('plugin directives', 'plugin_path')) if not x.startswith('.')])
+        logging.warning(self.config.get(u'plugin directives', u'plugin_path'))
+        return frozenset([x for x in os.listdir(self.config.get(u'plugin directives', u'plugin_path')) if not x.startswith(u'.')])
