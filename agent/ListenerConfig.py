@@ -36,11 +36,11 @@
 #       parameters sessionId and eventTypeId.
 #------------------------------------------------------------------------------
 
-NAME = u"NCPA Listener %s"
-DISPLAY_NAME = u"NCPA Listener - %s"
-MODULE_NAME = u"ncpa_windows"
-CLASS_NAME = u"Listener"
-DESCRIPTION = u"NCPA HTTP Listener Server"
+NAME = "NCPA Listener %s"
+DISPLAY_NAME = "NCPA Listener - %s"
+MODULE_NAME = "ncpa_windows"
+CLASS_NAME = "Listener"
+DESCRIPTION = "NCPA HTTP Listener Server"
 AUTO_START = True
 SESSION_CHANGES = False
 
