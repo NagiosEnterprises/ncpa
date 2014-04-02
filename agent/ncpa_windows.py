@@ -12,7 +12,11 @@ import logging
 import os
 import time
 import sys
-import jinja2.ext # DO NOT REMOVE THIS, THIS FORCES cx_Freeze to include the library
+# DO NOT REMOVE THIS, THIS FORCES cx_Freeze to include the library
+# DO NOT REMOVE ANYTHING BELOW THIS LINE
+import passive.nrds
+import passive.nrdp
+import jinja2.ext 
 import filename
 
 DEBUG = 0
@@ -117,7 +121,7 @@ class Passive(Base):
         
         for handler in handlers:
             try:
-                module_name = u'passive.%s' % handler
+                module_name = 'passive.%s' % handler
                 __import__(module_name)
                 tmp_handler = sys.modules[module_name]
             except ImportError, e:
@@ -132,10 +136,6 @@ class Passive(Base):
                     self.logger.exception(e)
     
     def start(self):
-        u'''Kickoff the TCP Server
-        
-        @todo Integrate this with the Windows code. It shares so much...and gains so little
-        ''' 
         try:
             while True:
                 self.run_all_handlers()
