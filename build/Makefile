@@ -10,7 +10,7 @@ build_exe: build_doc
 	mkdir -p ../agent/{plugins,var} 
 	echo -n '' > ../agent/var/ncpa_passive.log
 	echo -n '' > ../agent/var/ncpa_listener.log
-	cd ../agent && $(PYTHONVER) posix.py build_exe
+	cd ../agent && $(PYTHONVER) setup_posix.py build_exe
 	mv ../docs/_build/html ../agent/build/*/listener/static/help	
 
 build_doc: 
@@ -42,3 +42,5 @@ build_rpm: build_spec
 	/bin/cp -f ncpa.spec ~/rpmbuild/SPECS/
 	QA_RPATHS='$[ 0x0002 ]' rpmbuild ~/rpmbuild/SPECS/ncpa.spec -bb
 	
+build_dmg: build_tarball
+	echo 'hi'

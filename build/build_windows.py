@@ -22,7 +22,7 @@ if not os.path.exists('plugins'):
     os.mkdir('plugins')
 	
 sys.path.append(os.getcwd())
-os.system('python2.7 setup.py build_exe')
+os.system('python2.7 setup_windows.py build_exe')
 
 shutil.rmtree('build/exe.win32-2.7/listener/static/help', ignore_errors=True)
 shutil.copytree('../docs/_build/html', 'build/exe.win32-2.7/listener/static/help')
