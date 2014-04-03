@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -e
-
-UPDATERC=`which update-rc.d`
-$UPDATERC ncpa_listener remove
-$UPDATERC ncpa_passive remove

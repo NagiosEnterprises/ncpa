@@ -1,3 +1,0 @@
-python setup.py build_exe
-
-...Run the Nullsoft Installer
