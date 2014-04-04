@@ -3,21 +3,23 @@ PIPVER = pip2.7
 SPHINXBUILD = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION.md)
 INSTALLTARGET = /usr/local/ncpa/
+BASEDIR = ~/Development/ncpa
 
 .PHONY: build_exe build_doc update_packages update_git build_rpm build_spec
 
 build_exe: build_doc
-	mkdir -p ../agent/{plugins,var} 
-	echo -n '' > ../agent/var/ncpa_passive.log
-	echo -n '' > ../agent/var/ncpa_listener.log
-	cd ../agent && $(PYTHONVER) setup_posix.py build_exe
-	mv ../docs/_build/html ../agent/build/*/listener/static/help	
+	mkdir -p $(BASEDIR)/agent/plugins 
+	mkdir -p $(BASEDIR)/agent/var 
+	echo -n '' > $(BASEDIR)/agent/var/ncpa_passive.log
+	echo -n '' > $(BASEDIR)/agent/var/ncpa_listener.log
+	cd $(BASEDIR)/agent && $(PYTHONVER) setup_posix.py build_exe
+	mv $(BASEDIR)/docs/_build/html $(BASEDIR)/agent/build/*/listener/static/help	
 
 build_doc: 
 	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBUILD)" html
 
 update_packages:
-	$(PIPVER) install -r ../requirements.txt --upgrade
+	$(PIPVER) install -r $(BASEDIR)/requirements.txt --upgrade
 
 update_git:
 	git pull origin master
@@ -33,10 +35,14 @@ build_spec: build_tarball
 	
 clean:
 	rm -rf ncpa-$(NCPAVER)
-	rm -rf ../agent/build
+	rm -rf $(BASEDIR)/agent/build
 
 build_rpm: build_spec
-	rpmdev-setuptree
+	mkdir -p ~/rpmbuild/SPECS
+	mkdir -p ~/rpmbuild/SRPM
+	mkdir -p ~/rpmbuild/RPM
+	mkdir -p ~/rpmbuild/SOURCES
+	mkdir -p ~/rpmbuild/BUILD
 	/bin/cp ncpa-$(NCPAVER).tar.gz ~/rpmbuild/SOURCES/
 	rm -f ~/rpmbuild/SPECS/ncpa.spec
 	/bin/cp -f ncpa.spec ~/rpmbuild/SPECS/
