@@ -49,10 +49,8 @@ then
 	chkconfig --level 3,5 --add ncpa_passive
 elif which update-rc.d > /dev/null;
 then
-	update-rc.d ncpa_listener
-	update-rc.d ncpa_passive
-	update-rc.d ncpa_listener start 20 3 4 5
-	update-rc.d ncpa_passive start 20 3 4 5
+	update-rc.d ncpa_listener defaults
+	update-rc.d ncpa_passive defaults
 fi
 
 /etc/init.d/ncpa_listener start

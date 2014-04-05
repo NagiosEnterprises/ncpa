@@ -36,17 +36,30 @@ build_spec: build_tarball
 clean:
 	rm -rf ncpa-$(NCPAVER)
 	rm -rf $(BASEDIR)/agent/build
+	rm -f *.rpm
+	rm -f *.dmg
+	rm -f *.deb
+	rm -f ncpa.spec
+	rm -f *.tar.gz
+	rm -rf debbuild
 
 build_rpm: build_spec
 	mkdir -p ~/rpmbuild/SPECS
-	mkdir -p ~/rpmbuild/SRPM
-	mkdir -p ~/rpmbuild/RPM
+	mkdir -p ~/rpmbuild/SRPMS
+	mkdir -p ~/rpmbuild/RPMS
 	mkdir -p ~/rpmbuild/SOURCES
 	mkdir -p ~/rpmbuild/BUILD
 	/bin/cp ncpa-$(NCPAVER).tar.gz ~/rpmbuild/SOURCES/
 	rm -f ~/rpmbuild/SPECS/ncpa.spec
 	/bin/cp -f ncpa.spec ~/rpmbuild/SPECS/
 	QA_RPATHS='$[ 0x0002 ]' rpmbuild ~/rpmbuild/SPECS/ncpa.spec -bb
+	find ~/rpmbuild/RPMS -name 'ncpa-$(NCPAVER)*' -exec cp {} . \;
+
+build_deb: build_rpm
+	mkdir debbuild
+	cp *.rpm debbuild/
+	cd debbuild && alien -c -k -v *.rpm
+	cp debbuild/*.deb .
 	
 build_dmg: build_tarball
 	echo 'hi'
