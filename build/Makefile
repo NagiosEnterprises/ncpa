@@ -37,6 +37,7 @@ build_spec: build_tarball
 clean:
 	rm -rf ncpa-$(NCPAVER)
 	rm -rf $(BASEDIR)/agent/build
+	rm -rf NCPA-INSTALL-$(NCPAVER)
 	rm -f *.rpm
 	rm -f *.dmg
 	rm -f *.deb
@@ -63,4 +64,7 @@ build_deb: build_rpm
 	cp debbuild/*.deb .
 	
 build_dmg: build_tarball
-	echo 'hi'
+	mkdir NCPA-INSTALL-$(NCPAVER)
+	mv ncpa-$(NCPAVER) NCPA-INSTALL-$(NCPAVER)/ncpa
+	mv NCPA-INSTALL-$(NCPAVER)/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$(NCPAVER)/install.sh
+	hdiutil create -volname NCPA-$(NCPAVER) -srcfolder NCPA-INSTALL-$(NCPAVER) -ov -format UDZO ncpa-$(NCPAVER).dmg
