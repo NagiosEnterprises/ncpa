@@ -4,6 +4,7 @@ SPHINXBUILD = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION.md)
 INSTALLTARGET = /usr/local/ncpa/
 BASEDIR = ~/Development/ncpa
+FLAGS = ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
 
 .PHONY: build_exe build_doc update_packages update_git build_rpm build_spec
 
@@ -19,7 +20,7 @@ build_doc:
 	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBUILD)" html
 
 update_packages:
-	$(PIPVER) install -r $(BASEDIR)/requirements.txt --upgrade
+	$(FLAGS) $(PIPVER) install -r $(BASEDIR)/requirements.txt --upgrade
 
 update_git:
 	git pull origin master
