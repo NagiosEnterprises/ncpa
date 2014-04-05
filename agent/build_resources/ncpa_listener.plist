@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN” “http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>KeepAlive</key>
+        <dict>
+            <key>NetworkState</key>
+            <true/>
+        </dict>
+        <key>UserName</key>
+        <string>nagios</string>
+        <key>GroupName</key>
+        <string>nagcmd</string>
+        <key>Program</key>
+        <string>/usr/local/ncpa/ncpa_posix_listener</string>
+        <key>Sockets</key>
+        <dict>
+            <key>Listeners</key>
+            <dict>
+                <key>SockServiceName</key>
+                <string>5693</string>
+                <key>SockType</key>
+                <string>stream</string>
+                <key>SockFamily</key>
+                <string>IPv4</string>
+            </dict>
+        </dict>
+        <key>inetdCompatibility</key>
+        <dict>
+            <key>Wait</key>
+            <false/>
+        </dict>
+        <key>Label</key>
+        <string>org.nagios.ncpa_listener</string>
+    </dict>
+</plist>
