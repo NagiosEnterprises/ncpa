@@ -7,6 +7,11 @@ then
     if [ "$1" == "--create-user-and-group" ];
     then
         dscl . create /Groups/nagcmd gid 569
+        dscl . create /Groups/nagcmd
+        dscl . create /Groups/nagcmd Name "nagcmd"
+        dscl . create /Groups/nagcmd RealName “Nagios Command Group”
+        dscl . create /Groups/nagcmd passwd “*”
+        dscl . create /Groups/nagcmd GroupMembership nagiosadmin
     else
         echo "User nagios is not created. I need the user nagios and the group nagcmd created."
         echo "nagios needs to be in the nagcmd group." 
