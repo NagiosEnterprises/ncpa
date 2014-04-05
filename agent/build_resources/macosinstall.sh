@@ -2,12 +2,9 @@
 
 set -e
 
-USER=nagios
-GROUP=nagcmd
-
-if dscl . list /groups | grep nagcmd > /dev/null;
+if ! dscl . read /Groups/nagcmd > /dev/null;
 then
-    if [ "$1" -eq "--create-user-and-group" ];
+    if [ "$1" == "--create-user-and-group" ];
     then
         dscl . create /Groups/nagcmd gid 569
     else
@@ -18,9 +15,9 @@ then
     fi
 fi
 
-if dscl . list /users | grep nagios > /dev/null;
+if ! dscl . read /Users/nagios > /dev/null;
 then
-    if [ "$1" -eq "--create-user-and-group" ];
+    if [ "$1" == "--create-user-and-group" ];
     then
         dscl . create /Users/nagios PrimaryGroupID 569
     else
@@ -37,4 +34,4 @@ cp ncpa/build_resources/ncpa_passive.plist /System/Library/LaunchDaemons/org.nag
 mkdir -p /usr/local/ncpa
 cp -rf ncpa/* /usr/local/ncpa/
 chmod -R 775 /usr/local/ncpa
-chown -R nagios:nagios /usr/local/ncpa
+chown -R nagios:nagcmd /usr/local/ncpa
