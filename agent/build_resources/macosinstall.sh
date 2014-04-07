@@ -2,9 +2,8 @@
 
 set -e
 
-cd "`dirname '$0'`"
-dir="`pwd`"
-echo $dir
+pushd /Volumes/NCPA-*
+
 groupname=nagcmd
 homedir=/usr/local/ncpa
 
@@ -41,4 +40,5 @@ mkdir -p /usr/local/ncpa
 cp -rf ncpa/* /usr/local/ncpa/
 chmod -R 775 /usr/local/ncpa
 chown -R -v nagios:nagcmd /usr/local/ncpa
-cd - > /dev/null
+
+popd
