@@ -142,7 +142,8 @@ class Daemon(object):
             self.setup_root()
             # - drop privileges
             try:
-                self.set_uid()
+                if sys.platform != 'darwin':
+                    self.set_uid()
             except Exception, e:
                 logging.exception(e)
             self.start_logging()
