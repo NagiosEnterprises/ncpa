@@ -4,9 +4,6 @@ set -e
 
 SCRIPT=$(readlink "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
-
-(
-
 cd $SCRIPTPATH
 username=nagios
 groupname=nagcmd
@@ -45,5 +42,3 @@ mkdir -p /usr/local/ncpa
 cp -rf ncpa/* /usr/local/ncpa/
 chmod -R 775 /usr/local/ncpa
 chown -R -v nagios:nagcmd /usr/local/ncpa
-
-)
