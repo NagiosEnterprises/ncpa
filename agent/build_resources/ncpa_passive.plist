@@ -12,7 +12,11 @@
         <key>GroupName</key>
         <string>nagcmd</string>
         <key>Program</key>
-        <string>/usr/local/ncpa/ncpa_posix_passive</string>
+        <key>ProgramArguments</key>
+        <array>
+                <string>/usr/local/ncpa/ncpa_posix_passive</string>
+                <string>--start</string>
+        </array>
         <key>inetdCompatibility</key>
         <dict>
             <key>Wait</key>
