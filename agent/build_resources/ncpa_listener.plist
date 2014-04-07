@@ -13,7 +13,7 @@
         <string>nagcmd</string>
         <key>ProgramArguments</key>
         <array>
-                <string>/usr/local/ncpa/ncpa_posix_listener --start</string>
+                <string>/usr/local/ncpa/ncpa_posix_listener</string>
                 <string>--start</string>
         </array>
         <key>inetdCompatibility</key>
