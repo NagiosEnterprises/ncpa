@@ -2,9 +2,12 @@
 
 set -e
 
-# This script was derived from
-# https://wwwx.cs.unc.edu/~hays/archives/2010/11/entry_31.php
+SCRIPT=$(readlink "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
 
+(
+
+cd $SCRIPTPATH
 username=nagios
 groupname=nagcmd
 homedir=/usr/local/ncpa
@@ -42,3 +45,5 @@ mkdir -p /usr/local/ncpa
 cp -rf ncpa/* /usr/local/ncpa/
 chmod -R 775 /usr/local/ncpa
 chown -R -v nagios:nagcmd /usr/local/ncpa
+
+)
