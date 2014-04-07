@@ -137,12 +137,12 @@ class Daemon(object):
         # processes don't write to the same log file, but before
         # setup_root so that work done with root privileges can be
         # logged.
-        self.start_logging()
         try:
             # - set up with root privileges
             self.setup_root()
             # - drop privileges
             self.set_uid()
+            self.start_logging()
             # - check_pid_writable must come after set_uid in order to
             # detect whether the daemon user can write to the pidfile
             self.check_pid_writable()
