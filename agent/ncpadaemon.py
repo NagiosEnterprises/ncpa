@@ -141,7 +141,10 @@ class Daemon(object):
             # - set up with root privileges
             self.setup_root()
             # - drop privileges
-            self.set_uid()
+            try:
+                self.set_uid()
+            except Exception, e:
+                logging.exception(e)
             self.start_logging()
             # - check_pid_writable must come after set_uid in order to
             # detect whether the daemon user can write to the pidfile
@@ -216,8 +219,7 @@ class Daemon(object):
             try:
                 os.setuid(self.uid)
             except OSError, err:
-                sys.exit(u"can't setuid(%d): %s, %s" %
-                (self.uid, err.errno, err.strerror))
+                logging.exception(err)
 
     def chown(self, fn):
         u"""Change the ownership of a file to match the daemon uid/gid"""
