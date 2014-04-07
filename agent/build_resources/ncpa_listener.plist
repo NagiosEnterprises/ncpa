@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN” “http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
     <dict>
@@ -13,21 +13,9 @@
         <string>nagcmd</string>
         <key>ProgramArguments</key>
         <array>
-                <string>/usr/local/ncpa/ncpa_posix_listener</string>
+                <string>/usr/local/ncpa/ncpa_posix_listener --start</string>
                 <string>--start</string>
         </array>
-        <key>Sockets</key>
-        <dict>
-            <key>Listeners</key>
-            <dict>
-                <key>SockServiceName</key>
-                <string>5693</string>
-                <key>SockType</key>
-                <string>stream</string>
-                <key>SockFamily</key>
-                <string>IPv4</string>
-            </dict>
-        </dict>
         <key>inetdCompatibility</key>
         <dict>
             <key>Wait</key>
