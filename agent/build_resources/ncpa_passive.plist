@@ -23,6 +23,6 @@
             <false/>
         </dict>
         <key>Label</key>
-        <string>org.nagios.ncpa_passive</string>
+        <string>org.nagios.ncpa.passive</string>
     </dict>
 </plist>

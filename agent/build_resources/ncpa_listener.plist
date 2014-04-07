@@ -34,6 +34,6 @@
             <false/>
         </dict>
         <key>Label</key>
-        <string>org.nagios.ncpa_listener</string>
+        <string>org.nagios.ncpa.listener</string>
     </dict>
 </plist>
