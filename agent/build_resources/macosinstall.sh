@@ -21,7 +21,7 @@ else
     echo 'User already exists, skipping!'
 fi
 
-if ! dscl . -read /Groups/${groupname} > /dev/null;
+if ! dscl . -read /Groups/${groupname} > /dev/null; 
 then
     # Create the group
     dscl . -create /Groups/${groupname}
@@ -33,8 +33,8 @@ else
     echo 'Group already exists, skipping!'
 fi
 
-cp ncpa/build_resources/ncpa_listener.plist /System/Library/LaunchDaemons/org.nagios.ncpa_listener
-cp ncpa/build_resources/ncpa_passive.plist /System/Library/LaunchDaemons/org.nagios.ncpa_passive
+cp ncpa/build_resources/ncpa_listener.plist /System/Library/LaunchDaemons/org.nagios.ncpa_listener.plist
+cp ncpa/build_resources/ncpa_passive.plist /System/Library/LaunchDaemons/org.nagios.ncpa_passive.plist
 
 mkdir -p /usr/local/ncpa
 cp -rf ncpa/* /usr/local/ncpa/
