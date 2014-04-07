@@ -41,8 +41,8 @@ cp -rf ncpa/* /usr/local/ncpa/
 chmod -R 775 /usr/local/ncpa
 chown -R -v nagios:nagcmd /usr/local/ncpa
 
-launchtl load /Library/LaunchDaemons/org.nagios.ncpa_passive.plist
-launchtl load /Library/LaunchDaemons/org.nagios.ncpa_listener.plist
+launchctl load /Library/LaunchDaemons/org.nagios.ncpa_passive.plist
+launchctl load /Library/LaunchDaemons/org.nagios.ncpa_listener.plist
 
 launchctl start org.nagios.ncpa_passive
 launchctl start org.nagios.ncpa_listener
