@@ -211,8 +211,7 @@ class Daemon(object):
             try:
                 os.setgid(self.gid)
             except OSError, err:
-                sys.exit(u"can't setgid(%d): %s, %s" %
-                (self.gid, err.errno, err.strerror))
+                logging.exception(err)
         if self.uid:
             try:
                 os.setuid(self.uid)
