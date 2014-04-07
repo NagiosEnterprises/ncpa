@@ -11,8 +11,11 @@
         <string>nagios</string>
         <key>GroupName</key>
         <string>nagcmd</string>
-        <key>Program</key>
-        <string>/usr/local/ncpa/ncpa_posix_listener</string>
+        <key>ProgramArguments</key>
+        <array>
+                <string>/usr/local/ncpa/ncpa_posix_listener</string>
+                <string>--start</string>
+        </array>
         <key>Sockets</key>
         <dict>
             <key>Listeners</key>
