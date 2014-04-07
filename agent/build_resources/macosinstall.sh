@@ -33,8 +33,8 @@ else
     echo 'Group already exists, skipping!'
 fi
 
-cp ncpa/build_resources/ncpa_listener.plist /Library/LaunchDaemons/org.nagios.ncpa.listener.plist
-cp ncpa/build_resources/ncpa_passive.plist /Library/LaunchDaemons/org.nagios.ncpa.passive.plist
+cp ncpa/build_resources/ncpa_listener.plist /Library/LaunchDaemons/ncpa_listener.plist
+cp ncpa/build_resources/ncpa_passive.plist /Library/LaunchDaemons/ncpa_passive.plist
 
 mkdir -p /usr/local/ncpa
 cp -rf ncpa/* /usr/local/ncpa/
