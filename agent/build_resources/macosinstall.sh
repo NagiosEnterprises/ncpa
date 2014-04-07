@@ -2,39 +2,35 @@
 
 set -e
 
-if ! dscl . read /Groups/nagcmd > /dev/null;
+username=nagios
+groupname=nagcmd
+new_gid=569
+homedir=/usr/local/ncpa
+
+# Create the user account
+if ! dscl . -read /Users/${username} > /dev/null;
 then
-    if [ "$1" == "--create-user-and-group" ];
-    then
-        dscl . create /Groups/nagcmd gid 569
-        dscl . create /Groups/nagcmd
-        dscl . create /Groups/nagcmd Name "nagcmd"
-        dscl . create /Groups/nagcmd RealName “Nagios Command Group”
-        dscl . create /Groups/nagcmd passwd “*”
-    else
-        echo "User nagios is not created. I need the user nagios and the group nagcmd created."
-        echo "nagios needs to be in the nagcmd group." 
-        echo "Run the script with --create-user-and-group flag if you want me to create them."
-        exit 1
-    fi
+    dscl . -create /Users/${username}
+    dscl . -create /Users/${username} UserShell /usr/bin/false
+    dscl . -create /Users/${username} UniqueID ${new_uid}      
+    dscl . -create /Users/${username} RealName "${username}"
+    dscl . -create /Users/${username} PrimaryGroupID "${new_gid}"
+    dscl . -create /Users/${username} Password "*"        
+    dscl . -create /Users/${username} NFSHomeDirectory ${homedir}
+else
+    echo 'User already exists, skipping!'
 fi
 
-if ! dscl . read /Users/nagios > /dev/null;
+if ! dscl . -read /Groups/${groupname} > /dev/null;
 then
-    if [ "$1" == "--create-user-and-group" ];
-    then
-        dscl . -create /Users/nagios
-        dscl . -create /Users/nagios UserShell /bin/bash 
-        dscl . -create /Users/nagios RealName "Nagios Account" 
-        dscl . -create /Users/nagios UniqueID 42 
-        dscl . -create /Users/nagios PrimaryGroupID 569 
-        dscl . -append /Groups/nagcmd GroupMembership nagios 
-    else
-        echo "User nagios is not created. I need the user nagios and the group nagcmd created."
-        echo "nagios needs to be in the nagcmd group." 
-        echo "Run the script with --create-user-and-group flag if you want me to create them."
-        exit 1
-    fi
+    # Create the group
+    dscl . -create /Groups/${groupname}
+    dscl . -create /Groups/${username} RecordName "_${groupname} ${username}"
+    dscl . -create /Groups/${username} PrimaryGroupID "${new_gid}"
+    dscl . -create /Groups/${username} RealName "${groupname}"
+    dscl . -create /Groups/${username} Password "*"
+else
+    echo 'Group already exists, skipping!'
 fi
 
 cp ncpa/build_resources/ncpa_listener.plist /System/Library/LaunchDaemons/org.nagios.ncpa_listener
