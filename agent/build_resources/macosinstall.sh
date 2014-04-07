@@ -2,6 +2,9 @@
 
 set -e
 
+# This script was derived from
+# https://wwwx.cs.unc.edu/~hays/archives/2010/11/entry_31.php
+
 username=nagios
 groupname=nagcmd
 new_gid=569
