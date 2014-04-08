@@ -28,6 +28,9 @@ includes = ['xml.dom.minidom',
             'OpenSSL',
             'jinja2.ext']
 
+excludes = ['Tkinter',
+            'tkinter']
+
 packages = []
 
 includefiles += ['build_resources/NagiosSoftwareLicense.txt',
