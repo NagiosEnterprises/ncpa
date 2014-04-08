@@ -42,6 +42,7 @@ includefiles += ['build_resources/NagiosSoftwareLicense.txt',
 
 buildOptions = dict(includes=includes,
                     include_files=includefiles,
+                    excludes=excludes,
                     packages=packages)
 
 base = None
