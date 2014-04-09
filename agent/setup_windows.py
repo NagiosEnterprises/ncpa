@@ -13,8 +13,6 @@ import shutil
 from cx_Freeze import setup, Executable
 import os
 
-shutil.rmtree('build', ignore_errors=True)
-
 sys.argv += ['-p', 'xml']
 
 includefiles = ['var/ncpa_listener.log', 
