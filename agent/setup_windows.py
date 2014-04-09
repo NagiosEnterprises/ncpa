@@ -36,11 +36,11 @@ includefiles += ['build_resources/NagiosSoftwareLicense.txt',
 buildOptions = dict(includes=includes + ["ncpa_windows"],
                     include_files=includefiles)
 
-listener = Executable("ListenerConfig.py", 
+listener = Executable("ncpa_windows_listener.py", 
                       base=u"Win32Service",
                       targetName="ncpa_listener.exe")
 
-passive = Executable("PassiveConfig.py",
+passive = Executable("ncpa_windows_passive.py",
                      base = "Win32Service",
                      targetName = "ncpa_passive.exe")
 

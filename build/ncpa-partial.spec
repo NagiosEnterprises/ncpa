@@ -2,7 +2,7 @@ Name:           ncpa
 Version:        __VERSION__ 
 Release:        1%{?dist}
 Summary:        A Cross Platform Monitoring Agent
-BuildRoot:	/root/rpmbuild/BUILDROOT/
+BuildRoot:  __BUILDROOT__/BUILDROOT/
 Group:          Network/Monitoring
 License:        NOSL
 URL:            http://assets.nagios.com/downloads/ncpa/docs/html/index.html
@@ -43,15 +43,24 @@ fi
 
 %post
 
-chkconfig --level 3,5 --add ncpa_listener
-chkconfig --level 3,5 --add ncpa_passive
+if which chkconfig > /dev/null;
+then
+	chkconfig --level 3,5 --add ncpa_listener
+	chkconfig --level 3,5 --add ncpa_passive
+elif which update-rc.d > /dev/null;
+then
+	update-rc.d ncpa_listener defaults
+	update-rc.d ncpa_passive defaults
+fi
+
 /etc/init.d/ncpa_listener start
 /etc/init.d/ncpa_passive start
 
 %files
-%defattr(0775,nagios,nagcmd,-)
+%defattr(0755,root,root,-)
 /etc/init.d/ncpa_listener
 /etc/init.d/ncpa_passive
-/usr/local/ncpa/plugins
-%config /usr/local/ncpa/etc/ncpa.cfg
 
+%defattr(0775,nagios,nagcmd,-)
+/usr/local/ncpa
+%config /usr/local/ncpa/etc/ncpa.cfg
