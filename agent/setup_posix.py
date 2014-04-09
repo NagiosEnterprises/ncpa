@@ -16,8 +16,6 @@ import tarfile
 
 shutil.rmtree('build', ignore_errors=True)
 
-sys.argv += ['-p', 'xml']
-
 includefiles = ['var/ncpa_listener.log', 
                 'var/ncpa_passive.log',
                 'etc/ncpa.cfg',
@@ -28,23 +26,29 @@ includefiles = ['var/ncpa_listener.log',
 # It does not appear the cx_Freeze honors the package directive
 includes = ['xml.dom.minidom', 
             'OpenSSL',
-            'jinja2.ext',
-            ]
+            'jinja2.ext']
+
+excludes = ['Tkinter',
+            'tkinter']
 
 packages = []
 
 includefiles += ['build_resources/NagiosSoftwareLicense.txt',
+                 'build_resources/ncpa_listener.plist',
+                 'build_resources/ncpa_passive.plist',
+                 'build_resources/macosinstall.sh',
                  'build_resources/listener_init',
                  'build_resources/passive_init']
 
 buildOptions = dict(includes=includes,
                     include_files=includefiles,
+                    excludes=excludes,
                     packages=packages)
 
 base = None
 
 setup(name = "NCPA",
-      version = "1.4",
+      version = "1.5",
       description = "NCPA",
       options = dict(build_exe=buildOptions),
       executables = [Executable("ncpa_posix_listener.py", base=base), 
