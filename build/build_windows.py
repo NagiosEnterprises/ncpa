@@ -5,7 +5,7 @@ import sys
 
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 nsi = os.path.join(basedir, 'agent', 'build', 'ncpa.nsi')
-nsis = 'C:/Program Files/NSIS/makensis'
+nsis = os.environ['PROGRAMFILES'] + '/NSIS/makensis'
 
 os.chdir(basedir)
 
