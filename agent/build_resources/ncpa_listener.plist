@@ -2,11 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN” “http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
     <dict>
-        <key>KeepAlive</key>
-        <dict>
-            <key>NetworkState</key>
-            <true/>
-        </dict>
         <key>UserName</key>
         <string>nagios</string>
         <key>GroupName</key>
@@ -14,13 +9,8 @@
         <key>ProgramArguments</key>
         <array>
                 <string>/usr/local/ncpa/ncpa_posix_listener</string>
-                <string>--start</string>
+                <string>-n</string>
         </array>
-        <key>inetdCompatibility</key>
-        <dict>
-            <key>Wait</key>
-            <false/>
-        </dict>
         <key>Label</key>
         <string>org.nagios.ncpa.listener</string>
     </dict>
