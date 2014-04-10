@@ -44,7 +44,7 @@ chown -R nagios:nagcmd /usr/local/ncpa
 launchctl load /Library/LaunchDaemons/com.nagios.ncpa.listener.plist
 launchctl load /Library/LaunchDaemons/com.nagios.ncpa.passive.plist
 
-launchctl start org.nagios.ncpa.passive
-launchctl start org.nagios.ncpa.listener
+launchctl start com.nagios.ncpa.passive
+launchctl start com.nagios.ncpa.listener
 
 popd
