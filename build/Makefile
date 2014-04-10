@@ -3,7 +3,16 @@ PIPVER = pip2.7
 SPHINXBUILD = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION.md)
 INSTALLTARGET = /usr/local/ncpa/
-BASEDIR = ~/Development/ncpa
+BUILDROOT = ~/rpmbuild
+
+#BASEDIR = ~/Development/ncpa
+# Full path of the last Makefile make read. We haven't included other files, so that's us.
+makefile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+# Makefile's parent directory with no trailing slash (something like: .../ncpa/build).
+makefile_dir := $(patsubst %/,%,$(dir $(makefile_path)))
+# The NCPA directory is the Makefiile's grandparent.
+BASEDIR = $(patsubst %/,%,$(dir $(makefile_dir)))
+
 FLAGS = ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
 
 .PHONY: build_exe build_doc update_packages update_git build_rpm build_spec
@@ -31,9 +40,9 @@ build_tarball: update_git update_packages build_exe
 	tar zcvf ncpa-$(NCPAVER).tar.gz ncpa-$(NCPAVER)
 
 build_spec: build_tarball
-	cat ncpa-partial.spec | sed s/__VERSION__/$(NCPAVER)/g > ncpa.spec
-	cd ncpa-$(NCPAVER) && find . -type f | sed 's|^\./\(.*\)|"$(INSTALLTARGET)\1"|g' >> ../ncpa.spec
-	
+	cat ncpa-partial.spec | sed s/__VERSION__/$(NCPAVER)/g | sed s@__BUILDROOT__@$(BUILDROOT)@g > ncpa.spec
+# 	cd ncpa-$(NCPAVER) && find . -not -name . -and -not -name ncpa.cfg | sed 's|^\./\(.*\)|"$(INSTALLTARGET)\1"|g' >> ../ncpa.spec
+
 clean:
 	rm -rf ncpa-$(NCPAVER)
 	rm -rf $(BASEDIR)/agent/build
@@ -43,26 +52,27 @@ clean:
 	rm -f *.deb
 	rm -f ncpa.spec
 	rm -f *.tar.gz
+	rm -rf $(BUILDROOT)
 	rm -rf debbuild
 
 build_rpm: build_spec
-	mkdir -p ~/rpmbuild/SPECS
-	mkdir -p ~/rpmbuild/SRPMS
-	mkdir -p ~/rpmbuild/RPMS
-	mkdir -p ~/rpmbuild/SOURCES
-	mkdir -p ~/rpmbuild/BUILD
-	/bin/cp ncpa-$(NCPAVER).tar.gz ~/rpmbuild/SOURCES/
-	rm -f ~/rpmbuild/SPECS/ncpa.spec
-	/bin/cp -f ncpa.spec ~/rpmbuild/SPECS/
-	QA_RPATHS='$[ 0x0002 ]' rpmbuild ~/rpmbuild/SPECS/ncpa.spec -bb
-	find ~/rpmbuild/RPMS -name 'ncpa-$(NCPAVER)*' -exec cp {} . \;
+	mkdir -p $(BUILDROOT)/SPECS
+	mkdir -p $(BUILDROOT)/SRPMS
+	mkdir -p $(BUILDROOT)/RPMS
+	mkdir -p $(BUILDROOT)/SOURCES
+	mkdir -p $(BUILDROOT)/BUILD
+	/bin/cp ncpa-$(NCPAVER).tar.gz $(BUILDROOT)/SOURCES/
+	rm -f $(BUILDROOT)/SPECS/ncpa.spec
+	/bin/cp -f ncpa.spec $(BUILDROOT)/SPECS/
+	QA_RPATHS='$[ 0x0002 ]' rpmbuild $(BUILDROOT)/SPECS/ncpa.spec -bb
+	find $(BUILDROOT)/RPMS -name 'ncpa-$(NCPAVER)*' -exec cp {} . \;
 
 build_deb: build_rpm
 	mkdir debbuild
 	cp *.rpm debbuild/
 	cd debbuild && alien -c -k -v *.rpm
 	cp debbuild/*.deb .
-	
+
 build_dmg: build_tarball
 	mkdir NCPA-INSTALL-$(NCPAVER)
 	mv ncpa-$(NCPAVER) NCPA-INSTALL-$(NCPAVER)/ncpa

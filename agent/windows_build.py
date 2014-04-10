@@ -13,6 +13,8 @@ import shutil
 from cx_Freeze import setup, Executable
 import os
 
+shutil.rmtree('build', ignore_errors=True)
+
 sys.argv += ['-p', 'xml']
 
 includefiles = ['var/ncpa_listener.log', 
@@ -34,11 +36,11 @@ includefiles += ['build_resources/NagiosSoftwareLicense.txt',
 buildOptions = dict(includes=includes + ["ncpa_windows"],
                     include_files=includefiles)
 
-listener = Executable("ncpa_windows_listener.py", 
+listener = Executable("ListenerConfig.py", 
                       base=u"Win32Service",
                       targetName="ncpa_listener.exe")
 
-passive = Executable("ncpa_windows_passive.py",
+passive = Executable("PassiveConfig.py",
                      base = "Win32Service",
                      targetName = "ncpa_passive.exe")
 
