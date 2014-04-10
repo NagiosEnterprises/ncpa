@@ -29,10 +29,10 @@ build_doc:
 	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBUILD)" html
 
 update_packages:
-	$(FLAGS) $(PIPVER) install -r $(BASEDIR)/requirements.txt --upgrade
+	#$(FLAGS) $(PIPVER) install -r $(BASEDIR)/requirements.txt --upgrade
 
 update_git:
-	git pull origin master
+	#git pull origin master
 
 build_tarball: update_git update_packages build_exe
 	rm -rf ncpa-$(NCPAVER)
