@@ -3,7 +3,7 @@
 <plist version="1.0">
     <dict>
         <key>RunAtLoad</key>
-        </true>
+        <true/>
         <key>UserName</key>
         <string>nagios</string>
         <key>GroupName</key>
