@@ -141,11 +141,6 @@ class Daemon(object):
             # - set up with root privileges
             self.setup_root()
             # - drop privileges
-            try:
-                if sys.platform != 'darwin':
-                    self.set_uid()
-            except Exception, e:
-                logging.exception(e)
             self.start_logging()
             # - check_pid_writable must come after set_uid in order to
             # detect whether the daemon user can write to the pidfile
@@ -252,9 +247,7 @@ class Daemon(object):
                 from logging.handlers import RotatingFileHandler
                 handlers.append(RotatingFileHandler(self.logfile, maxBytes=self.logmaxmb * 1024 * 1024, backupCount=self.logbackups))
             self.chown(self.logfile)
-        if not self.options.daemonize:
-            # also log to stderr
-            handlers.append(logging.StreamHandler())
+        handlers.append(logging.StreamHandler())
 
         log = logging.getLogger()
         log.setLevel(level)

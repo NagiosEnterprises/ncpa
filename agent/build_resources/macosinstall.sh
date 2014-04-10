@@ -33,16 +33,16 @@ else
     echo 'Group already exists, skipping!'
 fi
 
-cp ncpa/build_resources/ncpa_listener.plist /Library/LaunchDaemons/ncpa_listener.plist
-cp ncpa/build_resources/ncpa_passive.plist /Library/LaunchDaemons/ncpa_passive.plist
+cp ncpa/build_resources/ncpa_listener.plist /Library/LaunchDaemons/com.nagios.ncpa.listener.plist
+cp ncpa/build_resources/ncpa_passive.plist /Library/LaunchDaemons/com.nagios.ncpa.passive.plist
 
 mkdir -p /usr/local/ncpa
 cp -rf ncpa/* /usr/local/ncpa/
 chmod -R 775 /usr/local/ncpa
 chown -R nagios:nagcmd /usr/local/ncpa
 
-launchctl load /Library/LaunchDaemons/ncpa_passive.plist
-launchctl load /Library/LaunchDaemons/ncpa_listener.plist
+launchctl load /Library/LaunchDaemons/com.nagios.ncpa.listener.plist
+launchctl load /Library/LaunchDaemons/com.nagios.ncpa.passive.plist
 
 launchctl start org.nagios.ncpa.passive
 launchctl start org.nagios.ncpa.listener
