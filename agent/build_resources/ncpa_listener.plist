@@ -12,6 +12,6 @@
                 <string>-n</string>
         </array>
         <key>Label</key>
-        <string>org.nagios.ncpa.listener</string>
+        <string>com.nagios.ncpa.listener</string>
     </dict>
 </plist>
