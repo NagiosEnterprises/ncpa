@@ -15,17 +15,17 @@ BASEDIR = $(patsubst %/,%,$(dir $(makefile_dir)))
 
 FLAGS = ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
 
-.PHONY: build_exe build_doc update_packages update_git build_rpm build_spec
+.PHONY: build_exe build_doc update_packages update_git build_rpm build_spec update_version
 
-build_exe: build_doc
-	mkdir -p $(BASEDIR)/agent/plugins 
-	mkdir -p $(BASEDIR)/agent/var 
+build_exe: update_version build_doc
+	mkdir -p $(BASEDIR)/agent/plugins
+	mkdir -p $(BASEDIR)/agent/var
 	echo -n '' > $(BASEDIR)/agent/var/ncpa_passive.log
 	echo -n '' > $(BASEDIR)/agent/var/ncpa_listener.log
 	cd $(BASEDIR)/agent && $(PYTHONVER) setup_posix.py build_exe
-	mv $(BASEDIR)/docs/_build/html $(BASEDIR)/agent/build/*/listener/static/help	
+	mv $(BASEDIR)/docs/_build/html $(BASEDIR)/agent/build/*/listener/static/help
 
-build_doc: 
+build_doc:
 	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBUILD)" html
 
 update_packages:
@@ -81,4 +81,4 @@ build_dmg: build_tarball
 	hdiutil create -volname NCPA-$(NCPAVER) -srcfolder NCPA-INSTALL-$(NCPAVER) -ov -format UDZO ncpa-$(NCPAVER).dmg
 
 update_version:
-	cd $(BASEDIR) && python apply_version.py
+	python $(BASEDIR)/apply_version.py
