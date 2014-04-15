@@ -7,7 +7,6 @@ import filename
 import passive.nrds
 import passive.nrdp
 
-
 class Passive(ncpadaemon.Daemon):
     default_conf = os.path.abspath(os.path.join(filename.get_dirname_file(), u'etc', u'ncpa.cfg'))
     section = u'passive'
