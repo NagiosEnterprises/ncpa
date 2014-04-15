@@ -54,6 +54,7 @@ clean:
 	rm -f *.tar.gz
 	rm -rf $(BUILDROOT)
 	rm -rf debbuild
+	rm -f *.log
 
 build_rpm: build_spec
 	mkdir -p $(BUILDROOT)/SPECS
