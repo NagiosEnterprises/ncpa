@@ -79,3 +79,6 @@ build_dmg: build_tarball
 	mv ncpa-$(NCPAVER) NCPA-INSTALL-$(NCPAVER)/ncpa
 	mv NCPA-INSTALL-$(NCPAVER)/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$(NCPAVER)/install.sh
 	hdiutil create -volname NCPA-$(NCPAVER) -srcfolder NCPA-INSTALL-$(NCPAVER) -ov -format UDZO ncpa-$(NCPAVER).dmg
+
+update_version:
+	cd $(BASEDIR) && python apply_version.py
