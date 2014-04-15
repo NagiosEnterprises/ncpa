@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session
 import logging
 import urllib2, urllib
@@ -10,8 +8,8 @@ import os
 import sys
 import platform
 import requests
-from . import psapi
-from . import pluginapi
+import psapi
+import pluginapi
 import functools
 import jinja2
 import datetime
@@ -251,7 +249,7 @@ def internal_api(accessor=None, listener_config=None):
     elif plugin_name:
         result = pluginapi.execute_plugin(plugin_name, plugin_args, listener_config)
     else:
-        result = {u'stdout': u'ERROR: Non-node value requested. Requested a tree.', 
+        result = {u'stdout': u'ERROR: Non-node value requested. Requested a tree.',
                   u'returncode': 3}
     return result
 
