@@ -16,7 +16,7 @@ import tarfile
 
 shutil.rmtree('build', ignore_errors=True)
 
-includefiles = ['var/ncpa_listener.log', 
+includefiles = ['var/ncpa_listener.log',
                 'var/ncpa_passive.log',
                 'etc/ncpa.cfg',
                 'plugins',
@@ -24,9 +24,11 @@ includefiles = ['var/ncpa_listener.log',
                 'listener/static']
 
 # It does not appear the cx_Freeze honors the package directive
-includes = ['xml.dom.minidom', 
+includes = ['xml.dom.minidom',
             'OpenSSL',
-            'jinja2.ext']
+            'jinja2.ext',
+            'passive.nrdp',
+            'passive.nrds']
 
 excludes = ['Tkinter',
             'tkinter']
@@ -51,6 +53,5 @@ setup(name = "NCPA",
       version = "1.5",
       description = "NCPA",
       options = dict(build_exe=buildOptions),
-      executables = [Executable("ncpa_posix_listener.py", base=base), 
+      executables = [Executable("ncpa_posix_listener.py", base=base),
                      Executable("ncpa_posix_passive.py", base=base)])
-

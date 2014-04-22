@@ -182,7 +182,7 @@ for x in ps.disk_partitions():
         disk_mountpoints.append(tmp)
 
 disk_logical = Node(u'logical', children=disk_mountpoints)
-disk_physical = Node(u'phyical', children=disk_counters)
+disk_physical = Node(u'physical', children=disk_counters)
 
 disk = Node(u'disk', children=(disk_physical, disk_logical))
 

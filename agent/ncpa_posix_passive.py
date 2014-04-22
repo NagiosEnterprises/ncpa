@@ -1,5 +1,3 @@
-#!/usr/bin/env python3.4
-
 import ncpadaemon
 import logging
 import time
@@ -9,11 +7,10 @@ import filename
 import passive.nrds
 import passive.nrdp
 
-
 class Passive(ncpadaemon.Daemon):
-    default_conf = os.path.abspath(os.path.join(filename.get_dirname_file(), u'etc', u'ncpa.cfg')) 
+    default_conf = os.path.abspath(os.path.join(filename.get_dirname_file(), u'etc', u'ncpa.cfg'))
     section = u'passive'
-    
+
     def run_all_handlers(self, *args, **kwargs):
         u"""Will run all handlers that exist.
 
@@ -23,7 +20,7 @@ class Passive(ncpadaemon.Daemon):
         - Terminate in a timely fashion
         """
         handlers = self.config_parser.get('passive', 'handlers').split(',')
-        
+
         for handler in handlers:
             try:
                 handler = handler.strip()
@@ -42,7 +39,7 @@ class Passive(ncpadaemon.Daemon):
                     logging.debug(u'Successfully ran handler %s' % handler)
                 except Exception, e:
                     logging.exception(e)
-    
+
     def run(self):
         while True:
             self.read_basic_config()
