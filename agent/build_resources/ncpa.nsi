@@ -39,7 +39,7 @@ ShowInstDetails show
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 
 ; Version information
-VIProductVersion "1.6"
+VIProductVersion "1.6.1.1"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "NCPA"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "Nagios Enterprises LLC"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "1.6"
