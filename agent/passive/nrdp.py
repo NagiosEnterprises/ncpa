@@ -1,9 +1,7 @@
-#!/usr/bin/env python
-
-from . import abstract
+import abstract
 import xml.dom.minidom
 import logging
-from . import utils
+import utils
 from itertools import izip
 try:
     import ConfigParser as configparser
@@ -14,10 +12,10 @@ class Handler(abstract.NagiosHandler):
     u'''
     NRDP Handler.
     '''
-    
+
     def __init__(self, *args, **kwargs):
         super(Handler, self).__init__(*args, **kwargs)
-    
+
     def make_tag(self, tagname, text=u'', tagattr={}, *args, **kwargs):
         doc = xml.dom.minidom.Document()
         element = doc.createElement(tagname)
@@ -28,8 +26,8 @@ class Handler(abstract.NagiosHandler):
             textnode = doc.createTextNode(text.strip())
             element.appendChild(textnode)
         return element
-        
-    
+
+
     def make_xml(self, result, *args, **kwargs):
         u'''
         Return the XML node for a host check
@@ -46,7 +44,7 @@ class Handler(abstract.NagiosHandler):
         checkresult.appendChild(state)
         checkresult.appendChild(output)
         return checkresult
-    
+
     def set_xml_of_checkresults(self, *args, **kwargs):
         u'''
         Get XML of all check results in NRDP.
@@ -57,7 +55,7 @@ class Handler(abstract.NagiosHandler):
         for result in self.ncpa_commands:
             element = self.make_xml(result)
             checkresults.appendChild(element)
-    
+
     def run(self, *args, **kwargs):
         u'''
         Sends all the commands to the agent and then submits them
@@ -70,7 +68,7 @@ class Handler(abstract.NagiosHandler):
             logging.error(u'%s -- Exiting out of passive daemon cycle.' % unicode(e))
         except configparser.NoOptionError, e:
             logging.error(u'%s -- Exiting out of cycle.' % unicode(e))
-    
+
     def log_result(self, retxml, *args, **kwargs):
         tree = xml.dom.minidom.parseString(retxml)
 
@@ -85,10 +83,10 @@ class Handler(abstract.NagiosHandler):
         except IndexError:
             logging.warning(u'XML returned did not contain a message, or was malformed.')
             meta = u'Nonexistent'
-        
+
         logging.info(u'Message from NRDP server: %s' % message)
         logging.info(u'Meta output from NRDP server: %s' % meta)
-    
+
     def submit_to_nagios(self, *args, **kwargs):
         u'''
         Submit the result as XML to the NRDP server.
