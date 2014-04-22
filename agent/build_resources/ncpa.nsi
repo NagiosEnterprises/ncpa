@@ -38,6 +38,11 @@ ShowInstDetails show
 
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 
+; Version information
+VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "NCPA"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "Nagios Enterprises LLC"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "1.6"
+
 ;Order of pages
 !define MUI_LANGUAGEFILE_DEFAULT "ENGLISH"
 LangString MUI_INNERTEXT_LICENSE_BOTTOM "ENGLISH" "Nagios Software License 1.3"
