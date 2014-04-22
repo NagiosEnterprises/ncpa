@@ -16,7 +16,7 @@
 
 !define CONFIG_INI "$INSTDIR\Config.ini"
 
-BrandingText 'Nagios LLC'
+BrandingText 'Nagios Enterprises LLC'
 
 ;The name of the installer
 Name "NCPA Installer"
@@ -41,8 +41,8 @@ LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 ;Order of pages
 !define MUI_LANGUAGEFILE_DEFAULT "ENGLISH"
 LangString MUI_INNERTEXT_LICENSE_BOTTOM "ENGLISH" "Nagios Software License 1.3"
-LangString MUI_TEXT_LICENSE_TITLE "ENGLISH" "Nagios Enterprises LLC"
-LangString MUI_TEXT_LICENSE_SUBTITLE "ENGLISH" "NCPA for Windows"
+LangString MUI_TEXT_LICENSE_TITLE "ENGLISH" "Nagios Cross-Platform Agent (NCPA)"
+LangString MUI_TEXT_LICENSE_SUBTITLE "ENGLISH" "Windows Version"
 LangString MUI_INNERTEXT_LICENSE_TOP "ENGLISH" "Software License Agreement"
 !insertmacro MUI_PAGE_LICENSE ".\NCPA\build_resources\NagiosSoftwareLicense.txt"
 # Page components
