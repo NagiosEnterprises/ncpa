@@ -66,12 +66,12 @@ Function .onInit
     ${GetParameters} $R1
     ${GetParameters} $R2
     ${GetParameters} $R3
-	${GetParameters} $R4
+    ${GetParameters} $R4
 	
     ClearErrors
     ${GetOptions} $R0 /TOKEN= $0
     ${GetOptions} $R1 /NRDPURL= $1
-	${GetOptions} $R2 /NRDPTOKEN= $2
+    ${GetOptions} $R2 /NRDPTOKEN= $2
     ${GetOptions} $R3 /CONFIG= $3
     ${GetOptions} $R4 /HOST= $4
 
@@ -85,7 +85,7 @@ Function SetAdvancedInstall
     !insertmacro MUI_INSTALLOPTIONS_READ $1 "quickstart.ini" "Field 4" "State"
     !insertmacro MUI_INSTALLOPTIONS_READ $2 "quickstart.ini" "Field 5" "State"
     !insertmacro MUI_INSTALLOPTIONS_READ $3 "quickstart.ini" "Field 6" "State"
-	!insertmacro MUI_INSTALLOPTIONS_READ $4 "quickstart.ini" "Field 7" "State"
+    !insertmacro MUI_INSTALLOPTIONS_READ $4 "quickstart.ini" "Field 7" "State"
     
 FunctionEnd
 
