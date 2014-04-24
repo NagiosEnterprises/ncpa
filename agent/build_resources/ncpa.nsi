@@ -39,10 +39,10 @@ ShowInstDetails show
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 
 ; Version information
-VIProductVersion "1.6.1.1"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "NCPA"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "Nagios Enterprises LLC"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "1.6"
+;VIProductVersion "1.6.0.0"
+;VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "NCPA"
+;VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "Nagios Enterprises LLC"
+;VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "1.6"
 
 ;Order of pages
 !define MUI_LANGUAGEFILE_DEFAULT "ENGLISH"
@@ -66,12 +66,14 @@ Function .onInit
     ${GetParameters} $R1
     ${GetParameters} $R2
     ${GetParameters} $R3
+	${GetParameters} $R4
 	
     ClearErrors
-    ${GetOptions} $R0 /NRDP= $0
-    ${GetOptions} $R1 /TOKEN= $1
-    ${GetOptions} $R2 /CONFIG= $2
-    ${GetOptions} $R3 /HOST= $3
+    ${GetOptions} $R0 /TOKEN= $0
+    ${GetOptions} $R1 /NRDPURL= $1
+	${GetOptions} $R2 /NRDPTOKEN= $2
+    ${GetOptions} $R3 /CONFIG= $3
+    ${GetOptions} $R4 /HOST= $4
 
 FunctionEnd
 
@@ -80,9 +82,10 @@ Function SetAdvancedInstall
     ;Display the InstallOptions dialog
     !insertmacro MUI_INSTALLOPTIONS_DISPLAY "quickstart.ini"
     !insertmacro MUI_INSTALLOPTIONS_READ $0 "quickstart.ini" "Field 3" "State"
-    !insertmacro MUI_INSTALLOPTIONS_READ $1 "quickstart.ini" "Field 2" "State"
+    !insertmacro MUI_INSTALLOPTIONS_READ $1 "quickstart.ini" "Field 4" "State"
     !insertmacro MUI_INSTALLOPTIONS_READ $2 "quickstart.ini" "Field 5" "State"
-    !insertmacro MUI_INSTALLOPTIONS_READ $3 "quickstart.ini" "Field 4" "State"
+    !insertmacro MUI_INSTALLOPTIONS_READ $3 "quickstart.ini" "Field 6" "State"
+	!insertmacro MUI_INSTALLOPTIONS_READ $4 "quickstart.ini" "Field 7" "State"
     
 FunctionEnd
 
@@ -93,17 +96,16 @@ Section # "Create Config.ini"
     File /r .\NCPA\*.*
 
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "CONFIG_VERSION" "0"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "CONFIG_NAME" "$2"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "URL" "$0"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "parent" "$0"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "TOKEN" "$1"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "token" "$1"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg api "community_string" "$1"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "CONFIG_NAME" "$3"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "URL" "$1"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "parent" "$1"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "TOKEN" "$2"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "token" "$2"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg api "community_string" "$0"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "PLUGIN_DIR" "plugins/"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "UPDATE_CONFIG" "1"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "UPDATE_PLUGINS" "1"
-	
-    WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "hostname" "$3"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "hostname" "$4"
 
 SectionEnd
 
