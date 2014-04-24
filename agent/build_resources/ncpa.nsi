@@ -50,7 +50,7 @@ LangString MUI_INNERTEXT_LICENSE_BOTTOM "ENGLISH" "Nagios Software License 1.3"
 LangString MUI_TEXT_LICENSE_TITLE "ENGLISH" "Nagios Cross-Platform Agent (NCPA)"
 LangString MUI_TEXT_LICENSE_SUBTITLE "ENGLISH" "Windows Version"
 LangString MUI_INNERTEXT_LICENSE_TOP "ENGLISH" "Software License Agreement"
-!insertmacro MUI_PAGE_LICENSE ".\NCPA\build_resources\NagiosSoftwareLicense.txt"
+!insertmacro MUI_PAGE_LICENSE ".\NCPA\build_resources\LicenseAgreement.txt"
 # Page components
 
 Page custom SetAdvancedInstall
