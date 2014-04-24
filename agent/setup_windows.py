@@ -27,8 +27,6 @@ includes = ['xml.dom.minidom']
                     
 includefiles += ['build_resources/NagiosSoftwareLicense.txt', 
                  'build_resources/quickstart.ini',
-                 'build_resources/basic.ini',
-                 'build_resources/pickpath.ini',
                  'build_resources/ncpa.ico']
 				 
 buildOptions = dict(includes=includes + ["ncpa_windows"],

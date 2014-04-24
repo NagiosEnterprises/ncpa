@@ -4,6 +4,7 @@ import subprocess
 import sys
 
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+nsi_store = os.path.join(basedir, 'agent', 'build_resources', 'ncpa.nsi')
 nsi = os.path.join(basedir, 'agent', 'build', 'ncpa.nsi')
 nsis = os.environ['PROGRAMFILES'] + '/NSIS/makensis'
 
@@ -40,6 +41,7 @@ subprocess.Popen(['python', 'setup_windows.py', 'build_exe']).wait()
 shutil.copytree(os.path.join(basedir, 'docs', '_build', 'html'), 
                 os.path.join(basedir, 'agent', 'build', 'exe.win32-2.7', 'listener', 'static', 'help'))
 
+shutil.copy(nsi_store, nsi)
 b = subprocess.Popen([nsis, nsi])
 b.wait()
 

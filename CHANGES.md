@@ -1,4 +1,9 @@
-1.5 - Not Released
+1.7 - ??
+==================
+- Fixed passive check settings being set during install
+
+
+1.5/1.6 - Not Released
 ==================
 - Rebuilt build system for NCPA
 - Fixed NRDS issue where configs were getting overwritten
