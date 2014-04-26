@@ -25,7 +25,7 @@ includefiles = ['var/ncpa_listener.log',
 
 includes = ['xml.dom.minidom']
                     
-includefiles += ['build_resources/NagiosSoftwareLicense.txt', 
+includefiles += ['build_resources/LicenseAgreement.txt', 
                  'build_resources/quickstart.ini',
                  'build_resources/ncpa.ico']
 				 

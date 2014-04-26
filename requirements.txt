@@ -5,5 +5,5 @@ flask==0.08
 werkzeug==0.9
 sphinx
 docutils
-pyOpenSSL==0.13
+pyOpenSSL==0.12
 sphinx-bootstrap-theme

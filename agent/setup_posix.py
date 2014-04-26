@@ -35,7 +35,7 @@ excludes = ['Tkinter',
 
 packages = []
 
-includefiles += ['build_resources/NagiosSoftwareLicense.txt',
+includefiles += ['build_resources/LicenseAgreement.txt',
                  'build_resources/ncpa_listener.plist',
                  'build_resources/ncpa_passive.plist',
                  'build_resources/macosinstall.sh',
