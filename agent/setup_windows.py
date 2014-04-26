@@ -13,6 +13,11 @@ import shutil
 from cx_Freeze import setup, Executable
 import os
 
+version_file = os.path.join(os.path.dirname(__file__),
+                            '..',
+                            'VERSION.md')
+version = open(version_file, 'r').readline().strip()
+
 sys.argv += ['-p', 'xml']
 
 includefiles = ['var/ncpa_listener.log', 
@@ -41,7 +46,7 @@ passive = Executable("ncpa_windows_passive.py",
                      targetName = "ncpa_passive.exe")
 
 setup(name="NCPA",
-	  version="1.5",
+	  version=version,
       description="Nagios Cross Platform Agent Installer",
       executables=[listener, passive],
       options=dict(build_exe=buildOptions),

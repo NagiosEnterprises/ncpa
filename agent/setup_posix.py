@@ -14,6 +14,11 @@ from cx_Freeze import setup, Executable
 import os
 import tarfile
 
+version_file = os.path.join(os.path.dirname(__file__),
+                            '..',
+                            'VERSION.md')
+version = open(version_file, 'r').readline().strip()
+
 shutil.rmtree('build', ignore_errors=True)
 
 includefiles = ['var/ncpa_listener.log',
@@ -50,7 +55,7 @@ buildOptions = dict(includes=includes,
 base = None
 
 setup(name = "NCPA",
-      version = "1.5",
+      version = version,
       description = "NCPA",
       options = dict(build_exe=buildOptions),
       executables = [Executable("ncpa_posix_listener.py", base=base),
