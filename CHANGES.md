@@ -1,6 +1,10 @@
 1.7.0 - NOT RELEASED
 ====================
 - Fixed init script for listener not getting the PID file correctly
+- Moved away from the Flask development server for serving HTTPS requests
+- Now manually creating SSL certificates, and added ability to specify
+  cert and key files by specifying in the certificate field by
+  a comma-delimited <path/to/cert>,<path/to/key>
 
 1.6.1
 ==================
