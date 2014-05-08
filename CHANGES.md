@@ -1,3 +1,7 @@
+1.7.0 - NOT RELEASED
+====================
+- Fixed init script for listener not getting the PID file correctly
+
 1.6.1
 ==================
 - Fixed passive check settings being set during install

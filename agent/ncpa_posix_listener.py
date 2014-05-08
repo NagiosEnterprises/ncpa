@@ -7,6 +7,9 @@ import listener.server
 import filename
 import werkzeug.serving
 import ConfigParser
+from tornado.wsgi import WSGIContainer
+from tornado.httpserver import HTTPServer
+from tornado.ioloop import IOLoop
 
 # All of the includes below are dummy includes so that cx_Freeze catches them
 import jinja2.ext
@@ -31,7 +34,10 @@ class Listener(ncpadaemon.Daemon):
             listener.server.listener.config[u'iconfig'] = self.config_parser
             listener.server.listener.secret_key = os.urandom(24)
             try:
-                listener.server.listener.run(address, port, ssl_context=ssl_context)
+                http_server = HTTPServer(WSGIContainer(listener.server.listener))
+                http_server.listen(port)
+                IOLoop.instance().start()
+                #listener.server.listener.run(address, port, ssl_context=ssl_context)
             except Exception, e:
                 logging.exception(e)
                 listener.server.listener.run(address, port)

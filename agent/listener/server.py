@@ -15,6 +15,7 @@ import jinja2
 import datetime
 import re
 from io import open
+from flask_sslify import SSLify
 
 __VERSION__ = 1.6
 __STARTED__ = datetime.datetime.now()
@@ -49,7 +50,6 @@ else:
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
 
 listener.jinja_env.line_statement_prefix = u'#'
-
 
 def requires_auth(f):
     @functools.wraps(f)
