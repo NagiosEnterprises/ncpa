@@ -12,10 +12,15 @@ import logging
 import os
 import time
 import sys
+from tornado.wsgi import WSGIContainer
+from tornado.httpserver import HTTPServer
+from tornado.ioloop import IOLoop
 # DO NOT REMOVE THIS, THIS FORCES cx_Freeze to include the library
 # DO NOT REMOVE ANYTHING BELOW THIS LINE
 import passive.nrds
 import passive.nrdp
+import listener.server
+import listener.certificate
 import jinja2.ext 
 import filename
 
@@ -87,13 +92,25 @@ class Listener(Base):
         @todo Integrate this with the Windows code. It shares so much...and gains so little
         ''' 
         try:
-            import listener.server
             address = self.config.get(u'listener', u'ip')
             port = int(self.config.get(u'listener', u'port'))
             listener.server.listener.config_file = self.config_filename
             listener.server.listener.config[u'iconfig'] = self.config
+
+            user_cert = self.config_parser.get('listener', 'certificate')
+
+            if user_cert == 'adhoc':
+                basepath = self.determine_relative_filename('')
+                cert, key = listener.certificate.create_self_signed_cert(basepath, 'ncpa.crt', 'ncpa.key')
+            else:
+                cert, key = user_cert.split(',')
+            ssl_context = {'certfile': cert, 'keyfile': key}
+
             listener.server.listener.secret_key = os.urandom(24)
-            listener.server.listener.run(address, port, ssl_context=self.config.get(u'listener', u'certificate'))
+            http_server = HTTPServer(WSGIContainer(listener.server.listener),
+                                     ssl_options=ssl_context)
+            http_server.listen(port)
+            IOLoop.instance().start()
         except Exception, e:
             self.logger.exception(e)
         
