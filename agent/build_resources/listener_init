@@ -28,9 +28,9 @@ stop() {
 }
 # Get the status
 status() {
-        if [ -f /usr/local/ncpa/var/ncpa_posix_listener.pid];
+        if [ -f "/usr/local/ncpa/var/ncpa_listener.pid" ];
         then
-            pid=`cat /usr/local/ncpa/var/ncpa_posix_listener.pid`
+            pid=`cat /usr/local/ncpa/var/ncpa_listener.pid`
             echo "Process running with PID $pid"
         else
             echo "Process is not running."
