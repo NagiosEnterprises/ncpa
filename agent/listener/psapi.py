@@ -3,32 +3,12 @@ import os
 import logging
 import re
 import platform
-
+import processes
 from nodes import ParentNode, RunnableNode, LazyNode
 from pluginnodes import PluginAgentNode
 import services
 root = None
 
-
-#
-#class ProcessNode(LazyNode):
-#
-#    def __init__(self, *args, **kwargs):
-#        super(ProcessNode, self).__init__(*args, **kwargs)
-#
-#    def parse_query(self, path, *args, **kwargs):
-#        desired_proc = path[0].replace('|', '/')
-#        metrics = {'count': 0}
-#        for proc in ps.process_iter():
-#            if proc.name == desired_proc:
-#                metrics['count'] += 1
-#        try:
-#            if path[1] == 'count':
-#                return {'count': metrics['count']}
-#        except IndexError:
-#            return {desired_proc: metrics}
-#
-#
 
 def make_disk_nodes(disk_name):
     read_time = RunnableNode('read_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_time, 'ms'))
@@ -129,7 +109,7 @@ def get_user_node():
 
 
 def get_process_node():
-    return ProcessNode('process')
+    return processes.ProcessNode('process', None)
 
 
 def get_service_node():
@@ -143,10 +123,10 @@ def get_root_node(*args):
     interface = get_interface_node()
     agent = get_agent_node()
     user = get_user_node()
-    #process = get_process_node()
+    process = get_process_node()
     service = get_service_node()
     system = get_system_node()
-    return ParentNode('root', children=[cpu, memory, disk, interface, agent, user, service, system])
+    return ParentNode('root', children=[cpu, memory, disk, interface, agent, user, service, process, system])
 
 
 def init_root(*args):

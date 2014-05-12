@@ -118,6 +118,13 @@ class RunnableNode(ParentNode):
         else:
             self.title = self.name
 
+    def set_perfdata_label(self, request_args):
+        perfdata_label = request_args.get('perfdata_label', None)
+        if not perfdata_label is None:
+            self.perfdata_label = perfdata_label[0]
+        else:
+            self.perfdata_label = None
+
     def run_check(self, *args, **kwargs):
         try:
             values, unit = self.method(*args, **kwargs)
@@ -129,6 +136,7 @@ class RunnableNode(ParentNode):
 
         self.set_unit(unit, kwargs)
         self.set_title(kwargs)
+        self.set_perfdata_label(kwargs)
         values = self.get_delta_values(values, kwargs)
         values = self.get_adjusted_scale(values, kwargs)
 
@@ -173,7 +181,10 @@ class RunnableNode(ParentNode):
             returncode = 2
             info_prefix = 'CRITICAL'
 
-        perfdata_label = self.title.replace(' ', '_').replace("'", '"')
+        if self.perfdata_label is None:
+            perfdata_label = self.title.replace(' ', '_').replace("'", '"')
+        else:
+            perfdata_label = self.perfdata_label
 
         if len(self.unit) > 2:
             perf_unit = ''
