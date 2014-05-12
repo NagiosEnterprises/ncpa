@@ -3,7 +3,8 @@ import platform
 import subprocess
 import logging
 import tempfile
-
+import os
+import subprocess
 
 def filter_services(m):
     def wrapper(*args, **kwargs):
@@ -93,17 +94,22 @@ class ServiceNode(nodes.LazyNode):
 
     @filter_services
     def get_services_via_initd(self, *args, **kwargs):
-        services = {}
-        disabled_keywords = ['stopped', 'not', 'disabled']
-        status = tempfile.TemporaryFile()
-        service = subprocess.Popen(['service', '--status-all'], stdout=status)
-        service.wait()
-        status.seek(0)
+        possible_services = os.listdir('/etc/init.d')
+        services = {x: 'stopped' for x in possible_services}
+        devnull = open(os.devnull, 'w')
 
-        for line in status.readlines():
-            for keyword in disabled_keywords:
-                if keyword in line:
-                    pass
+        for service in possible_services:
+            grep_search = '[%s]%s' % (service[0], service[1:])
+            ps_call = subprocess.Popen(['ps', 'aux'], stdout=subprocess.PIPE)
+            grep_call = subprocess.Popen(['grep', grep_search], stdout=devnull, stdin=ps_call.stdout)
+            ps_call.wait()
+            ps_call.stdout.close()
+            grep_call.wait()
+
+            if grep_call.returncode == 0:
+                services[service] = 'running'
+
+        devnull.close()
         return services
 
     def walk(self, *args, **kwargs):
@@ -140,6 +146,9 @@ class ServiceNode(nodes.LazyNode):
         service_names = self.get_service_name(kwargs)
         target_statuses = self.get_target_status(kwargs)
         method = self.get_service_method(*args, **kwargs)
+
+        if not service_names:
+            return {'stdout': 'OK: No services requested. That was too easy, give me something to do.', 'returncode': 0}
 
         services = method(*args, **kwargs)
         returncode = 0
