@@ -4,7 +4,7 @@ import subprocess
 import logging
 import tempfile
 import os
-import subprocess
+
 
 def filter_services(m):
     def wrapper(*args, **kwargs):
@@ -90,7 +90,7 @@ class ServiceNode(nodes.LazyNode):
 
     @filter_services
     def get_services_via_systemctl(self, *args, **kwargs):
-        pass
+        return {}
 
     @filter_services
     def get_services_via_initd(self, *args, **kwargs):
