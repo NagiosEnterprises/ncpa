@@ -21,10 +21,11 @@ import passive.nrds
 import passive.nrdp
 import listener.server
 import listener.certificate
-import jinja2.ext 
+import jinja2.ext
 import filename
 
 DEBUG = 0
+
 
 class Base(object):
     # no parameters are permitted; all configuration should be placed in the
@@ -32,10 +33,10 @@ class Base(object):
     def __init__(self):
         cx_Logging.Info(u"creating handler instance")
         self.stopEvent = cx_Threads.Event()
-    
+
     def determine_relative_filename(self, file_name, *args, **kwargs):
         u'''Gets the relative pathname of the executable being run.
-        
+
         This is meant exclusively for being used with cx_Freeze on Windows.
         '''
         global DEBUG
@@ -44,17 +45,17 @@ class Base(object):
         elif DEBUG == 1:
             appdir = os.path.dirname(filename.__file__)
         return os.path.join(appdir, file_name)
-        
+
     def parse_config(self, *args, **kwargs):
         self.config = ConfigParser.ConfigParser()
         self.config.optionxform = unicode
         self.config.read(self.config_filename)
-    
+
     def setup_plugins(self):
         plugin_path = self.config.get(u'plugin directives', u'plugin_path')
         self.abs_plugin_path = self.determine_relative_filename(plugin_path)
         self.config.set(u'plugin directives', u'plugin_path', self.abs_plugin_path)
-    
+
     def setup_logging(self, *arg, **kwargs):
         u'''This should always setup the logger.
         '''
@@ -69,7 +70,7 @@ class Base(object):
             log_config[u'filename'] = self.determine_relative_filename(log_file)
         logging.basicConfig(**log_config)
         self.logger = logging.getLogger()
-    
+
     # called when the service is starting immediately after Initialize()
     # use this to perform the work of the service; don't forget to set or check
     # for the stop event or the service GUI will not respond to requests to
@@ -83,13 +84,14 @@ class Base(object):
     def Stop(self):
         cx_Logging.Info(u"stopping service...")
         self.stopEvent.Set()
-    
+
+
 class Listener(Base):
-    
+
     def start(self):
         u'''Kickoff the TCP Server
-        
-        @todo Integrate this with the Windows code. It shares so much...and gains so little
+
+        TODO: Integrate this with the Windows code. It shares so much...and gains so little
         ''' 
         try:
             address = self.config.get(u'listener', u'ip')
@@ -113,7 +115,7 @@ class Listener(Base):
             IOLoop.instance().start()
         except Exception, e:
             self.logger.exception(e)
-        
+
     # called when the service is starting
     def Initialize(self, config_file):
         self.c_type = u'listener'
@@ -124,18 +126,19 @@ class Listener(Base):
         self.logger.info(u"Looking for config at: %s" % self.config_filename)
         self.logger.info(u"Looking for plugins at: %s" % self.abs_plugin_path)
 
+
 class Passive(Base):
-    
+
     def run_all_handlers(self, *args, **kwargs):
         u'''Will run all handlers that exist.
-        
+
         The handler must:
         - Have a config header entry
         - Abide by the handler API set forth by passive.abstract.NagiosHandler
         - Terminate in a timely fashion
         '''
         handlers = self.config.get(u'passive', u'handlers').split(u',')
-        
+
         for handler in handlers:
             try:
                 module_name = 'passive.%s' % handler
@@ -151,7 +154,7 @@ class Passive(Base):
                     self.logger.debug(u'Successfully ran handler %s' % handler)
                 except Exception, e:
                     self.logger.exception(e)
-    
+
     def start(self):
         try:
             while True:
@@ -161,7 +164,7 @@ class Passive(Base):
                 time.sleep(wait_time)
         except Exception, e:
             self.logger.exception(e)
-        
+
     # called when the service is starting
     def Initialize(self, config_file):
         self.c_type = u'passive'
