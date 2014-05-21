@@ -7,3 +7,5 @@ sphinx
 docutils
 pyOpenSSL==0.12
 sphinx-bootstrap-theme
+gevent
+Flask-Sockets
