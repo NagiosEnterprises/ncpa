@@ -29,7 +29,7 @@ class Node(object):
                     return x.accessor(path=path[1:], *args, **kwargs)
             raise IndexError('No node with that name: %s' % path[0])
         else:
-            kwargs[u'path'] = path[:1]
+            kwargs['path'] = path[:1]
             return self.run(*args, **kwargs)
 
     def walk(self, *args, **kwargs):
@@ -40,7 +40,7 @@ class Node(object):
 
     def run(self, walk=False, *args, **kwargs):
         if walk and self.lazy:
-            return {self.name: u'lazy'}
+            return {self.name: 'lazy'}
         try:
             retval = self.method(*args, **kwargs)
         except TypeError:
@@ -69,14 +69,14 @@ class ProcessNode(LazyNode):
         super(ProcessNode, self).__init__(*args, **kwargs)
 
     def parse_query(self, path):
-        desired_proc = path[0].replace(u'|', u'/')
-        metrics = {u'count': 0}
+        desired_proc = path[0].replace('|', '/')
+        metrics = {'count': 0}
         for proc in ps.process_iter():
             if proc.name == desired_proc:
-                metrics[u'count'] += 1
+                metrics['count'] += 1
         try:
-            if path[1] == u'count':
-                return {u'count': metrics[u'count']}
+            if path[1] == 'count':
+                return {'count': metrics['count']}
         except IndexError:
             return {desired_proc: metrics}
 
@@ -93,10 +93,10 @@ class ServiceNode(LazyNode):
             try:
                 return {self.name: psextensions.get_services()}
             except Exception, e:
-                return {self.name: u'Error getting services: %s' % unicode(e)}
+                return {self.name: 'Error getting services: %s' % unicode(e)}
 
     def parse_query(self, path):
-        desired_service = path[0].replace(u'|', u'/')
+        desired_service = path[0].replace('|', '/')
 
         try:
             desired_state = path[1]
@@ -106,77 +106,77 @@ class ServiceNode(LazyNode):
         services = psextensions.get_services()
 
         if desired_state:
-            return {desired_service: services.get(desired_service, u'Service not found') == desired_state}
+            return {desired_service: services.get(desired_service, 'Service not found') == desired_state}
         else:
-            return {desired_service: services.get(desired_service, u'Service not found')}
+            return {desired_service: services.get(desired_service, 'Service not found')}
 
 
 def make_disk_nodes(disk_name):
-    read_time = Node(u'read_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_time, u'ms'))
-    write_time = Node(u'write_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_time, u'ms'))
-    read_count = Node(u'read_count', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_count, u'c'))
-    write_count = Node(u'write_count', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_count, u'c'))
-    read_bytes = Node(u'read_bytes', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_bytes, u'b'))
-    write_bytes = Node(u'write_bytes', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_bytes, u'b'))
+    read_time = Node('read_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_time, 'ms'))
+    write_time = Node('write_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_time, 'ms'))
+    read_count = Node('read_count', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_count, 'c'))
+    write_count = Node('write_count', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_count, 'c'))
+    read_bytes = Node('read_bytes', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_bytes, 'b'))
+    write_bytes = Node('write_bytes', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_bytes, 'b'))
     return Node(disk_name, children=[read_time, write_time, read_count, write_count, read_bytes, write_bytes])
 
 
 def make_mountpoint_nodes(partition_name):
     mountpoint = partition_name.mountpoint
-    total_size = Node(u'total_size', method=lambda: (ps.disk_usage(mountpoint).total, u'b'))
-    used = Node(u'used', method=lambda: (ps.disk_usage(mountpoint).used, u'b'))
-    free = Node(u'free', method=lambda: (ps.disk_usage(mountpoint).free, u'b'))
-    used_percent = Node(u'used_percent', method=lambda: (ps.disk_usage(mountpoint).percent, u'%'))
-    device_name = Node(u'device_name', method=lambda: partition_name.device)
-    safe_mountpoint = re.sub(ur'[\\/]+', u'|', mountpoint)
+    total_size = Node('total_size', method=lambda: (ps.disk_usage(mountpoint).total, 'b'))
+    used = Node('used', method=lambda: (ps.disk_usage(mountpoint).used, 'b'))
+    free = Node('free', method=lambda: (ps.disk_usage(mountpoint).free, 'b'))
+    used_percent = Node('used_percent', method=lambda: (ps.disk_usage(mountpoint).percent, '%'))
+    device_name = Node('device_name', method=lambda: partition_name.device)
+    safe_mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
     return Node(safe_mountpoint, children=[total_size, used, free, used_percent, device_name])
 
 
 def make_if_nodes(if_name):
-    bytes_sent = Node(u'bytes_sent', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_sent, u'b'))
-    bytes_recv = Node(u'bytes_recv', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_recv, u'b'))
-    packets_sent = Node(u'packets_sent', method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_sent, u'c'))
-    packets_recv = Node(u'packets_recv', method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_recv, u'c'))
-    errin = Node(u'errin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errin, u'c'))
-    errout = Node(u'errout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errout, u'c'))
-    dropin = Node(u'dropin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropin, u'c'))
-    dropout = Node(u'dropout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropout, u'c'))
+    bytes_sent = Node('bytes_sent', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_sent, 'b'))
+    bytes_recv = Node('bytes_recv', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_recv, 'b'))
+    packets_sent = Node('packets_sent', method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_sent, 'c'))
+    packets_recv = Node('packets_recv', method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_recv, 'c'))
+    errin = Node('errin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errin, 'c'))
+    errout = Node('errout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errout, 'c'))
+    dropin = Node('dropin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropin, 'c'))
+    dropout = Node('dropout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropout, 'c'))
     return Node(if_name, children=[bytes_sent, bytes_recv, packets_sent, packets_recv, errin, errout, dropin, dropout])
 
 
 def get_system_node():
-    sys_system = Node(u'system', method=lambda: platform.uname()[0])
-    sys_node = Node(u'node', method=lambda: platform.uname()[1])
-    sys_release = Node(u'release', method=lambda: platform.uname()[2])
-    sys_version = Node(u'version', method=lambda: platform.uname()[3])
-    sys_machine = Node(u'machine', method=lambda: platform.uname()[4])
-    sys_processor = Node(u'processor', method=lambda: platform.uname()[5])
-    return Node(u'system', children=[sys_system, sys_node, sys_release, sys_version, sys_machine, sys_processor])
+    sys_system = Node('system', method=lambda: platform.uname()[0])
+    sys_node = Node('node', method=lambda: platform.uname()[1])
+    sys_release = Node('release', method=lambda: platform.uname()[2])
+    sys_version = Node('version', method=lambda: platform.uname()[3])
+    sys_machine = Node('machine', method=lambda: platform.uname()[4])
+    sys_processor = Node('processor', method=lambda: platform.uname()[5])
+    return Node('system', children=[sys_system, sys_node, sys_release, sys_version, sys_machine, sys_processor])
 
 
 def get_cpu_node():
-    cpu_count = Node(u'count', method=lambda: len(ps.cpu_percent(percpu=True)))
-    cpu_percent = Node(u'percent', method=lambda: (ps.cpu_percent(interval=1, percpu=True), u'%'))
-    cpu_user = Node(u'user', method=lambda: ([x.user for x in ps.cpu_times(percpu=True)], u'ms'))
-    cpu_system = Node(u'system', method=lambda: ([x.system for x in ps.cpu_times(percpu=True)], u'ms'))
-    cpu_idle = Node(u'idle', method=lambda: ([x.idle for x in ps.cpu_times(percpu=True)], u'ms'))
+    cpu_count = Node('count', method=lambda: len(ps.cpu_percent(percpu=True)))
+    cpu_percent = Node('percent', method=lambda: (ps.cpu_percent(interval=1, percpu=True), '%'))
+    cpu_user = Node('user', method=lambda: ([x.user for x in ps.cpu_times(percpu=True)], 'ms'))
+    cpu_system = Node('system', method=lambda: ([x.system for x in ps.cpu_times(percpu=True)], 'ms'))
+    cpu_idle = Node('idle', method=lambda: ([x.idle for x in ps.cpu_times(percpu=True)], 'ms'))
     cpu_percent.lazy = True
-    return Node(u'cpu', children=[cpu_count, cpu_system, cpu_percent, cpu_user, cpu_idle])
+    return Node('cpu', children=[cpu_count, cpu_system, cpu_percent, cpu_user, cpu_idle])
 
 
 def get_memory_node():
-    mem_virt_total = Node(u'total', method=lambda: (ps.virtual_memory().total, u'b'))
-    mem_virt_available = Node(u'available', method=lambda: (ps.virtual_memory().available, u'b'))
-    mem_virt_percent = Node(u'percent', method=lambda: (ps.virtual_memory().percent, u'%'))
-    mem_virt_used = Node(u'used', method=lambda: (ps.virtual_memory().used, u'b'))
-    mem_virt_free = Node(u'free', method=lambda: (ps.virtual_memory().free, u'b'))
-    mem_virt = Node(u'virtual', children=(mem_virt_total, mem_virt_available, mem_virt_free, mem_virt_percent, mem_virt_used))
-    mem_swap_total = Node(u'total', method=lambda: (ps.swap_memory().total, u'b'))
-    mem_swap_percent = Node(u'percent', method=lambda: (ps.swap_memory().percent, u'%'))
-    mem_swap_used = Node(u'used', method=lambda: (ps.swap_memory().used, u'b'))
-    mem_swap_free = Node(u'free', method=lambda: (ps.swap_memory().free, u'b'))
-    mem_swap = Node(u'swap', children=[mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used])
-    return Node(u'memory', children=[mem_virt, mem_swap])
+    mem_virt_total = Node('total', method=lambda: (ps.virtual_memory().total, 'b'))
+    mem_virt_available = Node('available', method=lambda: (ps.virtual_memory().available, 'b'))
+    mem_virt_percent = Node('percent', method=lambda: (ps.virtual_memory().percent, '%'))
+    mem_virt_used = Node('used', method=lambda: (ps.virtual_memory().used, 'b'))
+    mem_virt_free = Node('free', method=lambda: (ps.virtual_memory().free, 'b'))
+    mem_virt = Node('virtual', children=(mem_virt_total, mem_virt_available, mem_virt_free, mem_virt_percent, mem_virt_used))
+    mem_swap_total = Node('total', method=lambda: (ps.swap_memory().total, 'b'))
+    mem_swap_percent = Node('percent', method=lambda: (ps.swap_memory().percent, '%'))
+    mem_swap_used = Node('used', method=lambda: (ps.swap_memory().used, 'b'))
+    mem_swap_free = Node('free', method=lambda: (ps.swap_memory().free, 'b'))
+    mem_swap = Node('swap', children=[mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used])
+    return Node('memory', children=[mem_virt, mem_swap])
 
 
 def get_disk_node():
@@ -188,15 +188,15 @@ def get_disk_node():
             tmp = make_mountpoint_nodes(x)
             disk_mountpoints.append(tmp)
 
-    disk_logical = Node(u'logical', children=disk_mountpoints)
-    disk_physical = Node(u'physical', children=disk_counters)
+    disk_logical = Node('logical', children=disk_mountpoints)
+    disk_physical = Node('physical', children=disk_counters)
 
-    return Node(u'disk', children=[disk_physical, disk_logical])
+    return Node('disk', children=[disk_physical, disk_logical])
 
 
 def get_interface_node():
     if_children = [make_if_nodes(x) for x in list(ps.net_io_counters(pernic=True).keys())]
-    return Node(u'interface', children=if_children)
+    return Node('interface', children=if_children)
 
 
 def get_agent_node():
@@ -212,21 +212,21 @@ def get_agent_node():
         return lat
 
     plugin = Node('plugin', method=walk_plugins)
-    return Node(u'agent', children=(plugin,))
+    return Node('agent', children=(plugin,))
 
 
 def get_user_node():
-    user_count = Node(u'count', method=lambda: (len([x.name for x in ps.get_users()]), u'c'))
-    user_list = Node(u'list', method=lambda: [x.name for x in ps.get_users()])
-    return Node(u'user', children=[user_count, user_list])
+    user_count = Node('count', method=lambda: (len([x.name for x in ps.get_users()]), 'c'))
+    user_list = Node('list', method=lambda: [x.name for x in ps.get_users()])
+    return Node('user', children=[user_count, user_list])
 
 
 def get_process_node():
-    return ProcessNode(u'process')
+    return ProcessNode('process')
 
 
 def get_service_node():
-    return ServiceNode(u'service')
+    return ServiceNode('service')
 
 
 def get_root_node():
@@ -239,7 +239,7 @@ def get_root_node():
     process = get_process_node()
     service = get_service_node()
     system = get_system_node()
-    return Node(u'root', children=[cpu, memory, disk, interface, agent, user, process, service, system])
+    return Node('root', children=[cpu, memory, disk, interface, agent, user, process, service, system])
 
 
 def init_root(*args):
