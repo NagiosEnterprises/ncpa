@@ -249,11 +249,12 @@ def init_root(*args):
         root.children.append(n)
 
 
-def getter(accessor=u'', s_plugins=u''):
+def getter(accessor='', s_plugins=''):
     global plugins
-    logging.debug(u"Using %s" % s_plugins)
+    logging.debug('Getting accessor: %s', accessor)
+    logging.debug("Using %s" % s_plugins)
     plugins = os.path.abspath(os.path.normpath(s_plugins))
-    path = [x for x in accessor.split(u'/') if x]
-    if len(path) > 0 and path[0] == u'api':
+    path = [x for x in accessor.split('/') if x]
+    if len(path) > 0 and path[0] == 'api':
         path = path[1:]
     return root.accessor(path)
