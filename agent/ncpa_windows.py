@@ -18,6 +18,8 @@ from gevent.wsgi import WSGIServer
 import passive.nrds
 import passive.nrdp
 import listener.server
+import listener.psapi
+import listener.windowscounters
 import listener.certificate
 import jinja2.ext
 import filename
@@ -118,8 +120,13 @@ class Listener(Base):
         self.parse_config()
         self.setup_logging()
         self.setup_plugins()
+        self.setup_api_tree()
         logging.info("Looking for config at: %s" % self.config_filename)
         logging.info("Looking for plugins at: %s" % self.abs_plugin_path)
+
+    def setup_api_tree(self):
+        wc_node = listener.windowscounters.get_counters_node()
+        listener.psapi.init_root(wc_node)
 
 
 class Passive(Base):
@@ -132,7 +139,7 @@ class Passive(Base):
         - Abide by the handler API set forth by passive.abstract.NagiosHandler
         - Terminate in a timely fashion
         '''
-        handlers = self.config.get(u'passive', u'handlers').split(u',')
+        handlers = self.config.get('passive', 'handlers').split(',')
 
         for handler in handlers:
             try:
@@ -140,13 +147,13 @@ class Passive(Base):
                 __import__(module_name)
                 tmp_handler = sys.modules[module_name]
             except ImportError, e:
-                logging.error(u'Could not import module passive.%s, skipping. %s' % (handler, unicode(e)))
+                logging.error('Could not import module passive.%s, skipping. %s' % (handler, str(e)))
                 logging.exception(e)
             else:
                 try:
                     ins_handler = tmp_handler.Handler(self.config)
                     ins_handler.run()
-                    logging.debug(u'Successfully ran handler %s' % handler)
+                    logging.debug('Successfully ran handler %s' % handler)
                 except Exception, e:
                     logging.exception(e)
 

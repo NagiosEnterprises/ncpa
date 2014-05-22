@@ -194,15 +194,16 @@ def plugin_api(plugin_name=None, plugin_args=None):
 @listener.route(u'/api/')
 @listener.route(u'/api/<path:accessor>')
 @requires_auth
-def api(accessor=u'', raw=False):
-    if request.args.get(u'check'):
-        url = accessor + u'?' + urllib.urlencode(request.args)
-        return jsonify({u'value': internal_api(url, listener.config[u'iconfig'])})
+def api(accessor='', raw=False):
+    if request.args.get('check'):
+        url = accessor + '?' + urllib.urlencode(request.args)
+        return jsonify({'value': internal_api(url, listener.config['iconfig'])})
     try:
-        response = psapi.getter(accessor, listener.config[u'iconfig'].get(u'plugin directives', u'plugin_path'))
+        plugin_path = listener.config[u'iconfig'].get('plugin directives', 'plugin_path')
+        response = psapi.getter(accessor, plugin_path)
     except Exception, e:
         logging.exception(e)
-        return error(msg=u'Referencing node that does not exist.')
+        return error(msg='Referencing node that does not exist.')
     if raw:
         return response
     else:
