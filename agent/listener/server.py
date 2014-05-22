@@ -1,9 +1,6 @@
 from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session
 import logging
-import urllib2, urllib
-import urllib2, urllib, urlparse
-import urllib2, urllib
-import ConfigParser
+import urllib
 import os
 import sys
 import platform
@@ -14,8 +11,6 @@ import functools
 import jinja2
 import datetime
 import re
-from io import open
-from flask_sslify import SSLify
 
 __VERSION__ = 1.6
 __STARTED__ = datetime.datetime.now()
@@ -51,31 +46,31 @@ else:
 
 listener.jinja_env.line_statement_prefix = u'#'
 
+
 def requires_auth(f):
     @functools.wraps(f)
     def decorated(*args, **kwargs):
-        ncpa_token = listener.config[u'iconfig'].get(u'api', u'community_string')
-        token = request.args.get(u'token', None)
+        ncpa_token = listener.config['iconfig'].get('api', 'community_string')
+        token = request.args.get('token', None)
 
-        if session.get(u'logged', False):
+        if session.get('logged', False):
             pass
         elif token is None:
-            return redirect(url_for(u'login'))
+            return redirect(url_for('login'))
         elif token != ncpa_token:
-            return error(msg=u'Incorrect credentials given.')
+            return error(msg='Incorrect credentials given.')
         return f(*args, **kwargs)
 
     return decorated
 
 
-@listener.route(u'/login', methods=[u'GET', u'POST'])
+@listener.route('/login', methods=['GET', 'POST'])
 def login():
-    ncpa_token = listener.config[u'iconfig'].get(u'api', u'community_string')
-
-    if request.method == u'GET':
-        token = request.args.get(u'token', None)
-    elif request.method == u'POST':
-        token = request.form.get(u'token', None)
+    ncpa_token = listener.config['iconfig'].get('api', 'community_string')
+    if request.method == 'GET':
+        token = request.args.get('token', None)
+    elif request.method == 'POST':
+        token = request.form.get('token', None)
     else:
         token = None
 
@@ -110,25 +105,6 @@ def dashboard():
 @requires_auth
 def navigator():
     return render_template(u'navigator.html')
-
-
-@listener.route(u'/config', methods=[u'GET', u'POST'])
-@requires_auth
-def config():
-    if request.method == u'POST':
-        new_config = save_config(request.form, listener.config_filename)
-        listener.config[u'iconfig'] = new_config
-        config_fp = open(listener.config_filename, u'w')
-        new_config.write(config_fp)
-        config_fp.close()
-
-    section = request.args.get(u'section')
-    if section:
-        try:
-            return jsonify(**listener.config[u'iconfig'].__dict__[u'_sections'][section])
-        except Exception, e:
-            logging.exception(e)
-    return render_template(u'config.html', **{u'config': listener.config[u'iconfig'].__dict__[u'_sections']})
 
 
 @listener.route(u'/logout')
@@ -254,54 +230,6 @@ def internal_api(accessor=None, listener_config=None):
     return result
 
 
-def save_config(dconfig, writeto):
-    viv = vivicate_dict(dconfig)
-    config = ConfigParser.ConfigParser()
-
-    #~ Do the normal sections
-    for s in [u'listener', u'passive', u'nrdp', u'nrds', u'api']:
-        config.add_section(s)
-        for t in viv[s]:
-            config.set(s, t, viv[s][t])
-
-    #~ Do the plugin directives
-    directives = viv[u'directives']
-    config.add_section(u'plugin directives')
-
-    config.set(u'plugin directives', u'plugin_path', directives[u'plugin_path'])
-    del directives[u'plugin_path']
-
-    dkeys = [x for x in list(directives.keys()) if u'suffix|' in x]
-    for x in dkeys:
-        _, suffix = x.split(u'|')
-        config.set(u'plugin directives', suffix, directives[u'exec|' + suffix])
-
-    pchecks = viv[u'passivecheck']
-    config.add_section(u'passive checks')
-
-    pkeys = [x for x in list(pchecks.keys()) if u'name|' in x]
-    for x in pkeys:
-        _, pid = x.split(u'name|', 1)
-        config.set(u'passive checks', pchecks[x], pchecks[u'exec|' + pid])
-
-    return config
-
-
-def vivicate_dict(d, delimiter=u'|'):
-    result = {}
-    for x in d:
-        if delimiter in x:
-            key, value = x.split(delimiter, 1)
-            if key in result:
-                result[key][value] = d[x]
-            else:
-                result[key] = {value: d[x]}
-        else:
-            result[x] = d[x]
-
-    return result
-
-
 def parse_internal_input(accessor):
     ACCESSOR_REGEX = re.compile(u'(/api)?/?([^?]+)\??(.*)')
     PLUGIN_REGEX = re.compile(u'(/api)?(/?agent/)?plugin/([^/]+)(/(.*))?')
@@ -315,11 +243,9 @@ def parse_internal_input(accessor):
     accessor_result = ACCESSOR_REGEX.match(accessor)
 
     if plugin_result:
-        logging.debug(u'Plugin result!')
         plugin_name = plugin_result.group(3)
         plugin_args = plugin_result.group(5)
     elif accessor_result:
-        logging.debug(u'Accessor result!')
         accessor_name = accessor_result.group(2)
         accessor_args = accessor_result.group(3)
     return accessor_name, accessor_args, plugin_name, plugin_args
