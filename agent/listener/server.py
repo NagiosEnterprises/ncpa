@@ -21,30 +21,30 @@ base_dir = os.path.dirname(sys.path[0])
 #~ The following if statement is a workaround that is allowing us to run this in debug mode, rather than a hard coded
 #~ location.
 
-if os.name == u'nt':
-    tmpl_dir = os.path.join(base_dir, u'listener', u'templates')
+if os.name == 'nt':
+    tmpl_dir = os.path.join(base_dir, 'listener', 'templates')
     if not os.path.isdir(tmpl_dir):
-        tmpl_dir = os.path.join(base_dir, u'agent', u'listener', u'templates')
+        tmpl_dir = os.path.join(base_dir, 'agent', 'listener', 'templates')
 
-    stat_dir = os.path.join(base_dir, u'listener', u'static')
+    stat_dir = os.path.join(base_dir, 'listener', 'static')
     if not os.path.isdir(stat_dir):
-        stat_dir = os.path.join(base_dir, u'agent', u'listener', u'static')
+        stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
 
     logging.info(u"Looking for templates at: %s" % tmpl_dir)
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
     listener.jinja_loader = jinja2.FileSystemLoader(tmpl_dir)
 else:
-    tmpl_dir = os.path.join(base_dir, u'agent', u'listener', u'templates')
+    tmpl_dir = os.path.join(base_dir, 'agent', 'listener', 'templates')
     if not os.path.isdir(tmpl_dir):
-        tmpl_dir = os.path.join(u'/usr', u'local', u'ncpa', u'listener', u'templates')
+        tmpl_dir = os.path.join('/usr', 'local', 'ncpa', 'listener', 'templates')
 
-    stat_dir = os.path.join(base_dir, u'agent', u'listener', u'static')
+    stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
     if not os.path.isdir(stat_dir):
-        stat_dir = os.path.join(u'/usr', u'local', u'ncpa', u'listener', u'static')
+        stat_dir = os.path.join('/usr', 'local', 'ncpa', 'listener', 'static')
 
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
 
-listener.jinja_env.line_statement_prefix = u'#'
+listener.jinja_env.line_statement_prefix = '#'
 
 
 def requires_auth(f):
@@ -75,45 +75,45 @@ def login():
         token = None
 
     if token is None:
-        return render_template(u'login.html')
+        return render_template('login.html')
     if token == ncpa_token:
-        session[u'logged'] = True
-        return redirect(url_for(u'index'))
+        session['logged'] = True
+        return redirect(url_for('index'))
     if token != ncpa_token:
-        return render_template(u'login.html', error=u'Token was invalid.')
+        return render_template('login.html', error='Token was invalid.')
 
 
-@listener.route(u'/dashboard')
+@listener.route('/dashboard')
 @requires_auth
 def dashboard():
-    my_json = api(u'disk/logical', raw=True)
-    disks = [{u'safe': re.sub(ur'[^a-zA-Z0-9]', u'', x),
-              u'raw': x} for x in list(my_json.get(u'logical').keys())]
-    my_json = api(u'interface/', raw=True)
-    interfaces = [{u'safe': re.sub(ur'[^a-zA-Z0-9]', u'', x),
-                   u'raw': x} for x in list(my_json.get(u'interface').keys())]
-    my_json = api(u'cpu/count', raw=True)
-    cpu_count = my_json.get(u'count', 0)
+    my_json = api('disk/logical', raw=True)
+    disks = [{'safe': re.sub(ur'[^a-zA-Z0-9]', '', x),
+              'raw': x} for x in list(my_json.get('logical').keys())]
+    my_json = api('interface/', raw=True)
+    interfaces = [{'safe': re.sub(ur'[^a-zA-Z0-9]', '', x),
+                   'raw': x} for x in list(my_json.get('interface').keys())]
+    my_json = api('cpu/count', raw=True)
+    cpu_count = my_json.get('count', 0)
 
-    return render_template(u'dashboard.html',
+    return render_template('dashboard.html',
                            disks=disks,
                            interfaces=interfaces,
                            cpucount=cpu_count)
 
 
-@listener.route(u'/navigator')
+@listener.route('/navigator')
 @requires_auth
 def navigator():
-    return render_template(u'navigator.html')
+    return render_template('navigator.html')
 
 
-@listener.route(u'/logout')
+@listener.route('/logout')
 def logout():
-    if session.get(u'logged', False):
-        session[u'logged'] = False
-        return render_template(u'login.html', info=u'Successfully logged out.')
+    if session.get('logged', False):
+        session['logged'] = False
+        return render_template('login.html', info='Successfully logged out.')
     else:
-        return redirect(url_for(u'login'))
+        return redirect(url_for('login'))
 
 
 def make_info_dict():
@@ -123,83 +123,83 @@ def make_info_dict():
     now = datetime.datetime.now()
     uptime = unicode(now - __STARTED__)
 
-    return {u'agent_version': __VERSION__,
-            u'uptime': uptime,
-            u'processor': platform.uname()[5],
-            u'node': platform.uname()[1],
-            u'system': platform.uname()[0],
-            u'release': platform.uname()[2],
-            u'version': platform.uname()[3]}
+    return {'agent_version': __VERSION__,
+            'uptime': uptime,
+            'processor': platform.uname()[5],
+            'node': platform.uname()[1],
+            'system': platform.uname()[0],
+            'release': platform.uname()[2],
+            'version': platform.uname()[3]}
 
 
-@listener.route(u'/')
+@listener.route('/')
 @requires_auth
 def index():
     info = make_info_dict()
     try:
-        return render_template(u'main.html', **info)
+        return render_template('main.html', **info)
     except Exception, e:
         logging.exception(e)
 
 
-@listener.route(u'/error/')
-@listener.route(u'/error/<msg>')
+@listener.route('/error/')
+@listener.route('/error/<msg>')
 def error(msg=None):
     if not msg:
-        msg = u'Error occurred during processing request.'
+        msg = 'Error occurred during processing request.'
     return jsonify(error=msg)
 
 
-@listener.route(u'/testconnect/')
+@listener.route('/testconnect/')
 def testconnect():
-    ncpa_token = listener.config[u'iconfig'].get(u'api', u'community_string')
-    token = request.args.get(u'token', None)
+    ncpa_token = listener.config['iconfig'].get('api', 'community_string')
+    token = request.args.get('token', None)
     if ncpa_token != token:
-        return jsonify({u'error': u'Bad token.'})
+        return jsonify({'error': 'Bad token.'})
     else:
-        return jsonify({u'value': u'Success.'})
+        return jsonify({'value': 'Success.'})
 
 
-@listener.route(u'/nrdp/', methods=[u'GET', u'POST'])
+@listener.route('/nrdp/', methods=['GET', 'POST'])
 def nrdp():
     try:
-        forward_to = listener.config[u'iconfig'].get(u'nrdp', u'parent')
-        if request.method == u'get':
+        forward_to = listener.config['iconfig'].get('nrdp', 'parent')
+        if request.method == 'get':
             response = requests.get(forward_to, params=request.args)
         else:
             response = requests.post(forward_to, params=request.form)
-        resp = Response(response.content, 200, mimetype=response.headers[u'content-type'])
+        resp = Response(response.content, 200, mimetype=response.headers['content-type'])
         return resp
     except Exception, e:
         logging.exception(e)
         return error(msg=unicode(e))
 
 
-@listener.route(u'/api/agent/plugin/<plugin_name>/')
-@listener.route(u'/api/agent/plugin/<plugin_name>/<path:plugin_args>')
+@listener.route('/api/agent/plugin/<plugin_name>/')
+@listener.route('/api/agent/plugin/<plugin_name>/<path:plugin_args>')
 @requires_auth
 def plugin_api(plugin_name=None, plugin_args=None):
-    config = listener.config[u'iconfig']
+    config = listener.config['iconfig']
     if plugin_args:
         logging.info(plugin_args)
-        plugin_args = [urllib.unquote(x) for x in plugin_args.split(u'/')]
+        plugin_args = [urllib.unquote(x) for x in plugin_args.split('/')]
     try:
         response = pluginapi.execute_plugin(plugin_name, plugin_args, config)
     except Exception, e:
         logging.exception(e)
-        return error(msg=u'Error running plugin: %s' % unicode(e))
-    return jsonify({u'value': response})
+        return error(msg='Error running plugin: %s' % unicode(e))
+    return jsonify({'value': response})
 
 
-@listener.route(u'/api/')
-@listener.route(u'/api/<path:accessor>')
+@listener.route('/api/')
+@listener.route('/api/<path:accessor>')
 @requires_auth
 def api(accessor='', raw=False):
     if request.args.get('check'):
         url = accessor + '?' + urllib.urlencode(request.args)
         return jsonify({'value': internal_api(url, listener.config['iconfig'])})
     try:
-        plugin_path = listener.config[u'iconfig'].get('plugin directives', 'plugin_path')
+        plugin_path = listener.config['iconfig'].get('plugin directives', 'plugin_path')
         response = psapi.getter(accessor, plugin_path)
     except Exception, e:
         logging.exception(e)
@@ -207,33 +207,33 @@ def api(accessor='', raw=False):
     if raw:
         return response
     else:
-        return jsonify({u'value': response})
+        return jsonify({'value': response})
 
 
 def internal_api(accessor=None, listener_config=None):
-    logging.debug(u'Accessing internal API with accessor %s', accessor)
+    logging.debug('Accessing internal API with accessor %s', accessor)
     accessor_name, accessor_args, plugin_name, plugin_args = parse_internal_input(accessor)
     if accessor_name:
         try:
-            logging.debug(u'Accessing internal API with accessor %s', accessor_name)
+            logging.debug('Accessing internal API with accessor %s', accessor_name)
             acc_response = psapi.getter(accessor_name)
         except IndexError, e:
             logging.exception(e)
-            logging.warning(u"User request invalid node: %s" % accessor_name)
-            result = {u'returncode': 3, u'stdout': u'Invalid entry specified. No known node by %s' % accessor_name}
+            logging.warning("User request invalid node: %s" % accessor_name)
+            result = {'returncode': 3, 'stdout': 'Invalid entry specified. No known node by %s' % accessor_name}
         else:
             result = pluginapi.make_plugin_response_from_accessor(acc_response, accessor_args)
     elif plugin_name:
         result = pluginapi.execute_plugin(plugin_name, plugin_args, listener_config)
     else:
-        result = {u'stdout': u'ERROR: Non-node value requested. Requested a tree.',
-                  u'returncode': 3}
+        result = {'stdout': 'ERROR: Non-node value requested. Requested a tree.',
+                  'returncode': 3}
     return result
 
 
 def parse_internal_input(accessor):
-    ACCESSOR_REGEX = re.compile(u'(/api)?/?([^?]+)\??(.*)')
-    PLUGIN_REGEX = re.compile(u'(/api)?(/?agent/)?plugin/([^/]+)(/(.*))?')
+    ACCESSOR_REGEX = re.compile('(/api)?/?([^?]+)\??(.*)')
+    PLUGIN_REGEX = re.compile('(/api)?(/?agent/)?plugin/([^/]+)(/(.*))?')
 
     accessor_name = None
     accessor_args = None
