@@ -8,4 +8,5 @@ docutils
 pyOpenSSL==0.12
 sphinx-bootstrap-theme
 gevent
+gevent-websocket
 Flask-Sockets
