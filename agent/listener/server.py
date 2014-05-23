@@ -311,10 +311,10 @@ def plugin_api(plugin_name=None, plugin_args=None):
 def api(accessor='', raw=False):
     if request.args.get('check'):
         url = accessor + '?' + urllib.urlencode(request.args)
-        return jsonify({'value': internal_api(url, listener.config['iconfig'])})
+        return jsonify({'value': internal_api(url, listener.config['iconfig'], **request.args)})
     try:
         plugin_path = listener.config['iconfig'].get('plugin directives', 'plugin_path')
-        response = psapi.getter(accessor, plugin_path)
+        response = psapi.getter(accessor, plugin_path, **request.args)
     except Exception, e:
         logging.exception(e)
         return error(msg='Referencing node that does not exist.')
@@ -324,13 +324,13 @@ def api(accessor='', raw=False):
         return jsonify({'value': response})
 
 
-def internal_api(accessor=None, listener_config=None):
+def internal_api(accessor=None, listener_config=None, **kwargs):
     logging.debug('Accessing internal API with accessor %s', accessor)
     accessor_name, accessor_args, plugin_name, plugin_args = parse_internal_input(accessor)
     if accessor_name:
         try:
             logging.debug('Accessing internal API with accessor %s', accessor_name)
-            acc_response = psapi.getter(accessor_name)
+            acc_response = psapi.getter(accessor_name, **kwargs)
         except IndexError, e:
             logging.exception(e)
             logging.warning("User request invalid node: %s" % accessor_name)

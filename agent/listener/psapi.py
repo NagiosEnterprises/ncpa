@@ -58,9 +58,12 @@ class LazyNode(Node):
 
     def run(self, path, *args, **kwargs):
         if path:
-            return self.parse_query(path)
+            return self.parse_query(path, *args, **kwargs)
         else:
             return {self.name: []}
+
+    def parse_query(self):
+        raise Exception('Base class LazyNode was called, it is abstract, and you need to override this.')
 
 
 class ProcessNode(LazyNode):
@@ -95,7 +98,7 @@ class ServiceNode(LazyNode):
             except Exception, e:
                 return {self.name: 'Error getting services: %s' % unicode(e)}
 
-    def parse_query(self, path):
+    def parse_query(self, path, *args, **kwargs):
         desired_service = path[0].replace('|', '/')
 
         try:
@@ -249,7 +252,7 @@ def init_root(*args):
         root.children.append(n)
 
 
-def getter(accessor='', s_plugins=''):
+def getter(accessor='', s_plugins='', *args, **kwargs):
     global plugins
     logging.debug('Getting accessor: %s', accessor)
     logging.debug("Using %s" % s_plugins)
@@ -257,4 +260,4 @@ def getter(accessor='', s_plugins=''):
     path = [x for x in accessor.split('/') if x]
     if len(path) > 0 and path[0] == 'api':
         path = path[1:]
-    return root.accessor(path)
+    return root.accessor(path, *args, **kwargs)

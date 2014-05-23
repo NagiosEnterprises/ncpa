@@ -22,6 +22,7 @@ import passive.nrdp
 import listener.server
 import listener.psapi
 import listener.windowscounters
+import listener.windowslogs
 import listener.certificate
 import jinja2.ext
 import filename
@@ -132,7 +133,8 @@ class Listener(Base):
 
     def setup_api_tree(self):
         wc_node = listener.windowscounters.get_counters_node()
-        listener.psapi.init_root(wc_node)
+        log_node = listener.windowslogs.get_logs_node()
+        listener.psapi.init_root(wc_node, log_node)
 
 
 class Passive(Base):
