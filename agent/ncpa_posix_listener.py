@@ -8,10 +8,8 @@ import filename
 import listener.certificate
 import werkzeug.serving
 import ConfigParser
-from tornado.wsgi import WSGIContainer
-from tornado.httpserver import HTTPServer
-from tornado.ioloop import IOLoop
-
+from gevent.pywsgi import WSGIServer
+from geventwebsocket.handler import WebSocketHandler
 # All of the includes below are dummy includes so that cx_Freeze catches them
 import jinja2.ext
 
@@ -20,29 +18,28 @@ class Listener(ncpadaemon.Daemon):
     section = u'listener'
     
     def run(self):
-        address = self.config_parser.get('listener', 'ip')
-        port = int(self.config_parser.get('listener', 'port'))
-        user_cert = self.config_parser.get('listener', 'certificate')
-
-        if user_cert == 'adhoc':
-            basepath = filename.get_dirname_file()
-            cert, key = listener.certificate.create_self_signed_cert(basepath, 'ncpa.crt', 'ncpa.key')
-        else:
-            cert, key = user_cert.split(',')
-        ssl_context = {'certfile': cert, 'keyfile': key}
-
         try:
-            logging.info('Starting server...')
-            listener.server.listener.config_filename = 'etc/ncpa.cfg'
-            listener.server.listener.config['iconfig'] = self.config_parser
+            address = self.config.get('listener', 'ip')
+            port = self.config.getint('listener', 'port')
+            listener.server.listener.config_file = self.config_filename
+            listener.server.listener.config['iconfig'] = self.config
+
+            user_cert = self.config.get('listener', 'certificate')
+
+            if user_cert == 'adhoc':
+                basepath = self.get_dirname_file('')
+                cert, key = listener.certificate.create_self_signed_cert(basepath, 'ncpa.crt', 'ncpa.key')
+            else:
+                cert, key = user_cert.split(',')
+            ssl_context = {'certfile': cert, 'keyfile': key}
+
             listener.server.listener.secret_key = os.urandom(24)
-            try:
-                http_server = HTTPServer(WSGIContainer(listener.server.listener),
-                                         ssl_options=ssl_context)
-                http_server.listen(port)
-                IOLoop.instance().start()
-            except Exception, e:
-                logging.exception(e)
+            http_server = WSGIServer(listener=(address, port),
+                                     application=listener.server.listener,
+                                     handler_class=WebSocketHandler,
+                                     spawn=Pool(100),
+                                     **ssl_context)
+            http_server.serve_forever()
         except Exception, e:
             logging.exception(e)
 
