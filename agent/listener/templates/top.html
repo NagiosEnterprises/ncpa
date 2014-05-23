@@ -20,7 +20,6 @@
     }
 </style>
 
-<script src='/static/js/smoothie.js'></script>
 <script src='/static/js/jquery-1.8.3.min.js'></script>
 <link rel='stylesheet' href='/static/css/bootstrap.css' />
 <link rel='stylesheet' href='/static/css/bootstrap-responsive.css' />
@@ -32,9 +31,8 @@
         var highlight = '{{ highlight }}';
         var plbody = $('#top-container tbody');
         var plhead = $('#top-container thead tr#titles')
-        var order = ['pid', 'name', 'nice', 'username', 'cpu_percent', 'memory_percent'];
+        var order = ['pid', 'name', 'username', 'cpu_percent', 'memory_percent'];
         var current_pl = [];
-        
         var get_ws_address = function() {
             var loc = window.location;
             if(loc.protocol === 'https:') {
@@ -141,6 +139,7 @@
         var ws = new WebSocket(ws_loc);
         
         ws.onmessage = function(d) {
+            console.log(d.data);
             info = $.parseJSON(d.data);
             
             var load = info.load
