@@ -8,7 +8,7 @@ import os
 
 class WindowsCountersNode(psapi.LazyNode):
 
-    def parse_query(self, path, sleep=0):
+    def parse_query(self, path, sleep=0, *args, **kwargs):
         counter_path = os.path.join(*path)
         counter_path = '\\' + counter_path
         return self.get_counter_val(counter_path, sleep)
