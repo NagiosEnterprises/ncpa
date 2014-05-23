@@ -45,15 +45,8 @@
     <script src='/static/js/smoothie.js'></script>
     <script src='/static/js/jquery-1.8.3.min.js'></script>
     <script>
-    var interval = 1000;
-
-    // The following are explicitly for delta calculations
-    var delta = !!{{ delta }};
-    var delta_state = [];
-    var factor = {{ factor }};
-    var unit = '{{ unit }}';
-
-    function get_ws_address() {
+    {
+    var get_ws_address = function() {
         var loc = window.location;
         if(loc.protocol === 'https:') {
             var ws_proto = 'wss';
@@ -69,6 +62,13 @@
     }
 
     $(document).ready(function() {
+        var interval = 1000;
+
+        // The following are explicitly for delta calculations
+        var delta = !!{{ delta }};
+        var delta_state = [];
+        var factor = {{ factor }};
+        var unit = '{{ unit }}';
         var graph_title = $('#graph-{{ graph_hash }}-title');
         var default_smoothie = {maxValue: 100,
                                 minValue: 0,
@@ -78,6 +78,22 @@
                                 grid:{fillStyle:'#ffffff',
                                       strokeStyle:'rgba(119,119,119,0.18)'}};
 
+
+        var get_ws_address = function() {
+            var loc = window.location;
+            if(loc.protocol === 'https:') {
+                var ws_proto = 'wss';
+            } else {
+                var ws_proto = 'ws';
+            }
+            var ws_loc = ws_proto + '://' + loc.hostname + ':5693/api-websocket/' + '{{ graph_path }}';
+            return ws_loc;
+        }
+
+        function adjust_factor(val) {
+            return val / factor;
+        }
+        
         $.getJSON('/api/{{ graph_path }}', function(d) {
             var ts_length = 0;
             $.each(d, function(i, o) {
@@ -96,7 +112,6 @@
             var smoothie = new SmoothieChart(default_smoothie);
             var ws_loc = get_ws_address();
 
-            console.log(ws_loc)
             var ws = new WebSocket(ws_loc);
             var lines = [];
             var min = undefined;
@@ -142,6 +157,8 @@
                             delta_state[i] = tmp;
                         }
                     }
+                    
+                    val = Math.abs(val);
 
                     val = adjust_factor(val);
                     lsum += val;
@@ -173,6 +190,7 @@
 
 
     })
+    }
     </script>
     <div class='graph-title' id='graph-{{ graph_hash }}-title'>{{ graph_path }}</div>
     <div class='can-wrapper' width='500'>
