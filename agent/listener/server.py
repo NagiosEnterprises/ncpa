@@ -167,8 +167,26 @@ def api_websocket(accessor=None):
 @listener.route('/top')
 def top():
     d = request.args.get('display', 0)
+    h = request.args.get('highlight', None)
+    w = request.args.get('warning', 0)
+    c = request.args.get('critical', 0)
     info = {}
-    
+
+    if h is None:
+        info['highlight'] = 0
+    else:
+        info['highlight'] = h
+
+    try:
+        info['warning'] = int(w)
+    except TypeError:
+        info['warning'] = 0
+
+    try:
+        info['critical'] = int(c)
+    except TypeError:
+        info['critical'] = 0
+
     try:
         info['display'] = int(d)
     except TypeError:

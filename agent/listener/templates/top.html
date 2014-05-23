@@ -6,6 +6,18 @@
     * {
         font-size: 1em;
     }
+    
+    tr.highlight {
+        background-color: teal;
+    }
+    
+    td.critical {
+        background-color: red;
+    }
+    
+    td.warning {
+        background-color: yellow;
+    }
 </style>
 
 <script src='/static/js/smoothie.js'></script>
@@ -15,6 +27,9 @@
 <script>
     $(document).ready(function() {
         var display = {{ display }};
+        var critical = {{ critical }};
+        var warning = {{ warning }};
+        var highlight = '{{ highlight }}';
         var plbody = $('#top-container tbody');
         var plhead = $('#top-container thead tr#titles')
         var order = ['pid', 'name', 'nice', 'username', 'cpu_percent', 'memory_percent'];
@@ -97,6 +112,7 @@
         }
         
         var create_plbody = function(pl) {
+            console.log(critical);
             plbody.empty();
             $.each(pl, function(i) {
                 if (display > 0 && display <= i) {
@@ -105,7 +121,17 @@
                 var p = pl[i];
                 var tr = $('<tr>', {id: p.pid});
                 $.each(order, function(j) {
-                    tr.append($('<td>', {text: p[order[j]]}));    
+                    var td = $('<td>', {text: p[order[j]]});
+                    if (order[j] == 'name' && p[order[j]].indexOf(highlight) > -1) {
+                        tr.addClass('highlight');
+                    }
+                    if ((order[j] == 'cpu_percent' || order[j] == 'memory_percent') && critical > 0 && p[order[j]] > critical) {
+                        td.addClass('critical');
+                    }
+                    else if ((order[j] == 'cpu_percent' || order[j] == 'memory_percent') && warning > 0 && p[order[j]] > warning) {
+                        td.addClass('warning');
+                    }
+                    tr.append(td);    
                 })
                 plbody.append(tr);
             })
@@ -135,7 +161,7 @@
 </script>
 
 <div id='top-container'>
-    <table class='table table-striped table-bordered table-condensed'>
+    <table class='table table-bordered table-condensed'>
         <thead>
             <tr id='load'><th>CPU Load</th><th colspan="999" class='current'></th></tr>
             <tr id='virtual'><th>RAM Usage</th><th colspan="999" class='current'></th></tr>
