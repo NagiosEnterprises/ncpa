@@ -40,27 +40,11 @@
 
 </style>
 <link rel='stylesheet' href='/static/css/bootstrap.css' />
-        <link rel='stylesheet' href='/static/css/bootstrap-responsive.css' />
+<link rel='stylesheet' href='/static/css/bootstrap-responsive.css' />
 <div id='graph-{{ graph_hash }}' class='ncpa-graph'>
     <script src='/static/js/smoothie.js'></script>
     <script src='/static/js/jquery-1.8.3.min.js'></script>
     <script>
-    {
-    var get_ws_address = function() {
-        var loc = window.location;
-        if(loc.protocol === 'https:') {
-            var ws_proto = 'wss';
-        } else {
-            var ws_proto = 'ws';
-        }
-        var ws_loc = ws_proto + '://' + loc.hostname + ':5693/api-websocket/' + '{{ graph_path }}';
-        return ws_loc;
-    }
-
-    function adjust_factor(val) {
-        return val / factor;
-    }
-
     $(document).ready(function() {
         var interval = 1000;
 
@@ -190,7 +174,6 @@
 
 
     })
-    }
     </script>
     <div class='graph-title' id='graph-{{ graph_hash }}-title'>{{ graph_path }}</div>
     <div class='can-wrapper' width='500'>
