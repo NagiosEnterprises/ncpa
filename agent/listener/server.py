@@ -207,15 +207,12 @@ def top_websocket():
             ps = psutil.process_iter()
             pl = []
             for p in ps:
-                pl.append(p.as_dict(['username',
-                                     'get_nice',
-                                     'get_memory_info',
-                                     'get_memory_percent',
-                                     'get_cpu_percent',
-                                     'get_cpu_times',
-                                     'name',
-                                     'status',
-                                     'pid']))
+                pd = p.as_dict(['username',
+                                'get_memory_percent',
+                                'get_cpu_percent',
+                                'name',
+                                'pid'])
+                pl.append(pd)
             jval = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': pl})
             ws.send(jval)
             gevent.sleep(3)
