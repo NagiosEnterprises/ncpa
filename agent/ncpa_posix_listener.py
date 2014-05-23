@@ -14,6 +14,9 @@ from gevent.pool import Pool
 import listener.psapi
 # All of the includes below are dummy includes so that cx_Freeze catches them
 import jinja2.ext
+from gevent import monkey
+
+monkey.patch_all()
 
 
 class Listener(ncpadaemon.Daemon):

@@ -162,6 +162,12 @@ def api_websocket(accessor=None):
     return
 
 
+@listener.route('/top')
+def top():
+    return render_template('top.html')
+
+
+
 @listener.route('/graph/<path:accessor>')
 def graph(accessor=None):
     info = {'graph_path': accessor,
