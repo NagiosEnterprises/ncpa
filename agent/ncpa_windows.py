@@ -12,7 +12,9 @@ import logging
 import os
 import time
 import sys
-from gevent.wsgi import WSGIServer
+from gevent.pywsgi import WSGIServer
+from geventwebsocket.handler import WebSocketHandler
+from gevent.pool import Pool
 # DO NOT REMOVE THIS, THIS FORCES cx_Freeze to include the library
 # DO NOT REMOVE ANYTHING BELOW THIS LINE
 import passive.nrds
@@ -23,6 +25,9 @@ import listener.windowscounters
 import listener.certificate
 import jinja2.ext
 import filename
+from gevent import monkey
+
+monkey.patch_all()
 
 
 class Base(object):
@@ -48,7 +53,6 @@ class Base(object):
         self.config = ConfigParser.ConfigParser()
         self.config.optionxform = str
         self.config.read(self.config_filename)
-        print self.config.sections()
 
     def setup_plugins(self):
         plugin_path = self.config.get('plugin directives', 'plugin_path')
@@ -108,6 +112,8 @@ class Listener(Base):
             listener.server.listener.secret_key = os.urandom(24)
             http_server = WSGIServer(listener=(address, port),
                                      application=listener.server.listener,
+                                     handler_class=WebSocketHandler,
+                                     spawn=Pool(100),
                                      **ssl_context)
             http_server.serve_forever()
         except Exception, e:
