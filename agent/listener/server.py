@@ -10,7 +10,9 @@ import pluginapi
 import functools
 import jinja2
 import datetime
+import json
 import re
+
 
 __VERSION__ = 1.6
 __STARTED__ = datetime.datetime.now()
@@ -140,6 +142,62 @@ def index():
         return render_template('main.html', **info)
     except Exception, e:
         logging.exception(e)
+
+
+@listener.route('/api-websocket/<path:accessor>')
+def api_websocket(accessor=None):
+    print 'Trying a websocket...'
+
+    try:
+        prop = accessor.rsplit('/', 1)[-1]
+    except (IndexError, KeyError):
+        prop = None
+
+    if request.environ.get('wsgi.websocket'):
+        print 'Opened the websocket!'
+        ws = request.environ['wsgi.websocket']
+        while True:
+            message = ws.receive()
+            val = psapi.getter(message)
+            jval = json.dumps(val[prop])
+            ws.send(jval)
+    return
+
+
+@listener.route('/graph/<path:accessor>')
+def graph(accessor=None):
+    info = {'graph_path': accessor,
+            'graph_hash': hash(accessor)}
+
+    if request.args.get('delta'):
+        info['delta'] = 1
+    else:
+        info['delta'] = 0
+
+    unit = request.args.get('unit', 'a').upper()
+    if unit in ['K', 'M', 'G']:
+        info['unit'] = unit
+    else:
+        info['unit'] = ''
+
+    factor = 1
+    if unit == 'K':
+        factor = 1e3
+    elif unit == 'M':
+        factor = 1e6
+    elif unit == 'G':
+        factor = 1e9
+    info['factor'] = factor
+
+    try:
+        prop = accessor.rsplit('/', 1)[-1]
+    except (IndexError, KeyError):
+        prop = None
+
+    info['graph_prop'] = prop
+
+    return render_template('graph.html',
+                           **info)
 
 
 @listener.route('/error/')

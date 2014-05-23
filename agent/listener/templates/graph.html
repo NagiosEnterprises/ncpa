@@ -1,0 +1,204 @@
+<style>
+
+.ncpa-graph {
+    border:2px solid #FAEBD7;
+    border-radius:8px;
+    padding:10px;
+    height:200px;
+    width:650px;
+    background-color: white;
+}
+
+.graph-title {
+    text-align:center;
+    margin:5px 0px 5px 0px;
+}
+
+.can-wrapper {
+    float:left;
+}
+
+.data-units {
+    float:left;
+    font-size: 10px;
+    width: 80px;
+    vertical-align: middle;
+}
+
+.data-units table {
+    border:1px solid #FAEBD7;
+    border-radius: 12px;
+    margin-left: 10px;
+    margin-top: 45px;
+}
+
+.data-units td {
+    width:20px;
+    padding:5px 5px 5px 5px;
+    font-size:10px;
+}
+
+</style>
+<link rel='stylesheet' href='/static/css/bootstrap.css' />
+        <link rel='stylesheet' href='/static/css/bootstrap-responsive.css' />
+<div id='graph-{{ graph_hash }}' class='ncpa-graph'>
+    <script src='/static/js/smoothie.js'></script>
+    <script src='/static/js/jquery-1.8.3.min.js'></script>
+    <script>
+    var interval = 1000;
+
+    // The following are explicitly for delta calculations
+    var delta = !!{{ delta }};
+    var delta_state = [];
+    var factor = {{ factor }};
+    var unit = '{{ unit }}';
+
+    function get_ws_address() {
+        var loc = window.location;
+        if(loc.protocol === 'https:') {
+            var ws_proto = 'wss';
+        } else {
+            var ws_proto = 'ws';
+        }
+        var ws_loc = ws_proto + '://' + loc.hostname + ':5693/api-websocket/' + '{{ graph_path }}';
+        return ws_loc;
+    }
+
+    function adjust_factor(val) {
+        return val / factor;
+    }
+
+    $(document).ready(function() {
+        var graph_title = $('#graph-{{ graph_hash }}-title');
+        var default_smoothie = {maxValue: 100,
+                                minValue: 0,
+                                timestampFormatter:SmoothieChart.timeFormatter,
+                                millisPerPixel:76,
+                                labels:{fillStyle:'#000000'},
+                                grid:{fillStyle:'#ffffff',
+                                      strokeStyle:'rgba(119,119,119,0.18)'}};
+
+        $.getJSON('/api/{{ graph_path }}', function(d) {
+            var ts_length = 0;
+            $.each(d, function(i, o) {
+                var o = o['{{ graph_prop }}'];
+                ts_length = o[0].length || 1;
+                var title = '{{ graph_path }} in ' + unit + o[1];
+                if(delta) {
+                    title += '/s';
+                }
+                graph_title.text(title);
+                if(o[1] != '%') {
+                    delete default_smoothie.maxValue;
+                }
+            });
+
+            var smoothie = new SmoothieChart(default_smoothie);
+            var ws_loc = get_ws_address();
+
+            console.log(ws_loc)
+            var ws = new WebSocket(ws_loc);
+            var lines = [];
+            var min = undefined;
+            var max = undefined;
+            var all = [];
+
+            var td_min = $('#data-{{ graph_hash }}-units td.min');
+            var td_max = $('#data-{{ graph_hash }}-units td.max');
+            var td_cur = $('#data-{{ graph_hash }}-units td.current');
+            var td_avg = $('#data-{{ graph_hash }}-units td.average');
+
+
+            for(var i=0; i<ts_length; i++) {
+                lines.push(new TimeSeries());
+                delta_state.push(0);
+            }
+
+            ws.onopen = function() {
+                ws.send('{{ graph_path }}');
+            }
+
+            ws.onmessage = function(e) {
+                var d = $.parseJSON(e.data);
+                var ts = d[0];
+                var units = d[1];
+                var lsum = 0;
+
+                if(ts instanceof Array != true) {
+                    ts = [ts]
+                }
+
+                $.each(ts, function(i) {
+                    var val = ts[i];
+
+                    if(delta) {
+                        if(delta_state[i] == 0) {
+                            delta_state[i] = val;
+                            val = 0;
+                        }
+                        else {
+                            tmp = val;
+                            val = (val - delta_state[i]) / (interval / 1000);
+                            delta_state[i] = tmp;
+                        }
+                    }
+
+                    val = adjust_factor(val);
+                    lsum += val;
+                    lines[i].append(new Date().getTime(), val);
+                    if(min == undefined || val < min) min = val;
+                    if(max == undefined || val > max) max = val;
+                });
+
+                lmean = lsum / ts.length;
+                all.push(lmean);
+                asum = all.reduce(function(a, b) {return a+b})
+                amean = asum / all.length;
+
+                td_min.text(min.toFixed(2));
+                td_max.text(max.toFixed(2));
+                td_cur.text(lmean.toFixed(2));
+                td_avg.text(amean.toFixed(2));
+            }
+
+            setInterval(function() {ws.send('{{ graph_path }}')}, interval);
+
+            $.each(lines, function(i) {
+                smoothie.addTimeSeries(lines[i], {lineWidth:0.5,
+                                                  strokeStyle:'rgba(0,0,0,0.44)',
+                                                  fillStyle:'rgba(7,0,255,0.29)'});
+            });
+            smoothie.streamTo(document.getElementById('canvas-{{ graph_hash }}'), 1000);
+        }).error(function() {console.log('Errored out!')});
+
+
+    })
+    </script>
+    <div class='graph-title' id='graph-{{ graph_hash }}-title'>{{ graph_path }}</div>
+    <div class='can-wrapper' width='500'>
+        <canvas id='canvas-{{ graph_hash }}' width='500' height='160'></canvas>
+    </div>
+    <div class='data-units' id='data-{{ graph_hash }}-units'>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Current<td>
+                    <td class='current'>None</td>
+                </tr>
+                <tr>
+                    <td>Min<td>
+                    <td class='min'>Inf</td>
+                </tr>
+                <tr>
+                    <td>Max<td>
+                    <td class='max'>-Inf</td>
+                </tr>
+                <tr>
+                    <td>Average<td>
+                    <td class='average'>None</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style='clear:both;'
+</div>
