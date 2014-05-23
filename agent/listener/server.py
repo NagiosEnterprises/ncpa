@@ -138,6 +138,7 @@ def index():
 
 
 @listener.route('/api-websocket/<path:accessor>')
+@requires_auth
 def api_websocket(accessor=None):
     """Meant for use with the websocket and API.
 
@@ -162,6 +163,7 @@ def api_websocket(accessor=None):
 
 
 @listener.route('/top')
+@requires_auth
 def top():
     d = request.args.get('display', 0)
     h = request.args.get('highlight', None)
@@ -194,6 +196,7 @@ def top():
 
 
 @listener.route('/top-websocket/')
+@requires_auth
 def top_websocket():
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
@@ -217,6 +220,7 @@ def top_websocket():
 
 
 @listener.route('/graph/<path:accessor>')
+@requires_auth
 def graph(accessor=None):
     info = {'graph_path': accessor,
             'graph_hash': hash(accessor)}
