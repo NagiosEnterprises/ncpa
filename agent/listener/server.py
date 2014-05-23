@@ -12,6 +12,8 @@ import jinja2
 import datetime
 import json
 import re
+import psutil
+import gevent
 
 
 __VERSION__ = 1.6
@@ -164,8 +166,42 @@ def api_websocket(accessor=None):
 
 @listener.route('/top')
 def top():
-    return render_template('top.html')
+    d = request.args.get('display', 0)
+    info = {}
+    
+    try:
+        info['display'] = int(d)
+    except TypeError:
+        info['display'] = 0
 
+    return render_template('top.html',
+                           **info)
+
+
+@listener.route('/top-websocket/')
+def top_websocket():
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        while True:
+            load = psutil.cpu_percent()
+            vir_mem = psutil.virtual_memory().percent
+            swap_mem = psutil.swap_memory().percent
+            ps = psutil.process_iter()
+            pl = []
+            for p in ps:
+                pl.append(p.as_dict(['username',
+                                     'get_nice',
+                                     'get_memory_info',
+                                     'get_memory_percent',
+                                     'get_cpu_percent',
+                                     'get_cpu_times',
+                                     'name',
+                                     'status',
+                                     'pid']))
+            jval = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': pl})
+            ws.send(jval)
+            gevent.sleep(3)
+    return
 
 
 @listener.route('/graph/<path:accessor>')
