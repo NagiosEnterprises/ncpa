@@ -103,12 +103,6 @@ def dashboard():
                            cpucount=cpu_count)
 
 
-@listener.route('/navigator')
-@requires_auth
-def navigator():
-    return render_template('navigator.html')
-
-
 @listener.route('/logout')
 def logout():
     if session.get('logged', False):
@@ -146,15 +140,19 @@ def index():
 
 @listener.route('/api-websocket/<path:accessor>')
 def api_websocket(accessor=None):
-    print 'Trying a websocket...'
+    """Meant for use with the websocket and API.
 
+    Make a connection to this function, and then pass it the API
+    path you wish to receive. Function returns only the raw value
+    and unit in list form.
+
+    """
     try:
         prop = accessor.rsplit('/', 1)[-1]
     except (IndexError, KeyError):
         prop = None
 
     if request.environ.get('wsgi.websocket'):
-        print 'Opened the websocket!'
         ws = request.environ['wsgi.websocket']
         while True:
             message = ws.receive()
