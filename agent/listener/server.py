@@ -115,9 +115,6 @@ def logout():
 
 
 def make_info_dict():
-    global __VERSION__
-    global __STARTED__
-
     now = datetime.datetime.now()
     uptime = unicode(now - __STARTED__)
 
