@@ -27,6 +27,7 @@
     $(document).ready(function() {
 
         var logbody = $('#tail-{{ tail_hash }}-container tbody')
+        var query_string = '{{ query_string }}'
 
         var get_ws_address = function() {
             var loc = window.location;
@@ -40,15 +41,16 @@
         }
 
         var get_ws_args = function() {
-            var args = {name: 'System'};
-            return $.param(args);
+            var decoded = decodeURIComponent(query_string);
+            return decoded;
         }
 
         var get_ws_total = function() {
             return get_ws_address() + '?' + get_ws_args();
         }
 
-        var ws_loc = get_ws_address();
+        var ws_loc = get_ws_total();
+        console.log(ws_loc);
         var ws = new WebSocket(ws_loc);
 
         var add_log = function(log) {
@@ -65,8 +67,11 @@
         }
 
         ws.onmessage = function(d) {
-            log = $.parseJSON(d.data);
-            add_log(log);
+            logs = $.parseJSON(d.data);
+
+            $.each(logs, function(i, log) {
+                add_log(log);
+            })
         }
 
     })
