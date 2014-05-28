@@ -24,9 +24,9 @@ class Node(object):
 
     def accessor(self, path, *args, **kwargs):
         if path:
-            for x in self.children:
-                if x.name == path[0]:
-                    return x.accessor(path=path[1:], *args, **kwargs)
+            for child in self.children:
+                if child.name == path[0]:
+                    return child.accessor(path=path[1:], *args, **kwargs)
             raise IndexError('No node with that name: %s' % path[0])
         else:
             kwargs['path'] = path[:1]
@@ -62,7 +62,7 @@ class LazyNode(Node):
         else:
             return {self.name: []}
 
-    def parse_query(self):
+    def parse_query(self, *args, **kwargs):
         raise Exception('Base class LazyNode was called, it is abstract, and you need to override this.')
 
 
@@ -71,7 +71,7 @@ class ProcessNode(LazyNode):
     def __init__(self, *args, **kwargs):
         super(ProcessNode, self).__init__(*args, **kwargs)
 
-    def parse_query(self, path):
+    def parse_query(self, path, *args, **kwargs):
         desired_proc = path[0].replace('|', '/')
         metrics = {'count': 0}
         for proc in ps.process_iter():

@@ -1,0 +1,90 @@
+<style>
+    th {
+        text-align: center;
+    }
+
+    * {
+        font-size: .9em;
+    }
+
+    tr.highlight {
+        background-color: teal;
+    }
+
+    td.critical {
+        background-color: red;
+    }
+
+    td.warning {
+        background-color: yellow;
+    }
+</style>
+
+<script src='/static/js/jquery-1.8.3.min.js'></script>
+<link rel='stylesheet' href='/static/css/bootstrap.css' />
+<link rel='stylesheet' href='/static/css/bootstrap-responsive.css' />
+<script>
+    $(document).ready(function() {
+
+        var logbody = $('#tail-{{ tail_hash }}-container tbody')
+
+        var get_ws_address = function() {
+            var loc = window.location;
+            if(loc.protocol === 'https:') {
+                var ws_proto = 'wss';
+            } else {
+                var ws_proto = 'ws';
+            }
+            var ws_loc = ws_proto + '://' + loc.hostname + ':5693/tail-websocket/' + '{{ tail_path }}';
+            return ws_loc;
+        }
+
+        var get_ws_args = function() {
+            var args = {name: 'System'};
+            return $.param(args);
+        }
+
+        var get_ws_total = function() {
+            return get_ws_address() + '?' + get_ws_args();
+        }
+
+        var ws_loc = get_ws_address();
+        var ws = new WebSocket(ws_loc);
+
+        var add_log = function(log) {
+            var tr = $('<tr>');
+            $('<td>', {text: log.time_generated}).appendTo(tr);
+            $('<td>', {text: log.application}).appendTo(tr);
+            $('<td>', {text: log.computer_name}).appendTo(tr);
+            $('<td>', {text: log.category}).appendTo(tr);
+            $('<td>', {text: log.severity}).appendTo(tr);
+            $('<td>', {text: log.event_id}).appendTo(tr);
+            $('<td>', {text: log.message}).appendTo(tr);
+
+            logbody.append(tr)
+        }
+
+        ws.onmessage = function(d) {
+            log = $.parseJSON(d.data);
+            add_log(log);
+        }
+
+    })
+</script>
+
+<div id='tail-{{ tail_hash }}-container'>
+    <table class='table table-striped table-bordered table-condensed'>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Application</th>
+                <th>Hostname</th>
+                <th>Category</th>
+                <th>Severity</th>
+                <th>Event ID</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
