@@ -99,6 +99,7 @@ class Listener(Base):
             address = self.config.get('listener', 'ip')
             port = self.config.getint('listener', 'port')
             listener.server.listener.config_file = self.config_filename
+            listener.server.listener.tail_method = listener.windowslogs.tail_method
             listener.server.listener.config['iconfig'] = self.config
 
             user_cert = self.config.get('listener', 'certificate')

@@ -219,6 +219,36 @@ def top_websocket():
     return
 
 
+@listener.route('/tail-websocket/<path:accessor>')
+@requires_auth
+def tail_websocket(accessor=None):
+    logging.error('Testing websocket connection...')
+    if request.environ.get('wsgi.websocket'):
+        last_ts = datetime.datetime.now()
+        ws = request.environ['wsgi.websocket']
+        logging.error('Established tail socket')
+        while True:
+            try:
+                last_ts, logs = listener.tail_method('System', last_ts)
+                for log in logs:
+                    jlog = json.dumps(log)
+                    ws.send(jlog)
+                gevent.sleep(1)
+            except BaseException as exc:
+                logging.exception(exc)
+    return
+
+
+@listener.route('/tail/<path:accessor>')
+@requires_auth
+def tail(accessor=None):
+    info = {'tail_path': accessor,
+            'tail_hash': hash(accessor)}
+
+    return render_template('tail.html',
+                           **info)
+
+
 @listener.route('/graph/<path:accessor>')
 @requires_auth
 def graph(accessor=None):

@@ -51,7 +51,6 @@ import psapi
 import datetime
 import win32evtlog
 import re
-import time
 import win32evtlogutil
 import win32con
 
@@ -64,11 +63,11 @@ class WindowsLogsNode(psapi.LazyNode):
         else:
             self.request_args = kwargs
             logtypes = self.get_logtypes()
-            filters = self.get_filter_dict()
+            filters = get_filter_dict(kwargs)
             logs = {}
             for logtype in logtypes:
                 try:
-                    logs[logtype] = get_event_logs('localhost', logtype, filters)
+                    logs[logtype] = get_event_logs(None, logtype, filters)
                 except BaseException as exc:
                     logging.exception(exc)
                     logs[logtype] = [{'error': 'Unable to access log: %r' % exc}]
@@ -78,28 +77,31 @@ class WindowsLogsNode(psapi.LazyNode):
         logtypes = self.request_args.get('name', [])
         return logtypes
 
-    def get_filter_dict(self):
-        fdict = {}
-        for key in self.request_args:
-            value = self.request_args[key]
-            if key == 'event_id':
-                fdict['EventID'] = value
-            elif key == 'application':
-                fdict['SourceName'] = value
-            elif key == 'computer_name':
-                fdict['ComputerName'] = value
-            elif key == 'category':
-                fdict['EventCategory'] = value
-            elif key == 'severity':
-                fdict['EventType'] = [EVENT_TYPE.get(x, 'UNKNOWN') for x in value]
-            elif key == 'logged_after':
-                if isinstance(value, (str, unicode)):
-                    logged_after = value
-                else:
-                    logged_after = value[0]
-                logged_after = get_datetime_from_date_input(logged_after)
-                fdict['logged_after'] = logged_after
-        return fdict
+
+def get_filter_dict(request_args):
+    fdict = {}
+    for key in request_args:
+        value = request_args[key]
+        if key == 'event_id':
+            fdict['EventID'] = value
+        elif key == 'application':
+            fdict['SourceName'] = value
+        elif key == 'computer_name':
+            fdict['ComputerName'] = value
+        elif key == 'category':
+            fdict['EventCategory'] = value
+        elif key == 'message':
+            fdict['Message'] = value
+        elif key == 'severity':
+            fdict['EventType'] = [EVENT_TYPE.get(x, 'UNKNOWN') for x in value]
+        elif key == 'logged_after':
+            if isinstance(value, (str, unicode)):
+                logged_after = value
+            else:
+                logged_after = value[0]
+            logged_after = get_datetime_from_date_input(logged_after)
+            fdict['logged_after'] = logged_after
+    return fdict
 
 
 def get_logs_node():
@@ -122,6 +124,8 @@ def get_timedelta(offset, time_frame):
         return datetime.timedelta(seconds=offset)
     elif time_frame == 'm':
         return datetime.timedelta(minutes=offset)
+    elif time_frame == 'h':
+        return datetime.timedelta(hours=offset)
     elif time_frame == 'd':
         return datetime.timedelta(days=offset)
     elif time_frame == 'w':
@@ -130,7 +134,7 @@ def get_timedelta(offset, time_frame):
         offset = 4 * offset
         return datetime.timedelta(weeks=offset)
     else:
-        raise TypeError('Unknown time_frame, Given: %r, expected /smdwM/', time_frame)
+        raise TypeError('Unknown time_frame, Given: %r, expected /smdhwM/', time_frame)
 
 
 def get_datetime_from_date_input(date_input):
@@ -138,47 +142,40 @@ def get_datetime_from_date_input(date_input):
         offset, time_frame = date_input[:-1], date_input[-1]
         offset = abs(int(offset))
         t_delta = get_timedelta(offset, time_frame)
-    except (IndexError, TypeError):
-        logging.error('Date input was invalid, Given: %r', date_input)
+    except (IndexError, TypeError) as exc:
+        logging.error('Date input was invalid, Given: %r, %r', date_input, exc)
         t_delta = datetime.timedelta(days=1)
     return t_delta
 
 
-def date2sec(evt_date):
+def datetime_from_event_date(evt_date):
     """
     This function converts dates with format
     '12/23/99 15:54:09' to seconds since 1970.
 
-    Note from NS:
-
-    This was taken from:
-    http://docs.activestate.com/activepython/2.4/pywin32/Windows_NT_Eventlog.html
-
-    The fact that this is required is really dubious. I'm not sure why this was implemented
-    in this in the win32 module.
+    Note - NS:
+    The fact that this is required is really dubious. Not sure why the win32 API
+    doesn't take care of this, but alas, here we are.
     """
-    regexp = re.compile('(.*)\\s(.*)')
-    reg_result = regexp.search(evt_date)
-    date = reg_result.group(1)
-    the_time = reg_result.group(2)
-    mon, day, year = [int(x) for x in date.split('/')]
-    hour, minute, sec = [int(x) for x in the_time.split(':')]
-    tup = [year, mon, day, hour, minute, sec, 0, 0, 0]
-
-    sec = time.mktime(tup)
-
-    return sec
+    date_string = str(evt_date)
+    time_generated = datetime.datetime.strptime(date_string, '%m/%d/%y %H:%M:%S')
+    return time_generated
 
 
-def is_interesting_event(event, filters):
+def is_interesting_event(event, logtype, filters):
     for log_property in filters:
         if log_property == 'logged_after':
             continue
         restrictions = filters[log_property]
         for restriction in restrictions:
             value = getattr(event, log_property, None)
-            if not value is None and str(value) != str(restriction):
-                return False
+            if value is None and log_property == 'Message':
+                safe = win32evtlogutil.SafeFormatMessage(event, logtype)
+                if not re.search(restriction, safe):
+                    return False
+            if not value is None:
+                if str(restriction) != str(value):
+                    return False
     return True
 
 
@@ -204,17 +201,16 @@ def get_event_logs(server, logtype, filters):
         logged_after = datetime.datetime.now() - logged_after
     except KeyError:
         logged_after = datetime.datetime.now() - datetime.timedelta(days=1)
-    logged_after = time.mktime(logged_after.timetuple())
 
     try:
         while True:
             events = win32evtlog.ReadEventLog(handle, flags, 0)
             if events:
                 for event in events:
-                    time_generated = date2sec(str(event.TimeGenerated))
+                    time_generated = datetime_from_event_date(event.TimeGenerated)
                     if time_generated < logged_after:
                         raise StopIteration
-                    if is_interesting_event(event, filters):
+                    elif is_interesting_event(event, logtype, filters):
                         safe_log = normalize_event(event, logtype)
                         logs.append(safe_log)
     except StopIteration:
@@ -223,3 +219,19 @@ def get_event_logs(server, logtype, filters):
         win32evtlog.CloseEventLog(handle)
     return logs
 
+
+def tail_method(name, last_ts, server=None, *args, **kwargs):
+    filters = get_filter_dict(kwargs)
+    filters['logged_after'] = datetime.timedelta(seconds=10)
+    logs = get_event_logs(server, name, filters)
+    newest_ts = last_ts
+    non_dup_logs = []
+
+    for log in logs:
+        date_ts = datetime_from_event_date(log['time_generated'])
+        if date_ts > newest_ts:
+            newest_ts = date_ts
+        if date_ts > last_ts:
+            non_dup_logs.append(log)
+
+    return newest_ts, non_dup_logs
