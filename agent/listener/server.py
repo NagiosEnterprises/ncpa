@@ -14,6 +14,7 @@ import json
 import re
 import psutil
 import gevent
+import geventwebsocket
 
 
 __VERSION__ = 1.6
@@ -222,19 +223,24 @@ def top_websocket():
 @listener.route('/tail-websocket/<path:accessor>')
 @requires_auth
 def tail_websocket(accessor=None):
-    logging.error('Testing websocket connection...')
     if request.environ.get('wsgi.websocket'):
         last_ts = datetime.datetime.now()
         ws = request.environ['wsgi.websocket']
-        logging.error('Established tail socket')
         while True:
             try:
-                last_ts, logs = listener.tail_method('System', last_ts)
-                for log in logs:
-                    jlog = json.dumps(log)
-                    ws.send(jlog)
+                last_ts, logs = listener.tail_method(last_ts=last_ts, **request.args)
+
+                if logs:
+                    json_log = json.dumps(logs)
+                    ws.send(json_log)
+
                 gevent.sleep(1)
+            except geventwebsocket.WebSocketError as exc:
+                ws.close()
+                logging.exception(exc)
+                return
             except BaseException as exc:
+                ws.close()
                 logging.exception(exc)
     return
 
@@ -244,6 +250,9 @@ def tail_websocket(accessor=None):
 def tail(accessor=None):
     info = {'tail_path': accessor,
             'tail_hash': hash(accessor)}
+
+    query_string = request.query_string
+    info['query_string'] = urllib.quote(query_string)
 
     return render_template('tail.html',
                            **info)
@@ -314,9 +323,9 @@ def nrdp():
             response = requests.post(forward_to, params=request.form)
         resp = Response(response.content, 200, mimetype=response.headers['content-type'])
         return resp
-    except Exception, e:
-        logging.exception(e)
-        return error(msg=unicode(e))
+    except Exception as exc:
+        logging.exception(exc)
+        return error(msg=unicode(exc))
 
 
 @listener.route('/api/agent/plugin/<plugin_name>/')
@@ -329,9 +338,9 @@ def plugin_api(plugin_name=None, plugin_args=None):
         plugin_args = [urllib.unquote(x) for x in plugin_args.split('/')]
     try:
         response = pluginapi.execute_plugin(plugin_name, plugin_args, config)
-    except Exception, e:
-        logging.exception(e)
-        return error(msg='Error running plugin: %s' % unicode(e))
+    except Exception as exc:
+        logging.exception(exc)
+        return error(msg='Error running plugin: %r' % exc)
     return jsonify({'value': response})
 
 

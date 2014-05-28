@@ -162,7 +162,7 @@ def datetime_from_event_date(evt_date):
     return time_generated
 
 
-def is_interesting_event(event, logtype, filters):
+def is_interesting_event(event, name, filters):
     for log_property in filters:
         if log_property == 'logged_after':
             continue
@@ -170,7 +170,7 @@ def is_interesting_event(event, logtype, filters):
         for restriction in restrictions:
             value = getattr(event, log_property, None)
             if value is None and log_property == 'Message':
-                safe = win32evtlogutil.SafeFormatMessage(event, logtype)
+                safe = win32evtlogutil.SafeFormatMessage(event, name)
                 if not re.search(restriction, safe):
                     return False
             if not value is None:
@@ -179,9 +179,9 @@ def is_interesting_event(event, logtype, filters):
     return True
 
 
-def normalize_event(event, logtype):
+def normalize_event(event, name):
     safe_log = {}
-    safe_log['message'] = win32evtlogutil.SafeFormatMessage(event, logtype)
+    safe_log['message'] = win32evtlogutil.SafeFormatMessage(event, name)
     safe_log['event_id'] = str(event.EventID)
     safe_log['computer_name'] = str(event.ComputerName)
     safe_log['category'] = str(event.EventCategory)
@@ -191,8 +191,8 @@ def normalize_event(event, logtype):
     return safe_log
 
 
-def get_event_logs(server, logtype, filters):
-    handle = win32evtlog.OpenEventLog(server, logtype)
+def get_event_logs(server, name, filters):
+    handle = win32evtlog.OpenEventLog(server, name)
     flags = win32evtlog.EVENTLOG_BACKWARDS_READ | win32evtlog.EVENTLOG_SEQUENTIAL_READ
     logs = []
 
@@ -210,8 +210,8 @@ def get_event_logs(server, logtype, filters):
                     time_generated = datetime_from_event_date(event.TimeGenerated)
                     if time_generated < logged_after:
                         raise StopIteration
-                    elif is_interesting_event(event, logtype, filters):
-                        safe_log = normalize_event(event, logtype)
+                    elif is_interesting_event(event, name, filters):
+                        safe_log = normalize_event(event, name)
                         logs.append(safe_log)
     except StopIteration:
         pass
@@ -220,7 +220,7 @@ def get_event_logs(server, logtype, filters):
     return logs
 
 
-def tail_method(name, last_ts, server=None, *args, **kwargs):
+def tail_method(last_ts, server=None, name='System', *args, **kwargs):
     filters = get_filter_dict(kwargs)
     filters['logged_after'] = datetime.timedelta(seconds=10)
     logs = get_event_logs(server, name, filters)
