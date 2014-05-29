@@ -15,10 +15,10 @@ from itertools import izip
 
 def get_cmdline(plugin_name, plugin_args, instruction):
     u"""Execute with special instructions.
-    
+
     EXAMPLE instruction (Powershell):
     powershell -ExecutionPolicy Unrestricted $plugin_name $plugin_args
-    
+
     EXAMPLE instruction (VBS):
     wscript $plugin_name $plugin_args
 
@@ -35,12 +35,37 @@ def get_cmdline(plugin_name, plugin_args, instruction):
     return command
 
 
+def standardize_log_check(accessor_response):
+    '''Put the API log output into the standard form the plugin checker
+    expects.
+
+    '''
+    try:
+        logs = accessor_response['logs']
+    except KeyError:
+        logging.error('Trying to standardize log check but no logs key exists in response.')
+        raise
+
+    # We are going to create a summed values array. In order to keep the ordering
+    # of the logs we are going to put them into the array based on lexical ordering
+    # of the array keys.
+    summed_values = []
+    log_unit = ''
+    log_names = sorted(logs.keys())
+
+    for log_name in log_names:
+        num_logs = len(logs[log_name])
+        summed_values.append(num_logs)
+
+    return log_names, {'logs': [summed_values, log_unit]}
+
+
 def deltaize_call(key_name, result):
-    u"""Saves the results from this run of the check to be checked later.
+    """Saves the results from this run of the check to be checked later.
 
     """
     #Get our temp file filename to save our results too.
-    filename = u"ncpa-%s.tmp" % unicode(hash(key_name))
+    filename = "ncpa-%s.tmp" % unicode(hash(key_name))
     tmpfile = os.path.join(tempfile.gettempdir(), filename)
 
     if os.path.isfile(tmpfile):
@@ -68,38 +93,43 @@ def deltaize_call(key_name, result):
 
 
 def make_plugin_response_from_accessor(accessor_response, accessor_args):
-    u"""This function is a monster and needs to be broken up and rewritten
+    """TODO: This function is a monster and needs to be broken up and rewritten
 
     """
-    # TODO: Rewrite this beast.
-    #~ First look at the GET and POST arguments to see what we are 
+    #~ First look at the GET and POST arguments to see what we are
     #~ going to use for our warning/critical
+    is_log_check = False
+
     try:
         processed_args = dict(urlparse.parse_qsl(accessor_args))
     except ValueError:
-        logging.debug(u'No argument detected in string %s' % accessor_args)
+        logging.debug('No argument detected in string %s', accessor_args)
         processed_args = {}
     except Exception, e:
         processed_args = {}
         logging.exception(e)
-        logging.warning(u'Unabled to process arguments.')
-    
+        logging.warning('Unabled to process arguments.')
+    logging.error(accessor_response)
+
     #~ We need to have [{dictionary: value}] structure, so if it isn't that
     #~ we need to throw a warning
+    #if 'logs' in accessor_response:
+        #is_log_check = True
+        #log_names, accessor_response = standardize_log_check(accessor_response)
     if type(list(accessor_response.values())[0]) is dict:
-        stdout = u'ERROR: Non-node value requested. Requested entire tree.'
+        stdout = 'ERROR: Non-node value requested.'
         returncode = 3
     else:
         result = list(accessor_response.values())[0]
         if not type(result) in [list, tuple]:
-            unit = u''
+            unit = ''
             result = [result]
         try:
             unit = result[1]
         except IndexError:
-            unit = u''
+            unit = ''
         result = result[0]
-        
+
         if type(result) == bool:
             bool_name = list(accessor_response.keys())[0]
             if result:
@@ -108,15 +138,15 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
                 return {u'returncode': 2, u'stdout': u"%s's status was not as expected." % bool_name}
         elif not type(result) in [list, tuple]:
             result = [result]
-        
+
         warning = processed_args.get(u'warning')
         critical = processed_args.get(u'critical')
         s_unit = processed_args.get(u'unit')
         delta = processed_args.get(u'delta')
-        
+
         if delta:
             result = deltaize_call(list(accessor_response.keys())[0], result)
-        
+
         if s_unit == u'T':
             factor = 1e12
         elif s_unit == u'G':
@@ -170,7 +200,7 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
             perfdata.append(pdata)
         perfdata = u' '.join(perfdata)
         stdout = u"%s|%s" % (stdout, perfdata)
-        
+
     return {u'returncode': returncode, u'stdout': stdout}
 
 
@@ -224,12 +254,12 @@ def get_plugin_instructions(plugin_name, config):
 
 
 def execute_plugin(plugin_name, plugin_args, config):
-    u"""Runs custom scripts that MUST be located in the scripts subdirectory
+    """Runs custom scripts that MUST be located in the scripts subdirectory
     of the executable
-    
+
     """
     #Assemble our absolute plugin file name for calling
-    plugin_path = config.get(u'plugin directives', u'plugin_path')
+    plugin_path = config.get('plugin directives', 'plugin_path')
     plugin_abs_path = os.path.join(plugin_path, plugin_name)
 
     #Get any special instructions from the config for executing the plugin
@@ -237,14 +267,14 @@ def execute_plugin(plugin_name, plugin_args, config):
 
     #Make our command line
     cmd = get_cmdline(plugin_abs_path, plugin_args, instructions)
-    
-    logging.debug(u'Running process with command line: `%s`', u' '.join(cmd))
-    
+
+    logging.debug('Running process with command line: `%s`', ' '.join(cmd))
+
     running_check = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     running_check.wait()
 
     returncode = running_check.returncode
-    stdout = u''.join(running_check.stdout.readlines()).replace(u'\r\n', u'\n').replace(u'\r', u'\n').strip()
-    
-    return {u'returncode': returncode, u'stdout': stdout}
+    stdout = ''.join(running_check.stdout.readlines()).replace('\r\n', '\n').replace('\r', '\n').strip()
+
+    return {'returncode': returncode, 'stdout': stdout}
 

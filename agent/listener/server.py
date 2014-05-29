@@ -363,7 +363,7 @@ def api(accessor='', raw=False):
         return jsonify({'value': response})
 
 
-def internal_api(accessor=None, listener_config=None, **kwargs):
+def internal_api(accessor=None, listener_config=None, *args, **kwargs):
     logging.debug('Accessing internal API with accessor %s', accessor)
     accessor_name, accessor_args, plugin_name, plugin_args = parse_internal_input(accessor)
     if accessor_name:
@@ -372,7 +372,7 @@ def internal_api(accessor=None, listener_config=None, **kwargs):
             acc_response = psapi.getter(accessor_name, **kwargs)
         except IndexError, e:
             logging.exception(e)
-            logging.warning("User request invalid node: %s" % accessor_name)
+            logging.warning("User request invalid node: %s", accessor_name)
             result = {'returncode': 3, 'stdout': 'Invalid entry specified. No known node by %s' % accessor_name}
         else:
             result = pluginapi.make_plugin_response_from_accessor(acc_response, accessor_args)
