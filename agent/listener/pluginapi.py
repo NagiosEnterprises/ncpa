@@ -205,7 +205,7 @@ def make_plugin_response_from_accessor(accessor_response, accessor_args):
 
 
 def is_within_range(nagios_range, value):
-    u"""Returns False if the given value will raise an alert for the given
+    """Returns False if the given value will raise an alert for the given
     nagios_range.
 
     """
@@ -217,26 +217,26 @@ def is_within_range(nagios_range, value):
     value = float(value)
 
     #Setup our regular expressions to parse the Nagios ranges
-    first_float = ur'(?P<first>(-?[0-9]+(\.[0-9]+)?))'
-    second_float = ur'(?P<second>(-?[0-9]+(\.[0-9]+)?))'
+    first_float = r'(?P<first>(-?[0-9]+(\.[0-9]+)?))'
+    second_float = r'(?P<second>(-?[0-9]+(\.[0-9]+)?))'
 
     #The following is a list of regular expression => function. If the regular expression matches
     #then run the function. The function is a comparison involving value.
-    actions = [(ur'^%s$' % first_float, lambda y: (value > float(y.group(u'first'))) or (value < 0)),
-               (ur'^%s:$' % first_float, lambda y: value < float(y.group(u'first'))),
-               (ur'^~:%s$' % first_float, lambda y: value > float(y.group(u'first'))),
-               (ur'^%s:%s$' % (first_float, second_float), lambda y: (value < float(y.group(u'first'))) or (value > float(y.group(u'second')))),
-               (ur'^@%s:%s$' % (first_float, second_float), lambda y: not((value < float(y.group(u'first'))) or (value > float(y.group(u'second')))))]
+    actions = [(r'^%s$' % first_float, lambda y: (value > float(y.group('first'))) or (value < 0)),
+               (r'^%s:$' % first_float, lambda y: value < float(y.group('first'))),
+               (r'^~:%s$' % first_float, lambda y: value > float(y.group('first'))),
+               (r'^%s:%s$' % (first_float, second_float), lambda y: (value < float(y.group('first'))) or (value > float(y.group('second')))),
+               (r'^@%s:%s$' % (first_float, second_float), lambda y: not((value < float(y.group('first'))) or (value > float(y.group('second')))))]
 
     #For each of the previous list items, run the regular expression, and if the regular expression
     #finds a match, run the function and return its comparison result.
     for regex_string, func in actions:
         res = re.match(regex_string, nagios_range)
-        if res: 
+        if res:
             return func(res)
 
     #If none of the items matches, the warning/critical format was bogus! Sound the alarms!
-    raise Exception(u'Improper warning/critical format.')
+    raise Exception('Improper warning/critical format.')
 
 
 def get_plugin_instructions(plugin_name, config):
