@@ -58,8 +58,8 @@ def requires_auth(f):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
         token = request.args.get('token', None)
 
-        if session.get('logged', False):
-            pass
+        if session.get('logged', False) or token == ncpa_token:
+            session['logged'] = True
         elif token is None:
             return redirect(url_for('login'))
         elif token != ncpa_token:
@@ -154,10 +154,12 @@ def api_websocket(accessor=None):
         prop = None
 
     if request.environ.get('wsgi.websocket'):
+        config = listener.config['iconfig']
         ws = request.environ['wsgi.websocket']
         while True:
             message = ws.receive()
-            val = psapi.getter(message)
+            node = psapi.getter(message, config)
+            val = node.walk(first=True)
             jval = json.dumps(val[prop])
             ws.send(jval)
     return
@@ -173,7 +175,7 @@ def top():
     info = {}
 
     if h is None:
-        info['highlight'] = 0
+        info['highlight'] = None
     else:
         info['highlight'] = h
 
@@ -216,7 +218,7 @@ def top_websocket():
                 pl.append(pd)
             jval = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': pl})
             ws.send(jval)
-            gevent.sleep(3)
+            gevent.sleep(1)
     return
 
 
@@ -234,7 +236,7 @@ def tail_websocket(accessor=None):
                     json_log = json.dumps(logs)
                     ws.send(json_log)
 
-                gevent.sleep(1)
+                gevent.sleep(2)
             except geventwebsocket.WebSocketError as exc:
                 ws.close()
                 logging.exception(exc)
@@ -344,23 +346,44 @@ def plugin_api(plugin_name=None, plugin_args=None):
     return jsonify({'value': response})
 
 
+#@listener.route('/api/')
+#@listener.route('/api/<path:accessor>')
+#def api(accessor='', raw=False):
+#    if request.args.get('check'):
+#        url = accessor + '?' + urllib.urlencode(request.args)
+#        return jsonify({'value': internal_api(url, listener.config['iconfig'], **request.args)})
+#    try:
+#        plugin_path = listener.config['iconfig'].get('plugin directives', 'plugin_path')
+#        response = psapi.getter(accessor, plugin_path, **request.args)
+#    except Exception, e:
+#        logging.exception(e)
+#        return error(msg='Referencing node that does not exist.')
+#    if raw:
+#        return response
+#    else:
+#        return jsonify({'value': response})
+
+
 @listener.route('/api/')
 @listener.route('/api/<path:accessor>')
-@requires_auth
-def api(accessor='', raw=False):
-    if request.args.get('check'):
-        url = accessor + '?' + urllib.urlencode(request.args)
-        return jsonify({'value': internal_api(url, listener.config['iconfig'], **request.args)})
+def api(accessor=''):
     try:
-        plugin_path = listener.config['iconfig'].get('plugin directives', 'plugin_path')
-        response = psapi.getter(accessor, plugin_path, **request.args)
-    except Exception, e:
-        logging.exception(e)
-        return error(msg='Referencing node that does not exist.')
-    if raw:
-        return response
+        config = listener.config['iconfig']
+        node = psapi.getter(accessor, config)
+    except ValueError:
+        return error(msg='Referencing node that does not exist: %s' % accessor)
+    # Setup sane/safe arguments for actually getting the data. We take in all
+    # arguments that were passed via GET/POST. If they passed a config variable
+    # we clobber it, as we trust what is in the config.
+    sane_args = dict(request.args)
+    sane_args['config'] = config
+    sane_args['accessor'] = accessor
+
+    if request.args.get('check'):
+        value = node.run_check(**sane_args)
     else:
-        return jsonify({'value': response})
+        value = node.walk(**sane_args)
+    return jsonify({'value': value})
 
 
 def internal_api(accessor=None, listener_config=None, *args, **kwargs):

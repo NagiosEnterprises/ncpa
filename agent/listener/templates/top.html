@@ -20,6 +20,7 @@
     }
 </style>
 
+<script src='/static/js/smoothie.js'></script>
 <script src='/static/js/jquery-1.8.3.min.js'></script>
 <link rel='stylesheet' href='/static/css/bootstrap.css' />
 <link rel='stylesheet' href='/static/css/bootstrap-responsive.css' />
@@ -33,6 +34,7 @@
         var plhead = $('#top-container thead tr#titles')
         var order = ['pid', 'name', 'username', 'cpu_percent', 'memory_percent'];
         var current_pl = [];
+        
         var get_ws_address = function() {
             var loc = window.location;
             if(loc.protocol === 'https:') {
@@ -110,7 +112,7 @@
         }
         
         var create_plbody = function(pl) {
-            console.log(critical);
+            console.log(highlight);
             plbody.empty();
             $.each(pl, function(i) {
                 if (display > 0 && display <= i) {
@@ -120,7 +122,7 @@
                 var tr = $('<tr>', {id: p.pid});
                 $.each(order, function(j) {
                     var td = $('<td>', {text: p[order[j]]});
-                    if (order[j] == 'name' && p[order[j]].indexOf(highlight) > -1) {
+                    if (highlight != null && order[j] == 'name' && p[order[j]].indexOf(highlight) > -1) {
                         tr.addClass('highlight');
                     }
                     if ((order[j] == 'cpu_percent' || order[j] == 'memory_percent') && critical > 0 && p[order[j]] > critical) {
@@ -139,7 +141,6 @@
         var ws = new WebSocket(ws_loc);
         
         ws.onmessage = function(d) {
-            console.log(d.data);
             info = $.parseJSON(d.data);
             
             var load = info.load
