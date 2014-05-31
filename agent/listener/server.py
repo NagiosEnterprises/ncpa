@@ -370,7 +370,8 @@ def api(accessor=''):
     try:
         config = listener.config['iconfig']
         node = psapi.getter(accessor, config)
-    except ValueError:
+    except ValueError as exc:
+        logging.exception(exc)
         return error(msg='Referencing node that does not exist: %s' % accessor)
     # Setup sane/safe arguments for actually getting the data. We take in all
     # arguments that were passed via GET/POST. If they passed a config variable
@@ -393,8 +394,8 @@ def internal_api(accessor=None, listener_config=None, *args, **kwargs):
         try:
             logging.debug('Accessing internal API with accessor %s', accessor_name)
             acc_response = psapi.getter(accessor_name, **kwargs)
-        except IndexError, e:
-            logging.exception(e)
+        except IndexError as exc:
+            logging.exception(exc)
             logging.warning("User request invalid node: %s", accessor_name)
             result = {'returncode': 3, 'stdout': 'Invalid entry specified. No known node by %s' % accessor_name}
         else:

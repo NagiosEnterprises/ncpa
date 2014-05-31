@@ -3,10 +3,9 @@ import os
 import logging
 import re
 import platform
-import psextensions
 
 from nodes import ParentNode, RunnableNode, LazyNode
-from pluginnodes import PluginAgentNode, PluginNode
+from pluginnodes import PluginAgentNode
 root = None
 
 
@@ -163,7 +162,7 @@ def get_service_node():
     return ServiceNode('service')
 
 
-def get_root_node():
+def get_root_node(*args):
     cpu = get_cpu_node()
     memory = get_memory_node()
     disk = get_disk_node()
@@ -180,7 +179,7 @@ def init_root(*args):
     global root
     root = get_root_node()
     for n in args:
-        root.children.append(n)
+        root.add_child(n)
 
 
 def getter(accessor, config):

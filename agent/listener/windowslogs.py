@@ -47,7 +47,7 @@ adaptation of the input Logged After specification.
 
 """
 import logging
-import psapi
+import nodes
 import datetime
 import win32evtlog
 import re
@@ -55,14 +55,138 @@ import win32evtlogutil
 import win32con
 
 
-class WindowsLogsNode(psapi.LazyNode):
+class WindowsLogsNode(nodes.LazyNode):
+
+    def walk(self, *args, **kwargs):
+        try:
+            logtypes = get_logtypes(kwargs)
+            filters = get_filter_dict(kwargs)
+            if not logtypes:
+                raise AttributeError('No log types given.')
+
+            def log_method(*args, **kwargs):
+                return WindowsLogsNode.get_logs(logtypes, filters, *args, **kwargs)
+
+            self.method = log_method
+            return super(WindowsLogsNode, self).walk(*args, **kwargs)
+        except AttributeError:
+            return {self.name: []}
+
+    @staticmethod
+    def get_logs(logtypes, filters, *args, **kwargs):
+        logs = {}
+        server = kwargs.get('server', None)
+        if server:
+            server = server[0]
+
+        for logtype in logtypes:
+            try:
+                logs[logtype] = get_event_logs(server, logtype, filters)
+            except BaseException as exc:
+                logging.exception(exc)
+                logs[logtype] = [{'error': 'Unable to access log: %r' % exc}]
+        return logs
+
+    def run_check(self, *args, **kwargs):
+        logs = self.walk(*args, **kwargs)['logs']
+        log_names = sorted(logs.keys())
+        log_counts = [len(logs[x]) for x in log_names]
+
+        self.set_warning(kwargs)
+        self.set_critical(kwargs)
+        self.set_log_check(kwargs)
+        self.get_delta_values(log_counts, kwargs, log_names)
+
+        returncode = 0
+        prefix = 'OK'
+
+        if self.is_warning(log_counts, log_names):
+            returncode = 1
+            prefix = 'WARNING'
+        if self.is_critical(log_counts, log_names):
+            returncode = 2
+            prefix = 'CRITICAL'
+
+        log_names.append('Total_Count')
+        log_counts.append(sum(log_counts))
+        logged_after = kwargs.get('logged_after', None)
+        if not logged_after is None:
+            logged_after = logged_after[0]
+        nice_timedelta = self.translate_timedelta(logged_after)
+
+        perfdata = ' '.join(["'%s'=%d;%s;%s;" % (name, count, self.warning, self.critical) for name, count in zip(log_names, log_counts)])
+        info = ','.join(['%s has %d logs' % (name, count) for name, count in zip(log_names, log_counts)])
+        info_line = '%s: %s that are younger than %s' % (prefix, info, nice_timedelta)
+
+        stdout = '%s | %s' % (info_line, perfdata)
+        return {'stdout': stdout, 'returncode': returncode}
+
+    @staticmethod
+    def translate_timedelta(time_delta):
+        if not time_delta:
+            return 'the universe'
+        num, suffix = time_delta[:-1], time_delta[-1]
+        if suffix == 's':
+            nice_name = 'second'
+        elif suffix == 'm':
+            nice_name = 'minute'
+        elif suffix == 'h':
+            nice_name = 'hour'
+        elif suffix == 'd':
+            nice_name = 'day'
+        elif suffix == 'w':
+            nice_name = 'week'
+        elif suffix == 'M':
+            nice_name = 'month'
+        if int(num) > 1:
+            nice_name += 's'
+        nice_name += ' old'
+        return '%s %s' % (num, nice_name)
+
+    def set_log_check(self, request_args):
+        log_check = request_args.get('type', 'all')
+        if log_check != 'all':
+            self.log_check = 'individual'
+        else:
+            self.log_check = 'all'
+
+    def is_warning(self, log_counts, log_names):
+        if not self.warning:
+            return False
+
+        warnings = []
+
+        if self.log_check == 'all':
+            return self.is_within_range(self.warning, sum(log_counts))
+        else:
+            for count, name in zip(log_counts, log_names):
+                if self.is_within_range(self.warning, count):
+                    warnings.append(True)
+                else:
+                    warnings.append(False)
+            return any(warnings)
+
+    def is_critical(self, log_counts, log_names):
+        if not self.critical:
+            return False
+
+        criticals = []
+
+        if self.log_check == 'all':
+            return self.is_within_range(self.critical, sum(log_counts))
+        else:
+            for count, name in zip(log_counts, log_names):
+                if self.is_within_range(self.critical, count):
+                    criticals.append(True)
+                else:
+                    criticals.append(False)
+            return any(criticals)
 
     def run(self, path, *args, **kwargs):
         if args == []:
             return {self.name: []}
         else:
-            self.request_args = kwargs
-            logtypes = self.get_logtypes()
+            logtypes = get_logtypes(kwargs)
             filters = get_filter_dict(kwargs)
             logs = {}
             for logtype in logtypes:
@@ -73,9 +197,10 @@ class WindowsLogsNode(psapi.LazyNode):
                     logs[logtype] = [{'error': 'Unable to access log: %r' % exc}]
             return {self.name: logs}
 
-    def get_logtypes(self):
-        logtypes = self.request_args.get('name', [])
-        return logtypes
+
+def get_logtypes(request_args):
+    logtypes = request_args.get('name', [])
+    return logtypes
 
 
 def get_filter_dict(request_args):
@@ -105,7 +230,7 @@ def get_filter_dict(request_args):
 
 
 def get_logs_node():
-    return WindowsLogsNode('logs')
+    return WindowsLogsNode('logs', None)
 
 EVENT_TYPE = {win32con.EVENTLOG_AUDIT_FAILURE: 'AUDIT_FAILURE',
               win32con.EVENTLOG_AUDIT_SUCCESS: 'AUDIT_SUCCESS',
@@ -220,9 +345,16 @@ def get_event_logs(server, name, filters):
     return logs
 
 
-def tail_method(last_ts, server=None, name='System', *args, **kwargs):
+def tail_method(last_ts, server=None, *args, **kwargs):
     filters = get_filter_dict(kwargs)
     filters['logged_after'] = datetime.timedelta(seconds=10)
+    log_names = kwargs.get('name', None)
+
+    if log_names is None:
+        name = 'System'
+    else:
+        name = log_names[0]
+
     logs = get_event_logs(server, name, filters)
     newest_ts = last_ts
     non_dup_logs = []

@@ -10,33 +10,42 @@ import re
 class ParentNode(object):
 
     def __init__(self, name, children, *args, **kwargs):
-        self.children = children
-        self.children_names = [x.name for x in children]
+        self.children = {}
         self.name = name
+        for child in children:
+            self.add_child(child)
+
+    def add_child(self, new_node):
+        self.children[new_node.name] = new_node
 
     def accessor(self, path, config):
         if path:
-            next_child_name, rest_path = path[0], path[1:]
-            child_index = self.children_names.index(next_child_name)
-            child = self.children[child_index]
-            return child.accessor(rest_path, config)
+            try:
+                next_child_name, rest_path = path[0], path[1:]
+                child = self.children[next_child_name]
+                return child.accessor(rest_path, config)
+            except KeyError:
+                return ERROR_NODE
         else:
             return self
 
     def walk(self, *args, **kwargs):
         stat = {}
-        for child in self.children:
+        for name, child in self.children.iteritems():
             try:
                 if kwargs.get('first', None) is None:
                     kwargs['first'] = False
                 stat.update(child.walk(*args, **kwargs))
             except Exception as exc:
-                stat.update({child.name: 'Error retrieving child: %r' % str(exc)})
+                logging.exception(exc)
+                stat.update({name: 'Error retrieving child: %r' % str(exc)})
         return {self.name: stat}
 
     def run_check(self, *args, **kwargs):
         return {'stdout': 'Unable to run check on non-child node. Revise your query.',
                 'returncode': 3}
+
+ERROR_NODE = ParentNode(name='NodeDoesNotExist', children=[])
 
 
 class RunnableNode(ParentNode):
@@ -44,8 +53,9 @@ class RunnableNode(ParentNode):
     def __init__(self, name, method, *args, **kwargs):
         self.method = method
         self.name = name
-        self.children = []
+        self.children = {}
         self.unit = ''
+        self.delta = False
 
     def accessor(self, path, config):
         if path:
@@ -57,31 +67,75 @@ class RunnableNode(ParentNode):
         result = self.method()
         return {self.name: result}
 
-    def run_check(self, *args, **kwargs):
-        values, self.unit = self.method()
-        if not isinstance(values, (list, tuple)):
-            values = [values]
+    def set_unit(self, unit, request_args):
+        if 'unit' in request_args:
+            self.unit = request_args['unit'][0]
+        else:
+            self.unit = unit
 
-        delta = kwargs.get('delta', False)
-        accessor = kwargs.get('accessor', None)
+    def get_delta_values(self, values, request_args, hasher=False):
+        delta = request_args.get('delta', False)
+        if hasher is None:
+            accessor = request_args.get('accessor', None)
+        else:
+            accessor = hasher
         if delta:
+            self.delta = True
             values = self.deltaize_values(values, accessor)
+        return values
 
-        units = kwargs.get('units', None)
+    def get_adjusted_scale(self, values, request_args):
+        units = request_args.get('units', None)
         if not units is None:
             values, units = self.adjust_scale(values, units[0])
             self.unit = '%s%s' % (units, self.unit)
+        return values
+
+    def set_warning(self, request_args):
+        warning = request_args.get('warning', '')
+        if warning:
+            self.warning = warning[0]
+        else:
+            self.warning = warning
+
+    def set_critical(self, request_args):
+        critical = request_args.get('critical', '')
+        if critical:
+            self.critical = critical[0]
+        else:
+            self.critical = critical
+
+    def set_title(self, request_args):
+        title = request_args.get('title', None)
+        if not title is None:
+            self.title = title[0]
+        else:
+            self.title = self.name
+
+    def run_check(self, *args, **kwargs):
+        try:
+            values, unit = self.method(*args, **kwargs)
+        except TypeError:
+            values, unit = self.method()
+
+        if not isinstance(values, (list, tuple)):
+            values = [values]
+
+        self.set_unit(unit, kwargs)
+        self.set_title(kwargs)
+        values = self.get_delta_values(values, kwargs)
+        values = self.get_adjusted_scale(values, kwargs)
 
         try:
-            warning, is_warning = kwargs.get('warning', ''), False
-            critical, is_critical = kwargs.get('critical', ''), False
-            if warning:
-                warning = warning[0]
-                is_warning = any([self.is_within_range(warning, x) for x in values])
-            if critical:
-                critical = critical[0]
-                is_critical = any([self.is_within_range(critical, x) for x in values])
-            returncode, stdout = self.get_nagios_return(values, is_warning, is_critical, warning, critical, delta)
+            self.set_warning(kwargs)
+            self.set_critical(kwargs)
+            is_warning = False
+            is_critical = False
+            if self.warning:
+                is_warning = any([self.is_within_range(self.warning, x) for x in values])
+            if self.critical:
+                is_critical = any([self.is_within_range(self.critical, x) for x in values])
+            returncode, stdout = self.get_nagios_return(values, is_warning, is_critical)
         except Exception as exc:
             returncode = 3
             stdout = str(exc)
@@ -89,10 +143,10 @@ class RunnableNode(ParentNode):
 
         return {'returncode': returncode, 'stdout': stdout}
 
-    def get_nagios_return(self, values, is_warning, is_critical, warning='', critical='', delta=False):
-        proper_name = self.name.title().replace('|', '/')
+    def get_nagios_return(self, values, is_warning, is_critical):
+        proper_name = self.title.replace('|', '/')
 
-        if delta:
+        if self.delta:
             nice_unit = '%s/sec' % self.unit
         else:
             nice_unit = '%s' % self.unit
@@ -112,10 +166,16 @@ class RunnableNode(ParentNode):
             returncode = 2
             info_prefix = 'CRITICAL'
 
-        perfdata_label = self.name.replace(' ', '_').replace("'", '"')
+        perfdata_label = self.title.replace(' ', '_').replace("'", '"')
+
+        if len(self.unit) > 2:
+            perf_unit = ''
+        else:
+            perf_unit = self.unit
+
         perfdata = []
         for i, x in enumerate(values):
-            perf = "'%s_%d'=%d%s;%s;%s;" % (self.name, i, x, self.unit, warning, critical)
+            perf = "'%s_%d'=%d%s;%s;%s;" % (perfdata_label, i, x, perf_unit, self.warning, self.critical)
             perfdata.append(perf)
         perfdata = ' '.join(perfdata)
 
@@ -138,12 +198,12 @@ class RunnableNode(ParentNode):
         except (IOError, EOFError):
             #Otherwise load the loaded_values and last_modified with values that will cause zeros
             #to show up.
-            logging.info('No pickle file found for accessor %s' % accessor)
+            logging.info('No pickle file found for accessor %s', accessor)
             loaded_values = values
             last_modified = 0
 
         #Update the pickled data
-        logging.debug('Updating pickle for %s. Filename is %s.' % (accessor, tmpfile))
+        logging.debug('Updating pickle for %s. Filename is %s.', accessor, tmpfile)
         with open(tmpfile, 'w') as values_file:
             pickle.dump(values, values_file)
 
