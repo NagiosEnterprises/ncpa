@@ -68,7 +68,7 @@ class WindowsLogsNode(nodes.LazyNode):
                 return WindowsLogsNode.get_logs(logtypes, filters, *args, **kwargs)
 
             self.method = log_method
-            return super(WindowsLogsNode, self).walk(*args, **kwargs)
+            return {self.name: self.method(*args, **kwargs)}
         except AttributeError:
             return {self.name: []}
 
@@ -85,7 +85,7 @@ class WindowsLogsNode(nodes.LazyNode):
             except BaseException as exc:
                 logging.exception(exc)
                 logs[logtype] = [{'error': 'Unable to access log: %r' % exc}]
-        return logs
+        return logs, 'logs'
 
     def run_check(self, *args, **kwargs):
         logs = self.walk(*args, **kwargs)['logs']

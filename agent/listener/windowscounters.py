@@ -29,6 +29,8 @@ class WindowsCountersNode(nodes.LazyNode):
         def counter_method(*args, **kwargs):
             return WindowsCountersNode.get_counter_val(counter_path, *args, **kwargs)
 
+        logging.error(self.name)
+
         self.method = counter_method
         return super(WindowsCountersNode, self).walk(*args, **kwargs)
 
