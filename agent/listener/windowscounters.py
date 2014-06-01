@@ -14,32 +14,23 @@ class WindowsCountersNode(nodes.LazyNode):
         self.config = config
         return self
 
-    def set_unit(self, request_args):
-        unit = request_args.get('unit', None)
-        if not unit is None:
-            unit = unit[0]
-        self.unit = None
+    #def set_unit(self, request_args):
+    #    unit = request_args.get('unit', None)
+    #    if not unit is None:
+    #        unit = unit[0]
+    #    self.unit = None
 
     def walk(self, *args, **kwargs):
-        try:
-            if not self.path:
-                raise AttributeError
-            path = self.path
-            counter_path = os.path.join('\\', *path)
-            self.set_unit()
-
-            def counter_method(*args, **kwargs):
-                return WindowsCountersNode.get_counter_val(counter_path, *args, **kwargs)
-
-            self.method = counter_method
-            result = []
-            if kwargs.get('first', True):
-                result = self.method(*args, **kwargs)
-            if not self.unit is None:
-                result[1] = self.unit
-            return {self.name: result}
-        except AttributeError:
+        if not self.path:
             return {self.name: []}
+        path = self.path
+        counter_path = os.path.join('\\', *path)
+
+        def counter_method(*args, **kwargs):
+            return WindowsCountersNode.get_counter_val(counter_path, *args, **kwargs)
+
+        self.method = counter_method
+        return super(WindowsCountersNode, self).walk(*args, **kwargs)
 
     def run_check(self, *args, **kwargs):
         path = self.path
@@ -59,7 +50,7 @@ class WindowsCountersNode(nodes.LazyNode):
     def get_counter_val(counter_path, *args, **kwargs):
         try:
             sleep = float(kwargs['sleep'][0])
-        except (KeyError, TypeError):
+        except (KeyError, TypeError, IndexError):
             sleep = 0
 
         query = win32pdh.OpenQuery()
@@ -72,6 +63,9 @@ class WindowsCountersNode(nodes.LazyNode):
         win32pdh.CloseQuery(query)
 
         unit = info[-1]
+
+        if not isinstance(value, (list, tuple)):
+            value = [value]
 
         return [value, unit]
 
