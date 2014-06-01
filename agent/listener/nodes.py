@@ -64,8 +64,11 @@ class RunnableNode(ParentNode):
             return self
 
     def walk(self, *args, **kwargs):
-        result = self.method()
-        return {self.name: result}
+        values, unit = self.method()
+        self.set_unit(unit, kwargs)
+        values = self.get_adjusted_scale(values, kwargs)
+        values = self.get_delta_values(values, kwargs)
+        return {self.name: [values, self.unit]}
 
     def set_unit(self, unit, request_args):
         if 'unit' in request_args:
@@ -189,6 +192,9 @@ class RunnableNode(ParentNode):
         filename = "ncpa-%d.tmp" % hash(accessor)
         tmpfile = os.path.join(tempfile.gettempdir(), filename)
 
+        if not isinstance(values, (list, tuple)):
+            values = [values]
+
         try:
             #If the file exists, we extract the data from it and save it to our loaded_values
             #variable.
@@ -264,7 +270,7 @@ class RunnableNode(ParentNode):
 class LazyNode(RunnableNode):
 
     def walk(self, *args, **kwargs):
-        result = []
         if kwargs.get('first', True):
-            result = self.method()
-        return {self.name: result}
+            return super(LazyNode, self).walk(*args, **kwargs)
+        else:
+            return {self.name: []}

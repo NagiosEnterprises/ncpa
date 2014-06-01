@@ -148,10 +148,11 @@ def api_websocket(accessor=None):
     and unit in list form.
 
     """
-    try:
-        prop = accessor.rsplit('/', 1)[-1]
-    except (IndexError, KeyError):
-        prop = None
+    config = listener.config['iconfig']
+    logging.error(request.args)
+
+    sane_args = dict(request.args)
+    logging.error(sane_args)
 
     if request.environ.get('wsgi.websocket'):
         config = listener.config['iconfig']
@@ -159,7 +160,8 @@ def api_websocket(accessor=None):
         while True:
             message = ws.receive()
             node = psapi.getter(message, config)
-            val = node.walk(first=True)
+            prop = node.name
+            val = node.walk(first=True, **sane_args)
             jval = json.dumps(val[prop])
             ws.send(jval)
     return
@@ -168,29 +170,29 @@ def api_websocket(accessor=None):
 @listener.route('/top')
 @requires_auth
 def top():
-    d = request.args.get('display', 0)
-    h = request.args.get('highlight', None)
-    w = request.args.get('warning', 0)
-    c = request.args.get('critical', 0)
+    display = request.args.get('display', 0)
+    highlight = request.args.get('highlight', None)
+    warning = request.args.get('warning', 0)
+    critical = request.args.get('critical', 0)
     info = {}
 
-    if h is None:
+    if highlight is None:
         info['highlight'] = None
     else:
-        info['highlight'] = h
+        info['highlight'] = highlight
 
     try:
-        info['warning'] = int(w)
+        info['warning'] = int(warning)
     except TypeError:
         info['warning'] = 0
 
     try:
-        info['critical'] = int(c)
+        info['critical'] = int(critical)
     except TypeError:
         info['critical'] = 0
 
     try:
-        info['display'] = int(d)
+        info['display'] = int(display)
     except TypeError:
         info['display'] = 0
 
@@ -207,16 +209,16 @@ def top_websocket():
             load = psutil.cpu_percent()
             vir_mem = psutil.virtual_memory().percent
             swap_mem = psutil.swap_memory().percent
-            ps = psutil.process_iter()
-            pl = []
-            for p in ps:
-                pd = p.as_dict(['username',
-                                'get_memory_percent',
-                                'get_cpu_percent',
-                                'name',
-                                'pid'])
-                pl.append(pd)
-            jval = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': pl})
+            processes = psutil.process_iter()
+            process_list = []
+            for process in processes:
+                process_dict = process.as_dict(['username',
+                                                'get_memory_percent',
+                                                'get_cpu_percent',
+                                                'name',
+                                                'pid'])
+                process_list.append(process_dict)
+            jval = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
             ws.send(jval)
             gevent.sleep(1)
     return
@@ -286,12 +288,12 @@ def graph(accessor=None):
         factor = 1e9
     info['factor'] = factor
 
-    try:
-        prop = accessor.rsplit('/', 1)[-1]
-    except (IndexError, KeyError):
-        prop = None
+    node = psapi.getter(accessor, listener.config['iconfig'])
+    prop = node.name
 
     info['graph_prop'] = prop
+    query_string = request.query_string
+    info['query_string'] = urllib.quote(query_string)
 
     return render_template('graph.html',
                            **info)
