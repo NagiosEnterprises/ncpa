@@ -64,7 +64,10 @@ class RunnableNode(ParentNode):
             return self
 
     def walk(self, *args, **kwargs):
-        values, unit = self.method()
+        try:
+            values, unit = self.method(*args, **kwargs)
+        except TypeError:
+            values, unit = self.method()
         self.set_unit(unit, kwargs)
         values = self.get_adjusted_scale(values, kwargs)
         values = self.get_delta_values(values, kwargs)
