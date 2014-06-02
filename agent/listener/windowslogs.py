@@ -53,6 +53,7 @@ import win32evtlog
 import re
 import win32evtlogutil
 import win32con
+import pywintypes
 
 
 class WindowsLogsNode(nodes.LazyNode):
@@ -82,14 +83,22 @@ class WindowsLogsNode(nodes.LazyNode):
         for logtype in logtypes:
             try:
                 logs[logtype] = get_event_logs(server, logtype, filters)
+            except pywintypes.error as exc:
+                raise Exception('Windows error occurred while getting log %s: %r' % (logtype, exc.strerror))
             except BaseException as exc:
                 logging.exception(exc)
-                logs[logtype] = [{'error': 'Unable to access log: %r' % exc}]
+                raise Exception('General error occurred while getting log %s: %r' % (logtype, exc))
+
         return logs, 'logs'
 
     def run_check(self, *args, **kwargs):
-        logs = self.walk(*args, **kwargs)['logs']
-        log_names = sorted(logs.keys())
+        try:
+            logs = self.walk(*args, **kwargs)['logs'][0]
+            log_names = sorted(logs.keys())
+        except Exception as exc:
+            return {'stdout': 'UNKNOWN: %s, cannot continue meaningfully.' % exc.message,
+                    'returncode': 3}
+
         log_counts = [len(logs[x]) for x in log_names]
 
         self.set_warning(kwargs)
@@ -107,7 +116,7 @@ class WindowsLogsNode(nodes.LazyNode):
             returncode = 2
             prefix = 'CRITICAL'
 
-        log_names.append('Total_Count')
+        log_names.append('Total Count')
         log_counts.append(sum(log_counts))
         logged_after = kwargs.get('logged_after', None)
         if not logged_after is None:
@@ -115,7 +124,7 @@ class WindowsLogsNode(nodes.LazyNode):
         nice_timedelta = self.translate_timedelta(logged_after)
 
         perfdata = ' '.join(["'%s'=%d;%s;%s;" % (name, count, self.warning, self.critical) for name, count in zip(log_names, log_counts)])
-        info = ','.join(['%s has %d logs' % (name, count) for name, count in zip(log_names, log_counts)])
+        info = ', '.join(['%s has %d logs' % (name, count) for name, count in zip(log_names, log_counts)])
         info_line = '%s: %s that are younger than %s' % (prefix, info, nice_timedelta)
 
         stdout = '%s | %s' % (info_line, perfdata)
@@ -159,7 +168,7 @@ class WindowsLogsNode(nodes.LazyNode):
         if self.log_check == 'all':
             return self.is_within_range(self.warning, sum(log_counts))
         else:
-            for count, name in zip(log_counts, log_names):
+            for count in log_counts:
                 if self.is_within_range(self.warning, count):
                     warnings.append(True)
                 else:
@@ -175,27 +184,12 @@ class WindowsLogsNode(nodes.LazyNode):
         if self.log_check == 'all':
             return self.is_within_range(self.critical, sum(log_counts))
         else:
-            for count, name in zip(log_counts, log_names):
+            for count in log_counts:
                 if self.is_within_range(self.critical, count):
                     criticals.append(True)
                 else:
                     criticals.append(False)
             return any(criticals)
-
-    def run(self, path, *args, **kwargs):
-        if args == []:
-            return {self.name: []}
-        else:
-            logtypes = get_logtypes(kwargs)
-            filters = get_filter_dict(kwargs)
-            logs = {}
-            for logtype in logtypes:
-                try:
-                    logs[logtype] = get_event_logs(None, logtype, filters)
-                except BaseException as exc:
-                    logging.exception(exc)
-                    logs[logtype] = [{'error': 'Unable to access log: %r' % exc}]
-            return {self.name: logs}
 
 
 def get_logtypes(request_args):

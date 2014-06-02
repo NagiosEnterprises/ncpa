@@ -4,6 +4,7 @@ import time
 import itertools
 import logging
 import pickle
+import copy
 import re
 
 
@@ -27,7 +28,7 @@ class ParentNode(object):
             except KeyError:
                 return ERROR_NODE
         else:
-            return self
+            return copy.deepcopy(self)
 
     def walk(self, *args, **kwargs):
         stat = {}
@@ -61,7 +62,7 @@ class RunnableNode(ParentNode):
         if path:
             raise IndexError('End of path node called with more path')
         else:
-            return self
+            return copy.deepcopy(self)
 
     def walk(self, *args, **kwargs):
         try:
@@ -182,7 +183,7 @@ class RunnableNode(ParentNode):
             info_prefix = 'CRITICAL'
 
         if self.perfdata_label is None:
-            perfdata_label = self.title.replace(' ', '_').replace("'", '"')
+            perfdata_label = self.title.replace('=', '_').replace("'", '"')
         else:
             perfdata_label = self.perfdata_label
 
