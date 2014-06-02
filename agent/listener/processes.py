@@ -5,31 +5,37 @@ import nodes
 
 class ProcessNode(nodes.LazyNode):
 
-    def get_exe(self, request_args):
+    @staticmethod
+    def get_exe(request_args):
         return request_args.get('exe', [])
 
-    def get_name(self, request_args):
+    @staticmethod
+    def get_name(request_args):
         return request_args.get('name', [])
 
-    def get_count(self, request_args):
+    @staticmethod
+    def get_count(request_args):
         count = request_args.get('count', 0)
         if count:
             count = count[0]
         return count
 
-    def get_cpu_percent(self, request_args):
+    @staticmethod
+    def get_cpu_percent(request_args):
         cpu_percent = request_args.get('cpu_percent', None)
         if cpu_percent:
             cpu_percent = cpu_percent[0]
         return cpu_percent
 
-    def get_mem_percent(self, request_args):
+    @staticmethod
+    def get_mem_percent(request_args):
         mem_percent = request_args.get('mem_percent', None)
         if mem_percent:
             mem_percent = mem_percent[0]
         return mem_percent
 
-    def get_combiner(self, request_args):
+    @staticmethod
+    def get_combiner(request_args):
         combiner = request_args.get('combiner', 'and')
         if combiner == 'and':
             return all
@@ -59,10 +65,28 @@ class ProcessNode(nodes.LazyNode):
 
     @staticmethod
     def standard_form(process):
-        return {'name:': process.name(),
-                'exe:': process.exe(),
-                'cpu_percent': process.cpu_percent(),
-                'mem_percent': process.memory_percent()}
+        try:
+            name = process.name()
+        except BaseException:
+            name = 'Unknown'
+        try:
+            exe = process.exe()
+        except BaseException:
+            exe = 'Unknown'
+        try:
+            cpu_percent = process.cpu_percent()
+        except BaseException:
+            cpu_percent = 0
+        try:
+            mem_rss, mem_vms = process.memory_info()
+        except BaseException:
+            mem_rss, mem_vms = 0, 0
+
+        return {'name': name,
+                'exe': exe,
+                'cpu_percent': cpu_percent,
+                'mem_rss': mem_rss,
+                'mem_vms': mem_vms}
 
     def get_process_dict(self, *args, **kwargs):
         proc_filter = self.make_filter(*args, **kwargs)
@@ -78,7 +102,6 @@ class ProcessNode(nodes.LazyNode):
     def walk(self, *args, **kwargs):
         self.method = self.get_process_dict
         if kwargs.get('first', True):
-            logging.error('Doing the method')
             return {self.name: self.method(*args, **kwargs)}
         else:
             return {self.name: []}
@@ -114,7 +137,6 @@ class ProcessNode(nodes.LazyNode):
                     title += ' ' + combiner
             if mem_percent:
                 title += ' Memory Usage greater than %d%%' % mem_percent
-        logging.error(title)
         return [title]
 
     def run_check(self, *args, **kwargs):
@@ -131,6 +153,5 @@ class ProcessNode(nodes.LazyNode):
 
         if kwargs.get('title', None) is None:
             kwargs['title'] = self.get_process_label(kwargs)
-            logging.error('Set new title!')
 
         return super(ProcessNode, self).run_check(*args, **kwargs)

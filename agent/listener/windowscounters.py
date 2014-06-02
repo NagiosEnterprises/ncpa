@@ -5,14 +5,16 @@ import win32pdh
 import time
 import os
 import logging
+import copy
 
 
 class WindowsCountersNode(nodes.LazyNode):
 
     def accessor(self, path, config):
-        self.path = path
-        self.config = config
-        return self
+        new_node = copy.deepcopy(self)
+        new_node.path = path
+        new_node.config = config
+        return new_node
 
     def walk(self, *args, **kwargs):
 
