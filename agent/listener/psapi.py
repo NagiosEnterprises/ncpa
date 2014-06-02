@@ -138,7 +138,7 @@ def init_root(*args):
 
 def getter(accessor, config):
     logging.debug('Getting accessor: %s', accessor)
-    path = [x for x in accessor.split('/') if x]
+    path = [re.sub('%2f', '/', x, flags=re.I) for x in accessor.split('/') if x]
     if len(path) > 0 and path[0] == 'api':
         path = path[1:]
     return root.accessor(path, config)

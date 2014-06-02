@@ -25,7 +25,10 @@ class WindowsCountersNode(nodes.LazyNode):
         counter_path = os.path.join('\\', *path)
 
         def counter_method(*args, **kwargs):
-            return WindowsCountersNode.get_counter_val(counter_path, *args, **kwargs)
+            try:
+                return WindowsCountersNode.get_counter_val(counter_path, *args, **kwargs)
+            except Exception as exc:
+                return [['Error: %s' % exc.strerror], 'c']
 
         self.method = counter_method
         return super(WindowsCountersNode, self).walk(*args, **kwargs)
@@ -38,7 +41,7 @@ class WindowsCountersNode(nodes.LazyNode):
             try:
                 return WindowsCountersNode.get_counter_val(self.name, *args, **kwargs)
             except Exception as exc:
-                logging.error(exc)
+                logging.exception(exc)
                 return [0, 'c']
 
         self.method = counter_method
