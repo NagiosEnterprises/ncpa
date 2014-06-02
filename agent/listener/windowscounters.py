@@ -14,22 +14,16 @@ class WindowsCountersNode(nodes.LazyNode):
         self.config = config
         return self
 
-    #def set_unit(self, request_args):
-    #    unit = request_args.get('unit', None)
-    #    if not unit is None:
-    #        unit = unit[0]
-    #    self.unit = None
-
     def walk(self, *args, **kwargs):
-        if not self.path:
+
+        if not getattr(self, 'path', None) or not self.path:
             return {self.name: []}
+
         path = self.path
         counter_path = os.path.join('\\', *path)
 
         def counter_method(*args, **kwargs):
             return WindowsCountersNode.get_counter_val(counter_path, *args, **kwargs)
-
-        logging.error(self.name)
 
         self.method = counter_method
         return super(WindowsCountersNode, self).walk(*args, **kwargs)

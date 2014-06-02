@@ -149,6 +149,7 @@ class RunnableNode(ParentNode):
 
         return {'returncode': returncode, 'stdout': stdout}
 
+
     def get_nagios_return(self, values, is_warning, is_critical):
         proper_name = self.title.replace('|', '/')
 
