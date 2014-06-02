@@ -6,6 +6,7 @@ import platform
 
 from nodes import ParentNode, RunnableNode, LazyNode
 from pluginnodes import PluginAgentNode
+import services
 root = None
 
 
@@ -28,34 +29,7 @@ root = None
 #            return {desired_proc: metrics}
 #
 #
-#class ServiceNode(LazyNode):
-#
-#    def __init__(self, *args, **kwargs):
-#        super(ServiceNode, self).__init__(*args, **kwargs)
-#
-#    def run(self, path, *args, **kwargs):
-#        if path:
-#            return self.parse_query(path)
-#        else:
-#            try:
-#                return {self.name: psextensions.get_services()}
-#            except Exception, e:
-#                return {self.name: 'Error getting services: %s' % unicode(e)}
-#
-#    def parse_query(self, path, *args, **kwargs):
-#        desired_service = path[0].replace('|', '/')
-#
-#        try:
-#            desired_state = path[1]
-#        except IndexError:
-#            desired_state = None
-#
-#        services = psextensions.get_services()
-#
-#        if desired_state:
-#            return {desired_service: services.get(desired_service, 'Service not found') == desired_state}
-#        else:
-#            return {desired_service: services.get(desired_service, 'Service not found')}
+
 def make_disk_nodes(disk_name):
     read_time = RunnableNode('read_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_time, 'ms'))
     write_time = RunnableNode('write_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_time, 'ms'))
@@ -72,7 +46,7 @@ def make_mountpoint_nodes(partition_name):
     used = RunnableNode('used', method=lambda: (ps.disk_usage(mountpoint).used, 'b'))
     free = RunnableNode('free', method=lambda: (ps.disk_usage(mountpoint).free, 'b'))
     used_percent = RunnableNode('used_percent', method=lambda: (ps.disk_usage(mountpoint).percent, '%'))
-    device_name = RunnableNode('device_name', method=lambda: partition_name.device)
+    device_name = RunnableNode('device_name', method=lambda: ([partition_name.device], 'name'))
     safe_mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
     return ParentNode(safe_mountpoint, children=[total_size, used, free, used_percent, device_name])
 
@@ -90,17 +64,17 @@ def make_if_nodes(if_name):
 
 
 def get_system_node():
-    sys_system = RunnableNode('system', method=lambda: platform.uname()[0])
-    sys_node = RunnableNode('node', method=lambda: platform.uname()[1])
-    sys_release = RunnableNode('release', method=lambda: platform.uname()[2])
-    sys_version = RunnableNode('version', method=lambda: platform.uname()[3])
-    sys_machine = RunnableNode('machine', method=lambda: platform.uname()[4])
-    sys_processor = RunnableNode('processor', method=lambda: platform.uname()[5])
+    sys_system = RunnableNode('system', method=lambda: ([platform.uname()[0]], 'name'))
+    sys_node = RunnableNode('node', method=lambda: ([platform.uname()[1]], 'name'))
+    sys_release = RunnableNode('release', method=lambda: ([platform.uname()[2]], 'name'))
+    sys_version = RunnableNode('version', method=lambda: ([platform.uname()[3]], 'name'))
+    sys_machine = RunnableNode('machine', method=lambda: ([platform.uname()[4]], 'name'))
+    sys_processor = RunnableNode('processor', method=lambda: ([platform.uname()[5]], 'name'))
     return ParentNode('system', children=[sys_system, sys_node, sys_release, sys_version, sys_machine, sys_processor])
 
 
 def get_cpu_node():
-    cpu_count = RunnableNode('count', method=lambda: len(ps.cpu_percent(percpu=True)))
+    cpu_count = RunnableNode('count', method=lambda: ([len(ps.cpu_percent(percpu=True))], 'c'))
     cpu_percent = LazyNode('percent', method=lambda: (ps.cpu_percent(interval=1, percpu=True), '%'))
     cpu_user = RunnableNode('user', method=lambda: ([x.user for x in ps.cpu_times(percpu=True)], 'ms'))
     cpu_system = RunnableNode('system', method=lambda: ([x.system for x in ps.cpu_times(percpu=True)], 'ms'))
@@ -150,7 +124,7 @@ def get_agent_node():
 
 def get_user_node():
     user_count = RunnableNode('count', method=lambda: (len([x.name for x in ps.get_users()]), 'c'))
-    user_list = RunnableNode('list', method=lambda: [x.name for x in ps.get_users()])
+    user_list = RunnableNode('list', method=lambda: ([x.name for x in ps.get_users()], 'name'))
     return ParentNode('user', children=[user_count, user_list])
 
 
@@ -159,7 +133,7 @@ def get_process_node():
 
 
 def get_service_node():
-    return ServiceNode('service')
+    return services.ServiceNode('service', None)
 
 
 def get_root_node(*args):
@@ -170,9 +144,9 @@ def get_root_node(*args):
     agent = get_agent_node()
     user = get_user_node()
     #process = get_process_node()
-    #service = get_service_node()
+    service = get_service_node()
     system = get_system_node()
-    return ParentNode('root', children=[cpu, memory, disk, interface, agent, user, system])
+    return ParentNode('root', children=[cpu, memory, disk, interface, agent, user, service, system])
 
 
 def init_root(*args):
