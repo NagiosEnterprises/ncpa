@@ -16,7 +16,6 @@ import psutil
 import gevent
 import geventwebsocket
 
-
 __VERSION__ = 1.6
 __STARTED__ = datetime.datetime.now()
 
@@ -35,7 +34,7 @@ if os.name == 'nt':
     if not os.path.isdir(stat_dir):
         stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
 
-    logging.info(u"Looking for templates at: %s" % tmpl_dir)
+    logging.info(u"Looking for templates at: %s", tmpl_dir)
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
     listener.jinja_loader = jinja2.FileSystemLoader(tmpl_dir)
 else:
@@ -91,19 +90,7 @@ def login():
 @listener.route('/dashboard')
 @requires_auth
 def dashboard():
-    my_json = api('disk/logical', raw=True)
-    disks = [{'safe': re.sub(ur'[^a-zA-Z0-9]', '', x),
-              'raw': x} for x in list(my_json.get('logical').keys())]
-    my_json = api('interface/', raw=True)
-    interfaces = [{'safe': re.sub(ur'[^a-zA-Z0-9]', '', x),
-                   'raw': x} for x in list(my_json.get('interface').keys())]
-    my_json = api('cpu/count', raw=True)
-    cpu_count = my_json.get('count', 0)
-
-    return render_template('dashboard.html',
-                           disks=disks,
-                           interfaces=interfaces,
-                           cpucount=cpu_count)
+    return render_template('dashboard.html')
 
 
 @listener.route('/logout')
@@ -149,10 +136,8 @@ def api_websocket(accessor=None):
 
     """
     config = listener.config['iconfig']
-    logging.error(request.args)
 
     sane_args = dict(request.args)
-    logging.error(sane_args)
 
     if request.environ.get('wsgi.websocket'):
         config = listener.config['iconfig']

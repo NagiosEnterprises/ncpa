@@ -6,11 +6,9 @@ import ncpadaemon
 import listener.server
 import filename
 import listener.certificate
-import werkzeug.serving
-import ConfigParser
 from gevent.pywsgi import WSGIServer
-from geventwebsocket.handler import WebSocketHandler
 from gevent.pool import Pool
+import webhandler
 import listener.psapi
 import jinja2.ext  # Here for cx_Freeze import reasons, do not remove it
 from gevent import monkey
@@ -45,7 +43,7 @@ class Listener(ncpadaemon.Daemon):
             listener.server.listener.secret_key = os.urandom(24)
             http_server = WSGIServer(listener=(address, port),
                                      application=listener.server.listener,
-                                     handler_class=WebSocketHandler,
+                                     handler_class=webhandler.PatchedWSGIHandler,
                                      spawn=Pool(100),
                                      **ssl_context)
             http_server.serve_forever()

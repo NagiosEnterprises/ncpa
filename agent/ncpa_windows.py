@@ -13,7 +13,6 @@ import os
 import time
 import sys
 from gevent.pywsgi import WSGIServer
-from geventwebsocket.handler import WebSocketHandler
 from gevent.pool import Pool
 # DO NOT REMOVE THIS, THIS FORCES cx_Freeze to include the library
 # DO NOT REMOVE ANYTHING BELOW THIS LINE
@@ -25,6 +24,7 @@ import listener.windowscounters
 import listener.windowslogs
 import listener.certificate
 import jinja2.ext
+import webhandler
 import filename
 from gevent import monkey
 
@@ -114,7 +114,7 @@ class Listener(Base):
             listener.server.listener.secret_key = os.urandom(24)
             http_server = WSGIServer(listener=(address, port),
                                      application=listener.server.listener,
-                                     handler_class=WebSocketHandler,
+                                     handler_class=webhandler.PatchedWSGIHandler,
                                      spawn=Pool(100),
                                      **ssl_context)
             http_server.serve_forever()
