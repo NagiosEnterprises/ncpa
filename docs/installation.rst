@@ -53,7 +53,7 @@ The installer also supports a silent install, which would definitely be handy if
 There are four specifications currently supported by the NCPA installer, which are all analogs to the directives 
 in the GUI installer.
 
-.. warning::
+.. note::
 
     The installer will also require a /S flag when installing from the command line in order to install silently.
 
