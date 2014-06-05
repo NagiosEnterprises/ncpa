@@ -49,11 +49,17 @@ The following are absolutely not necessary to fill out to get an active agent up
 Silent Install
 ++++++++++++++
 
-The installer also supports a silent install, which would definitely be handy if you're a ninja systems admin! There are four specifications currently supported by the NCPA installer, which are all analogs to the directives in the GUI installer.
+The installer also supports a silent install, which would definitely be handy if you're a ninja systems admin! 
+There are four specifications currently supported by the NCPA installer, which are all analogs to the directives 
+in the GUI installer.
+
+.. warning::
+
+    The installer will also require a /S flag when installing from the command line in order to install silently.
 
 All of the following are to be used as such
     
-/*directive* **value**
+/*directive*="**value**"
 
 while being used on the command line. The following are the names of the directives that are available for a silent install.
 
@@ -71,7 +77,15 @@ while being used on the command line. The following are the names of the directi
     CONFIG
         The name of the NRDS config the agent will be associated with.
 
-.. note:: For both install methods, none of the values are set in stone and can easily be changed at a later date.
+Nothing beats an example. Here is an example of installing silently with the TOKEN 'fishingrocks'::
+
+    ncpa-head.exe /S /TOKEN='fishingrocks'
+
+
+.. note:: 
+
+    For both install methods, none of the values are set in stone and can easily be changed at a later date.
+    Also to note, that when installing using the silent install method that the case of the letters is important.
     
 Now the NCPA services are installed and started.
 
