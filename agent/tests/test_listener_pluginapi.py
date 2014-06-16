@@ -1,11 +1,7 @@
 import unittest
-import os
-import ConfigParser
 import sys
-import tempfile
-from io import open
 
-sys.path.append(os.path.dirname(__file__) + u'/..')
+sys.path.append(os.path.dirname(__file__) + '/..')
 from listener.pluginapi import *
 
 

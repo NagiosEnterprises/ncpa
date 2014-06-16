@@ -1,14 +1,12 @@
 from __future__ import with_statement
-import requests
 import sys
-from . import abstract
+import abstract
 import xml.etree.ElementTree as ET
-from . import utils
-import json
+import utils
 import re
 import logging
 import os
-from io import open
+
 
 class Handler(abstract.NagiosHandler):
     u"""
@@ -19,11 +17,11 @@ class Handler(abstract.NagiosHandler):
         super(Handler, self).__init__(*args, **kwargs)
 
     def get_nrds_url(self):
-        nrds_url = self.config.get(u'nrds', u'url')
-        if nrds_url.endswith(u'/'):
+        nrds_url = self.config.get('nrds', 'url')
+        if nrds_url.endswith('/'):
             return nrds_url
         else:
-            return nrds_url + u'/'
+            return nrds_url + '/'
 
     def run(self, *args, **kwargs):
         if self.config_update_is_required():
