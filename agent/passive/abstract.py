@@ -1,16 +1,14 @@
 import logging
 import json
 import platform
-import urllib2, urllib
-import urllib2, urllib, urlparse
-import urllib2, urllib
+import urllib
 import listener.server
 import optparse
 import shlex
 
 
 class NagiosHandler(object):
-    u"""These are intended for use to handle passive activities.
+    """These are intended for use to handle passive activities.
     
     Provides common functions that would be necessary for
     periodic activities that get kicked off by the passive NCPA
@@ -18,58 +16,63 @@ class NagiosHandler(object):
 
     """
     def __init__(self, config, *args, **kwargs):
-        u"""Does initial such as parsing the config.
+        """Does initial such as parsing the config.
 
         """
         self.ncpa_commands = None
-        self.config = None
 
-        self.parse_config(config)
+        self.config = config
+        self.parse_config()
 
         logging.debug(u'Establishing Nagios handler...')
     
     def _parse_commands(self, *args, **kwargs):
-        u"""Grab the commands from the config.
+        """Grab the commands from the config.
 
         """
-        logging.debug(u'Parsing commands...')
-        commands = dict(self.config.items(u'passive checks'))
+        logging.debug('Parsing commands...')
+        commands = dict(self.config.items('passive checks'))
         self.ncpa_commands = []
         for command in commands:
-            if u'|' not in command:
-                continue 
-            logging.debug(u'Parsing new individual command.')
+            if '|' not in command:
+                logging.warning('Invalid command entered. Pipe (|) symbol required: %s', command)
+                continue
+            logging.debug('Parsing new individual command.')
             host_service = command
             raw_command = commands[command]
             tmp = NCPACommand(self.config)
             tmp.set_host_and_service(host_service)
             tmp.parse_command(raw_command)
-            logging.debug(u"Command to be run: %s" % tmp)
+            logging.debug('Command to be run: %s' % tmp)
             self.ncpa_commands.append(tmp)
 
     @staticmethod
     def get_warn_crit_from_arguments(arguments):
-        logging.debug(u'Parsing arguments: %s' % arguments)
+        logging.debug('Parsing arguments: %s' % arguments)
         #~ Must give the arguments a prog name in order for them to work with
         #~ optparse
-        arguments = unicode(u'./xxx ' + arguments)
+        arguments = unicode('./xxx ' + arguments)
         parser = optparse.OptionParser()
-        parser.add_option(u'-w', u'--warning')
-        parser.add_option(u'-c', u'--critical')
-        parser.add_option(u'-u', u'--unit')
+        parser.add_option('-w', '--warning')
+        parser.add_option('-c', '--critical')
+        parser.add_option('-u', '--unit')
         try:
             arg_lat = shlex.split(arguments)
-            logging.debug(u"String args: %s" % unicode(arg_lat))
+            logging.debug('String args: %s' % unicode(arg_lat))
             options, args = parser.parse_args(arg_lat)
         except Exception, e:
             logging.exception(e)
-        warning = options.warning or u''
-        critical = options.critical or u''
-        unit = options.unit or u''
-        return {u'warning': warning, u'critical': critical, u'unit': unit}
+        finally:
+            warning = options.warning or ''
+            critical = options.critical or ''
+            unit = options.unit or ''
+
+        return {'warning': warning,
+                'critical': critical,
+                'unit': unit}
     
     def send_command(self, ncpa_command, *args, **kwargs):
-        u"""Query the local active agent.
+        """Query the local active agent.
 
         """
         url = ncpa_command.command
@@ -90,11 +93,10 @@ class NagiosHandler(object):
             tmp_result = self.send_command(command)
             command.set_json(tmp_result)
     
-    def parse_config(self, config, *args, **kwargs):
-        u"""Grab the commands from the config.
+    def parse_config(self, *args, **kwargs):
+        """Grab the commands from the config.
 
         """
-        self.config = config
         logging.debug(u'Parsing config...')
         self._parse_commands()
     
@@ -161,8 +163,8 @@ class NCPACommand(object):
 
         """
         parsed_result = json.loads(result)
-        self.stdout = parsed_result.get(u'stdout', 3)
-        self.returncode = parsed_result.get(u'returncode', u'An error occurred parsing the JSON')
+        self.stdout = parsed_result.get('stdout', 3)
+        self.returncode = parsed_result.get('returncode', u'An error occurred parsing the JSON')
     
     def parse_command(self, config_command, *args, **kwargs):
         u"""Parses the actual command from the config file. Example

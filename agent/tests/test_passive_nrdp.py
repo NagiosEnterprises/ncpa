@@ -2,9 +2,9 @@ import os
 import sys
 import unittest
 
-basepath = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+base_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
 
-sys.path.append(basepath)
+sys.path.append(base_path)
 from passive.abstract import *
 
 
