@@ -1,7 +1,8 @@
 import sys
 import os
 
-sys.path.append(os.path.dirname(__file__) + '/..')
+basepath = os.path.join(os.path.dirname(__file__), '..')
+sys.path.append(basepath)
 
 import certificate
 import unittest
