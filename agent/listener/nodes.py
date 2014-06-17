@@ -10,7 +10,10 @@ import re
 
 class ParentNode(object):
 
-    def __init__(self, name, children, *args, **kwargs):
+    def __init__(self, name, children=None, *args, **kwargs):
+        if children is None:
+            children = []
+
         self.children = {}
         self.name = name
         for child in children:
