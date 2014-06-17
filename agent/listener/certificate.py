@@ -5,9 +5,8 @@ http://skippylovesmalorie.wordpress.com/2010/02/12/how-to-generate-a-self-signed
 All rights go to the writer of this script.
 """
 
-from OpenSSL import crypto, SSL
+from OpenSSL import crypto
 from socket import gethostname
-from time import gmtime, mktime
 from os.path import exists, join
 
 def create_self_signed_cert(cert_dir, cert_file, key_file):
