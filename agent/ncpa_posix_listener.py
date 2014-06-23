@@ -20,9 +20,6 @@ class Listener(ncpadaemon.Daemon):
     default_conf = os.path.abspath(os.path.join(filename.get_dirname_file(), 'etc', 'ncpa.cfg'))
     section = 'listener'
 
-    def setup_root_node(self):
-        listener.psapi.init_root()
-
     def run(self):
         try:
             address = self.config_parser.get('listener', 'ip')
@@ -37,8 +34,6 @@ class Listener(ncpadaemon.Daemon):
             else:
                 cert, key = user_cert.split(',')
             ssl_context = {'certfile': cert, 'keyfile': key}
-
-            self.setup_root_node()
 
             listener.server.listener.secret_key = os.urandom(24)
             http_server = WSGIServer(listener=(address, port),

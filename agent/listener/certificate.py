@@ -9,13 +9,12 @@ import OpenSSL
 import socket
 import os
 
-def create_self_signed_cert(cert_dir, cert_file, key_file):
 
+def create_self_signed_cert(cert_dir, cert_file, key_file):
     target_cert = os.path.join(cert_dir, cert_file)
     target_key = os.path.join(cert_dir, key_file)
 
     if not os.path.exists(target_cert) or not os.path.exists(target_key):
-        
         # create a key pair
         k = OpenSSL.crypto.PKey()
         k.generate_key(OpenSSL.crypto.TYPE_RSA, 1024)
@@ -30,7 +29,7 @@ def create_self_signed_cert(cert_dir, cert_file, key_file):
         cert.get_subject().CN = socket.gethostname()
         cert.set_serial_number(1000)
         cert.gmtime_adj_notBefore(0)
-        cert.gmtime_adj_notAfter(10*365*24*60*60)
+        cert.gmtime_adj_notAfter(10 * 365 * 24 * 60 * 60)
         cert.set_issuer(cert.get_subject())
         cert.set_pubkey(k)
         cert.sign(k, 'sha1')

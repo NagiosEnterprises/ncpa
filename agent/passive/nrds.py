@@ -2,13 +2,14 @@ from __future__ import with_statement
 import sys
 import abstract
 import xml.etree.ElementTree as ET
+from passive.nagioshandler import NagiosHandler
 import utils
 import re
 import logging
 import os
 
 
-class Handler(abstract.NagiosHandler):
+class Handler(NagiosHandler):
     u"""
     api for nrds config management
     """

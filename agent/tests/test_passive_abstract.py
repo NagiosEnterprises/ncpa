@@ -1,7 +1,9 @@
 import unittest
-import os
 import sys
 import ConfigParser as configparser
+
+import os
+
 
 sys.path.append(os.path.dirname(__file__) + u'/..')
 from passive.abstract import *
