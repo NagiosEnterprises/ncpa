@@ -7,22 +7,31 @@ import listener.server
 class TestNCPACheck(TestCase):
     def setUp(self):
         listener.server.listener.config['iconfig'] = {}
+        self.nc = nc('/api/cpu/percent/', 'test_host', 'test_service')
 
     def test_get_api_url_from_instruction(self):
-        self.fail()
+        instruction = 'cpu/percent --warning 10 --critical=11'
+        expected_url = '/api/cpu/percent/'
+        expected_args = {'warning': '10', 'critical': '11', 'check': '1'}
+
+        url, args = nc.get_api_url_from_instruction(instruction)
+        self.assertEqual(url, expected_url)
+        self.assertEqual(args, expected_args)
 
     def test_run(self):
         self.fail()
 
     def test_run_check(self):
-        api_url = '/api/cpu/percent'
-        api_args = {}
+        api_url = '/api/cpu/percent/'
+        api_args = {'check': '1'}
 
         result = nc.run_check(api_url, api_args)
         result_json = json.loads(result)
 
         self.assertIsInstance(result_json, dict)
         self.assertIn('value', result_json)
+        self.assertIn('stdout', result_json['value'])
+        self.assertIn('returncode', result_json['value'])
 
     def test_handle_agent_response(self):
         response = '{"value": {"stdout": "Hi", "returncode": 0}}'
@@ -44,7 +53,7 @@ class TestNCPACheck(TestCase):
         self.assertIsNone(returncode)
 
     def test_parse_cmdline_style_instruction(self):
-        url_instruction = '/api/bingo/ --warning 1 --critical 10'
+        url_instruction = u'/api/bingo/ --warning 1 --critical 10'
         expected_api_url = '/api/bingo/'
         expected_api_args = {'warning': '1', 'critical': '10'}
 
@@ -53,7 +62,7 @@ class TestNCPACheck(TestCase):
         self.assertEqual(url, expected_api_url)
         self.assertEqual(args, expected_api_args)
 
-        url_instruction = '/api/agent/plugin/test.sh/--warning/10/--critical/hi'
+        url_instruction = u'/api/agent/plugin/test.sh/--warning/10/--critical/hi'
         expected_api_url = url_instruction
         expected_api_args = {}
 
@@ -96,8 +105,10 @@ class TestNCPACheck(TestCase):
         starts_with_slash_metric = u'/cpu/percent'
         starts_with_metric = u'cpu/percent'
 
-        self.assertEqual(starts_with_slash_api, nc.normalize_api_url(starts_with_slash_api))
-        self.assertEqual(starts_with_slash_api, nc.normalize_api_url(starts_with_slash_metric))
-        self.assertEqual(starts_with_slash_api, nc.normalize_api_url(starts_with_api))
-        self.assertEqual(starts_with_slash_api, nc.normalize_api_url(starts_with_metric))
+        expected_url = starts_with_slash_api + '/'
+
+        self.assertEqual(expected_url, nc.normalize_api_url(starts_with_slash_api))
+        self.assertEqual(expected_url, nc.normalize_api_url(starts_with_slash_metric))
+        self.assertEqual(expected_url, nc.normalize_api_url(starts_with_api))
+        self.assertEqual(expected_url, nc.normalize_api_url(starts_with_metric))
 

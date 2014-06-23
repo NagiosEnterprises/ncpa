@@ -3,7 +3,7 @@ import logging
 import nagioshandler
 import utils
 from itertools import izip
-import ConfigParser as configparser
+import ConfigParser
 
 
 class Handler(nagioshandler.NagiosHandler):
@@ -75,7 +75,8 @@ class Handler(nagioshandler.NagiosHandler):
         check_results = doc.createElement('checkresults')
         doc.appendChild(check_results)
 
-        for result in self.ncpa_commands:
+        for command in self.checks:
+            stdout, returncode = command.run()
             element = self.make_xml(result)
             check_results.appendChild(element)
 
@@ -89,17 +90,29 @@ class Handler(nagioshandler.NagiosHandler):
         :return: 0 on success, 1 on error
         :rtype : int
         """
+        super(Handler, self).run()
+
+        for check in self.checks:
+            
         try:
-            self.query_local_agent_for_all_commands()
             self.submit_to_nagios()
             error = 0
-        except configparser.NoSectionError, e:
+        except ConfigParser.NoSectionError, e:
             error = 1
             logging.error(u'%s -- Exiting out of passive daemon cycle.' % unicode(e))
-        except configparser.NoOptionError, e:
+        except ConfigParser.NoOptionError, e:
             error = 1
             logging.error(u'%s -- Exiting out of cycle.' % unicode(e))
         return error
+
+    def guess_hostname(self):
+        try:
+            hostname = self.config.get('nrdp', 'hostname', None)
+            assert hostname
+        except (ConfigParser.NoSectionError, ConfigParser.NoOptionError, AssertionError):
+            logging.debug("No hostname given in the config, falling back to parent class.")
+            hostname = super(Handler, self).guess_hostname()
+        return hostname
 
     @staticmethod
     def log_result(ret_xml):

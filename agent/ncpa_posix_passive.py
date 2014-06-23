@@ -7,6 +7,7 @@ import filename
 import passive.nrds
 import passive.nrdp
 
+
 class Passive(ncpadaemon.Daemon):
     default_conf = os.path.abspath(os.path.join(filename.get_dirname_file(), 'etc', 'ncpa.cfg'))
     section = u'passive'
@@ -49,6 +50,7 @@ class Passive(ncpadaemon.Daemon):
                 logging.exception(e)
             sleep = int(self.config_parser.get(u'passive', u'sleep'))
             time.sleep(sleep)
+
 
 if __name__ == u'__main__':
     try:

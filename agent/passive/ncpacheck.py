@@ -16,8 +16,10 @@ class NCPACheck(object):
     by their child classes and running the results.
     """
 
-    def __init__(self, instruction):
+    def __init__(self, instruction, hostname, servicename):
         logging.debug('Initializing NCPA check with %s', instruction)
+        self.hostname = hostname
+        self.servicename = servicename
         self.instruction = instruction
 
     @staticmethod
@@ -27,8 +29,8 @@ class NCPACheck(object):
 
         :param instruction: The instruction to be parsed
         :type instruction: unicode
-        :return: The API URL that will be accessed to retrieve information from the local agent
-        :rtype:  unicode
+        :return: Tuple containing the API URL that will be accessed to retrieve information from the local agent and its args
+        :rtype:  tuple
         """
         logging.debug('Getting API url for instruction %s', instruction)
 
@@ -177,13 +179,18 @@ class NCPACheck(object):
         :rtype: unicode
         """
         if api_url.startswith('/api'):
-            return api_url
+            normalized = api_url
         elif api_url.startswith('api'):
-            return "/{}".format(api_url)
+            normalized = "/{}".format(api_url)
         elif api_url.startswith('/'):
-            return "/api{}".format(api_url)
+            normalized = "/api{}".format(api_url)
         else:
-            return "/api/{}".format(api_url)
+            normalized = "/api/{}".format(api_url)
+
+        if not normalized.endswith('/'):
+            normalized += '/'
+
+        return normalized
 
     @staticmethod
     def parse_api_url_style_instruction(instruction):
