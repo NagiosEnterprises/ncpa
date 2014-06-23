@@ -1,5 +1,4 @@
 import psutil
-import logging
 import nodes
 
 
@@ -155,3 +154,7 @@ class ProcessNode(nodes.LazyNode):
             kwargs['title'] = self.get_process_label(kwargs)
 
         return super(ProcessNode, self).run_check(*args, **kwargs)
+
+
+def get_node():
+    return ProcessNode('processes', None)

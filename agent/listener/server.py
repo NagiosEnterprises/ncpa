@@ -203,8 +203,8 @@ def top_websocket():
                                                 'name',
                                                 'pid'])
                 process_list.append(process_dict)
-            jval = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
-            ws.send(jval)
+            json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
+            ws.end(json_val)
             gevent.sleep(1)
     return
 
@@ -250,6 +250,13 @@ def tail(accessor=None):
 @listener.route('/graph/<path:accessor>')
 @requires_auth
 def graph(accessor=None):
+    """
+    Accessor method for fetching the HTML for the real-time graphing.
+
+    :param accessor: The API path to be accessed (see /api)
+    :type accessor: unicode
+    :rtype: flask.Response
+    """
     info = {'graph_path': accessor,
             'graph_hash': hash(accessor)}
 
@@ -294,6 +301,11 @@ def error(msg=None):
 
 @listener.route('/testconnect/')
 def testconnect():
+    """
+    Method meant for testing connecting with monitoring applications and wizards.
+
+    :rtype: flask.Response
+    """
     ncpa_token = listener.config['iconfig'].get('api', 'community_string')
     token = request.args.get('token', None)
     if ncpa_token != token:
@@ -304,6 +316,15 @@ def testconnect():
 
 @listener.route('/nrdp/', methods=['GET', 'POST'])
 def nrdp():
+    """
+    Function acts an an NRDP forwarder.
+
+    Refers to the parent node and parent token under the NRDP section of the config
+    and forward all traffic hitting this function to the parent. Will return
+    the response from the parent NRDP server, so pretty much acts as proxy.
+
+    :rtype: flask.Response
+    """
     try:
         forward_to = listener.config['iconfig'].get('nrdp', 'parent')
         if request.method == 'get':
@@ -321,6 +342,15 @@ def nrdp():
 @listener.route('/api/agent/plugin/<plugin_name>/<path:plugin_args>')
 @requires_auth
 def plugin_api(plugin_name=None, plugin_args=None):
+    """
+    API for running old style Nagios plugins.
+
+    :param plugin_name: The name of the plugin to be run.
+    :type plugin_name: unicode
+    :param plugin_args: The args in the form arg1/arg2/arg3
+    :type plugin_args: unicode
+    :rtype: flask.Response
+    """
     config = listener.config['iconfig']
     if plugin_args:
         logging.info(plugin_args)
@@ -333,27 +363,17 @@ def plugin_api(plugin_name=None, plugin_args=None):
     return jsonify({'value': response})
 
 
-#@listener.route('/api/')
-#@listener.route('/api/<path:accessor>')
-#def api(accessor='', raw=False):
-#    if request.args.get('check'):
-#        url = accessor + '?' + urllib.urlencode(request.args)
-#        return jsonify({'value': internal_api(url, listener.config['iconfig'], **request.args)})
-#    try:
-#        plugin_path = listener.config['iconfig'].get('plugin directives', 'plugin_path')
-#        response = psapi.getter(accessor, plugin_path, **request.args)
-#    except Exception, e:
-#        logging.exception(e)
-#        return error(msg='Referencing node that does not exist.')
-#    if raw:
-#        return response
-#    else:
-#        return jsonify({'value': response})
-
-
 @listener.route('/api/')
 @listener.route('/api/<path:accessor>')
 def api(accessor=''):
+    """
+    The function that serves up all the metrics. Given some path/to/a/metric it will
+    retrieve the metric and do the necessary walking of the tree.
+
+    :param accessor: The path/to/the/desired/metric
+    :type accessor: unicode
+    :rtype: flask.Response
+    """
     try:
         config = listener.config['iconfig']
         node = psapi.getter(accessor, config)
@@ -396,16 +416,23 @@ def internal_api(accessor=None, listener_config=None, *args, **kwargs):
 
 
 def parse_internal_input(accessor):
-    ACCESSOR_REGEX = re.compile('(/api)?/?([^?]+)\??(.*)')
-    PLUGIN_REGEX = re.compile('(/api)?(/?agent/)?plugin/([^/]+)(/(.*))?')
+    """
+    Takes an accessor path from the API, and returns
+
+    :param accessor:
+    :rtype : tuple
+    :return:
+    """
+    accessor_regex = re.compile('(/api)?/?([^?]+)\??(.*)')
+    plugin_regex = re.compile('(/api)?(/?agent/)?plugin/([^/]+)(/(.*))?')
 
     accessor_name = None
     accessor_args = None
     plugin_name = None
     plugin_args = None
 
-    plugin_result = PLUGIN_REGEX.match(accessor)
-    accessor_result = ACCESSOR_REGEX.match(accessor)
+    plugin_result = plugin_regex.match(accessor)
+    accessor_result = accessor_regex.match(accessor)
 
     if plugin_result:
         plugin_name = plugin_result.group(3)
