@@ -1,6 +1,5 @@
 from __future__ import with_statement
 import sys
-import abstract
 import xml.etree.ElementTree as ET
 from passive.nagioshandler import NagiosHandler
 import utils
@@ -10,19 +9,12 @@ import os
 
 
 class Handler(NagiosHandler):
-    u"""
-    api for nrds config management
+    """
+    Class for handling the passive NRDS component.
     """
 
-    def __init__(self, *args, **kwargs):
-        super(Handler, self).__init__(*args, **kwargs)
-
-    def get_nrds_url(self):
-        nrds_url = self.config.get('nrds', 'url')
-        if nrds_url.endswith('/'):
-            return nrds_url
-        else:
-            return nrds_url + '/'
+    def __init__(self, config):
+        self.config = config
 
     def run(self, *args, **kwargs):
         if self.config_update_is_required():
@@ -35,110 +27,109 @@ class Handler(NagiosHandler):
                 self.get_plugin(plugin)
         logging.debug(u'Done with this NRDS iteration.')
 
-    def get_plugin(self, plugin, *args, **kwargs):
-        nrds_url = self.get_nrds_url()
-        plugin_path = self.config.get(u'plugin directives', u'plugin_path')
-        token = self.config.get(u'nrds', u'token')
-        operating_sys = self.get_os()
+    @staticmethod
+    def get_plugin(nrds_url, nrds_token, nrds_os, plugin_path, plugin):
+        getargs = {
+            'cmd': 'getplugin',
+            'os': nrds_os,
+            'token': nrds_token,
+            'plugin': plugin
+        }
 
-        getargs = {u'cmd': u'getplugin',
-                   u'os': operating_sys,
-                   u'token': token,
-                   u'plugin':   plugin}
-
+        # This plugin_abs_path should be absolute, as it is adjusted when the daemon runs.
         url_request = utils.send_request(nrds_url, **getargs)
-        local_path_location = os.path.join(plugin_path, plugin)
+        plugin_abs_path = os.path.join(plugin_path, plugin)
 
-        logging.debug( u"Downloading plugin to location: %s" % unicode(local_path_location))
+        if plugin_abs_path != os.path.abspath(plugin_abs_path):
+            raise ValueError("Plugin path (%s) is not absolute, I will not continue safely.", plugin_abs_path)
+
+        logging.debug("Downloading plugin to location: %s", plugin_abs_path)
 
         try:
-            with open(local_path_location, u'w') as plugin_file:
-                plugin_file.write(url_request.content)
-                os.chmod(local_path_location, 0775)
-        except IOError:
-            logging.error(u'Could not write the plugin to %s, perhaps permissions went bad.', local_path_location)
+            with open(plugin_abs_path, 'wb') as plugin_file:
+                plugin_file.write(url_request)
+                os.chmod(plugin_abs_path, 0775)
+        except Exception as exc:
+            logging.error('Could not write the plugin to %s: %r', plugin_abs_path, exc)
 
-    def update_config(self, *args, **kwargs):
-        u'''Downloads new config to whatever is declared as path
+    @staticmethod
+    def update_config(nrds_url, nrds_token, nrds_config):
+        """
+        Downloads new config to whatever is declared as path
 
         @todo Validate config before saving
-        '''
-        nrds_url = self.get_nrds_url()
-        get_args = {u'configname': self.config.get(u'nrds', u'CONFIG_NAME'),
-                    u'cmd': u'getconfig',
-                    u'os': u'NCPA',
-                    u'token': self.config.get(u'nrds', u'token') }
+        """
+        get_args = {
+            'configname': nrds_config,
+            'cmd': 'getconfig',
+            'os': 'NCPA',
+            'token': nrds_token
+        }
 
+        nrds_response = utils.send_request(nrds_url, **get_args)
 
-        logging.debug(u'URL I am requesting: %s' % nrds_url)
-        url_request = utils.send_request(nrds_url, **get_args)
-
-        if url_request.content != u"":
+        if nrds_response:
             try:
-                with open(self.config.file_path, u'wb') as config:
-                    config.write(url_request.content)
+                with open(self.config.file_path, 'wb') as new_config:
+                    new_config.write(nrds_response)
             except IOError:
                 logging.error(u'Could not rewrite the config. Permissions my be wrong.')
             else:
                 logging.info(u'Successfully updated NRDS config.')
 
-
-
-    def config_update_is_required(self, *args, **kwargs):
-        u'''Returns true or false based on value in the config_version
+    @staticmethod
+    def config_update_is_required(nrds_url, nrds_token, nrds_config, nrds_config_version):
+        """
+        Returns true or false based on value in the config_version
         variable in the config
 
         @todo Log results if we do not have this config
-        '''
-        get_args = {u'token': self.config.get(u'nrds', u'token'),
-                    u'cmd': u'updatenrds',
-                    u'os': u'NCPA',
-                    u'configname': self.config.get(u'nrds', u'CONFIG_NAME'),
-                    u'version': self.config.get(u'nrds', u'CONFIG_VERSION'), }
+        """
+        get_args = {
+            'token': nrds_token,
+            'cmd': 'updatenrds',
+            'os': 'NCPA',
+            'configname': nrds_config,
+            'version': nrds_config_version
+        }
 
-        logging.debug(u'Connecting to NRDS server...')
+        logging.debug('Connecting to NRDS server (%s)...', nrds_url)
 
-        nrdp_url = self.get_nrds_url()
-        url_request = utils.send_request(nrdp_url, **get_args)
+        url_request = utils.send_request(nrds_url, **get_args)
 
-        response_xml = ET.fromstring(url_request.content)
-        status_xml = response_xml.findall(u'./status')
+        response_xml = ET.fromstring(url_request)
+        status_xml = response_xml.findall('./status')
 
-        if status_xml:
-            status = status_xml[0].text
-        else:
-            status = u"0"
-
-        try:
-            status = int(status)
-        except Exception:
-            logging.error(u"Unrecognized value for NRDS update returned. Got %s, excpected integer." % status)
+        if not status_xml:
+            logging.warning("NRDS server did not respond with a status, skipping.")
             return False
 
-        logging.debug(u'Value returned for new config: %d' % status)
+        status = status_xml[0].text
+        if status == "0":
+            return False
+        elif status == "1":
+            return True
+        else:
+            logging.warning("Server does not have a record for %s config.", nrds_config)
+            return False
 
-        if status == 2:
-            logging.warning(u"Server does not have a record for %s config." % self.config.get(u'nrds', u'config_name'))
-            status = 0
-
-        return bool(status)
-
-    def get_os(self):
+    @staticmethod
+    def get_os():
         plat = sys.platform
 
         if plat == u'darwin' or plat == u'mac':
-            os = u'Darwin'
+            nrds_os = u'Darwin'
         elif u'linux' in plat:
-            os = u'Linux'
+            nrds_os = u'Linux'
         elif u'aix' in plat:
-            os = u'AIX'
+            nrds_os = u'AIX'
         elif u'sun' in plat:
-            os = u'SunOS'
+            nrds_os = u'SunOS'
         elif u'win' in plat:
-            os = u'Windows'
+            nrds_os = u'Windows'
         else:
-            os = u'Generic'
-        return os
+            nrds_os = u'Generic'
+        return nrds_os
 
     def list_missing_plugins(self, *args, **kwargs):
         installed_plugins = self.get_installed_plugins()
@@ -153,4 +144,5 @@ class Handler(NagiosHandler):
 
     def get_installed_plugins(self, *args, **kwargs):
         logging.warning(self.config.get(u'plugin directives', u'plugin_path'))
-        return frozenset([x for x in os.listdir(self.config.get(u'plugin directives', u'plugin_path')) if not x.startswith(u'.')])
+        return frozenset(
+            [x for x in os.listdir(self.config.get(u'plugin directives', u'plugin_path')) if not x.startswith(u'.')])

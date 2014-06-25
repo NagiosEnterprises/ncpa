@@ -32,10 +32,10 @@ class NagiosHandler(object):
         :rtype: dict
         """
         logging.debug('Parsing config for passive commands...')
-        commands = dict(self.config.items('passive checks'))
+        commands = self.config.items('passive checks')
         ncpa_commands = []
 
-        for name_blob, instruction in commands.items():
+        for name_blob, instruction in commands:
             try:
                 hostname, servicename = name_blob.split('|', 1)
                 if hostname.upper() == '%HOSTNAME%':
@@ -62,9 +62,6 @@ class NagiosHandler(object):
         """
         This item is a convenience method to consist with the API of a
         handler that is expected to exist in order to be called
-        generically.
-
-        :rtype: int
+        generically. This sets the checks parsed from the passive portion of the config.
         """
         self.checks = self.get_commands_from_config()
-        return 0
