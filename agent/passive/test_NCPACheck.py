@@ -19,7 +19,16 @@ class TestNCPACheck(TestCase):
         self.assertEqual(args, expected_args)
 
     def test_run(self):
-        self.fail()
+        stdout, returncode = self.nc.run()
+
+        self.assertIsInstance(stdout, unicode)
+        self.assertIsInstance(returncode, unicode)
+
+        new_check = nc('/invalid/check', 'test_host', 'test_service')
+        stdout, returncode = new_check.run()
+
+        self.assertIsInstance(stdout, unicode)
+        self.assertIsInstance(returncode, unicode)
 
     def test_run_check(self):
         api_url = '/api/cpu/percent/'
