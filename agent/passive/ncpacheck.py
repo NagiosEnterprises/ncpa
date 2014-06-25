@@ -109,7 +109,7 @@ class NCPACheck(object):
         try:
             response_dict = json.loads(response)['value']
             stdout = response_dict['stdout']
-            returncode = str(response_dict['returncode'])
+            returncode = unicode(response_dict['returncode'])
         except ValueError as exc:
             logging.error("Error with JSON: %s. JSON was: %s", str(exc), response)
         except TypeError as exc:
