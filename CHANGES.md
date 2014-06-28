@@ -1,3 +1,8 @@
+2.0
+===
+
+- Added continuous integration for the development cycle
+
 1.7.0 - NOT RELEASED
 ====================
 - Fixed init script for listener not getting the PID file correctly
