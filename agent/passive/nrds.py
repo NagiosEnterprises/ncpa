@@ -14,18 +14,18 @@ class Handler(NagiosHandler):
     """
 
     def __init__(self, config):
-        self.config = config
+        super(Handler, self).__init__(config)
 
     def run(self, *args, **kwargs):
         if self.config_update_is_required():
-            logging.debug(u'Updating my NRDS config...')
+            logging.debug('Updating my NRDS config...')
             self.update_config()
         needed_plugins = self.list_missing_plugins()
         if needed_plugins:
-            logging.debug(u'We need some plugins. Getting them...')
+            logging.debug('We need some plugins. Getting them...')
             for plugin in needed_plugins:
                 self.get_plugin(plugin)
-        logging.debug(u'Done with this NRDS iteration.')
+        logging.debug('Done with this NRDS iteration.')
 
     @staticmethod
     def get_plugin(nrds_url, nrds_token, nrds_os, plugin_path, plugin):
@@ -52,8 +52,7 @@ class Handler(NagiosHandler):
         except Exception as exc:
             logging.error('Could not write the plugin to %s: %r', plugin_abs_path, exc)
 
-    @staticmethod
-    def update_config(nrds_url, nrds_token, nrds_config):
+    def update_config(self, nrds_url, nrds_token, nrds_config):
         """
         Downloads new config to whatever is declared as path
 
@@ -73,9 +72,9 @@ class Handler(NagiosHandler):
                 with open(self.config.file_path, 'wb') as new_config:
                     new_config.write(nrds_response)
             except IOError:
-                logging.error(u'Could not rewrite the config. Permissions my be wrong.')
+                logging.error('Could not rewrite the config. Permissions my be wrong.')
             else:
-                logging.info(u'Successfully updated NRDS config.')
+                logging.info('Successfully updated NRDS config.')
 
     @staticmethod
     def config_update_is_required(nrds_url, nrds_token, nrds_config, nrds_config_version):
@@ -115,34 +114,76 @@ class Handler(NagiosHandler):
 
     @staticmethod
     def get_os():
+        """
+        Gets the current operation system we are working on. Used for determining which architecture/build of the
+        plugin we wish to retrieve.
+
+        :return: A string representing our OS
+        :rtype: str
+        """
         plat = sys.platform
 
-        if plat == u'darwin' or plat == u'mac':
-            nrds_os = u'Darwin'
-        elif u'linux' in plat:
-            nrds_os = u'Linux'
-        elif u'aix' in plat:
-            nrds_os = u'AIX'
-        elif u'sun' in plat:
-            nrds_os = u'SunOS'
-        elif u'win' in plat:
-            nrds_os = u'Windows'
+        if plat == 'darwin' or plat == 'mac':
+            nrds_os = 'Darwin'
+        elif 'linux' in plat:
+            nrds_os = 'Linux'
+        elif 'aix' in plat:
+            nrds_os = 'AIX'
+        elif 'sun' in plat:
+            nrds_os = 'SunOS'
+        elif 'win' in plat:
+            nrds_os = 'Windows'
         else:
-            nrds_os = u'Generic'
+            nrds_os = 'Generic'
         return nrds_os
 
-    def list_missing_plugins(self, *args, **kwargs):
+    def list_missing_plugins(self):
+        """
+        List the plugins that will need to retrieved from the NRDS server.
+
+        :return: The set containing a list of plugin names
+        :rtype: set
+        """
         installed_plugins = self.get_installed_plugins()
         required_plugins = self.get_required_plugins()
         return required_plugins - installed_plugins
 
-    def get_required_plugins(self, *args, **kwargs):
-        passive_checks = self.config.items(u'passive checks')
-        filtered = [x[1] for x in passive_checks if u'|' in x[0] and u'plugin/' in x[1]]
-        PLUGIN_NAME = re.compile(ur'plugin/([^/]+).*')
-        return frozenset([PLUGIN_NAME.search(x).group(1) for x in filtered])
+    def get_required_plugins(self):
+        """
+        List the plugins that are in the plugins directory
 
-    def get_installed_plugins(self, *args, **kwargs):
-        logging.warning(self.config.get(u'plugin directives', u'plugin_path'))
-        return frozenset(
-            [x for x in os.listdir(self.config.get(u'plugin directives', u'plugin_path')) if not x.startswith(u'.')])
+        :return: The set containing a list of plugin names
+        :rtype: set
+        """
+        checks_in_config = self.config.items('passive checks')
+        required_plugins = set()
+
+        for target, check in checks_in_config:
+            if '|' in target:
+                if 'plugin/' in check:
+                    plugin_search = re.search(u'plugin/([^/]+).*', check)
+                    plugin_name = plugin_search.group(1)
+                    required_plugins.add(plugin_name)
+
+        return required_plugins
+
+    def get_installed_plugins(self):
+        """
+        Return a set containing the plugins that exist in the plugins/ directory.
+
+        :return: Set containing all the plugins that already exist in the plugins/ directory.
+        :rtype: set
+        """
+        logging.debug("Checking for installed plugins.")
+        plugin_path = self.config.get('plugin directives', 'plugin_path')
+        plugins = set()
+
+        try:
+            for plugin in os.listdir(plugin_path):
+                if not plugin.startswith('.'):
+                    plugins.add(plugin)
+        except Exception as exc:
+            logging.error("Encountered exception while trying to read plugin directory: %r", exc)
+
+        return plugins
+
