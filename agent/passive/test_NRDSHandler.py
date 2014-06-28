@@ -8,6 +8,7 @@ import tempfile
 
 class NRDSHandler(TestCase):
     def setUp(self):
+        listener.server.listener.config['iconfig'] = {}
         self.testing_plugin_dir = os.path.join(tempfile.gettempdir(), 'testing-plugins')
         self.config = ConfigParser.ConfigParser()
         self.config.optionxform = str

@@ -4,6 +4,7 @@ import nagioshandler
 import utils
 from itertools import izip
 import ConfigParser
+import listener.server
 
 
 class Handler(nagioshandler.NagiosHandler):
@@ -11,8 +12,10 @@ class Handler(nagioshandler.NagiosHandler):
     NRDP Handler.
     """
 
-    def __init__(self, *args, **kwargs):
-        super(Handler, self).__init__(*args, **kwargs)
+    def __init__(self, config, *args, **kwargs):
+        super(Handler, self).__init__(config, *args, **kwargs)
+        listener.server.listener.config['iconfig'] = config
+
 
     @staticmethod
     def make_tag(tag_name, text='', tag_attr=None):

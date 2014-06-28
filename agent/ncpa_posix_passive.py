@@ -13,7 +13,8 @@ class Passive(ncpadaemon.Daemon):
     section = u'passive'
 
     def run_all_handlers(self, *args, **kwargs):
-        u"""Will run all handlers that exist.
+        """
+        Will run all handlers that exist.
 
         The handler must:
         - Have a config header entry
@@ -38,8 +39,8 @@ class Passive(ncpadaemon.Daemon):
                     ins_handler = tmp_handler.Handler(self.config_parser)
                     ins_handler.run()
                     logging.debug(u'Successfully ran handler %s' % handler)
-                except Exception, e:
-                    logging.exception(e)
+                except Exception as exc:
+                    logging.exception(exc)
 
     def run(self):
         while True:
@@ -48,7 +49,7 @@ class Passive(ncpadaemon.Daemon):
                 self.run_all_handlers()
             except Exception, e:
                 logging.exception(e)
-            sleep = int(self.config_parser.get(u'passive', u'sleep'))
+            sleep = int(self.config_parser.get('passive', 'sleep'))
             time.sleep(sleep)
 
 
