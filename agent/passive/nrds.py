@@ -3,9 +3,11 @@ import sys
 import xml.etree.ElementTree as ET
 from passive.nagioshandler import NagiosHandler
 import utils
+import tempfile
 import re
 import logging
 import os
+import ConfigParser
 
 
 class Handler(NagiosHandler):
@@ -67,14 +69,32 @@ class Handler(NagiosHandler):
 
         nrds_response = utils.send_request(nrds_url, **get_args)
 
+        try:
+            with tempfile.TemporaryFile() as temp_config:
+                temp_config = tempfile.TemporaryFile()
+                temp_config.write(nrds_response)
+                temp_config.seek(0)
+
+                test_config = ConfigParser.ConfigParser()
+                test_config.readfp(temp_config)
+
+                if not test_config.sections():
+                    raise Exception('Config contained no NCPA directives, not writing.')
+        except Exception as exc:
+            logging.error("NRDS config recieved from the server contained errors: %r", exc)
+            return False
+
         if nrds_response:
             try:
                 with open(self.config.file_path, 'wb') as new_config:
                     new_config.write(nrds_response)
-            except IOError:
-                logging.error('Could not rewrite the config. Permissions my be wrong.')
+            except Exception as exc:
+                logging.error('Could not rewrite the config: %r', exc)
+                return False
             else:
                 logging.info('Successfully updated NRDS config.')
+        return True
+
 
     @staticmethod
     def config_update_is_required(nrds_url, nrds_token, nrds_config, nrds_config_version):
