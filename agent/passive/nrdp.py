@@ -1,30 +1,35 @@
-import abstract
 import xml.dom.minidom
 import logging
+import nagioshandler
 import utils
 from itertools import izip
-import ConfigParser as configparser
+import ConfigParser
+import listener.server
 
 
-class Handler(abstract.NagiosHandler):
+class Handler(nagioshandler.NagiosHandler):
     """
     NRDP Handler.
     """
 
-    def __init__(self, *args, **kwargs):
-        super(Handler, self).__init__(*args, **kwargs)
+    def __init__(self, config, *args, **kwargs):
+        super(Handler, self).__init__(config, *args, **kwargs)
+        listener.server.listener.config['iconfig'] = config
 
-    def make_tag(self, tag_name, text='', tag_attr=None, *args, **kwargs):
+
+    @staticmethod
+    def make_tag(tag_name, text='', tag_attr=None):
         """
+        Make a tag given a tag name, internal text and attributes.
+
         :param tag_name: The name of the tag, ie <tag_name>
-        :type tag-name: unicode
+        :type tag_name: unicode
         :param text: The text to be placed inside of the tag.
         :type text: unicode
         :param tag_attr: Attributes to be added to the tag.
         :type tag_attr: dict
-        :param args:
-        :param kwargs:
         :return:
+        :rtype : xml.dom.minidom.Element
         """
         if tag_attr is None:
             tag_attr = {}
@@ -37,76 +42,121 @@ class Handler(abstract.NagiosHandler):
         if text:
             text_node = doc.createTextNode(text.strip())
             element.appendChild(text_node)
-        print type(element)
         return element
 
+    @staticmethod
+    def make_xml(check):
+        """
+        Return the XML node for a Nagios check.
 
-    def make_xml(self, result, *args, **kwargs):
+        :param check: The NCPACheck instance we are making into XML.
+        :type
+        :return: Element
+        :rtype: xml.dom.minidom.Element
         """
-        Return the XML node for a host check
-        """
-        check_result = self.make_tag(u'checkresult', tag_attr={u'type': result.check_type})
-        hostname = self.make_tag(u'hostname', unicode(result.nag_hostname))
-        state = self.make_tag(u'state', unicode(result.returncode))
-        output = self.make_tag(u'output', unicode(result.stdout))
-        if not result.check_type == u'host':
-            servicename = self.make_tag(u'servicename', result.nag_servicename)
+        stdout, returncode = check.run()
+
+        if stdout is None or returncode is None:
+            logging.error("Error running check for %s|%s given the instruction: %s, skipping.",
+                          check.hostname,
+                          check.servicename,
+                          check.instruction)
+
+        if check.servicename == '__HOST__':
+            check_type = 'host'
+        else:
+            check_type = 'service'
+
+        check_result = Handler.make_tag(u'checkresult', tag_attr={'type': check_type})
+        hostname = Handler.make_tag(u'hostname', unicode(check.hostname))
+        state = Handler.make_tag(u'state', unicode(returncode))
+        output = Handler.make_tag(u'output', unicode(stdout))
+
+        if not check_type == 'host':
+            servicename = Handler.make_tag(u'servicename', check.servicename)
             check_result.appendChild(servicename)
+
         check_result.appendChild(hostname)
         check_result.appendChild(state)
         check_result.appendChild(output)
         return check_result
 
-    def set_xml_of_checkresults(self, *args, **kwargs):
+    @staticmethod
+    def get_xml_of_checkresults(checks):
         """
-        Get XML of all check results in NRDP.
+        Gets XML of all check results in NRDP config section as
+        an XML document.
+
+        :return: The XML Document to be returned to Nagios
+        :rtype: xml.dom.minidom.Document
         """
-        self.doc = xml.dom.minidom.Document()
-        check_results = self.doc.createElement('checkresults')
-        self.doc.appendChild(check_results)
-        for result in self.ncpa_commands:
-            element = self.make_xml(result)
+        doc = xml.dom.minidom.Document()
+        check_results = doc.createElement('checkresults')
+        doc.appendChild(check_results)
+
+        for check in checks:
+            element = Handler.make_xml(check)
             check_results.appendChild(element)
 
-    def run(self, *args, **kwargs):
+        return doc.toxml()
+
+    def run(self):
         """
         Sends all the commands to the agent and then submits them
         via NRDP to Nagios.
-        """
-        try:
-            self.send_all_commands()
-            self.submit_to_nagios()
-        except configparser.NoSectionError, e:
-            logging.error(u'%s -- Exiting out of passive daemon cycle.' % unicode(e))
-        except configparser.NoOptionError, e:
-            logging.error(u'%s -- Exiting out of cycle.' % unicode(e))
 
-    def log_result(self, ret_xml, *args, **kwargs):
+        :return: 0 on success, 1 on error
+        :rtype : int
+        """
+        super(Handler, self).run()
+        checkresults = Handler.get_xml_of_checkresults(self.checks)
+        self.submit_to_nagios(checkresults)
+
+    def guess_hostname(self):
+        try:
+            hostname = self.config.get('nrdp', 'hostname', None)
+            assert hostname
+        except (ConfigParser.NoSectionError, ConfigParser.NoOptionError, AssertionError):
+            logging.debug("No hostname given in the config, falling back to parent class.")
+            hostname = super(Handler, self).guess_hostname()
+        return hostname
+
+    @staticmethod
+    def log_result(ret_xml):
+        """
+        Helper function to log the XML returned by the NRDP server.
+
+        :param ret_xml: The XML returned by the NRDP server.
+        :type ret_xml: unicode
+        :rtype : None
+        """
         tree = xml.dom.minidom.parseString(ret_xml)
 
         try:
-            message = tree.getElementsByTagName(u"message")[0].firstChild.nodeValue
+            message = tree.getElementsByTagName("message")[0].firstChild.nodeValue
         except IndexError:
-            logging.warning(u'XML returned did not contain a message, or was malformed.')
-            message = u'Nonexistent'
+            logging.warning('XML returned did not contain a message, or was malformed.')
+            message = 'Nonexistent'
 
         try:
-            meta = tree.getElementsByTagName(u"output")[0].firstChild.nodeValue
+            meta = tree.getElementsByTagName("output")[0].firstChild.nodeValue
         except IndexError:
-            logging.warning(u'XML returned did not contain a message, or was malformed.')
-            meta = u'Nonexistent'
+            logging.warning('XML returned did not contain a message, or was malformed.')
+            meta = 'Nonexistent'
 
-        logging.info(u'Message from NRDP server: %s' % message)
-        logging.info(u'Meta output from NRDP server: %s' % meta)
+        logging.info('Message from NRDP server: %s', message)
+        logging.info('Meta output from NRDP server: %s', meta)
 
-    def submit_to_nagios(self, *args, **kwargs):
+    def submit_to_nagios(self, checkresults):
         """
         Submit the result as XML to the NRDP server.
+        :param checkresults: The XML that will be submitted back to Nagios.
+        :type checkresults: xml.dom.minidom.Document
+        :rtype: None
         """
-        self.set_xml_of_checkresults()
-        server = self.config.get(u'nrdp', u'parent')
-        token = self.config.get(u'nrdp', u'token')
-        xml_data = self.doc.toxml()
-        logging.debug(u'XML to be submitted: %s', xml_data)
-        ret_xml = utils.send_request(url=server, token=token, XMLDATA=xml_data, cmd=u'submitcheck')
-        self.log_result(ret_xml.content)
+        server = self.config.get('nrdp', 'parent')
+        token = self.config.get('nrdp', 'token')
+
+        logging.debug('XML to be submitted: %s', checkresults)
+        ret_xml = utils.send_request(url=server, token=token, XMLDATA=checkresults, cmd='submitcheck')
+        Handler.log_result(ret_xml)

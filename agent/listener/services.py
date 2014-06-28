@@ -1,7 +1,6 @@
 import nodes
 import platform
 import subprocess
-import logging
 import tempfile
 import os
 
@@ -9,12 +8,12 @@ import os
 def filter_services(m):
     def wrapper(*args, **kwargs):
         services = m(*args, **kwargs)
-        filter_services = kwargs.get('service', [])
+        filtered_services = kwargs.get('service', [])
         filter_statuses = kwargs.get('status', [])
-        if filter_services or filter_statuses:
+        if filtered_services or filter_statuses:
             accepted = {}
-            if filter_services:
-                for service in filter_services:
+            if filtered_services:
+                for service in filtered_services:
                     if service in services:
                         accepted[service] = services[service]
             if filter_statuses:
@@ -176,3 +175,5 @@ class ServiceNode(nodes.LazyNode):
         return {'stdout': stdout, 'returncode': returncode}
 
 
+def get_node():
+    return ServiceNode('services', None)
