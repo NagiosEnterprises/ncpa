@@ -19,14 +19,32 @@ class Handler(NagiosHandler):
         super(Handler, self).__init__(config)
 
     def run(self, *args, **kwargs):
-        if self.config_update_is_required():
+        try:
+            nrds_url = self.config.get('nrds', 'URL', None)
+            nrds_config = self.config.get('nrds', 'CONFIG_NAME', None)
+            nrds_config_version = self.config.get('nrds', 'CONFIG_VERSION', None)
+            nrds_token = self.config.get('nrds', 'TOKEN', None)
+        except (ConfigParser.NoOptionError, ConfigParser.NoSectionError) as exc:
+            logging.error("Encountered error while getting NRDS config values: %r", exc)
+
+        # Make sure valid input was stated in the config, if not, error out and log it.
+        for directive in [nrds_url, nrds_config, nrds_config_version, nrds_token]:
+            if directive is None:
+                logging.error("Cannot start NRDS transaction: %r is invalid or missing.", directive)
+                return
+
+        # Check to see if an update is required.
+        if self.config_update_is_required(nrds_url, nrds_token, nrds_config, nrds_config_version):
             logging.debug('Updating my NRDS config...')
-            self.update_config()
+            self.update_config(nrds_url, nrds_token, nrds_config)
+
+        # Then install any necessary plugins if need be.
         needed_plugins = self.list_missing_plugins()
         if needed_plugins:
             logging.debug('We need some plugins. Getting them...')
             for plugin in needed_plugins:
                 self.get_plugin(plugin)
+
         logging.debug('Done with this NRDS iteration.')
 
     @staticmethod
