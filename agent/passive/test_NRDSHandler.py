@@ -11,6 +11,7 @@ class NRDSHandler(TestCase):
         self.testing_plugin_dir = os.path.join(tempfile.gettempdir(), 'testing-plugins')
         self.config = ConfigParser.ConfigParser()
         self.config.optionxform = str
+        self.config.file_path = os.path.join(self.testing_plugin_dir, "test.cfg")
         self.config.add_section('plugin directives')
         self.config.set('plugin directives', 'plugin_path', self.testing_plugin_dir)
         self.config.add_section('passive checks')
@@ -49,11 +50,44 @@ class NRDSHandler(TestCase):
             l = plugin_test.readlines()[0].strip()
             self.assertEquals(l, 'SECRET PAYLOAD')
 
-    def test_update_config(self):
-        self.fail()
-
     def test_config_update_is_required(self):
-        self.fail()
+        def mock_request(*args, **kwargs):
+            return "<result><status>0</status><message>OK</message></result>"
+
+        utils.send_request = mock_request
+        update = self.n.config_update_is_required('mocked', 'mocked', 'TESTING', '.1')
+        self.assertFalse(update)
+
+        def mock_request(*args, **kwargs):
+            return "<result><status>1</status><message>Config version is available</message></result>"
+
+        utils.send_request = mock_request
+        update = self.n.config_update_is_required('mocked', 'mocked', 'TESTING', '.2')
+        self.assertTrue(update)
+
+        def mock_request(*args, **kwargs):
+            return "<result><status>2</status><message>Config version is available</message></result>"
+
+        utils.send_request = mock_request
+        update = self.n.config_update_is_required('mocked', 'mocked', 'TESTING', '.3')
+        self.assertFalse(update)
+
+    def test_update_config(self):
+        def mock_request(*args, **kwargs):
+            return ""
+
+        utils.send_request = mock_request
+        success = self.n.update_config('', '', '')
+        self.assertFalse(success)
+
+        def mock_request(*args, **kwargs):
+            return "[test]\nvalue = foobar"
+
+        utils.send_request = mock_request
+        success = self.n.update_config('', '', '')
+        self.assertTrue(success)
+
+        os.unlink(self.config.file_path)
 
     def test_get_os(self):
         platform = self.n.get_os()
@@ -71,7 +105,6 @@ class NRDSHandler(TestCase):
         self.n.config.set('passive checks', 'bogus_entry', '/api/plugin/bogus.bingo/foobar')
         required_plugins = self.n.get_required_plugins()
         self.assertEquals(required_plugins, {'foobar.py'})
-
 
 
     def test_get_installed_plugins(self):
