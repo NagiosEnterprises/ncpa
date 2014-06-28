@@ -1,17 +1,9 @@
-import sys
-import os
-
-basepath = os.path.join(os.path.dirname(__file__), '..')
-sys.path.append(basepath)
-
 import nodes
 import unittest
 
 
 def get_nodes(names):
-
     class TestNode(object):
-
         def __init__(self, name):
             self.name = name
 
@@ -25,7 +17,6 @@ def get_nodes(names):
 
 
 class TestParentNode(unittest.TestCase):
-
     def setUp(self):
         self.n = nodes.ParentNode('testing')
 

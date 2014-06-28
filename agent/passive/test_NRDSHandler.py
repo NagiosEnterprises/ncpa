@@ -1,15 +1,19 @@
 from unittest import TestCase
+from unittest import skip
 from nrds import Handler as n
 import ConfigParser
 import os
 import utils
 import tempfile
+import listener.server
+import shutil
 
 
 class NRDSHandler(TestCase):
     def setUp(self):
         listener.server.listener.config['iconfig'] = {}
         self.testing_plugin_dir = os.path.join(tempfile.gettempdir(), 'testing-plugins')
+        shutil.rmtree(self.testing_plugin_dir, ignore_errors=True)
         self.config = ConfigParser.ConfigParser()
         self.config.optionxform = str
         self.config.file_path = os.path.join(self.testing_plugin_dir, "test.cfg")
@@ -23,8 +27,9 @@ class NRDSHandler(TestCase):
         except OSError:
             pass
 
+    @skip("Not testing the run method, just a convenience method.")
     def test_run(self):
-        self.fail()
+        pass
 
     def test_get_plugin(self):
         def get_request(*args, **kwargs):
@@ -92,7 +97,7 @@ class NRDSHandler(TestCase):
 
     def test_get_os(self):
         platform = self.n.get_os()
-        self.assertIsInstance(platform, unicode)
+        self.assertIsInstance(platform, str)
 
     def test_list_missing_plugins(self):
         required_plugins = self.n.get_required_plugins()
@@ -107,7 +112,6 @@ class NRDSHandler(TestCase):
         required_plugins = self.n.get_required_plugins()
         self.assertEquals(required_plugins, {'foobar.py'})
 
-
     def test_get_installed_plugins(self):
         installed_plugins = self.n.get_installed_plugins()
         self.assertEquals(installed_plugins, set())
@@ -120,8 +124,4 @@ class NRDSHandler(TestCase):
         os.unlink(foobar_plugin)
 
     def tearDown(self):
-        expected_abs_plugin_path = os.path.join(tempfile.gettempdir(), 'pluginname')
-        try:
-            os.unlink(expected_abs_plugin_path)
-        except OSError:
-            pass
+        shutil.rmtree(self.testing_plugin_dir, ignore_errors=True)
