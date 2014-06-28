@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 
 """A plugin checking event logs on Windows is expected to take the following inputs:
 
@@ -57,7 +57,6 @@ import pywintypes
 
 
 class WindowsLogsNode(nodes.LazyNode):
-
     def walk(self, *args, **kwargs):
         try:
             logtypes = get_logtypes(kwargs)
@@ -123,7 +122,8 @@ class WindowsLogsNode(nodes.LazyNode):
             logged_after = logged_after[0]
         nice_timedelta = self.translate_timedelta(logged_after)
 
-        perfdata = ' '.join(["'%s'=%d;%s;%s;" % (name, count, self.warning, self.critical) for name, count in zip(log_names, log_counts)])
+        perfdata = ' '.join(["'%s'=%d;%s;%s;" % (name, count, self.warning, self.critical) for name, count in
+                             zip(log_names, log_counts)])
         info = ', '.join(['%s has %d logs' % (name, count) for name, count in zip(log_names, log_counts)])
         info_line = '%s: %s that are younger than %s' % (prefix, info, nice_timedelta)
 
@@ -223,8 +223,13 @@ def get_filter_dict(request_args):
     return fdict
 
 
+def get_node():
+    return WindowsLogsNode('logs', None)
+
+
 def get_logs_node():
     return WindowsLogsNode('logs', None)
+
 
 EVENT_TYPE = {win32con.EVENTLOG_AUDIT_FAILURE: 'AUDIT_FAILURE',
               win32con.EVENTLOG_AUDIT_SUCCESS: 'AUDIT_SUCCESS',
