@@ -98,7 +98,9 @@ html_theme = 'bootstrap'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {'bootswatch_theme' : 'spacelab'}
+html_theme_options = {
+    'navbar_class': 'navbar navbar-inverse'
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #~ html_theme_path = ['_themes']
@@ -150,7 +152,7 @@ html_static_path = ['_static']
 #html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
-html_show_sourcelink = False
+html_show_sourcelink = True
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 #html_show_sphinx = True
