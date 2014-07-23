@@ -1,4 +1,4 @@
-1.7.0 - NOT RELEASED
+1.7.0 - 7/23/2014
 ====================
 - Fixed init script for listener not getting the PID file correctly
 - Moved away from the Flask development server for serving HTTPS requests
@@ -14,8 +14,7 @@
 ==================
 - Updated build and versioning process
 
-
-1.5.0 - Not Released
+1.5.0
 ==================
 - Rebuilt build system for NCPA
 - Fixed NRDS issue where configs were getting overwritten

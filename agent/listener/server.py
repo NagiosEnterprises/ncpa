@@ -16,7 +16,7 @@ import psutil
 import gevent
 import geventwebsocket
 
-__VERSION__ = 1.6
+__VERSION__ = 1.7
 __STARTED__ = datetime.datetime.now()
 
 
