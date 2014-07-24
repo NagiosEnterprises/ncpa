@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'NCPA'
-copyright = '2013, Nicholas Scott'
+copyright = '2013-2014, Nagios Enterprises LLC, Nicholas Scott'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
