@@ -14,7 +14,7 @@ with open('VERSION.md') as version_file:
     version = version_file.readline().strip()
 
 try:
-	os.remove(os.path.join(basedir, 'build', 'NCPA-%s.exe' % version))
+	os.remove(os.path.join(basedir, 'build', 'ncpa-%s.exe' % version))
 except:
 	pass
 
@@ -46,7 +46,7 @@ b = subprocess.Popen([nsis, nsi])
 b.wait()
 
 print os.path.join(basedir, 'agent', 'build', 'NCPA_Installer.exe')
-print os.path.join(basedir, 'build', 'NCPA-%s.exe' % version)
+print os.path.join(basedir, 'build', 'ncpa-%s.exe' % version)
 
 shutil.copyfile(os.path.join(basedir, 'agent', 'build', 'NCPA_Installer.exe'),
-                os.path.join(basedir, 'build', 'NCPA-%s.exe' % version))
+                os.path.join(basedir, 'build', 'ncpa-%s.exe' % version))
