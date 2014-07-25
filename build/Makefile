@@ -1,6 +1,6 @@
 PYTHONVER = python2.7
 PIPVER = pip2.7
-SPHINXBUILD = $(shell which sphinx-build)
+SPHINXBIN = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION.md)
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = ~/rpmbuild
@@ -27,7 +27,7 @@ build_exe: update_version build_doc
 	mv $(BASEDIR)/docs/_build/html $(BASEDIR)/agent/build/*/listener/static/help
 
 build_doc:
-	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBUILD)" html
+	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBIN)" html
 
 update_packages:
 	$(FLAGS) $(PIPVER) install -r $(BASEDIR)/requirements.txt --upgrade
