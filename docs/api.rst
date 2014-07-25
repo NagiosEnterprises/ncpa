@@ -3,18 +3,16 @@
 The API
 =======================
 
-These words might sound a bit daunting, but its really quite simple.
+The NCPA API may seem complex but it is actually very simple. NCPA was designed to make it easy for administrators to set-up checks, troubleshoot, test new checks, and keep the options for running these checks very flexible.
 
-NCPA was designed to make it easy for adminstrators to setup checks, troubleshoot and test new checks and keep the options for running these checks very flexible.
-
-Let us try out a quick example to illustrate what this means. In these following examples I will be running my checks against ncpaserver, so when addresses are used, substitute the IP of your NCPA agent's computer in for ncpaserver, as well as the NCPA agents token for the token that I will use.
+Let's try out a quick example to illustrate what this means. In these following examples I will be running my checks against "ncpaserver", a fictitious server, so when addresses are used. Substitute the IP of your NCPA agent's computer in for "ncpaserver" as well as your NCPA token for the token "nagios" that I use.
 
 Looking at the tree
 -------------------
 
 Open up your web browser, and navigate to::
     
-    https://ncpaserver:5693/api/?token=brody
+    https://ncpaserver:5693/api/?token=nagios
 
 This returns::
     
@@ -44,7 +42,7 @@ Accessing specific items in the tree
 
 So notice that there is a "memory" string. Let us amend our address a bit and see what comes out. Try::
     
-    https://ncpaserver:5693/api/memory?token=brody
+    https://ncpaserver:5693/api/memory?token=nagios
 
 This returns::
     
@@ -88,21 +86,21 @@ It cut out everything except all the items that had to do with memory. This is b
     * process
     * services
     
-    These are meant to provide a platform independent way of accessing basic metrics on a server that are most oftenly monitored. These are not run from plugins, these are built into the NCPA program itself.
+    These are meant to provide a platform independent way of accessing basic metrics on a server that are most often monitored. These are not run from plugins, these are built into the NCPA program itself.
     
-    Each of these branches contains its own metrics. Some of these metrics are enumerated upon NCPA server startup. For instance, disks and interfaces will be enumerates and will be listed in this tree as well.
+    Each of these branches contains its own metrics. Some of these metrics are enumerated upon NCPA server start-up. For instance, disks and interfaces will be enumerated and will be listed in this tree as well.
 
 .. caution:: Accessing disks is indicated with the pipe | character, rather than the / or \\ character to avoid escaping issues. Keep this in mind when writing queries. The | character is a special character in bash, so you will generally have to wrap it in single quotes when using it as an argument to avoid problems. 
 
-So hopefully, you're noticing whats going on here. To be overt, we can pare down the information to the actual metric we want in much the same way that we specify the file we want to a computer. We specify a path and then we access that file or directory. The individual metrics we wish to find (CPU Usage, Memory Usage, etc) are the files, while the general groupings (CPU, Memory) are the directories, in this analogy.
+So hopefully, you're noticing what's going on here. To be overt, we can pare down the information to the actual metric we want in much the same way that we specify the file we want to a computer. We specify a path and then we access that file or directory. The individual metrics we wish to find (CPU Usage, Memory Usage, etc) are the files, while the general groupings (CPU, Memory) are the directories, in this analogy.
 
-So now let us make a bigger leap and actually grab a specific memory metric. Let us grab the the percent of real memory used. If you look at the tree, you'd notice that the accessor URL is::
+So now let us make a bigger leap and actually grab a specific memory metric. Let us grab the the percent of real memory used. If you look at the tree, you'd notice that the accessors URL is::
 
     api/memory/virtual/available
 
-So let us try plugging that in to our ncpaserver::
+So let us try plugging that in to our fictitious "ncpaserver"::
     
-    https://ncpaserver:5693/api/memory/virtual/available?token=brody
+    https://ncpaserver:5693/api/memory/virtual/available?token=nagios
 
 This returns::
     
@@ -122,13 +120,13 @@ Take this method that we've done, going through the tree one thing at a time to 
 Getting Nagios return results
 -----------------------------
 
-Well its all well and good that we can pull these numbers, but what we it would pretty cool if we could turn these into Nagios return results. Now that we've spoke about accessing these items, lets talk about what we can do with these.
+Well it's good that we can pull these numbers, but it would pretty cool if we could turn these into Nagios return results. Now that we've spoke about accessing these items, lets talk about what we can do with these.
 
-When you are working on a metric, rather than a group of metrics, you can turn it into a Nagios result very easily. This API supports quite a bit of specifications using GET or POST variables, to illustrate that, let us turn the above RAM number into a Nagios return results.
+When you are working on a metric, rather than a group of metrics, you can turn it into a Nagios result very easily. The NCPA API supports quite a bit of specifications using GET (or POST) variables. To illustrate this let's turn the above RAM number into a Nagios return results.
 
-We are going to add &warning=60&critical=80&check=true onto the end of the above URL. If you're familiar with URLs, you'll see that this is specifying GET variables passed to the server. If you're unfamiliar with URLs, you just learned something!::
+We are going to add *&warning=60&critical=80&check=true* onto the end of the above URL::
     
-    https://ncpaserver:5693/api/memory/virtual/available?token=brody&warning=1&critical=2&check=true
+    https://ncpaserver:5693/api/memory/virtual/available?token=nagios&warning=1&critical=2&check=true
 
 Returns::
     
@@ -139,9 +137,9 @@ Returns::
       }
     }
 
-This is the JSON for dump to Nagios. We see it has its return code, and its standard out that will be the status information for a service.
+Using a GET request (we could also use POST, with the same variables) we were able to have the NCPA API dump this Nagios result formatted JSON output. We can clearly see the output which has a return code and the standard out that will give the status information for a service.
 
-Its kind of ugly though, I'd rather that number be in GB. So add &unit=G to the end of the request::
+Bytes are kind of ugly though and I'd rather that number be in GB. So add &unit=G to the end of the request::
     
     {
       "value": {
@@ -150,11 +148,11 @@ Its kind of ugly though, I'd rather that number be in GB. So add &unit=G to the 
       }
     }
 
-There thats better, much more human readable.
+That's better, much more human readable.
 
 .. topic:: Nagios Check Result Specifiers
     
-    So there are a couple things we can tack onto the end of the request URL to get what we want out our check
+    There are a couple things we can tack onto the request URL to get what we want out of our check
     
     .. glossary::
         
@@ -168,10 +166,10 @@ There thats better, much more human readable.
             Specify the Nagios critical threshold.*
         
         unit
-            Expects K (for kilo), M (for mega), G (for giga) and T (for tera).
+            Accepts K (for kilo), M (for mega), G (for giga) and T (for tera).
         
         delta
-            There are some results that simply counters. Specifically, the interface counters simply count the bytes that pass through the interface. Set delta=1 for the NCPA server to calculate the change in the counter divided by the amount of time that has past since last check (bytes/sec).
+            There are some results that are counters. Specifically, the interface counters simply count the bytes that pass through the interface. Set delta=1 for the NCPA server to calculate the change in the counter divided by the amount of time that has past since last check to create bytes/sec.
 
 Using Nagios Plugins
 --------------------
@@ -193,7 +191,7 @@ This returns::
 
 Which shows all of the plugins that are installed. Now if we want to execute those plugins, we follow the same logic as we did above (for the non-plugin metrics). One new introduction is for plugins that take arguments. Simply separate them with the forward slashes. So for instance, to pass one argument to my test.vbs script, I would call::
     
-    https://ncpaserver:5693/api/agent/plugin/test.vbs/"First Arg"?token=brody
+    https://ncpaserver:5693/api/agent/plugin/test.vbs/"First Arg"?token=nagios
 
 Which shows us the output::
     
@@ -250,9 +248,9 @@ Using this particular address is how you will check to see if a service is runni
 
     service/ALG/stopped
 
-For your metric (-M), and you will get the return value you want.
+To get metric data use -M and you will get the return value you want.
     
 Conclusion
 ----------
 
-Using the API is simple, and will be useful to access your own checks later. While intimate knowledge is certainly not necessary, it does give a strange feeling of power.
+Using the API is simple and will be useful to access your own checks later. While intimate knowledge is certainly not necessary, it does give a strange feeling of power.
