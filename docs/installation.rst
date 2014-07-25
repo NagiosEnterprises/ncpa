@@ -108,6 +108,9 @@ First thing that must be done is acquiring the RPM package. The latest RPM packa
 * CentOS 6
     * `32-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86&os=el6>`_ 
     * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86_64&os=el6>`_
+    
+* CentOS 7
+    * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86_64&os=el7>`_
 
 * SuSe
     * `32-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86&os=os12>`_
