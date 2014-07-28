@@ -1,4 +1,4 @@
-1.7.0 - 7/23/2014
+1.7.0 - 7/28/2014
 ====================
 - Fixed init script for listener not getting the PID file correctly
 - Fixed build issue with cz_Freeze
