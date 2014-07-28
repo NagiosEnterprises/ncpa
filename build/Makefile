@@ -1,7 +1,7 @@
 PYTHONVER = python2.7
 PIPVER = pip2.7
-SPHINXBIN = $(shell which sphinx-build)
-NCPAVER = $(shell cat ../VERSION.md)
+SPHINXBIN = $(which sphinx-build)
+NCPAVER = $(cat ../VERSION.md)
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = ~/rpmbuild
 
