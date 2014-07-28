@@ -8,6 +8,7 @@ All rights go to the writer of this script.
 import OpenSSL
 import socket
 import os
+import uuid
 
 def create_self_signed_cert(cert_dir, cert_file, key_file):
 
@@ -28,7 +29,10 @@ def create_self_signed_cert(cert_dir, cert_file, key_file):
         cert.get_subject().O = "Nagios Enterprises, LLC"
         cert.get_subject().OU = "Development"
         cert.get_subject().CN = socket.gethostname()
-        cert.set_serial_number(1000)
+        
+        sn = uuid.uuid1()
+        cert.set_serial_number(sn.int)
+        
         cert.gmtime_adj_notBefore(0)
         cert.gmtime_adj_notAfter(10*365*24*60*60)
         cert.set_issuer(cert.get_subject())
