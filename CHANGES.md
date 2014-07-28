@@ -4,6 +4,7 @@
 - Fixed build issue with cz_Freeze
 - Fixed issue with SSL certificates using the same SN
 - Fixed dependency issues with Debian systems
+- Fixed doc builds during compilation
 - Moved away from the Flask development server for serving HTTPS requests
 - Now manually creating SSL certificates, and added ability to specify
   cert and key files by specifying in the certificate field by
