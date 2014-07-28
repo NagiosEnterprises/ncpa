@@ -1,6 +1,9 @@
 1.7.0 - 7/23/2014
 ====================
 - Fixed init script for listener not getting the PID file correctly
+- Fixed build issue with cz_Freeze
+- Fixed issue with SSL certificates using the same SN
+- Fixed dependency issues with Debian systems
 - Moved away from the Flask development server for serving HTTPS requests
 - Now manually creating SSL certificates, and added ability to specify
   cert and key files by specifying in the certificate field by
