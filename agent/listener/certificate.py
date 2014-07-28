@@ -25,9 +25,10 @@ def create_self_signed_cert(cert_dir, cert_file, key_file):
         cert.get_subject().C = "US"
         cert.get_subject().ST = "Minnesota"
         cert.get_subject().L = "St. Paul"
-        cert.get_subject().O = "Nagios LLC"
-        cert.get_subject().OU = "Nagios LLC"
+        cert.get_subject().O = "Nagios Enterprises, LLC"
+        cert.get_subject().OU = "Development"
         cert.get_subject().CN = socket.gethostname()
+        cert.get_subject().SN = cert.get_serial_number()
         cert.set_serial_number(1000)
         cert.gmtime_adj_notBefore(0)
         cert.gmtime_adj_notAfter(10*365*24*60*60)
