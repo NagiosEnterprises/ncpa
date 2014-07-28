@@ -27,8 +27,7 @@ build_exe: update_version build_doc
 	mv $(BASEDIR)/docs/_build/html $(BASEDIR)/agent/build/*/listener/static/help
 
 build_doc:
-	cd ../docs
-	make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBIN)" html
+	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBIN)" html
 
 update_packages:
 	$(FLAGS) $(PIPVER) install -r $(BASEDIR)/requirements.txt --upgrade
