@@ -70,7 +70,7 @@ build_rpm: build_spec
 	find $(BUILDROOT)/RPMS -name 'ncpa-$(NCPAVER)*' -exec cp {} . \;
 
 build_deb: build_rpm
-	mkdir debbuild
+	mkdir -p debbuild
 	cp *.rpm debbuild/
 	cd debbuild && alien -c -k -v *.rpm
 	cp debbuild/*.deb .
