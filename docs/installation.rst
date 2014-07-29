@@ -176,7 +176,7 @@ Download the `NCPA DMG here <https://assets.nagios.com/downloads/ncpa/download.p
 
     cd /tmp
     hdiutil attach /tmp/ncpa-<version>.dmg
-    zsh /Volumes/NCPAInstall/ncpa/install.sh
+    sudo zsh /Volumes/NCPA-<version>/install.sh
 
 What this script does is
     * Creates the folder /usr/local/ncpa if it does not exist
