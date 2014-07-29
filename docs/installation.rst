@@ -68,14 +68,14 @@ while being used on the command line. The following are the names of the directi
 
 .. glossary::
     
-	TOKEN
+    TOKEN
         The token that will be used to access the agent's API and web interface.
 	
     NRDPURL
         This specifies the NRDP URL to use if passive checks are being implemented.
     
     NRDPTOKEN
-		This is the token that will be used to authenticate NRDP passive checks and to authenticate with NRDS.
+	This is the token that will be used to authenticate NRDP passive checks and to authenticate with NRDS.
     
     HOST
         The host that the passive agent will report back as.
@@ -101,20 +101,20 @@ Installing NCPA Using RPM Packing
 
 First thing that must be done is acquiring the RPM package. The latest RPM package can be found on the Nagios assets site. Please choose the correct package from the following list of RPM-using distributions. Note these are links.
 
-* CentOS 5
+* CentOS 5.x
     * `32-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86&os=el5>`_
     * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86_64&os=el5>`_
 
-* CentOS 6
+* CentOS 6.x
     * `32-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86&os=el6>`_ 
     * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86_64&os=el6>`_
     
-* CentOS 7
+* CentOS 7.0
     * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86_64&os=el7>`_
 
-* SuSe
-    * `32-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86&os=os12>`_
-    * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86_64&os=os12>`_
+* openSUSE 13.x
+    * `32-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86&os=os13>`_
+    * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86_64&os=os13>`_
 
 .. note:: These RPMs should cover the bases for your systems, if these do not work for your particular system, help make the project better by volunteering for a build or you can checkout the source code from git.
 
@@ -143,8 +143,8 @@ Installing NCPA Using DEB Packaging
 This section is largely the same as the RPM section above. The DEB package must be downloaded to the server you want to monitor, and then it needs to be installed. The latest DEB package is located as follows
 
 * Debian/Ubuntu
-    * `32-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=deb&arch=x86&os=db7>`_
-    * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=deb&arch=x86_64&os=db7>`_
+    * `32-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=deb&arch=x86>`_
+    * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=deb&arch=x86_64>`_
 
 Now that we have the DEB on our system, we simply need to install it. You can use any package manager you are comfortable with, but for the sake of portability, this example will use *dpkg* to install this particular package.
 
@@ -172,7 +172,7 @@ Install NCPA on Mac OS X
 
     The install process on Mac OS X is still experimental. If you would like to help make this process better, please get in contact with the author (whose address can be found at the bottom of the page.)
 
-Download the `NCPA DMG here <https://assets.nagios.com/downloads/ncpa/download.php?type=dmg&arch=x86>`_ . You will need to log in as root, or at least as a user who can run commands as root to continue with the installation. Then, depending on where you installed it (we will assume you downloaded it to your /tmp directory), run the following commands::
+Download the `NCPA DMG here <http://assets.nagios.com/downloads/ncpa/download.php?type=dmg&arch=x86>`_ . You will need to log in as root, or at least as a user who can run commands as root to continue with the installation. Then, depending on where you installed it (we will assume you downloaded it to your /tmp directory), run the following commands::
 
     cd /tmp
     hdiutil attach /tmp/ncpa-<version>.dmg
