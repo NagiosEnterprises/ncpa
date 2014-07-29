@@ -175,7 +175,7 @@ Install NCPA on Mac OS X
 Download the `NCPA DMG here <https://assets.nagios.com/downloads/ncpa/download.php?type=dmg&arch=x86>`_ . You will need to log in as root, or at least as a user who can run commands as root to continue with the installation. Then, depending on where you installed it (we will assume you downloaded it to your /tmp directory), run the following commands::
 
     cd /tmp
-    hdituil attach /tmp/ncpa-<version>.dmg
+    hdiutil attach /tmp/ncpa-<version>.dmg
     zsh /Volumes/NCPAInstall/ncpa/install.sh
 
 What this script does is
