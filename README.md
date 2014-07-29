@@ -16,7 +16,7 @@ There are known build issues involving *cx_Freeze*, if you run into an issue ref
 
 #### RPM Build Location Errors ####
 
-This is most relevant for __Cent OS 5__ and for __openSUSE 13__ but may occur on other systems.
+This is most relevant for __CentOS 5__ and for __openSUSE 13__ but may occur on other systems.
 
 If you get an error about not finding the .tar in the RPM build location you will need to create an `.rpmmacros` file in your home directory for the user you are building with that contains these three lines:
 
@@ -26,7 +26,7 @@ If you get an error about not finding the .tar in the RPM build location you wil
 
 #### Building on CentOS 5 and Mac OS X ####
 
-Building on __CentOS 5__ and __Mac OS X__ requires *pyOpenSSL* v0.12 instead of v0.13. In order to get ncpa to build you must change the `requirements.txt` file's pyOpenSSL requirement line to:
+Building on __CentOS 5__ and __Mac OS X__ requires *pyOpenSSL* v0.12 instead of v0.13. In order to get ncpa to build you must change the `requirements.txt` file's *pyOpenSSL* requirement line to:
 
     pyOpenSSL==0.12
 
