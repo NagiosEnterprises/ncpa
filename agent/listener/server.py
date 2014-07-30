@@ -360,6 +360,10 @@ def api(accessor=''):
     except ValueError as exc:
         logging.exception(exc)
         return error(msg='Referencing node that does not exist: %s' % accessor)
+    except IndexError as exc:
+        # Hide the actual exception and just show nice output to users about changes in the API functionality
+        return error(msg='Could not access location specified. Changes to API calls were made in NCPA v1.7, check documentation on making API calls.')
+
     # Setup sane/safe arguments for actually getting the data. We take in all
     # arguments that were passed via GET/POST. If they passed a config variable
     # we clobber it, as we trust what is in the config.
