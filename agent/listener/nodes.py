@@ -24,12 +24,9 @@ class ParentNode(object):
 
     def accessor(self, path, config):
         if path:
-            try:
-                next_child_name, rest_path = path[0], path[1:]
-                child = self.children[next_child_name]
-                return child.accessor(rest_path, config)
-            except KeyError:
-                return ERROR_NODE
+            next_child_name, rest_path = path[0], path[1:]
+            child = self.children[next_child_name]
+            return child.accessor(rest_path, config)
         else:
             return copy.deepcopy(self)
 
