@@ -206,51 +206,47 @@ Which is what our script is supposed to do, return 2 and print "This Worked!" al
 
 .. note:: For plugins, the Check Result Specified do not apply. The result specified will work only for NCPA tree results.
 
-Monitoring Services
+API/Service
 -------------------
 
-Monitoring services is easy with NCPA. You can see the existing services and their current status. Its under the service tree::
+The service tree has changed in NCPA v1.7 and now uses a more hybrid form of request. Like before, you can see the existing services and their current status by going to ``api/service`` but this is the end of the tree::
 
     https://ncpaserver:5693/api/service
-
-This should give you a list of all the services on your system. Now if you would like to see a specific service, such as 'ALG' in our instance, try::
-
-    https://ncpaserver:5693/api/service/ALG
     
     {
         "value": {
-            "ALG": "stopped"
+            "service": {
+                "auditd": "running",
+                "netfs": "stopped",
+                "sshd": "running",
+                ...
+            }
         }
     }
 
-This will return whether or not the service is running. You can short-circuit this and add running or stopped to get it to return true or false::
+Using the above example should give you a list of all the services on your system in alphabetical order. Now if you would like to see a specific service, such as **sshd** in our instance, try::
 
-    https://ncpaserver:5693/api/service/ALG/stopped
+    https://ncpaserver:5693/api/service?service=sshd
     
     {
         "value": {
-            "ALG": true
+            "service": {
+                "sshd": "running"
+            }
         }
     }
 
-Now what this does is allows us to use it as a check::
+This will filter the list of services down to the service specified, **sshd** by using the *service* paramter. The output also shows it's current status (running or stopped). You can also filter by multiple services by adding multipe parameters to the request. If we would have done ``service=sshd&service=auditd`` we would have got two services back. You can also filter by status using the *status* parameter.
 
-    https://ncpaserver:5693/api/service/ALG/stopped?check=True
+Now in order for us to check if the service is running and give us the normal Nagios output, use::
+
+    https://ncpaserver:5693/api/service?service=sshd&status=running&check=true
     
     {
         "value": {
             "returncode": 0, 
-            "stdout": "ALG's status was as expected."
+            "stdout": "OK: Service sshd is running"
         }
     }
 
-Using this particular address is how you will check to see if a service is running or not. If you're using check_ncpa.py simply use the address::
-
-    service/ALG/stopped
-
-To get metric data use -M and you will get the return value you want.
-    
-Conclusion
-----------
-
-Using the API is simple and will be useful to access your own checks later. While intimate knowledge is certainly not necessary, it does give a strange feeling of power.
+Using this type of request on ``api/services`` is how you will check to see if a service is running or not. Notice that the *status* parameter is set to what the status should be when the check is executed. In other words, the check above would have returned a CRITICAL stdout if the *status* parameter was set to stopped since it was running when the check was performed.
