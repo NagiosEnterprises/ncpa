@@ -238,6 +238,9 @@ Using the above example should give you a list of all the services on your syste
 
 This will filter the list of services down to the service specified, **sshd** by using the *service* paramter. The output also shows it's current status (running or stopped). You can also filter by multiple services by adding multipe parameters to the request. If we would have done ``service=sshd&service=auditd`` we would have got two services back. You can also filter by status using the *status* parameter.
 
+Monitoring Services With the API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Now in order for us to check if the service is running and give us the normal Nagios output, use::
 
     https://ncpaserver:5693/api/service?service=sshd&status=running&check=true
