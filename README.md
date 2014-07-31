@@ -6,7 +6,9 @@ The awesome NCPA agent - one agent to rule them all.
 Downloading NCPA
 ----
 
-We recommend downloading your operating system's pre-built package. You can [download the official builds for NCPA from Nagios.com](http://assets.nagios.com/downloads/ncpa/download.php) as well as see all available packages. If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here at GitHub.
+[Official Nagios Builds](http://assets.nagios.com/downloads/ncpa/download.php)
+
+We recommend downloading your operating system's pre-built package from the official builds page above. You can also see all available packages at the offical builds page. If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here at GitHub.
 
 Building NCPA
 ----
