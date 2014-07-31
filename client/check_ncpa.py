@@ -2,14 +2,16 @@
 """
 SYNOPSIS
 
-    
+
 """
 import sys
 import optparse
+
 try:
     import json
-except:
+except ImportError:
     import simplejson as json
+
 try:
     import urllib.request, urllib.parse, urllib.error
 except ImportError:
@@ -18,6 +20,7 @@ import shlex
 import re
 
 __VERSION__ = 0.2
+
 
 def pretty(d, indent=0, indenter=' '*4):
     info_str = ''
@@ -29,6 +32,7 @@ def pretty(d, indent=0, indenter=' '*4):
         else:
             info_str += ': ' + str(value) + '\n'
     return info_str
+
 
 def parse_args():
     parser = optparse.OptionParser()
@@ -62,10 +66,10 @@ def parse_args():
     parser.add_option("-V", "--version", action='store_true',
                       help='Print version number of plugin.')
     options, _ = parser.parse_args()
-    
+
     if options.version:
         pass # we just want to return
-    
+
     elif not options.hostname:
         parser.print_help()
         parser.error("Hostname is required for use.")
@@ -80,30 +84,32 @@ def parse_args():
                      'use --list.')
 
     options.metric = re.sub(r'^/?(api/)?', '', options.metric)
-    
+
     return options
 
 #~ The following are all helper functions. I would normally split these out into
 #~ a new module but this needs to be portable.
 
+
 def get_url_from_options(options, **kwargs):
     host_part = get_host_part_from_options(options, **kwargs)
     arguments = get_arguments_from_options(options, **kwargs)
-    
+
     return '%s?%s' % (host_part, arguments)
+
 
 def get_host_part_from_options(options, use_https=True, **kwargs):
     """Gets the address that will be queries for the JSON.
-    
+
     """
     if use_https:
         protocol = 'https'
     else:
         protocol = 'http'
-    
+
     hostname = options.hostname
     port = options.port
-    
+
     if not options.metric is None:
         metric = options.metric
     else:
@@ -113,13 +119,14 @@ def get_host_part_from_options(options, use_https=True, **kwargs):
         arguments = '/' + '/'.join([x for x in shlex.split(options.arguments)])
     else:
         arguments = ''
-    
+
     return '%s://%s:%d/api/%s%s' % (protocol, hostname, port, metric, arguments)
-    
+
+
 def get_arguments_from_options(options, **kwargs):
     """Returns the http query arguments. If there is a list variable specified,
     it will return the arguments necessary to query for a list.
-    
+
     """
     arguments = {'token': options.token,
                  'unit': options.unit}
@@ -139,17 +146,18 @@ def get_arguments_from_options(options, **kwargs):
 
 #~ The following function simply call the helper functions.
 
+
 def get_json(options):
     """Get the page given by the options. This will call down the url and
     encode its finding into a Python object (from JSON). If it fails to pull
     the page down using HTTPS, it will attempt HTTP.
-    
+
     """
     url = get_url_from_options(options, verbose=options.verbose)
 
     if options.verbose:
-        print(('Connecting to: ' + url))
-    
+        print('Connecting to: ' + url)
+
     # Add Python2 vs Python3 support
     try:
         urlretrieve = urllib.request.urlretrieve
@@ -165,32 +173,35 @@ def get_json(options):
         f = open(filename)
 
     if options.verbose:
-        print(('File returned contained:\n' + ''.join(f.readlines())))
+        print('File returned contained:\n' + ''.join(f.readlines()))
         f.seek(0)
-    
+
     return json.load(f)['value']
+
 
 def run_check(info_json):
     """Run a check against the remote host.
-    
+
     """
     return info_json['stdout'], info_json['returncode']
-    
+
+
 def show_list(info_json):
-    """Show the list of avaiable options.
-    
+    """Show the list of available options.
+
     """
     return pretty(info_json), 0
+
 
 def main():
     try:
         options = parse_args()
-        
+
         if options.version:
             global __VERSION__
             stdout = 'The version of this plugin is %.1f' % __VERSION__
             return stdout, 0
-        
+
         info_json = get_json(options)
         if options.list:
             return show_list(info_json)

@@ -16,6 +16,7 @@
       <w>stdout</w>
       <w>submitcheck</w>
       <w>updatenrds</w>
+      <w>urlencode</w>
     </words>
   </dictionary>
 </component>
