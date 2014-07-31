@@ -25,7 +25,7 @@ Name "NCPA Installer"
 OutFile "NCPA_Installer.exe"
 
 ;The icon
-;~ !define MUI_ICON ".\NCPA\build_resources\ncpa.ico"
+;!define MUI_ICON "NCPA\build_resources\ncpa.ico"
 
 ;The default installation directory
 InstallDir $PROGRAMFILES32\Nagios\NCPA
@@ -39,18 +39,18 @@ ShowInstDetails show
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 
 ; Version information
-;VIProductVersion "1.6.0.0"
+;VIProductVersion "1.7.0.0"
 ;VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "NCPA"
 ;VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "Nagios Enterprises LLC"
-;VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "1.6"
+;VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "1.7"
 
 ;Order of pages
 !define MUI_LANGUAGEFILE_DEFAULT "ENGLISH"
 LangString MUI_INNERTEXT_LICENSE_BOTTOM "ENGLISH" "Nagios Software License 1.3"
 LangString MUI_TEXT_LICENSE_TITLE "ENGLISH" "Nagios Cross-Platform Agent (NCPA)"
-LangString MUI_TEXT_LICENSE_SUBTITLE "ENGLISH" "Windows Version"
+LangString MUI_TEXT_LICENSE_SUBTITLE "ENGLISH" "1.7 - Windows Version"
 LangString MUI_INNERTEXT_LICENSE_TOP "ENGLISH" "Software License Agreement"
-!insertmacro MUI_PAGE_LICENSE ".\NCPA\build_resources\LicenseAgreement.txt"
+!insertmacro MUI_PAGE_LICENSE "NCPA\build_resources\LicenseAgreement.txt"
 # Page components
 
 Page custom SetAdvancedInstall
