@@ -1,5 +1,5 @@
-1.7.0 - ??/??/2014
-====================
+1.7.0 - ??/??/2014 - TESTING RELEASE
+====================================
 - Updated help documentation to include changes in 1.7.0
 - Fixed init script for listener not getting the PID file correctly
 - Fixed build issue with cx_Freeze which caused the built agent to not run
@@ -11,6 +11,11 @@
 - Now manually creating SSL certificates, and added ability to specify
   cert and key files by specifying in the certificate field by
   a comma-delimited [path/to/cert],[path/to/key]
+- Added full tests for NRDP
+- Moved to non-blocking system using gevent to accomodate many connections
+- Added realtime graphs
+- Added Windows Event Log monitoring
+- Added Windows counters monitoring ability
 
 1.6.1
 ==================
