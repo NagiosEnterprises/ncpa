@@ -19,7 +19,7 @@ except ImportError:
 import shlex
 import re
 
-__VERSION__ = 0.2
+__VERSION__ = 0.3
 
 
 def pretty(d, indent=0, indenter=' '*4):
@@ -207,7 +207,7 @@ def main():
             return show_list(info_json)
         else:
             return run_check(info_json)
-    except Exception as e:
+    except Exception, e:
         if options.verbose:
             return 'An error occurred:' + str(e), 3
         else:
