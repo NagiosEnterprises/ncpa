@@ -14,7 +14,7 @@ with open('VERSION.md') as version_file:
     version = version_file.readline().strip()
 
 try:
-	os.remove(os.path.join(basedir, 'build', 'NCPA-%s.exe' % version))
+	os.remove(os.path.join(basedir, 'build', 'ncpa-%s.exe' % version))
 except:
 	pass
 
@@ -38,15 +38,17 @@ if not os.path.exists('plugins'):
 sys.path.append(os.getcwd())
 subprocess.Popen(['python', 'setup_windows.py', 'build_exe']).wait()
 
+#os.remove(os.path.join(basedir, 'agent', 'build', 'NCPA', 'listener', 'static', 'help'))
+#os.mkdir(os.path.join(basedir, 'agent', 'build', 'NCPA', 'listener', 'static', 'help'))
 shutil.copytree(os.path.join(basedir, 'docs', '_build', 'html'), 
-                os.path.join(basedir, 'agent', 'build', 'exe.win32-2.7', 'listener', 'static', 'help'))
+                os.path.join(basedir, 'agent', 'build', 'NCPA', 'listener', 'static', 'help'))
 
 shutil.copy(nsi_store, nsi)
 b = subprocess.Popen([nsis, nsi])
 b.wait()
 
 print os.path.join(basedir, 'agent', 'build', 'NCPA_Installer.exe')
-print os.path.join(basedir, 'build', 'NCPA-%s.exe' % version)
+print os.path.join(basedir, 'build', 'ncpa-%s.exe' % version)
 
 shutil.copyfile(os.path.join(basedir, 'agent', 'build', 'NCPA_Installer.exe'),
-                os.path.join(basedir, 'build', 'NCPA-%s.exe' % version))
+                os.path.join(basedir, 'build', 'ncpa-%s.exe' % version))

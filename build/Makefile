@@ -1,6 +1,6 @@
 PYTHONVER = python2.7
 PIPVER = pip2.7
-SPHINXBUILD = $(shell which sphinx-build)
+SPHINXBIN = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION.md)
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = ~/rpmbuild
@@ -24,10 +24,12 @@ build_exe: update_version build_doc
 	echo -n '' > $(BASEDIR)/agent/var/ncpa_passive.log
 	echo -n '' > $(BASEDIR)/agent/var/ncpa_listener.log
 	cd $(BASEDIR)/agent && $(PYTHONVER) setup_posix.py build_exe
-	mv $(BASEDIR)/docs/_build/html $(BASEDIR)/agent/build/*/listener/static/help
+	mv $(BASEDIR)/docs/_build/html $(BASEDIR)/docs/_build/help
+	/bin/cp -rf $(BASEDIR)/docs/_build/help $(BASEDIR)/agent/build/*/listener/static
+	rm -rf $(BASEDIR)/docs/_build/help
 
 build_doc:
-	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBUILD)" html
+	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBIN)" html
 
 update_packages:
 	$(FLAGS) $(PIPVER) install -r $(BASEDIR)/requirements.txt --upgrade
@@ -42,8 +44,7 @@ build_tarball: update_git update_packages build_exe
 
 build_spec: build_tarball
 	cat ncpa-partial.spec | sed s/__VERSION__/$(NCPAVER)/g | sed s@__BUILDROOT__@$(BUILDROOT)@g > ncpa.spec
-# 	cd ncpa-$(NCPAVER) && find . -not -name . -and -not -name ncpa.cfg | sed 's|^\./\(.*\)|"$(INSTALLTARGET)\1"|g' >> ../ncpa.spec
-
+	
 clean:
 	rm -rf ncpa-$(NCPAVER)
 	rm -rf $(BASEDIR)/agent/build
@@ -70,7 +71,7 @@ build_rpm: build_spec
 	find $(BUILDROOT)/RPMS -name 'ncpa-$(NCPAVER)*' -exec cp {} . \;
 
 build_deb: build_rpm
-	mkdir debbuild
+	mkdir -p debbuild
 	cp *.rpm debbuild/
 	cd debbuild && alien -c -k -v *.rpm
 	cp debbuild/*.deb .
@@ -82,4 +83,4 @@ build_dmg: build_tarball
 	hdiutil create -volname NCPA-$(NCPAVER) -srcfolder NCPA-INSTALL-$(NCPAVER) -ov -format UDZO ncpa-$(NCPAVER).dmg
 
 update_version:
-	python $(BASEDIR)/apply_version.py
+	$(PYTHONVER) $(BASEDIR)/apply_version.py
