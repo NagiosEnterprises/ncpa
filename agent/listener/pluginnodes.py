@@ -15,7 +15,7 @@ class PluginNode(nodes.RunnableNode):
 
     def accessor(self, path, config):
         self.arguments = path
-        return self
+        return self.deepcopy()
 
     def walk(self, config):
         result = self.execute_plugin(config)
@@ -25,10 +25,11 @@ class PluginNode(nodes.RunnableNode):
         """Returns the instruction to use for the given plugin.
         If nothing exists for the suffix, then simply return the basic
 
-        $plugin_name $plugin_args
+        $plugin_name $plugin_args   
 
         """
         _, extension = os.path.splitext(self.name)
+        print extension
         try:
             return config.get('plugin directives', extension)
         except ConfigParser.NoOptionError:
@@ -67,7 +68,7 @@ class PluginNode(nodes.RunnableNode):
         command = []
         for x in shlex.split(instruction):
             if '$plugin_name' == x:
-                command.append(self.plugin_abs_path)
+                command.append("'%s'" % self.plugin_abs_path)
             elif '$plugin_args' == x:
                 if self.arguments:
                     for y in self.arguments:
@@ -84,21 +85,16 @@ class PluginAgentNode(nodes.ParentNode):
 
     def setup_plugin_children(self, config):
         plugin_path = config.get('plugin directives', 'plugin_path')
-        children = []
-        children_names = []
+        self.children = {}
 
         try:
             plugins = os.listdir(plugin_path)
             for plugin in plugins:
                 plugin_abs_path = os.path.join(plugin_path, plugin)
                 if os.path.isfile(plugin_abs_path):
-                    children_names.append(plugin)
-                    children.append(PluginNode(plugin, plugin_abs_path))
+                    self.children[plugin] = PluginNode(plugin, plugin_abs_path)
         except OSError as exc:
             logging.warning('Unable to assemble plugins. Does the directory exist? - %r', exc)
-
-        self.children = children
-        self.children_names = children_names
 
     def accessor(self, path, config):
         self.setup_plugin_children(config)
