@@ -396,7 +396,9 @@ def api(accessor=''):
                 if len(rest_path) == 2:
                     sane_args['status'] = [rest_path[1]]
                     sane_args['check'] = True;
-
+        elif node_name == "process":
+            accessor = "processes"
+            
     try:
         config = listener.config['iconfig']
         node = psapi.getter(accessor, config)
