@@ -354,8 +354,8 @@ def api(accessor=''):
     # we clobber it, as we trust what is in the config.
     sane_args = dict(request.args)
 
-    # Special cases for 'service' to make NCPA v1.7 backwards compatible with
-    # probably the most disgusting code ever written but needed to work ASAP for
+    # Special cases for 'service' and 'process' to make NCPA v1.7 backwards compatible
+    # with probably the most disgusting code ever written but needed to work ASAP for
     # those who had checks set up before the changes.
     path = [re.sub('%2f', '/', x, flags=re.I) for x in accessor.split('/') if x]
     if len(path) > 0 and path[0] == 'api':
@@ -372,6 +372,11 @@ def api(accessor=''):
                     sane_args['check'] = True;
         elif node_name == "process":
             accessor = "processes"
+            if len(rest_path) > 0:
+                sane_args['process'] = rest_path[0]
+                if len(rest_path) == 2:
+                    if rest_path[1] == "count":
+                        sane_args['check'] = True
             
     try:
         config = listener.config['iconfig']
