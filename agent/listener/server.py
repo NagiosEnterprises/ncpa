@@ -374,7 +374,7 @@ def api(accessor=''):
         elif node_name == "process":
             accessor = "processes"
             if len(rest_path) > 0:
-                sane_args['process'] = rest_path[0]
+                sane_args['name'] = [rest_path[0]]
                 if len(rest_path) == 2:
                     if rest_path[1] == "count":
                         sane_args['check'] = True
