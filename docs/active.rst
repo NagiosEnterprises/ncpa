@@ -25,7 +25,7 @@ Using check_ncpa.py
 
 Once check_ncpa.py is installed in the nagios/libexec directory, you can use it like you would any other plugin. This is where knowing the tree comes in handy. You'll need to specify the path in the tree that you'd like to access. So if we were interested in getting the CPU Usage (percent-wise) of our NCPA agent, we would run the check_ncpa.py as follows::
     
-    ./check_ncpa.py -H ncpaserver -t yourtoken cpu/percent
+    ./check_ncpa.py -H ncpaserver -t yourtoken -M cpu/percent
 
 Returns::
     
