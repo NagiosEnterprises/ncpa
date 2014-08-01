@@ -222,14 +222,8 @@ def get_filter_dict(request_args):
             fdict['logged_after'] = logged_after
     return fdict
 
-
 def get_node():
     return WindowsLogsNode('logs', None)
-
-
-def get_logs_node():
-    return WindowsLogsNode('logs', None)
-
 
 EVENT_TYPE = {win32con.EVENTLOG_AUDIT_FAILURE: 'AUDIT_FAILURE',
               win32con.EVENTLOG_AUDIT_SUCCESS: 'AUDIT_SUCCESS',
@@ -241,7 +235,6 @@ EVENT_TYPE = {win32con.EVENTLOG_AUDIT_FAILURE: 'AUDIT_FAILURE',
               'INFORMATION': win32con.EVENTLOG_INFORMATION_TYPE,
               'AUDIT_FAILURE': win32con.EVENTLOG_AUDIT_FAILURE,
               'AUDIT_SUCCESS': win32con.EVENTLOG_AUDIT_SUCCESS}
-
 
 def get_timedelta(offset, time_frame):
     if time_frame == 's':

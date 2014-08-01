@@ -5,15 +5,13 @@ import re
 import platform
 from nodes import ParentNode, RunnableNode, LazyNode
 from pluginnodes import PluginAgentNode
-
+import services
+import processes
 
 importables = (
     'windowscounters',
-    'windowslogs',
-    'services',
-    'processes'
+    'windowslogs'
 )
-
 
 def make_disk_nodes(disk_name):
     read_time = RunnableNode('read_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_time, 'ms'))
@@ -130,28 +128,23 @@ def get_root_node():
     agent = get_agent_node()
     user = get_user_node()
     system = get_system_node()
+    service = services.get_node()
+    process = processes.get_node()
 
-    children = [cpu, memory, disk, interface, agent, user, system]
+    children = [cpu, memory, disk, interface, agent, user, system, service, process]
 
     for importable in importables:
-        try:
-            relative_name = 'listener.' + importable
-            tmp = __import__(relative_name, fromlist=['get_node'])
-            get_node = getattr(tmp, 'get_node')
+        relative_name = 'listener.' + importable
+        tmp = __import__(relative_name, fromlist=['get_node'])
+        get_node = getattr(tmp, 'get_node')
 
-            node = get_node()
-            children.append(node)
-            logging.info("Imported %s into the API tree.", importable)
-        except ImportError:
-            logging.info("Could not import %s, skipping.", importable)
-        except AttributeError:
-            logging.warning("Trying to import %s but does not get_node() function, skipping.", importable)
+        node = get_node()
+        children.append(node)
+        logging.info("Imported %s into the API tree.", importable)
 
     return ParentNode('root', children=children)
 
-
 root = get_root_node()
-
 
 def getter(accessor, config):
     logging.debug('Getting accessor: %s', accessor)
