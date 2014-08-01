@@ -1,4 +1,4 @@
-1.7.0 - ??/??/2014 - TESTING RELEASE
+1.7.0 - ??/??/2014
 ====================================
 - Updated help documentation to include changes in 1.7.0
 - Fixed init script for listener not getting the PID file correctly
@@ -7,6 +7,7 @@
 - Fixed issue with SSL certificates using the same serial number
 - Fixed dependency issues with Debian systems
 - Fixed doc builds during compilation
+- Fixed threading error on NCPA listener start/stop
 - Moved away from the Flask development server for serving HTTPS requests
 - Now manually creating SSL certificates, and added ability to specify
   cert and key files by specifying in the certificate field by
