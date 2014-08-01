@@ -57,7 +57,8 @@ class Base(object):
 
     def setup_plugins(self):
         plugin_path = self.config.get('plugin directives', 'plugin_path')
-        self.abs_plugin_path = self.determine_relative_filename(plugin_path)
+        abs_plugin_path = self.determine_relative_filename(plugin_path)
+        self.abs_plugin_path = os.path.normpath(abs_plugin_path)
         self.config.set('plugin directives', 'plugin_path', self.abs_plugin_path)
 
     def setup_logging(self, *arg, **kwargs):
@@ -128,14 +129,8 @@ class Listener(Base):
         self.parse_config()
         self.setup_logging()
         self.setup_plugins()
-        self.setup_api_tree()
         logging.info("Looking for config at: %s" % self.config_filename)
         logging.info("Looking for plugins at: %s" % self.abs_plugin_path)
-
-    def setup_api_tree(self):
-        wc_node = listener.windowscounters.get_counters_node()
-        log_node = listener.windowslogs.get_logs_node()
-        listener.psapi.init_root(wc_node, log_node)
 
 
 class Passive(Base):

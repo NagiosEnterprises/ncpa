@@ -232,7 +232,7 @@ class RunnableNode(ParentNode):
         with open(tmpfile, 'w') as values_file:
             pickle.dump(values, values_file)
 
-        #Calcluate the return value and return it
+        #Calculate the return value and return it
         delta = time.time() - last_modified
         return [abs((x - y) / delta) for x, y in itertools.izip(loaded_values, values)]
 
