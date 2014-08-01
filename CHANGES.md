@@ -1,4 +1,4 @@
-1.7.1 - 08/01/2014
+1.7.1
 ==================
 - Fixed issue with SSL certificates using the same serial number
 - Fixed threading error on NCPA listener start/stop
