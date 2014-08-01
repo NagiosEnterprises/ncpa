@@ -174,6 +174,5 @@ class ServiceNode(nodes.LazyNode):
         stdout = self.make_stdout(returncode, stdout_builder)
         return {'stdout': stdout, 'returncode': returncode}
 
-
 def get_node():
     return ServiceNode('services', None)

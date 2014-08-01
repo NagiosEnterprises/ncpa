@@ -70,7 +70,5 @@ class WindowsCountersNode(nodes.LazyNode):
 
         return [value, unit]
 
-
-def get_counters_node():
+def get_node():
     return WindowsCountersNode('windowscounters', None)
-
