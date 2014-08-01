@@ -339,6 +339,7 @@ def nrdp():
 
 @listener.route('/api/')
 @listener.route('/api/<path:accessor>')
+@requires_auth
 def api(accessor=''):
     """
     The function that serves up all the metrics. Given some path/to/a/metric it will
