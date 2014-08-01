@@ -374,6 +374,29 @@ def api(accessor=''):
     :type accessor: unicode
     :rtype: flask.Response
     """
+    
+    # Setup sane/safe arguments for actually getting the data. We take in all
+    # arguments that were passed via GET/POST. If they passed a config variable
+    # we clobber it, as we trust what is in the config.
+    sane_args = dict(request.args)
+
+    # Special cases for 'service' to make NCPA v1.7 backwards compatible with
+    # probably the most disgusting code ever written but needed to work ASAP for
+    # those who had checks set up before the changes.
+    path = [re.sub('%2f', '/', x, flags=re.I) for x in accessor.split('/') if x]
+    if len(path) > 0 and path[0] == 'api':
+        path = path[1:]
+    if len(path) > 0:
+        node_name, rest_path = path[0], path[1:]
+
+        if node_name == "service":
+            accessor = "services"
+            if len(rest_path) > 0:
+                sane_args['service'] = [rest_path[0]]
+                if len(rest_path) == 2:
+                    sane_args['status'] = [rest_path[1]]
+                    sane_args['check'] = True;
+
     try:
         config = listener.config['iconfig']
         node = psapi.getter(accessor, config)
@@ -384,14 +407,13 @@ def api(accessor=''):
         # Hide the actual exception and just show nice output to users about changes in the API functionality
         return error(msg='Could not access location specified. Changes to API calls were made in NCPA v1.7, check documentation on making API calls.')
 
-    # Setup sane/safe arguments for actually getting the data. We take in all
-    # arguments that were passed via GET/POST. If they passed a config variable
-    # we clobber it, as we trust what is in the config.
-    sane_args = dict(request.args)
-    sane_args['config'] = config
+    # Set the accessor and variables
     sane_args['accessor'] = accessor
+    sane_args['config'] = config
+    if not 'check' in sane_args:
+        sane_args['check'] = request.args.get('check', False);
 
-    if request.args.get('check'):
+    if sane_args['check']:
         value = node.run_check(**sane_args)
     else:
         value = node.walk(**sane_args)
