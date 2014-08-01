@@ -7,6 +7,7 @@ from nodes import ParentNode, RunnableNode, LazyNode
 from pluginnodes import PluginAgentNode
 import services
 import processes
+import environment
 
 importables = (
     'windowscounters',
@@ -133,14 +134,20 @@ def get_root_node():
 
     children = [cpu, memory, disk, interface, agent, user, system, service, process]
 
-    for importable in importables:
-        relative_name = 'listener.' + importable
-        tmp = __import__(relative_name, fromlist=['get_node'])
-        get_node = getattr(tmp, 'get_node')
+    if environment.SYSTEM == "Windows":
+        for importable in importables:
+            try:
+                relative_name = 'listener.' + importable
+                tmp = __import__(relative_name, fromlist=['get_node'])
+                get_node = getattr(tmp, 'get_node')
 
-        node = get_node()
-        children.append(node)
-        logging.info("Imported %s into the API tree.", importable)
+                node = get_node()
+                children.append(node)
+                logging.info("Imported %s into the API tree.", importable)
+            except ImportError:
+                logging.info("Could not import %s, skipping.", importable)
+            except AttributeError:
+                logging.warning("Trying to import %s but does not get_node() function, skipping.", importable)
 
     return ParentNode('root', children=children)
 
