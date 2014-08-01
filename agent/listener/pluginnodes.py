@@ -4,6 +4,8 @@ import nodes
 import ConfigParser
 import subprocess
 import shlex
+import re
+import copy
 
 
 class PluginNode(nodes.RunnableNode):
@@ -15,9 +17,9 @@ class PluginNode(nodes.RunnableNode):
 
     def accessor(self, path, config):
         self.arguments = path
-        return self.deepcopy()
+        return copy.deepcopy(self)
 
-    def walk(self, config):
+    def walk(self, config, **kwargs):
         result = self.execute_plugin(config)
         return result
 
@@ -29,7 +31,6 @@ class PluginNode(nodes.RunnableNode):
 
         """
         _, extension = os.path.splitext(self.name)
-        print extension
         try:
             return config.get('plugin directives', extension)
         except ConfigParser.NoOptionError:
@@ -66,9 +67,14 @@ class PluginNode(nodes.RunnableNode):
 
         """
         command = []
-        for x in shlex.split(instruction):
-            if '$plugin_name' == x:
-                command.append("'%s'" % self.plugin_abs_path)
+        
+        lexer = shlex.shlex(instruction)
+        lexer.whitespace_split = True
+        
+        for x in lexer:
+            if '$plugin_name' in x:
+                replaced = x.replace('$plugin_name', self.plugin_abs_path)
+                command.append(replaced)
             elif '$plugin_args' == x:
                 if self.arguments:
                     for y in self.arguments:
@@ -102,4 +108,4 @@ class PluginAgentNode(nodes.ParentNode):
 
     def walk(self, *args, **kwargs):
         self.setup_plugin_children(kwargs['config'])
-        return {self.name: self.children_names}
+        return {self.name: self.children.keys()}

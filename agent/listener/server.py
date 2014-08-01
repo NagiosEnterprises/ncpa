@@ -6,7 +6,6 @@ import sys
 import platform
 import requests
 import psapi
-# import pluginapi
 import functools
 import jinja2
 import datetime
@@ -338,31 +337,6 @@ def nrdp():
         return error(msg=unicode(exc))
 
 
-# @listener.route('/api/agent/plugin/<plugin_name>/')
-# @listener.route('/api/agent/plugin/<plugin_name>/<path:plugin_args>')
-# @requires_auth
-# def plugin_api(plugin_name=None, plugin_args=None):
-    # """
-    # API for running old style Nagios plugins.
-
-    # :param plugin_name: The name of the plugin to be run.
-    # :type plugin_name: unicode
-    # :param plugin_args: The args in the form arg1/arg2/arg3
-    # :type plugin_args: unicode
-    # :rtype: flask.Response
-    # """
-    # config = listener.config['iconfig']
-    # if plugin_args:
-        # logging.info(plugin_args)
-        # plugin_args = [urllib.unquote(x) for x in plugin_args.split('/')]
-    # try:
-        # response = pluginapi.execute_plugin(plugin_name, plugin_args, config)
-    # except Exception as exc:
-        # logging.exception(exc)
-        # return error(msg='Error running plugin: %r' % exc)
-    # return jsonify({'value': response})
-
-
 @listener.route('/api/')
 @listener.route('/api/<path:accessor>')
 def api(accessor=''):
@@ -420,52 +394,3 @@ def api(accessor=''):
     else:
         value = node.walk(**sane_args)
     return jsonify({'value': value})
-
-
-# def internal_api(accessor=None, listener_config=None, *args, **kwargs):
-    # logging.debug('Accessing internal API with accessor %s', accessor)
-    # accessor_name, accessor_args, plugin_name, plugin_args = parse_internal_input(accessor)
-    # if accessor_name:
-        # try:
-            # logging.debug('Accessing internal API with accessor %s', accessor_name)
-            # acc_response = psapi.getter(accessor_name, **kwargs)
-        # except IndexError as exc:
-            # logging.exception(exc)
-            # logging.warning("User request invalid node: %s", accessor_name)
-            # result = {'returncode': 3, 'stdout': 'Invalid entry specified. No known node by %s' % accessor_name}
-        # else:
-            # result = pluginapi.make_plugin_response_from_accessor(acc_response, accessor_args)
-    # elif plugin_name:
-        # result = pluginapi.execute_plugin(plugin_name, plugin_args, listener_config)
-    # else:
-        # result = {'stdout': 'ERROR: Non-node value requested. Requested a tree.',
-                  # 'returncode': 3}
-    # return result
-
-
-# def parse_internal_input(accessor):
-    # """
-    # Takes an accessor path from the API, and returns
-
-    # :param accessor:
-    # :rtype : tuple
-    # :return:
-    # """
-    # accessor_regex = re.compile('(/api)?/?([^?]+)\??(.*)')
-    # plugin_regex = re.compile('(/api)?(/?agent/)?plugin/([^/]+)(/(.*))?')
-
-    # accessor_name = None
-    # accessor_args = None
-    # plugin_name = None
-    # plugin_args = None
-
-    # plugin_result = plugin_regex.match(accessor)
-    # accessor_result = accessor_regex.match(accessor)
-
-    # if plugin_result:
-        # plugin_name = plugin_result.group(3)
-        # plugin_args = plugin_result.group(5)
-    # elif accessor_result:
-        # accessor_name = accessor_result.group(2)
-        # accessor_args = accessor_result.group(3)
-    # return accessor_name, accessor_args, plugin_name, plugin_args
