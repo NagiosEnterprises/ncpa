@@ -176,13 +176,13 @@ Using Nagios Plugins
 
 Using existing Nagios plugins is not an issue either. In fact we can list all the plugins that are installed on the system by accessing the address::
     
-    https://ncpaserver:5693/api/agent/plugin
+    https://ncpaserver:5693/api/agent/plugins
 
 This returns::
     
     {
       "value": {
-        "plugin": [
+        "plugins": [
           "check_msmq.vbs", 
           "test.vbs", 
         ]
@@ -206,16 +206,18 @@ Which is what our script is supposed to do, return 2 and print "This Worked!" al
 
 .. note:: For plugins, the Check Result Specified do not apply. The result specified will work only for NCPA tree results.
 
-API/Service
+API/Services
 -------------------
+
+.. note:: Although the services tree changed in v1.7.0, backwards compatibility to the way the API worked in previous versions was added in 1.7.1 which allows old check_ncpa.py checks to work regardless of the version of the plugin script and the version of the NCPA agent installed.
 
 The service tree has changed in NCPA v1.7 and now uses a more hybrid form of request. Like before, you can see the existing services and their current status by going to ``api/service`` but this is the end of the tree::
 
-    https://ncpaserver:5693/api/service
+    https://ncpaserver:5693/api/services
     
     {
         "value": {
-            "service": {
+            "services": {
                 "auditd": "running",
                 "netfs": "stopped",
                 "sshd": "running",
@@ -226,7 +228,11 @@ The service tree has changed in NCPA v1.7 and now uses a more hybrid form of req
 
 Using the above example should give you a list of all the services on your system in alphabetical order. Now if you would like to see a specific service, such as **sshd** in our instance, try::
 
-    https://ncpaserver:5693/api/service?service=sshd
+    https://ncpaserver:5693/api/services?service=sshd
+    
+    or 
+    
+    (Deprecated) https://ncpaserver:5693/api/service/sshd
     
     {
         "value": {
@@ -244,6 +250,10 @@ Monitoring Services With the API
 Now in order for us to check if the service is running and give us the normal Nagios output, use::
 
     https://ncpaserver:5693/api/service?service=sshd&status=running&check=true
+    
+    or
+    
+    (Deprecated) https://ncpaserver:5693/api/service/sshd/running
     
     {
         "value": {
