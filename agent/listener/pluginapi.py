@@ -261,6 +261,7 @@ def execute_plugin(plugin_name, plugin_args, config):
     #Assemble our absolute plugin file name for calling
     plugin_path = config.get('plugin directives', 'plugin_path')
     plugin_abs_path = os.path.join(plugin_path, plugin_name)
+    lugin_abs_path = r''+plugin_abs_path # Possible solution to windows escaping issues
 
     #Get any special instructions from the config for executing the plugin
     instructions = get_plugin_instructions(plugin_abs_path, config)
