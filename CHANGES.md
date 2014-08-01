@@ -17,6 +17,7 @@
 - Added realtime graphs
 - Added Windows Event Log monitoring
 - Added Windows counters monitoring ability
+- Added backwards compatability with the api/service(s) call to work with old plugins/checks
 
 1.6.1
 ==================
