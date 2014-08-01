@@ -18,6 +18,7 @@
 - Added Windows Event Log monitoring
 - Added Windows counters monitoring ability
 - Added backwards compatability with the api/service(s) call to work with old plugins/checks
+- Plugin/file type directives now retain quotes around $plugin_name when being passed to the command line
 
 1.6.1
 ==================
