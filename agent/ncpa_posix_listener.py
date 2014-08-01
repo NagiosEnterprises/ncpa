@@ -11,8 +11,10 @@ from gevent.pool import Pool
 import webhandler
 import listener.psapi
 import jinja2.ext  # Here for cx_Freeze import reasons, do not remove it
+import sys
+if 'threading' in sys.modules:
+    del sys.modules['threading']
 from gevent import monkey
-
 monkey.patch_all()
 
 
