@@ -1,13 +1,18 @@
-1.7.0 - ??/??/2014
-====================================
+1.7.1 - 08/01/2014
+==================
+- Fixed issue with SSL certificates using the same serial number
+- Fixed threading error on NCPA listener start/stop
+- Added backwards compatability with the api/service(s) call to work with old plugins/checks
+- Plugin/file type directives now retain quotes around $plugin_name when being passed to the command line
+
+1.7.0 - 07/29/2014
+==================
 - Updated help documentation to include changes in 1.7.0
 - Fixed init script for listener not getting the PID file correctly
 - Fixed build issue with cx_Freeze which caused the built agent to not run
 - Fixed build issue with docs not building during build process
-- Fixed issue with SSL certificates using the same serial number
 - Fixed dependency issues with Debian systems
 - Fixed doc builds during compilation
-- Fixed threading error on NCPA listener start/stop
 - Moved away from the Flask development server for serving HTTPS requests
 - Now manually creating SSL certificates, and added ability to specify
   cert and key files by specifying in the certificate field by
@@ -17,8 +22,6 @@
 - Added realtime graphs
 - Added Windows Event Log monitoring
 - Added Windows counters monitoring ability
-- Added backwards compatability with the api/service(s) call to work with old plugins/checks
-- Plugin/file type directives now retain quotes around $plugin_name when being passed to the command line
 
 1.6.1
 ==================
