@@ -13,6 +13,7 @@
         <script src='/static/js/jquery-1.8.3.min.js'></script>
         <script src='/static/js/bootstrap.js'></script>
         <script src='/static/js/d3.v3.min.js'></script>
+        <script src='/static/js/ncpa-page-init.js'></script>
         {% block headerjs %}
         {% endblock %}
     </head>
@@ -31,6 +32,7 @@
                             <li id="home-nav"><a href="/">Home</a></li>
                             <li id="dashboard-nav"><a href="/dashboard">Dashboard</a></li>
                             <li id="navigator-nav"><a href="/api">API</a></li>
+                            <li id="top-nav"><a href="/top-base">Top Processes</a></li>
                             <li><a href="/logout">Logout</a></li>
                             <li><a href="/static/help/index.html">Help</a></li>
                         </ul>
@@ -38,7 +40,7 @@
                 </div>
             </div>
         </div>
-        <div class='container'>
+        <div class='container' id="main-content-container">
             {% block content %}
             {% endblock %}
         </div>

@@ -151,6 +151,12 @@ def api_websocket(accessor=None):
     return
 
 
+@listener.route('/top-base')
+@requires_auth
+def top_base():
+    return render_template('top-base.html')
+
+
 @listener.route('/top')
 @requires_auth
 def top():
@@ -203,7 +209,7 @@ def top_websocket():
                                                 'pid'])
                 process_list.append(process_dict)
             json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
-            ws.end(json_val)
+            ws.send(json_val)
             gevent.sleep(1)
     return
 
