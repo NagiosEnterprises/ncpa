@@ -143,8 +143,11 @@ class RunnableNode(ParentNode):
         self.set_unit(unit, kwargs)
         self.set_title(kwargs)
         self.set_perfdata_label(kwargs)
-        values = self.get_delta_values(values, kwargs)
-        values = self.get_adjusted_scale(values, kwargs)
+        try:
+            values = self.get_delta_values(values, kwargs)
+            values = self.get_adjusted_scale(values, kwargs)
+        except TypeError:
+            logging.warning('Error converting values to scale and delta. Values: %r' % values)
 
         try:
             self.set_warning(kwargs)
@@ -173,7 +176,11 @@ class RunnableNode(ParentNode):
 
         nice_values = []
         for x in values:
-            nice_values.append('%d%s' % (x, nice_unit))
+            try:
+                nice_values.append('%d%s' % (x, nice_unit))
+            except TypeError:
+                logging.warning('Did not receive normal values. Unable to find meaningful check.')
+                return '%s was %s' % (str(proper_name), str(values)), 0
         values_for_info_line = ','.join(nice_values)
 
         returncode = 0
