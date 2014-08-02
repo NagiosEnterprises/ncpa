@@ -36,7 +36,7 @@ class PluginNode(nodes.RunnableNode):
         except ConfigParser.NoOptionError:
             return '$plugin_name $plugin_args'
 
-    def execute_plugin(self, config):
+    def execute_plugin(self, config, *args, **kwargs):
         """Runs custom scripts that MUST be located in the scripts subdirectory
         of the executable
 
