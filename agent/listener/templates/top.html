@@ -18,6 +18,19 @@
     td.warning {
         background-color: yellow;
     }
+
+    .full-width {
+        width: 900px;
+        margin: 0 auto;
+    }
+
+    .spacer {
+        padding-right: 85px;
+    }
+
+    .form-inline {
+        margin: 0 auto;
+    }
 </style>
 
 <script src='/static/js/smoothie.js'></script>
@@ -34,7 +47,45 @@
         var plhead = $('#top-container thead tr#titles')
         var order = ['pid', 'name', 'username', 'cpu_percent', 'memory_percent'];
         var current_pl = [];
-        
+
+        $('#highlight-input').on('keyup', function(e) {
+            highlight = $(e.target).val();
+        })
+
+        $('#warning-input').on('keyup', function(e) {
+            var test = parseFloat($(e.target).val());
+
+            // NaN check
+            if (test != test) {
+                return;
+            }
+            else if (test < 0 || test > 100) {
+                return;
+            }
+            else {
+                warning = test;
+            }
+        });
+
+        $('#critical-input').on('keyup', function(e) {
+            var test = parseFloat($(e.target).val());
+
+            // NaN check
+            if (test != test) {
+                return;
+            }
+            else if (test < 0 || test > 100) {
+                return;
+            }
+            else {
+                critical = test;
+            }
+        });
+
+        $('.sortby').click(function(e) {
+            console.log($(e.target).val());
+        });
+
         var get_ws_address = function() {
             var loc = window.location;
             if(loc.protocol === 'https:') {
@@ -112,7 +163,6 @@
         }
         
         var create_plbody = function(pl) {
-            console.log(highlight);
             plbody.empty();
             $.each(pl, function(i) {
                 if (display > 0 && display <= i) {
@@ -161,6 +211,21 @@
 </script>
 
 <div id='top-container'>
+
+    <div class="well">
+        <form class="form-inline" id="top-form">
+           <label class="control-label spacer">Highlight Name
+                <input class="span2" type="text" id="highlight-input" placeholder="Highlight Name">
+            </label>
+            <label class="control-label spacer">Warning Threshold
+                <input class="span2" type="text" id="warning-input" placeholder="Warning Threshold">
+            </label>
+            <label class="control-label spacer">Critical Threshold
+                <input class="span2" type="text" id="critical-input" placeholder="Critical Threshold">
+            </label>
+        </form>
+    </div>
+
     <table class='table table-bordered table-condensed'>
         <thead>
             <tr id='load'><th>CPU Load</th><th colspan="999" class='current'></th></tr>
