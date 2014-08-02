@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block headerjs %}
+<script>
+$(document).ready(function() {
+    $('#main-content-container').load('/top');
+})
+</script>
+{% endblock headerjs %}
