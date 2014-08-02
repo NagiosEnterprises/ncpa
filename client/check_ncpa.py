@@ -6,20 +6,39 @@ SYNOPSIS
 """
 import sys
 import optparse
+import traceback
 
 try:
     import json
 except ImportError:
     import simplejson as json
 
+# Python2/3 Compatibility imports
 try:
-    import urllib.request, urllib.parse, urllib.error
+    import urllib.request
+    import urllib.parse
+    import urllib.error
 except ImportError:
     import urllib
+
+try:
+    urlencode = urllib.parse.urlencode
+except AttributeError:
+    urlencode = urllib.urlencode
+try:
+    urlretrieve = urllib.request.urlretrieve
+except AttributeError:
+    urlretrieve = urllib.urlretrieve
+
+try:
+    urlquote = urllib.parse.quote
+except AttributeError:
+    urlquote = urllib.quote
+
 import shlex
 import re
 
-__VERSION__ = 0.3
+__VERSION__ = '0.3.1'
 
 
 def pretty(d, indent=0, indenter=' '*4):
@@ -35,13 +54,16 @@ def pretty(d, indent=0, indenter=' '*4):
 
 
 def parse_args():
+    version = 'check_ncpa.py, Version %s' % __VERSION__
+
     parser = optparse.OptionParser()
     parser.add_option("-H", "--hostname", help="The hostname to be connected to.")
     parser.add_option("-M", "--metric", default='',
                       help="The metric to check, this is defined on client "
                            "system. This would also be the plugin name in the "
                            "plugins directory. Do not attach arguments to it, "
-                           "use the -a directive for that.")
+                           "use the -a directive for that. DO NOT INCLUDE the api/ "
+                           "instruction.")
     parser.add_option("-P", "--port", default=5693, type="int",
                       help="Port to use to connect to the client.")
     parser.add_option("-w", "--warning", default=None, type="str",
@@ -52,7 +74,8 @@ def parse_args():
                       help="The unit prefix (M, G, T)")
     parser.add_option("-a", "--arguments", default=None,
                       help="Arguments for the plugin to be run. Not necessary "
-                           "unless you're running a custom plugin.")
+                           "unless you're running a custom plugin. Given in the same "
+                           "as you would call from the command line. Example: -a '-w 10 -c 20 -f /usr/local'")
     parser.add_option("-t", "--token", default=None,
                       help="The token for connecting.")
     parser.add_option("-d", "--delta", action='store_true',
@@ -63,14 +86,21 @@ def parse_args():
                            "a check.")
     parser.add_option("-v", "--verbose", action='store_true',
                       help='Print more verbose error messages.')
+    parser.add_option("-s", "--super-verbose", action='store_true',
+                      help='Print LOTS of error messages.')
     parser.add_option("-V", "--version", action='store_true',
                       help='Print version number of plugin.')
     options, _ = parser.parse_args()
 
     if options.version:
-        pass # we just want to return
+        print(version)
+        sys.exit(0)
 
-    elif not options.hostname:
+    if options.arguments and options.metric and not 'agent/plugin' in options.metric:
+        parser.print_help()
+        parser.error('You cannot specify arguments and try to run a plugin.')
+
+    if not options.hostname:
         parser.print_help()
         parser.error("Hostname is required for use.")
 
@@ -91,22 +121,17 @@ def parse_args():
 #~ a new module but this needs to be portable.
 
 
-def get_url_from_options(options, **kwargs):
-    host_part = get_host_part_from_options(options, **kwargs)
-    arguments = get_arguments_from_options(options, **kwargs)
+def get_url_from_options(options):
+    host_part = get_host_part_from_options(options)
+    arguments = get_arguments_from_options(options)
 
     return '%s?%s' % (host_part, arguments)
 
 
-def get_host_part_from_options(options, use_https=True, **kwargs):
+def get_host_part_from_options(options):
     """Gets the address that will be queries for the JSON.
 
     """
-    if use_https:
-        protocol = 'https'
-    else:
-        protocol = 'http'
-
     hostname = options.hostname
     port = options.port
 
@@ -115,12 +140,25 @@ def get_host_part_from_options(options, use_https=True, **kwargs):
     else:
         metric = ''
 
-    if options.arguments:
-        arguments = '/' + '/'.join([x for x in shlex.split(options.arguments)])
-    else:
-        arguments = ''
+    arguments = get_check_arguments_from_options(options)
+    api_address = 'https://%s:%d/api/%s/%s' % (hostname, port, metric, arguments)
 
-    return '%s://%s:%d/api/%s%s' % (protocol, hostname, port, metric, arguments)
+    return api_address
+
+
+def get_check_arguments_from_options(options):
+    """Gets the escaped URL for plugin arguments to be added
+    to the end of the host URL. This is different from the get_arguments_from_options
+    in that this is meant for the syntax when the user is calling a check, whereas the below
+    is when GET arguments need to be added.
+
+    """
+    arguments = options.arguments
+    if arguments is None:
+        return ''
+    else:
+        arguments = '/'.join([urlquote(x, safe='') for x in shlex.split(arguments)])
+        return arguments
 
 
 def get_arguments_from_options(options, **kwargs):
@@ -136,39 +174,25 @@ def get_arguments_from_options(options, **kwargs):
         arguments['delta'] = options.delta
         arguments['check'] = 1
 
-    try:
-        urlencode = urllib.parse.urlencode
-    except AttributeError:
-        urlencode = urllib.urlencode
-
     #~ Encode the items in the dictionary that are not None
     return urlencode(dict((k, v) for k, v in list(arguments.items()) if v))
-
-#~ The following function simply call the helper functions.
 
 
 def get_json(options):
     """Get the page given by the options. This will call down the url and
-    encode its finding into a Python object (from JSON). If it fails to pull
-    the page down using HTTPS, it will attempt HTTP.
+    encode its finding into a Python object (from JSON).
 
     """
-    url = get_url_from_options(options, verbose=options.verbose)
+    url = get_url_from_options(options)
 
     if options.verbose:
         print('Connecting to: ' + url)
-
-    # Add Python2 vs Python3 support
-    try:
-        urlretrieve = urllib.request.urlretrieve
-    except AttributeError:
-        urlretrieve = urllib.urlretrieve
 
     try:
         filename, _ = urlretrieve(url)
         f = open(filename)
     except IOError:
-        url = get_url_from_options(options, use_https=False)
+        url = get_url_from_options(options)
         filename, _ = urlretrieve(url)
         f = open(filename)
 
@@ -194,12 +218,11 @@ def show_list(info_json):
 
 
 def main():
+    options = parse_args()
     try:
-        options = parse_args()
 
         if options.version:
-            global __VERSION__
-            stdout = 'The version of this plugin is %.1f' % __VERSION__
+            stdout = 'The version of this plugin is %s' % __VERSION__
             return stdout, 0
 
         info_json = get_json(options)
@@ -207,8 +230,10 @@ def main():
             return show_list(info_json)
         else:
             return run_check(info_json)
-    except Exception, e:
-        if options.verbose:
+    except Exception as e:
+        if options.super_verbose:
+            return 'The stack trace:' + traceback.format_exc(), 3
+        elif options.verbose:
             return 'An error occurred:' + str(e), 3
         else:
             return 'UNKNOWN: Error occurred while running the plugin. Use the verbose flag for more details.', 3

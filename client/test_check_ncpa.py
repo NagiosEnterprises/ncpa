@@ -2,12 +2,11 @@
 
 import unittest
 import mock
-import sys
-import os
 import re
 
 # The module to be tested
 import check_ncpa
+
 
 #~ Django URL validator
 def is_valid_url(url):
@@ -20,6 +19,7 @@ def is_valid_url(url):
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     return url is not None and regex.search(url)
 
+
 class Test(unittest.TestCase):
     
     def setUp(self):
@@ -27,7 +27,7 @@ class Test(unittest.TestCase):
         self.c_options.token = 'mytoken'
         self.c_options.hostname = 'bingo.bongo.com'
         self.c_options.unit = None
-        self.c_options.arguments = '-t this'
+        self.c_options.arguments = '-t this -b foo/bar'
         self.c_options.warning = '10'
         self.c_options.critical = '20'
         self.c_options.delta = True
@@ -51,7 +51,7 @@ class Test(unittest.TestCase):
         self.assertTrue('https' in host_part)
         self.assertTrue(is_valid_url(host_part))
         
-        host_part = check_ncpa.get_host_part_from_options(self.c_options, False)
+        host_part = check_ncpa.get_host_part_from_options(self.c_options)
         self.assertEquals(str, type(host_part))
         self.assertTrue('http' in host_part)
         self.assertTrue(is_valid_url(host_part))
@@ -68,6 +68,11 @@ class Test(unittest.TestCase):
         self.assertEquals(str, type(arguments))
         self.assertFalse('delta' in arguments)
         self.assertFalse('arguments' in arguments)
+
+    def test_get_check_arguments_from_options(self):
+        arguments = check_ncpa.get_check_arguments_from_options(self.c_options)
+        self.assertTrue(arguments)
+        self.assertIn('%2f', arguments.lower())
     
     def test_get_url_from_options(self):
         url = check_ncpa.get_url_from_options(self.c_options)
