@@ -134,6 +134,8 @@ class RunnableNode(ParentNode):
             values, unit = self.method(*args, **kwargs)
         except TypeError:
             values, unit = self.method()
+        except AttributeError:
+            return self.execute_plugin(*args, **kwargs)
 
         if not isinstance(values, (list, tuple)):
             values = [values]
@@ -160,7 +162,6 @@ class RunnableNode(ParentNode):
             logging.exception(exc)
 
         return {'returncode': returncode, 'stdout': stdout}
-
 
     def get_nagios_return(self, values, is_warning, is_critical):
         proper_name = self.title.replace('|', '/')
