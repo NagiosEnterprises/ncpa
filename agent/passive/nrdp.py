@@ -156,6 +156,11 @@ class Handler(nagioshandler.NagiosHandler):
         server = self.config.get('nrdp', 'parent')
         token = self.config.get('nrdp', 'token')
 
+        # The POST requests don't follow redirects, so we have to make sure
+        # the address is completely accurate.
+        if not server.endswith('/'):
+            server += '/'
+
         logging.debug('XML to be submitted: %s', checkresults)
         ret_xml = utils.send_request(url=server, token=token, XMLDATA=checkresults, cmd='submitcheck')
         Handler.log_result(ret_xml)

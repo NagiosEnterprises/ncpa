@@ -22,6 +22,5 @@ def send_request(url, **kwargs):
     :rtype: requests.models.Response
     """
     r = requests.post(url, data=kwargs, verify=False, allow_redirects=True)
-    logging.debug(u'hitting url with payload: %s' % unicode(r.url))
-    logging.debug(u'content response from payload: %s' % unicode(r.content))
+    logging.debug('Content response from URL: %s' % unicode(r.content))
     return r.content
