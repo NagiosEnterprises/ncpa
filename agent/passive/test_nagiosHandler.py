@@ -11,6 +11,8 @@ class TestNagiosHandler(TestCase):
         config.set('passive checks', '%HOSTNAME%|PING', '/cpu/percent')
         config.set('passive checks', '%hostname%|__HOST__', '/api/cpu/percent --warning 10')
         config.set('passive checks', 'localhost|CPU Load', '/api/cpu/percent?warning=10')
+        config.add_section('api')
+        config.set('api', 'community_string', 'mytoken')
         self.nh = nh(config)
 
     def test_get_commands_from_config(self):

@@ -17,7 +17,7 @@ import geventwebsocket
 
 __VERSION__ = '1.7.1'
 __STARTED__ = datetime.datetime.now()
-
+__INTERNAL__ = False
 
 base_dir = os.path.dirname(sys.path[0])
 
@@ -56,7 +56,10 @@ def requires_auth(f):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
         token = request.args.get('token', None)
 
-        if session.get('logged', False) or token == ncpa_token:
+        if __INTERNAL__ is True:
+            # This is an internal call, we don't check. (Passive agent call.)
+            pass
+        elif session.get('logged', False) or token == ncpa_token:
             session['logged'] = True
         elif token is None:
             return redirect(url_for('login'))
