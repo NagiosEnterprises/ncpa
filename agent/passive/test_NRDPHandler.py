@@ -20,6 +20,8 @@ class TestNRDPHandler(TestCase):
         self.config.add_section('passive checks')
         self.config.set('passive checks', '%HOSTNAME%|__HOST__', '/cpu/count')
         self.config.set('passive checks', 'TESTING|TESTING', '/cpu/count')
+        self.config.add_section('api')
+        self.config.set('api', 'community_string', 'mytoken')
         self.n = nrdp(self.config)
 
     def test_make_tag(self):

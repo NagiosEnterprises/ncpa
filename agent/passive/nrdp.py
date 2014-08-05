@@ -16,7 +16,6 @@ class Handler(nagioshandler.NagiosHandler):
         super(Handler, self).__init__(config, *args, **kwargs)
         listener.server.listener.config['iconfig'] = config
 
-
     @staticmethod
     def make_tag(tag_name, text='', tag_attr=None):
         """

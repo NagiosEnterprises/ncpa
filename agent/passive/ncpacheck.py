@@ -58,6 +58,7 @@ class NCPACheck(object):
         """
         logging.info("Running check: %s", self.instruction)
         api_url, api_args = self.get_api_url_from_instruction(self.instruction)
+
         response = self.run_check(api_url, api_args)
         stdout, returncode = self.handle_agent_response(response)
 
@@ -83,6 +84,7 @@ class NCPACheck(object):
 
         logging.debug("Access the API with %s", complete_api_url)
 
+        listener.server.__INTERNAL__ = True
         api_server = listener.server.listener.test_client()
 
         try:
