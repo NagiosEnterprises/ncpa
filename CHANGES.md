@@ -4,6 +4,10 @@
 - Fixed threading error on NCPA listener start/stop
 - Added backwards compatability with the api/service(s) call to work with old plugins/checks
 - Plugin/file type directives now retain quotes around $plugin_name when being passed to the command line
+- Fixed Windows logging issue where logs were not at var/*.log
+- Added log rotation to all clients, logs rotate at 20MB and will rotate once before overwriting old logs
+- Changed log format to be more descriptive
+- Changed test runner to be Python rather than sh to run tests on Windows
 
 1.7.0 - 07/29/2014
 ==================
