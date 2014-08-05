@@ -94,8 +94,8 @@ class Daemon(object):
         u"""Read basic options from the daemon config file"""
         self.config_filename = self.options.config_filename
         cp = ConfigParser.ConfigParser(defaults={
-            u'logmaxmb': u'0',
-            u'logbackups': u'0',
+            u'logmaxmb': u'20',
+            u'logbackups': u'1',
             u'loglevel': u'info',
             u'uid': unicode(os.getuid()),
             u'gid': unicode(os.getgid()),
@@ -252,8 +252,7 @@ class Daemon(object):
         log = logging.getLogger()
         log.setLevel(level)
         for h in handlers:
-            h.setFormatter(logging.Formatter(
-                u"%(asctime)s %(process)d %(levelname)s %(message)s"))
+            h.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(module)s:%(message)s"))
             log.addHandler(h)
 
     def check_pid(self):
