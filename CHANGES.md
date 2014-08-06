@@ -8,6 +8,8 @@
 - Added log rotation to all clients, logs rotate at 20MB and will rotate once before overwriting old logs
 - Changed log format to be more descriptive
 - Changed test runner to be Python rather than sh to run tests on Windows
+- Added safeguards when importing disk nodes that prevented the listener from starting in certain circumstances
+- diskperf -Y is now automatically run during Windows install
 
 1.7.0 - 07/29/2014
 ==================
