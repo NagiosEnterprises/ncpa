@@ -91,7 +91,11 @@ def get_memory_node():
 
 
 def get_disk_node():
-    disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
+    try:
+        disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
+    except RuntimeError:
+        logging.error("Could not locate any disks. If you're using windows, run `diskperf -Y` as administrator.")
+        return RunnableNode('disk', method=lambda: ("Could not locate any disks. If you're using windows, run `diskperf -Y` as administrator.", 'c'))
 
     disk_mountpoints = []
     for x in ps.disk_partitions():
