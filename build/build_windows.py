@@ -38,8 +38,7 @@ if not os.path.exists('plugins'):
 sys.path.append(os.getcwd())
 subprocess.Popen(['python', 'setup_windows.py', 'build_exe']).wait()
 
-shutil.rmtree(os.path.join(basedir, 'agent', 'build', 'NCPA', 'listener', 'static', 'help'), ignore_errors=True)
-
+#os.remove(os.path.join(basedir, 'agent', 'build', 'NCPA', 'listener', 'static', 'help'))
 shutil.copytree(os.path.join(basedir, 'docs', '_build', 'html'), 
                 os.path.join(basedir, 'agent', 'build', 'NCPA', 'listener', 'static', 'help'))
 

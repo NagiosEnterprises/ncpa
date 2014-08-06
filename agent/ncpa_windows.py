@@ -9,7 +9,6 @@ import cx_Logging
 import cx_Threads
 import ConfigParser
 import logging
-import logging.handlers
 import os
 import time
 import sys
@@ -65,23 +64,16 @@ class Base(object):
     def setup_logging(self, *arg, **kwargs):
         '''This should always setup the logger.
         '''
-        config = dict(self.config.items(self.c_type, 1))
-        
-        # Now we grab the logging specific items
-        log_level_str = config.get('loglevel', 'INFO').upper()
-        log_level = getattr(logging, log_level_str, logging.INFO)
-
-        log_file = os.path.normpath(config['logfile'])
-        if not os.path.isabs(log_file):
-            log_file = self.determine_relative_filename(log_file)
-        
-        # Max size of log files will be 20MB, and we'll keep one of them as backup
-        file_handler = logging.handlers.RotatingFileHandler(log_file, maxBytes = 20 * 1024 * 1024, backupCount=1)
-        file_format = logging.Formatter('%(asctime)s:%(levelname)s:%(module)s:%(message)s')
-        file_handler.setFormatter(file_format)
-        
-        logging.getLogger().addHandler(file_handler)
-        logging.getLogger().setLevel(log_level)
+        log_config = dict(self.config.items(self.c_type, 1))
+        log_level = log_config.get('loglevel', 'INFO').upper()
+        log_config['level'] = getattr(logging, log_level, logging.INFO)
+        del log_config['loglevel']
+        log_file = log_config['logfile']
+        if os.path.isabs(log_file):
+            log_config['filename'] = log_file
+        else:
+            log_config['filename'] = self.determine_relative_filename(log_file)
+        logging.basicConfig(**log_config)
 
     # called when the service is starting immediately after Initialize()
     # use this to perform the work of the service; don't forget to set or check
