@@ -8,4 +8,5 @@ docutils
 pyOpenSSL==0.13
 sphinx-bootstrap-theme
 gevent
+nose
 gevent-websocket
