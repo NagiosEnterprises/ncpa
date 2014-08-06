@@ -124,6 +124,7 @@ Section ""
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --install ncpalistener'
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --install ncpapassive'
+    nsExec::Exec '"$WINDIR\System32\diskperf" -Y'
  
     ; ...
 SectionEnd
