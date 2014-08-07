@@ -4,8 +4,11 @@
       <w>checkresult</w>
       <w>checkresults</w>
       <w>configname</w>
+      <w>dirname</w>
       <w>getconfig</w>
       <w>getplugin</w>
+      <w>importables</w>
+      <w>mountpoint</w>
       <w>nagios</w>
       <w>ncpa</w>
       <w>nrdp</w>
