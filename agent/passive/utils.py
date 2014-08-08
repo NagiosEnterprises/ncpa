@@ -1,16 +1,5 @@
 import requests
-import ConfigParser
 import logging
-
-
-class PConfigParser(ConfigParser.ConfigParser):
-    def __init__(self, *args, **kwargs):
-        ConfigParser.ConfigParser.__init__(self, *args, **kwargs)
-        self.file_path = None
-
-    def read(self, file_path, *args, **kwargs):
-        self.file_path = file_path
-        ConfigParser.ConfigParser.read(self, file_path, *args, **kwargs)
 
 
 def send_request(url, **kwargs):

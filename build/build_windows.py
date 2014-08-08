@@ -14,9 +14,9 @@ with open('VERSION.md') as version_file:
     version = version_file.readline().strip()
 
 try:
-	os.remove(os.path.join(basedir, 'build', 'ncpa-%s.exe' % version))
+    os.remove(os.path.join(basedir, 'build', 'ncpa-%s.exe' % version))
 except:
-	pass
+    pass
 
 subprocess.Popen(['git', 'pull']).wait()
 subprocess.Popen(['pip', 'install', '-r', os.path.join(basedir, 'requirements.txt')]).wait()
@@ -34,7 +34,7 @@ open(os.path.join('var', 'ncpa_passive.log'), 'w')
 
 if not os.path.exists('plugins'):
     os.mkdir('plugins')
-	
+
 sys.path.append(os.getcwd())
 subprocess.Popen(['python', 'setup_windows.py', 'build_exe']).wait()
 
