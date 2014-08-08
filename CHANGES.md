@@ -1,3 +1,7 @@
+1.8.0
+==================
+- Added graphing frontend, available via /graph-picker.html
+
 1.7.1
 ==================
 - Fixed issue with SSL certificates using the same serial number

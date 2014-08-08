@@ -53,7 +53,7 @@
         var query_string = '{{ query_string }}';
         var delta_state = [];
         var factor = {{ factor }};
-        var unit = '{{ unit }}';
+        var unit = '{{ title_unit }}';
         var graph_title = $('#graph-{{ graph_hash }}-title');
         var default_smoothie = {maxValue: 100,
                                 minValue: 0,
@@ -89,8 +89,8 @@
         }
         $.getJSON(API_URL, function(d) {
             var ts_length = 0;
-            console.log(d);
             $.each(d, function(i, o) {
+                console.log(o);
                 var o = o['{{ graph_prop }}'];
                 ts_length = o[0].length || 1;
                 var title = '{{ graph_path }} in ' + unit + o[1];
@@ -213,5 +213,5 @@
             </tbody>
         </table>
     </div>
-    <div style='clear:both;'
+    <div style='clear:both;'></div>
 </div>
