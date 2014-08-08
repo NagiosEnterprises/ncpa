@@ -114,7 +114,6 @@ function render_graph(target) {
 
 function populate_next_select(e) {
     var current = $(e.target);
-    var current_value = current.val();
     var next_url = current.attr('data-children') + '/' + current_value;
 
     var next_select = get_next_select(next_url, current_value);
