@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block headerjs %}
+<script src="/static/js/graph-picker.js"></script>
+<link href="/static/css/graph-picker.css" type="text/css" rel="stylesheet">
+{% endblock headerjs %}
+
+{% block content %}
+<div class="well row">
+    <div class="span5" id="graph-selector-div"></div>
+    <div class="span6" id="graph-options-div">
+        <form class="form-horizontal">
+            <div class="control-group">
+                <label for="label-delta" class="control-label extra-label">Delta</label>
+                <div class="control">
+                    <label class="radio inline">
+                        <input type="radio" id="label-delta" name="delta" value="off" checked>Off
+                    </label>
+                    <label class="radio inline">
+                        <input type="radio" name="delta" value="on">On
+                    </label>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="label-factor" class="control-label extra-label">Unit Prefix</label>
+                <div class="control">
+                    <label class="radio inline">
+                        <input type="radio" id="label-factor" name="title_unit" value="None" checked>None
+                    </label>
+                    <label class="radio inline">
+                        <input type="radio" name="title_unit" value="K">K
+                    </label>
+                    <label class="radio inline">
+                        <input type="radio" name="title_unit" value="M">M
+                    </label>
+                    <label class="radio inline">
+                        <input type="radio" name="title_unit" value="G">G
+                    </label>
+                </div>
+            </div>
+            <div class="control-group pull-right">
+                <button id="refresh-graph" class="btn" type="button">Refresh</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="graph-render-target" class="well row">
+    <span id="not-renderable" class="centered">Not Renderable</span>
+    <div id="graph-content"></div>
+</div>
+
+<div id="graph-url-target" class="well row centered">
+    <form class="form-horizontal">
+        <div class="control-group graph-url-input">
+            <label class="control-label" for="graph-address-url">Graph URL:</label>
+            <div class="controls">
+                <input type="text" id="graph-address-url" value="" placeholder="Graph URL" readonly>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}

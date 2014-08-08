@@ -1,0 +1,39 @@
+.centered {
+    text-align: center;
+    width: 100%;
+    display: inline-block;
+}
+
+.extra-label {
+    padding-right: 15px;
+    font-weight: bold;
+}
+
+#not-renderable {
+    position: relative;
+    font-size: 5em;
+    padding-top: 90px;
+    color: silver;
+}
+
+#graph-render-target {
+    height: 220px;
+    vertical-align: middle;
+}
+
+#graph-content {
+    width: 600px;
+    margin: 0 auto;
+}
+
+#graph-selector-div {
+    height: 220px;
+}
+
+#graph-address-url {
+    width: 800px;
+}
+
+.graph-url-input {
+    margin-top: 15px;
+}
