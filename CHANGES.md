@@ -1,4 +1,8 @@
-1.7.1 - 08/19/2014
+1.8.0
+==================
+- Added graphing frontend, available via /graph-picker.html
+
+1.7.1
 ==================
 - Added backwards compatability with the api/service(s) call to work with old plugins/checks
 - Added log rotation to all clients, logs rotate at 20MB and will rotate once before overwriting old logs
