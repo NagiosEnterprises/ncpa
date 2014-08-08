@@ -96,7 +96,7 @@ class RunnableNode(ParentNode):
 
     def get_adjusted_scale(self, values, request_args):
         units = request_args.get('units', None)
-        if not units is None:
+        if units is not None:
             values, units = self.adjust_scale(values, units[0])
             self.unit = '%s%s' % (units, self.unit)
         return values

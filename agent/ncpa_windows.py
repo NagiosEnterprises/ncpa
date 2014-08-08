@@ -35,20 +35,24 @@ class Base(object):
     # no parameters are permitted; all configuration should be placed in the
     # configuration file and handled in the Initialize() method
     def __init__(self, debug=False):
-        cx_Logging.Info("Creating handler instance...")
+        logging.getLogger().handlers = []
         self.stopEvent = cx_Threads.Event()
         self.debug = debug
 
     def determine_relative_filename(self, file_name, *args, **kwargs):
-        '''Gets the relative pathname of the executable being run.
+        """Gets the relative pathname of the executable being run.
 
         This is meant exclusively for being used with cx_Freeze on Windows.
-        '''
+        """
         if self.debug:
             appdir = os.path.dirname(filename.__file__)
         else:
             appdir = os.path.dirname(sys.path[0])
-        return os.path.join(appdir, file_name)
+
+        # There is something wonky about Windows and its need for paths and how Python
+        # pulls the above appdir, which doesn't come out absolute when the application
+        # is frozen. Figured being absolutely sure its an absolute path here.
+        return os.path.abspath(os.path.join(appdir, file_name))
 
     def parse_config(self, *args, **kwargs):
         self.config = ConfigParser.ConfigParser()
@@ -61,41 +65,51 @@ class Base(object):
         self.abs_plugin_path = os.path.normpath(abs_plugin_path)
         self.config.set('plugin directives', 'plugin_path', self.abs_plugin_path)
 
-    def setup_logging(self, *arg, **kwargs):
-        '''This should always setup the logger.
-        '''
-        log_config = dict(self.config.items(self.c_type, 1))
-        log_level = log_config.get('loglevel', 'INFO').upper()
-        log_config['level'] = getattr(logging, log_level, logging.INFO)
-        del log_config['loglevel']
-        log_file = log_config['logfile']
-        if os.path.isabs(log_file):
-            log_config['filename'] = log_file
-        else:
-            log_config['filename'] = self.determine_relative_filename(log_file)
-        logging.basicConfig(**log_config)
+    def setup_logging(self, *args, **kwargs):
+        """This should always setup the logger.
+
+        """
+        config = dict(self.config.items(self.c_type, 1))
+
+        # Now we grab the logging specific items
+        log_level_str = config.get('loglevel', 'INFO').upper()
+        log_level = getattr(logging, log_level_str, logging.INFO)
+
+        log_file = os.path.normpath(config['logfile'])
+        if not os.path.isabs(log_file):
+            log_file = self.determine_relative_filename(log_file)
+
+        logging.getLogger().handlers = []
+
+        # Max size of log files will be 20MB, and we'll keep one of them as backup
+        max_file_size = 20 * 1024 * 1024
+        file_handler = logging.handlers.RotatingFileHandler(log_file, maxBytes=max_file_size, backupCount=1)
+        file_format = logging.Formatter('%(asctime)s:%(levelname)s:%(module)s:%(message)s')
+        file_handler.setFormatter(file_format)
+
+        logging.getLogger().addHandler(file_handler)
+        logging.getLogger().setLevel(log_level)
 
     # called when the service is starting immediately after Initialize()
     # use this to perform the work of the service; don't forget to set or check
     # for the stop event or the service GUI will not respond to requests to
     # stop the service
     def Run(self):
-        cx_Logging.Info("Running service....")
         self.start()
         self.stopEvent.Wait()
 
     # called when the service is being stopped by the service manager GUI
     def Stop(self):
-        cx_Logging.Info("Stopping service...")
+        pass
         self.stopEvent.Set()
 
 
 class Listener(Base):
 
     def start(self):
-        '''Kickoff the TCP Server
+        """Kickoff the TCP Server
 
-        '''
+        """
         try:
             address = self.config.get('listener', 'ip')
             port = self.config.getint('listener', 'port')
@@ -136,13 +150,13 @@ class Listener(Base):
 class Passive(Base):
 
     def run_all_handlers(self, *args, **kwargs):
-        '''Will run all handlers that exist.
+        """Will run all handlers that exist.
 
         The handler must:
         - Have a config header entry
         - Abide by the handler API set forth by passive.abstract.NagiosHandler
         - Terminate in a timely fashion
-        '''
+        """
         handlers = self.config.get('passive', 'handlers').split(',')
 
         for handler in handlers:
