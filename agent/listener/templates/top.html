@@ -49,36 +49,49 @@
         var current_pl = [];
 
         $('#highlight-input').on('keyup', function(e) {
-            highlight = $(e.target).val();
+            var raw_highlight = $(e.target).val();
+
+            if (raw_highlight === '') {
+                highlight = null;
+            }
+            else {
+                highlight = raw_highlight;
+            }
         })
 
         $('#warning-input').on('keyup', function(e) {
-            var test = parseFloat($(e.target).val());
+            var test = $(e.target).val();
+            var parsed_test = parseFloat(test);
 
-            // NaN check
-            if (test != test) {
+            if (test === '') {
+                warning = 0;
+            }
+            else if (isNaN(parsed_test)) {
                 return;
             }
-            else if (test < 0 || test > 100) {
+            else if (parsed_test < 0 || test > 100) {
                 return;
             }
             else {
-                warning = test;
+                warning = parsed_test;
             }
         });
 
         $('#critical-input').on('keyup', function(e) {
-            var test = parseFloat($(e.target).val());
+            var test = $(e.target).val();
+            var parsed_test = parseFloat(test);
 
-            // NaN check
-            if (test != test) {
+            if (test === '') {
+                critical = 0;
+            }
+            else if (isNaN(parsed_test)) {
                 return;
             }
-            else if (test < 0 || test > 100) {
+            else if (parsed_test < 0 || test > 100) {
                 return;
             }
             else {
-                critical = test;
+                critical = parsed_test;
             }
         });
 
