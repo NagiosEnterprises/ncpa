@@ -272,11 +272,11 @@ def graph(accessor=None):
     else:
         info['delta'] = 0
 
-    unit = request.args.get('unit', 'a').upper()
+    unit = request.args.get('title_unit', 'a').upper()
     if unit in ['K', 'M', 'G']:
-        info['unit'] = unit
+        info['title_unit'] = unit
     else:
-        info['unit'] = ''
+        info['title_unit'] = ''
 
     factor = 1
     if unit == 'K':
@@ -354,7 +354,6 @@ def graph_picker():
     """
     return render_template('graph-picker.html')
 
-
 @listener.route('/api/', methods=['GET', 'POST'])
 @listener.route('/api/<path:accessor>', methods=['GET', 'POST'])
 @requires_auth
@@ -373,6 +372,7 @@ def api(accessor=''):
     # we clobber it, as we trust what is in the config.
     sane_args = request.values.to_dict()
 
+    # TODO: Rewrite this part, this needs to be moved to the Service/Process nodes rather than here.
     # Special cases for 'service' and 'process' to make NCPA v1.7 backwards compatible
     # with probably the most disgusting code ever written but needed to work ASAP for
     # those who had checks set up before the changes.
