@@ -246,6 +246,13 @@ class RunnableNode(ParentNode):
 
     @staticmethod
     def adjust_scale(values, units):
+
+        # It was either adjust it here or adjust every single node that only returns a single value. I'm putting this
+        # on the TODO for 2.0 to change all nodes to return lists rather than single values, as thats a API breaking
+        # change.
+        if not isinstance(values, (list, tuple)):
+            values = [values]
+
         units = units.upper()
         if units == 'G':
             factor = 1e9
