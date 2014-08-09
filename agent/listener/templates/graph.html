@@ -51,9 +51,6 @@
         // The following are explicitly for delta calculations
         var delta = !!{{ delta }};
         var query_string = '{{ query_string }}';
-        var delta_state = [];
-        var factor = {{ factor }};
-        var unit = '{{ title_unit }}';
         var graph_title = $('#graph-{{ graph_hash }}-title');
         var default_smoothie = {maxValue: 100,
                                 minValue: 0,
@@ -89,7 +86,7 @@
                 var title = '{{ graph_path }} in ' + response_object[1];
 
                 if (delta) {
-                   title += '/s';
+                    title += '/s';
                 }
 
                 graph_title.text(title);
@@ -116,6 +113,10 @@
             for(var i=0; i<ts_length; i++) {
                 lines.push(new TimeSeries());
             }
+
+            ws.onopen = function() {
+                ws.send('{{ graph_path }}');
+            };
 
             ws.onmessage = function(e) {
                 var d = $.parseJSON(e.data);
