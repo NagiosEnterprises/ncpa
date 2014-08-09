@@ -41,13 +41,13 @@ import re
 __VERSION__ = '0.3.1'
 
 
-def pretty(d, indent=0, indenter=' '*4):
+def pretty(d, indent=0, indenter=' ' * 4):
     info_str = ''
     for key, value in list(d.items()):
         info_str += indenter * indent + str(key)
         if isinstance(value, dict):
             info_str += '/\n'
-            info_str += pretty(value, indent+1, indenter)
+            info_str += pretty(value, indent + 1, indenter)
         else:
             info_str += ': ' + str(value) + '\n'
     return info_str
@@ -72,6 +72,9 @@ def parse_args():
                       help="Critical value to be passed for the check.")
     parser.add_option("-u", "--unit", default=None,
                       help="The unit prefix (M, G, T)")
+    parser.add_option("-n", "--units", default=None,
+                      help="What should be used in place of the default unit. As in, instead of 'b' as a unit, it will "
+                      "use this.")
     parser.add_option("-a", "--arguments", default=None,
                       help="Arguments for the plugin to be run. Not necessary "
                            "unless you're running a custom plugin. Given in the same "
@@ -117,7 +120,8 @@ def parse_args():
 
     return options
 
-#~ The following are all helper functions. I would normally split these out into
+
+# ~ The following are all helper functions. I would normally split these out into
 #~ a new module but this needs to be portable.
 
 
@@ -166,13 +170,18 @@ def get_arguments_from_options(options, **kwargs):
     it will return the arguments necessary to query for a list.
 
     """
+
+    # Note that the distinction between units/unit is a bit confusing. According to the API, the units the is
+    # the unit prefix, like K, M or G. Unit is the unit that will be ascribed like B, b, bytes, etc. We have them
+    # flip-flopped here and cannot change them due to API versions.
     arguments = {'token': options.token,
-                 'unit': options.unit}
+                 'units': options.unit}
     if not options.list:
         arguments['warning'] = options.warning
         arguments['critical'] = options.critical
         arguments['delta'] = options.delta
         arguments['check'] = 1
+        arguments['unit'] = options.units
 
     #~ Encode the items in the dictionary that are not None
     return urlencode(dict((k, v) for k, v in list(arguments.items()) if v))
@@ -237,6 +246,7 @@ def main():
             return 'An error occurred:' + str(e), 3
         else:
             return 'UNKNOWN: Error occurred while running the plugin. Use the verbose flag for more details.', 3
+
 
 if __name__ == "__main__":
     stdout, returncode = main()
