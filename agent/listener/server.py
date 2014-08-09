@@ -268,28 +268,13 @@ def graph(accessor=None):
     info = {'graph_path': accessor,
             'graph_hash': hash(accessor)}
 
+    node = psapi.getter(accessor, listener.config['iconfig'])
+    prop = node.name
+
     if request.args.get('delta'):
         info['delta'] = 1
     else:
         info['delta'] = 0
-
-    unit = request.args.get('title_unit', 'a').upper()
-    if unit in ['K', 'M', 'G']:
-        info['title_unit'] = unit
-    else:
-        info['title_unit'] = ''
-
-    factor = 1
-    if unit == 'K':
-        factor = 1e3
-    elif unit == 'M':
-        factor = 1e6
-    elif unit == 'G':
-        factor = 1e9
-    info['factor'] = factor
-
-    node = psapi.getter(accessor, listener.config['iconfig'])
-    prop = node.name
 
     info['graph_prop'] = prop
     query_string = request.query_string

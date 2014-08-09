@@ -51,9 +51,6 @@
         // The following are explicitly for delta calculations
         var delta = !!{{ delta }};
         var query_string = '{{ query_string }}';
-        var delta_state = [];
-        var factor = {{ factor }};
-        var unit = '{{ title_unit }}';
         var graph_title = $('#graph-{{ graph_hash }}-title');
         var default_smoothie = {maxValue: 100,
                                 minValue: 0,
@@ -66,47 +63,39 @@
 
         var get_ws_address = function() {
             var loc = window.location;
-            if(loc.protocol === 'https:') {
-                var ws_proto = 'wss';
-            } else {
-                var ws_proto = 'ws';
-            }
-            var ws_loc = ws_proto + '://' + loc.hostname + ':5693/api-websocket/' + '{{ graph_path }}';
+            var ws_protocol = (loc.protocol === 'https:') ? 'wss' : 'ws';
+            var ws_loc = ws_protocol + '://' + loc.hostname + ':5693/api-websocket/' + '{{ graph_path }}';
 
             if (query_string) {
                 ws_loc += '?' + decodeURIComponent(query_string);
             }
             return ws_loc;
-        }
+        };
 
-        function adjust_factor(val) {
-            return val / factor;
-        }
-        
-        var API_URL = '/api/{{graph_path}}'
+        var API_URL = '/api/{{graph_path}}';
         if (query_string) {
             API_URL += '?' + decodeURIComponent(query_string);
         }
+
         $.getJSON(API_URL, function(d) {
             var ts_length = 0;
-            $.each(d, function(i, o) {
-                console.log(o);
-                var o = o['{{ graph_prop }}'];
-                ts_length = o[0].length || 1;
-                var title = '{{ graph_path }} in ' + unit + o[1];
-                if(delta) {
+            $.each(d, function(i, api_response_object) {
+                var response_object = api_response_object['{{ graph_prop }}'];
+                ts_length = response_object[0].length || 1;
+                var title = '{{ graph_path }} in ' + response_object[1];
+
+                if (delta) {
                     title += '/s';
                 }
+
                 graph_title.text(title);
-                if(o[1] != '%') {
+                if(response_object[1] != '%') {
                     delete default_smoothie.maxValue;
                 }
             });
 
             var smoothie = new SmoothieChart(default_smoothie);
             var ws_loc = get_ws_address();
-
-            console.log(ws_loc)
 
             var ws = new WebSocket(ws_loc);
             var lines = [];
@@ -122,12 +111,11 @@
 
             for(var i=0; i<ts_length; i++) {
                 lines.push(new TimeSeries());
-                delta_state.push(0);
             }
 
             ws.onopen = function() {
                 ws.send('{{ graph_path }}');
-            }
+            };
 
             ws.onmessage = function(e) {
                 var d = $.parseJSON(e.data);
@@ -141,22 +129,8 @@
 
                 $.each(ts, function(i) {
                     var val = ts[i];
-
-                    if(delta) {
-                        if(delta_state[i] == 0) {
-                            delta_state[i] = val;
-                            val = 0;
-                        }
-                        else {
-                            tmp = val;
-                            val = (val - delta_state[i]) / (interval / 1000);
-                            delta_state[i] = tmp;
-                        }
-                    }
-                    
                     val = Math.abs(val);
 
-                    val = adjust_factor(val);
                     lsum += val;
                     lines[i].append(new Date().getTime(), val);
                     if(min == undefined || val < min) min = val;
@@ -165,7 +139,7 @@
 
                 lmean = lsum / ts.length;
                 all.push(lmean);
-                asum = all.reduce(function(a, b) {return a+b})
+                asum = all.reduce(function(a, b) {return a+b});
                 amean = asum / all.length;
 
                 td_min.text(min.toFixed(2));
