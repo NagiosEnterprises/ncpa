@@ -64,21 +64,25 @@ function get_graph_url(api_url) {
     if (api_url == undefined) {
         var raw_api_url = $('#graph-address-url').val();
         api_url = raw_api_url.replace(/\?.*/g, '');
-        console.log(api_url);
     }
 
     var graph_url = api_url.replace(/^\/api/g, '/graph');
 
     var delta = $('input[name=delta]:checked').val();
-    var unit = $('input[name=unit]:checked').val();
-    console.log(delta);
+    var units = $('input[name=units]:checked').val();
+    var unit = $('input[name=unit]').val();
+
     var query_args = {};
 
     if (delta == 'on') {
         query_args['delta'] = 1;
     }
 
-    if (unit != 'None') {
+    if (units != 'None') {
+        query_args['units'] = units;
+    }
+
+    if (unit) {
         query_args['unit'] = unit;
     }
 
@@ -87,22 +91,30 @@ function get_graph_url(api_url) {
 }
 
 function render_graph(target) {
+    var graph_content = $('#graph-content');
+    var graph_url = '';
+    var api_url = '';
+
     if (target == undefined) {
-        var graph_url = get_graph_url()
+        graph_url = get_graph_url()
     }
     else {
-        var api_url = target.attr('data-children') + '/' + target.val();
-        var graph_url = get_graph_url(api_url);
+        api_url = target.attr('data-children') + '/' + target.val();
+        graph_url = get_graph_url(api_url);
     }
 
     $('#not-renderable').hide();
     $('#graph-address-url').val(graph_url);
-    $('#graph-content').load(graph_url);
+    $('.ncpa-graph').trigger('doUnload');
+
+
+    graph_content.empty();
+    graph_content.load(graph_url);
 }
 
 function populate_next_select(e) {
     var current = $(e.target);
-    var current_value = current.val()
+    var current_value = current.val();
     var next_url = current.attr('data-children') + '/' + current_value;
 
     var next_select = get_next_select(next_url, current_value);

@@ -137,9 +137,8 @@ def api_websocket(accessor=None):
     and unit in list form.
 
     """
-    config = listener.config['iconfig']
-
     sane_args = dict(request.args)
+    sane_args['accessor'] = accessor
 
     if request.environ.get('wsgi.websocket'):
         config = listener.config['iconfig']
@@ -234,7 +233,7 @@ def tail_websocket(accessor=None):
                 gevent.sleep(2)
             except geventwebsocket.WebSocketError as exc:
                 ws.close()
-                logging.exception(exc)
+                logging.debug(exc)
                 return
             except BaseException as exc:
                 ws.close()

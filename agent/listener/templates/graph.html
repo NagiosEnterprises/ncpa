@@ -69,6 +69,7 @@
             if (query_string) {
                 ws_loc += '?' + decodeURIComponent(query_string);
             }
+
             return ws_loc;
         };
 
@@ -113,10 +114,6 @@
                 lines.push(new TimeSeries());
             }
 
-            ws.onopen = function() {
-                ws.send('{{ graph_path }}');
-            };
-
             ws.onmessage = function(e) {
                 var d = $.parseJSON(e.data);
                 var ts = d[0];
@@ -146,9 +143,23 @@
                 td_max.text(max.toFixed(2));
                 td_cur.text(lmean.toFixed(2));
                 td_avg.text(amean.toFixed(2));
-            }
 
-            setInterval(function() {ws.send('{{ graph_path }}')}, interval);
+
+            };
+
+            var websocket_thread;
+
+            ws.onopen = function() {
+                websocket_thread = setInterval(function() {
+                    ws.send('{{ graph_path }}');
+                }, interval);
+            };
+
+            $('#graph-{{ graph_hash }}').on('doUnload', function() {
+                ws.close();
+                delete ws;
+                clearInterval(websocket_thread);
+            });
 
             $.each(lines, function(i) {
                 smoothie.addTimeSeries(lines[i], {lineWidth:0.5,
@@ -156,7 +167,7 @@
                                                   fillStyle:'rgba(7,0,255,0.29)'});
             });
             smoothie.streamTo(document.getElementById('canvas-{{ graph_hash }}'), 1000);
-        }).error(function() {console.log('Errored out!')});
+        });
 
 
     })
