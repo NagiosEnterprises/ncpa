@@ -96,7 +96,7 @@ class TestRunnableNode(unittest.TestCase):
 
         self.n.deltaize_values = lambda x, y: ([z+1 for z in x], y)
         values = self.n.get_delta_values([0], {'delta': True})
-        self.assertEqual(values, ([1], False))
+        self.assertEqual(values, ([1], None))
 
     def test_get_adjusted_scale(self):
         values = self.n.get_adjusted_scale([0], {})
