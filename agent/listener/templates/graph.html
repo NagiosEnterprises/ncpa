@@ -114,10 +114,6 @@
                 lines.push(new TimeSeries());
             }
 
-            ws.onopen = function() {
-                ws.send('{{ graph_path }}');
-            };
-
             ws.onmessage = function(e) {
                 var d = $.parseJSON(e.data);
                 var ts = d[0];
