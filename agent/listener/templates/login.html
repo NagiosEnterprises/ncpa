@@ -5,8 +5,8 @@
 	<form class='form-signin' action='/login' method='post'>
 		<h4 class='form-signin-heading'>Login</h2>
 		<hr />
-		{% if info %}
-			<p class='text-info'>{{ info }}</p>
+		{% if message %}
+			<p class='text-info'>{{ message }}</p>
 		{% endif %}
 		{% if error %}
 			<p class='text-error'>{{ error }}</p>

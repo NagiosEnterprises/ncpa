@@ -29,13 +29,15 @@
                     <a class='brand' href='#'>NCPA Interface</a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
-                            <li id="home-nav"><a href="/">Home</a></li>
-                            <li id="dashboard-nav"><a href="/dashboard">Dashboard</a></li>
-                            <li id="navigator-nav"><a href="/api">API</a></li>
-                            <li id="top-nav"><a href="/top-base">Top Processes</a></li>
-                            <li id="graph-picker"><a href="/graph-picker">Graphs</a></li>
-                            <li><a href="/logout">Logout</a></li>
-                            <li><a href="/static/help/index.html">Help</a></li>
+                            {% if not hide_page_links %}
+                                <li id="home-nav"><a href="/">Home</a></li>
+                                <li id="dashboard-nav"><a href="/dashboard">Dashboard</a></li>
+                                <li id="navigator-nav"><a href="/api">API</a></li>
+                                <li id="top-nav"><a href="/top-base">Top Processes</a></li>
+                                <li id="graph-picker"><a href="/graph-picker">Graphs</a></li>
+                                <li><a href="/logout">Logout</a></li>
+                                <li><a href="/static/help/index.html">Help</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>
