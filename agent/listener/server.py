@@ -264,14 +264,10 @@ def graph(accessor=None):
     info = {'graph_path': accessor,
             'graph_hash': hash(accessor)}
 
-<<<<<<< HEAD
-    if request.args.get('delta'):
-=======
     node = psapi.getter(accessor, listener.config['iconfig'])
     prop = node.name
 
     if request.values.get('delta'):
->>>>>>> e6c0214... Fixing Page Headlings - GET/POST Issues
         info['delta'] = 1
     else:
         info['delta'] = 0
