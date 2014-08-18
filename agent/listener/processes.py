@@ -6,11 +6,17 @@ class ProcessNode(nodes.LazyNode):
 
     @staticmethod
     def get_exe(request_args):
-        return request_args.get('exe', [])
+        exe = request_args.get('exe', [])
+        if not isinstance(exe, list):
+            exe = [exe]
+        return exe
 
     @staticmethod
     def get_name(request_args):
-        return request_args.get('name', [])
+        name = request_args.get('name', [])
+        if not isinstance(name, list):
+            name = [name]
+        return name
 
     @staticmethod
     def get_count(request_args):
