@@ -13,6 +13,7 @@ Installing NCPA on Windows
 --------------------------
 
 First, download the installer to the machine that you wish to install NCPA onto. The NCPA installer can be found at `NCPA's Windows Installer link <http://assets.nagios.com/downloads/ncpa/download.php?type=exe&arch=x86>`_.
+
 Graphical Install
 +++++++++++++++++
 
@@ -224,4 +225,3 @@ Once you have these pieces of information you can attempt to connect to the web 
 Where <agent's IP> should be substituted for your agent's IP address. When you access the web interface of NCPA you should be asked to provide the token from above.
 
 This means your installation is working! You can now proceed.
-

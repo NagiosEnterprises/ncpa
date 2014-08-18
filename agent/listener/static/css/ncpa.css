@@ -1,3 +1,4 @@
-.description {
-    width: 300px;
-}
+.description { width: 300px; }
+body .navbar-inverse .navbar-inner { border-radius: 0px; }
+
+.top-col1 { width: 100px; }

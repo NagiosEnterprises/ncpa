@@ -9,4 +9,3 @@ client_path = os.path.join(script_dirname, 'client')
 sys.path.append(agent_path)
 
 nose.run()
-
