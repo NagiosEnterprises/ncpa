@@ -345,10 +345,6 @@ def nrdp():
         return error(msg=unicode(exc))
 
 
-<<<<<<< HEAD
-@listener.route('/api/')
-@listener.route('/api/<path:accessor>')
-=======
 @listener.route('/graph-picker/', methods=['GET', 'POST'])
 @requires_auth
 def graph_picker():
@@ -361,7 +357,6 @@ def graph_picker():
 
 @listener.route('/api/', methods=['GET', 'POST'])
 @listener.route('/api/<path:accessor>', methods=['GET', 'POST'])
->>>>>>> e6c0214... Fixing Page Headlings - GET/POST Issues
 @requires_auth
 def api(accessor=''):
     """
