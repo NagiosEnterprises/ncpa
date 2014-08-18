@@ -3,13 +3,14 @@
 - Added backwards compatability with the api/service(s) call to work with old plugins/checks
 - Added log rotation to all clients, logs rotate at 20MB and will rotate once before overwriting old logs
 - Added safeguards when importing disk nodes that prevented the listener from starting in certain circumstances
-- Added link to the /top service in the UI
+- Added link to the /top service in the web UI
 - Added "diskperf -Y" command to automatically run during Windows install
+- Added favicon to the web UI
 - Removed unused files and old static docs
 - Updated log format to be more descriptive
 - Updated test runner to be Python rather than sh to run tests on Windows
 - Updated plugin/file type directives to now retain quotes around $plugin_name when being passed to the command line
-- Updated styling of main Web UI screen
+- Updated styling of main web UI screen
 - Fixed issue with SSL certificates using the same serial number
 - Fixed threading error on NCPA listener start/stop
 - Fixed 500 access error on access
