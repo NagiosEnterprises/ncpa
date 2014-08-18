@@ -371,10 +371,11 @@ def api(accessor=''):
     # Setup sane/safe arguments for actually getting the data. We take in all
     # arguments that were passed via GET/POST. If they passed a config variable
     # we clobber it, as we trust what is in the config.
-    sane_args = {}
-    for key, value in request.values.iteritems():
-        sane_args[key] = value
-        
+    if (request.method == "POST"):
+        sane_args = dict(request.form)
+    else:
+        sane_args = dict(request.args)
+
     # Special cases for 'service' and 'process' to make NCPA v1.7 backwards compatible
     # with probably the most disgusting code ever written but needed to work ASAP for
     # those who had checks set up before the changes.
