@@ -10,5 +10,3 @@ def get_dirname_file():
     else:
         return os.path.dirname(__file__)
     
-
-

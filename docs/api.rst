@@ -209,9 +209,9 @@ Which is what our script is supposed to do, return 2 and print "This Worked!" al
 API/Services
 -------------------
 
-.. note:: Although the services tree changed in v1.7.0, backwards compatibility to the way the API worked in previous versions was added in 1.7.1 which allows old check_ncpa.py checks to work regardless of the version of the plugin script and the version of the NCPA agent installed.
+.. note:: Although the services tree changed in 1.7.0, backwards compatibility to the way the API worked in previous versions was added in 1.7.1 which allows old check_ncpa.py checks to work regardless of the version of the plugin script and the version of the NCPA agent installed.
 
-The service tree has changed in NCPA v1.7 and now uses a more hybrid form of request. Like before, you can see the existing services and their current status by going to ``api/service`` but this is the end of the tree::
+The service tree has changed in NCPA 1.7.0 and now uses a more hybrid form of request. Like before, you can see the existing services and their current status by going to ``api/service`` but this is the end of the tree::
 
     https://ncpaserver:5693/api/services
     

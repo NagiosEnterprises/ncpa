@@ -2,8 +2,8 @@
 <html lang='en'>
     <head>
         {% block headercss %}
-        <link rel='stylesheet' href='/static/css/bootstrap.css' />
-        <link rel='stylesheet' href='/static/css/bootstrap-responsive.css' />
+        <link rel='stylesheet' href='/static/css/bootstrap.min.css' />
+        <link rel='stylesheet' href='/static/css/bootstrap-responsive.min.css' />
         <link rel='stylesheet' href='/static/css/ncpa.css' />
         {% endblock %}
         <title>NCPA Web Interface</title>
@@ -11,9 +11,8 @@
         <meta name="description" content="NCPA Frontend">
         <meta name="author" content="Nicholas Scott">
         <script src='/static/js/jquery-1.8.3.min.js'></script>
-        <script src='/static/js/bootstrap.js'></script>
+        <script src='/static/js/bootstrap.min.js'></script>
         <script src='/static/js/d3.v3.min.js'></script>
-        <script src='/static/js/ncpa-page-init.js'></script>
         {% block headerjs %}
         {% endblock %}
     </head>
@@ -34,7 +33,7 @@
                                 <li id="dashboard-nav"><a href="/dashboard">Dashboard</a></li>
                                 <li id="navigator-nav"><a href="/api">API</a></li>
                                 <li id="top-nav"><a href="/top-base">Top Processes</a></li>
-                                <li id="graph-picker"><a href="/graph-picker">Graphs</a></li>
+                                <!-- <li id="graph-picker"><a href="/graph-picker">Graphs</a></li> Hide graph tab for 1.7.1 -->
                                 <li><a href="/logout">Logout</a></li>
                                 <li><a href="/static/help/index.html">Help</a></li>
                             {% endif %}

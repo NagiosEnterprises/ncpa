@@ -5,7 +5,6 @@
 - Moved to Major.Minor.Maintenance versioning scheme to align with NCPA
 - Added sanity check so -a/--arguments cannot be called when not calling a plugin
 
-
 0.3
 ---
 - Moved into main git repository
