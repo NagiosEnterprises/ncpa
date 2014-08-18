@@ -54,7 +54,7 @@ def requires_auth(f):
     @functools.wraps(f)
     def decorated(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
-        token = request.args.get('token', None)
+        token = request.values.get('token', None)
 
         if __INTERNAL__ is True:
             # This is an internal call, we don't check. (Passive agent call.)
@@ -73,20 +73,19 @@ def requires_auth(f):
 @listener.route('/login', methods=['GET', 'POST'])
 def login():
     ncpa_token = listener.config['iconfig'].get('api', 'community_string')
-    if request.method == 'GET':
-        token = request.args.get('token', None)
-    elif request.method == 'POST':
-        token = request.form.get('token', None)
-    else:
-        token = None
+    message = request.values.get('message', None)
+    token = request.values.get('token', None)
 
-    if token is None:
-        return render_template('login.html')
+    template_args = {'hide_page_links': True,
+                     'message': message}
+
     if token == ncpa_token:
         session['logged'] = True
         return redirect(url_for('index'))
-    if token != ncpa_token:
-        return render_template('login.html', error='Token was invalid.')
+    elif token != ncpa_token and token is not None:
+        template_args['error'] = 'Token was invalid.'
+
+    return render_template('login.html', **template_args)
 
 
 @listener.route('/dashboard')
@@ -97,11 +96,8 @@ def dashboard():
 
 @listener.route('/logout')
 def logout():
-    if session.get('logged', False):
-        session['logged'] = False
-        return render_template('login.html', info='Successfully logged out.')
-    else:
-        return redirect(url_for('login'))
+    session['logged'] = False
+    return redirect(url_for('login', message='Successfully logged out.'))
 
 
 def make_info_dict():
@@ -127,7 +123,7 @@ def index():
         logging.exception(e)
 
 
-@listener.route('/api-websocket/<path:accessor>')
+@listener.route('/api-websocket/<path:accessor>', methods=['GET', 'POST'])
 @requires_auth
 def api_websocket(accessor=None):
     """Meant for use with the websocket and API.
@@ -154,19 +150,19 @@ def api_websocket(accessor=None):
     return
 
 
-@listener.route('/top-base')
+@listener.route('/top-base', methods=['GET', 'POST'])
 @requires_auth
 def top_base():
     return render_template('top-base.html')
 
 
-@listener.route('/top')
+@listener.route('/top', methods=['GET', 'POST'])
 @requires_auth
 def top():
-    display = request.args.get('display', 0)
-    highlight = request.args.get('highlight', None)
-    warning = request.args.get('warning', 0)
-    critical = request.args.get('critical', 0)
+    display = request.values.get('display', 0)
+    highlight = request.values.get('highlight', None)
+    warning = request.values.get('warning', 0)
+    critical = request.values.get('critical', 0)
     info = {}
 
     if highlight is None:
@@ -242,7 +238,7 @@ def tail_websocket(accessor=None):
     return
 
 
-@listener.route('/tail/<path:accessor>')
+@listener.route('/tail/<path:accessor>', methods=['GET', 'POST'])
 @requires_auth
 def tail(accessor=None):
     info = {'tail_path': accessor,
@@ -255,7 +251,7 @@ def tail(accessor=None):
                            **info)
 
 
-@listener.route('/graph/<path:accessor>')
+@listener.route('/graph/<path:accessor>', methods=['GET', 'POST'])
 @requires_auth
 def graph(accessor=None):
     """
@@ -268,7 +264,10 @@ def graph(accessor=None):
     info = {'graph_path': accessor,
             'graph_hash': hash(accessor)}
 
-    if request.args.get('delta'):
+    node = psapi.getter(accessor, listener.config['iconfig'])
+    prop = node.name
+
+    if request.values.get('delta'):
         info['delta'] = 1
     else:
         info['delta'] = 0
@@ -307,16 +306,16 @@ def error(msg=None):
     return jsonify(error=msg)
 
 
-@listener.route('/testconnect/')
+@listener.route('/testconnect/', methods=['GET', 'POST'])
 def testconnect():
     """
     Method meant for testing connecting with monitoring applications and wizards.
 
     :rtype: flask.Response
     """
-    ncpa_token = listener.config['iconfig'].get('api', 'community_string')
-    token = request.args.get('token', None)
-    if ncpa_token != token:
+    real_token = listener.config['iconfig'].get('api', 'community_string')
+    test_token = request.values.get('token', None)
+    if real_token != test_token:
         return jsonify({'error': 'Bad token.'})
     else:
         return jsonify({'value': 'Success.'})
@@ -346,8 +345,23 @@ def nrdp():
         return error(msg=unicode(exc))
 
 
+<<<<<<< HEAD
 @listener.route('/api/')
 @listener.route('/api/<path:accessor>')
+=======
+@listener.route('/graph-picker/', methods=['GET', 'POST'])
+@requires_auth
+def graph_picker():
+    """This function renders the graph picker page, which can be though of the
+    the explorer for the graphs.
+
+    """
+    return render_template('graph-picker.html')
+
+
+@listener.route('/api/', methods=['GET', 'POST'])
+@listener.route('/api/<path:accessor>', methods=['GET', 'POST'])
+>>>>>>> e6c0214... Fixing Page Headlings - GET/POST Issues
 @requires_auth
 def api(accessor=''):
     """
@@ -362,7 +376,7 @@ def api(accessor=''):
     # Setup sane/safe arguments for actually getting the data. We take in all
     # arguments that were passed via GET/POST. If they passed a config variable
     # we clobber it, as we trust what is in the config.
-    sane_args = dict(request.args)
+    sane_args = dict(request.values)
 
     # Special cases for 'service' and 'process' to make NCPA v1.7 backwards compatible
     # with probably the most disgusting code ever written but needed to work ASAP for
