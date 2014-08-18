@@ -11,6 +11,7 @@
 - Added safeguards when importing disk nodes that prevented the listener from starting in certain circumstances
 - diskperf -Y is now automatically run during Windows install
 - Added link to the /top service in the UI
+- Fixed 500 access error on access
 
 1.7.0 - 07/29/2014
 ==================
