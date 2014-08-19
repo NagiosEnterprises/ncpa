@@ -6,7 +6,7 @@ The awesome NCPA agent - one agent to rule them all.
 Downloading NCPA
 ----
 
-[**Official Nagios Builds**](http://assets.nagios.com/downloads/ncpa/download.php)
+[**Download from the Nagios Official Builds**](http://assets.nagios.com/downloads/ncpa/download.php)
 
 We currently build for Windows, Mac OS X, CentOS 5/6/7, Debian/Ubuntu, and OpenSUSE 13. If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here at GitHub.
 
