@@ -335,10 +335,7 @@ def graph_picker():
     """
     return render_template('graph-picker.html')
 
-<<<<<<< HEAD
-=======
 
->>>>>>> Fixing Page Headlings - GET/POST Issues
 @listener.route('/api/', methods=['GET', 'POST'])
 @listener.route('/api/<path:accessor>', methods=['GET', 'POST'])
 @requires_auth
