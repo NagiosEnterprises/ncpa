@@ -1,4 +1,4 @@
-NCPA
+Nagios Cross Platform Agent (NCPA)
 ====
 
 The awesome NCPA agent - one agent to rule them all.
