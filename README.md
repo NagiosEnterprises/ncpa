@@ -8,7 +8,7 @@ Downloading NCPA
 
 [**Download from the Nagios Official Builds**](http://assets.nagios.com/downloads/ncpa/download.php)
 
-We currently build for Windows, Mac OS X, CentOS 5/6/7, Debian/Ubuntu, and OpenSUSE 13. If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here at GitHub.
+We currently build for Windows, Mac OS X, CentOS 5/6/7, Debian/Ubuntu, and OpenSUSE 12/13. If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here at GitHub.
 
 Building NCPA
 ----
@@ -18,7 +18,7 @@ There are known build issues involving *cx_Freeze*, if you run into an issue ref
 
 #### RPM Build Location Errors ####
 
-This is most relevant for __CentOS 5__ and for __openSUSE 13/12__ but may occur on other systems.
+This is most relevant for __CentOS 5__ and for __openSUSE 12/13__ but may occur on other systems.
 
 If you get an error about not finding the .tar in the RPM build location you will need to create an `.rpmmacros` file in your home directory for the user you are building with that contains these three lines:
 
