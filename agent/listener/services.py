@@ -9,7 +9,11 @@ def filter_services(m):
     def wrapper(*args, **kwargs):
         services = m(*args, **kwargs)
         filtered_services = kwargs.get('service', [])
+        if not isinstance(filtered_services, list):
+            filtered_services = [filtered_services]
         filter_statuses = kwargs.get('status', [])
+        if not isinstance(filter_statuses, list):
+            filter_statuses = [filter_statuses]
         if filtered_services or filter_statuses:
             accepted = {}
             if filtered_services:
