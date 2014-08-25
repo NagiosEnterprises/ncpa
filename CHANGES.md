@@ -5,7 +5,11 @@
 - Fixed issue where page head links showed up on /login page
 - Fixed issue where server would reject API POST queries
 
-1.7.1 - 8/19/2014
+1.7.2 - ??/??/2014
+==================
+- Fixed services filtering by single service name
+
+1.7.1 - 08/19/2014
 ==================
 - Added backwards compatability with the api/service(s) call to work with old plugins/checks
 - Added log rotation to all clients, logs rotate at 20MB and will rotate once before overwriting old logs
