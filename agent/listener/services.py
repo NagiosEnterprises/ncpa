@@ -121,11 +121,15 @@ class ServiceNode(nodes.LazyNode):
     @staticmethod
     def get_service_name(request_args):
         service_name = request_args.get('service', [])
+        if not isinstance(service_name, list):
+            service_name = [service_name]
         return service_name
 
     @staticmethod
     def get_target_status(request_args):
         target_status = request_args.get('status', [])
+        if not isinstance(target_status, list):
+            target_status = [target_status]
         return target_status
 
     @staticmethod
