@@ -1,3 +1,7 @@
+1.7.2 - ??/??/2014
+==================
+- Fixed services filtering by single service name
+
 1.7.1 - 08/19/2014
 ==================
 - Added backwards compatability with the api/service(s) call to work with old plugins/checks
