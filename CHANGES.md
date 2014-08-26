@@ -5,10 +5,11 @@
 - Fixed issue where page head links showed up on /login page
 - Fixed issue where server would reject API POST queries
 
-1.7.2 - ??/??/2014
+1.7.2 - 08/28/2014
 ==================
 - Fixed services filtering by single service name
 - Fixed NCPA Passive init.d script on Debian systems
+- Fixed issue where warning/critical values were truncated
 
 1.7.1 - 08/19/2014
 ==================
