@@ -7,6 +7,7 @@
 
 1.7.2 - 08/28/2014
 ==================
+- Fixed API giving 500 error on windows when filtering processes
 - Fixed services filtering by single service name
 - Fixed NCPA Passive init.d script on Debian systems
 - Fixed issue where warning/critical values were truncated
