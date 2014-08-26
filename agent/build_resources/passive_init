@@ -27,7 +27,7 @@ stop() {
 }
 # Get the status
 status() {
-        if [ -f /usr/local/ncpa/var/ncpa_posix_passive.pid];
+        if [ -f /usr/local/ncpa/var/ncpa_posix_passive.pid ];
         then
             pid=`cat /usr/local/ncpa/var/ncpa_posix_passive.pid`
             echo "Process running with PID $pid"
