@@ -103,17 +103,11 @@ class RunnableNode(ParentNode):
 
     def set_warning(self, request_args):
         warning = request_args.get('warning', '')
-        if warning:
-            self.warning = warning[0]
-        else:
-            self.warning = warning
+        self.warning = warning
 
     def set_critical(self, request_args):
         critical = request_args.get('critical', '')
-        if critical:
-            self.critical = critical[0]
-        else:
-            self.critical = critical
+        self.critical = critical
 
     def set_title(self, request_args):
         title = request_args.get('title', None)
