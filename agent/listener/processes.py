@@ -98,10 +98,14 @@ class ProcessNode(nodes.LazyNode):
         processes = []
 
         for process in psutil.process_iter():
-            if proc_filter(process):
-                process_json = self.standard_form(process)
-                processes.append(process_json)
-
+            try:
+                if proc_filter(process):
+                    process_json = self.standard_form(process)
+                    processes.append(process_json)
+            except AccessDenied:
+                # Could not access process, most likely because of windows permissions
+                continue
+        
         return processes
 
     def walk(self, *args, **kwargs):
