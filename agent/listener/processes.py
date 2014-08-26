@@ -102,7 +102,7 @@ class ProcessNode(nodes.LazyNode):
                 if proc_filter(process):
                     process_json = self.standard_form(process)
                     processes.append(process_json)
-            except AccessDenied:
+            except:
                 # Could not access process, most likely because of windows permissions
                 continue
         
