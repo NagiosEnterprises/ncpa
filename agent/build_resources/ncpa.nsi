@@ -72,8 +72,8 @@ Function .onInit
     ${GetOptions} $R0 /TOKEN= $0
     ${GetOptions} $R1 /NRDPURL= $1
     ${GetOptions} $R2 /NRDPTOKEN= $2
-    ${GetOptions} $R3 /CONFIG= $3
-    ${GetOptions} $R4 /HOST= $4
+    ${GetOptions} $R3 /HOST= $3
+    ${GetOptions} $R4 /CONFIG= $4
 
 FunctionEnd
 
@@ -95,17 +95,17 @@ Section # "Create Config.ini"
 
     File /r .\NCPA\*.*
 
+	WriteINIStr $INSTDIR\etc\ncpa.cfg api "community_string" "$0"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "CONFIG_VERSION" "0"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "CONFIG_NAME" "$3"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "CONFIG_NAME" "$4"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "URL" "$1"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "parent" "$1"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "TOKEN" "$2"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "token" "$2"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg api "community_string" "$0"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "PLUGIN_DIR" "plugins/"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "UPDATE_CONFIG" "1"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "UPDATE_PLUGINS" "1"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "hostname" "$4"
+	WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "parent" "$1"
+	WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "token" "$2"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "hostname" "$3"
 
 SectionEnd
 
