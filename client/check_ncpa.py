@@ -95,6 +95,9 @@ def parse_args():
                       help='Print LOTS of error messages.')
     parser.add_option("-V", "--version", action='store_true',
                       help='Print version number of plugin.')
+    parser.add_option("-D", "--disable-perf-data", action='store_true',
+                      help="Disable all perf data. Useful if you do NOT want "
+                      "history data.")
     options, _ = parser.parse_args()
 
     if options.version:
@@ -219,11 +222,23 @@ def get_json(options):
     return json.load(f)['value']
 
 
-def run_check(info_json):
+def run_check(info_json, opts):
     """Run a check against the remote host.
 
     """
-    return info_json['stdout'], info_json['returncode']
+
+    if opts.disable_perf_data:
+        stdout_lat = []
+        raw_stdout = shlex.split(info_json['stdout'])
+        for arg in raw_stdout:
+            if arg == '|':
+                break
+            else:
+                stdout_lat.append(arg)
+        stdout = ' '.join(stdout_lat)
+    else:
+        stdout = info_json['stdout']
+    return stdout, info_json['returncode']
 
 
 def show_list(info_json):
@@ -245,7 +260,7 @@ def main():
         if options.list:
             return show_list(info_json)
         else:
-            return run_check(info_json)
+            return run_check(info_json, options)
     except Exception as e:
         if options.super_verbose:
             return 'The stack trace:' + traceback.format_exc(), 3
