@@ -4,11 +4,12 @@ set -e
 
 pushd /Volumes/NCPA-*
 
+username=nagios
 groupname=nagcmd
 homedir=/usr/local/ncpa
 
 # Create the user account
-if ! dscl . -read /Groups/${groupname} > /dev/null;
+if ! dscl . -read /Users/${username} > /dev/null;
 then
     dscl . -create /Users/${username}
     dscl . -create /Users/${username} UserShell /usr/bin/false
