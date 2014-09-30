@@ -118,7 +118,7 @@ def get_agent_node():
 
 
 def get_user_node():
-    user_count = RunnableNode('count', method=lambda: (len([x.name for x in ps.get_users()]), 'c'))
+    user_count = RunnableNode('count', method=lambda: (len([x.name for x in ps.get_users()]), ''))
     user_list = RunnableNode('list', method=lambda: ([x.name for x in ps.get_users()], 'name'))
     return ParentNode('user', children=[user_count, user_list])
 
