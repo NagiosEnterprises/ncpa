@@ -7,7 +7,7 @@
 !insertmacro GetParameters
 !insertmacro GetOptions
 
-!define UNINST_KEY \
+!define UNINST_KEY HKCU\
   "Software\Microsoft\Windows\CurrentVersion\Uninstall\NCPA"
 ; ...
 !define MULTIUSER_INSTALLMODE_COMMANDLINE
