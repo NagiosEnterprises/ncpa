@@ -111,14 +111,14 @@ class TestRunnableNode(unittest.TestCase):
 
     def test_set_warning(self):
         self.n.set_warning({'warning': [0]})
-        self.assertEqual(0, self.n.warning)
+        self.assertEqual([0], self.n.warning)
 
         self.n.set_warning({})
         self.assertEqual('', self.n.warning)
 
     def test_set_critical(self):
         self.n.set_critical({'critical': [0]})
-        self.assertEqual(0, self.n.critical)
+        self.assertEqual([0], self.n.critical)
 
         self.n.set_critical({})
         self.assertEqual('', self.n.critical)
