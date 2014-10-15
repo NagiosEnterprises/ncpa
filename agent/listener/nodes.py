@@ -85,10 +85,15 @@ class RunnableNode(ParentNode):
 
     def get_delta_values(self, values, request_args, hasher=False):
         delta = request_args.get('delta', False)
-        if hasher is None:
+        # Here we check which value we should hash against for the delta pickle
+        # If the value is empty string, empty list, empty object, 0, False or None,
+        # then this is clearly not what we want and we simply hash against the API
+        # accessor.
+        if not hasher:
             accessor = request_args.get('accessor', None)
         else:
             accessor = hasher
+
         if delta:
             self.delta = True
             values = self.deltaize_values(values, accessor)
@@ -240,6 +245,13 @@ class RunnableNode(ParentNode):
 
     @staticmethod
     def adjust_scale(values, units):
+
+        # It was either adjust it here or adjust every single node that only returns a single value. I'm putting this
+        # on the TODO for 2.0 to change all nodes to return lists rather than single values, as thats a API breaking
+        # change.
+        if not isinstance(values, (list, tuple)):
+            values = [values]
+
         units = units.upper()
         if units == 'G':
             factor = 1e9

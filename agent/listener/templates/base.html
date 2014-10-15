@@ -35,13 +35,14 @@
                                 <li id="dashboard-nav"><a href="/dashboard">Dashboard</a></li>
                                 <li id="navigator-nav"><a href="/api">API</a></li>
                                 <li id="top-nav"><a href="/top-base">Top Processes</a></li>
-                                <!-- <li id="graph-picker"><a href="/graph-picker">Graphs</a></li> Hide graph tab for 1.7.1 -->
-                            {% endif %}
+                                <li id="graph-picker"><a href="/graph-picker">Graphs</a></li>
+                                <li><a href="/static/help/index.html">Help</a></li>
                         </ul>
-                        <ul class="nav pull-right">
+                        <ul class="nav" style="float: right;">
                             <li><a href="/static/help/index.html">Help</a></li>
                             <li class="divider-vertical"></li>
                             <li><a href="/logout">Logout</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>

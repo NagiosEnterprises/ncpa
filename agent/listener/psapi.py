@@ -157,7 +157,10 @@ root = get_root_node()
 
 
 def getter(accessor, config):
-    logging.debug('Getting accessor: %s', accessor)
+    # Sanity check. If accessor is None, we can do nothing meaningfully, and
+    # we need to stop.
+    if accessor is None:
+        return
     path = [re.sub('%2f', '/', x, flags=re.I) for x in accessor.split('/') if x]
     if len(path) > 0 and path[0] == 'api':
         path = path[1:]

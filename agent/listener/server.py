@@ -133,9 +133,8 @@ def api_websocket(accessor=None):
     and unit in list form.
 
     """
-    config = listener.config['iconfig']
-
     sane_args = dict(request.args)
+    sane_args['accessor'] = accessor
 
     if request.environ.get('wsgi.websocket'):
         config = listener.config['iconfig']
@@ -230,7 +229,7 @@ def tail_websocket(accessor=None):
                 gevent.sleep(2)
             except geventwebsocket.WebSocketError as exc:
                 ws.close()
-                logging.exception(exc)
+                logging.debug(exc)
                 return
             except BaseException as exc:
                 ws.close()
@@ -271,24 +270,6 @@ def graph(accessor=None):
         info['delta'] = 1
     else:
         info['delta'] = 0
-
-    unit = request.args.get('unit', 'a').upper()
-    if unit in ['K', 'M', 'G']:
-        info['unit'] = unit
-    else:
-        info['unit'] = ''
-
-    factor = 1
-    if unit == 'K':
-        factor = 1e3
-    elif unit == 'M':
-        factor = 1e6
-    elif unit == 'G':
-        factor = 1e9
-    info['factor'] = factor
-
-    node = psapi.getter(accessor, listener.config['iconfig'])
-    prop = node.name
 
     info['graph_prop'] = prop
     query_string = request.query_string
@@ -373,6 +354,7 @@ def api(accessor=''):
     # we clobber it, as we trust what is in the config.
     sane_args = request.values.to_dict()
 
+    # TODO: Rewrite this part, this needs to be moved to the Service/Process nodes rather than here.
     # Special cases for 'service' and 'process' to make NCPA v1.7 backwards compatible
     # with probably the most disgusting code ever written but needed to work ASAP for
     # those who had checks set up before the changes.

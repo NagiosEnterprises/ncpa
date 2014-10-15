@@ -1,3 +1,8 @@
+0.3.2
+-----
+- Fixed issue where --unit would change the base unit, not the unit prefix
+- Added --units/-n that will change the base unit
+
 0.3.1
 -----
 - Added quoting to arguments intended to by passed to Nagios plugins, all HTML element given with --arguments, -a will be escaped

@@ -96,7 +96,7 @@ class TestRunnableNode(unittest.TestCase):
 
         self.n.deltaize_values = lambda x, y: ([z+1 for z in x], y)
         values = self.n.get_delta_values([0], {'delta': True})
-        self.assertEqual(values, ([1], False))
+        self.assertEqual(values, ([1], None))
 
     def test_get_adjusted_scale(self):
         values = self.n.get_adjusted_scale([0], {})
@@ -111,14 +111,14 @@ class TestRunnableNode(unittest.TestCase):
 
     def test_set_warning(self):
         self.n.set_warning({'warning': [0]})
-        self.assertEqual(0, self.n.warning)
+        self.assertEqual([0], self.n.warning)
 
         self.n.set_warning({})
         self.assertEqual('', self.n.warning)
 
     def test_set_critical(self):
         self.n.set_critical({'critical': [0]})
-        self.assertEqual(0, self.n.critical)
+        self.assertEqual([0], self.n.critical)
 
         self.n.set_critical({})
         self.assertEqual('', self.n.critical)

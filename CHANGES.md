@@ -1,4 +1,11 @@
-1.7.2 - 08/26/2014
+1.8.0
+==================
+- Added graphing frontend, available via /graph-picker.html
+- Fixing issues with /graph and accessing the same state file
+- Fixed issue where page head links showed up on /login page
+- Fixed issue where server would reject API POST queries
+
+1.7.2 - 08/28/2014
 ==================
 - Fixed API giving 500 error on windows when filtering processes
 - Fixed services filtering by single service name
