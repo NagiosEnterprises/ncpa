@@ -352,7 +352,9 @@ def api(accessor=''):
     # Setup sane/safe arguments for actually getting the data. We take in all
     # arguments that were passed via GET/POST. If they passed a config variable
     # we clobber it, as we trust what is in the config.
-    sane_args = request.values.to_dict()
+    sane_args = {}
+    for key in request.values:
+        sane_args[key] = request.values.getlist(key)
 
     # TODO: Rewrite this part, this needs to be moved to the Service/Process nodes rather than here.
     # Special cases for 'service' and 'process' to make NCPA v1.7 backwards compatible
@@ -378,7 +380,7 @@ def api(accessor=''):
                 if len(rest_path) == 2:
                     if rest_path[1] == "count":
                         sane_args['check'] = True
-            
+
     try:
         config = listener.config['iconfig']
         node = psapi.getter(accessor, config)
