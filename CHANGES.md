@@ -9,6 +9,9 @@
 - Changed uninstall key location for Windows users to be under HKCU
 - Added PID to process information returned by the API
 - Changed unit for the user count to be ‘’ rather than c
+- Changed plugin to allow passed query arguments to URL
+- Changed plugin to remove perfdata
+- Fixed NRDS file path issue on windows
 
 1.7.2 - 08/28/2014
 ==================
