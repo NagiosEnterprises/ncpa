@@ -49,6 +49,35 @@ class ParentNode(object):
         return {'stdout': 'Unable to run check on non-child node. Revise your query.',
                 'returncode': 3}
 
+
+class RunnableParentNode(ParentNode):
+
+    def __init__(self, name, children, primary, include=None, *args, **kwargs):
+        super(RunnableParentNode, self).__init__(name, children)
+        self.primary = primary
+        if include is None:
+            self.include = [x for x in self.children]
+        else:
+            self.include = include
+
+    def run_check(self, *args, **kwargs):
+        primary_info = {}
+        secondary_results = []
+        for name, child in self.children.iteritems():
+            if name in self.include:
+                if name == self.primary:
+                    primary_info  = child.run_check(use_prefix=True, use_perfdata=True,
+                                                    primary=True, *args, **kwargs)
+                else:
+                    result = child.run_check(use_prefix=False, use_perfdata=False,
+                                             primary=False, *args, **kwargs)
+                    stdout = result.get('stdout', None)
+                    secondary_results.append(stdout)
+        secondary_stdout = ' -- '.join(x for x in secondary_results if x)
+        primary_info['stdout'] = primary_info['stdout'].format(extra_data=secondary_stdout)
+        return primary_info
+
+
 ERROR_NODE = ParentNode(name='NodeDoesNotExist', children=[])
 
 
@@ -99,7 +128,7 @@ class RunnableNode(ParentNode):
 
     def get_adjusted_scale(self, values, request_args):
         units = request_args.get('units', None)
-        if units is not None:
+        if units is not None and self.unit != '%':
             values, units = self.adjust_scale(values, units[0])
             self.unit = '%s%s' % (units, self.unit)
         return values
@@ -120,7 +149,7 @@ class RunnableNode(ParentNode):
         perfdata_label = request_args.get('perfdata_label', [None])
         self.perfdata_label = perfdata_label[0]
 
-    def run_check(self, *args, **kwargs):
+    def run_check(self, use_perfdata=True, use_prefix=True, primary=False, *args, **kwargs):
         try:
             values, unit = self.method(*args, **kwargs)
         except TypeError:
@@ -149,7 +178,7 @@ class RunnableNode(ParentNode):
                 is_warning = any([self.is_within_range(self.warning, x) for x in values])
             if self.critical:
                 is_critical = any([self.is_within_range(self.critical, x) for x in values])
-            returncode, stdout = self.get_nagios_return(values, is_warning, is_critical)
+            returncode, stdout = self.get_nagios_return(values, is_warning, is_critical, use_perfdata, use_prefix, primary)
         except Exception as exc:
             returncode = 3
             stdout = str(exc)
@@ -157,7 +186,7 @@ class RunnableNode(ParentNode):
 
         return {'returncode': returncode, 'stdout': stdout}
 
-    def get_nagios_return(self, values, is_warning, is_critical):
+    def get_nagios_return(self, values, is_warning, is_critical, use_perfdata=True, use_prefix=True, primary=False):
         proper_name = self.title.replace('|', '/')
 
         if self.delta:
@@ -200,8 +229,16 @@ class RunnableNode(ParentNode):
             perfdata.append(perf)
         perfdata = ' '.join(perfdata)
 
-        info_line = '%s: %s was %s' % (info_prefix, proper_name, values_for_info_line)
-        stdout = '%s | %s' % (info_line, perfdata)
+        stdout = '%s was %s' % (proper_name, values_for_info_line) 
+
+        if use_prefix is True:
+            stdout = '%s: %s' % (info_prefix, stdout)
+
+        if primary is True:
+            stdout = '%s -- {extra_data}' % stdout
+
+        if use_perfdata is True:
+            stdout = '%s | %s' % (stdout, perfdata)
 
         return returncode, stdout
 
