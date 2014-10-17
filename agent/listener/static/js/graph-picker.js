@@ -26,7 +26,7 @@ function get_next_select(api_address, selection) {
                 return;
             }
 
-            select.append($('<option>', {value: k, text: k, 'data-children': k}));
+            select.append($('<option>', {value: encodeURIComponent(k), text: k, 'data-children': k}));
 
             if (element[k] instanceof Array) {
                 select.attr('id', 'graph-bringer');
@@ -103,6 +103,7 @@ function render_graph(target) {
         graph_url = get_graph_url(api_url);
     }
 
+    //graph_url = encodeURIComponent(graph_url);
     $('#not-renderable').hide();
     $('#graph-address-url').val(graph_url);
     $('.ncpa-graph').trigger('doUnload');
@@ -114,8 +115,9 @@ function render_graph(target) {
 
 function populate_next_select(e) {
     var current = $(e.target);
-    var current_value = current.val();
-    var next_url = current.attr('data-children') + '/' + current_value;
+    var current_value = current.find(':selected').text();
+    var current_encoded_value = current.val();
+    var next_url = current.attr('data-children') + '/' + current_encoded_value;
 
     var next_select = get_next_select(next_url, current_value);
     var next_form = wrap_select_in_form(next_select);
