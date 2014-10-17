@@ -38,7 +38,7 @@ except AttributeError:
 import shlex
 import re
 
-__VERSION__ = '0.3.1'
+__VERSION__ = '0.3.2'
 
 
 def pretty(d, indent=0, indenter=' ' * 4):
@@ -79,6 +79,8 @@ def parse_args():
                       help="Arguments for the plugin to be run. Not necessary "
                            "unless you're running a custom plugin. Given in the same "
                            "as you would call from the command line. Example: -a '-w 10 -c 20 -f /usr/local'")
+    parser.add_option("-q", "--query-args", default=None, type="str",
+                      help="Args to pass the as the end of the query arguments.")
     parser.add_option("-t", "--token", default=None,
                       help="The token for connecting.")
     parser.add_option("-d", "--delta", action='store_true',
@@ -179,9 +181,14 @@ def get_arguments_from_options(options, **kwargs):
     if not options.list:
         arguments['warning'] = options.warning
         arguments['critical'] = options.critical
-        arguments['delta'] = options.delta
+        arguments['delta'] = options.delta 
         arguments['check'] = 1
         arguments['unit'] = options.units
+    
+    if options.query_args:
+        for argument in options.query_args.split(','):
+            key, value = argument.split('=')
+            arguments[key] = value
 
     #~ Encode the items in the dictionary that are not None
     return urlencode(dict((k, v) for k, v in list(arguments.items()) if v))
