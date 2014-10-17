@@ -7,7 +7,7 @@
 !insertmacro GetParameters
 !insertmacro GetOptions
 
-!define UNINST_KEY HKCU\
+!define UNINST_KEY \
   "Software\Microsoft\Windows\CurrentVersion\Uninstall\NCPA"
 ; ...
 !define MULTIUSER_INSTALLMODE_COMMANDLINE
@@ -113,10 +113,10 @@ SectionEnd
 Section ""
     ; ...
  
-    WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "NCPA"
-    WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" \
+    WriteRegStr HKCU "${UNINST_KEY}" "DisplayName" "NCPA"
+    WriteRegStr HKCU "${UNINST_KEY}" "UninstallString" \
     "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode"
-    WriteRegStr SHCTX "${UNINST_KEY}" "QuietUninstallString" \
+    WriteRegStr HKCU "${UNINST_KEY}" "QuietUninstallString" \
     "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
  
     WriteUninstaller $INSTDIR\uninstall.exe
@@ -137,7 +137,7 @@ Section "Uninstall"
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --uninstall ncpalistener'
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --uninstall ncpapassive'
     
-    DeleteRegKey SHCTX "${UNINST_KEY}"
+    DeleteRegKey HKCU "${UNINST_KEY}"
     
     RMDir /r "$INSTDIR"
 	
