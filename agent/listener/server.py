@@ -15,7 +15,7 @@ import psutil
 import gevent
 import geventwebsocket
 
-__VERSION__ = '1.7.2'
+__VERSION__ = '1.8.0'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
@@ -139,14 +139,19 @@ def api_websocket(accessor=None):
     if request.environ.get('wsgi.websocket'):
         config = listener.config['iconfig']
         ws = request.environ['wsgi.websocket']
-        while True:
-            message = ws.receive()
+        message = ws.receive()
+        while message is not None:
             node = psapi.getter(message, config)
             prop = node.name
             val = node.walk(first=True, **sane_args)
             jval = json.dumps(val[prop])
             ws.send(jval)
-    return
+            message = ws.receive()
+        ws.close()
+    # We have to return something view like, otherwise there is an exception
+    # raised and it makes the logs noisy and alarming. Just return an empty
+    # string to keep the exceptions down.
+    return ''
 
 
 @listener.route('/top-base', methods=['GET', 'POST'])
@@ -206,10 +211,15 @@ def top_websocket():
                                                 'name',
                                                 'pid'])
                 process_list.append(process_dict)
-            json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
-            ws.send(json_val)
+            json_val = json.dumps({'load': load, 'vir': vir_mem, 
+                                   'swap': swap_mem, 'process': process_list})
+            try:
+                ws.send(json_val)
+            except:
+                # Websocket is closed. We can't do anymore sending.
+                pass
             gevent.sleep(1)
-    return
+    return ''
 
 
 @listener.route('/tail-websocket/<path:accessor>')
@@ -348,11 +358,12 @@ def api(accessor=''):
     :type accessor: unicode
     :rtype: flask.Response
     """
-    
     # Setup sane/safe arguments for actually getting the data. We take in all
     # arguments that were passed via GET/POST. If they passed a config variable
     # we clobber it, as we trust what is in the config.
-    sane_args = request.values.to_dict()
+    sane_args = {}
+    for key in request.values:
+        sane_args[key] = request.values.getlist(key)
 
     # TODO: Rewrite this part, this needs to be moved to the Service/Process nodes rather than here.
     # Special cases for 'service' and 'process' to make NCPA v1.7 backwards compatible
@@ -378,7 +389,6 @@ def api(accessor=''):
                 if len(rest_path) == 2:
                     if rest_path[1] == "count":
                         sane_args['check'] = True
-            
     try:
         config = listener.config['iconfig']
         node = psapi.getter(accessor, config)

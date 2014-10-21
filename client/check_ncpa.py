@@ -38,7 +38,7 @@ except AttributeError:
 import shlex
 import re
 
-__VERSION__ = '0.3.1'
+__VERSION__ = '0.3.2'
 
 
 def pretty(d, indent=0, indenter=' ' * 4):
@@ -79,6 +79,8 @@ def parse_args():
                       help="Arguments for the plugin to be run. Not necessary "
                            "unless you're running a custom plugin. Given in the same "
                            "as you would call from the command line. Example: -a '-w 10 -c 20 -f /usr/local'")
+    parser.add_option("-q", "--query-args", default=None, type="str",
+                      help="Args to pass the as the end of the query arguments.")
     parser.add_option("-t", "--token", default=None,
                       help="The token for connecting.")
     parser.add_option("-d", "--delta", action='store_true',
@@ -93,6 +95,9 @@ def parse_args():
                       help='Print LOTS of error messages.')
     parser.add_option("-V", "--version", action='store_true',
                       help='Print version number of plugin.')
+    parser.add_option("-D", "--disable-perf-data", action='store_true',
+                      help="Disable all perf data. Useful if you do NOT want "
+                      "history data.")
     options, _ = parser.parse_args()
 
     if options.version:
@@ -179,9 +184,14 @@ def get_arguments_from_options(options, **kwargs):
     if not options.list:
         arguments['warning'] = options.warning
         arguments['critical'] = options.critical
-        arguments['delta'] = options.delta
+        arguments['delta'] = options.delta 
         arguments['check'] = 1
         arguments['unit'] = options.units
+    
+    if options.query_args:
+        for argument in options.query_args.split(','):
+            key, value = argument.split('=')
+            arguments[key] = value
 
     #~ Encode the items in the dictionary that are not None
     return urlencode(dict((k, v) for k, v in list(arguments.items()) if v))
@@ -212,11 +222,23 @@ def get_json(options):
     return json.load(f)['value']
 
 
-def run_check(info_json):
+def run_check(info_json, opts):
     """Run a check against the remote host.
 
     """
-    return info_json['stdout'], info_json['returncode']
+
+    if opts.disable_perf_data:
+        stdout_lat = []
+        raw_stdout = shlex.split(info_json['stdout'])
+        for arg in raw_stdout:
+            if arg == '|':
+                break
+            else:
+                stdout_lat.append(arg)
+        stdout = ' '.join(stdout_lat)
+    else:
+        stdout = info_json['stdout']
+    return stdout, info_json['returncode']
 
 
 def show_list(info_json):
@@ -238,7 +260,7 @@ def main():
         if options.list:
             return show_list(info_json)
         else:
-            return run_check(info_json)
+            return run_check(info_json, options)
     except Exception as e:
         if options.super_verbose:
             return 'The stack trace:' + traceback.format_exc(), 3

@@ -73,15 +73,14 @@ class RunnableNode(ParentNode):
         except TypeError:
             values, unit = self.method()
         self.set_unit(unit, kwargs)
+        values = self.get_aggregated_values(values, kwargs)
         values = self.get_adjusted_scale(values, kwargs)
         values = self.get_delta_values(values, kwargs)
         return {self.name: [values, self.unit]}
 
     def set_unit(self, unit, request_args):
-        if 'unit' in request_args:
-            self.unit = request_args['unit'][0]
-        else:
-            self.unit = unit
+        metric_unit = request_args.get('unit', [unit])
+        self.unit = metric_unit[0]
 
     def get_delta_values(self, values, request_args, hasher=False):
         delta = request_args.get('delta', False)
@@ -99,6 +98,28 @@ class RunnableNode(ParentNode):
             values = self.deltaize_values(values, accessor)
         return values
 
+    def get_aggregated_values(self, values, request_args):
+        if not isinstance(values, (list, tuple)):
+            return values
+
+        aggregate = request_args.get('aggregate', [None])[0]
+        is_numeric = [not isinstance(x, (int, long, float, complex))
+                      for x in values]
+
+        # We simply return the values if not all of the values are numeric
+        if not aggregate:
+            return values
+        elif all(is_numeric):
+            return values
+        elif aggregate == 'max':
+            return [max(values)]
+        elif aggregate == 'min':
+            return [min(values)]
+        elif aggregate == 'avg':
+            return [sum(values)/len(values)]
+        elif aggregate == 'sum':
+            return [sum(values)]
+
     def get_adjusted_scale(self, values, request_args):
         units = request_args.get('units', None)
         if units is not None:
@@ -107,26 +128,20 @@ class RunnableNode(ParentNode):
         return values
 
     def set_warning(self, request_args):
-        warning = request_args.get('warning', '')
-        self.warning = warning
+        warning = request_args.get('warning', [''])
+        self.warning = warning[0]
 
     def set_critical(self, request_args):
-        critical = request_args.get('critical', '')
-        self.critical = critical
+        critical = request_args.get('critical', [''])
+        self.critical = critical[0]
 
     def set_title(self, request_args):
-        title = request_args.get('title', None)
-        if not title is None:
-            self.title = title[0]
-        else:
-            self.title = self.name
+        title = request_args.get('title', [self.name])
+        self.title = title[0]
 
     def set_perfdata_label(self, request_args):
-        perfdata_label = request_args.get('perfdata_label', None)
-        if not perfdata_label is None:
-            self.perfdata_label = perfdata_label[0]
-        else:
-            self.perfdata_label = None
+        perfdata_label = request_args.get('perfdata_label', [None])
+        self.perfdata_label = perfdata_label[0]
 
     def run_check(self, *args, **kwargs):
         try:
