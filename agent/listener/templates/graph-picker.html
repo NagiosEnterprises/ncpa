@@ -6,74 +6,64 @@
 {% endblock headerjs %}
 
 {% block content %}
-<div class="well">
-    <div class="row-fluid">
-        <div class="span6" id="graph-selector-div"></div>
-        <div class="span6" id="graph-options-div">
-            <form class="form-horizontal">
-                <div class="control-group">
-                    <label for="label-delta" class="control-label extra-label">Delta</label>
-                    <div class="control">
-                        <label class="radio inline">
-                            <input type="radio" id="label-delta" name="delta" value="off" checked>Off
-                        </label>
-                        <label class="radio inline">
-                            <input type="radio" name="delta" value="on">On
-                        </label>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label for="label-factor" class="control-label extra-label">Unit Prefix</label>
-                    <div class="control">
-                        <label class="radio inline">
-                            <input type="radio" id="label-factor" name="units" value="None" checked>None
-                        </label>
-                        <label class="radio inline">
-                            <input type="radio" name="units" value="K">K
-                        </label>
-                        <label class="radio inline">
-                            <input type="radio" name="units" value="M">M
-                        </label>
-                        <label class="radio inline">
-                            <input type="radio" name="units" value="G">G
-                        </label>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label for="input-unit" class="control-label extra-label">Unit</label>
-                    <div class="control">
-                        <input type="text" name="unit" id="input-unit" placeholder="Use Default">
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label extra-label"></label>
-                    <div class="control">
-                        <button id="refresh-graph" class="btn" type="button">Refresh</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="well">
-    <div id="graph-render-target" class="row-fluid">
-        <span id="not-renderable" class="centered">Not Renderable</span>
-        <div id="graph-content"></div>
-    </div>
-</div>
-
-<div class="well">
-    <div id="graph-url-target" class="row-fluid">
+<div class="well row">
+    <div class="span5" id="graph-selector-div"></div>
+    <div class="span6" id="graph-options-div">
         <form class="form-horizontal">
-            <div class="control-group graph-url-input">
-                <label class="control-label" for="graph-address-url">Graph URL:</label>
-                <div class="controls">
-                    <input type="text" id="graph-address-url" value="" placeholder="Graph URL" readonly>
+            <div class="control-group">
+                <label for="label-delta" class="control-label extra-label">Delta</label>
+                <div class="control">
+                    <label class="radio inline">
+                        <input type="radio" id="label-delta" name="delta" value="off" checked>Off
+                    </label>
+                    <label class="radio inline">
+                        <input type="radio" name="delta" value="on">On
+                    </label>
                 </div>
+            </div>
+            <div class="control-group">
+                <label for="label-factor" class="control-label extra-label">Unit Prefix</label>
+                <div class="control">
+                    <label class="radio inline">
+                        <input type="radio" id="label-factor" name="units" value="None" checked>None
+                    </label>
+                    <label class="radio inline">
+                        <input type="radio" name="units" value="K">K
+                    </label>
+                    <label class="radio inline">
+                        <input type="radio" name="units" value="M">M
+                    </label>
+                    <label class="radio inline">
+                        <input type="radio" name="units" value="G">G
+                    </label>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="input-unit" class="control-label extra-label">Unit</label>
+                <div class="control">
+                    <input type="text" name="unit" id="input-unit" placeholder="Use Default">
+                </div>
+            </div>
+            <div class="control-group pull-right">
+                <button id="refresh-graph" class="btn" type="button">Refresh</button>
             </div>
         </form>
     </div>
 </div>
 
+<div id="graph-render-target" class="well row">
+    <span id="not-renderable" class="centered">Not Renderable</span>
+    <div id="graph-content"></div>
+</div>
+
+<div id="graph-url-target" class="well row centered">
+    <form class="form-horizontal">
+        <div class="control-group graph-url-input">
+            <label class="control-label" for="graph-address-url">Graph URL:</label>
+            <div class="controls">
+                <input type="text" id="graph-address-url" value="" placeholder="Graph URL" readonly>
+            </div>
+        </div>
+    </form>
+</div>
 {% endblock content %}

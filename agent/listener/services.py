@@ -16,16 +16,14 @@ def filter_services(m):
             filter_statuses = [filter_statuses]
         if filtered_services or filter_statuses:
             accepted = {}
-            for service, status in services.iteritems():
-                accept = True
-                if filtered_services and service not in filtered_services:
-                    accept = False
-                if (filter_statuses and
-                    status not in filter_statuses and
-                    not kwargs['check']):
-                    accept = False
-                if accept:
-                    accepted[service] = services[service]
+            if filtered_services:
+                for service in filtered_services:
+                    if service in services:
+                        accepted[service] = services[service]
+            if filter_statuses:
+                for service in services:
+                    if services[service] in filter_statuses:
+                        accepted[service] = services[service]
             return accepted
         return services
     return wrapper
@@ -79,20 +77,17 @@ class ServiceNode(nodes.LazyNode):
     def get_services_via_launchctl(self, *args, **kwargs):
         services = {}
         status = tempfile.TemporaryFile()
-        service = subprocess.Popen(['launchctl', 'bslist'], stdout=status)
+        service = subprocess.Popen(['launchctl', 'list'], stdout=status)
         service.wait()
         status.seek(0)
         # The first line is the header
         status.readline()
 
         for line in status.readlines():
-            try:
-                status, label = line.strip().split('  ')
-            except ValueError:
-                continue
-            if status == 'D':
+            pid, status, label = line.split()
+            if pid == '-':
                 services[label] = 'stopped'
-            else:
+            elif status == '-':
                 services[label] = 'running'
         return services
 
@@ -109,9 +104,7 @@ class ServiceNode(nodes.LazyNode):
         for service in possible_services:
             grep_search = '[%s]%s' % (service[0], service[1:])
             ps_call = subprocess.Popen(['ps', 'aux'], stdout=subprocess.PIPE)
-            grep_call = subprocess.Popen(['grep', grep_search],
-                                          stdout=devnull,
-                                          stdin=ps_call.stdout)
+            grep_call = subprocess.Popen(['grep', grep_search], stdout=devnull, stdin=ps_call.stdout)
             ps_call.wait()
             ps_call.stdout.close()
             grep_call.wait()
@@ -160,13 +153,13 @@ class ServiceNode(nodes.LazyNode):
         service_names = self.get_service_name(kwargs)
         target_statuses = self.get_target_status(kwargs)
         method = self.get_service_method(*args, **kwargs)
-        print 'Running check...'
 
         if not service_names:
             return {'stdout': 'OK: No services requested. That was too easy, give me something to do.', 'returncode': 0}
 
         services = method(*args, **kwargs)
         returncode = 0
+        status = 'not a problem'
         stdout_builder = []
         for service in service_names:
             priority = 0
