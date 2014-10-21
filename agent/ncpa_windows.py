@@ -60,10 +60,6 @@ class Base(object):
         self.config.optionxform = str
         self.config.read(self.config_filename)
 
-        config_relative_path = os.path.join('etc', 'ncpa.cfg')
-        config_path = self.determine_relative_filename(config_relative_path)
-        self.config.file_path = config_path
-
     def setup_plugins(self):
         plugin_path = self.config.get('plugin directives', 'plugin_path')
         abs_plugin_path = self.determine_relative_filename(plugin_path)
@@ -175,7 +171,6 @@ class Passive(Base):
             else:
                 try:
                     ins_handler = tmp_handler.Handler(self.config)
-                    ins_handler
                     ins_handler.run()
                     logging.debug('Successfully ran handler %s' % handler)
                 except Exception, e:

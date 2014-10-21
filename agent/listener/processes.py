@@ -86,14 +86,9 @@ class ProcessNode(nodes.LazyNode):
             mem_rss, mem_vms = process.memory_info()
         except BaseException:
             mem_rss, mem_vms = 0, 0
-        try:
-            pid = process.pid
-        except BaseException:
-            pid = 0
 
         return {'name': name,
                 'exe': exe,
-                'pid': pid,
                 'cpu_percent': cpu_percent,
                 'mem_rss': mem_rss,
                 'mem_vms': mem_vms}
