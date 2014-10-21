@@ -3,7 +3,7 @@ import os
 import logging
 import re
 import platform
-from nodes import ParentNode, RunnableNode, LazyNode
+from nodes import ParentNode, RunnableNode, RunnableParentNode, LazyNode
 from pluginnodes import PluginAgentNode
 import services
 import processes
@@ -39,7 +39,10 @@ def make_mountpoint_nodes(partition_name):
     used_percent = RunnableNode('used_percent', method=lambda: (ps.disk_usage(mountpoint).percent, '%'))
     device_name = RunnableNode('device_name', method=lambda: ([partition_name.device], 'name'))
     safe_mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
-    return ParentNode(safe_mountpoint, children=[total_size, used, free, used_percent, device_name])
+    return RunnableParentNode(safe_mountpoint,
+                              children=[total_size, used, free, used_percent, device_name],
+                              primary='used_percent',
+                              include=('total_size', 'used', 'free', 'used_percent'))
 
 
 def make_if_nodes(if_name):
@@ -82,13 +85,14 @@ def get_memory_node():
     mem_virt_percent = RunnableNode('percent', method=lambda: (ps.virtual_memory().percent, '%'))
     mem_virt_used = RunnableNode('used', method=lambda: (ps.virtual_memory().used, 'B'))
     mem_virt_free = RunnableNode('free', method=lambda: (ps.virtual_memory().free, 'B'))
-    mem_virt = ParentNode('virtual',
+    mem_virt = RunnableParentNode('virtual',
+                          primary='percent',
                           children=(mem_virt_total, mem_virt_available, mem_virt_free, mem_virt_percent, mem_virt_used))
     mem_swap_total = RunnableNode('total', method=lambda: (ps.swap_memory().total, 'B'))
     mem_swap_percent = RunnableNode('percent', method=lambda: (ps.swap_memory().percent, '%'))
     mem_swap_used = RunnableNode('used', method=lambda: (ps.swap_memory().used, 'B'))
     mem_swap_free = RunnableNode('free', method=lambda: (ps.swap_memory().free, 'B'))
-    mem_swap = ParentNode('swap', children=[mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used])
+    mem_swap = RunnableParentNode('swap', primary='percent', children=[mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used])
     return ParentNode('memory', children=[mem_virt, mem_swap])
 
 
