@@ -13,6 +13,7 @@
 - Changed plugin to remove perfdata
 - Fixed NRDS file path issue on windows
 - Adding aggregate function to aggregate list values for checks
+- Adding uptime under /api/system/uptime
 
 1.7.2 - 08/28/2014
 ==================
