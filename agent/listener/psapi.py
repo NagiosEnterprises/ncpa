@@ -1,6 +1,7 @@
 import psutil as ps
 import os
 import logging
+import datetime
 import re
 import platform
 from nodes import ParentNode, RunnableNode, LazyNode
@@ -14,6 +15,11 @@ importables = (
     'windowscounters',
     'windowslogs'
 )
+
+def get_uptime():
+    current_time = datetime.datetime.now().strftime('%s')
+    epoch_boot = int(current_time)
+    return ([epoch_boot - ps.BOOT_TIME], 's')
 
 
 def make_disk_nodes(disk_name):
@@ -64,7 +70,8 @@ def get_system_node():
     sys_version = RunnableNode('version', method=lambda: ([platform.uname()[3]], 'name'))
     sys_machine = RunnableNode('machine', method=lambda: ([platform.uname()[4]], 'name'))
     sys_processor = RunnableNode('processor', method=lambda: ([platform.uname()[5]], 'name'))
-    return ParentNode('system', children=[sys_system, sys_node, sys_release, sys_version, sys_machine, sys_processor])
+    sys_uptime = RunnableNode('uptime', method=get_uptime)
+    return ParentNode('system', children=[sys_system, sys_node, sys_release, sys_version, sys_machine, sys_processor, sys_uptime])
 
 
 def get_cpu_node():
