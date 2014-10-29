@@ -3,6 +3,7 @@ import os
 import logging
 import re
 import platform
+import server
 from nodes import ParentNode, RunnableNode, LazyNode
 from pluginnodes import PluginAgentNode
 import services
@@ -64,7 +65,8 @@ def get_system_node():
     sys_version = RunnableNode('version', method=lambda: ([platform.uname()[3]], 'name'))
     sys_machine = RunnableNode('machine', method=lambda: ([platform.uname()[4]], 'name'))
     sys_processor = RunnableNode('processor', method=lambda: ([platform.uname()[5]], 'name'))
-    return ParentNode('system', children=[sys_system, sys_node, sys_release, sys_version, sys_machine, sys_processor])
+    sys_agent = RunnableNode('agent_version', method=lambda: ([server.__VERSION__], ''))
+    return ParentNode('system', children=[sys_system, sys_node, sys_release, sys_version, sys_machine, sys_processor, sys_agent])
 
 
 def get_cpu_node():
