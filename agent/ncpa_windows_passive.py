@@ -36,7 +36,7 @@
 #       parameters sessionId and eventTypeId.
 #------------------------------------------------------------------------------
 
-NAME = "NCPA Passive %s"
+NAME = "%s"
 DISPLAY_NAME = "NCPA Passive - %s"
 MODULE_NAME = "ncpa_windows"
 CLASS_NAME = "Passive"

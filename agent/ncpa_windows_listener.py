@@ -36,7 +36,7 @@
 #       parameters sessionId and eventTypeId.
 #------------------------------------------------------------------------------
 
-NAME = "NCPA Listener %s"
+NAME = "%s"
 DISPLAY_NAME = "NCPA Listener - %s"
 MODULE_NAME = "ncpa_windows"
 CLASS_NAME = "Listener"
