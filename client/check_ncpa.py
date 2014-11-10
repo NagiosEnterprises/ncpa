@@ -239,7 +239,7 @@ def main():
             return show_list(info_json)
         else:
             return run_check(info_json)
-    except Exception as e:
+    except Exception, e:
         if options.super_verbose:
             return 'The stack trace:' + traceback.format_exc(), 3
         elif options.verbose:
