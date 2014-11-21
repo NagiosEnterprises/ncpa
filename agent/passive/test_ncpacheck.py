@@ -46,8 +46,52 @@ class TestNCPACheck(unittest.TestCase):
         with open(plugin_path, 'w') as plugin:
             plugin.write(content)
 
+    @unittest.skipIf(platform.system() != 'Windows', 'Not running, not Windows')
+    def test_run_powershell_plugin(self):
+        self.config.add_section('plugin directives')
+        abs_plugin_path = os.path.abspath('plugins/')
+        self.config.set('plugin directives', 'plugin_path', abs_plugin_path)
+        self.config.set('plugin directives', '.ps1', 'powershell -ExecutionPolicy Unrestricted -File $plugin_name $plugin_args')
+
+        plugin = """
+param ([string]$a, [int]$b)
+
+Write-Host $a
+exit $b
+"""
+
+        self.setup_plugin(abs_plugin_path, 'test.ps1', plugin)
+        ncpa_check = nc(self.config, None, None, None)
+
+        api_url = '/api/agent/plugin/test.ps1'
+        result = ncpa_check.run_check(api_url, {})
+        result_json = json.loads(result)
+
+        self.assertIsInstance(result_json, dict)
+        self.assertIn('value', result_json)
+        self.assertEqual(result_json['value']['stdout'], '')
+        self.assertEqual(result_json['value']['returncode'], 0)
+
+        api_url = '/api/agent/plugin/test.ps1/Bingo'
+        result = ncpa_check.run_check(api_url, {})
+        result_json = json.loads(result)
+
+        self.assertIsInstance(result_json, dict)
+        self.assertIn('value', result_json)
+        self.assertEqual(result_json['value']['stdout'], 'Bingo')
+        self.assertEqual(result_json['value']['returncode'], 0)
+
+        api_url = '/api/agent/plugin/test.ps1/Bingo/42'
+        result = ncpa_check.run_check(api_url, {})
+        result_json = json.loads(result)
+
+        self.assertIsInstance(result_json, dict)
+        self.assertIn('value', result_json)
+        self.assertEqual(result_json['value']['stdout'], 'Bingo')
+        self.assertEqual(result_json['value']['returncode'], 42)
+
     @unittest.skipIf(platform.system() == 'Windows', 'Not running, not POSIX')
-    def test_run_plugin(self):
+    def test_run_shell_plugin(self):
         self.config.add_section('plugin directives')
         abs_plugin_path = os.path.abspath('plugins/')
         self.config.set('plugin directives', 'plugin_path', abs_plugin_path)
