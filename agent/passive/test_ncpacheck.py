@@ -1,13 +1,18 @@
-from unittest import TestCase
+import unittest
+import platform
 from ncpacheck import NCPACheck as nc
+import ConfigParser as configparser
+import os
 import json
 import listener.server
 
 
-class TestNCPACheck(TestCase):
+class TestNCPACheck(unittest.TestCase):
     def setUp(self):
+        self.config = configparser.ConfigParser()
+        self.config.add_section('api')
+        self.config.set('api', 'community_string', 'mytoken')
         listener.server.listener.config['iconfig'] = {}
-        self.nc = nc('/api/cpu/percent/', 'test_host', 'test_service')
 
     def test_get_api_url_from_instruction(self):
         instruction = 'cpu/percent --warning 10 --critical=11'
@@ -19,22 +24,73 @@ class TestNCPACheck(TestCase):
         self.assertEqual(args, expected_args)
 
     def test_run(self):
-        stdout, returncode = self.nc.run()
+        ncpa_check = nc({}, '/api/cpu/percent/', 'test_host', 'test_service')
+        stdout, returncode = ncpa_check.run()
 
         self.assertIsInstance(stdout, unicode)
         self.assertIsInstance(returncode, unicode)
 
-        new_check = nc('/invalid/check', 'test_host', 'test_service')
+        new_check = nc({}, '/invalid/check', 'test_host', 'test_service')
         stdout, returncode = new_check.run()
 
         self.assertIsInstance(stdout, unicode)
         self.assertIsInstance(returncode, unicode)
 
+    def setup_plugin(self, path, name, content):
+        try:
+            os.mkdir(path)
+        except:
+            # Expected
+            pass
+        plugin_path = os.path.join(path, name)
+        with open(plugin_path, 'w') as plugin:
+            plugin.write(content)
+
+    @unittest.skipIf(platform.system() == 'Windows', 'Not running, not POSIX')
+    def test_run_plugin(self):
+        self.config.add_section('plugin directives')
+        abs_plugin_path = os.path.abspath('plugins/')
+        self.config.set('plugin directives', 'plugin_path', abs_plugin_path)
+        self.config.set('plugin directives', '.sh', 'sh $plugin_name $plugin_args')
+
+        plugin = "echo $1; exit $2"
+
+        self.setup_plugin(abs_plugin_path, 'test.sh', plugin)
+        ncpa_check = nc(self.config, None, None, None)
+
+        api_url = '/api/agent/plugin/test.sh'
+        result = ncpa_check.run_check(api_url, {})
+        result_json = json.loads(result)
+
+        self.assertIsInstance(result_json, dict)
+        self.assertIn('value', result_json)
+        self.assertEqual(result_json['value']['stdout'], '')
+        self.assertEqual(result_json['value']['returncode'], 0)
+
+        api_url = '/api/agent/plugin/test.sh/Hi There'
+        result = ncpa_check.run_check(api_url, {})
+        result_json = json.loads(result)
+
+        self.assertIsInstance(result_json, dict)
+        self.assertIn('value', result_json)
+        self.assertEqual(result_json['value']['stdout'], 'Hi There')
+        self.assertEqual(result_json['value']['returncode'], 0)
+
+        api_url = '/api/agent/plugin/test.sh/Hi There/42'
+        result = ncpa_check.run_check(api_url, {})
+        result_json = json.loads(result)
+
+        self.assertIsInstance(result_json, dict)
+        self.assertIn('value', result_json)
+        self.assertEqual(result_json['value']['stdout'], 'Hi There')
+        self.assertEqual(result_json['value']['returncode'], 42)
+
     def test_run_check(self):
         api_url = '/api/cpu/percent/'
         api_args = {'check': '1'}
 
-        result = nc.run_check(api_url, api_args)
+        ncpa_check = nc({}, None, None, None)
+        result = ncpa_check.run_check(api_url, api_args)
         result_json = json.loads(result)
 
         self.assertIsInstance(result_json, dict)
