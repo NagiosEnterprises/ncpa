@@ -4,4 +4,4 @@
 *.key
 *.crt
 *.cfg
-.idea/*
+.idea/
