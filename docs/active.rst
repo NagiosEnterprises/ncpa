@@ -74,7 +74,7 @@ Imagine we are going to run the test.sh plugin installed on our NCPA server. If 
 
 In order to run this properly with NCPA you would call check_ncpa.py like so::
 
-    ./check_ncpa.py -H ncpaserver -t yourtoken agent/plugin/test.sh -a "-u 'one argument' -p 'another argument'"
+    ./check_ncpa.py -H ncpaserver -t yourtoken -M agent/plugin/test.sh -a "-u 'one argument' -p 'another argument'"
 
 Notice that items with spaces are wrapped in quotes. There is some shell splitting that goes on under
 the hood with NCPA, so the quotes are important if you need to keep the spaces. Lets take
