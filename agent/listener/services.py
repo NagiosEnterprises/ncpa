@@ -1,5 +1,6 @@
 import nodes
 import platform
+import re
 import subprocess
 import tempfile
 import os
@@ -33,25 +34,42 @@ class ServiceNode(nodes.LazyNode):
 
     def get_service_method(self, *args, **kwargs):
         uname = platform.uname()[0]
+        # look for systemd
+        is_systemctl = False
         try:
             process = subprocess.Popen(['which', 'systemctl'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             process.wait()
             if process.returncode == 0:
                 is_systemctl = True
-            else:
-                is_systemctl = False
         except:
-            is_systemctl = False
+            pass
 
+        # look for upstart
+        is_upstart = False
+        try:
+            process = subprocess.Popen(['which', 'initctl'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process.wait()
+            if process.returncode == 0:
+                is_upstart = True
+        except:
+            pass
+
+        # look for sysv style init
+        is_initd = os.path.exists("/etc/init.d")
+
+        services = {}
         if uname == 'Windows':
-            return self.get_services_via_sc
+            services = self.get_services_via_sc
         elif uname == 'Darwin':
-            return self.get_services_via_launchctl
+            services = self.get_services_via_launchctl
         else:
             if is_systemctl:
-                return self.get_services_via_systemctl
-            else:
-                return self.get_services_via_initd
+                services = self.get_services_via_systemctl
+            if is_upstart:
+                services.update(self.get_services_via_initctl)
+            if is_initd:
+                services.update(self.get_services_via_initd)
+        return services
 
     @filter_services
     def get_services_via_sc(self, *args, **kwargs):
@@ -93,7 +111,35 @@ class ServiceNode(nodes.LazyNode):
 
     @filter_services
     def get_services_via_systemctl(self, *args, **kwargs):
-        return {}
+        services = {}
+        status = tempfile.TemporaryFile()
+        service = subprocess.Popen(['systemctl', 'list-units', '*.service', '--no-pager', '--no-legend'], stdout=status)
+        service.wait()
+        status.seek(0)
+
+        for line in status.readlines():
+            unit, load, active, sub, description = line.split(None, 5)
+            if active.lower() == 'active' and sub.lower() == 'running':
+                services[unit] = 'running'
+            else:
+                services[unit] = 'stopped'
+        return services
+
+    @filter_services
+    def get_services_via_initctl(self, *args, **kwargs):
+        services = {}
+        status = tempfile.TemporaryFile()
+        service = subprocess.Popen(['initctl', 'list'], stdout=status)
+        service.wait()
+        status.seek(0)
+
+        for line in status.readlines():
+            m = re.match("(\S*)\s+\(.*\)?\s+\S*/(\S*)", line)
+            if m.group(2) == 'running':
+                services[m.group(1)] = 'running'
+            else:
+                services[m.group(1)] = 'stopped'
+        return services
 
     @filter_services
     def get_services_via_initd(self, *args, **kwargs):
