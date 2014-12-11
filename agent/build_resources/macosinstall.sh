@@ -9,25 +9,25 @@ groupname=nagcmd
 homedir=/usr/local/ncpa
 
 # Create the user account
-if ! dscl . -read /Users/${username} > /dev/null;
+if ! dscl . -read /Users/${username} > /dev/null 2>&1;
 then
     dscl . -create /Users/${username}
     dscl . -create /Users/${username} UserShell /usr/bin/false
-    dscl . -create /Users/${username} UniqueID 569      
+    dscl . -create /Users/${username} UniqueID 569
     dscl . -create /Users/${username} RealName "${username}"
-    dscl . -create /Users/${username} PrimaryGroupID 20 
-    dscl . -create /Users/${username} Password "*"        
+    dscl . -create /Users/${username} PrimaryGroupID 20
+    dscl . -create /Users/${username} Password "*"
     dscl . -create /Users/${username} NFSHomeDirectory ${homedir}
 else
     echo 'User already exists, skipping!'
 fi
 
-if ! dscl . -read /Groups/${groupname} > /dev/null; 
+if ! dscl . -read /Groups/${groupname} > /dev/null;
 then
     # Create the group
     dscl . -create /Groups/${groupname}
     dscl . -create /Groups/${groupname} RecordName "_${groupname} ${username}"
-    dscl . -create /Groups/${groupname} PrimaryGroupID 20 
+    dscl . -create /Groups/${groupname} PrimaryGroupID 20
     dscl . -create /Groups/${groupname} RealName "${groupname}"
     dscl . -create /Groups/${groupname} Password "*"
 else
