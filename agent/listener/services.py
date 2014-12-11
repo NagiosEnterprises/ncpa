@@ -4,7 +4,7 @@ import re
 import subprocess
 import tempfile
 import os
-
+from stat import ST_MODE,S_IXUSR,S_IXGRP,S_IXOTH
 
 def filter_services(m):
     def wrapper(*args, **kwargs):
@@ -54,22 +54,18 @@ class ServiceNode(nodes.LazyNode):
         except:
             pass
 
-        # look for sysv style init
-        is_initd = os.path.exists("/etc/init.d")
-
-        services = {}
         if uname == 'Windows':
-            services = self.get_services_via_sc
+            return self.get_services_via_sc
         elif uname == 'Darwin':
-            services = self.get_services_via_launchctl
+            return self.get_services_via_launchctl
         else:
             if is_systemctl:
-                services = self.get_services_via_systemctl
-            if is_upstart:
-                services.update(self.get_services_via_initctl)
-            if is_initd:
-                services.update(self.get_services_via_initd)
-        return services
+                return self.get_services_via_systemctl
+            elif is_upstart:
+                return self.get_services_via_initctl
+            else:
+                # fall back on sysv init
+                return self.get_services_via_initd
 
     @filter_services
     def get_services_via_sc(self, *args, **kwargs):
@@ -128,22 +124,31 @@ class ServiceNode(nodes.LazyNode):
     @filter_services
     def get_services_via_initctl(self, *args, **kwargs):
         services = {}
+        # ubuntu supports both sysv init and upstart, let upstart win
+        services = self.get_services_via_initd(args, kwargs)
+
+        # now go ask initctl
         status = tempfile.TemporaryFile()
         service = subprocess.Popen(['initctl', 'list'], stdout=status)
         service.wait()
         status.seek(0)
 
         for line in status.readlines():
-            m = re.match("(\S*)\s+\(.*\)?\s+\S*/(\S*)", line)
-            if m.group(2) == 'running':
-                services[m.group(1)] = 'running'
-            else:
-                services[m.group(1)] = 'stopped'
+            m = re.match("(.*) (?:\w*)/(\w*)(?:, .*)?", line)
+            try:
+                print m.groups()
+                if m.group(2) == 'running':
+                    services[m.group(1)] = 'running'
+                else:
+                    services[m.group(1)] = 'stopped'
+            except:
+                pass
         return services
 
     @filter_services
     def get_services_via_initd(self, *args, **kwargs):
-        possible_services = os.listdir('/etc/init.d')
+        # only look at executable files in init.d (there is no README service)
+        possible_services = filter(lambda x: os.stat('/etc/init.d/'+x)[ST_MODE] & (S_IXUSR|S_IXGRP|S_IXOTH), os.listdir('/etc/init.d'))
         services = {x: 'stopped' for x in possible_services}
         devnull = open(os.devnull, 'w')
 
