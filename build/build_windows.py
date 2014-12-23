@@ -6,7 +6,7 @@ import sys
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 nsi_store = os.path.join(basedir, 'agent', 'build_resources', 'ncpa.nsi')
 nsi = os.path.join(basedir, 'agent', 'build', 'ncpa.nsi')
-nsis = os.environ['PROGRAMFILES'] + '/NSIS/makensis'
+nsis = os.path.join(os.environ['PROGRAMFILES(X86)'] if os.environ.has_key('PROGRAMFILES(X86)') else os.environ['PROGRAMFILES'], 'NSIS', 'makensis.exe')
 
 os.chdir(basedir)
 

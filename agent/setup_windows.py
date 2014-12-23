@@ -12,6 +12,7 @@ import sys
 import shutil
 from cx_Freeze import setup, Executable
 import os
+import platform
 
 version_file = os.path.join(os.path.dirname(__file__),
                             '..',
@@ -52,5 +53,12 @@ setup(name="NCPA",
       options=dict(build_exe=buildOptions),
 )
 
-os.rename(os.path.join('build', 'exe.win32-2.7'), os.path.join('build', 'NCPA'))
+if platform.architecture()[0].lower() == '32bit':
+    os.rename(os.path.join('build', 'exe.win32-2.7'), os.path.join('build', 'NCPA'))
+elif platform.architecture()[0].lower() == '64bit':
+    os.rename(os.path.join('build', 'exe.win-amd64-2.7'), os.path.join('build', 'NCPA'))
+else:
+    print "unhandled architecture"
+    sys.exit(1)
+
 shutil.copy(u'build_resources/ncpa.nsi', u'build/')
