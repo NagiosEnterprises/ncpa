@@ -29,7 +29,7 @@ import webhandler
 import filename
 from gevent import monkey
 
-monkey.patch_all()
+monkey.patch_all(subprocess=True)
 
 
 class Base(object):

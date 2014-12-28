@@ -15,7 +15,7 @@ import sys
 if 'threading' in sys.modules:
     del sys.modules['threading']
 from gevent import monkey
-monkey.patch_all()
+monkey.patch_all(subprocess=True)
 
 
 class Listener(ncpadaemon.Daemon):
