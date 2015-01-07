@@ -31,14 +31,16 @@ rm -rf %{buildroot}
 
 %pre
 
-if ! grep 'nagcmd' /etc/group > /dev/null;
+if ! getent group nagcmd > /dev/null;
 then
-    groupadd nagcmd
+    groupadd -r nagcmd
 fi
 
-if ! id nagios 2> /dev/null;
+if ! getent passwd nagios 2> /dev/null;
 then
-    useradd nagios -g nagcmd
+    useradd -r -g nagcmd nagios
+else
+    usermod -a -g nagcmd nagios
 fi
 
 %post
