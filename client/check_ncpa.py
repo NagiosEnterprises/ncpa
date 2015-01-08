@@ -38,7 +38,7 @@ except AttributeError:
 import shlex
 import re
 
-__VERSION__ = '0.3.2'
+__VERSION__ = '0.3.3'
 
 
 def pretty(d, indent=0, indenter=' ' * 4):
@@ -150,7 +150,11 @@ def get_host_part_from_options(options):
         metric = ''
 
     arguments = get_check_arguments_from_options(options)
-    api_address = 'https://%s:%d/api/%s/%s' % (hostname, port, metric, arguments)
+    if not metric and not arguments:
+        api_address = 'https://%s:%d/api' % (hostname, port)
+    else:
+        api_address = 'https://%s:%d/api/%s/%s' % (hostname, port, metric,
+                                                   arguments)
 
     return api_address
 
@@ -184,10 +188,10 @@ def get_arguments_from_options(options, **kwargs):
     if not options.list:
         arguments['warning'] = options.warning
         arguments['critical'] = options.critical
-        arguments['delta'] = options.delta 
+        arguments['delta'] = options.delta
         arguments['check'] = 1
         arguments['unit'] = options.units
-    
+
     if options.query_args:
         for argument in options.query_args.split(','):
             key, value = argument.split('=')
