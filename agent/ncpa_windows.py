@@ -8,6 +8,7 @@ are called.
 import cx_Logging
 import cx_Threads
 import ConfigParser
+import glob
 import logging
 import logging.handlers
 import os
@@ -58,7 +59,7 @@ class Base(object):
     def parse_config(self, *args, **kwargs):
         self.config = ConfigParser.ConfigParser()
         self.config.optionxform = str
-        self.config.read(self.config_filename)
+        self.config.read(self.config_filenames)
 
     def setup_plugins(self):
         plugin_path = self.config.get('plugin directives', 'plugin_path')
@@ -114,7 +115,7 @@ class Listener(Base):
         try:
             address = self.config.get('listener', 'ip')
             port = self.config.getint('listener', 'port')
-            listener.server.listener.config_file = self.config_filename
+            listener.server.listener.config_files = self.config_filenames
             listener.server.listener.tail_method = listener.windowslogs.tail_method
             listener.server.listener.config['iconfig'] = self.config
 
@@ -140,11 +141,15 @@ class Listener(Base):
     # called when the service is starting
     def Initialize(self, config_file):
         self.c_type = 'listener'
-        self.config_filename = self.determine_relative_filename(os.path.join('etc', 'ncpa.cfg'))
+        self.config_filenames = [self.determine_relative_filename(
+	    os.path.join('etc', 'ncpa.cfg'))]
+	self.config_filenames.extend(sorted(glob.glob(
+	    self.determine_relative_filename(os.path.join(
+	        'etc', 'ncpa.cfg.d', '*.cfg'))), key=str.lower))
         self.parse_config()
         self.setup_logging()
         self.setup_plugins()
-        logging.info("Looking for config at: %s" % self.config_filename)
+        logging.info("Parsed config from: %s" % str(self.config_filenames))
         logging.info("Looking for plugins at: %s" % self.abs_plugin_path)
 
 
@@ -189,9 +194,13 @@ class Passive(Base):
     # called when the service is starting
     def Initialize(self, config_file):
         self.c_type = 'passive'
-        self.config_filename = self.determine_relative_filename(os.path.join('etc', 'ncpa.cfg'))
+        self.config_filenames = [self.determine_relative_filename(
+	    os.path.join('etc', 'ncpa.cfg'))]
+	self.config_filenames.extend(sorted(glob.glob(
+	    self.determine_relative_filename(os.path.join(
+	        'etc', 'ncpa.cfg.d', '*.cfg'))), key=str.lower))
         self.parse_config()
         self.setup_logging()
         self.setup_plugins()
-        logging.info("Looking for config at: %s" % self.config_filename)
+        logging.info("Parsed config from: %s" % str(self.config_filenames))
         logging.info("Looking for plugins at: %s" % self.config.get('plugin directives', 'plugin_path'))
