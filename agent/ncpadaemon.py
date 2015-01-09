@@ -94,7 +94,7 @@ class Daemon(object):
     def read_basic_config(self):
         u"""Read basic options from the daemon config file"""
         self.config_filenames = [self.options.config_filename]
-        self.config_filenames.extend(glob.glob(os.path.join(self.options.config_filename + ".d", "*.cfg")))
+        self.config_filenames.extend(sorted(glob.glob(os.path.join(self.options.config_filename + ".d", "*.cfg"))))
         cp = ConfigParser.ConfigParser(defaults={
             u'logmaxmb': u'0',
             u'logbackups': u'0',
