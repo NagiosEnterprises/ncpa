@@ -40,7 +40,7 @@ if ! getent passwd nagios 2> /dev/null;
 then
     useradd -r -g nagcmd nagios
 else
-    usermod -a -g nagcmd nagios
+    usermod -a -G nagcmd nagios
 fi
 
 %post
