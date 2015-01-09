@@ -157,7 +157,7 @@ class Listener(Base):
 	    os.path.join('etc', 'ncpa.cfg'))]
 	self.config_filenames.extend(sorted(glob.glob(
 	    self.determine_relative_filename(os.path.join(
-	        'etc', 'cfg.d', '*.cfg'))), key=str.lower))
+	        'etc', 'ncpa.cfg.d', '*.cfg'))), key=str.lower))
         self.parse_config()
         self.setup_logging()
         self.setup_plugins()
@@ -211,7 +211,7 @@ class Passive(Base):
 	    os.path.join('etc', 'ncpa.cfg'))]
 	self.config_filenames.extend(sorted(glob.glob(
 	    self.determine_relative_filename(os.path.join(
-	        'etc', 'cfg.d', '*.cfg'))), key=str.lower))
+	        'etc', 'ncpa.cfg.d', '*.cfg'))), key=str.lower))
         self.parse_config()
         self.setup_logging()
         self.setup_plugins()
