@@ -194,9 +194,13 @@ class Passive(Base):
     # called when the service is starting
     def Initialize(self, config_file):
         self.c_type = 'passive'
-        self.config_filename = self.determine_relative_filename(os.path.join('etc', 'ncpa.cfg'))
+        self.config_filenames = [self.determine_relative_filename(
+	    os.path.join('etc', 'ncpa.cfg'))]
+	self.config_filenames.extend(sorted(glob.glob(
+	    self.determine_relative_filename(os.path.join(
+	        'etc', 'cfg.d', '*.cfg'))), key=str.lower))
         self.parse_config()
         self.setup_logging()
         self.setup_plugins()
-        logging.info("Looking for config at: %s" % self.config_filename)
+        logging.info("Parsed config from: %s" % str(self.config_filenames))
         logging.info("Looking for plugins at: %s" % self.config.get('plugin directives', 'plugin_path'))
