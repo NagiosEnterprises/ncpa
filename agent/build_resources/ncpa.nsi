@@ -7,6 +7,7 @@
 !insertmacro GetParameters
 !insertmacro GetOptions
 
+!define NCPA_VERSION "$%NCPA_BUILD_VER%"
 !define UNINST_KEY \
   "Software\Microsoft\Windows\CurrentVersion\Uninstall\NCPA"
 ; ...
@@ -22,7 +23,7 @@ BrandingText 'Nagios Enterprises LLC'
 Name "NCPA Installer"
 
 ;The file to write
-OutFile "NCPA_Installer.exe"
+OutFile "ncpa-${NCPA_VERSION}.exe"
 
 ;The icon
 ;!define MUI_ICON "NCPA\build_resources\ncpa.ico"
@@ -39,16 +40,15 @@ ShowInstDetails show
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 
 ; Version information
-;VIProductVersion "1.8.0.0"
-;VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "NCPA"
-;VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "Nagios Enterprises LLC"
-;VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "1.8"
-
+VIProductVersion ${NCPA_VERSION}.0
+VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "NCPA"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "Nagios Enterprises LLC"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" ${NCPA_VERSION}
 ;Order of pages
 !define MUI_LANGUAGEFILE_DEFAULT "ENGLISH"
 LangString MUI_INNERTEXT_LICENSE_BOTTOM "ENGLISH" "Nagios Software License 1.3"
 LangString MUI_TEXT_LICENSE_TITLE "ENGLISH" "Nagios Cross-Platform Agent (NCPA)"
-LangString MUI_TEXT_LICENSE_SUBTITLE "ENGLISH" "1.8.0 - Windows Version"
+LangString MUI_TEXT_LICENSE_SUBTITLE "ENGLISH" "${NCPA_VERSION} - Windows Version"
 LangString MUI_INNERTEXT_LICENSE_TOP "ENGLISH" "Software License Agreement"
 !insertmacro MUI_PAGE_LICENSE "NCPA\build_resources\LicenseAgreement.txt"
 # Page components
@@ -112,9 +112,18 @@ SectionEnd
 
 Section ""
     ; ...
- 
-    WriteRegStr HKCU "${UNINST_KEY}" "DisplayName" "NCPA"
-    WriteRegStr HKCU "${UNINST_KEY}" "UninstallString" \
+
+    WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "NCPA"
+    WriteRegStr SHCTX "${UNINST_KEY}" "DisplayVersion" ${NCPA_VERSION}
+    WriteRegStr SHCTX "${UNINST_KEY}" "Publisher" "Nagios Enterprises LLC"
+
+	; get the size of our install dir, convert it from KB to a DWORD
+	; and write the size regkey
+	${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
+	IntFmt $0 "0x%08X" $0
+	WriteRegDWORD SHCTX "${UNINST_KEY}" "EstimatedSize" "$0"
+
+    WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" \
     "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode"
     WriteRegStr HKCU "${UNINST_KEY}" "QuietUninstallString" \
     "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
@@ -142,6 +151,6 @@ Section "Uninstall"
     
     DeleteRegKey HKCU "${UNINST_KEY}"
     
-    RMDir /r "$INSTDIR"
-	
+    RMDir /r "$INSTDIR"	
+
 SectionEnd
