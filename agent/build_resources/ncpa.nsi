@@ -122,6 +122,7 @@ Section ""
     WriteUninstaller $INSTDIR\uninstall.exe
   
     ReadEnvStr $9 COMSPEC
+    nsExec::Exec '$9 /c diskperf -Y'
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --install ncpalistener'
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --install ncpapassive'
  
