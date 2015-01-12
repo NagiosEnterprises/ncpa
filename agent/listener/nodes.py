@@ -233,6 +233,10 @@ class RunnableNode(ParentNode):
             logging.info('No pickle file found for accessor %s', accessor)
             loaded_values = values
             last_modified = 0
+        except (KeyError, pickle.UnpicklingError):
+            logging.info('Problem unpickling data for accessor %s', accessor)
+            loaded_values = values
+            last_modified = 0
 
         #Update the pickled data
         logging.debug('Updating pickle for %s. Filename is %s.', accessor, tmpfile)
