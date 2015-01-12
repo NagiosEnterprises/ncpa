@@ -117,11 +117,11 @@ Section ""
     WriteRegStr SHCTX "${UNINST_KEY}" "DisplayVersion" ${NCPA_VERSION}
     WriteRegStr SHCTX "${UNINST_KEY}" "Publisher" "Nagios Enterprises LLC"
 
-	; get the size of our install dir, convert it from KB to a DWORD
-	; and write the size regkey
-	${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
-	IntFmt $0 "0x%08X" $0
-	WriteRegDWORD SHCTX "${UNINST_KEY}" "EstimatedSize" "$0"
+    ; get the size of our install dir, convert it from KB to a DWORD
+    ; and write the size regkey
+    ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
+    IntFmt $0 "0x%08X" $0
+    WriteRegDWORD SHCTX "${UNINST_KEY}" "EstimatedSize" "$0"
 
     WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" \
     "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode"
@@ -151,6 +151,6 @@ Section "Uninstall"
     
     DeleteRegKey HKCU "${UNINST_KEY}"
     
-    RMDir /r "$INSTDIR"	
+    RMDir /r "$INSTDIR"
 
 SectionEnd
