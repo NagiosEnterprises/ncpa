@@ -27,6 +27,7 @@ import listener.certificate
 import jinja2.ext
 import webhandler
 import filename
+import ssl
 from gevent import monkey
 
 monkey.patch_all(subprocess=True)
@@ -121,6 +122,13 @@ class Listener(Base):
             listener.server.listener.config_file = self.config_filename
             listener.server.listener.tail_method = listener.windowslogs.tail_method
             listener.server.listener.config['iconfig'] = self.config
+
+            try:
+                ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
+            except:
+                ssl_version = getattr(ssl, 'PROTOCOL_TLSv1')
+                ssl_str_version = 'TLSv1'
+            logging.info('Using SSL version %s', ssl_str_version)
 
             user_cert = self.config.get('listener', 'certificate')
 
