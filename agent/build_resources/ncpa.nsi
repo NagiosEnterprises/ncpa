@@ -125,6 +125,8 @@ Section ""
     nsExec::Exec '$9 /c diskperf -Y'
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --install ncpalistener'
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --install ncpapassive'
+    nsExec::Exec '$9 /c sc config ncpalistener start= delayed-auto'
+    nsExec::Exec '$9 /c sc config ncpapassive start= delayed-auto'
  
     ; ...
 SectionEnd
