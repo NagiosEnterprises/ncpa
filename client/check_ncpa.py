@@ -37,8 +37,10 @@ except AttributeError:
 
 import shlex
 import re
+import signal
+import time
 
-__VERSION__ = '0.3.3'
+__VERSION__ = '0.3.4 Varnar Edition'
 
 
 def pretty(d, indent=0, indenter=' ' * 4):
@@ -83,6 +85,9 @@ def parse_args():
                       help="Args to pass the as the end of the query arguments.")
     parser.add_option("-t", "--token", default=None,
                       help="The token for connecting.")
+    parser.add_option("-T", "--timeout", default=15, type="int",
+                      help="Enforced timeout, will terminate plugins after "
+                           "this amount of seconds. [%default]")
     parser.add_option("-d", "--delta", action='store_true',
                       help="Signals that this check is a delta check and a "
                            "local state will kept.")
@@ -252,8 +257,24 @@ def show_list(info_json):
     return pretty(info_json), 0
 
 
+def timeout_handler(threshold):
+    def wrapped(signum, frames):
+        stdout = "UNKNOWN: Execution exceeded timeout threshold of %ds" % threshold
+        print stdout
+        sys.exit(3)
+    return wrapped
+
+
 def main():
     options = parse_args()
+
+    # We need to ensure that we will only execute for a certain amount of
+    # seconds.
+    signal.signal(signal.SIGALRM, timeout_handler(options.timeout))
+    signal.alarm(options.timeout)
+
+    time.sleep(100)
+
     try:
 
         if options.version:
