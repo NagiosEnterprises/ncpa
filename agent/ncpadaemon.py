@@ -3,12 +3,13 @@ Provides a simple Daemon class to ease the process of forking a
 python application on Unix systems.
 """
 
-VERSION = (1, 3, 0)
+VERSION = (1, 3, 1)
 
 import ConfigParser
 import errno
 import grp
 import logging
+from logging.handlers import RotatingFileHandler
 import optparse
 import os
 import pwd
@@ -94,8 +95,8 @@ class Daemon(object):
         u"""Read basic options from the daemon config file"""
         self.config_filename = self.options.config_filename
         cp = ConfigParser.ConfigParser(defaults={
-            u'logmaxmb': u'0',
-            u'logbackups': u'0',
+            u'logmaxmb': u'5',
+            u'logbackups': u'5',
             u'loglevel': u'info',
             u'uid': unicode(os.getuid()),
             u'gid': unicode(os.getgid()),
@@ -244,8 +245,10 @@ class Daemon(object):
             if not self.logmaxmb:
                 handlers.append(logging.FileHandler(self.logfile))
             else:
-                from logging.handlers import RotatingFileHandler
-                handlers.append(RotatingFileHandler(self.logfile, maxBytes=self.logmaxmb * 1024 * 1024, backupCount=self.logbackups))
+                max_log_size_bytes = self.logmaxmb * 1024 * 1024
+                handlers.append(RotatingFileHandler(self.logfile,
+                                                    maxBytes=max_log_size_bytes,
+                                                    backupCount=self.logbackups))
             self.chown(self.logfile)
         handlers.append(logging.StreamHandler())
 
