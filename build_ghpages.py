@@ -4,6 +4,7 @@ import fileinput
 import subprocess
 import tempfile
 import os
+import shutil
 
 BASEDIR = os.path.dirname(os.path.abspath(__file__))
 DOCSDIR = os.path.join(BASEDIR, 'docs')
@@ -33,6 +34,7 @@ def build_docs():
 @fie
 def move_docs_to_tmp():
     os.chdir(DOCSDIR)
+    shutil.rmtree('%s/html' % TEMPDIR, ignore_errors=True)
     s = subprocess.Popen('mv %s/_build/html %s/' % (DOCSDIR, TEMPDIR),
                          shell=True)
     s.wait()

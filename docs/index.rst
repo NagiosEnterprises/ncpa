@@ -13,6 +13,8 @@ Contents:
    
    news
    changes
+   news
+   changes
    introduction
    installation
    configuration
