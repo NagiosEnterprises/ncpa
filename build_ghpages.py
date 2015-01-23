@@ -38,7 +38,7 @@ def move_docs_to_tmp():
     s = subprocess.Popen('mv %s/_build/html %s/' % (DOCSDIR, TEMPDIR),
                          shell=True)
     s.wait()
-    subprocess.Popen('make clean').wait()
+    subprocess.Popen('make clean', shell=True).wait()
     return s.returncode
 
 
