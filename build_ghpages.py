@@ -64,7 +64,10 @@ def git_reset():
     os.chdir(DOCSDIR)
     s = subprocess.Popen('git reset --hard HEAD', shell=True)
     s.wait()
-    return s.returncode
+    r = s.returncode
+    s = subprocess.Popen('git clean -fd', shell=True)
+    s.wait()
+    return r | s.returncode
 
 
 @fie
