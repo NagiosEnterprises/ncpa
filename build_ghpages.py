@@ -35,17 +35,17 @@ def build_docs():
 def move_docs_to_tmp():
     os.chdir(DOCSDIR)
     shutil.rmtree('%s/html' % TEMPDIR, ignore_errors=True)
-    s = subprocess.Popen('mv %s/_build/html %s/' % (DOCSDIR, TEMPDIR),
+    s = subprocess.Popen('mv %s/_build/html %s' % (DOCSDIR, TEMPDIR),
                          shell=True)
     s.wait()
-    subprocess.Popen('make clean', shell=True).wait()
     return s.returncode
 
 
 @fie
 def move_docs_from_tmp():
     os.chdir(BASEDIR)
-    s = subprocess.Popen('mv -f %s/html/* %s' % (TEMPDIR, BASEDIR), shell=True)
+    subprocess.Popen('git rm * -rf', shell=True).wait()
+    s = subprocess.Popen('mv %s/html/* %s' % (TEMPDIR, BASEDIR), shell=True)
     s.wait()
     return s.returncode
 
@@ -64,10 +64,7 @@ def git_reset():
     os.chdir(DOCSDIR)
     s = subprocess.Popen('git reset --hard HEAD', shell=True)
     s.wait()
-    r = s.returncode
-    s = subprocess.Popen('git clean -fd', shell=True)
-    s.wait()
-    return r | s.returncode
+    return s.returncode
 
 
 @fie
@@ -92,13 +89,13 @@ def prep_for_github():
 @fie
 def commit():
     os.chdir(BASEDIR)
-    s = subprocess.Popen('git add *')
+    s = subprocess.Popen('git add *', shell=True)
     s.wait()
     r = s.returncode
-    s = subprocess.Popen('git commit -a -m "Committing via commitbot"')
+    s = subprocess.Popen('git commit -a -m "Committing via commitbot"', shell=True)
     s.wait()
     r |= s.returncode
-    s = subprocess.Popen('git push')
+    s = subprocess.Popen('git push', shell=True)
     s.wait()
     return r | s.returncode
 
