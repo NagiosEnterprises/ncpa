@@ -61,8 +61,9 @@ def git_checkout(branch):
 
 @fie
 def git_reset():
-    os.chdir(DOCSDIR)
+    os.chdir(BASEDIR)
     s = subprocess.Popen('git reset --hard HEAD', shell=True)
+    subprocess.Popen('git clean -df', shell=True)
     s.wait()
     return s.returncode
 
