@@ -28,7 +28,7 @@
 - Fixed issue with SSL certificates using the same serial number
 - Fixed threading error on NCPA listener start/stop
 - Fixed 500 access error on access
-- Fixed Windows logging issue where logs were not at var/*.log
+- Fixed Windows logging issue where logs were not at var/\*.log
 - Fixed process count checks returning wrong number of processes
 
 1.7.0 - 07/29/2014
