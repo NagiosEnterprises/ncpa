@@ -33,9 +33,10 @@ def build_docs():
 @fie
 def move_docs_to_tmp():
     os.chdir(DOCSDIR)
-    s = subprocess.Popen('mv %s/_build/html %s/html' % (DOCSDIR, TEMPDIR),
+    s = subprocess.Popen('mv %s/_build/html %s/' % (DOCSDIR, TEMPDIR),
                          shell=True)
     s.wait()
+    subprocess.Popen('make clean').wait()
     return s.returncode
 
 
