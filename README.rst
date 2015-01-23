@@ -20,7 +20,7 @@ There are known build issues involving *cx_Freeze*, if you run into an issue ref
 RPM Build Location Errors
 *************************
 
-This is most relevant for __CentOS 5__ and for __OpenSUSE 12/13__ but may occur on other systems.
+This is most relevant for **CentOS 5** and for **OpenSUSE 12/13** but may occur on other systems.
 
 If you get an error about not finding the .tar in the RPM build location you will need to create an `.rpmmacros` file in your home directory for the user you are building with that contains these three lines:
 
