@@ -45,7 +45,7 @@ def move_docs_to_tmp():
 @fie
 def move_docs_from_tmp():
     os.chdir(BASEDIR)
-    s = subprocess.Popen('mv %s/html/* %s' % (TEMPDIR, BASEDIR), shell=True)
+    s = subprocess.Popen('mv -f %s/html/* %s' % (TEMPDIR, BASEDIR), shell=True)
     s.wait()
     return s.returncode
 
