@@ -1,22 +1,24 @@
 Nagios Cross Platform Agent (NCPA)
-====
+==================================
 
 The awesome NCPA agent - one agent to rule them all.
 
 Downloading NCPA
-----
+----------------
 
 [**Download from the Nagios Official Builds**](http://assets.nagios.com/downloads/ncpa/download.php)
 
 We currently build for Windows, Mac OS X, CentOS 5/6/7, Debian/Ubuntu, and OpenSUSE 12/13. If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here at GitHub.
 
 Building NCPA
-----
+-------------
+
 While we recommend using our pre-built solutions above, if you'd like to build NCPA yourself there are a few things you may run into that can cause problems with your build.
 
 There are known build issues involving *cx_Freeze*, if you run into an issue refer to the bug report on the *cx_Freeze* [project bug page](https://bitbucket.org/anthony_tuininga/cx_freeze/issue/42/recent-versions-of-gevent-break#comment-11421289).
 
-#### RPM Build Location Errors ####
+RPM Build Location Errors
+*************************
 
 This is most relevant for __CentOS 5__ and for __OpenSUSE 12/13__ but may occur on other systems.
 
@@ -26,7 +28,8 @@ If you get an error about not finding the .tar in the RPM build location you wil
     %_smp_mflags -j3
     %__arch_install_post /usr/lib/rpm/check-rpaths /usr/lib/rpm/check-buildroot
 
-#### Building on CentOS 5 and Mac OS X ####
+Building on CentOS 5 and Mac OS X
+*********************************
 
 Building on __CentOS 5__ and __Mac OS X__ requires *pyOpenSSL* v0.12 instead of v0.13. In order to get ncpa to build you must change the `requirements.txt` file's *pyOpenSSL* requirement line to:
 
