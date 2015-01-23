@@ -1,3 +1,9 @@
+Changlog
+++++++++
+
+Versions
+--------
+
 1.8.0
 ==================
 - Added graphing frontend, available via /graph-picker.html
