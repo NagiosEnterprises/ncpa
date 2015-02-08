@@ -36,7 +36,8 @@ update_packages:
 	$(FLAGS) $(PIPVER) install -r $(BASEDIR)/requirements.txt --upgrade
 
 update_git:
-	git pull origin $(BUILDBRANCH)
+	git pull
+	git checkout -f $(BUILDBRANCH)
 
 build_tarball: update_git update_packages build_exe
 	rm -rf ncpa-$(NCPAVER)
