@@ -6,6 +6,7 @@ import os
 import filename
 import passive.nrds
 import passive.nrdp
+import ssl_patch
 
 
 class Passive(ncpadaemon.Daemon):
