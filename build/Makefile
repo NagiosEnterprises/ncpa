@@ -2,6 +2,7 @@ PYTHONVER = python2.7
 PIPVER = pip2.7
 SPHINXBIN = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION.md)
+BUILDBRANCH = $(shell cat /vagrant/buildbranch || echo "master")
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = ~/rpmbuild
 
@@ -35,7 +36,7 @@ update_packages:
 	$(FLAGS) $(PIPVER) install -r $(BASEDIR)/requirements.txt --upgrade
 
 update_git:
-	git pull origin master
+	git pull origin $(BUILDBRANCH)
 
 build_tarball: update_git update_packages build_exe
 	rm -rf ncpa-$(NCPAVER)
@@ -44,7 +45,7 @@ build_tarball: update_git update_packages build_exe
 
 build_spec: build_tarball
 	cat ncpa-partial.spec | sed s/__VERSION__/$(NCPAVER)/g | sed s@__BUILDROOT__@$(BUILDROOT)@g > ncpa.spec
-	
+
 clean:
 	rm -rf ncpa-$(NCPAVER)
 	rm -rf $(BASEDIR)/agent/build
