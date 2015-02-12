@@ -3,7 +3,7 @@ PIPVER = pip2.7
 SPHINXBIN = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION.md)
 INSTALLTARGET = /usr/local/ncpa/
-BUILDROOT = ~/rpmbuild
+BUILDROOT = /usr/src/redhat
 
 #BASEDIR = ~/Development/ncpa
 # Full path of the last Makefile make read. We haven't included other files, so that's us.
