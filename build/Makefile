@@ -4,7 +4,7 @@ SPHINXBIN = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION.md)
 BUILDBRANCH = $(shell cat /vagrant/buildbranch || echo "master")
 INSTALLTARGET = /usr/local/ncpa/
-BUILDROOT = ~/rpmbuild
+BUILDROOT = /usr/src/redhat
 
 #BASEDIR = ~/Development/ncpa
 # Full path of the last Makefile make read. We haven't included other files, so that's us.
