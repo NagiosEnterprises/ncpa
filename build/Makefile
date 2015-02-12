@@ -67,7 +67,7 @@ build_rpm: build_spec
 	/bin/cp ncpa-$(NCPAVER).tar.gz $(BUILDROOT)/SOURCES/
 	rm -f $(BUILDROOT)/SPECS/ncpa.spec
 	/bin/cp -f ncpa.spec $(BUILDROOT)/SPECS/
-	QA_RPATHS='$[ 0x0002 ]' rpmbuild $(BUILDROOT)/SPECS/ncpa.spec -bb
+	QA_RPATHS='$[ 0x0002 ]' rpmbuild $(BUILDROOT)/SPECS/ncpa.spec -bb --define '_topdir /usr/src/redhat'
 	find $(BUILDROOT)/RPMS -name 'ncpa-$(NCPAVER)*' -exec cp {} . \;
 
 build_deb: build_rpm
