@@ -13,6 +13,7 @@ import listener.psapi
 import jinja2.ext  # Here for cx_Freeze import reasons, do not remove it
 import sys
 import ssl
+import ssl_patch
 if 'threading' in sys.modules:
     del sys.modules['threading']
 from gevent import monkey
