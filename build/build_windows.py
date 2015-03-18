@@ -42,12 +42,11 @@ subprocess.Popen(['python', 'setup_windows.py', 'build_exe']).wait()
 shutil.copytree(os.path.join(basedir, 'docs', '_build', 'html'), 
                 os.path.join(basedir, 'agent', 'build', 'NCPA', 'listener', 'static', 'help'))
 
+environ = os.environ.copy()
+environ['NCPA_BUILD_VER'] = version
 shutil.copy(nsi_store, nsi)
-b = subprocess.Popen([nsis, nsi])
+b = subprocess.Popen([nsis, nsi], env=environ)
 b.wait()
 
-print os.path.join(basedir, 'agent', 'build', 'NCPA_Installer.exe')
-print os.path.join(basedir, 'build', 'ncpa-%s.exe' % version)
-
-shutil.copyfile(os.path.join(basedir, 'agent', 'build', 'NCPA_Installer.exe'),
+shutil.copyfile(os.path.join(basedir, 'agent', 'build', 'ncpa-%s.exe' % version),
                 os.path.join(basedir, 'build', 'ncpa-%s.exe' % version))
