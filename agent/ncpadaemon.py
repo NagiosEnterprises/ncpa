@@ -7,6 +7,7 @@ VERSION = (1, 3, 1)
 
 import ConfigParser
 import errno
+import glob
 import grp
 import logging
 from logging.handlers import RotatingFileHandler
@@ -93,7 +94,8 @@ class Daemon(object):
 
     def read_basic_config(self):
         u"""Read basic options from the daemon config file"""
-        self.config_filename = self.options.config_filename
+        self.config_filenames = [self.options.config_filename]
+        self.config_filenames.extend(sorted(glob.glob(os.path.join(self.options.config_filename + ".d", "*.cfg"))))
         cp = ConfigParser.ConfigParser(defaults={
             u'logmaxmb': u'5',
             u'logbackups': u'5',
@@ -102,7 +104,7 @@ class Daemon(object):
             u'gid': unicode(os.getgid()),
         })
         cp.optionxform = unicode
-        cp.read([self.config_filename])
+        cp.read(self.config_filenames)
         self.config_parser = cp
 
         try:
