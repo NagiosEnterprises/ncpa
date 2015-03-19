@@ -90,7 +90,12 @@ Function SetAdvancedInstall
 FunctionEnd
 
 Section # "Create Config.ini"
-	
+
+    ; Disable currently running ncpa listener/passive services
+    ReadEnvStr $9 COMSPEC
+    nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --uninstall ncpalistener'
+    nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --uninstall ncpapassive'
+
     SetOutPath $INSTDIR
 
     File /r .\NCPA\*.*
@@ -145,7 +150,6 @@ Section "Uninstall"
     Delete "$INSTDIR\uninstall.exe"
     
     ReadEnvStr $9 COMSPEC
-	
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --uninstall ncpalistener'
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --uninstall ncpapassive'
     
