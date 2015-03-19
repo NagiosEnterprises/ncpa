@@ -29,6 +29,7 @@ os.chdir('../agent')
 
 if not os.path.exists('var'):
     os.mkdir('var')
+
 open(os.path.join('var', 'ncpa_listener.log'), 'w')
 open(os.path.join('var', 'ncpa_passive.log'), 'w')
 
@@ -38,7 +39,6 @@ if not os.path.exists('plugins'):
 sys.path.append(os.getcwd())
 subprocess.Popen(['python', 'setup_windows.py', 'build_exe']).wait()
 
-#os.remove(os.path.join(basedir, 'agent', 'build', 'NCPA', 'listener', 'static', 'help'))
 shutil.copytree(os.path.join(basedir, 'docs', '_build', 'html'), 
                 os.path.join(basedir, 'agent', 'build', 'NCPA', 'listener', 'static', 'help'))
 

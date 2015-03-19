@@ -21,25 +21,25 @@ version = open(version_file, 'r').readline().strip()
 
 sys.argv += ['-p', 'xml']
 
-includefiles = ['var/ncpa_listener.log', 
-                'var/ncpa_passive.log',
-                'etc/ncpa.cfg',
+includefiles = [('var/ncpa_listener.log', 'var/ncpa_listener.log'),
+                ('var/ncpa_passive.log', 'var/ncpa_passive.log'),
+                ('etc/ncpa.cfg', 'etc/ncpa.cfg'),
                 'plugins',
-                'listener/templates',
-                'listener/static',
+                ('listener/templates', 'listener/templates'),
+                ('listener/static', 'listener/static'),
                 'passive']
 
 includes = ['xml.dom.minidom']
                     
-includefiles += ['build_resources/LicenseAgreement.txt', 
-                 'build_resources/quickstart.ini',
-                 'build_resources/ncpa.ico']
+includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
+                 ('build_resources/quickstart.ini', 'build_resources/quickstart.ini'),
+                 ('build_resources/ncpa.ico', 'build_resources/ncpa.ico')]
 				 
 buildOptions = dict(includes=includes + ["ncpa_windows"],
                     include_files=includefiles)
 
 listener = Executable("ncpa_windows_listener.py", 
-                      base=u"Win32Service",
+                      base = "Win32Service",
                       targetName="ncpa_listener.exe")
 
 passive = Executable("ncpa_windows_passive.py",
