@@ -104,6 +104,7 @@ class RunnableNode(ParentNode):
         self.set_unit(unit, kwargs)
         values = self.get_adjusted_scale(values, kwargs)
         values = self.get_delta_values(values, kwargs)
+        values = self.get_aggregated_values(values, kwargs)
         return {self.name: [values, self.unit]}
 
     def set_unit(self, unit, request_args):
@@ -149,6 +150,21 @@ class RunnableNode(ParentNode):
         perfdata_label = request_args.get('perfdata_label', [None])
         self.perfdata_label = perfdata_label[0]
 
+    def get_aggregated_values(self, values, request_args):
+        aggregate = request_args.get('aggregate', [None])[0]
+        print 'Doing aggregation %s' % aggregate
+        if aggregate == 'max':
+            print 'Doing max'
+            return [max(values)]
+        elif aggregate == 'min':
+            return [min(values)]
+        elif aggregate == 'sum':
+            return [sum(values)]
+        elif aggregate == 'avg':
+            return [sum(values) / len(values)]
+        else:
+            return values
+
     def run_check(self, use_perfdata=True, use_prefix=True, primary=False, *args, **kwargs):
         try:
             values, unit = self.method(*args, **kwargs)
@@ -166,6 +182,7 @@ class RunnableNode(ParentNode):
         try:
             values = self.get_delta_values(values, kwargs)
             values = self.get_adjusted_scale(values, kwargs)
+            values = self.get_aggregated_values(values, kwargs)
         except TypeError:
             logging.warning('Error converting values to scale and delta. Values: %r' % values)
 
@@ -229,7 +246,7 @@ class RunnableNode(ParentNode):
             perfdata.append(perf)
         perfdata = ' '.join(perfdata)
 
-        stdout = '%s was %s' % (proper_name, values_for_info_line) 
+        stdout = '%s was %s' % (proper_name, values_for_info_line)
 
         if use_prefix is True:
             stdout = '%s: %s' % (info_prefix, stdout)
