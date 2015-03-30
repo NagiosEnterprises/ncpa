@@ -61,6 +61,7 @@ LangString LICENSE_BOTTOM ${LANG_ENGLISH} "Nagios Software License 1.3"
 !insertmacro MUI_PAGE_LICENSE "NCPA\build_resources\LicenseAgreement.txt"
 
 Page custom SetAdvancedInstall
+
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 
@@ -88,10 +89,11 @@ Function .onInit
 FunctionEnd
 
 Function SetAdvancedInstall
-		
-	; TODO: Add check to only display this page if it's a new install
-	
-    ; Display the InstallOptions dialog
+
+	IfFileExists $INSTDIR\etc\ncpa.cfg 0 +2
+	Abort
+
+    ; Display the InstallOptions dialogue
     !insertmacro INSTALLOPTIONS_DISPLAY "quickstart.ini"
     !insertmacro INSTALLOPTIONS_READ $0 "quickstart.ini" "Field 3" "State"
     !insertmacro INSTALLOPTIONS_READ $1 "quickstart.ini" "Field 4" "State"
@@ -110,25 +112,12 @@ Section # "Create Config.ini"
 
     SetOutPath $INSTDIR
 	
-	IfFileExists $INSTDIR\etc\ncpa.cfg 0 +2
-	MessageBox MB_OK "NCPA is already installed."
-
-	; Don't overwrite the old config file...
-	SetOverwrite off
-	File .\NCPA\etc\ncpa.cfg
-	SetOverwrite on
-	
-	; Copy over everything we need for NCPA
-    File /r .\NCPA\listener\*.*
-	File /r .\NCPA\passive\*.*
-	File /r .\NCPA\tcl\*.*
-	File /r .\NCPA\tk\*.*
-	File /r .\NCPA\var\*.*
-	File .\NCPA\*.*
-	CreateDirectory $INSTDIR\plugins
+	IfFileExists $INSTDIR\etc\ncpa.cfg SkipUpdateConfig UpdateConfig
 	
 	; If it's a fresh install, set the config options
-	; TODO: Add check
+	UpdateConfig:
+	CreateDirectory $INSTDIR\etc
+	File /oname=$INSTDIR\etc\ncpa.cfg .\NCPA\etc\ncpa.cfg
     WriteINIStr $INSTDIR\etc\ncpa.cfg api "community_string" "$0"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "CONFIG_VERSION" "0"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrds "CONFIG_NAME" "$4"
@@ -140,6 +129,19 @@ Section # "Create Config.ini"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "parent" "$1"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "token" "$2"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "hostname" "$3"
+	
+	SkipUpdateConfig:
+	; Don't overwrite the old config file...
+	SetOverwrite off
+	File /oname=$INSTDIR\etc\ncpa.cfg .\NCPA\etc\ncpa.cfg
+	SetOverwrite on
+	
+	; Copy over everything we need for NCPA
+    File /r .\NCPA\listener
+	File /r .\NCPA\passive
+	File /r .\NCPA\var
+	File .\NCPA\*.*
+	CreateDirectory $INSTDIR\plugins
 
 SectionEnd
 
