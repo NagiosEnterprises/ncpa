@@ -36,7 +36,7 @@ class TestNRDPHandler(TestCase):
 
     def test_make_xml(self):
         hostname, servicename, instruction = 'MixedCase', 'Mixed Case', '/cpu/count'
-        check = ncpacheck.NCPACheck(instruction, hostname, servicename)
+        check = ncpacheck.NCPACheck(self.config, instruction, hostname, servicename)
 
         xml = nrdp.make_xml(check).toxml()
         tree = ET.fromstring(xml)
@@ -53,7 +53,7 @@ class TestNRDPHandler(TestCase):
         self.assertIsNotNone(state)
 
         hostname, servicename, instruction = 'testing_host', '__HOST__', '/cpu/count'
-        check = ncpacheck.NCPACheck(instruction, hostname, servicename)
+        check = ncpacheck.NCPACheck(self.config, instruction, hostname, servicename)
 
         xml = nrdp.make_xml(check).toxml()
         tree = ET.fromstring(xml)

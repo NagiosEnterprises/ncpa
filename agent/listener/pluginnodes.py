@@ -100,6 +100,7 @@ class PluginAgentNode(nodes.ParentNode):
                 if os.path.isfile(plugin_abs_path):
                     self.children[plugin] = PluginNode(plugin, plugin_abs_path)
         except OSError as exc:
+            logging.warning('Unable to access directory %s', plugin_path)
             logging.warning('Unable to assemble plugins. Does the directory exist? - %r', exc)
 
     def accessor(self, path, config):

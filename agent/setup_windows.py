@@ -12,6 +12,7 @@ import sys
 import shutil
 from cx_Freeze import setup, Executable
 import os
+import platform
 
 version_file = os.path.join(os.path.dirname(__file__),
                             '..',
@@ -20,25 +21,25 @@ version = open(version_file, 'r').readline().strip()
 
 sys.argv += ['-p', 'xml']
 
-includefiles = ['var/ncpa_listener.log', 
-                'var/ncpa_passive.log',
-                'etc/ncpa.cfg',
+includefiles = [('var/ncpa_listener.log', 'var/ncpa_listener.log'),
+                ('var/ncpa_passive.log', 'var/ncpa_passive.log'),
+                ('etc/ncpa.cfg', 'etc/ncpa.cfg'),
                 'plugins',
-                'listener/templates',
-                'listener/static',
+                ('listener/templates', 'listener/templates'),
+                ('listener/static', 'listener/static'),
                 'passive']
 
 includes = ['xml.dom.minidom']
                     
-includefiles += ['build_resources/LicenseAgreement.txt', 
-                 'build_resources/quickstart.ini',
-                 'build_resources/ncpa.ico']
+includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
+                 ('build_resources/quickstart.ini', 'build_resources/quickstart.ini'),
+                 ('build_resources/ncpa.ico', 'build_resources/ncpa.ico')]
 				 
 buildOptions = dict(includes=includes + ["ncpa_windows"],
                     include_files=includefiles)
 
 listener = Executable("ncpa_windows_listener.py", 
-                      base=u"Win32Service",
+                      base = "Win32Service",
                       targetName="ncpa_listener.exe")
 
 passive = Executable("ncpa_windows_passive.py",
@@ -52,5 +53,12 @@ setup(name="NCPA",
       options=dict(build_exe=buildOptions),
 )
 
-os.rename(os.path.join('build', 'exe.win32-2.7'), os.path.join('build', 'NCPA'))
+if platform.architecture()[0].lower() == '32bit':
+    os.rename(os.path.join('build', 'exe.win32-2.7'), os.path.join('build', 'NCPA'))
+elif platform.architecture()[0].lower() == '64bit':
+    os.rename(os.path.join('build', 'exe.win-amd64-2.7'), os.path.join('build', 'NCPA'))
+else:
+    print "unhandled architecture"
+    sys.exit(1)
+
 shutil.copy(u'build_resources/ncpa.nsi', u'build/')

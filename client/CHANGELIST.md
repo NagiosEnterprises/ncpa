@@ -1,3 +1,7 @@
+0.3.3
+-----
+- Fixed issue where --list with no metric would cause an error
+
 0.3.2
 -----
 - Fixed issue where --unit would change the base unit, not the unit prefix

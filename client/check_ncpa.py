@@ -37,9 +37,9 @@ except AttributeError:
 
 import shlex
 import re
+import signal
 
-__VERSION__ = '0.3.1'
-
+__VERSION__ = '0.3.4 Varnar Edition'
 
 def pretty(d, indent=0, indenter=' ' * 4):
     info_str = ''
@@ -81,6 +81,9 @@ def parse_args():
                            "as you would call from the command line. Example: -a '-w 10 -c 20 -f /usr/local'")
     parser.add_option("-t", "--token", default=None,
                       help="The token for connecting.")
+    parser.add_option("-T", "--timeout", default=15, type="int",
+                      help="Enforced timeout, will terminate plugins after "
+                           "this amount of seconds. [%default]")
     parser.add_option("-d", "--delta", action='store_true',
                       help="Signals that this check is a delta check and a "
                            "local state will kept.")
@@ -145,7 +148,11 @@ def get_host_part_from_options(options):
         metric = ''
 
     arguments = get_check_arguments_from_options(options)
-    api_address = 'https://%s:%d/api/%s/%s' % (hostname, port, metric, arguments)
+    if not metric and not arguments:
+        api_address = 'https://%s:%d/api' % (hostname, port)
+    else:
+        api_address = 'https://%s:%d/api/%s/%s' % (hostname, port, metric,
+                                                   arguments)
 
     return api_address
 
@@ -182,6 +189,11 @@ def get_arguments_from_options(options, **kwargs):
         arguments['delta'] = options.delta
         arguments['check'] = 1
         arguments['unit'] = options.units
+
+    if options.query_args:
+        for argument in options.query_args.split(','):
+            key, value = argument.split('=')
+            arguments[key] = value
 
     #~ Encode the items in the dictionary that are not None
     return urlencode(dict((k, v) for k, v in list(arguments.items()) if v))
@@ -226,8 +238,22 @@ def show_list(info_json):
     return pretty(info_json), 0
 
 
+def timeout_handler(threshold):
+    def wrapped(signum, frames):
+        stdout = "UNKNOWN: Execution exceeded timeout threshold of %ds" % threshold
+        print stdout
+        sys.exit(3)
+    return wrapped
+
+
 def main():
     options = parse_args()
+
+    # We need to ensure that we will only execute for a certain amount of
+    # seconds.
+    signal.signal(signal.SIGALRM, timeout_handler(options.timeout))
+    signal.alarm(options.timeout)
+
     try:
 
         if options.version:

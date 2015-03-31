@@ -90,7 +90,14 @@ It cut out everything except all the items that had to do with memory. This is b
     
     Each of these branches contains its own metrics. Some of these metrics are enumerated upon NCPA server start-up. For instance, disks and interfaces will be enumerated and will be listed in this tree as well.
 
-.. caution:: Accessing disks is indicated with the pipe | character, rather than the / or \\ character to avoid escaping issues. Keep this in mind when writing queries. The | character is a special character in bash, so you will generally have to wrap it in single quotes when using it as an argument to avoid problems. 
+.. caution:: 
+    
+    Accessing disks is indicated with the pipe | character, rather than the / or \\ character to avoid escaping issues. Keep this in mind when writing queries. The | character is a special character in bash, so you will generally have to wrap it in single quotes when using it as an argument to avoid problems. 
+    
+    It is a known issue that counter rollover can happen with specific metrics
+    that are direction concerned octet counting (such as interface byte counts).
+    NCPA's indication may differ from your operating systems count if the
+    operating systems count uses a larger counter.
 
 So hopefully, you're noticing what's going on here. To be overt, we can pare down the information to the actual metric we want in much the same way that we specify the file we want to a computer. We specify a path and then we access that file or directory. The individual metrics we wish to find (CPU Usage, Memory Usage, etc) are the files, while the general groupings (CPU, Memory) are the directories, in this analogy.
 
@@ -166,10 +173,61 @@ That's better, much more human readable.
             Specify the Nagios critical threshold.*
         
         unit
-            Accepts K (for kilo), M (for mega), G (for giga) and T (for tera).
+            This will be what the unit of the item should be. So if there is
+            something you would rather see as bytes rather than B, specify
+            unit=bytes instead of B. This is not recommended, but in the case
+            that NCPA guesses the wrong unit, it can be rectified using this.
+
+        units
+            This is the prefix that will be appended to the unit. You can
+            specify K, M, G or T for kilo, mega, giga or tera in regards to
+            units. This will modify the size of the number returns and tack
+            the appropriate prefix onto the unit. **Note this will not affect
+            items whose unit is %.**
         
         delta
             There are some results that are counters. Specifically, the interface counters simply count the bytes that pass through the interface. Set delta=1 for the NCPA server to calculate the change in the counter divided by the amount of time that has past since last check to create bytes/sec.
+
+Combined Results
+----------------
+
+There are some metrics that make sense to combine into information for one
+check result, but only use one aspect of that check for a warning or critical.
+For example, hard drive status. Generally, you might only care about the
+percent of disk that is left. However, in your Nagios display, you might wish
+to see how much disk space is actually left (1% of 1PB is a lot of disk left.)
+
+In order to take advantage of this, you can simply target specific nodes that
+that are tailored for this exact situation. The nodes that are prepared for this
+are
+
+* Logical hard disk nodes
+* Memory nodes
+
+This means that any node under ``api/disk/logical`` or ``api/memory``
+support accessing and getting a general health readout, while still only warning
+on special metrics.
+
+For example, let us say that we have a Linux server (this works just as well
+on Windows servers, just that ``/`` would be ``C:/``). And we wish to monitor the
+space left on C:/. We can simply hit this API URL::
+
+    https://ncpaserver:5693/api/disk/logical/|?check=1&units=G
+
+This greets us with this response::
+
+    {
+        "value": {
+            "returncode": 0, 
+            "stdout": "OK: percent was 37% -- available was 10GB -- total was 17GB -- free was 10GB -- used was 6GB | 'percent_0'=37%;90;92;"
+        }
+    }
+
+We can see it shows several disk metrics that we care about: how much is left,
+size of the disk, how much free space we have; but at the same time it is also
+making the decision that percentage is important and only returns percent used
+in the performance data. It tells you what you need to know, without making
+Nagios remember more that what is necesssary or helpful to continue.
 
 Using Nagios Plugins
 --------------------

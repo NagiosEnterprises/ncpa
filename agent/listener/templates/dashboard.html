@@ -35,8 +35,13 @@ function load_interface() {
     
     $.getJSON(INTERFACE_API, function(d) {
         $.each(d.value['interface'], function(key) {
-            var sent = INTERFACE_BASE + key + '/bytes_sent?delta=1&unit=K';
-            var recv = INTERFACE_BASE + key + '/bytes_recv?delta=1&unit=K';
+
+            if (key.indexOf("isatap") != -1) {
+                return;
+            }
+
+            var sent = INTERFACE_BASE + encodeURIComponent(key) + '/bytes_sent?delta=1&unit=K';
+            var recv = INTERFACE_BASE + encodeURIComponent(key) + '/bytes_recv?delta=1&unit=K';
             interface_div.append($('<div>').load(sent));
             interface_div.append($('<div>').load(recv));
         })
@@ -63,19 +68,15 @@ $(document).ready(function() {
         <li><a href="#disk" class='graph-toggle' data-toggle='tab' data-load='disk'>Disks</a></li>
         <li><a href="#interface" class='graph-toggle' data-toggle='tab' data-load='interface'>Interfaces</a></li>
     </ul>
-    
     <div class='tab-content'>
         <div id='cmu' class='tab-pane active' style='width: 100%; margin:0 auto;'>
             <h3>CPU/Memory</h3>
             <hr />    
         </div>
-
         <div id='disk' class='tab-pane'>
             <h3>Disks</h3>
             <hr />
         </div>
-
-
         <div id='interface' class='tab-pane'>
             <h3>Network Interfaces</h3>
             <hr />

@@ -10,6 +10,16 @@ Versions
 - Fixing issues with /graph and accessing the same state file
 - Fixed issue where page head links showed up on /login page
 - Fixed issue where server would reject API POST queries
+- Changed web sockets to fail gracefully
+- Fixed Mac OS installer group/user issues
+- Changed uninstall key location for Windows users to be under HKCU
+- Added PID to process information returned by the API
+- Changed unit for the user count to be ‘’ rather than c
+- Changed plugin to allow passed query arguments to URL
+- Changed plugin to remove perfdata
+- Fixed NRDS file path issue on windows
+- Adding aggregate function to aggregate list values for checks
+- Adding uptime under /api/system/uptime
 
 1.7.2 - 08/28/2014
 ==================

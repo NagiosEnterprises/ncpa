@@ -8,6 +8,7 @@ are called.
 import cx_Logging
 import cx_Threads
 import ConfigParser
+import glob
 import logging
 import logging.handlers
 import os
@@ -27,9 +28,11 @@ import listener.certificate
 import jinja2.ext
 import webhandler
 import filename
+import ssl
 from gevent import monkey
+import ssl_patch
 
-monkey.patch_all()
+monkey.patch_all(subprocess=True)
 
 
 class Base(object):
@@ -58,7 +61,7 @@ class Base(object):
     def parse_config(self, *args, **kwargs):
         self.config = ConfigParser.ConfigParser()
         self.config.optionxform = str
-        self.config.read(self.config_filename)
+        self.config.read(self.config_filenames)
 
     def setup_plugins(self):
         plugin_path = self.config.get('plugin directives', 'plugin_path')
@@ -83,8 +86,12 @@ class Base(object):
         logging.getLogger().handlers = []
 
         # Max size of log files will be 20MB, and we'll keep one of them as backup
-        max_file_size = 20 * 1024 * 1024
-        file_handler = logging.handlers.RotatingFileHandler(log_file, maxBytes=max_file_size, backupCount=1)
+        max_log_size_bytes = int(config.get('logmaxmb', 5))
+        max_log_rollovers = int(config.get('logbackups', 5))
+        max_file_size = max_log_size_bytes * 1024 * 1024
+        file_handler = logging.handlers.RotatingFileHandler(log_file,
+                                                            maxBytes=max_file_size,
+                                                            backupCount=max_log_rollovers)
         file_format = logging.Formatter('%(asctime)s:%(levelname)s:%(module)s:%(message)s')
         file_handler.setFormatter(file_format)
 
@@ -114,9 +121,16 @@ class Listener(Base):
         try:
             address = self.config.get('listener', 'ip')
             port = self.config.getint('listener', 'port')
-            listener.server.listener.config_file = self.config_filename
+            listener.server.listener.config_files = self.config_filenames
             listener.server.listener.tail_method = listener.windowslogs.tail_method
             listener.server.listener.config['iconfig'] = self.config
+
+            try:
+                ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
+            except:
+                ssl_version = getattr(ssl, 'PROTOCOL_TLSv1')
+                ssl_str_version = 'TLSv1'
+            logging.info('Using SSL version %s', ssl_str_version)
 
             user_cert = self.config.get('listener', 'certificate')
 
@@ -140,11 +154,15 @@ class Listener(Base):
     # called when the service is starting
     def Initialize(self, config_file):
         self.c_type = 'listener'
-        self.config_filename = self.determine_relative_filename(os.path.join('etc', 'ncpa.cfg'))
+        self.config_filenames = [self.determine_relative_filename(
+	    os.path.join('etc', 'ncpa.cfg'))]
+	self.config_filenames.extend(sorted(glob.glob(
+	    self.determine_relative_filename(os.path.join(
+	        'etc', 'ncpa.cfg.d', '*.cfg')))))
         self.parse_config()
         self.setup_logging()
         self.setup_plugins()
-        logging.info("Looking for config at: %s" % self.config_filename)
+        logging.info("Parsed config from: %s" % str(self.config_filenames))
         logging.info("Looking for plugins at: %s" % self.abs_plugin_path)
 
 
@@ -189,9 +207,13 @@ class Passive(Base):
     # called when the service is starting
     def Initialize(self, config_file):
         self.c_type = 'passive'
-        self.config_filename = self.determine_relative_filename(os.path.join('etc', 'ncpa.cfg'))
+        self.config_filenames = [self.determine_relative_filename(
+	    os.path.join('etc', 'ncpa.cfg'))]
+	self.config_filenames.extend(sorted(glob.glob(
+	    self.determine_relative_filename(os.path.join(
+	        'etc', 'ncpa.cfg.d', '*.cfg')))))
         self.parse_config()
         self.setup_logging()
         self.setup_plugins()
-        logging.info("Looking for config at: %s" % self.config_filename)
+        logging.info("Parsed config from: %s" % str(self.config_filenames))
         logging.info("Looking for plugins at: %s" % self.config.get('plugin directives', 'plugin_path'))

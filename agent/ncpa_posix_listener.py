@@ -12,10 +12,12 @@ import webhandler
 import listener.psapi
 import jinja2.ext  # Here for cx_Freeze import reasons, do not remove it
 import sys
+import ssl
+import ssl_patch
 if 'threading' in sys.modules:
     del sys.modules['threading']
 from gevent import monkey
-monkey.patch_all()
+monkey.patch_all(subprocess=True)
 
 
 class Listener(ncpadaemon.Daemon):
@@ -30,12 +32,26 @@ class Listener(ncpadaemon.Daemon):
 
             user_cert = self.config_parser.get('listener', 'certificate')
 
+            ssl_str_version = self.config_parser.get('listener',
+                                                     'ssl_version',
+                                                     'TLSv1')
+            try:
+                ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
+            except:
+                ssl_version = getattr(ssl, 'PROTOCOL_TLSv1')
+                ssl_str_version = 'TLSv1'
+            logging.info('Using SSL version %s', ssl_str_version)
+
             if user_cert == 'adhoc':
                 basepath = filename.get_dirname_file()
                 cert, key = listener.certificate.create_self_signed_cert(basepath, 'ncpa.crt', 'ncpa.key')
             else:
                 cert, key = user_cert.split(',')
-            ssl_context = {'certfile': cert, 'keyfile': key}
+            ssl_context = {
+                'certfile': cert,
+                'keyfile': key,
+                'ssl_version': ssl_version
+            }
 
             listener.server.listener.secret_key = os.urandom(24)
             http_server = WSGIServer(listener=(address, port),

@@ -3,6 +3,11 @@
 {% block headerjs %}
 <script src="/static/js/graph-picker.js"></script>
 <link href="/static/css/graph-picker.css" type="text/css" rel="stylesheet">
+<script>
+$(document).ready(function() {
+    $('#graph-picker-nav').addClass('active');
+});
+</script>
 {% endblock headerjs %}
 
 {% block content %}
