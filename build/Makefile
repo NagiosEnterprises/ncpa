@@ -28,9 +28,8 @@ build_exe: clean update_version build_doc
 	echo -n '' > $(BASEDIR)/agent/var/ncpa_passive.log
 	echo -n '' > $(BASEDIR)/agent/var/ncpa_listener.log
 	cd $(BASEDIR)/agent && $(PYTHONVER) setup_posix.py build_exe
-	cp -f $(BASEDIR)/docs/_build/html $(BASEDIR)/docs/_build/help
-	cp -rf $(BASEDIR)/docs/_build/help $(BASEDIR)/agent/build/*/listener/static
-	rm -rf $(BASEDIR)/docs/_build/help
+	mv $(BASEDIR)/agent/build/exe.* $(BASEDIR)/agent/build/NCPA
+	cp -rf $(BASEDIR)/docs/_build/html $(BASEDIR)/agent/build/NCPA/listener/static/help
 
 build_doc:
 	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBIN)" html
