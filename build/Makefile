@@ -39,7 +39,8 @@ update_packages:
 	wget http://assets.nagios.com/downloads/ncpa/dev/$(CXFREEZEVER)-patched.tar.gz
 	tar xf $(CXFREEZEVER)-patched.tar.gz
 	cd $(CXFREEZEVER) && $(PYTHONBIN) setup.py install
-	rm $(CXFREEZEVER)
+	cd ..
+	rm -rf $(CXFREEZEVER)
 
 update_git:
 	git pull
