@@ -1,5 +1,7 @@
 PYTHONVER = python2.7
 PIPVER = pip2.7
+CXFREEZEVER = cx_Freeze-4.3.4
+PYTHONBIN = $(shell which python2.7)
 SPHINXBIN = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION.md)
 BUILDBRANCH = $(shell cat /vagrant/buildbranch || echo "master")
@@ -16,7 +18,7 @@ BASEDIR = $(patsubst %/,%,$(dir $(makefile_dir)))
 
 FLAGS = ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
 
-.PHONY: build_exe build_doc update_git build_rpm build_spec update_version
+.PHONY: build_exe build_doc update_packages update_git build_rpm build_spec update_version
 
 build_exe: update_version build_doc
 	find $(BASEDIR) -name *.pyc -delete
@@ -34,6 +36,9 @@ build_doc:
 
 update_packages:
 	$(FLAGS) $(PIPVER) install -r $(BASEDIR)/requirements.txt --upgrade
+	wget http://assets.nagios.com/downloads/ncpa/dev/$(CXFREEZEVER)-patched.tar.gz
+	tar xf $(CXFREEZEVER)-patched.tar.gz
+	cd $(CXFREEZEVER) && $(PYTHONBIN) setup.py install
 
 update_git:
 	git pull
