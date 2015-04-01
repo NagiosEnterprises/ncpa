@@ -9,4 +9,3 @@ pyOpenSSL==0.13
 sphinx-bootstrap-theme
 gevent
 gevent-websocket
-git+git://github.com/scot0357/cx_freeze.git@gevent-import-fix
