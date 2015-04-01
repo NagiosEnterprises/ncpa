@@ -39,7 +39,7 @@ update_git:
 	git pull
 	git checkout -f $(BUILDBRANCH)
 
-build_tarball: update_git update_packages build_exe
+build_tarball: update_git build_exe
 	rm -rf ncpa-$(NCPAVER)
 	mv ../agent/build/* ncpa-$(NCPAVER)
 	tar zcvf ncpa-$(NCPAVER).tar.gz ncpa-$(NCPAVER)
