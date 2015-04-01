@@ -18,7 +18,7 @@ BASEDIR = $(patsubst %/,%,$(dir $(makefile_dir)))
 
 FLAGS = ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
 
-.PHONY: build_exe build_doc update_packages update_git build_rpm build_spec update_version
+.PHONY: build_exe build_doc update_git update_packages build_rpm build_spec update_version
 
 build_exe: update_version build_doc
 	find $(BASEDIR) -name *.pyc -delete
@@ -44,7 +44,7 @@ update_git:
 	git pull
 	git checkout -f $(BUILDBRANCH)
 
-build_tarball: update_git build_exe
+build_tarball: update_git update_packages build_exe
 	rm -rf ncpa-$(NCPAVER)
 	mv ../agent/build/* ncpa-$(NCPAVER)
 	tar zcvf ncpa-$(NCPAVER).tar.gz ncpa-$(NCPAVER)
