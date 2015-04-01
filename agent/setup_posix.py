@@ -21,12 +21,12 @@ version = open(version_file, 'r').readline().strip()
 
 shutil.rmtree('build', ignore_errors=True)
 
-includefiles = ['var/ncpa_listener.log',
-                'var/ncpa_passive.log',
-                'etc/ncpa.cfg',
+includefiles = [('var/ncpa_listener.log', 'var/ncpa_listener.log'),
+                ('var/ncpa_passive.log', 'var/ncpa_passive.log'),
+                'etc',
                 'plugins',
-                'listener/templates',
-                'listener/static']
+                ('listener/templates', 'listener/templates'),
+                ('listener/static', 'listener/static')]
 
 # It does not appear the cx_Freeze honors the package directive
 includes = ['xml.dom.minidom',
