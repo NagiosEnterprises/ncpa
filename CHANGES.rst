@@ -4,7 +4,7 @@ Changlog
 Versions
 --------
 
-1.8.0
+1.8.0 - 04/02/2015
 ==================
 - Added graphing frontend, available via /graph-picker.html
 - Fixing issues with /graph and accessing the same state file
