@@ -24,11 +24,12 @@ build_exe: clean update_version build_doc
 	find $(BASEDIR) -name *.pyc -delete
 	mkdir -p $(BASEDIR)/agent/plugins
 	mkdir -p $(BASEDIR)/agent/var
+	mkdir -p $(BASEDIR)/agent/build
 	echo -n '' > $(BASEDIR)/agent/var/ncpa_passive.log
 	echo -n '' > $(BASEDIR)/agent/var/ncpa_listener.log
 	cd $(BASEDIR)/agent && $(PYTHONVER) setup_posix.py build_exe
-	cp -f $(BASEDIR)/docs/_build/html $(BASEDIR)/docs/_build/help || :
-	/bin/cp -rf $(BASEDIR)/docs/_build/help $(BASEDIR)/agent/build/*/listener/static
+	cp -f $(BASEDIR)/docs/_build/html $(BASEDIR)/docs/_build/help
+	cp -rf $(BASEDIR)/docs/_build/help $(BASEDIR)/agent/build/*/listener/static
 	rm -rf $(BASEDIR)/docs/_build/help
 
 build_doc:
@@ -39,6 +40,7 @@ update_packages:
 	wget http://assets.nagios.com/downloads/ncpa/dev/$(CXFREEZEVER)-patched.tar.gz
 	tar xf $(CXFREEZEVER)-patched.tar.gz
 	cd $(CXFREEZEVER) && $(PYTHONBIN) setup.py install
+	rm $(CXFREEZEVER)
 
 update_git:
 	git pull
