@@ -27,7 +27,7 @@ build_exe: update_version build_doc
 	echo -n '' > $(BASEDIR)/agent/var/ncpa_passive.log
 	echo -n '' > $(BASEDIR)/agent/var/ncpa_listener.log
 	cd $(BASEDIR)/agent && $(PYTHONVER) setup_posix.py build_exe
-	mv -f $(BASEDIR)/docs/_build/html $(BASEDIR)/docs/_build/help
+	cp -f $(BASEDIR)/docs/_build/html $(BASEDIR)/docs/_build/help
 	/bin/cp -rf $(BASEDIR)/docs/_build/help $(BASEDIR)/agent/build/*/listener/static
 	rm -rf $(BASEDIR)/docs/_build/help
 
