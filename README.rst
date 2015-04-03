@@ -8,7 +8,7 @@ Downloading NCPA
 
 `Download from the Nagios Official Builds <http://assets.nagios.com/downloads/ncpa/download.php>`_.
 
-We currently build for Windows, Mac OS X, CentOS 5/6/7, Debian/Ubuntu, and OpenSUSE 12/13. If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here at GitHub.
+We currently build for Windows, Mac OS X, RHEL/CentOS 5/6/7, Fedora 21, Debian/Ubuntu, SLES 11/12, and OpenSUSE 11/12/13. If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here at GitHub.
 
 Building NCPA
 -------------
@@ -31,7 +31,7 @@ If you get an error about not finding the .tar in the RPM build location you wil
 Building on CentOS 5 and Mac OS X
 *********************************
 
-Building on __CentOS 5__ and __Mac OS X__ requires *pyOpenSSL* v0.12 instead of v0.13. In order to get ncpa to build you must change the `requirements.txt` file's *pyOpenSSL* requirement line to:
+Building on **CentOS 5** and **Mac OS X** requires *pyOpenSSL* v0.12 instead of v0.13. In order to get ncpa to build you must change the `requirements.txt` file's *pyOpenSSL* requirement line to:
 
     pyOpenSSL==0.12
 
