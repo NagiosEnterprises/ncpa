@@ -7,19 +7,21 @@ Versions
 1.8.0 - 04/02/2015
 ==================
 - Added graphing frontend, available via /graph-picker.html
-- Fixing issues with /graph and accessing the same state file
-- Fixed issue where page head links showed up on /login page
-- Fixed issue where server would reject API POST queries
-- Changed web sockets to fail gracefully
-- Fixed Mac OS installer group/user issues
-- Changed uninstall key location for Windows users to be under HKCU
 - Added PID to process information returned by the API
+- Adding aggregate function to aggregate list values for checks
+- Adding uptime under /api/system/uptime
+- Added delayed starting to windows NCPA services
+- Changed web sockets to fail gracefully
+- Changed uninstall key location for Windows users to be under HKCU
 - Changed unit for the user count to be ‘’ rather than c
 - Changed plugin to allow passed query arguments to URL
 - Changed plugin to remove perfdata
+- Changed windows NCPA services to be more windows-like
+- Fixed Mac OS installer group/user issues
 - Fixed NRDS file path issue on windows
-- Adding aggregate function to aggregate list values for checks
-- Adding uptime under /api/system/uptime
+- Fixing issues with /graph and accessing the same state file
+- Fixed issue where page head links showed up on /login page
+- Fixed issue where server would reject API POST queries
 - Fixed windows installer to now upgrade NCPA when NCPA is installed already
 - Fixed windows installer to not overwrite configuration file
 
