@@ -20,6 +20,8 @@ Versions
 - Fixed NRDS file path issue on windows
 - Adding aggregate function to aggregate list values for checks
 - Adding uptime under /api/system/uptime
+- Fixed windows installer to now upgrade NCPA when NCPA is installed already
+- Fixed windows installer to not overwrite configuration file
 
 1.7.2 - 08/28/2014
 ==================
