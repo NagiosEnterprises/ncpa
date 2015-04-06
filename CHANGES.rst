@@ -7,6 +7,7 @@ Versions
 1.8.1
 ==================
 - Fix aggregation of CPU percent only working on Windows
+- Fix system/uptime not working on Windows
 
 1.8.0 - 04/02/2015
 ==================
