@@ -11,12 +11,6 @@ Contents:
 .. toctree::
    :maxdepth: 2
    
-   news
-   changes
-   news
-   changes
-   news
-   changes
    introduction
    installation
    configuration
