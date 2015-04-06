@@ -159,8 +159,13 @@ class RunnableNode(ParentNode):
             self.perfdata_label = None
 
     def get_aggregated_values(self, values, request_args):
-        aggregate = request_args.get('aggregate', [None])[0]
-        print 'Doing aggregation %s' % aggregate
+        aggregate = request_args.get('aggregate', 'None')
+        
+        # Do a quick check to verify that we are using a string not a list/tuple
+        # which happens to occur on Windows requests only...
+        if isinstance(aggregate, (list, tuple)):
+            aggregate = aggregate[0]
+        
         if aggregate == 'max':
             print 'Doing max'
             return [max(values)]
