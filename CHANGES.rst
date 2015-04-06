@@ -4,6 +4,10 @@ Changlog
 Versions
 --------
 
+1.8.1
+==================
+- Fix aggregation of CPU percent only working on Windows
+
 1.8.0 - 04/02/2015
 ==================
 - Added graphing frontend, available via /graph-picker.html
