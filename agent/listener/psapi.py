@@ -2,6 +2,7 @@ import psutil as ps
 import os
 import logging
 import datetime
+import time
 import re
 import platform
 import server
@@ -18,7 +19,7 @@ importables = (
 )
 
 def get_uptime():
-    current_time = datetime.datetime.now().strftime('%s')
+    current_time = time.time()
     epoch_boot = int(current_time)
     return ([epoch_boot - ps.BOOT_TIME], 's')
 
