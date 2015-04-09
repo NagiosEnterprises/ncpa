@@ -1,3 +1,7 @@
+0.3.4
+-----
+- Added timeout option (-T)
+
 0.3.3
 -----
 - Fixed issue where --list with no metric would cause an error
