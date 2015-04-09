@@ -1,10 +1,10 @@
-Changlog
+﻿Changlog
 ++++++++
 
 Versions
 --------
 
-1.8.1
+1.8.1 - 04/09/2015
 ==================
 - Fix aggregation of CPU percent only working on Windows
 - Fix system/uptime not working on Windows
