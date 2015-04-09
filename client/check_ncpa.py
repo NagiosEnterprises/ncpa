@@ -39,7 +39,7 @@ import shlex
 import re
 import signal
 
-__VERSION__ = '0.3.4 Varnar Edition'
+__VERSION__ = '0.3.5'
 
 def pretty(d, indent=0, indenter=' ' * 4):
     info_str = ''
@@ -96,6 +96,8 @@ def parse_args():
                       help='Print LOTS of error messages.')
     parser.add_option("-V", "--version", action='store_true',
                       help='Print version number of plugin.')
+    parser.add_option("-q", "--queryargs", default=None,
+                      help='Extra query arguments to pass in the NCPA URL.')
     options, _ = parser.parse_args()
 
     if options.version:
@@ -183,6 +185,7 @@ def get_arguments_from_options(options, **kwargs):
     # flip-flopped here and cannot change them due to API versions.
     arguments = {'token': options.token,
                  'units': options.unit}
+    
     if not options.list:
         arguments['warning'] = options.warning
         arguments['critical'] = options.critical
@@ -190,8 +193,8 @@ def get_arguments_from_options(options, **kwargs):
         arguments['check'] = 1
         arguments['unit'] = options.units
 
-    if options.query_args:
-        for argument in options.query_args.split(','):
+    if options.queryargs:
+        for argument in options.queryargs.split(','):
             key, value = argument.split('=')
             arguments[key] = value
 
