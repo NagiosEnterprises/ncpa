@@ -1,3 +1,8 @@
+0.3.5
+-----
+- Added in the 'queryargs' variable to pass in extra arguments to the URL being called
+- Fixed missing query_args error
+
 0.3.4
 -----
 - Added timeout option (-T)
