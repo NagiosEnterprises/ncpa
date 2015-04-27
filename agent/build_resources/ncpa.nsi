@@ -158,7 +158,7 @@ Section ""
     WriteRegDWORD SHCTX "${UNINST_KEY}" "EstimatedSize" "$0"
 
     WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode"
-    WriteRegStr HKCU "${UNINST_KEY}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
+    WriteRegStr HKLM "${UNINST_KEY}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
  
     WriteUninstaller $INSTDIR\uninstall.exe
   
@@ -179,7 +179,7 @@ Section "Uninstall"
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --uninstall ncpalistener'
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --uninstall ncpapassive'
     
-    DeleteRegKey HKCU "${UNINST_KEY}"
+    DeleteRegKey HKLM "${UNINST_KEY}"
     
     RMDir /r "$INSTDIR"
 
