@@ -4,6 +4,10 @@
 Versions
 --------
 
+1.8.2 - ??/??/2015
+==================
+- Fix systemctl service list on el7
+
 1.8.1 - 04/09/2015
 ==================
 - Fix aggregation of CPU percent only working on Windows

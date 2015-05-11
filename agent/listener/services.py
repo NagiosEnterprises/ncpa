@@ -109,7 +109,7 @@ class ServiceNode(nodes.LazyNode):
     def get_services_via_systemctl(self, *args, **kwargs):
         services = {}
         status = tempfile.TemporaryFile()
-        service = subprocess.Popen(['systemctl', 'list-units', '*.service', '--no-pager', '--no-legend'], stdout=status)
+        service = subprocess.Popen(['systemctl', '--no-pager', '--no-legend', '--type=service', 'list-units'], stdout=status)
         service.wait()
         status.seek(0)
 
