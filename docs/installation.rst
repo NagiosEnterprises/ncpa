@@ -113,6 +113,14 @@ First thing that must be done is acquiring the RPM package. The latest RPM packa
 * CentOS 7.0
     * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86_64&os=el7>`_
 
+* openSUSE 11.x
+    * `32-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86&os=os11>`_
+    * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86_64&os=os11>`_
+
+* openSUSE 12.x
+    * `32-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86&os=os12>`_
+    * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86_64&os=os12>`_
+
 * openSUSE 13.x
     * `32-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86&os=os13>`_
     * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86_64&os=os13>`_
