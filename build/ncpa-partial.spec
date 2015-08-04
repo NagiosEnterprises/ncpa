@@ -40,7 +40,11 @@ if ! getent passwd nagios 2> /dev/null;
 then
     useradd -r -g nagcmd nagios
 else
-    usermod -a -G nagcmd nagios
+    %if 0%{?suse_version} && 0%{?suse_version} < 1210
+        usermod -A nagcmd nagios
+    %else
+    	usermod -a -G nagcmd nagios
+    %endif
 fi
 
 %post
