@@ -124,6 +124,10 @@ First thing that must be done is acquiring the RPM package. The latest RPM packa
 * openSUSE 13.x
     * `32-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86&os=os13>`_
     * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86_64&os=os13>`_
+    
+* Fedora 21
+    * `32-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86&os=fc21>`_
+    * `64-bit <http://assets.nagios.com/downloads/ncpa/download.php?type=rpm&arch=x86_64&os=fc21>`_
 
 .. note:: These RPMs should cover the bases for your systems, if these do not work for your particular system, help make the project better by volunteering for a build or you can checkout the source code from git.
 
@@ -190,8 +194,6 @@ Install NCPA on Mac OS X
     The install process on Mac OS X is still experimental. If you would like to
     help make this process better, please get in contact with the author
     (whose address can be found at the bottom of the page.)
-
-Download the `DMG here <https://assets.nagios.com/downloads/ncpa/ncpa-head.dmg>`_ .
 
 Download the `NCPA DMG here <http://assets.nagios.com/downloads/ncpa/download.php?type=dmg&arch=x86>`_ . You will need to log in as root, or at least as a user who can run commands as root to continue with the installation. Then, depending on where you installed it (we will assume you downloaded it to your /tmp directory), run the following commands::
 
