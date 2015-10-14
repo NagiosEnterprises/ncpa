@@ -12,8 +12,10 @@ if not exist "%openssldir%" (
 set PATH=%openssldir%\bin;%PATH%
 
 if not exist "%PROGRAMFILES%\NSIS" (
-  echo Install NSIS 2.46 from http://sourceforge.net/projects/nsis/files/NSIS%202/2.46/
+    if not exist "%PROGRAMFILES(x86)%\NSIS" (
+        echo Install NSIS 2.46 from http://sourceforge.net/projects/nsis/files/NSIS%202/2.46/
    exit /B 1
+    )
 )
 
 where python > nul:
