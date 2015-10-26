@@ -25,6 +25,8 @@ Prerequisite Packages
 * pip
 * OpenSSL for Windows (32-bit) (https://indy.fulgan.com/SSL/)
 * Microsoft Visual C++ Compiler for Python 2.7 (http://aka.ms/vcpython27)
+* pywin32 (http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win32-py2.7.exe/download)
+* cx_Freeze
 * Nullsoft Scriptable Install System (NSIS) 2.4.6 (http://nsis.sourceforge.net/Download)
 
 Assumptions
@@ -51,11 +53,11 @@ Install Prerequisites
   
   1. Since Python version 2.7.9, pip can be installed by running::
     
-    "%pydir%\python" -m ensurepip
+      "%pydir%\python" -m ensurepip
 
   2. Pip should then be updated::
 
-    "%pydir%\python" "%pydir%\Lib\site-packages\pip" install --upgrade pip
+      "%pydir%\Scripts\pip" install --upgrade pip
 
 * OpenSSL
 
@@ -77,17 +79,22 @@ Install Prerequisites
   
   %LOCALAPPDATA%\Programs\Common\Microsoft\Visual C++ for Python\9.0
 
-* NSIS
+* pywin32
 
-  1. Download NSIS from http://nsis.sourceforge.net/Download 
-  2. Run the NSIS installer.
+  * Install via easy_install::
 
+    "%pydir%\Scripts\easy_install" http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20219/pywin32-219.win32-py2.7.exe
 
 * cx_Freeze
 
   * Install cx_Freeze via pip::
 
-    "%pydir%\python" "%pydir%\Lib\site-packages\pip" install cx_Freeze
+    "%pydir%\Scripts\pip" install cx_Freeze
+
+* NSIS
+
+  1. Download NSIS from http://nsis.sourceforge.net/Download 
+  2. Run the NSIS installer.
 
 Set Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -126,8 +133,8 @@ openssl.exe executable to the 'bin' directory::
   mkdir bin
   move openssl.exe bin\
 
-Patching cx_Freeze
-~~~~~~~~~~~~~~~~~~
+Patch cx_Freeze
+~~~~~~~~~~~~~~~
 cx_Freeze interacts poorly with the gevent package used by NCPA due to
 a namespace collision. The cx_Freeze package must be patched for the
 resulting binary to function properly. Without this patch, the build
@@ -137,4 +144,15 @@ executables will crash with an error similar to
 executed. See `cx_Freeze issue #42 <https://bitbucket.org/anthony_tuininga/cx_freeze/issues/42/recent-versions-of-gevent-break#comment-11421289>`_.
 for more details.
 
-1. Navigate to the cx_Freeze directory.
+1. Navigate to the cx_Freeze directory::
+
+   cd "%pydir%\Lib\site-packages\cx_Freeze"
+
+2. Find the line which reads::
+
+   import imp, os, sys
+
+3. Replace the previous line with the following::
+
+   import imp, sys
+   os = sys.modules['os']
