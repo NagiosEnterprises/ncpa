@@ -47,7 +47,9 @@ Install Prerequisites
        msiexec /a python-2.7.10.msi /qb TARGETDIR="%HOME%\Program Files (x86)\python27"*
 
 * pip
-    Since Python version 2.7.9, pip can be installed by running::
+  
+  * Since Python version 2.7.9, pip can be installed by running::
+    
     %pydir%\python -m ensurepip
 
 * OpenSSL
@@ -56,7 +58,7 @@ Install Prerequisites
   2. Extract the OpenSSL package to your preferred path. A suitable
      location would be::
 
-       %HOME%\Program Files (x86)\Common Files\openssl-x.x.xx-i386-win32
+     %HOME%\Program Files (x86)\Common Files\openssl-x.x.xx-i386-win32
 
 * NSIS
 
@@ -69,6 +71,7 @@ Two variables must be set for the build-setup.bat script to run
 properly:
 
 * **pydir**: The root directory of your Python installation.
+
   If installed using the command mentioned previously, it will be::
 
     %HOME%\Program Files (x86)\python27  
