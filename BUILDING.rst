@@ -14,7 +14,7 @@ Build Requirements
 ------------------
 
 User Rights
-~~~~~~~~~~~
+~~~~~~~~~~~  
 Administrative privileges are required to install the Nullsoft
 Scriptable Install System.
 
@@ -38,20 +38,28 @@ Configure the Build Environment
 Install Prerequisites
 ~~~~~~~~~~~~~~~~~~~~~
 * Python
+
   1. Download the Python installer from::
-       https://www.python.org/downloads/release/python-2710/
+     https://www.python.org/downloads/release/python-2710/
   2. Once downloaded, python can be installed into the user's home
      directory with the following command::
+
        msiexec /a python-2.7.10.msi /qb TARGETDIR="%HOME%\Program Files (x86)\python27"*
+
 * pip
-  Since Python version 2.7.9, pip can be installed by running::
+    Since Python version 2.7.9, pip can be installed by running::
     %pydir%\python -m ensurepip
+
 * OpenSSL
+
   1. Download the OpenSSL package from https://indy.fulgan.com/SSL/
   2. Extract the OpenSSL package to your preferred path. A suitable
      location would be::
+
        %HOME%\Program Files (x86)\Common Files\openssl-x.x.xx-i386-win32
+
 * NSIS
+
   1. Download NSIS from http://nsis.sourceforge.net/Download 
   2. Run the NSIS installer.
 
@@ -59,15 +67,21 @@ Set Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Two variables must be set for the build-setup.bat script to run
 properly:
-* pydir: The root directory of your Python installation.
+
+* **pydir**: The root directory of your Python installation.
   If installed using the command mentioned previously, it will be::
+
     %HOME%\Program Files (x86)\python27  
+
   If you installed Python for all users on the system, this will
   probably be::
+  
     C:\python27
-* openssldir: The root directory of your OpenSSL installation.
+
+* **openssldir**: The root directory of your OpenSSL installation.
 
 Set these variables by running::
+
   set pydir=%HOME%\Program Files (x86)\python27  
   set openssldir=%HOME%\Program Files (x86)\Common Files\openssl-x.x.xx-i386-win32
 
@@ -75,9 +89,10 @@ Modify the Directory Structure of the OpenSSL Package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The OpenSSL Package from indy.fulgan.com ships with the openssl.exe
 executable in the root of the package directory. The NCPA build tools
-for Windows require openssl.exe to be located at %openssldir%\bin. To
-rectify this, create a directory at %openssldir%\bin and move the
+for Windows require openssl.exe to be located at :code:`%openssldir%\bin`. To
+rectify this, create a directory at :code:`%openssldir%\bin` and move the
 openssl.exe executable to the 'bin' directory::
+
   cd %openssldir%
   mkdir bin
   move openssl.exe bin\
@@ -88,9 +103,9 @@ cx_Freeze interacts poorly with the gevent package used by NCPA due to
 a namespace collision. The cx_Freeze package must be patched for the
 resulting binary to function properly. Without this patch, the build
 will appear to succeed, but the ncpa_listener.exe and ncpa_passive.exe
-executables will crash with an error similar to::
-  "AttributeError: 'module' object has no attribute 'path'"
-when executed. See `cx_Freeze issue #42 <https://bitbucket.org/anthony_tuininga/cx_freeze/issues/42/recent-versions-of-gevent-break#comment-11421289>`
+executables will crash with an error similar to
+:code:`"AttributeError: 'module' object has no attribute 'path'"` when
+executed. See `cx_Freeze issue #42 <https://bitbucket.org/anthony_tuininga/cx_freeze/issues/42/recent-versions-of-gevent-break#comment-11421289>`_.
 for more details.
 
 1. Navigate to the cx_Freeze directory.
