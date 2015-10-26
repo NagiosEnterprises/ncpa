@@ -24,6 +24,7 @@ Prerequisite Packages
 * Python 2.7.10 (32-Bit) (https://www.python.org/downloads/release/python-2710/)
 * pip
 * OpenSSL for Windows (32-bit) (https://indy.fulgan.com/SSL/)
+* Microsoft Visual C++ Compiler for Python 2.7 (http://aka.ms/vcpython27)
 * Nullsoft Scriptable Install System (NSIS) 2.4.6 (http://nsis.sourceforge.net/Download)
 
 Assumptions
@@ -39,18 +40,22 @@ Install Prerequisites
 ~~~~~~~~~~~~~~~~~~~~~
 * Python
 
-  1. Download the Python installer from::
+  1. Download the Python installer from
      https://www.python.org/downloads/release/python-2710/
   2. Once downloaded, python can be installed into the user's home
      directory with the following command::
 
-       msiexec /a python-2.7.10.msi /qb TARGETDIR="%HOME%\Program Files (x86)\python27"*
+       msiexec /a python-2.7.10.msi /qb TARGETDIR="%LOCALAPPDATA%\Programs\python27"*
 
 * pip
   
-  * Since Python version 2.7.9, pip can be installed by running::
+  1. Since Python version 2.7.9, pip can be installed by running::
     
-    %pydir%\python -m ensurepip
+    "%pydir%\python" -m ensurepip
+
+  2. Pip should then be updated::
+
+    "%pydir%\python" "%pydir%\Lib\site-packages\pip" install --upgrade pip
 
 * OpenSSL
 
@@ -58,14 +63,31 @@ Install Prerequisites
   2. Extract the OpenSSL package to your preferred path. A suitable
      location would be::
 
-       %HOME%\Program Files (x86)\Common Files\openssl-x.x.xx-i386-win32
+       %LOCALAPPDATA%\Programs\Common\openssl-x.x.xx-i386-win32
 
      where *x.x.xx* is the version of openssl you downloaded.
+
+* Microsoft Visual C++ Compiler for Python 2.7
+
+  1. Download the installer from http://aka.ms/vcpython27.
+  2. Run the installer.
+
+  Running the installer without administrator privileges will
+  cause the files to be installed to::
+  
+  %LOCALAPPDATA%\Programs\Common\Microsoft\Visual C++ for Python\9.0
 
 * NSIS
 
   1. Download NSIS from http://nsis.sourceforge.net/Download 
   2. Run the NSIS installer.
+
+
+* cx_Freeze
+
+  * Install cx_Freeze via pip::
+
+    "%pydir%\python" "%pydir%\Lib\site-packages\pip" install cx_Freeze
 
 Set Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,7 +98,7 @@ properly:
 
   If installed using the command mentioned previously, it will be::
 
-    %HOME%\Program Files (x86)\python27  
+    %LOCALAPPDATA%\Programs\python27  
 
   If you installed Python for all users on the system, this will
   probably be::
@@ -87,8 +109,8 @@ properly:
 
 Set these variables by running::
 
-  set pydir=%HOME%\Program Files (x86)\python27  
-  set openssldir=%HOME%\Program Files (x86)\Common Files\openssl-x.x.xx-i386-win32
+  set pydir=%LOCALAPPDATA%\Programs\python27  
+  set openssldir=%LOCALAPPDATA%\Programs\Common\openssl-x.x.xx-i386-win32
   
 where *x.x.xx* is the version of openssl you downloaded.
 
