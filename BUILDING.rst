@@ -38,22 +38,22 @@ Configure the Build Environment
 Install Prerequisites
 ~~~~~~~~~~~~~~~~~~~~~
 * Python
-  # Download the Python installer from::
-      https://www.python.org/downloads/release/python-2710/
-  Once downloaded, python can be installed into the user's home
-  directory with the following command::
-    msiexec /a python-2.7.10.msi /qb TARGETDIR="%HOME%\Program Files (x86)\python27"*
+  1. Download the Python installer from::
+       https://www.python.org/downloads/release/python-2710/
+  2. Once downloaded, python can be installed into the user's home
+     directory with the following command::
+       msiexec /a python-2.7.10.msi /qb TARGETDIR="%HOME%\Program Files (x86)\python27"*
 * pip
   Since Python version 2.7.9, pip can be installed by running::
     %pydir%\python -m ensurepip
 * OpenSSL
-  # Download the OpenSSL package from https://indy.fulgan.com/SSL/
-  # Extract the OpenSSL package to your preferred path. A suitable
-    location would be::
-      %HOME%\Program Files (x86)\Common Files\openssl-x.x.xx-i386-win32
+  1. Download the OpenSSL package from https://indy.fulgan.com/SSL/
+  2. Extract the OpenSSL package to your preferred path. A suitable
+     location would be::
+       %HOME%\Program Files (x86)\Common Files\openssl-x.x.xx-i386-win32
 * NSIS
-  # Download NSIS from http://nsis.sourceforge.net/Download 
-  # Run the NSIS installer.
+  1. Download NSIS from http://nsis.sourceforge.net/Download 
+  2. Run the NSIS installer.
 
 Set Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,4 +93,4 @@ executables will crash with an error similar to::
 when executed. See `cx_Freeze issue #42 <https://bitbucket.org/anthony_tuininga/cx_freeze/issues/42/recent-versions-of-gevent-break#comment-11421289>`
 for more details.
 
-# Navigate to the cx_Freeze directory.
+1. Navigate to the cx_Freeze directory.
