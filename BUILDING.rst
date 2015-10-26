@@ -146,13 +146,13 @@ for more details.
 
 1. Navigate to the cx_Freeze directory::
 
-   cd "%pydir%\Lib\site-packages\cx_Freeze"
+     cd "%pydir%\Lib\site-packages\cx_Freeze"
 
 2. Find the line which reads::
 
-   import imp, os, sys
+     import imp, os, sys
 
 3. Replace the previous line with the following::
 
-   import imp, sys
-   os = sys.modules['os']
+     import imp, sys
+     os = sys.modules['os']
