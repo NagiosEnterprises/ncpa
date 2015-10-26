@@ -58,7 +58,9 @@ Install Prerequisites
   2. Extract the OpenSSL package to your preferred path. A suitable
      location would be::
 
-     %HOME%\Program Files (x86)\Common Files\openssl-x.x.xx-i386-win32
+       %HOME%\Program Files (x86)\Common Files\openssl-x.x.xx-i386-win32
+
+     where *x.x.xx* is the version of openssl you downloaded.
 
 * NSIS
 
@@ -87,6 +89,8 @@ Set these variables by running::
 
   set pydir=%HOME%\Program Files (x86)\python27  
   set openssldir=%HOME%\Program Files (x86)\Common Files\openssl-x.x.xx-i386-win32
+  
+where *x.x.xx* is the version of openssl you downloaded.
 
 Modify the Directory Structure of the OpenSSL Package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
