@@ -234,7 +234,7 @@ Using Nagios Plugins
 
 Using existing Nagios plugins is not an issue either. In fact we can list all the plugins that are installed on the system by accessing the address::
     
-    https://ncpaserver:5693/api/agent/plugins
+    https://ncpaserver:5693/api/agent/plugin
 
 This returns::
     
