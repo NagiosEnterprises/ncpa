@@ -21,7 +21,7 @@ importables = (
 def get_uptime():
     current_time = time.time()
     epoch_boot = int(current_time)
-    return ([epoch_boot - ps.BOOT_TIME], 's')
+    return ([epoch_boot - ps.boot_time()], 's')
 
 
 def make_disk_nodes(disk_name):
@@ -132,8 +132,8 @@ def get_agent_node():
 
 
 def get_user_node():
-    user_count = RunnableNode('count', method=lambda: (len([x.name for x in ps.get_users()]), 'c'))
-    user_list = RunnableNode('list', method=lambda: ([x.name for x in ps.get_users()], 'name'))
+    user_count = RunnableNode('count', method=lambda: (len([x.name for x in ps.users()]), 'c'))
+    user_list = RunnableNode('list', method=lambda: ([x.name for x in ps.users()], 'name'))
     return ParentNode('user', children=[user_count, user_list])
 
 
