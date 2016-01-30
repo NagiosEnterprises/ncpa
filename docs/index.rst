@@ -13,6 +13,7 @@ Contents:
    
    introduction
    installation
+   development
    configuration
    api
    active
