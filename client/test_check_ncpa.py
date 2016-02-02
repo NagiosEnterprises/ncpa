@@ -23,7 +23,7 @@ def is_valid_url(url):
 class Test(unittest.TestCase):
     
     def setUp(self):
-        self.c_options = mock.Mock()
+        self.c_options = mock.MagicMock()
         self.c_options.token = 'mytoken'
         self.c_options.hostname = 'bingo.bongo.com'
         self.c_options.unit = None
