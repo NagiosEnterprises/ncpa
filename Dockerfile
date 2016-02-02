@@ -16,4 +16,6 @@ RUN pip install -r /src/_ncpa/requirements.txt
 RUN groupadd nagcmd
 RUN useradd nagios -M -g nagcmd -u 1000
 
+EXPOSE 5693
+
 CMD python /src/ncpa/agent/ncpa_posix_listener.py -n

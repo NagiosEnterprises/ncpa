@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "properties": {
+        "value": {
+            "type": "object",
+            "properties": {
+                "cpu": {
+		    "type": "object",
+		    "properties": {
+			"count": {
+			    "type": "array"
+			},
+			"idle": {
+			    "type": "array"
+			},
+			"percent": {
+			    "type": "array"
+			},
+			"system": {
+			    "type": "array"
+			},
+			"user": {
+			    "type": "array"
+			}
+		    }
+		}
+            }
+        }
+    }
+}
