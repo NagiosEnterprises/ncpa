@@ -5,12 +5,17 @@ Getting a development environment right now is up limited to Linux at the
 moment. It also requires docker to get up and going. For information on
 installing docker please see `Docker Documentation <https://docs.docker.com/engine/installation/>`_.
 
+These instructions assume that your base development environment is run
+from a bash shell. If you are running this from some other type of shell
+where these commands do not work, please help make this documentation better
+by translating these commands.
+
 Docker Build
 *************
 
 Pull the NCPA repo::
 
-    git pull https://github.com/NagiosEnterprises/ncpa.git
+    git clone https://github.com/NagiosEnterprises/ncpa.git
 
 Move into it::
 
@@ -25,9 +30,9 @@ Go grab a coffee while it builds.
 Active Agent
 ************
 
-Simply running::
+Assuming you're in the NCPA directory, simply running::
 
-    docker run -i -t -p 5693:5693 ncpadev
+    docker run -i -t -p 5693:5693 -v $(pwd):/src/ncpa ncpadev
 
 It would probably be a good idea to alias this if you're going to be heavy development.
 
@@ -44,6 +49,6 @@ Passive Agent
 
 For this you'll need to go inside the docker container::
 
-    docker run -i -t ncpadev python /src/ncpa/agent/ncpa_posix_passive.py -n
+    docker run -i -t -p 5693:5693 -v $(pwd):/src/ncpa ncpadev /src/ncpa/agent/ncpa_posix_passive.py -n
 
-And the passive agent will be run in the foreground. Spamming the logs as usual.
+And the passive agent will be run in the foreground.
