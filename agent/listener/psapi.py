@@ -110,7 +110,7 @@ def get_disk_node():
     disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
 
     disk_mountpoints = []
-    for x in ps.disk_partitions():
+    for x in ps.disk_partitions(all=True):
         if os.path.isdir(x.mountpoint):
             tmp = make_mountpoint_nodes(x)
             disk_mountpoints.append(tmp)
