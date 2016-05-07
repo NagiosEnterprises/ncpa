@@ -4,7 +4,7 @@
 Versions
 --------
 
-1.8.2 - ??/??/2015
+2.0.0 - ??/??/2016
 ==================
 - Fix systemctl service list on el7
 - Fix registry key placement on fresh installs
