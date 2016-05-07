@@ -40,7 +40,7 @@ import re
 import signal
 
 
-__VERSION__ = '0.3.5'
+__VERSION__ = '0.4.0'
 
 
 def pretty(d, indent=0, indenter=' ' * 4):
@@ -78,12 +78,12 @@ def parse_args():
         "-c", "--critical", default=None, type="str",
         help="Critical value to be passed for the check.")
     parser.add_option(
-        "-u", "--unit", default=None,
-        help="The unit prefix (M, G, T)")
+        "-u", "--unit-prefix", default=None,
+        help="The unit prefix (M, G, T) for checks with bytes and bits.")
     parser.add_option(
-        "-n", "--units", default=None,
+        "-n", "--unit-name", default=None,
         help="What should be used in place of the default unit. "
-        "As in, instead of 'b' as a unit, it will use this.")
+        "Instead of 'b' or '%' as the unit, it will use whatever is defined here.")
     parser.add_option(
         "-a", "--arguments", default=None,
         help="Arguments for the plugin to be run. Not necessary "
