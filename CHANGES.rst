@@ -6,6 +6,7 @@ Versions
 
 2.0.0 - ??/??/2016
 ==================
+- Upgraded to all latest available python modules
 - Fix systemctl service list on el7
 - Fix registry key placement on fresh installs
 
