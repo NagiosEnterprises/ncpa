@@ -114,7 +114,10 @@ class ServiceNode(nodes.LazyNode):
         status.seek(0)
 
         for line in status.readlines():
-            unit, load, active, sub, description = line.split(None, 5)
+            line.rstrip()
+            unit, load, active, sub, description = re.split('\s+', line, 4)
+            if unit.endswith('.service'):
+                unit = unit[:-8]
             if active.lower() == 'active' and sub.lower() == 'running':
                 services[unit] = 'running'
             else:
