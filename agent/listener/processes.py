@@ -83,7 +83,9 @@ class ProcessNode(nodes.LazyNode):
         except BaseException:
             cpu_percent = 0
         try:
-            mem_rss, mem_vms = process.memory_info()
+            pmi = process.memory_info()
+            mem_rss = pmi.rss
+            mem_vms = pmi.vms
         except BaseException:
             mem_rss, mem_vms = 0, 0
 

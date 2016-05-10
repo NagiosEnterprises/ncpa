@@ -5,3 +5,4 @@
 *.crt
 *.cfg
 .idea/
+.vagrant

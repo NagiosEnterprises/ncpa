@@ -4,7 +4,7 @@
 Versions
 --------
 
-1.8.2 - 05/12/2016
+2.0.0 - ??/??/2016
 ==================
 - Updated unit names that were set to c that weren't actually generic counters for better graphing
 - Fixed systemctl service list on el7

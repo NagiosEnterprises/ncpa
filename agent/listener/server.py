@@ -200,11 +200,13 @@ def top_websocket():
             processes = psutil.process_iter()
             process_list = []
             for process in processes:
+                if process.pid == 0:
+                    continue
                 process_dict = process.as_dict(['username',
-                                                'get_memory_percent',
-                                                'get_cpu_percent',
                                                 'name',
                                                 'pid'])
+                process_dict['memory_percent'] = round(process.memory_percent(), 2)
+                process_dict['cpu_percent'] = round(process.cpu_percent() / psutil.cpu_count(), 2)
                 process_list.append(process_dict)
             json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
             ws.send(json_val)
