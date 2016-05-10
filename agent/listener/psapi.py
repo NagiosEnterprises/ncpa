@@ -33,17 +33,17 @@ def make_disk_nodes(disk_name):
     write_count = RunnableNode('write_count',
                                method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_count, 'c'))
     read_bytes = RunnableNode('read_bytes',
-                              method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_bytes, 'b'))
+                              method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_bytes, 'B'))
     write_bytes = RunnableNode('write_bytes',
-                               method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_bytes, 'b'))
+                               method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_bytes, 'B'))
     return ParentNode(disk_name, children=[read_time, write_time, read_count, write_count, read_bytes, write_bytes])
 
 
 def make_mountpoint_nodes(partition_name):
     mountpoint = partition_name.mountpoint
-    total_size = RunnableNode('total_size', method=lambda: (ps.disk_usage(mountpoint).total, 'b'))
-    used = RunnableNode('used', method=lambda: (ps.disk_usage(mountpoint).used, 'b'))
-    free = RunnableNode('free', method=lambda: (ps.disk_usage(mountpoint).free, 'b'))
+    total_size = RunnableNode('total_size', method=lambda: (ps.disk_usage(mountpoint).total, 'B'))
+    used = RunnableNode('used', method=lambda: (ps.disk_usage(mountpoint).used, 'B'))
+    free = RunnableNode('free', method=lambda: (ps.disk_usage(mountpoint).free, 'B'))
     used_percent = RunnableNode('used_percent', method=lambda: (ps.disk_usage(mountpoint).percent, '%'))
     device_name = RunnableNode('device_name', method=lambda: ([partition_name.device], 'name'))
     safe_mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
@@ -54,16 +54,16 @@ def make_mountpoint_nodes(partition_name):
 
 
 def make_if_nodes(if_name):
-    bytes_sent = RunnableNode('bytes_sent', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_sent, 'b'))
-    bytes_recv = RunnableNode('bytes_recv', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_recv, 'b'))
+    bytes_sent = RunnableNode('bytes_sent', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_sent, 'B'))
+    bytes_recv = RunnableNode('bytes_recv', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_recv, 'B'))
     packets_sent = RunnableNode('packets_sent',
-                                method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_sent, 'c'))
+                                method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_sent, 'packets'))
     packets_recv = RunnableNode('packets_recv',
-                                method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_recv, 'c'))
-    errin = RunnableNode('errin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errin, 'c'))
-    errout = RunnableNode('errout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errout, 'c'))
-    dropin = RunnableNode('dropin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropin, 'c'))
-    dropout = RunnableNode('dropout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropout, 'c'))
+                                method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_recv, 'packets'))
+    errin = RunnableNode('errin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errin, 'errors'))
+    errout = RunnableNode('errout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errout, 'errors'))
+    dropin = RunnableNode('dropin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropin, 'packets'))
+    dropout = RunnableNode('dropout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropout, 'packets'))
     return ParentNode(if_name,
                       children=[bytes_sent, bytes_recv, packets_sent, packets_recv, errin, errout, dropin, dropout])
 
@@ -81,7 +81,7 @@ def get_system_node():
 
 
 def get_cpu_node():
-    cpu_count = RunnableNode('count', method=lambda: ([len(ps.cpu_percent(percpu=True))], 'c'))
+    cpu_count = RunnableNode('count', method=lambda: ([len(ps.cpu_percent(percpu=True))], 'cores'))
     cpu_percent = LazyNode('percent', method=lambda: (ps.cpu_percent(interval=1, percpu=True), '%'))
     cpu_user = RunnableNode('user', method=lambda: ([x.user for x in ps.cpu_times(percpu=True)], 'ms'))
     cpu_system = RunnableNode('system', method=lambda: ([x.system for x in ps.cpu_times(percpu=True)], 'ms'))
@@ -90,15 +90,15 @@ def get_cpu_node():
 
 
 def get_memory_node():
-    mem_virt_total = RunnableNode('total', method=lambda: (ps.virtual_memory().total, 'b'))
-    mem_virt_available = RunnableNode('available', method=lambda: (ps.virtual_memory().available, 'b'))
+    mem_virt_total = RunnableNode('total', method=lambda: (ps.virtual_memory().total, 'B'))
+    mem_virt_available = RunnableNode('available', method=lambda: (ps.virtual_memory().available, 'B'))
     mem_virt_percent = RunnableNode('percent', method=lambda: (ps.virtual_memory().percent, '%'))
     mem_virt_used = RunnableNode('used', method=lambda: (ps.virtual_memory().used, 'B'))
     mem_virt_free = RunnableNode('free', method=lambda: (ps.virtual_memory().free, 'B'))
     mem_virt = RunnableParentNode('virtual',
                           primary='percent',
                           children=(mem_virt_total, mem_virt_available, mem_virt_free, mem_virt_percent, mem_virt_used))
-    mem_swap_total = RunnableNode('total', method=lambda: (ps.swap_memory().total, 'b'))
+    mem_swap_total = RunnableNode('total', method=lambda: (ps.swap_memory().total, 'B'))
     mem_swap_percent = RunnableNode('percent', method=lambda: (ps.swap_memory().percent, '%'))
     mem_swap_used = RunnableNode('used', method=lambda: (ps.swap_memory().used, 'B'))
     mem_swap_free = RunnableNode('free', method=lambda: (ps.swap_memory().free, 'B'))
@@ -132,8 +132,8 @@ def get_agent_node():
 
 
 def get_user_node():
-    user_count = RunnableNode('count', method=lambda: (len([x.name for x in ps.users()]), 'c'))
-    user_list = RunnableNode('list', method=lambda: ([x.name for x in ps.users()], 'name'))
+    user_count = RunnableNode('count', method=lambda: (len([x.name for x in ps.users()]), 'users'))
+    user_list = RunnableNode('list', method=lambda: ([x.name for x in ps.users()], 'users'))
     return ParentNode('user', children=[user_count, user_list])
 
 

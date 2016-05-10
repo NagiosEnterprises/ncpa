@@ -131,7 +131,7 @@ class RunnableNode(ParentNode):
 
     def get_adjusted_scale(self, values, request_args):
         units = request_args.get('units', None)
-        if units is not None and self.unit != '%':
+        if units is not None and self.unit in ['b', 'B']:
             values, units = self.adjust_scale(values, units[0])
             self.unit = '%s%s' % (units, self.unit)
         return values
@@ -224,6 +224,9 @@ class RunnableNode(ParentNode):
         else:
             nice_unit = '%s' % self.unit
 
+        if not isinstance(values, (list, tuple)):
+            values = [values]
+
         nice_values = []
         for x in values:
             try:
@@ -307,7 +310,7 @@ class RunnableNode(ParentNode):
         return [abs((x - y) / delta) for x, y in itertools.izip(loaded_values, values)]
 
     @staticmethod
-    def adjust_scale(values, units):
+    def adjust_scale(serlf, values, units):
 
         # It was either adjust it here or adjust every single node that only returns a single value. I'm putting this
         # on the TODO for 2.0 to change all nodes to return lists rather than single values, as thats a API breaking
@@ -316,16 +319,29 @@ class RunnableNode(ParentNode):
             values = [values]
 
         units = units.upper()
-        if units == 'G':
-            factor = 1e9
-        elif units == 'M':
-            factor = 1e6
-        elif units == 'K':
-            factor = 1e3
+
+        if self.unit == 'b':
+            if units == 'G':
+                factor = 1e9
+            elif units == 'M':
+                factor = 1e6
+            elif units == 'K':
+                factor = 1e3
+        elif self.unit == 'B':
+            if units == 'G':
+                factor = 1e9
+            elif units == 'M':
+                factor = 1e6
+            elif units == 'K':
+                factor = 1e3
         else:
             factor = 1.0
 
-        return [x/factor for x in values], units
+        values = [round(x/factor, 2) for x in values]
+        if len(values) == 1:
+            values = values[0]
+
+        return values, units
 
     @staticmethod
     def is_within_range(nagios_range, value):

@@ -1,3 +1,7 @@
+0.3.6
+-----
+- Fixed unit confusion by renaming --unit to --units (-u) and --units to --unit-name (-n) to avoid confusion and to match the API
+
 0.3.5
 -----
 - Added in the 'queryargs' variable to pass in extra arguments to the URL being called

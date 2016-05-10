@@ -18,8 +18,8 @@ try:
 except:
     pass
 
-subprocess.Popen(['git', 'pull']).wait()
-subprocess.Popen(['pip', 'install', '-r', os.path.join(basedir, 'requirements.txt')]).wait()
+#subprocess.Popen(['git', 'pull']).wait()
+#subprocess.Popen(['pip', 'install', '-r', os.path.join(basedir, 'requirements.txt')]).wait()
 subprocess.Popen(['rmdir', os.path.join(basedir, 'agent', 'build'), '/s', '/q'], shell=True).wait()
 
 os.chdir('docs')
