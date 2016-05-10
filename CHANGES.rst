@@ -18,7 +18,6 @@ Versions
 - Fixed units=x setting only affecting b and B units not any unit name
 - Fixed API showing b instead of B for bytes in multiple locations
 - Fixed single value objects that have been updated via units (K, M, G, T) from becoming lists in the API
-- Fixed converting units to actually convert by bytes not bits (units=K should convert 1024 => 1 not 1.024 when bytes)
 - Fixed ncpa.cfg ssl_version option not working on Windows builds
 
 1.8.1 - 04/09/2015
