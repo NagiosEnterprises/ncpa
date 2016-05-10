@@ -32,7 +32,6 @@ import filename
 import ssl
 import gevent.builtins
 from gevent import monkey
-import ssl_patch
 
 monkey.patch_all(subprocess=True, thread=False)
 
@@ -127,11 +126,14 @@ class Listener(Base):
             listener.server.listener.tail_method = listener.windowslogs.tail_method
             listener.server.listener.config['iconfig'] = self.config
 
+            ssl_str_version = self.config.get('listener', 'ssl_version', 'TLSv1')
+
             try:
                 ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
             except:
                 ssl_version = getattr(ssl, 'PROTOCOL_TLSv1')
                 ssl_str_version = 'TLSv1'
+
             logging.info('Using SSL version %s', ssl_str_version)
 
             user_cert = self.config.get('listener', 'certificate')
@@ -141,7 +143,11 @@ class Listener(Base):
                 cert, key = listener.certificate.create_self_signed_cert(basepath, 'ncpa.crt', 'ncpa.key')
             else:
                 cert, key = user_cert.split(',')
-            ssl_context = {'certfile': cert, 'keyfile': key}
+            ssl_context = {
+                'certfile': cert,
+                'keyfile': key,
+                'ssl_version': ssl_version
+            }
 
             listener.server.listener.secret_key = os.urandom(24)
             http_server = WSGIServer(listener=(address, port),

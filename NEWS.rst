@@ -1,1 +1,0 @@
-Initial testing NEWS.rst

@@ -64,7 +64,7 @@ This section controls NCPA's active check settings including how you actively co
 
     ssl_version
         Set the SSL protocol to use when using HTTPS, valid selections are
-        SSLv2, SSLv3 and TLSv1.
+        TLSv1, TLSv1_1, TLSv1_2.
 
     logmaxmb
         The max size allowed for a log file in megabytes. When the log becomes

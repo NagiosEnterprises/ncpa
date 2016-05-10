@@ -1,5 +1,0 @@
-psutil
-requests
-lxml
-xmltodict
-Jinja2

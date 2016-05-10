@@ -129,6 +129,10 @@ Section # "Create Config.ini"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "parent" "$1"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "token" "$2"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "hostname" "$3"
+
+    ; Set log locations for Windows
+    WriteINIStr $INSTDIR\etc\ncpa.cfg listener "logfile" "var/log/ncpa_listener.log"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg passive "logfile" "var/log/ncpa_passive.log"
     
     SkipUpdateConfig:
     ; Don't overwrite the old config file...

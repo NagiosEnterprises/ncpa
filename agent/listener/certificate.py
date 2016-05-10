@@ -1,7 +1,5 @@
 """This script was pulled directly from 
-
 http://skippylovesmalorie.wordpress.com/2010/02/12/how-to-generate-a-self-signed-certificate-using-pyopenssl/
-
 All rights go to the writer of this script.
 """
 
@@ -18,7 +16,7 @@ def create_self_signed_cert(cert_dir, cert_file, key_file):
     if not os.path.exists(target_cert) or not os.path.exists(target_key):
         # create a key pair
         k = OpenSSL.crypto.PKey()
-        k.generate_key(OpenSSL.crypto.TYPE_RSA, 1024)
+        k.generate_key(OpenSSL.crypto.TYPE_RSA, 2048)
 
         # create a self-signed cert
         cert = OpenSSL.crypto.X509()
@@ -36,7 +34,7 @@ def create_self_signed_cert(cert_dir, cert_file, key_file):
         cert.gmtime_adj_notAfter(10 * 365 * 24 * 60 * 60)
         cert.set_issuer(cert.get_subject())
         cert.set_pubkey(k)
-        cert.sign(k, 'sha1')
+        cert.sign(k, 'sha256')
 
         open(target_cert, "wt").write(
             OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, cert))
