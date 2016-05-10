@@ -7,6 +7,7 @@ Versions
 2.0.0 - ??/??/2016
 ==================
 - Updated unit names that were set to c that weren't actually generic counters for better graphing
+- Updated top proceses to not show Idle process on Windows and added % / rounding
 - Fixed systemctl service list on el7
 - Fixed registry key placement on fresh installs
 - Fixed using multiple values passed to nodes for filtering in API and active checks (ex. service=x&service=y)

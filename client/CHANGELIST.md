@@ -1,4 +1,4 @@
-0.3.6
+1.0.0
 -----
 - Fixed unit confusion by renaming --unit to --units (-u) and --units to --unit-name (-n) to avoid confusion and to match the API
 
