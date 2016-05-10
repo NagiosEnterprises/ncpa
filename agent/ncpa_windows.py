@@ -5,8 +5,9 @@ See below for more information on what methods must be implemented and how they
 are called.
 """
 
-import cx_Logging
-import cx_Threads
+#import cx_Logging
+#import cx_Threads
+import threading
 import ConfigParser
 import glob
 import logging
@@ -40,7 +41,7 @@ class Base(object):
     # configuration file and handled in the Initialize() method
     def __init__(self, debug=False):
         logging.getLogger().handlers = []
-        self.stopEvent = cx_Threads.Event()
+        self.stopEvent = threading.Event()
         self.debug = debug
 
     def determine_relative_filename(self, file_name, *args, **kwargs):
