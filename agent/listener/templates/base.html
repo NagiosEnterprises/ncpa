@@ -20,34 +20,35 @@
         {% endblock %}
     </head>
     <body>
-        <div class='navbar navbar-inverse navbar-top'>
-            <div class='navbar-inner'>
-                <div class='container-fluid'>
-                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <nav class="navbar navbar-inverse navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class='brand' href='/'>NCPA</a>
-                    <div class="nav-collapse collapse">
-                        <ul class="nav">
-                            {% if not hide_page_links %}
-                                <li id="home-nav"><a href="/"><i class="fa fa-home"></i> Home</a></li>
-                                <li id="dashboard-nav"><a href="/dashboard"><i class="fa fa-desktop"></i> Dashboard</a></li>
-                                <li id="navigator-nav"><a href="/api"><i class="fa fa-cog"></i> API</a></li>
-                                <li id="top-nav"><a href="/top-base"><i class="fa fa-tachometer"></i> Top Processes</a></li>
-                                <li id="graph-picker-nav"><a href="/graph-picker"><i class="fa fa-area-chart"></i> Graphs</a></li>
-                        </ul>
-                        <ul class="nav" style="float: right;">
-                            <li><a href="/static/help/index.html"><i class="fa fa-life-ring"></i> Help</a></li>
-                            <li class="divider-vertical"></li>
-                            <li><a href="/logout"><i class="fa fa-power-off"></i> Logout</a></li>
-                            {% endif %}
-                        </ul>
-                    </div>
+                    <a class="navbar-brand" href="/">NCPA</a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse-left">
+                    <ul class="nav navbar-nav">
+                        {% if not hide_page_links %}
+                        <li id="home-nav"><a href="/"><i class="fa fa-home"></i> Home</a></li>
+                        <li id="dashboard-nav"><a href="/dashboard"><i class="fa fa-desktop"></i> Dashboard</a></li>
+                        <li id="navigator-nav"><a href="/api"><i class="fa fa-cog"></i> API</a></li>
+                        <li id="top-nav"><a href="/top-base"><i class="fa fa-tachometer"></i> Top Processes</a></li>
+                        <li id="graph-picker-nav"><a href="/graph-picker"><i class="fa fa-area-chart"></i> Graphs</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/static/help/index.html"><i class="fa fa-life-ring"></i> Help</a></li>
+                        <li class="divider-vertical"></li>
+                        <li><a href="/logout"><i class="fa fa-power-off"></i> Logout</a></li>
+                        {% endif %}
+                    </ul>
                 </div>
             </div>
-        </div>
+        </nav>
         <div class='container' id="main-content-container">
             {% block content %}
             {% endblock %}

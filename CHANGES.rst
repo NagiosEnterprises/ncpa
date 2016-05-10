@@ -12,14 +12,14 @@ Versions
 - Updated top proceses to not show Idle process on Windows and added % / rounding
 - Updated default locations on fresh install for log files on windows and linux
 - Updated openssl and PyOpenSSL libraries which no longer accept SSLv2 & SSLv3
+- Updated API to round most values that had been calculated to 2 decimals
 - Fixed systemctl service list on el7
 - Fixed registry key placement on fresh installs
 - Fixed using multiple values passed to nodes for filtering in API and active checks (ex. service=x&service=y)
 - Fixed units=x setting only affecting b and B units not any unit name
 - Fixed API showing b instead of B for bytes in multiple locations
 - Fixed single value objects that have been updated via units (K, M, G, T) from becoming lists in the API
-- Fixed converting units to actually convert by bytes not bits (units=K should convert 1024 => 1 not 1.024 when bytes)
-- Fixed ncpa.cfg ssl_version option not working on Windows builds
+- Fixed ncpa.cfg ssl_version option not actually working for Windows version
 
 1.8.1 - 04/09/2015
 ==================
