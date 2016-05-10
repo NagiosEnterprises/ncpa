@@ -350,11 +350,13 @@ def api(accessor=''):
     :type accessor: unicode
     :rtype: flask.Response
     """
-    
+
     # Setup sane/safe arguments for actually getting the data. We take in all
     # arguments that were passed via GET/POST. If they passed a config variable
     # we clobber it, as we trust what is in the config.
-    sane_args = request.values.to_dict()
+    sane_args = {}
+    for value in request.values:
+        sane_args[value] = request.args.getlist(value)
 
     # TODO: Rewrite this part, this needs to be moved to the Service/Process nodes rather than here.
     # Special cases for 'service' and 'process' to make NCPA v1.7 backwards compatible

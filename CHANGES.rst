@@ -6,14 +6,14 @@ Versions
 
 2.0.0 - ??/??/2016
 ==================
-- Upgraded to all latest available python modules
-- Fix systemctl service list on el7
-- Fix registry key placement on fresh installs
+- Fixed systemctl service list on el7
+- Fixed registry key placement on fresh installs
+- Fixed using multiple values passed to nodes for filtering in API and active checks (ex. service=x&service=y)
 
 1.8.1 - 04/09/2015
 ==================
-- Fix aggregation of CPU percent only working on Windows
-- Fix system/uptime not working on Windows
+- Fixed aggregation of CPU percent only working on Windows
+- Fixed system/uptime not working on Windows
 
 1.8.0 - 04/02/2015
 ==================

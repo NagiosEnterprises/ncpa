@@ -40,7 +40,7 @@ import re
 import signal
 
 
-__VERSION__ = '0.4.0'
+__VERSION__ = '0.3.6'
 
 
 def pretty(d, indent=0, indenter=' ' * 4):
@@ -78,12 +78,12 @@ def parse_args():
         "-c", "--critical", default=None, type="str",
         help="Critical value to be passed for the check.")
     parser.add_option(
-        "-u", "--unit-prefix", default=None,
-        help="The unit prefix (M, G, T) for checks with bytes and bits.")
+        "-u", "--units", default=None,
+        help="The prefix (M, G, T) for the bytes/bits units.")
     parser.add_option(
         "-n", "--unit-name", default=None,
         help="What should be used in place of the default unit. "
-        "Instead of 'b' or '%' as the unit, it will use whatever is defined here.")
+        "Example: 1000 n instead of 1000 b or anything else.")
     parser.add_option(
         "-a", "--arguments", default=None,
         help="Arguments for the plugin to be run. Not necessary "
@@ -208,14 +208,14 @@ def get_arguments_from_options(options, **kwargs):
     # like B, b, bytes, etc. We have them
     # flip-flopped here and cannot change them due to API versions.
     arguments = {'token': options.token,
-                 'units': options.unit}
+                 'units': options.units}
 
     if not options.list:
         arguments['warning'] = options.warning
         arguments['critical'] = options.critical
         arguments['delta'] = options.delta
         arguments['check'] = 1
-        arguments['unit'] = options.units
+        arguments['unit'] = options.unit_name
 
     if options.queryargs:
         for argument in options.queryargs.split(','):
