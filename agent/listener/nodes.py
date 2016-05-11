@@ -133,7 +133,6 @@ class RunnableNode(ParentNode):
         units = request_args.get('units', None)
         if units is not None and self.unit in ['b', 'B']:
             values, units = self.adjust_scale(self, values, units[0])
-            self.unit = '%s%s' % (units, self.unit)
         return values
 
     def set_warning(self, request_args):
@@ -319,18 +318,38 @@ class RunnableNode(ParentNode):
             values = [values]
 
         units = units.upper()
+        factor = 1.0
 
-        if units == 'G':
-            factor = 1e9
-        elif units == 'M':
-            factor = 1e6
-        elif units == 'K':
-            units = 'k'
-            factor = 1e3
-        else:
-            factor = 1.0
+        if units in ['G', 'M', 'K']:
+            if units == 'T':
+                factor = 1e12
+            elif units == 'G':
+                factor = 1e9
+            elif units == 'M':
+                factor = 1e6
+            elif units == 'K':
+                units = 'k'
+                factor = 1e3
+            else:
+                factor = 1.0
+        elif units in ['TI', 'GI', 'MI', 'KI']:
+            if units == 'TI':
+                units = 'Ti'
+                factor = 1.074e12
+            elif units == 'GI':
+                units = 'Gi'
+                factor = 1.074e9
+            elif units == 'MI':
+                units = 'Mi'
+                factor = 1.074e6
+            elif units == 'KI':
+                units = 'Ki'
+                factor = 1.074e3
 
         values = [round(x/factor, 2) for x in values]
+
+        if factor != 1.0:
+            self.unit = '%s%s' % (units, self.unit)
 
         if len(values) == 1:
             values = values[0]
