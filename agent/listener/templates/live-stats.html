@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}Live Stats{% endblock %}
+
 {% block headerjs %}
 
 <script>
@@ -49,13 +51,10 @@ function load_interface() {
 }
 
 $(document).ready(function() {
-    $('#dashboard-nav').addClass('active');
-    
-    $(document).ready(function() {
-        load_cmu();
-        load_disk();
-        load_interface();
-    });
+    $('#live-stats-nav').addClass('active');
+    load_cmu();
+    load_disk();
+    load_interface();
 });
 
 </script>

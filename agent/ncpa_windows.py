@@ -185,6 +185,11 @@ class Passive(Base):
         """
         handlers = self.config.get('passive', 'handlers').split(',')
 
+        # Empty passive handlers will skip trying to run any handlers
+        if handlers[0] == 'None' or handlers[0] == '':
+            return
+
+        # Runs either nrds or nrdp (or both)
         for handler in handlers:
             try:
                 module_name = 'passive.%s' % handler
@@ -201,6 +206,8 @@ class Passive(Base):
                 except Exception, e:
                     logging.exception(e)
 
+    # Actual method that loops doing passive checks forever, using the sleep
+    # config setting to wait for the next time to run
     def start(self):
         try:
             while True:
@@ -211,7 +218,8 @@ class Passive(Base):
         except Exception, e:
             logging.exception(e)
 
-    # called when the service is starting
+    # Called when the service is starting to initiate variables required by the main
+    # passive "run_all_handlers" method
     def Initialize(self, config_file):
         self.c_type = 'passive'
         self.config_filenames = [self.determine_relative_filename(

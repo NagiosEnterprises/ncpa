@@ -88,10 +88,10 @@ def login():
     return render_template('login.html', **template_args)
 
 
-@listener.route('/dashboard')
+@listener.route('/live-stats')
 @requires_auth
-def dashboard():
-    return render_template('dashboard.html')
+def live_stats():
+    return render_template('live-stats.html')
 
 
 @listener.route('/logout')

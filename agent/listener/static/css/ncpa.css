@@ -1,4 +1,6 @@
-body { padding-top: 70px; font-size: 12px; font-family: verdana, sans-serif; }
+body { padding-top: 80px; font-size: 12px; font-family: verdana, sans-serif; }
+.fa-l { margin-right: 2px; }
+.fa-r { margin-left: 2px; }
 
 /* Bootstrap overrides */
 .form-control { border-radius: 0; }
@@ -15,3 +17,5 @@ body { padding-top: 70px; font-size: 12px; font-family: verdana, sans-serif; }
 .navbar-inverse { background: url('../img/footer_lodyas.png'); border: none; }
 .navbar-inverse .navbar-brand { font-size: 24px; font-weight: bold; color: #EEE; letter-spacing: 2px; }
 .navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:hover { background-color: #222; }
+.navbar { margin-bottom: 30px; }
+.table-border { border: 1px solid #DDD; }
