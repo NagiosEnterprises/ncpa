@@ -1,4 +1,17 @@
-body { padding-top: 70px; }
-.description { width: 300px; }
-.brand { color: #2891f3; }
-.top-col1 { width: 100px; }
+body { padding-top: 70px; font-size: 12px; font-family: verdana, sans-serif; }
+
+/* Bootstrap overrides */
+.form-control { border-radius: 0; }
+.form-control:focus { border-color: #BBB; box-shadow: none; }
+.btn { border-radius: 0; }
+.btn:focus, .btn:active, .btn:active:focus { outline: none; }
+.btn-default { background-color: #EEE; border-color: #E9E9E9; }
+.alert { padding: 10px; border-radius: 0; margin: 0; }
+.table { margin: 0; }
+.table-condensed>tbody>tr>td { padding: 4px 8px; }
+.well { border-radius: 0; }
+.modal-content { border-radius: 0; }
+.modal-header { font-weight: bold; font-size: 18px; }
+.navbar-inverse { background: url('../img/footer_lodyas.png'); border: none; }
+.navbar-inverse .navbar-brand { font-size: 24px; font-weight: bold; color: #EEE; letter-spacing: 2px; }
+.navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:hover { background-color: #222; }

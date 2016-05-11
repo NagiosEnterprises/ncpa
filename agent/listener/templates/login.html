@@ -1,19 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class='hero-unit'>
-	<form class='form-signin' action='/login' method='post'>
-		<h4 class='form-signin-heading'>Login</h2>
-		<hr />
-		{% if message %}
-			<p class='text-info'>{{ message }}</p>
-		{% endif %}
-		{% if error %}
-			<p class='text-error'>{{ error }}</p>
-		{% endif %}
-		<input {% if error %}id='inputError'{% endif %}type='password' class='input-block-level' name='token' placeholder='token' />
-		<button class='btn' type='submit'>Sign In</button>
-	</form>
-</div>
-{% endblock %}
 
+<div class="container" style="margin-top: 100px;">
+    <div class="row">
+        <div class="col-sm-6 col-lg-4 col-lg-offset-4">
+            <div class="well">
+                <form class='form-signin' action='/login' method='post'>
+                    <h4 style="margin: 0 0 20px 0; font-weight: bold;">Web GUI Log In</h4>
+                    {% if message %}
+                        <div class="alert alert-info" style="margin-bottom: 20px;">{{ message }}</div>
+                    {% endif %}
+                    {% if error %}
+                        <div class="alert alert-danger" style="margin-bottom: 20px;">{{ error }}</div>
+                    {% endif %}
+                    <input {% if error %}id='inputError'{% endif %}type='password' class='form-control' name='token' placeholder='Token'>
+                    <button class='btn btn-sm btn-primary' type='submit' style="margin-top: 20px;">Log In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

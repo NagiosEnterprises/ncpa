@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html lang='en'>
     <head>
-        {% block headercss %}
-        <link rel='stylesheet' href='/static/css/bootstrap.min.css' />
-        <link rel='stylesheet' href='/static/css/bootstrap-responsive.min.css' />
-        <link rel='stylesheet' href='/static/css/font-awesome.min.css' />
-        <link rel='stylesheet' href='/static/css/ncpa.css' />
-        {% endblock %}
-        <title>NCPA Web Interface</title>
-        <link rel="shortcut icon" type="image/png" href="/static/img/ncpa-favicon.png" />
-        <link rel="icon" type="image/png" href="/static/img/ncpa-favicon.png" />
+        <title>Home &middot; NCPA</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="NCPA Web Interface">
-        <meta name="author" content="Nagios Enterprises LLC, Nicholas Scott">
-        <script src='/static/js/jquery-1.12.3.min.js'></script>
-        <script src='/static/js/bootstrap.min.js'></script>
-        <script src='/static/js/d3.v3.min.js'></script>
+        <meta name="author" content="Nagios Enterprises, LLC">
+        <link rel="shortcut icon" type="image/png" href="static/img/ncpa.png" />
+        <link rel="icon" type="image/png" href="static/img/ncpa.png" />
+        <link rel='stylesheet' href='static/css/bootstrap.min.css'>
+        <link rel='stylesheet' href='static/css/font-awesome.min.css'>
+        <link rel='stylesheet' href='static/css/ncpa.css'>
+        {% block headercss %}
+        {% endblock %}
+        <script src='static/js/jquery-1.12.3.min.js'></script>
+        <script src='static/js/bootstrap.min.js'></script>
+        <script src='static/js/d3.v3.min.js'></script>
         {% block headerjs %}
         {% endblock %}
     </head>
@@ -23,7 +22,7 @@
         <nav class="navbar navbar-inverse navbar-default navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-left">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
