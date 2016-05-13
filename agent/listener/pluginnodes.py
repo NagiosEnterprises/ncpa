@@ -49,7 +49,7 @@ class PluginNode(nodes.RunnableNode):
         logging.debug('Running process with command line: `%s`', ' '.join(cmd))
 
         running_check = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        running_check.wait()
+        running_check.communicate()
 
         returncode = running_check.returncode
         stdout = ''.join(running_check.stdout.readlines()).replace('\r\n', '\n').replace('\r', '\n').strip()
