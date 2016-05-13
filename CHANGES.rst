@@ -9,6 +9,7 @@ Versions
 - Added support for SSL protocols TLSv1.1 & TLSv1.2
 - Added ability to adjust units B and b with T, Ti, Gi, Mi, Ki to match windows disk sizes
 - Added comments/help to the config file itself to help understand certain areas of the config that are confusing
+- Added API endpoints system/time and system/timezone with current timestamp and timezone information
 - Updated self-signed SSL certs to use 2048bit RSA and sha256 signature
 - Updated unit names that were set to c that weren't actually generic counters for better graphing
 - Updated top proceses to not show Idle process on Windows and added % / rounding
@@ -23,6 +24,7 @@ Versions
 - Fixed single value objects that have been updated via units (K, M, G, T) from becoming lists in the API
 - Fixed ncpa.cfg ssl_version option not actually working for Windows version
 - Fixed handlers config variable from throwing errors when empty or set to None
+- Fixed issue with large plugin output (4KB+ on windows and 64KB+ on linux) could crash NCPA
 
 1.8.1 - 04/09/2015
 ==================
