@@ -15,6 +15,7 @@ import sys
 import ssl
 if 'threading' in sys.modules:
     del sys.modules['threading']
+import gevent.builtins
 from gevent import monkey
 monkey.patch_all(subprocess=True)
 

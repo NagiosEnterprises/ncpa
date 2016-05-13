@@ -28,11 +28,3 @@ If you get an error about not finding the .tar in the RPM build location you wil
     %_smp_mflags -j3
     %__arch_install_post /usr/lib/rpm/check-rpaths /usr/lib/rpm/check-buildroot
 
-Building on CentOS 5 and Mac OS X
-*********************************
-
-Building on **CentOS 5** and **Mac OS X** requires *pyOpenSSL* v0.12 instead of v0.13. In order to get ncpa to build you must change the `requirements.txt` file's *pyOpenSSL* requirement line to:
-
-    pyOpenSSL==0.12
-
-This should then allow ncpa to be built granting you have already installed all required dependencies.
