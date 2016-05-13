@@ -2,6 +2,10 @@
 
 {% block title %}Live Stats{% endblock %}
 
+{% block headercss %}
+<link rel='stylesheet' href='static/css/ncpa-graph.css'>
+{% endblock %}
+
 {% block headerjs %}
 
 <script>
@@ -22,7 +26,7 @@ function load_disk() {
     var DISK_BASE = '/graph/disk/logical/';
     
     $.getJSON(DISK_API, function(d) {
-        $.each(d.value.logical, function(key) {
+        $.each(d.logical, function(key) {
             var target = DISK_BASE + key + '/used_percent'
             disk_div.append($('<div>').load(target));
         })
@@ -36,14 +40,14 @@ function load_interface() {
     var metrics = ['bytes_recv', 'bytes_sent'];
     
     $.getJSON(INTERFACE_API, function(d) {
-        $.each(d.value['interface'], function(key) {
+        $.each(d['interface'], function(key) {
 
             if (key.indexOf("isatap") != -1) {
                 return;
             }
 
-            var sent = INTERFACE_BASE + encodeURIComponent(key) + '/bytes_sent?delta=1&unit=K';
-            var recv = INTERFACE_BASE + encodeURIComponent(key) + '/bytes_recv?delta=1&unit=K';
+            var sent = INTERFACE_BASE + encodeURIComponent(key) + '/bytes_sent?delta=1&units=K';
+            var recv = INTERFACE_BASE + encodeURIComponent(key) + '/bytes_recv?delta=1&units=K';
             interface_div.append($('<div>').load(sent));
             interface_div.append($('<div>').load(recv));
         })
@@ -51,35 +55,46 @@ function load_interface() {
 }
 
 $(document).ready(function() {
+    
     $('#live-stats-nav').addClass('active');
     load_cmu();
     load_disk();
     load_interface();
+
+    $(window).resize(function() {
+        resize_graphs();
+    });
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        resize_graphs();
+    });
+
 });
+
+function resize_graphs()
+{
+    $('.can-wrapper:visible').each(function(k, v) {
+        var w = $(v).width();
+        $(v).find('canvas').attr('width', w);
+    });
+}
 
 </script>
 {% endblock %}
 
 {% block content %}
-<div class='tabbable tabs-left'>
-    <ul class='nav nav-tabs'>
+
+<div class="row">
+    <ul class='nav nav-tabs' style="margin-bottom: 20px;">
         <li class='active'><a href='#cmu' class='graph-toggle' data-toggle='tab' data-load='cmu'>CPU/Memory</a></li>
         <li><a href="#disk" class='graph-toggle' data-toggle='tab' data-load='disk'>Disks</a></li>
         <li><a href="#interface" class='graph-toggle' data-toggle='tab' data-load='interface'>Interfaces</a></li>
     </ul>
     <div class='tab-content'>
-        <div id='cmu' class='tab-pane active' style='width: 100%; margin:0 auto;'>
-            <h3>CPU/Memory</h3>
-            <hr />    
-        </div>
-        <div id='disk' class='tab-pane'>
-            <h3>Disks</h3>
-            <hr />
-        </div>
-        <div id='interface' class='tab-pane'>
-            <h3>Network Interfaces</h3>
-            <hr />
-        </div>
+        <div id='cmu' class='tab-pane active'></div>
+        <div id='disk' class='tab-pane'></div>
+        <div id='interface' class='tab-pane'></div>
     </div>
 </div>
+
 {% endblock %}

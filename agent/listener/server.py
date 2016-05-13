@@ -338,6 +338,11 @@ def graph_picker():
     return render_template('graph-picker.html')
 
 
+@listener.route('/view-api')
+@requires_auth
+def view_api():
+    return render_template('view-api.html')
+
 @listener.route('/api/', methods=['GET', 'POST'])
 @listener.route('/api/<path:accessor>', methods=['GET', 'POST'])
 @requires_auth
@@ -403,4 +408,4 @@ def api(accessor=''):
         value = node.run_check(**sane_args)
     else:
         value = node.walk(**sane_args)
-    return jsonify({'value': value})
+    return jsonify(value)

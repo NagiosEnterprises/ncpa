@@ -16,7 +16,7 @@
                     {% if error %}
                         <div class="alert alert-danger" style="margin-bottom: 20px;">{{ error }}</div>
                     {% endif %}
-                    <input {% if error %}id='inputError'{% endif %}type='password' class='form-control' name='token' placeholder='Token'>
+                    <input {% if error %}id='inputError'{% endif %}type='password' class='form-control' name='token' placeholder='Token' autofocus>
                     <button class='btn btn-sm btn-primary' type='submit' style="margin-top: 20px;">Log In</button>
                 </form>
             </div>

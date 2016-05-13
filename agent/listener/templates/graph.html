@@ -1,64 +1,25 @@
-<style>
 
-.ncpa-graph {
-    border:2px solid #FAEBD7;
-    border-radius:8px;
-    padding:10px;
-    height:200px;
-    width:650px;
-    background-color: white;
-}
-
-.graph-title {
-    text-align:center;
-    margin:5px 0px 5px 0px;
-}
-
-.can-wrapper {
-    float:left;
-}
-
-.data-units {
-    float:left;
-    font-size: 10px;
-    width: 80px;
-    vertical-align: middle;
-}
-
-.data-units table {
-    border:1px solid #FAEBD7;
-    border-radius: 12px;
-    margin-left: 10px;
-    margin-top: 45px;
-}
-
-.data-units td {
-    width:20px;
-    padding:5px 5px 5px 5px;
-    font-size:10px;
-}
-
-</style>
-<link rel='stylesheet' href='/static/css/bootstrap.min.css' />
-<link rel='stylesheet' href='/static/css/bootstrap-responsive.min.css' />
 <div id='graph-{{ graph_hash }}' class='ncpa-graph'>
     <script src='/static/js/smoothie.js'></script>
-    <script src='/static/js/jquery-1.12.3.min.js'></script>
-    <script>
+    <script type="text/javascript">
     $(document).ready(function() {
         var interval = 1000;
 
+        // Set the size of the chart
+        var width = $('#graph-{{ graph_hash }} .can-wrapper').width();
+        $('#graph-{{ graph_hash }} canvas').attr('width', width);
+
         // The following are explicitly for delta calculations
+        // interpolation: 'bezier','linear','step'
         var delta = !!{{ delta }};
         var query_string = '{{ query_string }}';
         var graph_title = $('#graph-{{ graph_hash }}-title');
         var default_smoothie = {maxValue: 100,
                                 minValue: 0,
-                                timestampFormatter:SmoothieChart.timeFormatter,
-                                millisPerPixel:76,
-                                labels:{fillStyle:'#000000'},
-                                grid:{fillStyle:'#ffffff',
-                                      strokeStyle:'rgba(119,119,119,0.18)'}};
+                                millisPerPixel: 40,
+                                labels: { fillStyle: '#OOO' },
+                                interpolation: 'bezier',
+                                grid: { fillStyle:'#FFF', strokeStyle:'#F8F8F8', sharpLines:true, borderVisible:false,verticalSections:6}};
 
 
         var get_ws_address = function() {
@@ -81,16 +42,12 @@
         $.getJSON(API_URL, function(d) {
             var ts_length = 0;
             $.each(d, function(i, api_response_object) {
-                var response_object = api_response_object['{{ graph_prop }}'];
+                var response_object = api_response_object;
                 ts_length = response_object[0].length || 1;
-                var title = '{{ graph_path }} in ' + response_object[1];
-
-                if (delta) {
-                    title += '/s';
-                }
+                var title = '{{ graph_path }}';
 
                 graph_title.text(title);
-                if(response_object[1] != '%') {
+                if (response_object[1] != '%') {
                     delete default_smoothie.maxValue;
                 }
             });
@@ -139,11 +96,14 @@
                 asum = all.reduce(function(a, b) {return a+b});
                 amean = asum / all.length;
 
-                td_min.text(min.toFixed(2));
-                td_max.text(max.toFixed(2));
-                td_cur.text(lmean.toFixed(2));
-                td_avg.text(amean.toFixed(2));
+                if (delta) {
+                    units += '/s';
+                }
 
+                td_min.text(min.toFixed(2) + ' ' + units);
+                td_max.text(max.toFixed(2) + ' ' + units);
+                td_cur.text(lmean.toFixed(2) + ' ' + units);
+                td_avg.text(amean.toFixed(2) + ' ' + units);
 
             };
 
@@ -162,41 +122,31 @@
             });
 
             $.each(lines, function(i) {
-                smoothie.addTimeSeries(lines[i], {lineWidth:0.5,
-                                                  strokeStyle:'rgba(0,0,0,0.44)',
-                                                  fillStyle:'rgba(7,0,255,0.29)'});
+                smoothie.addTimeSeries(lines[i], {lineWidth: 1, strokeStyle: '#000', fillStyle: 'rgba(0,0,0,0.1)'});
             });
             smoothie.streamTo(document.getElementById('canvas-{{ graph_hash }}'), 1000);
         });
 
 
-    })
+    });
     </script>
     <div class='graph-title' id='graph-{{ graph_hash }}-title'>{{ graph_path }}</div>
-    <div class='can-wrapper' width='500'>
-        <canvas id='canvas-{{ graph_hash }}' width='500' height='160'></canvas>
-    </div>
+    <div class='can-wrapper'><canvas id='canvas-{{ graph_hash }}' height='120'></canvas></div>
     <div class='data-units' id='data-{{ graph_hash }}-units'>
         <table>
             <tbody>
                 <tr>
-                    <td>Current<td>
-                    <td class='current'>None</td>
-                </tr>
-                <tr>
-                    <td>Min<td>
-                    <td class='min'>Inf</td>
-                </tr>
-                <tr>
-                    <td>Max<td>
-                    <td class='max'>-Inf</td>
-                </tr>
-                <tr>
-                    <td>Average<td>
-                    <td class='average'>None</td>
+                    <td class="title">Current</td>
+                    <td class='current'>0</td>
+                    <td class="title">Min</td>
+                    <td class='min'>0</td>
+                    <td class="title">Max</td>
+                    <td class='max'>0</td>
+                    <td class="title">Average</td>
+                    <td class='average'>0</td>
                 </tr>
             </tbody>
         </table>
     </div>
-    <div style='clear:both;'></div>
+    <div style='clear: both;'></div>
 </div>

@@ -12,7 +12,6 @@ import services
 import processes
 import environment
 
-
 importables = (
     'windowscounters',
     'windowslogs'
@@ -21,8 +20,7 @@ importables = (
 def get_uptime():
     current_time = time.time()
     epoch_boot = int(current_time)
-    return ([epoch_boot - ps.boot_time()], 's')
-
+    return (epoch_boot - ps.boot_time(), 's')
 
 def make_disk_nodes(disk_name):
     read_time = RunnableNode('read_time', method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_time, 'ms'))
@@ -64,20 +62,26 @@ def make_if_nodes(if_name):
     errout = RunnableNode('errout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errout, 'errors'))
     dropin = RunnableNode('dropin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropin, 'packets'))
     dropout = RunnableNode('dropout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropout, 'packets'))
-    return ParentNode(if_name,
-                      children=[bytes_sent, bytes_recv, packets_sent, packets_recv, errin, errout, dropin, dropout])
+    return ParentNode(if_name, children=[bytes_sent, bytes_recv, packets_sent, packets_recv, errin, errout, dropin, dropout])
+
+
+def get_timezone():
+    return time.tzname, ''
 
 
 def get_system_node():
-    sys_system = RunnableNode('system', method=lambda: ([platform.uname()[0]], 'name'))
-    sys_node = RunnableNode('node', method=lambda: ([platform.uname()[1]], 'name'))
-    sys_release = RunnableNode('release', method=lambda: ([platform.uname()[2]], 'name'))
-    sys_version = RunnableNode('version', method=lambda: ([platform.uname()[3]], 'name'))
-    sys_machine = RunnableNode('machine', method=lambda: ([platform.uname()[4]], 'name'))
-    sys_processor = RunnableNode('processor', method=lambda: ([platform.uname()[5]], 'name'))
+    sys_system = RunnableNode('system', method=lambda: (platform.uname()[0], ''))
+    sys_node = RunnableNode('node', method=lambda: (platform.uname()[1], ''))
+    sys_release = RunnableNode('release', method=lambda: (platform.uname()[2], ''))
+    sys_version = RunnableNode('version', method=lambda: (platform.uname()[3], ''))
+    sys_machine = RunnableNode('machine', method=lambda: (platform.uname()[4], ''))
+    sys_processor = RunnableNode('processor', method=lambda: (platform.uname()[5], ''))
     sys_uptime = RunnableNode('uptime', method=get_uptime)
-    sys_agent = RunnableNode('agent_version', method=lambda: ([server.__VERSION__], ''))
-    return ParentNode('system', children=[sys_system, sys_node, sys_release, sys_version, sys_machine, sys_processor, sys_uptime, sys_agent])
+    sys_agent = RunnableNode('agent_version', method=lambda: (server.__VERSION__, ''))
+    sys_time = RunnableNode('time', method=lambda: (time.time(), ''))
+    sys_timezone = RunnableNode('timezone', method=get_timezone)
+    return ParentNode('system', children=[sys_system, sys_node, sys_release, sys_version, sys_machine, sys_processor, sys_uptime,
+        sys_agent, sys_timezone, sys_time])
 
 
 def get_cpu_node():

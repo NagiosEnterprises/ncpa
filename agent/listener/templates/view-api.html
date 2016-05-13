@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}API{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-12">
+
+        <a href="/api" target="api-frame">root</a> /
+        <a href="/api/cpu" target="api-frame">cpu</a> /
+        <a href="/api/disk" target="api-frame">disk</a> /
+        <a href="/api/interface" target="api-frame">interface</a> /
+        <a href="/api/memory" target="api-frame">memory</a> /
+        <a href="/api/processes" target="api-frame">processes</a> /
+        <a href="/api/services" target="api-frame">services</a> /
+        <a href="/api/system" target="api-frame">system</a>
+
+        <input class="view-api-input form-control" type="text" value="https://localhost:5693/api"> 
+        <iframe src="/api" name="api-frame" id="view-api-frame"></iframe>
+
+    </div>
+</div>
+
+{% endblock %}

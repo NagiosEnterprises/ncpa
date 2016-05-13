@@ -5,16 +5,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="NCPA Web Interface">
         <meta name="author" content="Nagios Enterprises, LLC">
-        <link rel="shortcut icon" type="image/png" href="static/img/ncpa.png" />
-        <link rel="icon" type="image/png" href="static/img/ncpa.png" />
-        <link rel='stylesheet' href='static/css/bootstrap.min.css'>
-        <link rel='stylesheet' href='static/css/font-awesome.min.css'>
-        <link rel='stylesheet' href='static/css/ncpa.css'>
+        <link rel="shortcut icon" type="image/png" href="/static/img/ncpa.png" />
+        <link rel="icon" type="image/png" href="/static/img/ncpa.png" />
+        <link rel='stylesheet' href='/static/css/bootstrap.min.css'>
+        <link rel='stylesheet' href='/static/css/font-awesome.min.css'>
+        <link rel='stylesheet' href='/static/css/ncpa.css'>
         {% block headercss %}
         {% endblock %}
-        <script src='static/js/jquery-1.12.3.min.js'></script>
-        <script src='static/js/bootstrap.min.js'></script>
-        <script src='static/js/d3.v3.min.js'></script>
+        <script src='/static/js/jquery-1.12.3.min.js'></script>
+        <script src='/static/js/bootstrap.min.js'></script>
+        <script src='/static/js/d3.v3.min.js'></script>
         {% block headerjs %}
         {% endblock %}
     </head>
@@ -35,7 +35,7 @@
                         {% if not hide_page_links %}
                         <li id="dashboard-nav"><a href="/"><i class="fa fa-desktop fa-l"></i> Dashboard</a></li>
                         <li id="live-stats-nav"><a href="/live-stats"><i class="fa fa-area-chart fa-l"></i> Live Stats</a></li>
-                        <li id="navigator-nav"><a href="/api"><i class="fa fa-cog fa-l"></i> API</a></li>
+                        <li id="navigator-nav"><a href="/view-api"><i class="fa fa-cubes fa-l"></i> API</a></li>
                         <li id="top-nav"><a href="/top-base"><i class="fa fa-tachometer fa-l"></i> Top Processes</a></li>
                         <li id="graph-picker-nav"><a href="/graph-picker"><i class="fa fa-area-chart fa-l"></i> Graphs</a></li>
                     </ul>

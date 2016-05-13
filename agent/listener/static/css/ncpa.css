@@ -3,7 +3,7 @@ body { padding-top: 80px; font-size: 12px; font-family: verdana, sans-serif; }
 .fa-r { margin-left: 2px; }
 
 /* Bootstrap overrides */
-.form-control { border-radius: 0; }
+.form-control { border-radius: 0; padding: 6px 10px; }
 .form-control:focus { border-color: #BBB; box-shadow: none; }
 .btn { border-radius: 0; }
 .btn:focus, .btn:active, .btn:active:focus { outline: none; }
@@ -19,3 +19,6 @@ body { padding-top: 80px; font-size: 12px; font-family: verdana, sans-serif; }
 .navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:hover { background-color: #222; }
 .navbar { margin-bottom: 30px; }
 .table-border { border: 1px solid #DDD; }
+.navbar-inverse .navbar-nav>li>a { color: #BBB; }
+
+#view-api-frame { width: 100%; height: 595px; border: none; background-color: #F9F9F9; padding: 10px; }

@@ -105,7 +105,11 @@ class RunnableNode(ParentNode):
         values = self.get_adjusted_scale(values, kwargs)
         values = self.get_delta_values(values, kwargs)
         values = self.get_aggregated_values(values, kwargs)
-        return {self.name: [values, self.unit]}
+
+        if self.unit != '':
+            return {self.name: [values, self.unit]}
+
+        return {self.name: values}
 
     def set_unit(self, unit, request_args):
         if 'unit' in request_args:

@@ -16,7 +16,7 @@ function get_next_select(api_address, selection) {
     var select = $('<select>', {'data-children': api_address});
 
     $.getJSON(api_address, function(d) {
-        var element = d.value[selection];
+        var element = d[selection];
         var bind_graph = false;
         $.each(element, function(k, v) {
 
