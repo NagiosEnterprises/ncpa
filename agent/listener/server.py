@@ -209,9 +209,14 @@ def top_websocket():
                 process_dict['cpu_percent'] = round(process.cpu_percent() / psutil.cpu_count(), 2)
                 process_list.append(process_dict)
             json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
-            ws.send(json_val)
-            gevent.sleep(1)
-    return
+            try:
+                ws.send(json_val)
+                gevent.sleep(1)
+            except geventwebsocket.WebSocketError as e:
+                # Socket was probably closed by the browser changing pages
+                logging.debug(e)
+                break
+    return ''
 
 
 @listener.route('/tail-websocket/<path:accessor>')
@@ -229,13 +234,13 @@ def tail_websocket(accessor=None):
                     ws.send(json_log)
 
                 gevent.sleep(2)
-            except geventwebsocket.WebSocketError as exc:
+            except geventwebsocket.WebSocketError as e:
                 ws.close()
-                logging.debug(exc)
+                logging.debug(e)
                 return
-            except BaseException as exc:
+            except BaseException as e:
                 ws.close()
-                logging.exception(exc)
+                logging.exception(e)
     return
 
 

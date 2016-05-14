@@ -153,7 +153,7 @@ class Listener(Base):
             http_server = WSGIServer(listener=(address, port),
                                      application=listener.server.listener,
                                      handler_class=webhandler.PatchedWSGIHandler,
-                                     spawn=Pool(100),
+                                     spawn=Pool(200),
                                      **ssl_context)
             http_server.serve_forever()
         except Exception, e:

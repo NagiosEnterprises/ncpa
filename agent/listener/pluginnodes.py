@@ -6,7 +6,8 @@ import subprocess
 import shlex
 import re
 import copy
-
+import Queue
+from threading import Timer
 
 class PluginNode(nodes.RunnableNode):
 
@@ -36,25 +37,44 @@ class PluginNode(nodes.RunnableNode):
         except ConfigParser.NoOptionError:
             return '$plugin_name $plugin_args'
 
+    def kill_proc(self, p, t, q):
+        p.kill()
+        q.put("Error: Plugin command timed out. (%d sec)" % t)
+
     def execute_plugin(self, config, *args, **kwargs):
         """Runs custom scripts that MUST be located in the scripts subdirectory
         of the executable
 
         """
-        #Get any special instructions from the config for executing the plugin
+        # Get any special instructions from the config for executing the plugin
         instructions = self.get_plugin_instructions(config)
 
-        #Make our command line
+        timeout = 10
+
+        # Make our command line
         cmd = self.get_cmdline(instructions)
         logging.debug('Running process with command line: `%s`', ' '.join(cmd))
 
         running_check = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        running_check.communicate()
+        queue = Queue.Queue(maxsize=2)
+        timer = Timer(timeout, self.kill_proc, [running_check, timeout, queue])
+
+        try:
+            timer.start()
+            stdout, stderr = running_check.communicate()
+        finally:
+            timer.cancel()
 
         returncode = running_check.returncode
-        stdout = ''.join(running_check.stdout.readlines()).replace('\r\n', '\n').replace('\r', '\n').strip()
 
-        return {'returncode': returncode, 'stdout': stdout}
+        # Pull from the queue if we have a error and the stdout is empty
+        if returncode == 1 and not stdout:
+            if queue.qsize() > 0:
+                stdout = queue.get()
+
+        cleaned_stdout = ''.join(stdout).replace('\r\n', '\n').replace('\r', '\n').strip()
+
+        return {'returncode': returncode, 'stdout': cleaned_stdout}
 
     def get_cmdline(self, instruction):
         """Execute with special instructions.
