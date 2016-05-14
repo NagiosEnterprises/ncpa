@@ -1,6 +1,9 @@
 1.0.0
 -----
-- Fixed unit confusion by renaming --unit to --units (-u) and --units to --unit-name (-n) to avoid confusion and to match the API
+- Added backwards compatability for 1.7.x and 1.8.x
+- Updated default timeout to 60 seconds
+- Updated --unit to --units (-u) and --units to --unit-name (-n) to avoid confusion and to match the API
+- Fixed issue where connection reset errors were frequently raised with simultaneous checks
 
 0.3.5
 -----
