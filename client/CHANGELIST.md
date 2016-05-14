@@ -1,6 +1,8 @@
 1.0.0
 -----
+- Added backwards compatability for 1.7.x and 1.8.x
 - Fixed unit confusion by renaming --unit to --units (-u) and --units to --unit-name (-n) to avoid confusion and to match the API
+- Fixed issue where connection reset messages would happen frequently when running large amount of checks on single system
 
 0.3.5
 -----
