@@ -10,6 +10,7 @@ Versions
 - Added ability to adjust units B and b with T, Ti, Gi, Mi, Ki to match windows disk sizes
 - Added comments/help to the config file itself to help understand certain areas of the config that are confusing
 - Added API endpoints system/time and system/timezone with current timestamp and timezone information
+- Added command_timeout config option in ncpa.cfg [plugin directives] section
 - Updated self-signed SSL certs to use 2048bit RSA and sha256 signature
 - Updated unit names that were set to c that weren't actually generic counters for better graphing
 - Updated top proceses to not show Idle process on Windows and added % / rounding
