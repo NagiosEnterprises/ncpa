@@ -21,8 +21,8 @@ version = open(version_file, 'r').readline().strip()
 
 sys.argv += ['-p', 'xml']
 
-includefiles = [('var/ncpa_listener.log', 'var/ncpa_listener.log'),
-                ('var/ncpa_passive.log', 'var/ncpa_passive.log'),
+includefiles = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
+                ('var/log/ncpa_passive.log', 'var/log/ncpa_passive.log'),
                 ('etc/ncpa.cfg', 'etc/ncpa.cfg'),
                 'plugins',
                 ('listener/templates', 'listener/templates'),

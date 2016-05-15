@@ -6,3 +6,6 @@
 *.cfg
 .idea/
 .vagrant
+agent/build/*
+docs/_build
+*.exe

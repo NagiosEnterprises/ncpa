@@ -4,7 +4,7 @@ certificate = adhoc
 loglevel = info
 ip = 0.0.0.0
 gid = nagcmd
-logfile = var/ncpa_listener.log
+logfile = var/log/ncpa_listener.log
 port = 5693
 pidfile = var/ncpa_listener.pid
 
@@ -14,7 +14,7 @@ handlers = nrds
 loglevel = info
 gid = nagcmd
 sleep = 300
-logfile = var/ncpa_passive.log
+logfile = var/log/ncpa_passive.log
 pidfile = var/ncpa_passive.pid
 
 [nrdp]

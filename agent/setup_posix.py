@@ -21,8 +21,8 @@ version = open(version_file, 'r').readline().strip()
 
 shutil.rmtree('build', ignore_errors=True)
 
-includefiles = [('var/ncpa_listener.log', 'var/ncpa_listener.log'),
-                ('var/ncpa_passive.log', 'var/ncpa_passive.log'),
+includefiles = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
+                ('var/log/ncpa_passive.log', 'var/log/ncpa_passive.log'),
                 'etc',
                 'plugins',
                 ('listener/templates', 'listener/templates'),

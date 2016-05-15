@@ -25,8 +25,8 @@ build_exe: clean update_version build_doc
 	mkdir -p $(BASEDIR)/agent/plugins
 	mkdir -p $(BASEDIR)/agent/var
 	mkdir -p $(BASEDIR)/agent/build
-	echo -n '' > $(BASEDIR)/agent/var/ncpa_passive.log
-	echo -n '' > $(BASEDIR)/agent/var/ncpa_listener.log
+	echo -n '' > $(BASEDIR)/agent/var/log/ncpa_passive.log
+	echo -n '' > $(BASEDIR)/agent/var/log/ncpa_listener.log
 	cd $(BASEDIR)/agent && $(PYTHONVER) setup_posix.py build_exe
 	mv $(BASEDIR)/agent/build/exe.* $(BASEDIR)/agent/build/NCPA
 	cp -rf $(BASEDIR)/docs/_build/html $(BASEDIR)/agent/build/NCPA/listener/static/help
