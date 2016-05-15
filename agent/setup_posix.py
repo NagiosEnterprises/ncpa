@@ -16,7 +16,7 @@ import tarfile
 
 version_file = os.path.join(os.path.dirname(__file__),
                             '..',
-                            'VERSION.md')
+                            'VERSION')
 version = open(version_file, 'r').readline().strip()
 
 shutil.rmtree('build', ignore_errors=True)
