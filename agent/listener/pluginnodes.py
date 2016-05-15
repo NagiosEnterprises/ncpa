@@ -49,7 +49,11 @@ class PluginNode(nodes.RunnableNode):
         # Get any special instructions from the config for executing the plugin
         instructions = self.get_plugin_instructions(config)
 
-        timeout = 10
+        # Get plugin command timeout value, if it exists
+        try:
+            timeout = int(config.get('plugin directives', 'command_timeout'))
+        except ConfigParser.NoOptionError:
+            timeout = 60
 
         # Make our command line
         cmd = self.get_cmdline(instructions)

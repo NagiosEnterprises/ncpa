@@ -88,13 +88,13 @@ def login():
     return render_template('login.html', **template_args)
 
 
-@listener.route('/live-stats')
+@listener.route('/live-stats', methods=['GET', 'POST'])
 @requires_auth
 def live_stats():
     return render_template('live-stats.html')
 
 
-@listener.route('/logout')
+@listener.route('/logout', methods=['GET', 'POST'])
 def logout():
     session['logged'] = False
     return redirect(url_for('login', message='Successfully logged out.'))
@@ -336,17 +336,19 @@ def nrdp():
 @listener.route('/graph-picker/', methods=['GET', 'POST'])
 @requires_auth
 def graph_picker():
-    """This function renders the graph picker page, which can be though of the
+    """
+    This function renders the graph picker page, which can be though of the
     the explorer for the graphs.
 
     """
     return render_template('graph-picker.html')
 
 
-@listener.route('/view-api')
+@listener.route('/view-api', methods=['GET', 'POST'])
 @requires_auth
 def view_api():
     return render_template('view-api.html')
+
 
 @listener.route('/api/', methods=['GET', 'POST'])
 @listener.route('/api/<path:accessor>', methods=['GET', 'POST'])
