@@ -7,7 +7,7 @@ Versions
 2.0.0 - ??/??/2016
 ==================
 - Added support for SSL protocols TLSv1.1 & TLSv1.2
-- Added ability to adjust units B and b with T, Ti, Gi, Mi, Ki to match windows disk sizes
+- Added ability to adjust units B and b with T, Ti, Gi, Mi, Ki to match windows disk sizes using untis=x
 - Added comments/help to the config file itself to help understand certain areas of the config that are confusing
 - Added API endpoints system/time and system/timezone with current timestamp and timezone information
 - Added command_timeout config option in ncpa.cfg [plugin directives] section
@@ -17,10 +17,10 @@ Versions
 - Updated default locations on fresh install for log files on windows and linux
 - Updated openssl and PyOpenSSL libraries which no longer accept SSLv2 & SSLv3
 - Updated API to round most values that had been calculated to 2 decimals
-- Fixed systemctl service list on el7
-- Fixed registry key placement on fresh installs
+- Fixed services list on el7 (and all systemctl systems)
+- Fixed registry key placement for fresh installs on Windows
 - Fixed using multiple values passed to nodes for filtering in API and active checks (ex. service=x&service=y)
-- Fixed units=x setting only affecting b and B units not any unit name
+- Fixed units=x setting to only affecting b and B units not all unit types
 - Fixed API showing b instead of B for bytes in multiple locations
 - Fixed single value objects that have been updated via units (K, M, G, T) from becoming lists in the API
 - Fixed ncpa.cfg ssl_version option not actually working for Windows version
