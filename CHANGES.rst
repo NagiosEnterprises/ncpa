@@ -11,6 +11,7 @@ Versions
 - Added comments/help to the config file itself to help understand certain areas of the config that are confusing
 - Added API endpoints system/time and system/timezone with current timestamp and timezone information
 - Added command_timeout config option in ncpa.cfg [plugin directives] section
+- Updated web UI with modern theme with better graph styling
 - Updated self-signed SSL certs to use 2048bit RSA and sha256 signature
 - Updated unit names that were set to c that weren't actually generic counters for better graphing
 - Updated top proceses to not show Idle process on Windows and added % / rounding
@@ -26,6 +27,7 @@ Versions
 - Fixed ncpa.cfg ssl_version option not actually working for Windows version
 - Fixed handlers config variable from throwing errors when empty or set to None
 - Fixed issue with large plugin output (4KB+ on windows and 64KB+ on linux) could crash NCPA
+- Fixed errors thrown by clients ending websocket connections by changing pages not being caught and handled properly
 
 1.8.1 - 04/09/2015
 ==================
