@@ -106,6 +106,9 @@ class RunnableNode(ParentNode):
         values = self.get_delta_values(values, kwargs)
         values = self.get_aggregated_values(values, kwargs)
 
+        if len(values) == 1:
+            values = values[0]
+
         if self.unit != '':
             return {self.name: [values, self.unit]}
 
@@ -354,9 +357,6 @@ class RunnableNode(ParentNode):
 
         if factor != 1.0:
             self.unit = '%s%s' % (units, self.unit)
-
-        if len(values) == 1:
-            values = values[0]
 
         return values, units
 

@@ -116,7 +116,7 @@ class NCPACheck(object):
         stdout, returncode = None, None
 
         try:
-            response_dict = json.loads(response)['value']
+            response_dict = json.loads(response)
             stdout = response_dict['stdout']
             returncode = unicode(response_dict['returncode'])
         except ValueError as exc:
@@ -124,9 +124,6 @@ class NCPACheck(object):
                           response)
         except TypeError as exc:
             logging.error("Error response was not a string: %s", str(exc))
-        except KeyError as exc:
-            logging.error("JSON was missing keyword: %s. JSON given: %s",
-                          str(exc), response)
 
         logging.debug("JSON response handled found stdout='%s', returncode=%s",
                       stdout, returncode)
