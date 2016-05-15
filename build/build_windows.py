@@ -18,6 +18,7 @@ try:
 except:
     pass
 
+# We should not be doing this in the build_windows.py script but rather in another script that should call this script
 #subprocess.Popen(['git', 'pull']).wait()
 #subprocess.Popen(['pip', 'install', '-r', os.path.join(basedir, 'requirements.txt')]).wait()
 subprocess.Popen(['rmdir', os.path.join(basedir, 'agent', 'build'), '/s', '/q'], shell=True).wait()

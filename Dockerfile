@@ -11,7 +11,7 @@ RUN mkdir -p /src/ncpa
 
 ADD . /src/_ncpa
 RUN curl --silent --show-error --retry 5 https://bootstrap.pypa.io/get-pip.py | python2.7
-RUN pip install -r /src/_ncpa/requirements.txt
+RUN pip install -r /src/_ncpa/build/resources/require.txt
 
 RUN groupadd nagcmd
 RUN useradd nagios -M -g nagcmd -u 1000

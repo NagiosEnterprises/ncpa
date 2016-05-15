@@ -35,7 +35,7 @@ build_doc:
 	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBIN)" html
 
 update_packages:
-	$(FLAGS) $(PIPVER) install -r $(BASEDIR)/requirements.txt --upgrade
+	$(FLAGS) $(PIPVER) install -r $(BASEDIR)/build/resources/require.txt --upgrade
 	wget http://assets.nagios.com/downloads/ncpa/dev/$(CXFREEZEVER)-patched.tar.gz
 	tar xf $(CXFREEZEVER)-patched.tar.gz
 	cd $(CXFREEZEVER) && $(PYTHONBIN) setup.py install
