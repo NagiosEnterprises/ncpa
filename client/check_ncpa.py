@@ -96,7 +96,7 @@ def parse_args():
                            "a check.")
     parser.add_option("-v", "--verbose", action='store_true',
                       help='Print more verbose error messages.')
-    parser.add_option("-d", "--debug", action='store_true',
+    parser.add_option("-D", "--debug", action='store_true',
                       help='Print LOTS of error messages. Used mostly for debugging.')
     parser.add_option("-V", "--version", action='store_true',
                       help='Print version number of plugin.')
