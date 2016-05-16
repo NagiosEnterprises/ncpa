@@ -7,6 +7,7 @@ SYNOPSIS
 import sys
 import optparse
 import traceback
+import ssl
 
 # Python 2/3 Compatibility imports
 
@@ -95,12 +96,14 @@ def parse_args():
                            "a check.")
     parser.add_option("-v", "--verbose", action='store_true',
                       help='Print more verbose error messages.')
-    parser.add_option("-s", "--super-verbose", action='store_true',
-                      help='Print LOTS of error messages.')
+    parser.add_option("-d", "--debug", action='store_true',
+                      help='Print LOTS of error messages. Used mostly for debugging.')
     parser.add_option("-V", "--version", action='store_true',
                       help='Print version number of plugin.')
     parser.add_option("-q", "--queryargs", default=None,
                       help='Extra query arguments to pass in the NCPA URL.')
+    parser.add_option("-s", "--secure", action='store_true', default=False,
+                      help='Require successful certificate verification. Does not work on Python < 2.7.9.')
     options, _ = parser.parse_args()
 
     if options.version:
@@ -215,7 +218,14 @@ def get_json(options):
     if options.verbose:
         print('Connecting to: ' + url)
 
-    ret = urlopen(url)
+    try:
+        ctx = ssl.create_default_context()
+        if not options.secure:
+            ctx.check_hostname = False
+            ctx.verify_mode = ssl.CERT_NONE
+        ret = urlopen(url, context=ctx)
+    except AttributeError:
+        ret = urlopen(url)
 
     if options.verbose:
         print('File returned contained:\n' + ''.join(ret))
@@ -270,7 +280,7 @@ def main():
         else:
             return run_check(info_json)
     except Exception, e:
-        if options.super_verbose:
+        if options.debug:
             return 'The stack trace:' + traceback.format_exc(), 3
         elif options.verbose:
             return 'An error occurred:' + str(e), 3
