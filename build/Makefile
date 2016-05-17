@@ -92,4 +92,4 @@ build_dmg: build_tarball
 	hdiutil create -volname NCPA-$(NCPAVER) -srcfolder NCPA-INSTALL-$(NCPAVER) -ov -format UDZO ncpa-$(NCPAVER).dmg
 
 update_version:
-	$(PYTHONVER) $(BASEDIR)/apply_version.py
+	$(PYTHONVER) $(BASEDIR)/build/scripts/apply_version.py
