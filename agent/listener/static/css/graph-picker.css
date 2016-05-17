@@ -26,14 +26,6 @@
     margin: 0 auto;
 }
 
-#graph-selector-div {
-    height: 220px;
-}
-
 #graph-address-url {
     width: 800px;
-}
-
-.graph-url-input {
-    margin-top: 15px;
 }

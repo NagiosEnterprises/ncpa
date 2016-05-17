@@ -13,7 +13,7 @@ function remove_selects_below(e) {
 }
 
 function get_next_select(api_address, selection) {
-    var select = $('<select>', {'data-children': api_address});
+    var select = $('<select>', {'data-children': api_address, 'class': 'form-control'});
 
     $.getJSON(api_address, function(d) {
         var element = d[selection];
@@ -54,9 +54,7 @@ function get_next_select(api_address, selection) {
 
 function wrap_select_in_form(select) {
     var form = $('<form>', {class: 'form-inline graph-picker-holder'});
-    var label = $('<label>', {class: 'control-label centered'});
-    label.append(select);
-    form.append(label);
+    form.append(select);
     return form;
 }
 
@@ -66,7 +64,7 @@ function get_graph_url(api_url) {
         api_url = raw_api_url.replace(/\?.*/g, '');
     }
 
-    var graph_url = api_url.replace(/^\/api/g, '/graph');
+    var graph_url = api_url.replace(/^\/api/g, '/graph').replace(' ', '%20');
 
     var delta = $('input[name=delta]:checked').val();
     var units = $('input[name=units]:checked').val();
@@ -107,6 +105,7 @@ function render_graph(target) {
     $('#graph-address-url').val(graph_url);
     $('.ncpa-graph').trigger('doUnload');
 
+    console.log(graph_url);
 
     graph_content.empty();
     graph_content.load(graph_url);

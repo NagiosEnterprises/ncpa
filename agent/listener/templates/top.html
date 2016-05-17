@@ -223,15 +223,14 @@
 
     <div class="well">
         <form class="form-inline" id="top-form">
-           <label class="control-label spacer">Highlight Name
-                <input class="span2" type="text" id="highlight-input" placeholder="Highlight Name">
-            </label>
-            <label class="control-label spacer">Warning Threshold
-                <input class="span2" type="text" id="warning-input" placeholder="Warning Threshold">
-            </label>
-            <label class="control-label spacer">Critical Threshold
-                <input class="span2" type="text" id="critical-input" placeholder="Critical Threshold">
-            </label>
+            <div style="float: left;">
+                <input class="form-control" style="width: 260px;" type="text" id="highlight-input" placeholder="Highlight Name">
+            </div>
+            <div style="float: right;">
+                <input class="form-control" type="text" id="warning-input" placeholder="Warning Threshold">
+                <input class="form-control" type="text" id="critical-input" placeholder="Critical Threshold">
+            </div>
+            <div style="clear: both;"></div>
         </form>
     </div>
 
