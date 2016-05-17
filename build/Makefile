@@ -4,7 +4,7 @@ CXFREEZEVER = cx_Freeze-4.3.4
 PYTHONBIN = $(shell which python2.7)
 SPHINXBIN = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION)
-BUILDBRANCH = $(shell cat /vagrant/buildbranch || echo "master")
+BUILDBRANCH = master
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = /usr/src/redhat
 
@@ -35,12 +35,12 @@ build_doc:
 	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBIN)" html
 
 update_packages:
-	$(FLAGS) $(PIPVER) install -r $(BASEDIR)/build/resources/require.txt --upgrade
-	wget http://assets.nagios.com/downloads/ncpa/dev/$(CXFREEZEVER)-patched.tar.gz
-	tar xf $(CXFREEZEVER)-patched.tar.gz
-	cd $(CXFREEZEVER) && $(PYTHONBIN) setup.py install
-	cd ..
-	rm -rf $(CXFREEZEVER)
+	$(PYTHONBIN) -m pip install -r $(BASEDIR)/build/resources/require.txt --upgrade
+	#wget http://assets.nagios.com/downloads/ncpa/dev/$(CXFREEZEVER)-patched.tar.gz
+	#tar xf $(CXFREEZEVER)-patched.tar.gz
+	#cd $(CXFREEZEVER) && $(PYTHONBIN) setup.py install
+	#cd ..
+	#rm -rf $(CXFREEZEVER)
 
 update_git:
 	git pull
