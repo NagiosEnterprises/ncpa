@@ -17,7 +17,11 @@ import platform
 version_file = os.path.join(os.path.dirname(__file__),
                             '..',
                             'VERSION')
-version, rel, x = open(version_file, 'r').readline().strip().partition('-')
+version = open(version_file, 'r').readline().strip()
+
+if not version[-1].isdigit():
+	x = version.rsplit('.', 1)
+	version = x[0]
 
 sys.argv += ['-p', 'xml']
 

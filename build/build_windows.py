@@ -45,9 +45,10 @@ shutil.copytree(os.path.join(basedir, 'docs', '_build', 'html'),
 
 environ = os.environ.copy()
 environ['NCPA_BUILD_VER'] = version
-try:
-	environ['NCPA_BUILD_VER_CLEAN'] = version[:version.index('-')]
-except ValueError:
+if not version[-1].isdigit():
+	x = version.rsplit('.', 1)
+	environ['NCPA_BUILD_VER_CLEAN'] = x[0]
+else:
 	environ['NCPA_BUILD_VER_CLEAN'] = version
 shutil.copy(nsi_store, nsi)
 b = subprocess.Popen([nsis, nsi], env=environ)
