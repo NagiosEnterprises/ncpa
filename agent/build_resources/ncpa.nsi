@@ -11,6 +11,7 @@
 !define NAME "NCPA"
 !define COMPANY "Nagios Enterprises, LLC"
 !define NCPA_VERSION "$%NCPA_BUILD_VER%"
+!define NCPA_VERSION_CLEAN "$%NCPA_BUILD_VER_CLEAN%"
 !define UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\NCPA"
   
 !define MULTIUSER_INSTALLMODE_COMMANDLINE
@@ -41,7 +42,7 @@ ShowInstDetails hide
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 
 ; Version information
-VIProductVersion ${NCPA_VERSION}.0
+VIProductVersion ${NCPA_VERSION_CLEAN}.0
 VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "${NAME}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "${COMPANY}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" ${NCPA_VERSION}

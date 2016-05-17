@@ -20,7 +20,7 @@ for line in fileinput.input(server_source, inplace=True):
 
 for line in fileinput.input(docs_config, inplace=True):
     if line.startswith('version ='):
-        print "version = %s" % VERSION[:3]
+        print "version = '%s'" % VERSION[:3]
     elif line.startswith('release ='):
         print "release = '%s'" % VERSION
     else:
