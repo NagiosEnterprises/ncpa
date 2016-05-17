@@ -36,11 +36,6 @@ build_doc:
 
 update_packages:
 	$(PYTHONBIN) -m pip install -r $(BASEDIR)/build/resources/require.txt --upgrade
-	#wget http://assets.nagios.com/downloads/ncpa/dev/$(CXFREEZEVER)-patched.tar.gz
-	#tar xf $(CXFREEZEVER)-patched.tar.gz
-	#cd $(CXFREEZEVER) && $(PYTHONBIN) setup.py install
-	#cd ..
-	#rm -rf $(CXFREEZEVER)
 
 update_git:
 	git pull
@@ -52,7 +47,7 @@ build_tarball: update_git update_packages build_exe
 	tar zcvf ncpa-$(NCPAVER).tar.gz ncpa-$(NCPAVER)
 
 build_spec: build_tarball
-        NCPACLEANVER=${NCPAVER%-*}
+	NCPACLEANVER=${NCPAVER%-*}
 	cat ncpa-partial.spec | sed s/__VERSION__/$(NCPACLEANVER)/g | sed s@__BUILDROOT__@$(BUILDROOT)@g > ncpa.spec
 
 clean:
