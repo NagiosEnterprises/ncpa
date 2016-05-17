@@ -4,7 +4,6 @@ CXFREEZEVER = cx_Freeze-4.3.4
 PYTHONBIN = $(shell which python2.7)
 SPHINXBIN = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION)
-NCPACLEANVER = 2.0.0
 BUILDBRANCH = master
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = /usr/src/redhat
@@ -48,7 +47,7 @@ build_tarball: update_git update_packages build_exe
 	tar zcvf ncpa-$(NCPAVER).tar.gz ncpa-$(NCPAVER)
 
 build_spec: build_tarball
-	cat ncpa-partial.spec | sed s/__VERSION__/$(NCPACLEANVER)/g | sed s@__BUILDROOT__@$(BUILDROOT)@g > ncpa.spec
+	cat ncpa-partial.spec | sed s/__VERSION__/$(NCPAVER)/g | sed s@__BUILDROOT__@$(BUILDROOT)@g > ncpa.spec
 
 clean:
 	rm -rf ncpa-$(NCPAVER)
