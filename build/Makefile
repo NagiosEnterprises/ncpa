@@ -52,7 +52,8 @@ build_tarball: update_git update_packages build_exe
 	tar zcvf ncpa-$(NCPAVER).tar.gz ncpa-$(NCPAVER)
 
 build_spec: build_tarball
-	cat ncpa-partial.spec | sed s/__VERSION__/$(NCPAVER)/g | sed s@__BUILDROOT__@$(BUILDROOT)@g > ncpa.spec
+        NCPACLEANVER=${NCPAVER%-*}
+	cat ncpa-partial.spec | sed s/__VERSION__/$(NCPACLEANVER)/g | sed s@__BUILDROOT__@$(BUILDROOT)@g > ncpa.spec
 
 clean:
 	rm -rf ncpa-$(NCPAVER)
