@@ -4,7 +4,7 @@ CXFREEZEVER = cx_Freeze-4.3.4
 PYTHONBIN = $(shell which python2.7)
 SPHINXBIN = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION)
-NCPACLEANVER = ${$(NCPAVER)%-*}
+NCPACLEANVER = $(shell var=`cat ../VERSION`; echo ${ver%-*};)
 BUILDBRANCH = master
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = /usr/src/redhat
