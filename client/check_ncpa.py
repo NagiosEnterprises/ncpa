@@ -226,10 +226,12 @@ def get_json(options):
     except AttributeError:
         ret = urlopen(url)
 
-    if options.verbose:
-        print('File returned contained:\n' + ''.join(ret))
+    ret = ''.join(ret)
 
-    arr = json.load(ret)
+    if options.verbose:
+        print('File returned contained:\n' + ret)
+
+    arr = json.loads(ret)
 
     if 'value' in arr:
         return arr['value']
