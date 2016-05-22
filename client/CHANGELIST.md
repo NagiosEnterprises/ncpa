@@ -6,6 +6,7 @@
 - Updated --unit to --units (-u) and --units to --unit-name (-n) to avoid confusion and to match the API
 - Updated -s, --super-verbose flag to be -d, --debug so that secure flag can be added
 - Fixed issue where connection reset errors were frequently raised with simultaneous checks
+- Fixed issue where metrics with spaces in their name were not url encoded
 
 0.3.5
 -----

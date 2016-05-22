@@ -151,7 +151,7 @@ def get_host_part_from_options(options):
     port = options.port
 
     if not options.metric is None:
-        metric = options.metric
+        metric = urlquote(options.metric)
     else:
         metric = ''
 
@@ -159,8 +159,7 @@ def get_host_part_from_options(options):
     if not metric and not arguments:
         api_address = 'https://%s:%d/api' % (hostname, port)
     else:
-        api_address = 'https://%s:%d/api/%s/%s' % (hostname, port, metric,
-                                                   arguments)
+        api_address = 'https://%s:%d/api/%s/%s' % (hostname, port, metric, arguments)
 
     return api_address
 
