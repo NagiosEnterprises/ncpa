@@ -384,6 +384,7 @@ class RunnableNode(ParentNode):
 
         #For each of the previous list items, run the regular expression, and if the regular expression
         #finds a match, run the function and return its comparison result.
+        nagios_range = ''.join(nagios_range)
         for regex_string, func in actions:
             res = re.match(regex_string, nagios_range)
             if res:

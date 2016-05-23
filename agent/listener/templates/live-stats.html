@@ -48,8 +48,17 @@ function load_interface() {
 
             var sent = INTERFACE_BASE + encodeURIComponent(key) + '/bytes_sent?delta=1&units=K';
             var recv = INTERFACE_BASE + encodeURIComponent(key) + '/bytes_recv?delta=1&units=K';
-            interface_div.append($('<div>').load(sent));
-            interface_div.append($('<div>').load(recv));
+
+            // Load each interface in it's own fill sized div
+            var s = $('<div>').css('width', '49%')
+                              .css('float', 'left')
+                              .load(sent);
+            var r = $('<div>').css('width', '49%')
+                              .css('float', 'right')
+                              .load(recv);
+            var box = $('<div>', { class: 'clear' }).append(s).append(r);
+
+            interface_div.append(box);
         })
     })
 }
@@ -82,14 +91,19 @@ function resize_graphs()
 </script>
 {% endblock %}
 
+{% block undernav %}
+
+<ul class='nav graph-tabs nav-tabs' style="margin-bottom: 20px;">
+    <li class='active'><a href='#cmu' class='graph-toggle' data-toggle='tab' data-load='cmu'>CPU/Memory</a></li>
+    <li><a href="#disk" class='graph-toggle' data-toggle='tab' data-load='disk'>Disks</a></li>
+    <li><a href="#interface" class='graph-toggle' data-toggle='tab' data-load='interface'>Interfaces</a></li>
+</ul>
+
+{% endblock %}
+
 {% block content %}
 
 <div class="row">
-    <ul class='nav nav-tabs' style="margin-bottom: 20px;">
-        <li class='active'><a href='#cmu' class='graph-toggle' data-toggle='tab' data-load='cmu'>CPU/Memory</a></li>
-        <li><a href="#disk" class='graph-toggle' data-toggle='tab' data-load='disk'>Disks</a></li>
-        <li><a href="#interface" class='graph-toggle' data-toggle='tab' data-load='interface'>Interfaces</a></li>
-    </ul>
     <div class='tab-content'>
         <div id='cmu' class='tab-pane active'></div>
         <div id='disk' class='tab-pane'></div>

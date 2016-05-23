@@ -1,4 +1,4 @@
-body { padding-top: 80px; font-size: 12px; font-family: verdana, sans-serif; }
+body { padding-top: 50px; font-size: 12px; font-family: verdana, sans-serif; }
 .fa-l { margin-right: 2px; }
 .fa-r { margin-left: 2px; }
 
@@ -17,11 +17,16 @@ body { padding-top: 80px; font-size: 12px; font-family: verdana, sans-serif; }
 .navbar-inverse { background: url('../img/footer_lodyas.png'); border: none; }
 .navbar-inverse .navbar-brand { font-size: 24px; font-weight: bold; color: #EEE; letter-spacing: 2px; }
 .navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:hover { background-color: #222; }
-.navbar { margin-bottom: 30px; }
+.navbar { margin-bottom: 0; }
 .table-border { border: 1px solid #DDD; }
 .navbar-inverse .navbar-nav>li>a { color: #BBB; }
 input[type=checkbox], input[type=radio] { margin: 2px 0 0; }
 .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] { margin-left: -18px; }
 .form-horizontal .checkbox, .form-horizontal .checkbox-inline, .form-horizontal .radio, .form-horizontal .radio-inline, .form-horizontal .control-label { padding-top: 0; }
+.nav-tabs>li>a { border-radius: 0; }
+
+.undernav { margin-bottom: 30px; }
+
+.graph-tabs { background-color: #EEE; }
 
 #view-api-frame { width: 100%; height: 595px; border: none; background-color: #F9F9F9; padding: 10px; }
