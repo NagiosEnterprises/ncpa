@@ -81,7 +81,7 @@ class Handler(nagioshandler.NagiosHandler):
         return check_result
 
     @staticmethod
-    def get_xml_of_checkresults(checks):
+    def get_xml_of_checkresults(doc, checks):
         """
         Gets XML of all check results in NRDP config section as
         an XML document.
@@ -89,7 +89,6 @@ class Handler(nagioshandler.NagiosHandler):
         :return: The XML Document to be returned to Nagios
         :rtype: xml.dom.minidom.Document
         """
-        doc = xml.dom.minidom.Document()
         check_results = doc.createElement('checkresults')
         doc.appendChild(check_results)
 
@@ -97,7 +96,7 @@ class Handler(nagioshandler.NagiosHandler):
             element = Handler.make_xml(check)
             check_results.appendChild(element)
 
-        return doc.toxml()
+        return doc
 
     def run(self):
         """
@@ -108,7 +107,17 @@ class Handler(nagioshandler.NagiosHandler):
         :rtype : int
         """
         super(Handler, self).run()
-        checkresults = Handler.get_xml_of_checkresults(self.checks)
+
+        doc = xml.dom.minidom.Document()
+        doc = Handler.get_xml_of_checkresults(doc, self.checks)
+
+        # Verify there are any checks to send
+        checks = doc.getElementsByTagName('checkresult')
+        if len(checks) is 0:
+            logging.info("No NRDP checks. Skipping NRDP send.")
+            return
+
+        checkresults = doc.toxml()
         self.submit_to_nagios(checkresults)
 
     def guess_hostname(self):
@@ -129,6 +138,7 @@ class Handler(nagioshandler.NagiosHandler):
         :type ret_xml: unicode
         :rtype : None
         """
+
         tree = xml.dom.minidom.parseString(ret_xml)
 
         try:
