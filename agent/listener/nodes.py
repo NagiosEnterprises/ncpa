@@ -217,7 +217,7 @@ class RunnableNode(ParentNode):
             stdout = str(exc)
             logging.exception(exc)
 
-        return {'returncode': returncode, 'stdout': stdout}
+        return { 'returncode': returncode, 'stdout': stdout }
 
     def get_nagios_return(self, values, is_warning, is_critical, use_perfdata=True, use_prefix=True, primary=False):
         proper_name = self.title.replace('|', '/')
@@ -233,10 +233,10 @@ class RunnableNode(ParentNode):
         nice_values = []
         for x in values:
             try:
-                nice_values.append('%d%s' % (x, nice_unit))
+                nice_values.append('%d %s' % (x, nice_unit))
             except TypeError:
-                logging.warning('Did not receive normal values. Unable to find meaningful check.')
-                return '%s was %s' % (str(proper_name), str(values)), 0
+                logging.info('Did not receive normal values. Unable to find meaningful check.')
+                return 0, 'OK: %s was %s' % (str(proper_name).capitalize(), str(values))
         values_for_info_line = ','.join(nice_values)
 
         returncode = 0
@@ -259,13 +259,19 @@ class RunnableNode(ParentNode):
         else:
             perf_unit = self.unit
 
+        if isinstance(self.warning, list):
+            self.warning = self.warning[0]
+
+        if isinstance(self.critical, list):
+            self.critical = self.critical[0]
+
         perfdata = []
         for i, x in enumerate(values):
             perf = "'%s_%d'=%d%s;%s;%s;" % (perfdata_label, i, x, perf_unit, self.warning, self.critical)
             perfdata.append(perf)
         perfdata = ' '.join(perfdata)
 
-        stdout = '%s was %s' % (proper_name, values_for_info_line)
+        stdout = '%s was %s' % (proper_name.capitalize(), values_for_info_line)
 
         if use_prefix is True:
             stdout = '%s: %s' % (info_prefix, stdout)

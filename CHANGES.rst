@@ -32,6 +32,7 @@ Versions
 - Fixed errors thrown by clients ending websocket connections by changing pages not being caught and handled properly
 - Fixed issue where having no passive NRDP checks would give errors in ncpa_passive.log
 - Fixed regex issue for warning and critical values
+- Fixed stdout and returncode swapped when doing checks on nodes that can't be checked (user/list, system/agent_version)
 
 1.8.1 - 04/09/2015
 ==================
