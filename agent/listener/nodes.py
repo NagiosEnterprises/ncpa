@@ -177,7 +177,7 @@ class RunnableNode(ParentNode):
         elif aggregate == 'sum':
             return [sum(values)]
         elif aggregate == 'avg':
-            return [sum(values) / len(values)]
+            return [round(sum(values) / len(values), 2)]
         else:
             return values
 
@@ -233,7 +233,7 @@ class RunnableNode(ParentNode):
         nice_values = []
         for x in values:
             try:
-                nice_values.append('%d %s' % (x, nice_unit))
+                nice_values.append('%0.2f %s' % (x, nice_unit))
             except TypeError:
                 logging.info('Did not receive normal values. Unable to find meaningful check.')
                 return 0, 'OK: %s was %s' % (str(proper_name).capitalize(), str(values))
@@ -267,7 +267,7 @@ class RunnableNode(ParentNode):
 
         perfdata = []
         for i, x in enumerate(values):
-            perf = "'%s_%d'=%d%s;%s;%s;" % (perfdata_label, i, x, perf_unit, self.warning, self.critical)
+            perf = "'%s_%d'=%0.2f%s;%s;%s;" % (perfdata_label, i, x, perf_unit, self.warning, self.critical)
             perfdata.append(perf)
         perfdata = ' '.join(perfdata)
 

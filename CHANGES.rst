@@ -18,7 +18,7 @@ Versions
 - Updated top proceses to not show Idle process on Windows and added % / rounding
 - Updated default locations on fresh install for log files on windows and linux
 - Updated openssl and PyOpenSSL libraries which no longer accept SSLv2 & SSLv3
-- Updated API to round most values that had been calculated to 2 decimals
+- Updated API to round most values that had been calculated to 2 decimals including check results and perfdata
 - Updated default configuration for passive checks to be located in the ncpa.cfg.d/ folder
 - Fixed services list on el7 (and all systemctl systems)
 - Fixed registry key placement for fresh installs on Windows
