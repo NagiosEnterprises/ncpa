@@ -5,12 +5,12 @@
 #
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PYTHONTAR = Python-2.7.11
-PYTHONVER = python2.7
-CXFREEZEVER = cx_Freeze-4.3.4-patched
-CXLOGGINGVER = cx_Logging-2.1
-CXPYGENLIBVER = cx_PyGenLib-3.0
-PYTHONBIN = /usr/local/bin/python2.7
+PYTHONTAR="Python-2.7.11"
+PYTHONVER="python2.7"
+CXFREEZEVER="cx_Freeze-4.3.4-patched"
+CXLOGGINGVER="cx_Logging-2.1"
+CXPYGENLIBVER="cx_PyGenLib-3.0"
+PYTHONBIN="/usr/local/bin/python2.7"
 
 # --------------------------
 #  INSTALL PRE-REQS
