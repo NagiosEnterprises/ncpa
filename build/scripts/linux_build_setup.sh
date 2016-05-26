@@ -21,7 +21,7 @@ PYTHONBIN = /usr/local/bin/python2.7
 #  INSTALL RESOURCES
 # --------------------------
 
-cd ../resources
+cd $DIR/../resources
 
 # Install Python
 tar xf $PYTHONTAR.tgz
