@@ -21,8 +21,9 @@ PYTHONBIN = /usr/local/bin/python2.7
 #  INSTALL RESOURCES
 # --------------------------
 
-# Install Python 
 cd ../resources
+
+# Install Python
 tar xf $PYTHONTAR.tgz
 cd $PYTHONTAR && ./configure --with-zlib=/usr/include --enable-shared && make && make altinstall
 echo '/usr/local/lib' >> /etc/ld.so.conf 
@@ -31,14 +32,17 @@ echo '/usr/local/lib' >> /etc/ld.so.conf
 # Install cx_Freeze patched version
 cd ..
 tar xf $CXFREEZEVER.tar.gz
+cd $CXFREEZEVER && $PYTHONBIN setup.py
 
 # Install cx_Logging
 cd ..
 tar xf $CXLOGGINGVER.tar.gz
+cd $CXLOGGINGVER && $PYTHONBIN setup.py
 
 # Install cx_PyGenLib
 cd ..
 tar xf $CXPYGENLIBVER.tar.gz
+cd $CXPYGENLIBVER && $PYTHONBIN setup.py
 
 # Clean up resource directory
 rm -rf $PYTHONTAR
