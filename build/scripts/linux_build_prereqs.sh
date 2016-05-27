@@ -7,7 +7,7 @@ then
 elif uname -a | grep -i 'el5';
 then
 	yum install epel-release -y
-	yum install gcc zlib zlib-devel openssl openssl-devel rpm-build wget -y
+	yum install gcc zlib zlib-devel openssl openssl-devel rpm-build wget buildsys-macros -y
 elif  uname -a | grep -i 'el6';
 then
 	yum install epel-release -y

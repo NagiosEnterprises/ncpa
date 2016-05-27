@@ -62,6 +62,11 @@ fi
 /etc/init.d/ncpa_listener start
 /etc/init.d/ncpa_passive start
 
+%prerun
+
+/etc/init.d/ncpa_listener stop
+/etc/init.d/ncpa_passive stop
+
 %files
 %defattr(0755,root,root,-)
 /etc/init.d/ncpa_listener

@@ -33,6 +33,7 @@ Versions
 - Fixed issue where having no passive NRDP checks would give errors in ncpa_passive.log
 - Fixed regex issue for warning and critical values
 - Fixed stdout and returncode swapped when doing checks on nodes that can't be checked (user/list, system/agent_version)
+- Fixed rpm uninstall to stop the NCPA processes before it removes the NCPA files
 
 1.8.1 - 04/09/2015
 ==================
