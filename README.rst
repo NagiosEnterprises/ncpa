@@ -16,15 +16,3 @@ Building NCPA
 While we recommend using our pre-built solutions above, if you'd like to build NCPA yourself there are a few things you may run into that can cause problems with your build.
 
 There are known build issues involving *cx_Freeze*, if you run into an issue refer to the bug report on the *cx_Freeze* `project bug page <https://bitbucket.org/anthony_tuininga/cx_freeze/issue/42/recent-versions-of-gevent-break#comment-11421289>`_.
-
-RPM Build Location Errors
-*************************
-
-This is most relevant for **CentOS 5** and for **OpenSUSE 12/13** but may occur on other systems.
-
-If you get an error about not finding the .tar in the RPM build location you will need to create an `.rpmmacros` file in your home directory for the user you are building with that contains these three lines:
-
-    %_topdir %(echo $HOME)/rpmbuild
-    %_smp_mflags -j3
-    %__arch_install_post /usr/lib/rpm/check-rpaths /usr/lib/rpm/check-buildroot
-
