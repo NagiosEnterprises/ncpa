@@ -20,6 +20,7 @@ Versions
 - Updated openssl and PyOpenSSL libraries which no longer accept SSLv2 & SSLv3
 - Updated API to round most values that had been calculated to 2 decimals including check results and perfdata
 - Updated default configuration for passive checks to be located in the ncpa.cfg.d/ folder
+- Updated RPM .spec file information for new locations and summar/description information
 - Fixed services list on el7 (and all systemctl systems)
 - Fixed registry key placement for fresh installs on Windows
 - Fixed using multiple values passed to nodes for filtering in API and active checks (ex. service=x&service=y)
