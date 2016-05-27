@@ -58,7 +58,7 @@ fi
 /etc/init.d/ncpa_listener start
 /etc/init.d/ncpa_passive start
 
-%triggerun
+%preun
 /etc/init.d/ncpa_listener stop
 /etc/init.d/ncpa_passive stop
 
