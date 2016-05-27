@@ -1,16 +1,18 @@
 Name:           ncpa
 Version:        __VERSION__ 
 Release:        1%{?dist}
-Summary:        A Cross Platform Monitoring Agent
-BuildRoot:  __BUILDROOT__/BUILDROOT/
+Vendor: 	Nagios Enterprises, LLC
+Summary:        A cross-platform active and passive monitoring agent
+BuildRoot:  	__BUILDROOT__/BUILDROOT/
 Group:          Network/Monitoring
-License:        NOSL
+License:        Nagios Open Software License Version 1.3
 URL:            http://assets.nagios.com/downloads/ncpa/docs/html/index.html
 Source:         ncpa-%{version}.tar.gz
 AutoReqProv:    no
 %description
-Installs on your system with zero requirements and allows for monitoring via
-Nagios.
+The Nagios Cross-Platform Agent is used with Nagios XI and Nagios Core to run active
+and/or passive checks on any operating system. Installs with zero requirements using a
+bundled version of Python.
 
 %prep
 %setup -q
@@ -30,12 +32,10 @@ install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{bui
 rm -rf %{buildroot}
 
 %pre
-
 if ! getent group nagcmd > /dev/null;
 then
     groupadd -r nagcmd
 fi
-
 if ! getent passwd nagios 2> /dev/null;
 then
     useradd -r -g nagcmd nagios
@@ -48,7 +48,6 @@ else
 fi
 
 %post
-
 if which chkconfig > /dev/null;
 then
 	chkconfig --level 3,5 --add ncpa_listener
@@ -58,12 +57,10 @@ then
 	update-rc.d ncpa_listener defaults
 	update-rc.d ncpa_passive defaults
 fi
-
 /etc/init.d/ncpa_listener start
 /etc/init.d/ncpa_passive start
 
-%prerun
-
+%preun
 /etc/init.d/ncpa_listener stop
 /etc/init.d/ncpa_passive stop
 
