@@ -30,12 +30,10 @@ install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{bui
 rm -rf %{buildroot}
 
 %pre
-
 if ! getent group nagcmd > /dev/null;
 then
     groupadd -r nagcmd
 fi
-
 if ! getent passwd nagios 2> /dev/null;
 then
     useradd -r -g nagcmd nagios
@@ -48,7 +46,6 @@ else
 fi
 
 %post
-
 if which chkconfig > /dev/null;
 then
 	chkconfig --level 3,5 --add ncpa_listener
@@ -58,12 +55,10 @@ then
 	update-rc.d ncpa_listener defaults
 	update-rc.d ncpa_passive defaults
 fi
-
 /etc/init.d/ncpa_listener start
 /etc/init.d/ncpa_passive start
 
-%prerun
-
+%triggerun
 /etc/init.d/ncpa_listener stop
 /etc/init.d/ncpa_passive stop
 
