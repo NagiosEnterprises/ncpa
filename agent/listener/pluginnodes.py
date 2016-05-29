@@ -51,7 +51,7 @@ class PluginNode(nodes.RunnableNode):
 
         # Get plugin command timeout value, if it exists
         try:
-            timeout = int(config.get('plugin directives', 'command_timeout'))
+            timeout = int(config.get('plugin directives', 'plugin_timeout'))
         except ConfigParser.NoOptionError:
             timeout = 60
 
