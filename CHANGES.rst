@@ -7,7 +7,7 @@ Changelog
 - Added ability to adjust units B and b with T, Ti, Gi, Mi, Ki to match windows disk sizes using untis=x
 - Added comments/help to the config file itself to help understand certain areas of the config that are confusing
 - Added API endpoints system/time and system/timezone with current timestamp and timezone information
-- Added command_timeout config option in ncpa.cfg [plugin directives] section
+- Added plugin_timeout config option in ncpa.cfg [plugin directives] section
 - Added default __HOST__ passive check definition so it doesn't show up as unknown forever
 - Updated web UI with modern theme with better graph styling
 - Updated self-signed SSL certs to use 2048bit RSA and sha256 signature
