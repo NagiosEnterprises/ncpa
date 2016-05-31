@@ -20,8 +20,8 @@ version_file = os.path.join(os.path.dirname(__file__),
 version = open(version_file, 'r').readline().strip()
 
 if not version[-1].isdigit():
-	x = version.rsplit('.', 1)
-	version = x[0]
+    x = version.rsplit('.', 1)
+    version = x[0]
 
 sys.argv += ['-p', 'xml']
 
@@ -38,7 +38,7 @@ includes = ['xml.dom.minidom']
 includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                  ('build_resources/quickstart.ini', 'build_resources/quickstart.ini'),
                  ('build_resources/ncpa.ico', 'build_resources/ncpa.ico')]
-				 
+         
 buildOptions = dict(includes=includes + ["ncpa_windows"],
                     include_files=includefiles)
 
@@ -51,7 +51,7 @@ passive = Executable("ncpa_windows_passive.py",
                      targetName = "ncpa_passive.exe")
 
 setup(name="NCPA",
-	  version=version,
+      version=version,
       description="Nagios Cross Platform Agent Installer",
       executables=[listener, passive],
       options=dict(build_exe=buildOptions),

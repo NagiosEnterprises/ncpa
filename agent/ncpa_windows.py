@@ -116,10 +116,18 @@ class Base(object):
 class Listener(Base):
 
     def start(self):
-        """Kickoff the TCP Server
 
-        """
+        # Check if there is a start delay
         try:
+            delay_start = self.config.get('listener', 'delay_start')
+            if delay_start:
+                logging.info('Delayed start in configuration. Waiting %s seconds to start.', delay_start)
+                time.sleep(int(delay_start))
+        except Exception:
+            pass
+
+        try:
+
             address = self.config.get('listener', 'ip')
             port = self.config.getint('listener', 'port')
             listener.server.listener.config_files = self.config_filenames
@@ -209,6 +217,16 @@ class Passive(Base):
     # Actual method that loops doing passive checks forever, using the sleep
     # config setting to wait for the next time to run
     def start(self):
+
+        # Check if there is a start delay
+        try:
+            delay_start = self.config.get('passive', 'delay_start')
+            if delay_start:
+                logging.info('Delayed start in configuration. Waiting %s seconds to start.', delay_start)
+                time.sleep(int(delay_start))
+        except Exception:
+            pass
+
         try:
             while True:
                 self.run_all_handlers()

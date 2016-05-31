@@ -2,6 +2,14 @@
 
 {% block title %}API{% endblock %}
 
+{% block headerjs %}
+<script>
+$(document).ready(function() {
+    $('#api-nav').addClass('active');
+});
+</script>
+{% endblock %}
+
 {% block content %}
 
 <div class="row">

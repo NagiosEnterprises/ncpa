@@ -43,6 +43,16 @@ class Passive(ncpadaemon.Daemon):
                     logging.exception(exc)
 
     def run(self):
+
+        # Check if there is a start delay
+        try:
+            delay_start = self.config.get('passive', 'delay_start')
+            if delay_start:
+                logging.info('Delayed start in configuration. Waiting %s seconds to start.', delay_start)
+                time.sleep(int(delay_start))
+        except Exception:
+            pass
+
         while True:
             self.read_basic_config()
             try:

@@ -25,6 +25,16 @@ class Listener(ncpadaemon.Daemon):
     section = 'listener'
 
     def run(self):
+
+        # Check if there is a start delay
+        try:
+            delay_start = self.config.get('listener', 'delay_start')
+            if delay_start:
+                logging.info('Delayed start in configuration. Waiting %s seconds to start.', delay_start)
+                time.sleep(int(delay_start))
+        except Exception:
+            pass
+        
         try:
             address = self.config_parser.get('listener', 'ip')
             port = self.config_parser.getint('listener', 'port')
