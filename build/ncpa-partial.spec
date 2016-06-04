@@ -24,7 +24,10 @@ bundled version of Python.
 %install
 rm -rf %{buildroot} 
 mkdir -p %{buildroot}/usr/local/ncpa
+mkdir -p %{buildroot}/usr/local/ncpa/var/run
 mkdir -p %{buildroot}/etc/init.d/
+touch %{buildroot}/usr/local/ncpa/ncpa.crt
+touch %{buildroot}/usr/local/ncpa/ncpa.key
 cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown nagios:nagcmd %{buildroot}/usr/local/ncpa -R
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/listener_init %{buildroot}/etc/init.d/ncpa_listener
@@ -76,10 +79,6 @@ sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_passive
 %defattr(0755,root,root,-)
 /etc/init.d/ncpa_listener
 /etc/init.d/ncpa_passive
-
-/usr/local/ncpa/ncpa.crt
-/usr/local/ncpa/ncpa.key
-/usr/local/ncpa/var/run
 
 %defattr(0775,nagios,nagcmd,-)
 /usr/local/ncpa
