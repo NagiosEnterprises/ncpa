@@ -68,6 +68,10 @@ dir=$RPM_INSTALL_PREFIX/ncpa
 sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_listener
 sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_passive
 
+# Remove empty cert and key files
+rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
+rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
+
 /etc/init.d/ncpa_listener start
 /etc/init.d/ncpa_passive start
 

@@ -12,6 +12,7 @@
 _BASEDIR_
 
 # Grab the PID file location
+# Someday the py file should get status so this doesn't need to happen
 PIDFILE=$(grep pidfile -r $BASEDIR/etc/*.cfg | grep passive | sed '/^#/ d' | cut -d '=' -f 2 | awk '{$1=$1};1' | head -1)
 PIDFILE=$BASEDIR/$PIDFILE
 
@@ -19,7 +20,7 @@ PIDFILE=$BASEDIR/$PIDFILE
 start() {
     (
         cd $BASEDIR
-        $BASEDIR/ncpa_posix_passive --start
+        ./ncpa_posix_passive --start
     )
     echo "Started passive agent..."
 }
@@ -28,7 +29,7 @@ start() {
 stop() {
     (
         cd $BASEDIR
-        $BASEDIR/ncpa_posix_passive --stop
+        ./ncpa_posix_passive --stop
     )
     echo "Exited."
 }
