@@ -7,7 +7,6 @@ import filename
 import passive.nrds
 import passive.nrdp
 
-
 class Passive(ncpadaemon.Daemon):
     default_conf = os.path.abspath(os.path.join(filename.get_dirname_file(), 'etc', 'ncpa.cfg'))
     section = u'passive'
@@ -22,6 +21,10 @@ class Passive(ncpadaemon.Daemon):
         - Terminate in a timely fashion
         """
         handlers = self.config_parser.get('passive', 'handlers').split(',')
+
+        # Empty passive handlers will skip trying to run any handlers
+        if handlers[0] == 'None' or handlers[0] == '':
+            return
 
         for handler in handlers:
             try:
