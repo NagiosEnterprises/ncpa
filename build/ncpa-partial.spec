@@ -77,6 +77,10 @@ sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_passive
 /etc/init.d/ncpa_listener
 /etc/init.d/ncpa_passive
 
+/usr/local/ncpa/ncpa.crt
+/usr/local/ncpa/ncpa.key
+/usr/local/ncpa/var/run
+
 %defattr(0775,nagios,nagcmd,-)
 /usr/local/ncpa
 %config /usr/local/ncpa/etc/ncpa.cfg
