@@ -132,18 +132,18 @@ def api_websocket(accessor=None):
         config = listener.config['iconfig']
         ws = request.environ['wsgi.websocket']
         while True:
-            message = ws.receive()
-            node = psapi.getter(message, config)
-            prop = node.name
-            val = node.walk(first=True, **sane_args)
-            jval = json.dumps(val[prop])
             try:
+                message = ws.receive()
+                node = psapi.getter(message, config)
+                prop = node.name
+                val = node.walk(first=True, **sane_args)
+                jval = json.dumps(val[prop])
                 ws.send(jval)
-            except geventwebsocket.WebSocketError as e:
+            except (AttributeError, geventwebsocket.WebSocketError) as e:
                 # Socket was probably closed by the browser changing pages
                 logging.debug(e)
                 break
-    return
+    return ''
 
 
 @listener.route('/top-base', methods=['GET', 'POST'])
