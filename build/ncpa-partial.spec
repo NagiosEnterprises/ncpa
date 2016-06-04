@@ -62,7 +62,7 @@ fi
 
 # Set the directory inside the init scripts
 dir=$RPM_INSTALL_PREFIX/ncpa
-sed -i "s|_BASEDIR_|BASEDIR=\x22\x22|" /etc/init.d/ncpa_listener
+sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_listener
 sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_passive
 
 /etc/init.d/ncpa_listener start
