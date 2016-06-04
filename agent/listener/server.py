@@ -24,27 +24,19 @@ base_dir = os.path.dirname(sys.path[0])
 #~ The following if statement is a workaround that is allowing us to run this in debug mode, rather than a hard coded
 #~ location.
 
+tmpl_dir = os.path.join(base_dir, 'listener', 'templates')
+if not os.path.isdir(tmpl_dir):
+    tmpl_dir = os.path.join(base_dir, 'agent', 'listener', 'templates')
+
+stat_dir = os.path.join(base_dir, 'listener', 'static')
+if not os.path.isdir(stat_dir):
+    stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
+
 if os.name == 'nt':
-    tmpl_dir = os.path.join(base_dir, 'listener', 'templates')
-    if not os.path.isdir(tmpl_dir):
-        tmpl_dir = os.path.join(base_dir, 'agent', 'listener', 'templates')
-
-    stat_dir = os.path.join(base_dir, 'listener', 'static')
-    if not os.path.isdir(stat_dir):
-        stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
-
     logging.info(u"Looking for templates at: %s", tmpl_dir)
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
     listener.jinja_loader = jinja2.FileSystemLoader(tmpl_dir)
 else:
-    tmpl_dir = os.path.join(base_dir, 'agent', 'listener', 'templates')
-    if not os.path.isdir(tmpl_dir):
-        tmpl_dir = os.path.join('/usr', 'local', 'ncpa', 'listener', 'templates')
-
-    stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
-    if not os.path.isdir(stat_dir):
-        stat_dir = os.path.join('/usr', 'local', 'ncpa', 'listener', 'static')
-
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
 
 listener.jinja_env.line_statement_prefix = '#'
