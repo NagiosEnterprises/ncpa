@@ -137,7 +137,12 @@ def api_websocket(accessor=None):
             prop = node.name
             val = node.walk(first=True, **sane_args)
             jval = json.dumps(val[prop])
-            ws.send(jval)
+            try:
+                ws.send(jval)
+            except geventwebsocket.WebSocketError as e:
+                # Socket was probably closed by the browser changing pages
+                logging.debug(e)
+                break
     return
 
 
