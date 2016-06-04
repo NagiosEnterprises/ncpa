@@ -6,54 +6,61 @@
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Description:       Enable NCPA listener.
+# Description:       Enables the NCPA listener service.
 ### END INIT INFO
 
-BASEDIR="/usr/local/ncpa"
+_BASEDIR_
 
+# Grab the PID file location
+PIDFILE=$(grep pidfile -r $BASEDIR/etc/*.cfg | grep listener | sed '/^#/ d' | cut -d '=' -f 2 | awk '{$1=$1};1' | head -1)
+PIDFILE=$BASEDIR/$PIDFILE
+
+# Start listener service
 start() {
-        (
-            cd $BASEDIR
-            ./ncpa_posix_listener --start
-        )
-        echo "Started listener..."
+    (
+        cd $BASEDIR
+        ./ncpa_posix_listener --start
+    )
+    echo "Started listener..."
 }
-# Restart the service
+
+# Restart listener service
 stop() {
-        (
-            cd $BASEDIR
-            ./ncpa_posix_listener --stop
-            echo "Exited."
-        )   
+    (
+        cd $BASEDIR
+        ./ncpa_posix_listener --stop
+        echo "Exited."
+    )
 }
+
 # Get the status
 status() {
-        if [ -f "/usr/local/ncpa/var/ncpa_listener.pid" ];
-        then
-            pid=`cat /usr/local/ncpa/var/ncpa_listener.pid`
-            echo "Process running with PID $pid"
-        else
-            echo "Process is not running."
-        fi
+    if [ -f "$PIDFILE" ];
+    then
+        pid=`cat $PIDFILE`
+        echo "Process running with PID $pid"
+    else
+        echo "Process is not running."
+    fi
 }
 
 
 ### main logic ###
 case "$1" in
-  start)
+    start)
         start
         ;;
-  stop)
+    stop)
         stop
         ;;
-  status)
+    status)
         status
         ;;
-  restart|reload|condrestart)
+    restart|reload|condrestart)
         stop
         start
         ;;
-  *)
+    *)
         echo $"Usage: $0 {start|stop|restart|reload|status}"
         exit 1
 esac

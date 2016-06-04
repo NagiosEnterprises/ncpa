@@ -29,6 +29,9 @@ cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown nagios:nagcmd %{buildroot}/usr/local/ncpa -R
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/listener_init %{buildroot}/etc/init.d/ncpa_listener
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{buildroot}/etc/init.d/ncpa_passive
+dir=%{buildroot}/usr/local/ncpa
+sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" %{buildroot}/etc/init.d/ncpa_listener
+sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" %{buildroot}/etc/init.d/ncpa_passive
 
 %clean
 rm -rf %{buildroot}

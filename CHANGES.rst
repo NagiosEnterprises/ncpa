@@ -10,6 +10,7 @@ Changelog
 - Added plugin_timeout config option in ncpa.cfg [plugin directives] section
 - Added default __HOST__ passive check definition so it doesn't show up as unknown forever
 - Added delay_start option to listener and passive section of ncpa.cfg to actually run after a # of seconds
+- Added ability to relocate rpm install (ex. --prefix=/opt would install /opt/ncpa)
 - Updated web UI with modern theme with better graph styling
 - Updated self-signed SSL certs to use 2048bit RSA and sha256 signature
 - Updated unit names that were set to c that weren't actually generic counters for better graphing
