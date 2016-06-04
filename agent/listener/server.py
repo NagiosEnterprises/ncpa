@@ -128,13 +128,16 @@ def api_websocket(accessor=None):
     sane_args = dict(request.args)
     sane_args['accessor'] = accessor
 
+    # Refresh the root node before creating the websocket
+    psapi.refresh()
+
     if request.environ.get('wsgi.websocket'):
         config = listener.config['iconfig']
         ws = request.environ['wsgi.websocket']
         while True:
             try:
                 message = ws.receive()
-                node = psapi.getter(message, config)
+                node = psapi.getter(message, config, cache=True)
                 prop = node.name
                 val = node.walk(first=True, **sane_args)
                 jval = json.dumps(val[prop])
@@ -267,7 +270,10 @@ def graph(accessor=None):
     info = {'graph_path': accessor,
             'graph_hash': hash(accessor)}
 
-    node = psapi.getter(accessor, listener.config['iconfig'])
+    # Refresh the root node before creating the websocket
+    psapi.refresh()
+
+    node = psapi.getter(accessor, listener.config['iconfig'], cache=True)
     prop = node.name
 
     if request.values.get('delta'):

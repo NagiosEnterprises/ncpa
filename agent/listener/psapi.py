@@ -43,13 +43,21 @@ def make_mountpoint_nodes(partition_name):
     used = RunnableNode('used', method=lambda: (ps.disk_usage(mountpoint).used, 'B'))
     free = RunnableNode('free', method=lambda: (ps.disk_usage(mountpoint).free, 'B'))
     used_percent = RunnableNode('used_percent', method=lambda: (ps.disk_usage(mountpoint).percent, '%'))
-    device_name = RunnableNode('device_name', method=lambda: ([partition_name.device], 'name'))
+    device_name = RunnableNode('device_name', method=lambda: ([partition_name.device], ''))
+    fstype = RunnableNode('fstype', method=lambda: (partition_name.fstype, ''))
+    opts = RunnableNode('opts', method=lambda: (partition_name.opts, ''))
     safe_mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
     return RunnableParentNode(safe_mountpoint,
-                              children=[total_size, used, free, used_percent, device_name],
+                              children=[total_size, used, free, used_percent, device_name, fstype, opts],
                               primary='used_percent',
                               include=('total_size', 'used', 'free', 'used_percent'))
 
+def make_mount_other_nodes(partition):
+    dvn = RunnableNode('device_name', method=lambda: ([partition.device], ''))
+    fstype = RunnableNode('fstype', method=lambda: (partition.fstype, ''))
+    opts = RunnableNode('opts', method=lambda: (partition.opts, ''))
+    safe_mountpoint = re.sub(r'[\\/]+', '|', partition.mountpoint)
+    return ParentNode(safe_mountpoint, children=[dvn, fstype, opts])
 
 def make_if_nodes(if_name):
     bytes_sent = RunnableNode('bytes_sent', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_sent, 'B'))
@@ -114,15 +122,20 @@ def get_disk_node():
     disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
 
     disk_mountpoints = []
+    disk_parts = []
     for x in ps.disk_partitions(all=True):
         if os.path.isdir(x.mountpoint):
             tmp = make_mountpoint_nodes(x)
             disk_mountpoints.append(tmp)
+        else:
+            tmp = make_mount_other_nodes(x)
+            disk_parts.append(tmp)
 
     disk_logical = ParentNode('logical', children=disk_mountpoints)
     disk_physical = ParentNode('physical', children=disk_counters)
+    disk_mount = ParentNode('mount', children=disk_parts)
 
-    return ParentNode('disk', children=[disk_physical, disk_logical])
+    return ParentNode('disk', children=[disk_physical, disk_logical, disk_mount])
 
 
 def get_interface_node():
@@ -163,23 +176,37 @@ def get_root_node():
 
                 node = get_node()
                 children.append(node)
-                logging.info("Imported %s into the API tree.", importable)
+                logging.debug("Imported %s into the API tree.", importable)
             except ImportError:
-                logging.info("Could not import %s, skipping.", importable)
+                logging.warning("Could not import %s, skipping.", importable)
             except AttributeError:
                 logging.warning("Trying to import %s but does not get_node() function, skipping.", importable)
 
     return ParentNode('root', children=children)
 
+
+# The root node (cached objects)
 root = get_root_node()
 
 
-def getter(accessor, config):
-    # Sanity check. If accessor is None, we can do nothing meaningfully, and
-    # we need to stop.
+def refresh():
+    global root
+    root = get_root_node()
+    return True
+
+
+def getter(accessor, config, cache=False):
+    global root
+
+    # Sanity check. If accessor is None, we can do nothing meaningfully, and we need to stop.
     if accessor is None:
         return
     path = [re.sub('%2f', '/', x, flags=re.I) for x in accessor.split('/') if x]
     if len(path) > 0 and path[0] == 'api':
         path = path[1:]
+
+    # Check how old our data is, if we are > 60 seconds, we need to reset ourselves
+    if not cache:
+        root = get_root_node()
+
     return root.accessor(path, config)

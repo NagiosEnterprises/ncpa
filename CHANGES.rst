@@ -11,6 +11,7 @@ Changelog
 - Added default __HOST__ passive check definition so it doesn't show up as unknown forever
 - Added delay_start option to listener and passive section of ncpa.cfg to actually run after a # of seconds
 - Added ability to relocate rpm install (ex. --prefix=/opt would install /opt/ncpa)
+- Added disk/mount for giving information on partitions that aren't currently accessible, such as cdroms
 - Updated web UI with modern theme with better graph styling
 - Updated self-signed SSL certs to use 2048bit RSA and sha256 signature
 - Updated unit names that were set to c that weren't actually generic counters for better graphing
@@ -20,6 +21,7 @@ Changelog
 - Updated API to round most values that had been calculated to 2 decimals including check results and perfdata
 - Updated default configuration for passive checks to be located in the ncpa.cfg.d/ folder
 - Updated RPM .spec file information for new locations and summar/description information
+- Updated API to now automatically update disk partitions and other static items except while websocket is open
 - Fixed services list on el7 (and all systemctl systems)
 - Fixed registry key placement for fresh installs on Windows
 - Fixed using multiple values passed to nodes for filtering in API and active checks (ex. service=x&service=y)
