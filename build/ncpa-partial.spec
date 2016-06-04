@@ -1,14 +1,16 @@
 Name:           ncpa
-Version:        __VERSION__ 
+Version:        __VERSION__
 Release:        1%{?dist}
-Vendor: 	Nagios Enterprises, LLC
+Vendor:         Nagios Enterprises, LLC
 Summary:        A cross-platform active and passive monitoring agent
-BuildRoot:  	__BUILDROOT__/BUILDROOT/
+BuildRoot:      __BUILDROOT__/BUILDROOT/
+Prefix:         /usr/local
 Group:          Network/Monitoring
 License:        Nagios Open Software License Version 1.3
 URL:            http://assets.nagios.com/downloads/ncpa/docs/html/index.html
 Source:         ncpa-%{version}.tar.gz
 AutoReqProv:    no
+
 %description
 The Nagios Cross-Platform Agent is used with Nagios XI and Nagios Core to run active
 and/or passive checks on any operating system. Installs with zero requirements using a
@@ -23,7 +25,7 @@ bundled version of Python.
 rm -rf %{buildroot} 
 mkdir -p %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/etc/init.d/
-cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/ 
+cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown nagios:nagcmd %{buildroot}/usr/local/ncpa -R
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/listener_init %{buildroot}/etc/init.d/ncpa_listener
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{buildroot}/etc/init.d/ncpa_passive
@@ -43,19 +45,19 @@ else
     %if 0%{?suse_version} && 0%{?suse_version} < 1210
         usermod -A nagcmd nagios
     %else
-    	usermod -a -G nagcmd nagios
+        usermod -a -G nagcmd nagios
     %endif
 fi
 
 %post
 if which chkconfig > /dev/null;
 then
-	chkconfig --level 3,5 --add ncpa_listener
-	chkconfig --level 3,5 --add ncpa_passive
+    chkconfig --level 3,5 --add ncpa_listener
+    chkconfig --level 3,5 --add ncpa_passive
 elif which update-rc.d > /dev/null;
 then
-	update-rc.d ncpa_listener defaults
-	update-rc.d ncpa_passive defaults
+    update-rc.d ncpa_listener defaults
+    update-rc.d ncpa_passive defaults
 fi
 /etc/init.d/ncpa_listener start
 /etc/init.d/ncpa_passive start
