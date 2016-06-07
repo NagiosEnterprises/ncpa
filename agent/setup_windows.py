@@ -36,7 +36,8 @@ includefiles = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
 includes = ['xml.dom.minidom']
                     
 includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
-                 ('build_resources/quickstart.ini', 'build_resources/quickstart.ini'),
+                 ('build_resources/nsis_listener_options.ini', 'build_resources/nsis_listener_options.ini'),
+                 ('build_resources/nsis_passive_options.ini', 'build_resources/nsis_passive_options.ini'),
                  ('build_resources/ncpa.ico', 'build_resources/ncpa.ico')]
          
 buildOptions = dict(includes=includes + ["ncpa_windows"],
@@ -44,17 +45,19 @@ buildOptions = dict(includes=includes + ["ncpa_windows"],
 
 listener = Executable("ncpa_windows_listener.py", 
                       base = "Win32Service",
-                      targetName="ncpa_listener.exe")
+                      targetName = "ncpa_listener.exe",
+                      icon = "build_resources/ncpa.ico")
 
 passive = Executable("ncpa_windows_passive.py",
                      base = "Win32Service",
-                     targetName = "ncpa_passive.exe")
+                     targetName = "ncpa_passive.exe",
+                     icon = "build_resources/ncpa.ico")
 
-setup(name="NCPA",
-      version=version,
-      description="Nagios Cross Platform Agent Installer",
-      executables=[listener, passive],
-      options=dict(build_exe=buildOptions),
+setup(name = "NCPA",
+      version = version,
+      description = "Nagios Cross Platform Agent Installer",
+      executables = [listener, passive],
+      options = dict(build_exe = buildOptions),
 )
 
 if platform.architecture()[0].lower() == '32bit':

@@ -129,8 +129,8 @@ FunctionEnd
 
 Section # "Create Config.ini"
 
-    ReadRegStr $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{FF66E9F6-83E7-3A3E-AF14-8DE9A809A6A4}" "DisplayName"
-    MessageBox MB_OK $R0
+    ;ReadRegStr $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{FF66E9F6-83E7-3A3E-AF14-8DE9A809A6A4}" "DisplayName"
+    ;MessageBox MB_OK $R0
 
     ; Disable currently running ncpa listener/passive services
     ReadEnvStr $9 COMSPEC
