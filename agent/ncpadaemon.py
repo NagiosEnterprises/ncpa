@@ -3,7 +3,7 @@ Provides a simple Daemon class to ease the process of forking a
 python application on Unix systems.
 """
 
-VERSION = (1, 3, 1)
+VERSION = (2, 0, 0)
 
 import ConfigParser
 import errno
