@@ -205,13 +205,13 @@ What this script does:
 
 * Creates the folder /usr/local/ncpa if it does not exist
 * Moves all necessary files there
-* Sets the owner of /usr/local/ncpa to nagios:nagcmd
+* Sets the owner of /usr/local/ncpa to nagios:nagios
 * Sets the mode of /usr/local/ncpa to 775
-* Creates the group nagcmd if it does not exist
+* Creates the group nagios if it does not exist
 * Creates the user nagios if it does not exist
 * Starts the listener daemon
 
-If any of this fails, you will need to do the steps manually. The steps that may fail most often are adding users and groups. If they do, add the user 'nagios' and make sure the group 'nagcmd' exists and that 'nagios' user is in the group 'nagcmd'.
+If any of this fails, you will need to do the steps manually. The steps that may fail most often are adding users and groups. If they do, add the user 'nagios' and make sure the group 'nagios' exists and that 'nagios' user is in the group 'nagios'.
 
 Testing Your Installation
 -------------------------

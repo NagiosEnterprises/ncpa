@@ -29,7 +29,7 @@ mkdir -p %{buildroot}/etc/init.d/
 touch %{buildroot}/usr/local/ncpa/ncpa.crt
 touch %{buildroot}/usr/local/ncpa/ncpa.key
 cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
-chown nagios:nagcmd %{buildroot}/usr/local/ncpa -R
+chown nagios:nagios %{buildroot}/usr/local/ncpa -R
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/listener_init %{buildroot}/etc/init.d/ncpa_listener
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{buildroot}/etc/init.d/ncpa_passive
 
@@ -37,18 +37,18 @@ install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{bui
 rm -rf %{buildroot}
 
 %pre
-if ! getent group nagcmd > /dev/null;
+if ! getent group nagios > /dev/null;
 then
-    groupadd -r nagcmd
+    groupadd -r nagios
 fi
 if ! getent passwd nagios 2> /dev/null;
 then
-    useradd -r -g nagcmd nagios
+    useradd -r -g nagios nagios
 else
     %if 0%{?suse_version} && 0%{?suse_version} < 1210
-        usermod -A nagcmd nagios
+        usermod -A nagios nagios
     %else
-        usermod -a -G nagcmd nagios
+        usermod -a -G nagios nagios
     %endif
 fi
 
@@ -84,6 +84,6 @@ rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
 /etc/init.d/ncpa_listener
 /etc/init.d/ncpa_passive
 
-%defattr(0775,nagios,nagcmd,-)
+%defattr(0775,nagios,nagios,-)
 /usr/local/ncpa
 %config /usr/local/ncpa/etc/ncpa.cfg

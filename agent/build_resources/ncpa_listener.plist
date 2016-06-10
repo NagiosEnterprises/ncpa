@@ -7,7 +7,7 @@
         <key>UserName</key>
         <string>nagios</string>
         <key>GroupName</key>
-        <string>nagcmd</string>
+        <string>nagios</string>
         <key>WorkingDirectory</key>
         <string>/usr/local/ncpa</string>
         <key>ProgramArguments</key>

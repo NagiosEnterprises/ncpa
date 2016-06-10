@@ -6,7 +6,7 @@ pushd /Volumes/NCPA-*
 
 # these names are baked into the launchd plists, change with caution
 username=nagios
-groupname=nagcmd
+groupname=nagios
 homedir=/usr/local/ncpa
 
 # find the highest UID that exists, pick the next one

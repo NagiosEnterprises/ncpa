@@ -22,6 +22,7 @@ Changelog
 - Updated default configuration for passive checks to be located in the ncpa.cfg.d/ folder
 - Updated RPM .spec file information for new locations and summar/description information
 - Updated API to now automatically update disk partitions and other static items except while websocket is open
+- Updated Linux and Mac OS X installs to use nagios group instead of nagcmd group like other Nagios products
 - Fixed services list on el7 (and all systemctl systems)
 - Fixed registry key placement for fresh installs on Windows
 - Fixed using multiple values passed to nodes for filtering in API and active checks (ex. service=x&service=y)
