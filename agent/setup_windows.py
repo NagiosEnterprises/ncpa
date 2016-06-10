@@ -39,7 +39,9 @@ includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/Licen
                  ('build_resources/nsis_listener_options.ini', 'build_resources/nsis_listener_options.ini'),
                  ('build_resources/nsis_passive_options.ini', 'build_resources/nsis_passive_options.ini'),
                  ('build_resources/nsis_passive_checks.ini', 'build_resources/nsis_passive_checks.ini'),
-                 ('build_resources/ncpa.ico', 'build_resources/ncpa.ico')]
+                 ('build_resources/ncpa.ico', 'build_resources/ncpa.ico'),
+                 ('build_resources/nagios_installer.bmp', 'build_resources/nagios_installer.bmp'),
+                 ('build_resources/nagios_installer_logo.bmp', 'build_resources/nagios_installer_logo.bmp')]
 
 buildOptions = dict(includes=includes + ["ncpa_windows"],
                     include_files=includefiles)

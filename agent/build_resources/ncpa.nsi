@@ -15,7 +15,7 @@
 !define UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\NCPA"
 
 !define MUI_INSTFILESPAGE_COLORS "FFFFFF 000000"
-  
+
 !define MULTIUSER_INSTALLMODE_COMMANDLINE
 !include "MultiUser.nsh"
 
@@ -31,6 +31,12 @@ OutFile "ncpa-${NCPA_VERSION}.exe"
 
 ; The installer styling
 !define MUI_ICON "NCPA\build_resources\ncpa.ico"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "NCPA\build_resources\nagios_installer.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "NCPA\build_resources\nagios_installer.bmp"
+!define MUI_HEADERIMAGE
+!define MUI_HEADERIMAGE_RIGHT
+!define MUI_HEADERIMAGE_BITMAP "NCPA\build_resources\nagios_installer_logo.bmp"
+!define MUI_HEADERIMAGE_UNBITMAP "NCPA\build_resources\nagios_installer_logo.bmp"
 
 ; The default installation directory
 InstallDir $PROGRAMFILES32\Nagios\NCPA
@@ -57,12 +63,17 @@ LangString LICENSE_BOTTOM ${LANG_ENGLISH} "Nagios Software License 1.3"
 
 ;--------------------------------
 ; Pages (actual pages in order)
+
+; Defines for pre-configured MUI pages
 !define MUI_PAGE_HEADER_TEXT $(PAGE_TITLE)
 !define MUI_PAGE_HEADER_SUBTEXT $(PAGE_SUBTITLE)
 !define MUI_LICENSEPAGE_TEXT_TOP $(LICENSE_TOP)
 !define MUI_LICENSEPAGE_TEXT_BOTTOM $(LICENSE_BOTTOM)
+!define MUI_FINISHPAGE_LINK "View online NCPA documentation"
+!define MUI_FINISHPAGE_LINK_LOCATION "https://assets.nagios.com/downloads/ncpa/docs/html/"
 
 ; Installer
+!insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "NCPA\build_resources\LicenseAgreement.txt"
 Page custom ConfigListener
 Page custom ConfigPassive
