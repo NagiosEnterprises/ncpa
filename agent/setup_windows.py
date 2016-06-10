@@ -1,12 +1,12 @@
-# A simple setup script for creating a Windows service. See the comments in the
-# Config.py and ServiceHandler.py files for more information on how to set this
-# up.
+#
+# A simple setup script for creating a Windows service.
 #
 # Installing the service is done with the option --install <Name> and
 # uninstalling the service is done with the option --uninstall <Name>. The
 # value for <Name> is intended to differentiate between different invocations
 # of the same service code -- for example for accessing different databases or
 # using different configuration files.
+#
 
 import sys
 import shutil
@@ -34,12 +34,13 @@ includefiles = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
                 'passive']
 
 includes = ['xml.dom.minidom']
-                    
+
 includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                  ('build_resources/nsis_listener_options.ini', 'build_resources/nsis_listener_options.ini'),
                  ('build_resources/nsis_passive_options.ini', 'build_resources/nsis_passive_options.ini'),
+                 ('build_resources/nsis_passive_checks.ini', 'build_resources/nsis_passive_checks.ini'),
                  ('build_resources/ncpa.ico', 'build_resources/ncpa.ico')]
-         
+
 buildOptions = dict(includes=includes + ["ncpa_windows"],
                     include_files=includefiles)
 

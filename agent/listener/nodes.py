@@ -233,11 +233,14 @@ class RunnableNode(ParentNode):
         nice_values = []
         for x in values:
             try:
-                nice_values.append('%0.2f %s' % (x, nice_unit))
+                if isinstance(x, int):
+                    nice_values.append('%d %s' % (x, nice_unit))
+                else:
+                    nice_values.append('%0.2f %s' % (x, nice_unit))
             except TypeError:
                 logging.info('Did not receive normal values. Unable to find meaningful check.')
                 return 0, 'OK: %s was %s' % (str(proper_name).capitalize(), str(values))
-        values_for_info_line = ','.join(nice_values)
+        values_for_info_line = ', '.join(nice_values)
 
         returncode = 0
         info_prefix = 'OK'
@@ -266,12 +269,25 @@ class RunnableNode(ParentNode):
             self.critical = self.critical[0]
 
         perfdata = []
+        v = len(values)
         for i, x in enumerate(values):
-            perf = "'%s_%d'=%0.2f%s;%s;%s;" % (perfdata_label, i, x, perf_unit, self.warning, self.critical)
+
+            if isinstance(x, int):
+                perf = "=%d%s;%s;%s;" % (x, perf_unit, self.warning, self.critical)
+            else: 
+                perf = "=%0.2f%s;%s;%s;" % (x, perf_unit, self.warning, self.critical)
+
+            if v == 1:
+                perf = "'%s'%s" % (perfdata_label, perf)
+            else:
+                perf = "'%s_%d'%s" % (perfdata_label, i, perf)
+
             perfdata.append(perf)
+        
         perfdata = ' '.join(perfdata)
 
         stdout = '%s was %s' % (proper_name.capitalize(), values_for_info_line)
+        stdout = stdout.rstrip()
 
         if use_prefix is True:
             stdout = '%s: %s' % (info_prefix, stdout)

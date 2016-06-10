@@ -3,7 +3,6 @@
 !include "winmessages.nsh"
 !include "LogicLib.nsh"
 !include "InstallOptions.nsh"
-;!include "CommCtrl.nsh"
 
 !include FileFunc.nsh
 !insertmacro GetParameters
@@ -47,6 +46,8 @@ VIProductVersion ${NCPA_VERSION_CLEAN}.0
 VIAddVersionKey "ProductName" "${NAME}"
 VIAddVersionKey "CompanyName" "${COMPANY}"
 VIAddVersionKey "FileVersion" ${NCPA_VERSION}
+VIAddVersionKey "LegalCopyright" "Copyright 2016, ${COMPANY}"
+VIAddVersionKey "FileDescription" "The Nagios Cross-Platform Agent is a monitoring agent used to monitor system information and return results to Nagios products."
 
 ; Language values for pages
 LangString PAGE_TITLE ${LANG_ENGLISH} "Nagios Cross-Platform Agent (${NAME})"
@@ -65,6 +66,7 @@ LangString LICENSE_BOTTOM ${LANG_ENGLISH} "Nagios Software License 1.3"
 !insertmacro MUI_PAGE_LICENSE "NCPA\build_resources\LicenseAgreement.txt"
 Page custom ConfigListener
 Page custom ConfigPassive
+Page custom ConfigPassiveChecks
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
@@ -82,6 +84,7 @@ Function .onInit
     InitPluginsDir
     !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\nsis_listener_options.ini" "nsis_listener_options.ini"
     !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\nsis_passive_options.ini" "nsis_passive_options.ini"
+    !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\nsis_passive_checks.ini" "nsis_passive_checks.ini"
     
     ${GetParameters} $R0
     ${GetParameters} $R1
@@ -107,6 +110,8 @@ Function ConfigListener
 
     ; Display the listener setup options
     !insertmacro INSTALLOPTIONS_DISPLAY "nsis_listener_options.ini"
+
+    ; Grab listener options
     !insertmacro INSTALLOPTIONS_READ $0 "nsis_listener_options.ini" "Field 3" "State"
     !insertmacro INSTALLOPTIONS_READ $1 "nsis_listener_options.ini" "Field 4" "State"
     !insertmacro INSTALLOPTIONS_READ $2 "nsis_listener_options.ini" "Field 5" "State"
@@ -124,6 +129,21 @@ Function ConfigPassive
     
     ; Display the passive setup options
     !insertmacro INSTALLOPTIONS_DISPLAY "nsis_passive_options.ini"
+
+    ; Grab passive options
+
+
+FunctionEnd
+
+Function ConfigPassiveChecks
+
+    !insertmacro MUI_HEADER_TEXT $(PAGE_TITLE) $(PAGE_SUBTITLE)
+
+    IfFileExists $INSTDIR\etc\ncpa.cfg 0 +2
+    Abort
+    
+    ; Display the passive setup options
+    !insertmacro INSTALLOPTIONS_DISPLAY "nsis_passive_checks.ini"
 
 FunctionEnd
 

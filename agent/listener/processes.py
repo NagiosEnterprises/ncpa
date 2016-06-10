@@ -155,7 +155,7 @@ class ProcessNode(nodes.LazyNode):
         def process_check_method(*args, **kwargs):
             processes_count = self.walk(first=True, *args, **kwargs)
             count = len(processes_count['processes'])
-            return [count, 'c']
+            return [count, '']
 
         self.method = process_check_method
 
