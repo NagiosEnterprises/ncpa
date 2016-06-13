@@ -20,7 +20,7 @@ Changelog
 - Updated openssl and PyOpenSSL libraries which no longer accept SSLv2 & SSLv3
 - Updated API to round most values that had been calculated to 2 decimals including check results and perfdata
 - Updated default configuration for passive checks to be located in the ncpa.cfg.d/ folder
-- Updated RPM .spec file information for new locations and summar/description information
+- Updated RPM .spec file information for new locations and summary/description information
 - Updated API to now automatically update disk partitions and other static items except while websocket is open
 - Updated Linux and Mac OS X installs to use nagios group instead of nagcmd group like other Nagios products
 - Fixed services list on el7 (and all systemctl systems)
