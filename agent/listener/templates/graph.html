@@ -24,7 +24,7 @@
         var get_ws_address = function() {
             var loc = window.location;
             var ws_protocol = (loc.protocol === 'https:') ? 'wss' : 'ws';
-            var ws_loc = ws_protocol + '://' + loc.hostname + ':5693/api-websocket/' + '{{ graph_path }}';
+            var ws_loc = ws_protocol + '://' + loc.hostname + ':' + loc.port + '/api-websocket/' + '{{ graph_path }}';
 
             if (query_string) {
                 ws_loc += '?' + decodeURIComponent(query_string);
