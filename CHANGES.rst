@@ -20,7 +20,7 @@ Changelog
 - Updated openssl and PyOpenSSL libraries which no longer accept SSLv2 & SSLv3
 - Updated API to round most values that had been calculated to 2 decimals including check results and perfdata
 - Updated default configuration for passive checks to be located in the ncpa.cfg.d/ folder
-- Updated RPM .spec file information for new locations and summar/description information
+- Updated RPM .spec file information for new locations and summary/description information
 - Updated API to now automatically update disk partitions and other static items except while websocket is open
 - Updated Linux and Mac OS X installs to use nagios group instead of nagcmd group like other Nagios products
 - Fixed services list on el7 (and all systemctl systems)
@@ -38,6 +38,7 @@ Changelog
 - Fixed stdout and returncode swapped when doing checks on nodes that can't be checked (user/list, system/agent_version)
 - Fixed rpm uninstall to stop the NCPA processes before it removes the NCPA files
 - Fixed issue on OS X where plugin directory was not readable by nagios due to LaunchDaemon permissions
+- Fixed issue on Windows systems not having accurate network I/O if bytes > 4.3GB
 
 1.8.1 - 04/09/2015
 ==================
