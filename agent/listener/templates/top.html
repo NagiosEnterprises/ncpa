@@ -102,7 +102,7 @@
             } else {
                 var ws_proto = 'ws';
             }
-            var ws_loc = ws_proto + '://' + loc.hostname + ':5693/top-websocket/';
+            var ws_loc = ws_proto + '://' + loc.hostname + ':' + loc.port + '/top-websocket/';
             return ws_loc;
         }
         
