@@ -109,7 +109,7 @@ class ServiceNode(nodes.LazyNode):
     def get_services_via_systemctl(self, *args, **kwargs):
         services = {}
         status = tempfile.TemporaryFile()
-        service = subprocess.Popen(['systemctl', '--no-pager', '--no-legend', '--type=service', 'list-units'], stdout=status)
+        service = subprocess.Popen(['systemctl', '--no-pager', '--no-legend', '--all', '--type=service', 'list-units'], stdout=status)
         service.wait()
         status.seek(0)
 
@@ -118,10 +118,11 @@ class ServiceNode(nodes.LazyNode):
             unit, load, active, sub, description = re.split('\s+', line, 4)
             if unit.endswith('.service'):
                 unit = unit[:-8]
-            if active.lower() == 'active' and sub.lower() == 'running':
-                services[unit] = 'running'
-            else:
-                services[unit] = 'stopped'
+            if 'not-found' not in load:
+                if active.lower() == 'active' and sub.lower() != 'dead':
+                    services[unit] = 'running'
+                else:
+                    services[unit] = 'stopped'
         return services
 
     @filter_services
