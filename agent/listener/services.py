@@ -127,10 +127,11 @@ class ServiceNode(nodes.LazyNode):
     @filter_services
     def get_services_via_initctl(self, *args, **kwargs):
         services = {}
-        # ubuntu supports both sysv init and upstart, let upstart win
+        
+        # Ubuntu & CentOS/RHEL 6 supports both sysv init and upstart
         services = self.get_services_via_initd(args, kwargs)
 
-        # now go ask initctl
+        # Now go ask initctl
         status = tempfile.TemporaryFile()
         service = subprocess.Popen(['initctl', 'list'], stdout=status)
         service.wait()
@@ -139,7 +140,6 @@ class ServiceNode(nodes.LazyNode):
         for line in status.readlines():
             m = re.match("(.*) (?:\w*)/(\w*)(?:, .*)?", line)
             try:
-                print m.groups()
                 if m.group(2) == 'running':
                     services[m.group(1)] = 'running'
                 else:
@@ -150,21 +150,30 @@ class ServiceNode(nodes.LazyNode):
 
     @filter_services
     def get_services_via_initd(self, *args, **kwargs):
-        # only look at executable files in init.d (there is no README service)
+        # Only look at executable files in init.d (there is no README service)
         possible_services = filter(lambda x: os.stat('/etc/init.d/'+x)[ST_MODE] & (S_IXUSR|S_IXGRP|S_IXOTH), os.listdir('/etc/init.d'))
         services = {x: 'stopped' for x in possible_services}
         devnull = open(os.devnull, 'w')
 
-        for service in possible_services:
-            grep_search = '[%s]%s' % (service[0], service[1:])
-            ps_call = subprocess.Popen(['ps', 'aux'], stdout=subprocess.PIPE)
-            grep_call = subprocess.Popen(['grep', grep_search], stdout=devnull, stdin=ps_call.stdout)
-            ps_call.wait()
-            ps_call.stdout.close()
-            grep_call.wait()
+        # Services that need to be checked via 'service <service> status'
+        service_calls = ['iptables']
 
-            if grep_call.returncode == 0:
-                services[service] = 'running'
+        for service in possible_services:
+            if service in service_calls:
+                p = subprocess.Popen(['service', service, 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                out, err = p.communicate()
+                if 'is not running' not in out:
+                    srevices[service] = 'running'
+            else:
+                grep_search = '[%s]%s' % (service[0], service[1:])
+                ps_call = subprocess.Popen(['ps', 'aux'], stdout=subprocess.PIPE)
+                grep_call = subprocess.Popen(['grep', grep_search], stdout=devnull, stdin=ps_call.stdout)
+                ps_call.wait()
+                ps_call.stdout.close()
+                grep_call.wait()
+
+                if grep_call.returncode == 0:
+                    services[service] = 'running'
 
         devnull.close()
         return services

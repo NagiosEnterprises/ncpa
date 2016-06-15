@@ -170,7 +170,6 @@ class RunnableNode(ParentNode):
             aggregate = aggregate[0]
         
         if aggregate == 'max':
-            print 'Doing max'
             return [max(values)]
         elif aggregate == 'min':
             return [min(values)]
