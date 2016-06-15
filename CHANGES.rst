@@ -39,6 +39,7 @@ Changelog
 - Fixed rpm uninstall to stop the NCPA processes before it removes the NCPA files
 - Fixed issue on OS X where plugin directory was not readable by nagios due to LaunchDaemon permissions
 - Fixed issue on Windows systems not having accurate network I/O if bytes > 4.3GB
+- Fixed issue with iptables showing up as stopped even while running in CentOS/RHEL 6 and 7
 
 1.8.1 - 04/09/2015
 ==================
