@@ -8,9 +8,9 @@ Nagios Enterprises, LLC (the "Company") hereby grants, free of charge, to any pe
 
 2. The copyright notices and attribution information included in the Software may not be altered or removed.
 
-2. The Software may not be Forked.  "Forking" and "to Fork" means to create or distribute a product or a derivative work of the object or source code of the Software under a new or different brand. 
+3. The Software may not be Forked.  "Forking" and "to Fork" means to create or distribute a product or a derivative work of the object or source code of the Software under a new or different brand. 
 
-3. Any Use of the Software is subject to compliance with the terms and conditions of the Nagios Trademark Use Restrictions, which are incorporated herein by reference and can be viewed online at http://www.nagios.com/legal/trademarks/
+4. Any Use of the Software is subject to compliance with the terms and conditions of the Nagios Trademark Use Restrictions, which are incorporated herein by reference and can be viewed online at http://www.nagios.com/legal/trademarks/
 
 5. Any Contribution of materials to the Software by any User is subject to, and signifies, either explicitly or implicitly, the User's acceptance of the terms and conditions of the Nagios Contributor Agreement, which are incorporated herein by reference and can be viewed online at http://www.nagios.com/legal/contributoragreement/.  "Contribution" means any source code, object code, patch, tool, sample, graphic, specification, manual, documentation, or any other material posted or submitted by a User to the Company, directly or indirectly, via the Company's websites, forums, email lists, or other methods of communication.
 
