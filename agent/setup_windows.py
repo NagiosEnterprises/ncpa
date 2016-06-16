@@ -27,10 +27,10 @@ sys.argv += ['-p', 'xml']
 
 includefiles = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
                 ('var/log/ncpa_passive.log', 'var/log/ncpa_passive.log'),
-                ('etc/ncpa.cfg', 'etc/ncpa.cfg'),
-                'plugins',
                 ('listener/templates', 'listener/templates'),
                 ('listener/static', 'listener/static'),
+                'etc',
+                'plugins',
                 'passive']
 
 includes = ['xml.dom.minidom']

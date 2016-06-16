@@ -35,7 +35,6 @@ from gevent import monkey
 
 monkey.patch_all(subprocess=True, thread=False)
 
-
 class Base(object):
     # no parameters are permitted; all configuration should be placed in the
     # configuration file and handled in the Initialize() method
@@ -77,9 +76,6 @@ class Base(object):
         config = dict(self.config.items(self.c_type, 1))
 
         # Now we grab the logging specific items
-        log_level_str = config.get('loglevel', 'INFO').upper()
-        log_level = getattr(logging, log_level_str, logging.INFO)
-
         log_file = os.path.normpath(config['logfile'])
         if not os.path.isabs(log_file):
             log_file = self.determine_relative_filename(log_file)
@@ -97,6 +93,10 @@ class Base(object):
         file_handler.setFormatter(file_format)
 
         logging.getLogger().addHandler(file_handler)
+
+        # Set log level
+        log_level_str = config.get('loglevel', 'INFO').upper()
+        log_level = getattr(logging, log_level_str, logging.INFO)
         logging.getLogger().setLevel(log_level)
 
     # called when the service is starting immediately after Initialize()
@@ -170,8 +170,7 @@ class Listener(Base):
     # called when the service is starting
     def Initialize(self, config_file):
         self.c_type = 'listener'
-        self.config_filenames = [self.determine_relative_filename(
-        os.path.join('etc', 'ncpa.cfg'))]
+        self.config_filenames = [self.determine_relative_filename(os.path.join('etc', 'ncpa.cfg'))]
         self.config_filenames.extend(sorted(glob.glob(self.determine_relative_filename(os.path.join(
             'etc', 'ncpa.cfg.d', '*.cfg')))))
         self.parse_config()
@@ -240,8 +239,7 @@ class Passive(Base):
     # passive "run_all_handlers" method
     def Initialize(self, config_file):
         self.c_type = 'passive'
-        self.config_filenames = [self.determine_relative_filename(
-        os.path.join('etc', 'ncpa.cfg'))]
+        self.config_filenames = [self.determine_relative_filename(os.path.join('etc', 'ncpa.cfg'))]
         self.config_filenames.extend(sorted(glob.glob(self.determine_relative_filename(os.path.join(
             'etc', 'ncpa.cfg.d', '*.cfg')))))
         self.parse_config()

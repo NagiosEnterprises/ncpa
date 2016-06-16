@@ -1,7 +1,7 @@
-Nagios Cross Platform Agent (NCPA)
-==================================
+NCPA
+====
 
-The awesome NCPA agent - one agent to rule them all.
+The *Nagios Cross-Platform Agent*, a single monitoring agent that installs on all major operating systems. Compatible with both active checks via check_ncpa.py and passive checks via NRDP.
 
 Downloading NCPA
 ----------------
