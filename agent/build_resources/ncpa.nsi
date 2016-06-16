@@ -126,14 +126,16 @@ Function .onInit
     ${GetParameters} $R1
     ${GetParameters} $R2
     ${GetParameters} $R3
-    ${GetParameters} $R4
     
     ClearErrors
-    ${GetOptions} $R0 /TOKEN= $0
-    ${GetOptions} $R1 /NRDPURL= $1
-    ${GetOptions} $R2 /NRDPTOKEN= $2
-    ${GetOptions} $R3 /HOST= $3
-    ${GetOptions} $R4 /CONFIG= $4
+    ${GetOptions} $R0 /TOKEN= $token
+    ${GetOptions} $R1 /NRDPURL= $nrdp_url
+    ${GetOptions} $R2 /NRDPTOKEN= $nrdp_token
+    ${GetOptions} $R3 /NRDPHOSTNAME= $nrdp_hostname
+
+    ${If} $nrdp_url != ''
+    StrCpy $nrdp 1
+    ${EndIf}
 
 FunctionEnd
 
