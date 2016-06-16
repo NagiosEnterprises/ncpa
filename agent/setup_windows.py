@@ -58,7 +58,7 @@ passive = Executable("ncpa_windows_passive.py",
 
 setup(name = "NCPA",
       version = version,
-      description = "Nagios Cross Platform Agent Installer",
+      description = "Nagios Cross-Platform Agent",
       executables = [listener, passive],
       options = dict(build_exe = buildOptions),
 )
