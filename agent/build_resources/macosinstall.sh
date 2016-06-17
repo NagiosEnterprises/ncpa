@@ -58,6 +58,12 @@ else
     echo 'Group already exists, skipping!'
 fi
 
+# Unload the daemons so they can be re-loaded after
+if [ ${upgrade} -eq "1" ]; then
+    launchctl unload /Library/LaunchDaemons/com.nagios.ncpa.listener.plist
+    launchctl unload /Library/LaunchDaemons/com.nagios.ncpa.passive.plist
+fi
+
 cp ncpa/build_resources/ncpa_listener.plist /Library/LaunchDaemons/com.nagios.ncpa.listener.plist
 cp ncpa/build_resources/ncpa_passive.plist /Library/LaunchDaemons/com.nagios.ncpa.passive.plist
 
@@ -79,10 +85,8 @@ if [ ${upgrade} -eq "1" ]; then
     rm -rf /tmp/ncpa_etc
 fi
 
-if [ ${upgrade} -eq "0" ]; then
-    launchctl load /Library/LaunchDaemons/com.nagios.ncpa.listener.plist
-    launchctl load /Library/LaunchDaemons/com.nagios.ncpa.passive.plist
-fi
+launchctl load /Library/LaunchDaemons/com.nagios.ncpa.listener.plist
+launchctl load /Library/LaunchDaemons/com.nagios.ncpa.passive.plist
 
 launchctl start com.nagios.ncpa.passive
 launchctl start com.nagios.ncpa.listener
