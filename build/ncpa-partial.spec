@@ -37,7 +37,7 @@ install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{bui
 rm -rf %{buildroot}
 
 %pre
-if $1 -gt 1;
+if [ $1 -gt 1 ];
 then
     /etc/init.d/ncpa_listener stop
     /etc/init.d/ncpa_passive stop
@@ -59,7 +59,7 @@ else
 fi
 
 %post
-if $1 -eq 1;
+if [ $1 -eq 1 ];
 then
     if which chkconfig > /dev/null;
     then
@@ -78,7 +78,7 @@ sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_listener
 sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_passive
 
 # Remove empty cert and key files
-if $1 -eq 1;
+if [ $1 -eq 1 ];
 then
     rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
     rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
