@@ -16,7 +16,7 @@ if [ -f ${homedir} ]; then
 fi
 
 # Disable NCPA if it's already installed for upgrade
-if [ ${upgrade} == "1" ]; then
+if [ ${upgrade} -eq "1" ]; then
     launchctl stop com.nagios.ncpa.listener
     launchctl stop com.nagios.ncpa.passive
 fi
@@ -61,7 +61,7 @@ cp ncpa/build_resources/ncpa_passive.plist /Library/LaunchDaemons/com.nagios.ncp
 mkdir -p ${homedir}
 
 # Temporarily save etc directory
-if [ ${upgrade} == "1" ]; then
+if [ ${upgrade} -eq "1" ]; then
     cp -Rf ${homedir}/etc /tmp/ncpa_etc
 fi
 
@@ -71,12 +71,12 @@ chmod -R 775 ${homedir}
 chown -R ${username}:${groupname} ${homedir}
 
 # Replace files
-if [ ${upgrade} == "1" ]; then
+if [ ${upgrade} -eq "1" ]; then
     cp -Rf /tmp/ncpa_etc ${homedir}
     rm -rf /tmp/ncpa_etc
 fi
 
-if [ ${upgrade} == "0" ]; then
+if [ ${upgrade} -eq "0" ]; then
     launchctl load /Library/LaunchDaemons/com.nagios.ncpa.listener.plist
     launchctl load /Library/LaunchDaemons/com.nagios.ncpa.passive.plist
 fi
