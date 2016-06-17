@@ -5,18 +5,18 @@ set -e
 pushd /Volumes/NCPA-*
 
 # These names are baked into the launchd plists, change with caution
-username=nagios
-groupname=nagios
-homedir=/usr/local/ncpa
-upgrade=0
+username="nagios"
+groupname="nagios"
+homedir="/usr/local/ncpa"
+upgrade="0"
 
 # Check if NCPA is installed
 if [ -f ${homedir} ]; then
-    upgrade=1
+    upgrade="1"
 fi
 
 # Disable NCPA if it's already installed for upgrade
-if [ ${upgrade} -eq 1 ]; then
+if [ ${upgrade} == "1" ]; then
     launchctl stop com.nagios.ncpa.listener
     launchctl stop com.nagios.ncpa.passive
 fi
@@ -61,23 +61,25 @@ cp ncpa/build_resources/ncpa_passive.plist /Library/LaunchDaemons/com.nagios.ncp
 mkdir -p ${homedir}
 
 # Temporarily save etc directory
-if [ ${upgrade} -eq 1 ]; then
-    cp -rf ${homedir}/etc /tmp/ncpa_etc
+if [ ${upgrade} == "1" ]; then
+    cp -Rf ${homedir}/etc /tmp/ncpa_etc
 fi
 
 # Copy over files
-cp -rf ncpa/* ${homedir}
+cp -Rf ncpa/* ${homedir}
 chmod -R 775 ${homedir}
 chown -R ${username}:${groupname} ${homedir}
 
 # Replace files
-if [ ${upgrade} -eq 1 ]; then
-    cp -rf /tmp/ncpa_etc ${homedir}/etc
+if [ ${upgrade} == "1" ]; then
+    cp -Rf /tmp/ncpa_etc ${homedir}
     rm -rf /tmp/ncpa_etc
 fi
 
-launchctl load /Library/LaunchDaemons/com.nagios.ncpa.listener.plist
-launchctl load /Library/LaunchDaemons/com.nagios.ncpa.passive.plist
+if [ ${upgrade} == "0" ]; then
+    launchctl load /Library/LaunchDaemons/com.nagios.ncpa.listener.plist
+    launchctl load /Library/LaunchDaemons/com.nagios.ncpa.passive.plist
+fi
 
 launchctl start com.nagios.ncpa.passive
 launchctl start com.nagios.ncpa.listener
