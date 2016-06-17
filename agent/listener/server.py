@@ -205,8 +205,15 @@ def top_websocket():
                 process_dict = process.as_dict(['username',
                                                 'name',
                                                 'pid'])
-                process_dict['memory_percent'] = round(process.memory_percent(), 2)
-                process_dict['cpu_percent'] = round(process.cpu_percent() / psutil.cpu_count(), 2)
+
+                try:
+                    process_dict['memory_percent'] = round(process.memory_percent(), 2)
+                    process_dict['cpu_percent'] = round(process.cpu_percent() / psutil.cpu_count(), 2)
+                except psutil.ZombieProcess as e:
+                    # Mac OS X has problems reading processes that are zombies
+                    process_dict['memory_percent'] = 0
+                    process_dict['cpu_percent'] = 0
+
                 process_list.append(process_dict)
             json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
             try:
