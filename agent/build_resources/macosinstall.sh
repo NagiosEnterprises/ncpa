@@ -11,7 +11,7 @@ homedir="/usr/local/ncpa"
 upgrade="0"
 
 # Check if NCPA is installed
-if [ -f ${homedir} ]; then
+if [ -d ${homedir} ]; then
     upgrade="1"
 fi
 
