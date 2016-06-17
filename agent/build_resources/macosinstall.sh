@@ -19,6 +19,9 @@ fi
 if [ ${upgrade} -eq "1" ]; then
     launchctl stop com.nagios.ncpa.listener
     launchctl stop com.nagios.ncpa.passive
+
+    # Give launchctl time to stop services before continuing
+    sleep 5
 fi
 
 # Find the highest UID that exists, pick the next one
