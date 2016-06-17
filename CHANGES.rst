@@ -24,7 +24,7 @@ Changelog
 - Updated API to now automatically update disk partitions and other static items except while websocket is open
 - Updated Linux and Mac OS X installs to use nagios group instead of nagcmd group like other Nagios products
 - Updated Windows installer to now have multiple sections that edit listener, passive, and passive check configs
-- Updated RPM to allow upgrading from older versions without issues
+- Updated RPM, DEB, and DMG to allow upgrading from older versions without issues
 - Fixed services list on el7 (and all systemctl systems)
 - Fixed registry key placement for fresh installs on Windows
 - Fixed using multiple values passed to nodes for filtering in API and active checks (ex. service=x&service=y)
@@ -42,6 +42,7 @@ Changelog
 - Fixed issue on OS X where plugin directory was not readable by nagios due to LaunchDaemon permissions
 - Fixed issue on Windows systems not having accurate network I/O if bytes > 4.3GB
 - Fixed issue with iptables showing up as stopped even while running in CentOS/RHEL 6 and 7
+- Fixed zombie process error in Mac OS X top websocket making the GUI top display nothing
 
 1.8.1 - 04/09/2015
 ==================
