@@ -4,16 +4,24 @@ set -e
 
 pushd /Volumes/NCPA-*
 
-# these names are baked into the launchd plists, change with caution
+# These names are baked into the launchd plists, change with caution
 username=nagios
 groupname=nagios
 homedir=/usr/local/ncpa
 
-# find the highest UID that exists, pick the next one
+# Disable NCPA if it's already installed for upgrade
+if [ -f /Library/LaunchDaemons/com.nagios.ncpa.listener.plist ]; then
+    launchctl stop com.nagios.ncpa.listener
+fi
+if [ -f /Library/LaunchDaemons/com.nagios.ncpa.passive.plist ]; then
+    launchctl stop com.nagios.ncpa.passive
+fi
+
+# Find the highest UID that exists, pick the next one
 UniqueID=`dscl . -list /Users UniqueID | awk '{print $2}' | sort -ug | tail -1`
 let UniqueID=UniqueID+1
 
-# select GID the same way
+# Select GID the same way
 PrimaryGroupID=`dscl . -list /Groups PrimaryGroupID | awk '{print $2}' | sort -ug | tail -1`
 let PrimaryGroupID=PrimaryGroupID+1
 
