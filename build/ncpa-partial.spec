@@ -78,11 +78,8 @@ sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_listener
 sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_passive
 
 # Remove empty cert and key files
-if [ $1 -eq 1 ];
-then
-    rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
-    rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
-fi
+rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
+rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
 
 /etc/init.d/ncpa_listener start
 /etc/init.d/ncpa_passive start
@@ -98,4 +95,6 @@ fi
 
 %defattr(0775,nagios,nagios,-)
 /usr/local/ncpa
-%config /usr/local/ncpa/etc/ncpa.cfg
+
+%config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
+%config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
