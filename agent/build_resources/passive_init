@@ -45,7 +45,7 @@ status() {
     fi
 }
 
-### main logic ###
+# Main init script logic
 case "$1" in
     start)
         start

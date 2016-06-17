@@ -41,21 +41,21 @@ if [ $1 -gt 1 ];
 then
     /etc/init.d/ncpa_listener stop
     /etc/init.d/ncpa_passive stop
+fi
+
+if ! getent group nagios > /dev/null;
+then
+    groupadd -r nagios
+fi
+if ! getent passwd nagios > /dev/null;
+then
+    useradd -r -g nagios nagios
 else
-    if ! getent group nagios > /dev/null;
-    then
-        groupadd -r nagios
-    fi
-    if ! getent passwd nagios 2> /dev/null;
-    then
-        useradd -r -g nagios nagios
-    else
-        %if 0%{?suse_version} && 0%{?suse_version} < 1210
-            usermod -A nagios nagios
-        %else
-            usermod -a -G nagios nagios
-        %endif
-    fi
+    %if 0%{?suse_version} && 0%{?suse_version} < 1210
+        usermod -A nagios nagios
+    %else
+        usermod -a -G nagios nagios
+    %endif
 fi
 
 %post
