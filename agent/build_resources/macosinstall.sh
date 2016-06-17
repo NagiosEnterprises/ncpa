@@ -8,12 +8,16 @@ pushd /Volumes/NCPA-*
 username=nagios
 groupname=nagios
 homedir=/usr/local/ncpa
+upgrade=0
+
+# Check if NCPA is installed
+if [ -f ${homedir} ]; then
+    upgrade=1
+fi
 
 # Disable NCPA if it's already installed for upgrade
-if [ -f /Library/LaunchDaemons/com.nagios.ncpa.listener.plist ]; then
+if [ ${upgrade} -eq 1 ]; then
     launchctl stop com.nagios.ncpa.listener
-fi
-if [ -f /Library/LaunchDaemons/com.nagios.ncpa.passive.plist ]; then
     launchctl stop com.nagios.ncpa.passive
 fi
 
@@ -39,9 +43,9 @@ else
     echo 'User already exists, skipping!'
 fi
 
+# Create the group account
 if ! dscl . -read /Groups/${groupname} > /dev/null 2>&1;
 then
-    # Create the group
     dscl . -create /Groups/${groupname}
     dscl . -create /Groups/${groupname} RecordName "_${groupname} ${username}"
     dscl . -create /Groups/${groupname} PrimaryGroupID ${PrimaryGroupID}
@@ -55,9 +59,22 @@ cp ncpa/build_resources/ncpa_listener.plist /Library/LaunchDaemons/com.nagios.nc
 cp ncpa/build_resources/ncpa_passive.plist /Library/LaunchDaemons/com.nagios.ncpa.passive.plist
 
 mkdir -p ${homedir}
+
+# Temporarily save etc directory
+if [ ${upgrade} -eq 1 ]; then
+    cp -rf ${homedir}/etc /tmp/ncpa_etc
+fi
+
+# Copy over files
 cp -rf ncpa/* ${homedir}
 chmod -R 775 ${homedir}
 chown -R ${username}:${groupname} ${homedir}
+
+# Replace files
+if [ ${upgrade} -eq 1 ]; then
+    cp -rf /tmp/ncpa_etc ${homedir}/etc
+    rm -rf /tmp/ncpa_etc
+fi
 
 launchctl load /Library/LaunchDaemons/com.nagios.ncpa.listener.plist
 launchctl load /Library/LaunchDaemons/com.nagios.ncpa.passive.plist
