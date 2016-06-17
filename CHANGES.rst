@@ -10,7 +10,7 @@ Changelog
 - Added plugin_timeout config option in ncpa.cfg [plugin directives] section
 - Added default __HOST__ passive check definition so it doesn't show up as unknown forever
 - Added delay_start option to listener and passive section of ncpa.cfg to actually run after a # of seconds
-- Added ability to relocate rpm install (ex. --prefix=/opt would install /opt/ncpa)
+- Added ability to relocate RPM install (ex. --prefix=/opt would install /opt/ncpa)
 - Added disk/mount for giving information on partitions that aren't currently accessible, such as cdroms
 - Updated web UI with modern theme with better graph styling
 - Updated self-signed SSL certs to use 2048bit RSA and sha256 signature
@@ -24,6 +24,7 @@ Changelog
 - Updated API to now automatically update disk partitions and other static items except while websocket is open
 - Updated Linux and Mac OS X installs to use nagios group instead of nagcmd group like other Nagios products
 - Updated Windows installer to now have multiple sections that edit listener, passive, and passive check configs
+- Updated RPM to allow upgrading from older versions without issues
 - Fixed services list on el7 (and all systemctl systems)
 - Fixed registry key placement for fresh installs on Windows
 - Fixed using multiple values passed to nodes for filtering in API and active checks (ex. service=x&service=y)
@@ -37,7 +38,7 @@ Changelog
 - Fixed issue where having no passive NRDP checks would give errors in ncpa_passive.log
 - Fixed regex issue for warning and critical values
 - Fixed stdout and returncode swapped when doing checks on nodes that can't be checked (user/list, system/agent_version)
-- Fixed rpm uninstall to stop the NCPA processes before it removes the NCPA files
+- Fixed RPM uninstall to stop the NCPA processes before it removes the NCPA files
 - Fixed issue on OS X where plugin directory was not readable by nagios due to LaunchDaemon permissions
 - Fixed issue on Windows systems not having accurate network I/O if bytes > 4.3GB
 - Fixed issue with iptables showing up as stopped even while running in CentOS/RHEL 6 and 7
