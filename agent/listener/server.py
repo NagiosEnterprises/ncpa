@@ -204,17 +204,23 @@ def top_websocket():
                 if process.pid == 0:
                     continue
 
-                process_dict = process.as_dict(['username',
-                                                'name',
-                                                'pid'])
+                process_dict = process.as_dict(['username', 'name', 'pid'])
+
+                # Set these to unknown and 0 if they fail
+                if not process_dict['name']:
+                    process_dict['name'] = "unknown"
+                if not process_dict['username']:
+                    process_dict['username'] = "unknown"
+                if not process_dict['pid']:
+                    process_dict['pid'] = 0
 
                 try:
                     process_dict['memory_percent'] = round(process.memory_percent(), 2)
                     process_dict['cpu_percent'] = round(process.cpu_percent() / psutil.cpu_count(), 2)
                 except:
                     # Mac OS X has problems reading processes that are zombies
-                    process_dict['memory_percent'] = 0
-                    process_dict['cpu_percent'] = 0
+                    process_dict['memory_percent'] = 0.00
+                    process_dict['cpu_percent'] = 0.00
                 
                 process_list.append(process_dict)
 
