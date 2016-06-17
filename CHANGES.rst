@@ -23,6 +23,7 @@ Changelog
 - Updated RPM .spec file information for new locations and summary/description information
 - Updated API to now automatically update disk partitions and other static items except while websocket is open
 - Updated Linux and Mac OS X installs to use nagios group instead of nagcmd group like other Nagios products
+- Updated Windows installer to now have multiple sections that edit listener, passive, and passive check configs
 - Fixed services list on el7 (and all systemctl systems)
 - Fixed registry key placement for fresh installs on Windows
 - Fixed using multiple values passed to nodes for filtering in API and active checks (ex. service=x&service=y)

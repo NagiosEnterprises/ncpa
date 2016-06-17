@@ -37,30 +37,39 @@ install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{bui
 rm -rf %{buildroot}
 
 %pre
-if ! getent group nagios > /dev/null;
+if $1 -gt 1;
 then
-    groupadd -r nagios
-fi
-if ! getent passwd nagios 2> /dev/null;
-then
-    useradd -r -g nagios nagios
+    /etc/init.d/ncpa_listener stop
+    /etc/init.d/ncpa_passive stop
 else
-    %if 0%{?suse_version} && 0%{?suse_version} < 1210
-        usermod -A nagios nagios
-    %else
-        usermod -a -G nagios nagios
-    %endif
+    if ! getent group nagios > /dev/null;
+    then
+        groupadd -r nagios
+    fi
+    if ! getent passwd nagios 2> /dev/null;
+    then
+        useradd -r -g nagios nagios
+    else
+        %if 0%{?suse_version} && 0%{?suse_version} < 1210
+            usermod -A nagios nagios
+        %else
+            usermod -a -G nagios nagios
+        %endif
+    fi
 fi
 
 %post
-if which chkconfig > /dev/null;
+if $1 -eq 1;
 then
-    chkconfig --level 3,5 --add ncpa_listener
-    chkconfig --level 3,5 --add ncpa_passive
-elif which update-rc.d > /dev/null;
-then
-    update-rc.d ncpa_listener defaults
-    update-rc.d ncpa_passive defaults
+    if which chkconfig > /dev/null;
+    then
+        chkconfig --level 3,5 --add ncpa_listener
+        chkconfig --level 3,5 --add ncpa_passive
+    elif which update-rc.d > /dev/null;
+    then
+        update-rc.d ncpa_listener defaults
+        update-rc.d ncpa_passive defaults
+    fi
 fi
 
 # Set the directory inside the init scripts
@@ -69,8 +78,11 @@ sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_listener
 sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_passive
 
 # Remove empty cert and key files
-rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
-rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
+if $1 -eq 1;
+then
+    rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
+    rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
+fi
 
 /etc/init.d/ncpa_listener start
 /etc/init.d/ncpa_passive start
