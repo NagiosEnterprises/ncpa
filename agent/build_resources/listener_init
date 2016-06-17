@@ -22,7 +22,7 @@ start() {
         cd $BASEDIR
         ./ncpa_posix_listener --start
     )
-    echo "Started listener..."
+    echo "Started listener."
 }
 
 # Restart listener service
@@ -30,7 +30,7 @@ stop() {
     (
         cd $BASEDIR
         ./ncpa_posix_listener --stop
-        echo "Exited."
+        echo "Stopped listener."
     )
 }
 

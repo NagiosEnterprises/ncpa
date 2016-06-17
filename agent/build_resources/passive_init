@@ -22,7 +22,7 @@ start() {
         cd $BASEDIR
         ./ncpa_posix_passive --start
     )
-    echo "Started passive agent..."
+    echo "Started passive."
 }
 
 # Restart passive service
@@ -31,7 +31,7 @@ stop() {
         cd $BASEDIR
         ./ncpa_posix_passive --stop
     )
-    echo "Exited."
+    echo "Stopped passive."
 }
 
 # Get the status

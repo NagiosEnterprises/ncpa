@@ -39,8 +39,8 @@ rm -rf %{buildroot}
 %pre
 if [ $1 -gt 1 ];
 then
-    /etc/init.d/ncpa_listener stop
-    /etc/init.d/ncpa_passive stop
+    /etc/init.d/ncpa_listener stop > /dev/null
+    /etc/init.d/ncpa_passive stop > /dev/null
 fi
 
 if ! getent group nagios > /dev/null;
@@ -88,8 +88,8 @@ fi
 /etc/init.d/ncpa_passive start
 
 %preun
-/etc/init.d/ncpa_listener stop
-/etc/init.d/ncpa_passive stop
+/etc/init.d/ncpa_listener stop > /dev/null
+/etc/init.d/ncpa_passive stop > /dev/null
 
 %files
 %defattr(0755,root,root,-)
