@@ -1,0 +1,820 @@
+2016-06-23 23:53:05,243:INFO:handler:127.0.0.1 - - [2016-06-23 23:53:05] "GET /static/fonts/fontawesome-webfont.woff2?v=4.3.0 HTTP/1.1" 200 57163 0.002000
+2016-06-24 00:17:09,664:INFO:handler:127.0.0.1 - - [2016-06-24 00:17:09] "GET /admin/ HTTP/1.1" 302 379 0.002000
+2016-06-24 00:17:09,665:INFO:handler:127.0.0.1 - - [2016-06-24 00:17:09] "GET /login HTTP/1.1" 200 2759 0.001000
+2016-06-24 00:17:09,732:INFO:handler:127.0.0.1 - - [2016-06-24 00:17:09] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 121547 0.003000
+2016-06-24 00:17:09,733:INFO:handler:127.0.0.1 - - [2016-06-24 00:17:09] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 24030 0.001000
+2016-06-24 00:17:09,733:INFO:handler:127.0.0.1 - - [2016-06-24 00:17:09] "GET /static/css/ncpa.css HTTP/1.1" 200 2227 0.001000
+2016-06-24 00:17:09,736:INFO:handler:127.0.0.1 - - [2016-06-24 00:17:09] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 200 97471 0.002000
+2016-06-24 00:17:09,737:INFO:handler:127.0.0.1 - - [2016-06-24 00:17:09] "GET /static/js/bootstrap.min.js HTTP/1.1" 200 37154 0.001000
+2016-06-24 00:17:09,740:INFO:handler:127.0.0.1 - - [2016-06-24 00:17:09] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 152018 0.002000
+2016-06-24 00:17:09,819:INFO:handler:127.0.0.1 - - [2016-06-24 00:17:09] "GET /static/img/footer_lodyas.png HTTP/1.1" 304 188 0.001000
+2016-06-24 00:17:09,838:INFO:handler:127.0.0.1 - - [2016-06-24 00:17:09] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.001000
+2016-06-24 00:17:09,845:INFO:handler:127.0.0.1 - - [2016-06-24 00:17:09] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.000000
+2016-06-24 00:17:09,858:INFO:handler:127.0.0.1 - - [2016-06-24 00:17:09] "GET /admin/ HTTP/1.1" 302 379 0.001000
+2016-06-24 00:17:09,861:INFO:handler:127.0.0.1 - - [2016-06-24 00:17:09] "GET /login HTTP/1.1" 200 2759 0.001000
+2016-06-24 00:35:59,867:INFO:handler:127.0.0.1 - - [2016-06-24 00:35:59] "GET /login HTTP/1.1" 200 2759 0.001000
+2016-06-24 00:35:59,917:INFO:handler:127.0.0.1 - - [2016-06-24 00:35:59] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 121547 0.003000
+2016-06-24 00:35:59,921:INFO:handler:127.0.0.1 - - [2016-06-24 00:35:59] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 24030 0.003000
+2016-06-24 00:35:59,923:INFO:handler:127.0.0.1 - - [2016-06-24 00:35:59] "GET /static/css/ncpa.css HTTP/1.1" 200 2227 0.001000
+2016-06-24 00:35:59,924:INFO:handler:127.0.0.1 - - [2016-06-24 00:35:59] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 200 97471 0.002000
+2016-06-24 00:35:59,927:INFO:handler:127.0.0.1 - - [2016-06-24 00:35:59] "GET /static/js/bootstrap.min.js HTTP/1.1" 200 37154 0.002000
+2016-06-24 00:35:59,928:INFO:handler:127.0.0.1 - - [2016-06-24 00:35:59] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 152018 0.002000
+2016-06-24 00:36:00,000:INFO:handler:127.0.0.1 - - [2016-06-24 00:36:00] "GET /static/img/footer_lodyas.png HTTP/1.1" 200 33974 0.001000
+2016-06-24 00:36:00,016:INFO:handler:127.0.0.1 - - [2016-06-24 00:36:00] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.001000
+2016-06-24 00:36:00,025:INFO:handler:127.0.0.1 - - [2016-06-24 00:36:00] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.001000
+2016-06-24 00:36:03,023:INFO:handler:127.0.0.1 - - [2016-06-24 00:36:03] "POST /login HTTP/1.1" 302 459 0.002000
+2016-06-24 00:36:03,026:INFO:handler:127.0.0.1 - - [2016-06-24 00:36:03] "GET / HTTP/1.1" 302 477 0.001000
+2016-06-24 00:36:03,030:INFO:handler:127.0.0.1 - - [2016-06-24 00:36:03] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:36:03,158:INFO:handler:127.0.0.1 - - [2016-06-24 00:36:03] "GET /static/fonts/fontawesome-webfont.woff2?v=4.3.0 HTTP/1.1" 200 57163 0.002000
+2016-06-24 00:36:04,433:INFO:handler:127.0.0.1 - - [2016-06-24 00:36:04] "GET /admin/api HTTP/1.1" 200 3976 0.003000
+2016-06-24 00:36:04,502:INFO:handler:127.0.0.1 - - [2016-06-24 00:36:04] "GET /api HTTP/1.1" 301 527 0.003000
+2016-06-24 00:36:04,635:INFO:handler:127.0.0.1 - - [2016-06-24 00:36:04] "GET /api/ HTTP/1.1" 200 13500 0.098000
+2016-06-24 00:36:05,946:INFO:handler:127.0.0.1 - - [2016-06-24 00:36:05] "GET /api/interface HTTP/1.1" 200 6301 0.088000
+2016-06-24 00:37:48,075:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:37:48,075:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:37:48,076:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:37:55,934:INFO:handler:127.0.0.1 - - [2016-06-24 00:37:55] "GET /api/processes HTTP/1.1" 302 379 0.009000
+2016-06-24 00:37:55,944:INFO:handler:127.0.0.1 - - [2016-06-24 00:37:55] "GET /login HTTP/1.1" 200 2759 0.010000
+2016-06-24 00:38:10,961:INFO:handler:127.0.0.1 - - [2016-06-24 00:38:10] "GET /api/processes HTTP/1.1" 302 379 0.002000
+2016-06-24 00:38:10,964:INFO:handler:127.0.0.1 - - [2016-06-24 00:38:10] "GET /login HTTP/1.1" 200 2759 0.002000
+2016-06-24 00:38:16,213:INFO:handler:127.0.0.1 - - [2016-06-24 00:38:16] "GET /api/processes?name=test HTTP/1.1" 302 379 0.002000
+2016-06-24 00:38:16,216:INFO:handler:127.0.0.1 - - [2016-06-24 00:38:16] "GET /login HTTP/1.1" 200 2759 0.001000
+2016-06-24 00:38:36,332:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:38:36,332:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:38:36,332:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:38:45,000:INFO:handler:127.0.0.1 - - [2016-06-24 00:38:45] "GET /api/processes?name=test HTTP/1.1" 302 379 0.003000
+2016-06-24 00:38:45,013:INFO:handler:127.0.0.1 - - [2016-06-24 00:38:45] "GET /login HTTP/1.1" 200 2759 0.010000
+2016-06-24 00:40:29,457:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:40:29,457:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:40:29,457:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:40:31,365:INFO:handler:127.0.0.1 - - [2016-06-24 00:40:31] "GET /login HTTP/1.1" 200 2759 0.011000
+2016-06-24 00:40:31,605:INFO:handler:127.0.0.1 - - [2016-06-24 00:40:31] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 188 0.175000
+2016-06-24 00:40:31,608:INFO:handler:127.0.0.1 - - [2016-06-24 00:40:31] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 190 0.001000
+2016-06-24 00:40:31,608:INFO:handler:127.0.0.1 - - [2016-06-24 00:40:31] "GET /static/css/ncpa.css HTTP/1.1" 304 187 0.001000
+2016-06-24 00:40:31,611:INFO:handler:127.0.0.1 - - [2016-06-24 00:40:31] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 189 0.001000
+2016-06-24 00:40:31,611:INFO:handler:127.0.0.1 - - [2016-06-24 00:40:31] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 189 0.001000
+2016-06-24 00:40:31,614:INFO:handler:127.0.0.1 - - [2016-06-24 00:40:31] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 191 0.001000
+2016-06-24 00:40:31,690:INFO:handler:127.0.0.1 - - [2016-06-24 00:40:31] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.001000
+2016-06-24 00:40:31,694:INFO:handler:127.0.0.1 - - [2016-06-24 00:40:31] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.001000
+2016-06-24 00:40:36,845:ERROR:app:Exception on /api/processes [GET]
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Jake\Documents\ncpa\agent\listener\server.py", line 71, in decorated
+    return redirect(url_for('login'), redirect=request.url)
+TypeError: redirect() got an unexpected keyword argument 'redirect'
+2016-06-24 00:40:36,848:INFO:handler:127.0.0.1 - - [2016-06-24 00:40:36] "GET /api/processes HTTP/1.1" 500 412 0.004000
+2016-06-24 00:40:36,904:INFO:handler:127.0.0.1 - - [2016-06-24 00:40:36] "GET /favicon.ico HTTP/1.1" 404 342 0.002000
+2016-06-24 00:41:15,243:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:41:15,243:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:41:15,243:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:41:18,684:INFO:handler:127.0.0.1 - - [2016-06-24 00:41:18] "GET /api/processes HTTP/1.1" 302 553 0.002000
+2016-06-24 00:41:18,697:INFO:handler:127.0.0.1 - - [2016-06-24 00:41:18] "GET /login?redirect=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses HTTP/1.1" 200 2759 0.010000
+2016-06-24 00:41:18,946:INFO:handler:127.0.0.1 - - [2016-06-24 00:41:18] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 188 0.174000
+2016-06-24 00:41:18,954:INFO:handler:127.0.0.1 - - [2016-06-24 00:41:18] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 190 0.002000
+2016-06-24 00:41:18,957:INFO:handler:127.0.0.1 - - [2016-06-24 00:41:18] "GET /static/css/ncpa.css HTTP/1.1" 304 187 0.001000
+2016-06-24 00:41:18,960:INFO:handler:127.0.0.1 - - [2016-06-24 00:41:18] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 189 0.002000
+2016-06-24 00:41:18,960:INFO:handler:127.0.0.1 - - [2016-06-24 00:41:18] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 191 0.001000
+2016-06-24 00:41:18,963:INFO:handler:127.0.0.1 - - [2016-06-24 00:41:18] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 189 0.001000
+2016-06-24 00:41:24,953:ERROR:app:Exception on /login [POST]
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Jake\Documents\ncpa\agent\listener\server.py", line 91, in login
+    return redirect(url_for('index'))
+TypeError: 'NoneType' object is not callable
+2016-06-24 00:41:24,957:INFO:handler:127.0.0.1 - - [2016-06-24 00:41:24] "POST /login HTTP/1.1" 500 412 0.004000
+2016-06-24 00:41:29,252:ERROR:app:Exception on /login [POST]
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Jake\Documents\ncpa\agent\listener\server.py", line 91, in login
+    return redirect(url_for('index'))
+TypeError: 'NoneType' object is not callable
+2016-06-24 00:41:29,253:INFO:handler:127.0.0.1 - - [2016-06-24 00:41:29] "POST /login HTTP/1.1" 500 412 0.002000
+2016-06-24 00:42:53,423:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:42:53,424:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:42:53,424:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:42:56,242:INFO:handler:127.0.0.1 - - [2016-06-24 00:42:56] "POST /login HTTP/1.1" 302 459 0.002000
+2016-06-24 00:42:56,244:INFO:handler:127.0.0.1 - - [2016-06-24 00:42:56] "GET / HTTP/1.1" 302 477 0.002000
+2016-06-24 00:42:56,256:INFO:handler:127.0.0.1 - - [2016-06-24 00:42:56] "GET /admin/ HTTP/1.1" 200 5251 0.010000
+2016-06-24 00:42:56,505:INFO:handler:127.0.0.1 - - [2016-06-24 00:42:56] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.174000
+2016-06-24 00:42:56,506:INFO:handler:127.0.0.1 - - [2016-06-24 00:42:56] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:42:56,509:INFO:handler:127.0.0.1 - - [2016-06-24 00:42:56] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:42:56,510:INFO:handler:127.0.0.1 - - [2016-06-24 00:42:56] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:42:56,513:INFO:handler:127.0.0.1 - - [2016-06-24 00:42:56] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:42:56,515:INFO:handler:127.0.0.1 - - [2016-06-24 00:42:56] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:42:56,594:INFO:handler:127.0.0.1 - - [2016-06-24 00:42:56] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:42:56,596:INFO:handler:127.0.0.1 - - [2016-06-24 00:42:56] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:43:00,566:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:00] "GET /login HTTP/1.1" 200 2854 0.005000
+2016-06-24 00:43:02,180:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:02] "GET /login HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:43:02,234:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:02] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:43:02,236:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:02] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:43:02,239:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:02] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:43:02,240:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:02] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.002000
+2016-06-24 00:43:02,243:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:02] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.002000
+2016-06-24 00:43:02,243:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:02] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:43:02,302:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:02] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:43:02,309:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:02] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:43:04,437:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:04] "GET /admin HTTP/1.1" 301 533 0.004000
+2016-06-24 00:43:04,441:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:04] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:43:06,101:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:43:06,157:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.003000
+2016-06-24 00:43:06,158:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.002000
+2016-06-24 00:43:06,160:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:43:06,161:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:43:06,164:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:43:06,165:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.002000
+2016-06-24 00:43:06,230:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:43:06,233:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:43:06,249:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /admin/ HTTP/1.1" 200 5251 0.001000
+2016-06-24 00:43:06,309:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:43:06,311:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:43:06,312:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:43:06,315:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:43:06,315:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:43:06,318:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:43:06,369:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:43:06,375:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:43:06,420:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /admin/ HTTP/1.1" 200 5251 0.001000
+2016-06-24 00:43:06,476:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:43:06,477:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:43:06,480:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:43:06,482:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:43:06,483:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.002000
+2016-06-24 00:43:06,484:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:43:06,553:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:43:06,559:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:06] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:43:23,956:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:23] "GET /admin/api HTTP/1.1" 200 3976 0.004000
+2016-06-24 00:43:24,148:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:24] "GET /api HTTP/1.1" 301 527 0.002000
+2016-06-24 00:43:24,266:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:24] "GET /api/ HTTP/1.1" 200 13504 0.095000
+2016-06-24 00:43:24,803:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:24] "GET /admin/top HTTP/1.1" 200 3307 0.003000
+2016-06-24 00:43:24,960:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:24] "GET /top HTTP/1.1" 200 7868 0.006000
+2016-06-24 00:43:24,973:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:24] "GET /static/js/smoothie.js HTTP/1.1" 200 33203 0.002000
+2016-06-24 00:43:25,483:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:25] "GET /admin/stats HTTP/1.1" 200 5998 0.005000
+2016-06-24 00:43:25,549:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:25] "GET /static/css/ncpa-graph.css HTTP/1.1" 200 988 0.002000
+2016-06-24 00:43:25,615:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:25] "GET /graph/cpu/percent HTTP/1.1" 200 5514 0.010000
+2016-06-24 00:43:25,621:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:25] "GET /graph/memory/virtual/percent HTTP/1.1" 200 5582 0.004000
+2016-06-24 00:43:25,631:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:25] "GET /api/disk/logical HTTP/1.1" 200 610 0.010000
+2016-06-24 00:43:25,717:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:25] "GET /api/interface/ HTTP/1.1" 200 2306 0.086000
+2016-06-24 00:43:26,720:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:26] "GET /api/cpu/percent HTTP/1.1" 200 285 1.004000
+2016-06-24 00:43:26,723:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:26] "GET /logout HTTP/1.1" 302 575 0.001000
+2016-06-24 00:43:26,732:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:26] "GET /graph/interface/VMware%20Network%20Adapter%20VMnet1/bytes_sent?delta=1&units=K HTTP/1.1" 200 5743 0.004000
+2016-06-24 00:43:26,733:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:26] "GET /login?message=Successfully+logged+out. HTTP/1.1" 200 2991 0.002000
+2016-06-24 00:43:26,737:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:26] "GET /graph/interface/VMware%20Network%20Adapter%20VMnet1/bytes_recv?delta=1&units=K HTTP/1.1" 200 5730 0.004000
+2016-06-24 00:43:29,447:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:29] "GET /admin HTTP/1.1" 301 535 0.002000
+2016-06-24 00:43:29,450:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:29] "GET /admin/ HTTP/1.1" 302 614 0.001000
+2016-06-24 00:43:29,456:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:29] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fadmin%2F HTTP/1.1" 200 2856 0.001000
+2016-06-24 00:43:32,911:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:32] "GET /admin HTTP/1.1" 301 535 0.002000
+2016-06-24 00:43:32,915:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:32] "GET /admin/ HTTP/1.1" 302 614 0.002000
+2016-06-24 00:43:32,918:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:32] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fadmin%2F HTTP/1.1" 200 2856 0.002000
+2016-06-24 00:43:35,437:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:35] "GET /login HTTP/1.1" 200 2856 0.002000
+2016-06-24 00:43:39,941:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:39] "GET /api/processes?name=test HTTP/1.1" 302 677 0.002000
+2016-06-24 00:43:39,944:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:39] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses%3Fname%3Dtest HTTP/1.1" 200 2856 0.001000
+2016-06-24 00:43:44,809:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:44] "POST /login HTTP/1.1" 302 459 0.002000
+2016-06-24 00:43:44,812:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:44] "GET / HTTP/1.1" 302 477 0.001000
+2016-06-24 00:43:44,815:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:44] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:43:46,617:INFO:handler:127.0.0.1 - - [2016-06-24 00:43:46] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses%3Fname%3Dtest HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:44:39,188:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:39] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses%3Fname%3Dtest HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:44:39,246:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:39] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:44:39,249:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:39] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.002000
+2016-06-24 00:44:39,250:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:39] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:44:39,253:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:39] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:44:39,253:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:39] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:44:39,256:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:39] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.002000
+2016-06-24 00:44:39,328:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:39] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:44:39,332:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:39] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:44:43,651:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:44:43,651:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:44:43,651:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:44:47,602:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:47] "GET /api/processes?name=test HTTP/1.1" 302 846 0.001000
+2016-06-24 00:44:47,614:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:47] "GET /login?path=%2Fapi%2Fprocesses&req=CombinedMultiDict%28%5BImmutableMultiDict%28%5B%28%27name%27%2C+u%27test%27%29%5D%29%2C+ImmutableMultiDict%28%5B%5D%29%5D%29 HTTP/1.1" 200 2759 0.010000
+2016-06-24 00:44:58,456:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:58] "GET /login?path=%2Fapi%2Fprocesses&req=CombinedMultiDict%28%5BImmutableMultiDict%28%5B%28%27name%27%2C+u%27test%27%29%5D%29%2C+ImmutableMultiDict%28%5B%5D%29%5D%29 HTTP/1.1" 200 2759 0.002000
+2016-06-24 00:44:58,684:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:58] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 188 0.178000
+2016-06-24 00:44:58,686:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:58] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 190 0.001000
+2016-06-24 00:44:58,687:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:58] "GET /static/css/ncpa.css HTTP/1.1" 304 187 0.001000
+2016-06-24 00:44:58,688:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:58] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 189 0.001000
+2016-06-24 00:44:58,690:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:58] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 189 0.000000
+2016-06-24 00:44:58,691:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:58] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 191 0.001000
+2016-06-24 00:44:58,730:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:58] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.001000
+2016-06-24 00:44:58,736:INFO:handler:127.0.0.1 - - [2016-06-24 00:44:58] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.002000
+2016-06-24 00:45:02,318:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:45:02,318:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:45:02,318:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:45:10,546:ERROR:app:Exception on /api/processes [GET]
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Jake\Documents\ncpa\agent\listener\server.py", line 71, in decorated
+    return redirect(url_for('login', path=request.path, req=request.values.get_all()))
+AttributeError: 'CombinedMultiDict' object has no attribute 'get_all'
+2016-06-24 00:45:10,548:INFO:handler:127.0.0.1 - - [2016-06-24 00:45:10] "GET /api/processes?name=test HTTP/1.1" 500 412 0.003000
+2016-06-24 00:45:50,862:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:45:50,862:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:45:50,862:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:45:55,230:INFO:handler:127.0.0.1 - - [2016-06-24 00:45:55] "GET /api/processes?name=test HTTP/1.1" 302 657 0.001000
+2016-06-24 00:45:55,243:INFO:handler:127.0.0.1 - - [2016-06-24 00:45:55] "GET /login?path=%2Fapi%2Fprocesses&req=ImmutableMultiDict%28%5B%28%27name%27%2C+u%27test%27%29%5D%29 HTTP/1.1" 200 2759 0.011000
+2016-06-24 00:49:07,178:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:49:07,180:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:49:07,180:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:49:11,381:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:11] "GET /api/processes?name=test HTTP/1.1" 302 580 0.002000
+2016-06-24 00:49:11,391:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:11] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses%3Fname%3Dtest HTTP/1.1" 200 2759 0.010000
+2016-06-24 00:49:11,635:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:11] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 121547 0.177000
+2016-06-24 00:49:11,638:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:11] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 24030 0.001000
+2016-06-24 00:49:11,645:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:11] "GET /static/css/ncpa.css HTTP/1.1" 200 2227 0.002000
+2016-06-24 00:49:11,650:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:11] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 200 97471 0.002000
+2016-06-24 00:49:11,651:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:11] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 152018 0.002000
+2016-06-24 00:49:11,654:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:11] "GET /static/js/bootstrap.min.js HTTP/1.1" 200 37154 0.001000
+2016-06-24 00:49:11,724:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:11] "GET /static/img/footer_lodyas.png HTTP/1.1" 200 33974 0.002000
+2016-06-24 00:49:14,157:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:14] "POST /login HTTP/1.1" 302 459 0.002000
+2016-06-24 00:49:14,161:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:14] "GET / HTTP/1.1" 302 477 0.002000
+2016-06-24 00:49:14,167:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:14] "GET /admin/ HTTP/1.1" 200 5251 0.005000
+2016-06-24 00:49:14,299:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:14] "GET /static/fonts/fontawesome-webfont.woff2?v=4.3.0 HTTP/1.1" 200 57163 0.002000
+2016-06-24 00:49:25,740:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:25] "GET /logout HTTP/1.1" 302 575 0.001000
+2016-06-24 00:49:25,792:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:25] "GET /login?message=Successfully+logged+out. HTTP/1.1" 200 2991 0.002000
+2016-06-24 00:49:29,397:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:29] "GET /api/processes HTTP/1.1" 302 635 0.002000
+2016-06-24 00:49:29,401:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:29] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses HTTP/1.1" 200 2856 0.002000
+2016-06-24 00:49:33,391:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:33] "POST /login HTTP/1.1" 302 459 0.001000
+2016-06-24 00:49:33,394:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:33] "GET / HTTP/1.1" 302 477 0.002000
+2016-06-24 00:49:33,398:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:33] "GET /admin/ HTTP/1.1" 200 5251 0.001000
+2016-06-24 00:49:35,546:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:35] "GET /admin/api HTTP/1.1" 200 3976 0.004000
+2016-06-24 00:49:35,625:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:35] "GET /api HTTP/1.1" 301 527 0.002000
+2016-06-24 00:49:35,775:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:35] "GET /api/ HTTP/1.1" 200 13483 0.098000
+2016-06-24 00:49:36,641:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:36] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:49:37,088:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:37] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:49:38,394:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:38] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:49:38,454:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:38] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:49:38,457:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:38] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.002000
+2016-06-24 00:49:38,457:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:38] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:49:38,460:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:38] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:49:38,461:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:38] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:49:38,463:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:38] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:49:38,539:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:38] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:49:38,546:INFO:handler:127.0.0.1 - - [2016-06-24 00:49:38] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:50:47,523:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:47] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses HTTP/1.1" 200 2854 0.003000
+2016-06-24 00:50:47,573:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:47] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.001000
+2016-06-24 00:50:47,575:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:47] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:50:47,578:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:47] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:50:47,579:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:47] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:50:47,582:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:47] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:50:47,584:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:47] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:50:47,651:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:47] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:50:47,661:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:47] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:50:48,207:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses HTTP/1.1" 200 2854 0.001000
+2016-06-24 00:50:48,263:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:50:48,265:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.002000
+2016-06-24 00:50:48,266:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.002000
+2016-06-24 00:50:48,269:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.002000
+2016-06-24 00:50:48,269:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:50:48,272:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:50:48,328:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:50:48,331:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:50:48,387:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:50:48,433:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.001000
+2016-06-24 00:50:48,434:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:50:48,437:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:50:48,438:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.002000
+2016-06-24 00:50:48,440:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:50:48,441:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:50:48,496:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:50:48,500:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:50:48,568:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:50:48,611:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:50:48,614:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:50:48,615:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:50:48,618:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.002000
+2016-06-24 00:50:48,618:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:50:48,621:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:50:48,686:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:50:48,688:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:48] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:50:49,296:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:49] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses HTTP/1.1" 200 2854 0.001000
+2016-06-24 00:50:49,345:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:49] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:50:49,346:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:49] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:50:49,348:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:49] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:50:49,351:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:49] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:50:49,352:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:49] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.002000
+2016-06-24 00:50:49,354:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:49] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:50:49,407:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:49] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:50:49,410:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:49] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:50:54,891:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:50:54,891:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:50:54,891:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:50:56,950:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:56] "GET /admin/ HTTP/1.1" 302 517 0.001000
+2016-06-24 00:50:56,963:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:56] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fadmin%2F HTTP/1.1" 200 2759 0.010000
+2016-06-24 00:50:59,854:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:59] "POST /login HTTP/1.1" 302 459 0.002000
+2016-06-24 00:50:59,857:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:59] "GET / HTTP/1.1" 302 477 0.001000
+2016-06-24 00:50:59,865:INFO:handler:127.0.0.1 - - [2016-06-24 00:50:59] "GET /admin/ HTTP/1.1" 200 5251 0.006000
+2016-06-24 00:51:01,039:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:01] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:51:03,398:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:03] "GET /login HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:51:05,157:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /login HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:51:05,388:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.181000
+2016-06-24 00:51:05,391:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:51:05,392:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:51:05,394:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.002000
+2016-06-24 00:51:05,395:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:51:05,398:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:51:05,430:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:51:05,437:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:51:05,529:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /login HTTP/1.1" 200 2854 0.001000
+2016-06-24 00:51:05,579:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.001000
+2016-06-24 00:51:05,582:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:51:05,584:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:51:05,586:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.002000
+2016-06-24 00:51:05,588:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:51:05,589:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:51:05,642:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:51:05,648:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:05] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:51:06,092:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /login HTTP/1.1" 200 2854 0.001000
+2016-06-24 00:51:06,145:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.001000
+2016-06-24 00:51:06,148:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:51:06,150:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:51:06,151:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.002000
+2016-06-24 00:51:06,153:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:51:06,154:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:51:06,217:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:51:06,220:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:51:06,684:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /login HTTP/1.1" 200 2854 0.001000
+2016-06-24 00:51:06,739:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:51:06,740:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.002000
+2016-06-24 00:51:06,742:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:51:06,743:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:51:06,746:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:51:06,747:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.002000
+2016-06-24 00:51:06,801:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:51:06,805:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:06] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:51:07,944:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:07] "GET /login HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:51:08,000:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:08] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:51:08,002:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:08] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.002000
+2016-06-24 00:51:08,003:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:08] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:51:08,005:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:08] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:51:08,006:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:08] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:51:08,009:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:08] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:51:08,062:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:08] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:51:08,068:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:08] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:51:39,266:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /login HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:51:39,348:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:51:39,349:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.002000
+2016-06-24 00:51:39,351:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:51:39,352:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:51:39,355:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:51:39,357:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.002000
+2016-06-24 00:51:39,437:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:51:39,443:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:51:39,526:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /login HTTP/1.1" 200 2854 0.001000
+2016-06-24 00:51:39,604:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:51:39,607:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.002000
+2016-06-24 00:51:39,608:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.002000
+2016-06-24 00:51:39,609:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:51:39,611:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:51:39,614:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:51:39,676:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:51:39,681:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:39] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:51:40,030:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:40] "GET /admin/ HTTP/1.1" 200 5251 0.001000
+2016-06-24 00:51:43,990:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:43] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:51:44,049:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:44] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:51:44,049:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:44] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:51:44,052:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:44] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:51:44,053:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:44] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.002000
+2016-06-24 00:51:44,055:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:44] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:51:44,056:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:44] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:51:44,122:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:44] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:51:44,125:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:44] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:51:47,048:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:47] "GET /login HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:51:47,138:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:47] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 121642 0.003000
+2016-06-24 00:51:47,140:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:47] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 24125 0.001000
+2016-06-24 00:51:47,142:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:47] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 200 97566 0.002000
+2016-06-24 00:51:47,144:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:47] "GET /static/js/bootstrap.min.js HTTP/1.1" 200 37249 0.001000
+2016-06-24 00:51:47,147:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:47] "GET /static/css/ncpa.css HTTP/1.1" 200 2322 0.002000
+2016-06-24 00:51:47,150:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:47] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 152113 0.003000
+2016-06-24 00:51:47,256:INFO:handler:127.0.0.1 - - [2016-06-24 00:51:47] "GET /static/img/footer_lodyas.png HTTP/1.1" 200 34069 0.002000
+2016-06-24 00:52:18,614:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:18] "GET /login HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:52:18,677:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:18] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 121642 0.002000
+2016-06-24 00:52:18,678:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:18] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 200 97566 0.002000
+2016-06-24 00:52:18,680:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:18] "GET /static/css/ncpa.css HTTP/1.1" 200 2322 0.001000
+2016-06-24 00:52:18,683:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:18] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 24125 0.001000
+2016-06-24 00:52:18,684:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:18] "GET /static/js/bootstrap.min.js HTTP/1.1" 200 37249 0.001000
+2016-06-24 00:52:18,687:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:18] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 152113 0.002000
+2016-06-24 00:52:18,793:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:18] "GET /static/img/footer_lodyas.png HTTP/1.1" 304 283 0.002000
+2016-06-24 00:52:18,818:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:18] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:52:18,822:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:18] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:52:23,107:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:52:23,107:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:52:23,107:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:52:25,457:ERROR:app:Exception on /login [GET]
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Jake\Documents\ncpa\agent\listener\server.py", line 83, in login
+    if session['logged']:
+  File "C:\Python27\lib\site-packages\werkzeug\local.py", line 373, in <lambda>
+    __getitem__ = lambda x, i: x._get_current_object()[i]
+KeyError: 'logged'
+2016-06-24 00:52:25,460:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:25] "GET /login HTTP/1.1" 500 412 0.004000
+2016-06-24 00:52:26,950:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:26] "GET / HTTP/1.1" 302 493 0.001000
+2016-06-24 00:52:26,953:ERROR:app:Exception on /login [GET]
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Jake\Documents\ncpa\agent\listener\server.py", line 83, in login
+    if session['logged']:
+  File "C:\Python27\lib\site-packages\werkzeug\local.py", line 373, in <lambda>
+    __getitem__ = lambda x, i: x._get_current_object()[i]
+KeyError: 'logged'
+2016-06-24 00:52:26,954:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:26] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2F HTTP/1.1" 500 412 0.001000
+2016-06-24 00:52:31,246:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:31] "GET /admin HTTP/1.1" 301 438 0.002000
+2016-06-24 00:52:31,249:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:31] "GET /admin/ HTTP/1.1" 302 517 0.001000
+2016-06-24 00:52:31,250:ERROR:app:Exception on /login [GET]
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Jake\Documents\ncpa\agent\listener\server.py", line 83, in login
+    if session['logged']:
+  File "C:\Python27\lib\site-packages\werkzeug\local.py", line 373, in <lambda>
+    __getitem__ = lambda x, i: x._get_current_object()[i]
+KeyError: 'logged'
+2016-06-24 00:52:31,252:INFO:handler:127.0.0.1 - - [2016-06-24 00:52:31] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fadmin%2F HTTP/1.1" 500 412 0.001000
+2016-06-24 00:53:56,519:ERROR:app:Exception on /login [GET]
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Jake\Documents\ncpa\agent\listener\server.py", line 83, in login
+    if session['logged']:
+  File "C:\Python27\lib\site-packages\werkzeug\local.py", line 373, in <lambda>
+    __getitem__ = lambda x, i: x._get_current_object()[i]
+KeyError: 'logged'
+2016-06-24 00:53:56,519:INFO:handler:127.0.0.1 - - [2016-06-24 00:53:56] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fadmin%2F HTTP/1.1" 500 412 0.002000
+2016-06-24 00:54:53,033:ERROR:app:Exception on /login [GET]
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1817, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1477, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1381, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1475, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Python27\lib\site-packages\flask\app.py", line 1461, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Jake\Documents\ncpa\agent\listener\server.py", line 83, in login
+    if 'logged' in session:
+  File "C:\Python27\lib\site-packages\werkzeug\local.py", line 373, in <lambda>
+    __getitem__ = lambda x, i: x._get_current_object()[i]
+KeyError: 'logged'
+2016-06-24 00:54:53,035:INFO:handler:127.0.0.1 - - [2016-06-24 00:54:53] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fadmin%2F HTTP/1.1" 500 412 0.002000
+2016-06-24 00:54:57,023:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:54:57,023:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:54:57,023:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:54:59,579:INFO:handler:127.0.0.1 - - [2016-06-24 00:54:59] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fadmin%2F HTTP/1.1" 200 2759 0.012000
+2016-06-24 00:54:59,815:INFO:handler:127.0.0.1 - - [2016-06-24 00:54:59] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 121547 0.176000
+2016-06-24 00:54:59,823:INFO:handler:127.0.0.1 - - [2016-06-24 00:54:59] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 24030 0.002000
+2016-06-24 00:54:59,825:INFO:handler:127.0.0.1 - - [2016-06-24 00:54:59] "GET /static/css/ncpa.css HTTP/1.1" 200 2227 0.001000
+2016-06-24 00:54:59,828:INFO:handler:127.0.0.1 - - [2016-06-24 00:54:59] "GET /static/js/bootstrap.min.js HTTP/1.1" 200 37154 0.001000
+2016-06-24 00:54:59,831:INFO:handler:127.0.0.1 - - [2016-06-24 00:54:59] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 152018 0.002000
+2016-06-24 00:54:59,832:INFO:handler:127.0.0.1 - - [2016-06-24 00:54:59] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 200 97471 0.002000
+2016-06-24 00:54:59,914:INFO:handler:127.0.0.1 - - [2016-06-24 00:54:59] "GET /static/img/footer_lodyas.png HTTP/1.1" 200 33974 0.001000
+2016-06-24 00:54:59,970:INFO:handler:127.0.0.1 - - [2016-06-24 00:54:59] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.001000
+2016-06-24 00:54:59,974:INFO:handler:127.0.0.1 - - [2016-06-24 00:54:59] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.001000
+2016-06-24 00:55:02,467:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:02] "POST /login HTTP/1.1" 302 459 0.002000
+2016-06-24 00:55:02,470:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:02] "GET / HTTP/1.1" 302 477 0.001000
+2016-06-24 00:55:02,477:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:02] "GET /admin/ HTTP/1.1" 200 5251 0.005000
+2016-06-24 00:55:02,628:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:02] "GET /static/fonts/fontawesome-webfont.woff2?v=4.3.0 HTTP/1.1" 200 57163 0.002000
+2016-06-24 00:55:04,194:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:04] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:55:05,819:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:05] "GET /login HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:55:05,911:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:05] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 121642 0.002000
+2016-06-24 00:55:05,914:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:05] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 24125 0.002000
+2016-06-24 00:55:05,914:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:05] "GET /static/css/ncpa.css HTTP/1.1" 200 2322 0.001000
+2016-06-24 00:55:05,917:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:05] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 200 97566 0.002000
+2016-06-24 00:55:05,918:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:05] "GET /static/js/bootstrap.min.js HTTP/1.1" 200 37249 0.001000
+2016-06-24 00:55:05,921:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:05] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 152113 0.002000
+2016-06-24 00:55:06,026:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:06] "GET /static/img/footer_lodyas.png HTTP/1.1" 200 34069 0.002000
+2016-06-24 00:55:08,667:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:08] "GET /login HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:55:08,730:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:08] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:55:08,733:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:08] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.002000
+2016-06-24 00:55:08,734:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:08] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:55:08,736:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:08] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.002000
+2016-06-24 00:55:08,737:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:08] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:55:08,740:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:08] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.002000
+2016-06-24 00:55:08,864:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:08] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:55:08,867:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:08] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:55:09,299:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /login HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:55:09,351:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:55:09,351:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:55:09,354:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:55:09,355:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:55:09,357:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:55:09,358:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.002000
+2016-06-24 00:55:09,436:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:55:09,440:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:55:09,471:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /login HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:55:09,533:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.001000
+2016-06-24 00:55:09,536:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:55:09,538:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:55:09,539:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:55:09,540:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.002000
+2016-06-24 00:55:09,542:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:55:09,595:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:55:09,611:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:09] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:55:31,569:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:55:31,569:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:55:31,569:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:55:34,088:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:34] "GET /login HTTP/1.1" 200 2759 0.011000
+2016-06-24 00:55:34,321:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:34] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 188 0.176000
+2016-06-24 00:55:34,328:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:34] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 190 0.001000
+2016-06-24 00:55:34,332:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:34] "GET /static/css/ncpa.css HTTP/1.1" 304 187 0.001000
+2016-06-24 00:55:34,332:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:34] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 189 0.001000
+2016-06-24 00:55:34,335:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:34] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 191 0.001000
+2016-06-24 00:55:34,335:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:34] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 189 0.001000
+2016-06-24 00:55:34,381:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:34] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.001000
+2016-06-24 00:55:34,384:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:34] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.002000
+2016-06-24 00:55:36,140:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:36] "GET /login HTTP/1.1" 200 2759 0.002000
+2016-06-24 00:55:36,200:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:36] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 188 0.001000
+2016-06-24 00:55:36,200:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:36] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 190 0.001000
+2016-06-24 00:55:36,203:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:36] "GET /static/css/ncpa.css HTTP/1.1" 304 187 0.001000
+2016-06-24 00:55:36,203:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:36] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 189 0.001000
+2016-06-24 00:55:36,204:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:36] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 189 0.001000
+2016-06-24 00:55:36,207:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:36] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 191 0.001000
+2016-06-24 00:55:36,276:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:36] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.002000
+2016-06-24 00:55:36,286:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:36] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.002000
+2016-06-24 00:55:38,528:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:38] "GET /admin HTTP/1.1" 301 438 0.003000
+2016-06-24 00:55:38,530:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:38] "GET /admin/ HTTP/1.1" 302 517 0.001000
+2016-06-24 00:55:38,532:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:38] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fadmin%2F HTTP/1.1" 200 2759 0.001000
+2016-06-24 00:55:38,624:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:38] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 121547 0.002000
+2016-06-24 00:55:38,625:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:38] "GET /static/css/ncpa.css HTTP/1.1" 200 2227 0.001000
+2016-06-24 00:55:38,625:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:38] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 24030 0.001000
+2016-06-24 00:55:38,628:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:38] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 200 97471 0.002000
+2016-06-24 00:55:38,631:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:38] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 152018 0.003000
+2016-06-24 00:55:38,631:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:38] "GET /static/js/bootstrap.min.js HTTP/1.1" 200 37154 0.001000
+2016-06-24 00:55:38,740:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:38] "GET /static/img/footer_lodyas.png HTTP/1.1" 200 33974 0.002000
+2016-06-24 00:55:41,411:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:41] "POST /login HTTP/1.1" 302 459 0.001000
+2016-06-24 00:55:41,414:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:41] "GET / HTTP/1.1" 302 477 0.002000
+2016-06-24 00:55:41,421:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:41] "GET /admin/ HTTP/1.1" 200 5251 0.005000
+2016-06-24 00:55:41,588:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:41] "GET /static/fonts/fontawesome-webfont.woff2?v=4.3.0 HTTP/1.1" 200 57163 0.002000
+2016-06-24 00:55:43,811:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:43] "GET /login HTTP/1.1" 200 2854 0.002000
+2016-06-24 00:55:43,901:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:43] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 121642 0.003000
+2016-06-24 00:55:43,903:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:43] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 24125 0.002000
+2016-06-24 00:55:43,904:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:43] "GET /static/css/ncpa.css HTTP/1.1" 200 2322 0.002000
+2016-06-24 00:55:43,907:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:43] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 200 97566 0.002000
+2016-06-24 00:55:43,908:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:43] "GET /static/js/bootstrap.min.js HTTP/1.1" 200 37249 0.001000
+2016-06-24 00:55:43,911:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:43] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 152113 0.003000
+2016-06-24 00:55:44,016:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:44] "GET /static/img/footer_lodyas.png HTTP/1.1" 200 34069 0.001000
+2016-06-24 00:55:47,006:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:47] "GET /login HTTP/1.1" 200 2854 0.001000
+2016-06-24 00:55:47,065:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:47] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.001000
+2016-06-24 00:55:47,068:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:47] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:55:47,069:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:47] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:55:47,071:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:47] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:55:47,072:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:47] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.002000
+2016-06-24 00:55:47,073:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:47] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:55:47,197:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:47] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:55:47,203:INFO:handler:127.0.0.1 - - [2016-06-24 00:55:47] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:56:09,038:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:56:09,038:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:56:09,038:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:56:12,700:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:12] "GET /api/processes?name=test HTTP/1.1" 302 580 0.001000
+2016-06-24 00:56:12,711:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:12] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses%3Fname%3Dtest HTTP/1.1" 200 2759 0.010000
+2016-06-24 00:56:38,246:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:56:38,246:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:56:38,246:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:56:49,426:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:49] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses%3Fname%3Dtest HTTP/1.1" 200 2759 0.012000
+2016-06-24 00:56:49,674:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:49] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 188 0.173000
+2016-06-24 00:56:49,681:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:49] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 190 0.001000
+2016-06-24 00:56:49,684:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:49] "GET /static/css/ncpa.css HTTP/1.1" 304 187 0.001000
+2016-06-24 00:56:49,686:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:49] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 189 0.001000
+2016-06-24 00:56:49,687:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:49] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 191 0.001000
+2016-06-24 00:56:49,688:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:49] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 189 0.001000
+2016-06-24 00:56:49,769:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:49] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.001000
+2016-06-24 00:56:49,775:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:49] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.002000
+2016-06-24 00:56:54,868:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:54] "POST /login HTTP/1.1" 302 459 0.003000
+2016-06-24 00:56:54,871:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:54] "GET / HTTP/1.1" 302 477 0.001000
+2016-06-24 00:56:54,878:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:54] "GET /admin/ HTTP/1.1" 200 5251 0.005000
+2016-06-24 00:56:55,000:INFO:handler:127.0.0.1 - - [2016-06-24 00:56:55] "GET /static/fonts/fontawesome-webfont.woff2?v=4.3.0 HTTP/1.1" 200 57163 0.002000
+2016-06-24 00:57:58,506:INFO:handler:127.0.0.1 - - [2016-06-24 00:57:58] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:57:58,588:INFO:handler:127.0.0.1 - - [2016-06-24 00:57:58] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:57:58,591:INFO:handler:127.0.0.1 - - [2016-06-24 00:57:58] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:57:58,592:INFO:handler:127.0.0.1 - - [2016-06-24 00:57:58] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:57:58,595:INFO:handler:127.0.0.1 - - [2016-06-24 00:57:58] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:57:58,596:INFO:handler:127.0.0.1 - - [2016-06-24 00:57:58] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:57:58,599:INFO:handler:127.0.0.1 - - [2016-06-24 00:57:58] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:57:58,723:INFO:handler:127.0.0.1 - - [2016-06-24 00:57:58] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:57:58,729:INFO:handler:127.0.0.1 - - [2016-06-24 00:57:58] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:58:00,368:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:00] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:58:00,436:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:00] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.001000
+2016-06-24 00:58:00,438:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:00] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.002000
+2016-06-24 00:58:00,440:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:00] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:58:00,443:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:00] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:58:00,444:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:00] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:58:00,447:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:00] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:58:00,559:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:00] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:58:00,562:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:00] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:58:06,788:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:06] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:58:06,844:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:06] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:58:06,846:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:06] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.002000
+2016-06-24 00:58:06,848:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:06] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.001000
+2016-06-24 00:58:06,851:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:06] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:58:06,852:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:06] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:58:06,855:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:06] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:58:06,913:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:06] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:58:06,917:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:06] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:58:27,914:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:27] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:58:27,994:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:27] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 283 0.002000
+2016-06-24 00:58:27,996:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:27] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 285 0.001000
+2016-06-24 00:58:27,999:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:27] "GET /static/css/ncpa.css HTTP/1.1" 304 282 0.002000
+2016-06-24 00:58:28,000:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:28] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:58:28,002:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:28] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 284 0.001000
+2016-06-24 00:58:28,003:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:28] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 286 0.001000
+2016-06-24 00:58:28,082:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:28] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:58:28,085:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:28] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.001000
+2016-06-24 00:58:32,546:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:32] "GET /logout HTTP/1.1" 302 575 0.002000
+2016-06-24 00:58:32,552:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:32] "GET /login?message=Successfully+logged+out. HTTP/1.1" 200 3053 0.005000
+2016-06-24 00:58:36,589:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:58:36,589:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:58:36,589:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:58:41,559:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:41] "GET /api/processes?name=test HTTP/1.1" 302 580 0.002000
+2016-06-24 00:58:41,572:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:41] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fapi%2Fprocesses%3Fname%3Dtest HTTP/1.1" 200 2867 0.010000
+2016-06-24 00:58:45,055:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:45] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 121547 0.182000
+2016-06-24 00:58:45,063:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:45] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 24030 0.002000
+2016-06-24 00:58:45,066:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:45] "GET /static/css/ncpa.css HTTP/1.1" 200 2227 0.002000
+2016-06-24 00:58:45,081:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:45] "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 342 0.001000
+2016-06-24 00:58:54,581:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:54] "POST /login HTTP/1.1" 302 572 0.004000
+2016-06-24 00:58:54,842:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:54] "GET /api/processes?name=test HTTP/1.1" 200 226 0.259000
+2016-06-24 00:58:57,151:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:57] "GET /api/processes?name=test HTTP/1.1" 200 226 0.138000
+2016-06-24 00:58:58,510:INFO:handler:127.0.0.1 - - [2016-06-24 00:58:58] "GET /api/processest HTTP/1.1" 200 233 0.004000
+2016-06-24 00:59:00,753:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:00] "GET /api/processes HTTP/1.1" 200 26332 0.334000
+2016-06-24 00:59:04,737:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:04] "GET / HTTP/1.1" 302 477 0.002000
+2016-06-24 00:59:04,744:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:04] "GET /admin/ HTTP/1.1" 200 5251 0.005000
+2016-06-24 00:59:04,799:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:04] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 200 97566 0.002000
+2016-06-24 00:59:04,801:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:04] "GET /static/js/bootstrap.min.js HTTP/1.1" 200 37249 0.001000
+2016-06-24 00:59:04,805:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:04] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 152113 0.002000
+2016-06-24 00:59:04,897:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:04] "GET /static/img/footer_lodyas.png HTTP/1.1" 200 34069 0.001000
+2016-06-24 00:59:04,900:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:04] "GET /static/fonts/fontawesome-webfont.woff2?v=4.3.0 HTTP/1.1" 200 57163 0.002000
+2016-06-24 00:59:04,921:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:04] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.003000
+2016-06-24 00:59:04,927:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:04] "GET /static/img/ncpa.png HTTP/1.1" 200 18984 0.002000
+2016-06-24 00:59:08,138:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:08] "GET /admin/login HTTP/1.1" 404 437 0.001000
+2016-06-24 00:59:12,635:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:12] "GET /login HTTP/1.1" 200 2920 0.002000
+2016-06-24 00:59:12,723:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:12] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 121642 0.003000
+2016-06-24 00:59:12,723:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:12] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 24125 0.001000
+2016-06-24 00:59:12,726:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:12] "GET /static/css/ncpa.css HTTP/1.1" 200 2322 0.001000
+2016-06-24 00:59:12,729:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:12] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 200 97566 0.002000
+2016-06-24 00:59:12,730:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:12] "GET /static/js/bootstrap.min.js HTTP/1.1" 200 37249 0.001000
+2016-06-24 00:59:12,733:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:12] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 152113 0.002000
+2016-06-24 00:59:12,838:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:12] "GET /static/img/footer_lodyas.png HTTP/1.1" 200 34069 0.002000
+2016-06-24 00:59:36,831:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 00:59:36,831:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 00:59:36,832:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 00:59:38,740:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:38] "GET /login HTTP/1.1" 200 2825 0.011000
+2016-06-24 00:59:38,973:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:38] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 188 0.175000
+2016-06-24 00:59:38,982:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:38] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 190 0.001000
+2016-06-24 00:59:38,984:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:38] "GET /static/css/ncpa.css HTTP/1.1" 304 187 0.001000
+2016-06-24 00:59:38,986:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:38] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 189 0.001000
+2016-06-24 00:59:38,987:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:38] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 191 0.001000
+2016-06-24 00:59:38,990:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:38] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 189 0.001000
+2016-06-24 00:59:39,085:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:39] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.001000
+2016-06-24 00:59:39,088:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:39] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.001000
+2016-06-24 00:59:42,000:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:42] "GET /ld HTTP/1.1" 404 342 0.002000
+2016-06-24 00:59:43,539:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:43] "GET /admin HTTP/1.1" 301 438 0.001000
+2016-06-24 00:59:43,542:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:43] "GET /admin/ HTTP/1.1" 302 517 0.001000
+2016-06-24 00:59:43,546:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:43] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fadmin%2F HTTP/1.1" 200 2850 0.001000
+2016-06-24 00:59:43,634:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:43] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 121547 0.002000
+2016-06-24 00:59:43,637:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:43] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 24030 0.001000
+2016-06-24 00:59:43,638:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:43] "GET /static/css/ncpa.css HTTP/1.1" 200 2227 0.001000
+2016-06-24 00:59:43,640:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:43] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 200 97471 0.001000
+2016-06-24 00:59:43,641:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:43] "GET /static/js/bootstrap.min.js HTTP/1.1" 200 37154 0.001000
+2016-06-24 00:59:43,644:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:43] "GET /static/js/d3.v3.min.js HTTP/1.1" 200 152018 0.002000
+2016-06-24 00:59:43,750:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:43] "GET /static/img/footer_lodyas.png HTTP/1.1" 200 33974 0.002000
+2016-06-24 00:59:47,467:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:47] "POST /login HTTP/1.1" 200 2996 0.002000
+2016-06-24 00:59:49,437:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:49] "POST /login HTTP/1.1" 302 521 0.003000
+2016-06-24 00:59:49,446:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:49] "GET /admin/ HTTP/1.1" 200 5251 0.006000
+2016-06-24 00:59:49,558:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:49] "GET /static/fonts/fontawesome-webfont.woff2?v=4.3.0 HTTP/1.1" 200 57163 0.002000
+2016-06-24 00:59:50,792:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:50] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:59:51,621:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:51] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:59:52,130:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:52] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:59:52,285:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:52] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:59:52,796:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:52] "GET /admin/ HTTP/1.1" 200 5251 0.001000
+2016-06-24 00:59:53,329:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:53] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:59:54,483:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:54] "GET /admin/ HTTP/1.1" 200 5251 0.004000
+2016-06-24 00:59:55,081:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:59:55,398:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /admin/stats HTTP/1.1" 200 5998 0.004000
+2016-06-24 00:59:55,444:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /static/css/ncpa-graph.css HTTP/1.1" 200 988 0.002000
+2016-06-24 00:59:55,509:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /graph/cpu/percent HTTP/1.1" 200 5514 0.012000
+2016-06-24 00:59:55,513:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /graph/memory/virtual/percent HTTP/1.1" 200 5582 0.004000
+2016-06-24 00:59:55,523:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/disk/logical HTTP/1.1" 200 610 0.009000
+2016-06-24 00:59:55,605:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/interface/ HTTP/1.1" 200 2306 0.081000
+2016-06-24 00:59:55,607:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /static/js/smoothie.js HTTP/1.1" 200 33203 0.001000
+2016-06-24 00:59:55,627:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/memory/virtual/percent HTTP/1.1" 200 227 0.003000
+2016-06-24 00:59:55,631:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /graph/disk/logical/D:%7C/used_percent HTTP/1.1" 200 5617 0.004000
+2016-06-24 00:59:55,637:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /graph/disk/logical/C:%7C/used_percent HTTP/1.1" 200 5604 0.004000
+2016-06-24 00:59:55,641:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /graph/interface/Teredo%20Tunneling%20Pseudo-Interface/bytes_sent?delta=1&units=K HTTP/1.1" 200 5750 0.003000
+2016-06-24 00:59:55,644:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /graph/interface/Teredo%20Tunneling%20Pseudo-Interface/bytes_recv?delta=1&units=K HTTP/1.1" 200 5763 0.003000
+2016-06-24 00:59:55,650:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /graph/interface/VMware%20Network%20Adapter%20VMnet8/bytes_sent?delta=1&units=K HTTP/1.1" 200 5717 0.004000
+2016-06-24 00:59:55,654:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /graph/interface/VMware%20Network%20Adapter%20VMnet8/bytes_recv?delta=1&units=K HTTP/1.1" 200 5730 0.004000
+2016-06-24 00:59:55,657:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /graph/interface/Ethernet%204/bytes_sent?delta=1&units=K HTTP/1.1" 200 5635 0.003000
+2016-06-24 00:59:55,661:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /graph/interface/Ethernet%204/bytes_recv?delta=1&units=K HTTP/1.1" 200 5648 0.003000
+2016-06-24 00:59:55,667:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /graph/interface/Loopback%20Pseudo-Interface%201/bytes_sent?delta=1&units=K HTTP/1.1" 200 5707 0.004000
+2016-06-24 00:59:55,671:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /graph/interface/Loopback%20Pseudo-Interface%201/bytes_recv?delta=1&units=K HTTP/1.1" 200 5720 0.004000
+2016-06-24 00:59:55,676:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /graph/interface/VMware%20Network%20Adapter%20VMnet1/bytes_sent?delta=1&units=K HTTP/1.1" 200 5743 0.004000
+2016-06-24 00:59:55,680:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /graph/interface/VMware%20Network%20Adapter%20VMnet1/bytes_recv?delta=1&units=K HTTP/1.1" 200 5730 0.004000
+2016-06-24 00:59:55,686:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/disk/logical/D:%7C/used_percent HTTP/1.1" 200 232 0.004000
+2016-06-24 00:59:55,690:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/disk/logical/C:%7C/used_percent HTTP/1.1" 200 232 0.004000
+2016-06-24 00:59:55,700:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/interface/Teredo%20Tunneling%20Pseudo-Interface/bytes_sent?delta=1&units=K HTTP/1.1" 200 250 0.009000
+2016-06-24 00:59:55,706:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/interface/Teredo%20Tunneling%20Pseudo-Interface/bytes_recv?delta=1&units=K HTTP/1.1" 200 232 0.005000
+2016-06-24 00:59:55,713:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/interface/VMware%20Network%20Adapter%20VMnet8/bytes_sent?delta=1&units=K HTTP/1.1" 200 250 0.007000
+2016-06-24 00:59:55,720:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/interface/VMware%20Network%20Adapter%20VMnet8/bytes_recv?delta=1&units=K HTTP/1.1" 200 232 0.005000
+2016-06-24 00:59:55,726:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/interface/Ethernet%204/bytes_sent?delta=1&units=K HTTP/1.1" 200 247 0.006000
+2016-06-24 00:59:55,736:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/interface/Ethernet%204/bytes_recv?delta=1&units=K HTTP/1.1" 200 246 0.008000
+2016-06-24 00:59:55,742:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/interface/Loopback%20Pseudo-Interface%201/bytes_sent?delta=1&units=K HTTP/1.1" 200 232 0.005000
+2016-06-24 00:59:55,746:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/interface/Loopback%20Pseudo-Interface%201/bytes_recv?delta=1&units=K HTTP/1.1" 200 232 0.004000
+2016-06-24 00:59:55,755:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/interface/VMware%20Network%20Adapter%20VMnet1/bytes_sent?delta=1&units=K HTTP/1.1" 200 250 0.007000
+2016-06-24 00:59:55,760:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:55] "GET /api/interface/VMware%20Network%20Adapter%20VMnet1/bytes_recv?delta=1&units=K HTTP/1.1" 200 232 0.005000
+2016-06-24 00:59:56,063:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:56] "GET /admin/ HTTP/1.1" 200 5251 0.001000
+2016-06-24 00:59:56,500:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:56] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:59:56,621:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:56] "GET /api/cpu/percent HTTP/1.1" 200 288 1.004000
+2016-06-24 00:59:57,112:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:57] "GET /admin/ HTTP/1.1" 200 5251 0.001000
+2016-06-24 00:59:57,392:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:57] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 00:59:57,526:INFO:handler:127.0.0.1 - - [2016-06-24 00:59:57] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 01:00:52,019:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-06-24 01:00:52,019:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-06-24 01:00:52,019:INFO:ncpa_windows:Using SSL version TLSv1
+2016-06-24 01:00:54,967:INFO:handler:127.0.0.1 - - [2016-06-24 01:00:54] "GET /admin/ HTTP/1.1" 302 517 0.001000
+2016-06-24 01:00:54,979:INFO:handler:127.0.0.1 - - [2016-06-24 01:00:54] "GET /login?url=https%3A%2F%2Flocalhost%3A5900%2Fadmin%2F HTTP/1.1" 200 2850 0.010000
+2016-06-24 01:00:55,227:INFO:handler:127.0.0.1 - - [2016-06-24 01:00:55] "GET /static/css/bootstrap.min.css HTTP/1.1" 304 188 0.176000
+2016-06-24 01:00:55,236:INFO:handler:127.0.0.1 - - [2016-06-24 01:00:55] "GET /static/css/font-awesome.min.css HTTP/1.1" 304 190 0.002000
+2016-06-24 01:00:55,239:INFO:handler:127.0.0.1 - - [2016-06-24 01:00:55] "GET /static/css/ncpa.css HTTP/1.1" 304 187 0.001000
+2016-06-24 01:00:55,240:INFO:handler:127.0.0.1 - - [2016-06-24 01:00:55] "GET /static/js/bootstrap.min.js HTTP/1.1" 304 189 0.000000
+2016-06-24 01:00:55,242:INFO:handler:127.0.0.1 - - [2016-06-24 01:00:55] "GET /static/js/d3.v3.min.js HTTP/1.1" 304 191 0.001000
+2016-06-24 01:00:55,243:INFO:handler:127.0.0.1 - - [2016-06-24 01:00:55] "GET /static/js/jquery-1.12.3.min.js HTTP/1.1" 304 189 0.001000
+2016-06-24 01:00:55,325:INFO:handler:127.0.0.1 - - [2016-06-24 01:00:55] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.001000
+2016-06-24 01:00:55,328:INFO:handler:127.0.0.1 - - [2016-06-24 01:00:55] "GET /static/img/ncpa.png HTTP/1.1" 200 18889 0.001000
+2016-06-24 01:01:07,418:INFO:handler:127.0.0.1 - - [2016-06-24 01:01:07] "POST /login HTTP/1.1" 302 521 0.002000
+2016-06-24 01:01:07,426:INFO:handler:127.0.0.1 - - [2016-06-24 01:01:07] "GET /admin/ HTTP/1.1" 200 5251 0.005000
+2016-06-24 01:01:09,296:INFO:handler:127.0.0.1 - - [2016-06-24 01:01:09] "GET /admin/ HTTP/1.1" 200 5251 0.002000
+2016-06-24 01:01:11,861:INFO:handler:127.0.0.1 - - [2016-06-24 01:01:11] "GET /login HTTP/1.1" 302 459 0.001000
+2016-06-24 01:01:11,865:INFO:handler:127.0.0.1 - - [2016-06-24 01:01:11] "GET / HTTP/1.1" 302 477 0.001000
+2016-06-24 01:01:12,582:INFO:handler:127.0.0.1 - - [2016-06-24 01:01:12] "GET /login HTTP/1.1" 302 459 0.002000
+2016-06-24 01:01:12,585:INFO:handler:127.0.0.1 - - [2016-06-24 01:01:12] "GET / HTTP/1.1" 302 477 0.002000
+2016-06-24 01:01:12,821:INFO:handler:127.0.0.1 - - [2016-06-24 01:01:12] "GET /login HTTP/1.1" 302 459 0.002000
+2016-06-24 01:01:12,825:INFO:handler:127.0.0.1 - - [2016-06-24 01:01:12] "GET / HTTP/1.1" 302 477 0.002000
+2016-06-24 01:01:12,828:INFO:handler:127.0.0.1 - - [2016-06-24 01:01:12] "GET /admin/ HTTP/1.1" 200 5251 0.001000
+2016-06-24 01:01:14,417:INFO:handler:127.0.0.1 - - [2016-06-24 01:01:14] "GET /admin/ HTTP/1.1" 200 5251 0.001000

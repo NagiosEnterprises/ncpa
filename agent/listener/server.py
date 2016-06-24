@@ -68,7 +68,7 @@ def requires_auth(f):
         elif session.get('logged', False) or token == ncpa_token:
             session['logged'] = True
         elif token is None:
-            return redirect(url_for('login'))
+            return redirect(url_for('login', url=request.url))
         elif token != ncpa_token:
             return error(msg='Incorrect credentials given.')
         return f(*args, **kwargs)
@@ -78,16 +78,26 @@ def requires_auth(f):
 
 @listener.route('/login', methods=['GET', 'POST'])
 def login():
+
+    # Verify authentication and redirect if we are authenticated
+    if session.get('logged', False):
+        return redirect(url_for('index'))
+
     ncpa_token = listener.config['iconfig'].get('api', 'community_string')
     message = request.values.get('message', None)
+    url = request.values.get('url', None)
     token = request.values.get('token', None)
 
-    template_args = {'hide_page_links': True,
-                     'message': message}
+    template_args = { 'hide_page_links': True,
+                      'message': message,
+                      'url': url }
 
     if token == ncpa_token:
         session['logged'] = True
-        return redirect(url_for('index'))
+        if url is not None:
+            return redirect(url)
+        else:
+            return redirect(url_for('index'))
     elif token != ncpa_token and token is not None:
         template_args['error'] = 'Token was invalid.'
 
