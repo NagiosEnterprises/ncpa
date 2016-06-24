@@ -24,6 +24,8 @@ input[type=checkbox], input[type=radio] { margin: 2px 0 0; }
 .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] { margin-left: -18px; }
 .form-horizontal .checkbox, .form-horizontal .checkbox-inline, .form-horizontal .radio, .form-horizontal .radio-inline, .form-horizontal .control-label { padding-top: 0; }
 .nav-tabs>li>a { border-radius: 0; }
+.btn-primary { background-color: #4d89f9; border-color: #3371e6; }
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary:active:focus { background-color: #3371e6; border-color: #1b59cd; }
 
 .undernav { margin-bottom: 30px; }
 

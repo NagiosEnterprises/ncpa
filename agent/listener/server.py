@@ -42,6 +42,20 @@ else:
 listener.jinja_env.line_statement_prefix = '#'
 
 
+def make_info_dict():
+    now = datetime.datetime.now()
+    uptime = unicode(now - __STARTED__)
+    uptime = uptime.split('.', 1)[0]
+
+    return {'agent_version': __VERSION__,
+            'uptime': uptime,
+            'processor': platform.uname()[5],
+            'node': platform.uname()[1],
+            'system': platform.uname()[0],
+            'release': platform.uname()[2],
+            'version': platform.uname()[3]}
+
+
 def requires_auth(f):
     @functools.wraps(f)
     def decorated(*args, **kwargs):
@@ -80,39 +94,32 @@ def login():
     return render_template('login.html', **template_args)
 
 
-@listener.route('/live-stats', methods=['GET', 'POST'])
-@requires_auth
-def live_stats():
-    return render_template('live-stats.html')
-
-
 @listener.route('/logout', methods=['GET', 'POST'])
 def logout():
     session['logged'] = False
     return redirect(url_for('login', message='Successfully logged out.'))
 
 
-def make_info_dict():
-    now = datetime.datetime.now()
-    uptime = unicode(now - __STARTED__)
-
-    return {'agent_version': __VERSION__,
-            'uptime': uptime,
-            'processor': platform.uname()[5],
-            'node': platform.uname()[1],
-            'system': platform.uname()[0],
-            'release': platform.uname()[2],
-            'version': platform.uname()[3]}
-
-
 @listener.route('/')
 @requires_auth
 def index():
+    return redirect(url_for('admin_index'))
+
+
+@listener.route('/admin/')
+@requires_auth
+def admin_index():
     info = make_info_dict()
     try:
-        return render_template('main.html', **info)
+        return render_template('admin/dashboard.html', **info)
     except Exception, e:
         logging.exception(e)
+
+
+@listener.route('/admin/stats', methods=['GET', 'POST'])
+@requires_auth
+def live_stats():
+    return render_template('admin/stats.html')
 
 
 @listener.route('/api-websocket/<path:accessor>', methods=['GET', 'POST'])
@@ -149,10 +156,10 @@ def api_websocket(accessor=None):
     return ''
 
 
-@listener.route('/top-base', methods=['GET', 'POST'])
+@listener.route('/admin/top', methods=['GET', 'POST'])
 @requires_auth
 def top_base():
-    return render_template('top-base.html')
+    return render_template('admin/top.html')
 
 
 @listener.route('/top', methods=['GET', 'POST'])
@@ -352,7 +359,7 @@ def nrdp():
         return error(msg=unicode(exc))
 
 
-@listener.route('/graph-picker/', methods=['GET', 'POST'])
+@listener.route('/admin/graphs', methods=['GET', 'POST'])
 @requires_auth
 def graph_picker():
     """
@@ -360,13 +367,13 @@ def graph_picker():
     the explorer for the graphs.
 
     """
-    return render_template('graph-picker.html')
+    return render_template('admin/graphs.html')
 
 
-@listener.route('/view-api', methods=['GET', 'POST'])
+@listener.route('/admin/api', methods=['GET', 'POST'])
 @requires_auth
 def view_api():
-    return render_template('view-api.html')
+    return render_template('admin/api.html')
 
 
 @listener.route('/api/', methods=['GET', 'POST'])
@@ -434,4 +441,4 @@ def api(accessor=''):
         value = node.run_check(**sane_args)
     else:
         value = node.walk(**sane_args)
-    return jsonify(value)
+    return Response(json.dumps(dict(value), indent=None if request.is_xhr else 4), mimetype='application/json')
