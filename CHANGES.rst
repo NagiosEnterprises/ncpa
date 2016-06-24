@@ -12,6 +12,7 @@ Changelog
 - Added delay_start option to listener and passive section of ncpa.cfg to actually run after a # of seconds
 - Added ability to relocate RPM install (ex. --prefix=/opt would install /opt/ncpa)
 - Added disk/mount for giving information on partitions that aren't currently accessible, such as cdroms
+- Added redirection when logging in if the user was trying to access a protected page
 - Updated web UI with modern theme with better graph styling
 - Updated self-signed SSL certs to use 2048bit RSA and sha256 signature
 - Updated unit names that were set to c that weren't actually generic counters for better graphing
