@@ -44,5 +44,5 @@ sure to verify your code before submitting your pull requst.
 Send Us A Pull Request
 ~~~~~~~~~~~~~~~~~~~~~~
 
-The easist way to do this is from inside `GitHub <https://help.github.com/articles/creating-a-pull-request/>`_ 
+The easist way to do this is `from inside GitHub <https://help.github.com/articles/creating-a-pull-request/>`_ 
 but you can also run it from the command line. 
