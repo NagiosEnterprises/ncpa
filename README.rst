@@ -6,7 +6,9 @@ The *Nagios Cross-Platform Agent*; a single monitoring agent that installs on al
 Downloads
 ---------
 
-`Nagios Official Builds <http://assets.nagios.com/downloads/ncpa/download.php>`_
+Current stable version: **1.8.1**
+
+`Download Current Stable Builds <http://assets.nagios.com/downloads/ncpa/download.php>`_
 
 We currently build for the following operating systems:
 
