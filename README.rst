@@ -33,10 +33,14 @@ You can view the most current `HTML documentation <https://assets.nagios.com/dow
 Advanced
 --------
 
+**Contributing**
+
+We are always looking to improve NCPA. If you can add a feature or fix a bug, your help is greatly appreciated. Even testing is a great help! In order to contribute, you should start by following the instructions in the `contribute docs <https://github.com/NagiosEnterprises/ncpa/blob/master/CONTRIBUTING.rst>`_.
+
 **Building From Source**
 
 While we recommend using the pre-built version above, sometimes you may find the need to build your own binaries from the source. Mostly, this consists of installing the newest version of *Python 2.7* and a few modules installed through pip. There are some issues on certain systems that are explained in the build docs below.
 
-`Building for Windows <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst>`_
-
-`Building for Linux <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst>`_
++----------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------+
+| `Building for Windows <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst>`_ | `Building for Linux <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst>`_ |
++----------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------+
