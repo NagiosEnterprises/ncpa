@@ -9,13 +9,14 @@ Downloads
 `Nagios Official Builds <http://assets.nagios.com/downloads/ncpa/download.php>`_
 
 We currently build for the following operating systems:
-* Windows (XP and above)
-* Mac OS X
-* CentOS / RHEL 5, 6, 7
-* Fedora 21
-* Debian / Ubuntu
-* OpenSUSE 11, 12, 13
-* SLES 11, 12
+
+- Windows (XP and above)
+- Mac OS X
+- CentOS / RHEL 5, 6, 7
+- Fedora 21
+- Debian / Ubuntu
+- OpenSUSE 11, 12, 13
+- SLES 11, 12
 
 If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here by creating a new GitHub issue.
 
