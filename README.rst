@@ -1,18 +1,36 @@
 NCPA
 ====
 
-The *Nagios Cross-Platform Agent*, a single monitoring agent that installs on all major operating systems. Compatible with both active checks via check_ncpa.py and passive checks via NRDP.
+The *Nagios Cross-Platform Agent*; a single monitoring agent that installs on all major operating systems. NCPA allows both active checks via check_ncpa.py and passive checks via NRDP. NCPA comes with a built-in web GUI, documentation, websocket graphing, and is secure with SSL by default.
 
-Downloading NCPA
-----------------
+Downloads
+---------
 
-`Download from the Nagios Official Builds <http://assets.nagios.com/downloads/ncpa/download.php>`_.
+`Nagios Official Builds <http://assets.nagios.com/downloads/ncpa/download.php>`_
 
-We currently build for Windows, Mac OS X, RHEL/CentOS 5/6/7, Fedora 21, Debian/Ubuntu, SLES 11/12, and OpenSUSE 11/12/13. If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here at GitHub.
+We currently build for the following operating systems:
+- Windows (XP and above)
+- Mac OS X
+- CentOS / RHEL 5, 6, 7
+- Fedora 21
+- Debian / Ubuntu
+- OpenSUSE 11, 12, 13
+- SLES 11, 12
 
-Building NCPA
+If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here by creating a new GitHub issue.
+
+Documentation
 -------------
 
-While we recommend using our pre-built solutions above, if you'd like to build NCPA yourself there are a few things you may run into that can cause problems with your build.
+You can view the most current `HTML documentation <https://assets.nagios.com/downloads/ncpa/docs/html/>`_ online or view your current NCPA version's documentation using the NCPA web GUI from an installed agent. This is recommended if you are using an older version, since some features may not be available but may be used in newer documents.
 
-There are known build issues involving *cx_Freeze*, if you run into an issue refer to the bug report on the *cx_Freeze* `project bug page <https://bitbucket.org/anthony_tuininga/cx_freeze/issue/42/recent-versions-of-gevent-break#comment-11421289>`_.
+
+Advanced
+--------
+
+**Building From Source**
+
+While we recommend using the pre-built version above, sometimes you may find the need to build your own binaries from the source. Mostly, this consists of installing the newest version of *Python 2.7* and a few modules installed through pip. There are some issues on certain systems that are explained in the build docs below.
+
+`Building for Windows <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst>`_
+`Building for Linux`_
