@@ -21,7 +21,7 @@ Build Your Development Environment
 In order to get your NCPA development environment up and running you need to make sure all the pre-reqs have 
 been installed and working.
 
-**Set Up Linux Environment**
+**Set Up Linux Environment**::
 
     cd ncpa
     ./build/scripts/linux_build_prereqs.sh
