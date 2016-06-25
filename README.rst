@@ -10,7 +10,7 @@ Downloads
 
 We currently build for the following operating systems:
 
-- Windows (XP and above)
+- Windows
 - Mac OS X
 - CentOS / RHEL 5, 6, 7
 - Fedora 21
@@ -34,4 +34,5 @@ Advanced
 While we recommend using the pre-built version above, sometimes you may find the need to build your own binaries from the source. Mostly, this consists of installing the newest version of *Python 2.7* and a few modules installed through pip. There are some issues on certain systems that are explained in the build docs below.
 
 `Building for Windows <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst>`_
-`Building for Linux`_
+
+`Building for Linux <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst>`_
