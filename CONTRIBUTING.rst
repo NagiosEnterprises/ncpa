@@ -23,11 +23,9 @@ been installed and working.
 
 **Set Up Linux Environment**
 
-```
-cd ncpa
-./build/scripts/linux_build_prereqs.sh
-./build/scripts/linux_build_setup.sh
-```
+    cd ncpa
+    ./build/scripts/linux_build_prereqs.sh
+    ./build/scripts/linux_build_setup.sh
 
 Create Readable Code
 ~~~~~~~~~~~~~~~~~~~~
