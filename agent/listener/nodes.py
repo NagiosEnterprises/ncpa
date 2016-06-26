@@ -360,16 +360,16 @@ class RunnableNode(ParentNode):
         elif units in ['TI', 'GI', 'MI', 'KI']:
             if units == 'TI':
                 units = 'Ti'
-                factor = 1.074e12
+                factor = 1.1e12
             elif units == 'GI':
                 units = 'Gi'
                 factor = 1.074e9
             elif units == 'MI':
                 units = 'Mi'
-                factor = 1.074e6
+                factor = 1.049e6
             elif units == 'KI':
                 units = 'Ki'
-                factor = 1.074e3
+                factor = 1.024e3
 
         values = [round(x/factor, 2) for x in values]
 
