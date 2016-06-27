@@ -3,31 +3,76 @@
 {% block title %}API{% endblock %}
 
 {% block headerjs %}
-<script>
+<script type="text/javascript">
 $(document).ready(function() {
+    
+    // Set nav header active link and resize API window
     $('#api-nav').addClass('active');
+    resize_api_window();
+
+    $(window).resize(function() {
+        resize_api_window();
+    });
+
+    $('#module').change(function() {
+        var api = "https://localhost:5900/api";
+        var module = "";
+
+        if ($(this).val() != '') {
+            module = '/' + $(this).val();
+        }
+
+        // Generate the full API URL
+        var url = api + module;
+
+        // Set URL of link and iframe
+        $('#api-frame').attr('src', url);
+        $('#api-input').val(url);
+    });
+
+    $('#reload').click(function() {
+        var url = $('#api-input').val();
+        $('#api-frame').attr('src', url);
+    });
+
 });
+
+function resize_api_window() {
+    var h = $(window).height() - $('nav').outerHeight();
+    $('#api-input-control').css('height', h);
+    $('#api-frame').css('height', h - $('#api-input').outerHeight());
+}
 </script>
 {% endblock %}
 
 {% block content %}
-
-<div class="row">
-    <div class="col-sm-12">
-
-        <a href="/api" target="api-frame">root</a> /
-        <a href="/api/cpu" target="api-frame">cpu</a> /
-        <a href="/api/disk" target="api-frame">disk</a> /
-        <a href="/api/interface" target="api-frame">interface</a> /
-        <a href="/api/memory" target="api-frame">memory</a> /
-        <a href="/api/processes" target="api-frame">processes</a> /
-        <a href="/api/services" target="api-frame">services</a> /
-        <a href="/api/system" target="api-frame">system</a>
-
-        <input class="view-api-input form-control" type="text" value="https://localhost:5693/api"> 
-        <iframe src="/api" name="api-frame" id="view-api-frame"></iframe>
-
+<div style="display: table; width: 100%;">
+    <div class="well" id="api-input-control" style="width: 300px; vertical-align: top; display: table-cell;">
+        <div>
+            <label>Module</label>
+            <select class="form-control" id="module">
+                <option></option>
+                <option>cpu</option>
+                <option>disk</option>
+                <option>agent</option>
+                <option>interface</option>
+                <option>memory</option>
+                <option>processes</option>
+                <option>services</option>
+                <option>system</option>
+                {% if system == "Windows" %}
+                <option>logs</option>
+                <option>windowscounters</option>
+                {% endif %}
+            </select>
+        </div>
+        <div style="margin-top: 20px;">
+            <button class="btn btn-primary" id="reload"><i class="fa fa-refresh fa-l"></i> Reload</button>
+        </div>
+    </div>
+    <div style="display: table-cell;">
+        <input class="form-control" id="api-input" style="vertical-align: top;" type="text" value="https://localhost:5900/api">
+        <iframe src="/api" name="api-frame" style="vertical-align: top;" id="api-frame"></iframe>
     </div>
 </div>
-
 {% endblock %}

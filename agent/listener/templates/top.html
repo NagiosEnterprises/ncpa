@@ -39,8 +39,8 @@
         var critical = {{ critical }};
         var warning = {{ warning }};
         var highlight = '{{ highlight }}';
-        var plbody = $('#top-container tbody');
-        var plhead = $('#top-container thead tr#titles')
+        var plbody = $('table.processes tbody');
+        var plhead = $('table.processes thead tr#titles')
         var order = ['pid', 'name', 'username', 'cpu_percent', 'memory_percent'];
         var current_pl = [];
 
@@ -166,9 +166,9 @@
             var fvirtual = parseFloat(virtual).toFixed(2) + '%';
             var fswap = parseFloat(swap).toFixed(2) + '%';
             
-            $('tr#load .current').text(fcpu);
-            $('tr#virtual .current').text(fvirtual);
-            $('tr#swap .current').text(fswap);
+            $('#load .current').text(fcpu);
+            $('#virtual .current').text(fvirtual);
+            $('#swap .current').text(fswap);
         }
         
         var create_plbody = function(pl) {
@@ -219,28 +219,40 @@
     })
 </script>
 
-<div id='top-container'>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
 
-    <div class="well">
-        <form class="form-inline" id="top-form">
-            <div style="float: left;">
-                <input class="form-control" style="width: 260px;" type="text" id="highlight-input" placeholder="Highlight Name">
+        <div id='top-container'>
+            <div class="well">
+                <form class="form-inline" id="top-form">
+                    <div style="float: left;">
+                        <input class="form-control" style="width: 260px;" type="text" id="highlight-input" placeholder="Highlight Name">
+                    </div>
+                    <div style="float: right;">
+                        <input class="form-control" type="text" id="warning-input" placeholder="Warning Threshold">
+                        <input class="form-control" type="text" id="critical-input" placeholder="Critical Threshold">
+                    </div>
+                    <div style="clear: both;"></div>
+                </form>
             </div>
-            <div style="float: right;">
-                <input class="form-control" type="text" id="warning-input" placeholder="Warning Threshold">
-                <input class="form-control" type="text" id="critical-input" placeholder="Critical Threshold">
+            <div style="padding-bottom: 20px;">
+                <table class="table table-bordered table-condensed">
+                    <tr>
+                        <td id='load' style="width: 33.3%;"><b>CPU Load</b> <span class='current'></span></td>
+                        <td id='virtual' style="width: 33.3%;"><b>RAM Usage</b> <span class='current'></span></td>
+                        <td id='swap' style="width: 33.3%;"><b>Swap Usage</b> <span class='current'></span></td>
+                    </tr>
+                </table>
             </div>
-            <div style="clear: both;"></div>
-        </form>
+            <table class='processes table table-bordered table-condensed'>
+                <thead>
+                    <tr id='titles'></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        </div>
     </div>
-
-    <table class='table table-bordered table-condensed'>
-        <thead>
-            <tr id='load'><th class="top-col1">CPU Load</th><th colspan="999" class='current'></th></tr>
-            <tr id='virtual'><th class="top-col1">RAM Usage</th><th colspan="999" class='current'></th></tr>
-            <tr id='swap'><th class="top-col1">Swap Usage</th><th colspan="999" class='current'></th></tr>
-            <tr id='titles'></tr>
-        </thead>
-        <tbody></tbody>
-    </table>
 </div>

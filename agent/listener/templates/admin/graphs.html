@@ -3,67 +3,214 @@
 {% block title %}Graphs{% endblock %}
 
 {% block headerjs %}
-<script src="/static/js/graph-picker.js"></script>
-<link href="/static/css/graph-picker.css" type="text/css" rel="stylesheet">
-<script>
+<script type="text/javascript">
+var GRAPHABLES = [
+    'disk',
+    'interface',
+    'memory',
+    'cpu'
+];
+
+function get_next_select(api_address, selection) {
+    var select = $('<select>', {'data-children': api_address, 'class': 'form-control'});
+
+    $.getJSON(api_address, function(d) {
+        var element = d[selection];
+        var bind_graph = false;
+        $.each(element, function(k, v) {
+
+            // This is a special case for when we are in the root node
+            // and we target a node that has no graphable children.
+            if (selection == 'root' && GRAPHABLES.indexOf(k) == -1) {
+                return;
+            }
+
+            select.append($('<option>', {value: k, text: k, 'data-children': k}));
+
+            if (element[k] instanceof Array) {
+                select.attr('id', 'graph-bringer');
+                bind_graph = true;
+            }
+        });
+
+        if (bind_graph) {
+            select.change(function(e) {
+                render_graph($(e.target));
+            });
+        } else {
+            select.change(function(e) {
+                $('.gsel').remove();
+                populate_next_select(e);
+            });
+        }
+
+        select.trigger('change');
+    });
+
+    return select;
+}
+
+function get_graph_url(api_url) {
+    if (api_url == undefined) {
+        var raw_api_url = $('#graph-address-url').val();
+        api_url = raw_api_url.replace(/\?.*/g, '');
+    }
+
+    var graph_url = api_url.replace(/^\/api/g, '/graph').replace(/ /g, '%20');
+
+    var delta = $('input[name=delta]:checked').val();
+    var units = $('input[name=units]:checked').val();
+    var unit = $('input[name=unit]').val();
+
+    var query_args = {};
+
+    if (delta == 'on') {
+        query_args['delta'] = 1;
+    }
+
+    if (units != 'None') {
+        query_args['units'] = units;
+    }
+
+    if (unit) {
+        query_args['unit'] = unit;
+    }
+
+    var qs = $.param(query_args);
+    return (qs) ? graph_url + '?' + qs : graph_url;
+}
+
+function render_graph(target) {
+    var graph_content = $('#graph-content');
+    var graph_url = '';
+    var api_url = '';
+
+    if (target == undefined) {
+        graph_url = get_graph_url()
+    }
+    else {
+        api_url = target.attr('data-children') + '/' + target.val();
+        graph_url = get_graph_url(api_url);
+    }
+
+    $('#not-renderable').hide();
+    $('#graph-address-url').val(graph_url);
+    $('.ncpa-graph').trigger('doUnload');
+
+    graph_content.empty();
+    graph_content.load(graph_url);
+}
+
+function populate_next_select(e) {
+    var current = $(e.target);
+    var current_value = current.val();
+    var next_url = current.attr('data-children') + '/' + current_value;
+
+    var next_select = get_next_select(next_url, current_value);
+
+    var graph_selector_div = $('#graph-selector-div');
+    graph_selector_div.append(next_select);
+}
+
+function get_module_selects(api_address) {
+    var select = $('<select>', { 'data-children': api_address, 'class': 'form-control' });
+    $.getJSON(api_address, function(d) {
+        $.each(d[$('#modules').val()], function(k, value) {
+            select.append($('<option>', { value: k, text: k }));
+        });
+    });
+}
+
+function initialize() {
+    var graph_selector_div = $('#graph-selector-div');
+    var initial_select = get_module_selects('/api/' + $('#modules').val());
+}
+
 $(document).ready(function() {
     $('#graph-picker-nav').addClass('active');
+    initialize();
+
+    $('#refresh-graph').click(function() {
+        render_graph();
+    });
 });
 </script>
 {% endblock headerjs %}
 
+{% block headercss %}
+<link rel='stylesheet' href='/static/css/ncpa-graph.css'>
+{% endblock %}
+
+{% block undernav %}
+<div class="undernav">
+    <div class="well">
+        <span style="font-weight: bold; margin-right: 10px;">API Endpoint</span>
+        <select id="modules" style="display: inline-block; width: auto;" class="form-control">
+            <option value="interface">Interface</option>
+            <option value="memory">Memory</option>
+            <option value="disk">Disk</option>
+            <option value="cpu">CPU</option>
+        </select>
+        <div id="graph-selector-div"></div>
+    </div>
+</div>
+{% endblock %}
+
 {% block content %}
-<div class="well row">
-    <div class="span5" id="graph-selector-div"></div>
-    <div class="span6" id="graph-options-div">
-        <form class="form-horizontal">
-            <div>
-                <label for="label-delta" class="control-label extra-label">Delta</label>
-                <label class="radio-inline">
-                    <input type="radio" id="label-delta" name="delta" value="off" checked>Off
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="delta" value="on">On
-                </label>
-            </div>
-            <div>
-                <label for="label-factor" class="control-label extra-label">Unit Prefix</label>
-                <label class="radio-inline">
-                    <input type="radio" id="label-factor" name="units" value="None" checked>None
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="units" value="K">K
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="units" value="M">M
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="units" value="G">G
-                </label>
-            </div>
-            <div class="control-group">
-                <label for="input-unit" class="control-label extra-label">Unit</label>
-                <div class="control">
-                    <input type="text" name="unit" id="input-unit" placeholder="Use Default">
+<div class="container">
+
+    <div class="well row">
+        <div id="graph-options-div">
+            <form class="form-horizontal">
+                <div>
+                    <label for="label-delta" class="control-label extra-label">Delta</label>
+                    <label class="radio-inline">
+                        <input type="radio" id="label-delta" name="delta" value="off" checked>Off
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="delta" value="on">On
+                    </label>
                 </div>
-            </div>
-            <div class="control-group pull-right">
-                <button id="refresh-graph" class="btn" type="button">Refresh</button>
+                <div>
+                    <label for="label-factor" class="control-label extra-label">Unit Prefix</label>
+                    <label class="radio-inline">
+                        <input type="radio" id="label-factor" name="units" value="None" checked>None
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="units" value="K">K
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="units" value="M">M
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="units" value="G">G
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label for="input-unit" class="control-label extra-label">Unit</label>
+                    <div class="control">
+                        <input type="text" name="unit" id="input-unit" placeholder="Use Default">
+                    </div>
+                </div>
+                <div class="control-group pull-right">
+                    <button id="refresh-graph" class="btn" type="button">Refresh</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="graph-render-target">
+        <span id="not-renderable" class="centered">Not Renderable</span>
+        <div id="graph-content"></div>
+    </div>
+
+    <div id="graph-url-target" class="well row">
+        <form class="form-horizontal">
+            <div class="control-group graph-url-input">
+                <input type="text" class="form-control" style="width: 100%;" id="graph-address-url" value="" placeholder="Graph URL" readonly>
             </div>
         </form>
     </div>
-</div>
 
-<div id="graph-render-target" class="well row">
-    <span id="not-renderable" class="centered">Not Renderable</span>
-    <div id="graph-content"></div>
-</div>
-
-<div id="graph-url-target" class="well row">
-    <form class="form-horizontal">
-        <div class="control-group graph-url-input">
-            <input type="text" class="form-control" style="width: 100%;" id="graph-address-url" value="" placeholder="Graph URL" readonly>
-        </div>
-    </form>
 </div>
 {% endblock content %}

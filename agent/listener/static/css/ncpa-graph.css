@@ -1,35 +1,7 @@
-.ncpa-graph {
-    border: 1px solid #CCC;
-    padding: 10px 20px 20px 20px;
-    background-color: white;
-    margin-bottom: 20px;
-}
-
-.graph-title {
-    text-align: center;
-    margin: 5px 0px 15px 0px;
-    font-weight: bold;
-}
-
-.can-wrapper {
-    border: 1px solid #EEE;
-    height: 122px;
-}
-
-.data-units {
-    font-size: 10px;
-    vertical-align: middle;
-    margin-top: 5px;
-}
-
-.data-units table {
-    border: 1px solid #EEE;
-    width: auto;
-}
-
-.data-units td {
-    padding: 5px 5px 5px 5px;
-    font-size: 10px;
-}
-
+.ncpa-graph { border: 1px solid #CCC; padding: 10px 20px 20px 20px; background-color: white; margin-bottom: 20px; }
+.graph-title { text-align: center; margin: 5px 0px 15px 0px; font-weight: bold; }
+.can-wrapper { border: 1px solid #EEE; height: 122px; }
+.data-units { font-size: 10px; vertical-align: middle; margin-top: 5px; }
+.data-units table { border: 1px solid #EEE; width: auto; }
+.data-units td { padding: 5px 5px 5px 5px; font-size: 10px; }
 .data-units td.title { width: 24px; font-weight: bold; }

@@ -388,7 +388,8 @@ def graph_picker():
 @listener.route('/admin/api', methods=['GET', 'POST'])
 @requires_auth
 def view_api():
-    return render_template('admin/api.html')
+    info = make_info_dict()
+    return render_template('admin/api.html', **info)
 
 
 @listener.route('/api/', methods=['GET', 'POST'])
