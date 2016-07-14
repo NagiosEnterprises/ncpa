@@ -16,14 +16,20 @@ $(document).ready(function() {
 
     $('#module').change(function() {
         var api = "https://localhost:5900/api";
-        var module = "";
+        var module_url = "";
+        var module = $(this).val();
 
-        if ($(this).val() != '') {
-            module = '/' + $(this).val();
+        if (module != '') {
+            module_url = '/' + module;
         }
 
         // Generate the full API URL
-        var url = api + module;
+        var url = api + module_url;
+
+        // Grab the actual json data
+        $.get(url, { }, function(data) {
+            console.log(data[module]);
+        }, 'json');
 
         // Set URL of link and iframe
         $('#api-frame').attr('src', url);

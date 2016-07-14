@@ -112,23 +112,29 @@ function populate_next_select(e) {
     graph_selector_div.append(next_select);
 }
 
-function get_module_selects(api_address) {
-    var select = $('<select>', { 'data-children': api_address, 'class': 'form-control' });
-    $.getJSON(api_address, function(d) {
-        $.each(d[$('#modules').val()], function(k, value) {
-            select.append($('<option>', { value: k, text: k }));
-        });
+function generate_select(obj) {
+    var select = $('<select>', { 'class': 'form-control' });
+    $.each(obj, function(k, value) {
+        select.append($('<option>', { value: k, text: k }));
     });
+    $('#graph-selector-div').append(select);
 }
 
-function initialize() {
-    var graph_selector_div = $('#graph-selector-div');
-    var initial_select = get_module_selects('/api/' + $('#modules').val());
+function get_module_selects(api_address) {
+    $('#graph-selector-div').html('');
+    var select = $('<select>', { 'class': 'form-control' });
+    $.getJSON(api_address, function(d) {
+        generate_select(d[$('#modules').val()]);
+    });
 }
 
 $(document).ready(function() {
     $('#graph-picker-nav').addClass('active');
-    initialize();
+    get_module_selects('/api/' + $('#modules').val());
+
+    $('#modules').change(function() {
+        get_module_selects('/api/' + $(this).val());
+    });
 
     $('#refresh-graph').click(function() {
         render_graph();

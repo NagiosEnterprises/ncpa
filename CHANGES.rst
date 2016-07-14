@@ -44,6 +44,7 @@ Changelog
 - Fixed issue on Windows systems not having accurate network I/O if bytes > 4.3GB
 - Fixed issue with iptables showing up as stopped even while running in CentOS/RHEL 6 and 7
 - Fixed zombie process error in Mac OS X top websocket making the GUI top display nothing
+- Fixed graphs tab not displaying graphs of interfaces with multiple spaces in their names
 
 1.8.1 - 04/09/2015
 ==================

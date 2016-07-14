@@ -2,8 +2,6 @@ import logging
 import platform
 import ncpacheck
 
-__author__ = 'nscott'
-
 
 class NagiosHandler(object):
     """These are intended for use to handle passive activities.

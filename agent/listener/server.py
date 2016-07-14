@@ -21,8 +21,8 @@ __INTERNAL__ = False
 
 base_dir = os.path.dirname(sys.path[0])
 
-#~ The following if statement is a workaround that is allowing us to run this in debug mode, rather than a hard coded
-#~ location.
+# The following if statement is a workaround that is allowing us to run this
+# in debug mode, rather than a hard coded location.
 
 tmpl_dir = os.path.join(base_dir, 'listener', 'templates')
 if not os.path.isdir(tmpl_dir):
@@ -115,6 +115,40 @@ def logout():
     return redirect(url_for('login'))
 
 
+# ------------------------------
+# Templates for HTTP error codes
+# ------------------------------
+
+
+@listener.errorhandler(404)
+def error_page_not_found(e):
+    template_args = {}
+    if not session.get('logged', False):
+        template_args = { 'hide_page_links': True }
+    return render_template('errors/404.html', **template_args), 404
+
+
+@listener.errorhandler(403)
+def error_page_not_found(e):
+    template_args = {}
+    if not session.get('logged', False):
+        template_args = { 'hide_page_links': True }
+    return render_template('errors/403.html', **template_args), 403
+
+
+@listener.errorhandler(500)
+def error_page_not_found(e):
+    template_args = {}
+    if not session.get('logged', False):
+        template_args = { 'hide_page_links': True }
+    return render_template('errors/500.html', **template_args), 500
+
+
+# ------------------------------
+# Admin section
+# ------------------------------
+
+
 @listener.route('/')
 @requires_auth
 def index():
@@ -131,10 +165,22 @@ def admin_index():
         logging.exception(e)
 
 
+# Help section (just a frame for the actual help)
+@listener.route('/admin/help')
+@requires_auth
+def help_section():
+    return render_template('admin/help.html')
+
+
 @listener.route('/admin/stats', methods=['GET', 'POST'])
 @requires_auth
 def live_stats():
     return render_template('admin/stats.html')
+
+
+# ------------------------------
+# API access sections
+# ------------------------------
 
 
 @listener.route('/api-websocket/<path:accessor>', methods=['GET', 'POST'])
@@ -206,8 +252,7 @@ def top():
     except TypeError:
         info['display'] = 0
 
-    return render_template('top.html',
-                           **info)
+    return render_template('top.html', **info)
 
 
 @listener.route('/top-websocket/')
@@ -457,4 +502,6 @@ def api(accessor=''):
         value = node.run_check(**sane_args)
     else:
         value = node.walk(**sane_args)
-    return Response(json.dumps(dict(value), indent=None if request.is_xhr else 4), mimetype='application/json')
+    return Response(json.dumps(dict(value),
+                    indent=None if request.is_xhr else 4),
+                    mimetype='application/json')

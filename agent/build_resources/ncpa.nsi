@@ -252,6 +252,8 @@ Section # "Create Config.ini"
     FileWrite $8 "[passive checks]$\r$\n$\r$\n"
     FileWrite $8 "$7"
     FileClose $8
+    ${Else}
+    WriteINIStr $INSTDIR\etc\ncpa.cfg passive "handlers" "None"
     ${EndIf}
 
     ; Passive settings

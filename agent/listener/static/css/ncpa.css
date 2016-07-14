@@ -28,8 +28,10 @@ input[type=checkbox], input[type=radio] { margin: 2px 0 0; }
 .btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary:active:focus { background-color: #3371e6; border-color: #1b59cd; }
 input.form-control, select.form-control, .btn { font-size: 1.2rem; }
 
+.well .table { background-color: #FFF; }
+
 #graph-selector-div { display: inline-block; }
-#graph-selector-div select { display: inline-block; width: auto; margin-right: 10px;}
+#graph-selector-div select { display: inline-block; width: auto; margin-right: 4px;}
 
 .undernav { margin-bottom: 30px; }
 .graph-tabs { background-color: #EEE; }
