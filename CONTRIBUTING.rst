@@ -27,22 +27,24 @@ been installed and working.
     ./build/scripts/linux_build_prereqs.sh
     ./build/scripts/linux_build_setup.sh
 
-Create Readable Code
-~~~~~~~~~~~~~~~~~~~~
+Code Readability
+~~~~~~~~~~~~~~~~
 
-Please follow `PEP8 <https://www.python.org/dev/peps/pep-0008/>`_ as close as possible, however it is not 
-a requirement to get your code into NCPA. We will work with you to fix any issues that we see that involve 
-PEP8 or our own styling guidelines.
+We suggest following the `PEP8 <https://www.python.org/dev/peps/pep-0008/>`_ Python coding guidelines as
+close as possible, however it is not a requirement to get your code into NCPA. We will work with you to fix
+any issues that we see that involve PEP8 or our own styling guidelines.
 
-Does It Work?
-~~~~~~~~~~~~~
+Test Your Code
+~~~~~~~~~~~~~~
 
 Be sure to thoroughly test your code. We do not have full tests set up yet and without them, we need to 
-be sure that each pull request does not break functionality. We can help you with this, but please make 
-sure to verify your code before submitting your pull requst.
+be sure that each pull request does not break functionality. We can help you with this, and will test it
+ourselves too, but please make sure to verify your code before submitting your pull requst.
 
-Send Us A Pull Request
-~~~~~~~~~~~~~~~~~~~~~~
+Send A Pull Request
+~~~~~~~~~~~~~~~~~~~
+
+Once your code changes are completed, tested, and verified, send the pull request.
 
 The easist way to do this is `from inside GitHub <https://help.github.com/articles/creating-a-pull-request/>`_ 
 but you can also run it from the command line. 
