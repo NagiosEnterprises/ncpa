@@ -215,6 +215,15 @@ class Passive(Base):
 
     # Actual method that loops doing passive checks forever, using the sleep
     # config setting to wait for the next time to run
+    #
+    #   Removed the "self.parse_config()" after the run_all_handlers
+    #   ----------
+    #   Prior to 2.0.0, the configuration could be changed without restarting
+    #   the NCPA passive service which caused the plugins to fail to run
+    #   after the first time it ran, re-loading the improper path that hadn't
+    #   been updated. This really isn't necessary, and has been removed to
+    #   preserve the config that was being ran from the start.
+    # 
     def start(self):
 
         # Check if there is a start delay
@@ -229,7 +238,6 @@ class Passive(Base):
         try:
             while True:
                 self.run_all_handlers()
-                self.parse_config()
                 wait_time = self.config.getint('passive', 'sleep')
                 time.sleep(wait_time)
         except Exception, e:
