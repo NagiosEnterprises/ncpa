@@ -46,6 +46,7 @@ Changelog
 - Fixed zombie process error in Mac OS X top websocket making the GUI top display nothing
 - Fixed graphs tab not displaying graphs of interfaces with multiple spaces in their names
 - Fixed passive service on Windows only able to successfully run a plugin-based check once after restarting
+- Fixed filtering processes by 'name' and 'exe' field to no longer need a perfect match and to not be case sensitive
 
 1.8.1 - 04/09/2015
 ==================

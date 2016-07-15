@@ -56,14 +56,25 @@ class ProcessNode(nodes.LazyNode):
 
         def proc_filter(process):
             comp = []
+
             for exe in exes:
-                comp.append(process.exe() in exe)
+                if exe.lower() in process.exe().lower():
+                    comp.append(True)
+                else:
+                    comp.append(False)
+
             for name in names:
-                comp.append(process.name() in name)
+                if name.lower() in process.name().lower():
+                    comp.append(True)
+                else:
+                    comp.append(False)
+
             if not cpu_percent is None:
-                comp.append(cpu_percent < process.cpu_percent())
+                comp.append(cpu_percent <= process.cpu_percent())
+
             if not cpu_percent is None:
-                comp.append(mem_percent < process.memory_percent())
+                comp.append(mem_percent <= process.memory_percent())
+
             return comparison(comp)
 
         return proc_filter
