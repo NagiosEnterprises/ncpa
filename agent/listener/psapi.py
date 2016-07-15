@@ -205,7 +205,9 @@ def getter(accessor, config, cache=False):
     if len(path) > 0 and path[0] == 'api':
         path = path[1:]
 
-    # Check how old our data is, if we are > 60 seconds, we need to reset ourselves
+    # Check if this should be a cached query or if we should reset the root
+    # node. This normally only happens on new API calls. When we are using
+    # websockets we use the cached version while it makes requests.
     if not cache:
         root = get_root_node()
 

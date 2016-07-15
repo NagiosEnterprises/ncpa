@@ -4,7 +4,8 @@ import ncpacheck
 
 
 class NagiosHandler(object):
-    """These are intended for use to handle passive activities.
+    """
+    These are intended for use to handle passive activities.
 
     Provides common functions that would be necessary for
     periodic activities that get kicked off by the passive NCPA

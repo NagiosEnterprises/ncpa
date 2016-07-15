@@ -5,6 +5,8 @@
 {% block headerjs %}
 <script type="text/javascript">
 $(document).ready(function() {
+
+    $('.tt-bind').tooltip();
     
     // Set nav header active link and resize API window
     $('#api-nav').addClass('active');
@@ -15,21 +17,38 @@ $(document).ready(function() {
     });
 
     $('#module').change(function() {
-        var api = "https://localhost:5900/api";
-        var module_url = "";
+        clear_settings();
         var module = $(this).val();
 
-        if (module != '') {
-            module_url = '/' + module;
+        // Remove all old module accessors
+        $('.selector .submod').remove();
+
+        // Show settings based on module
+        switch (module) {
+            case 'processes':
+                $('.check-settings').show();
+                break;
+            default:
+                $('.settings').hide();
+                break;
         }
 
         // Generate the full API URL
-        var url = api + module_url;
+        var url = generate_url();
 
-        // Grab the actual json data
-        $.get(url, { }, function(data) {
-            console.log(data[module]);
-        }, 'json');
+        // Grab the actual json data and show module accessors
+        if (module != 'processes') {
+            $.get(url, { }, function(data) {
+                var keys = Object.keys(data[module]);
+                var select = $('<select>', { class: 'form-control submod' });
+                select.append('<option></option>');
+                $(keys).each(function(i, obj) {
+                    var opt = $('<option>' + obj + '</option>');
+                    select.append(opt);
+                });
+                $('.selector').append(select);
+            }, 'json');
+        }
 
         // Set URL of link and iframe
         $('#api-frame').attr('src', url);
@@ -37,11 +56,80 @@ $(document).ready(function() {
     });
 
     $('#reload').click(function() {
-        var url = $('#api-input').val();
+        var url = generate_url();
         $('#api-frame').attr('src', url);
+        $('#api-input').val(url);
+    });
+
+    // If the checkbox for running as a nagios check is checked, then we should
+    // display the button to show the check_ncpa.py version
+    $('input.check').change(function() {
+        toggle_check_ncpa_btn();
     });
 
 });
+
+function generate_url() {
+    var api = window.location.protocol + '//' + window.location.hostname;
+    if (window.location.port) {
+        api += ':' + window.location.port;
+    }
+    api += '/api';
+
+    // Add module to api call
+    var module = $('#module').val();
+    if (module == '') {
+        return api;
+    }
+    api += '/' + module;
+
+    // Add in any submodules there are
+    if ($('.selector .submod').length > 0) {
+        $('.selector .submod').each(function(i, name) {
+            if ($(name).val() != '') {
+                api += '/' + $(name).val();
+            }
+        });
+    }
+
+    console.log(api);
+
+    var url = api;
+
+    // Grab check settings
+    var extra = '';
+    if ($('.check').is(':checked')) {
+        extra += 'check';
+        var warn = $('.warn').val();
+        var crit = $('.crit').val();
+        if (warn) {
+            extra += '&warning=' + warn;
+        }
+        if (crit) {
+            extra += '&critical=' + crit;
+        }
+    }
+
+    // Add extra to url
+    if (extra) {
+        url = url + '?' + extra;
+    }
+
+    return url;
+}
+
+function toggle_check_ncpa_btn() {
+    if ($('input.check').is(':checked')) {
+        $('.btn-check-ncpa').show();
+    } else {
+        $('.btn-check-ncpa').hide();
+    }
+}
+
+function clear_settings() {
+    $('.settings input[type="checkbox"]').attr('checked', false);
+    $('.settings input').val('');
+}
 
 function resize_api_window() {
     var h = $(window).height() - $('nav').outerHeight();
@@ -53,8 +141,8 @@ function resize_api_window() {
 
 {% block content %}
 <div style="display: table; width: 100%;">
-    <div class="well" id="api-input-control" style="width: 300px; vertical-align: top; display: table-cell;">
-        <div>
+    <div class="well" id="api-input-control" style="width: 300px; vertical-align: top; display: table-cell; position: relative;">
+        <div class="selector">
             <label>Module</label>
             <select class="form-control" id="module">
                 <option></option>
@@ -72,9 +160,26 @@ function resize_api_window() {
                 {% endif %}
             </select>
         </div>
+        <div class="settings check-settings">
+            <label>Check Settings</label>
+            <div class="checkbox">
+                <label><input type="checkbox" class="check" name="check" value="1"> Run as a Nagios check</label>
+            </div>
+            <div class="form-inline">
+                <div class="input-group">
+                    <div class="input-group-addon"><img src="../../static/img/warning.png" class="tt-bind" title="Warning threshold"></div>
+                    <input type="text" class="form-control warn" placeholder="Warning">
+                </div>
+                <div class="input-group">
+                    <div class="input-group-addon"><img src="../../static/img/critical.png" class="tt-bind" title="Critical threshold"></div>
+                    <input type="text" class="form-control crit" placeholder="Critical">
+                </div>
+            </div>
+        </div>
         <div style="margin-top: 20px;">
             <button class="btn btn-primary" id="reload"><i class="fa fa-refresh fa-l"></i> Reload</button>
         </div>
+        <button type="button" class="btn-check-ncpa btn btn-sm btn-default"><i class="fa fa-external-link-square fa-l"></i> View check in <em>check_ncpa</em> format</button>
     </div>
     <div style="display: table-cell;">
         <input class="form-control" id="api-input" style="vertical-align: top;" type="text" value="https://localhost:5900/api">
