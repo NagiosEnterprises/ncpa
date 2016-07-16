@@ -3,6 +3,9 @@ Changelog
 
 2.0.0 - ??/??/2016
 ==================
+
+**Additions**
+
 - Added support for SSL protocols TLSv1.1 & TLSv1.2
 - Added ability to adjust units B and b with T, Ti, Gi, Mi, Ki to match windows disk sizes using untis=x
 - Added comments/help to the config file itself to help understand certain areas of the config that are confusing
@@ -13,6 +16,9 @@ Changelog
 - Added ability to relocate RPM install (ex. --prefix=/opt would install /opt/ncpa)
 - Added disk/mount for giving information on partitions that aren't currently accessible, such as cdroms
 - Added redirection when logging in if the user was trying to access a protected page
+
+** Updates**
+
 - Updated web UI with modern theme with better graph styling
 - Updated self-signed SSL certs to use 2048bit RSA and sha256 signature
 - Updated unit names that were set to c that weren't actually generic counters for better graphing
@@ -26,6 +32,9 @@ Changelog
 - Updated Linux and Mac OS X installs to use nagios group instead of nagcmd group like other Nagios products
 - Updated Windows installer to now have multiple sections that edit listener, passive, and passive check configs
 - Updated RPM, DEB, and DMG to allow upgrading from older versions without issues
+
+**Fixes and Maintenance**
+
 - Fixed services list on el7 (and all systemctl systems)
 - Fixed registry key placement for fresh installs on Windows
 - Fixed using multiple values passed to nodes for filtering in API and active checks (ex. service=x&service=y)
@@ -48,6 +57,10 @@ Changelog
 - Fixed graphs tab not displaying graphs of interfaces with multiple spaces in their names
 - Fixed passive service on Windows only able to successfully run a plugin-based check once after restarting
 - Fixed filtering processes by 'name' and 'exe' field to no longer need a perfect match and to not be case sensitive
+
+**Deprecated**
+
+- Both api/service/<servicename> and api/process/<processname> will be remove in version 2.1.0
 
 1.8.1 - 04/09/2015
 ==================
