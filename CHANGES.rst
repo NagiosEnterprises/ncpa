@@ -60,7 +60,7 @@ Changelog
 
 **Deprecated**
 
-- Both api/service/<servicename> and api/process/<processname> will be remove in version 2.1.0
+- Both api/service/<servicename> and api/process/<processname> will be remove in version 2.1.0 and should be replaced by api/services?service=<servicename> and api/processes?name=<processname> instead
 
 1.8.1 - 04/09/2015
 ==================
