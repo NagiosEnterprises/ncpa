@@ -33,7 +33,7 @@ Changelog
 - Updated Windows installer to now have multiple sections that edit listener, passive, and passive check configs
 - Updated RPM, DEB, and DMG to allow upgrading from older versions without issues
 
-**Fixes and Maintenance**
+**Bug Fixes**
 
 - Fixed services list on el7 (and all systemctl systems)
 - Fixed registry key placement for fresh installs on Windows
