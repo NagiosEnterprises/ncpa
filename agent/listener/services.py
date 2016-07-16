@@ -157,9 +157,7 @@ class ServiceNode(nodes.LazyNode):
     def get_initd_service_status(self, service):
         p = subprocess.Popen(['service', service, 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.communicate()
-        if p.returncode > 0:
-            return 'stopped' # Service is likely not running
-        elif p.returncode == 1:
+        if p.returncode == 1:
             return 'stopped' # Service not found
         elif p.returncode == 0:
             out = out.lower()
@@ -168,8 +166,8 @@ class ServiceNode(nodes.LazyNode):
             elif out in 'not running' or out in 'stopped': # Service returned 0 but had 'stopped' or 'not running' message
                 return 'stopped'
             else:
-                return 'running' # Service is assumed running due to return 0
-        return 'stopped'
+                return 'running' # Service is assumed running due to (return 0)
+        return 'stopped' # Service is likely not running (return > 0)
 
     @filter_services
     def get_services_via_initd(self, *args, **kwargs):

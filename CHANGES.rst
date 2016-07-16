@@ -43,6 +43,7 @@ Changelog
 - Fixed issue on OS X where plugin directory was not readable by nagios due to LaunchDaemon permissions
 - Fixed issue on Windows systems not having accurate network I/O if bytes > 4.3GB
 - Fixed issue with iptables showing up as stopped even while running in CentOS/RHEL 6 and 7
+- Fixed issue with multiple services always showing stopped in CentOS/RHEL 6 systems relying on initd
 - Fixed zombie process error in Mac OS X top websocket making the GUI top display nothing
 - Fixed graphs tab not displaying graphs of interfaces with multiple spaces in their names
 - Fixed passive service on Windows only able to successfully run a plugin-based check once after restarting
