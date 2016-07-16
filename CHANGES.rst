@@ -17,7 +17,7 @@ Changelog
 - Added disk/mount for giving information on partitions that aren't currently accessible, such as cdroms
 - Added redirection when logging in if the user was trying to access a protected page
 
-** Updates**
+**Updates**
 
 - Updated web UI with modern theme with better graph styling
 - Updated self-signed SSL certs to use 2048bit RSA and sha256 signature
