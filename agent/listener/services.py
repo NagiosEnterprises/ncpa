@@ -34,6 +34,7 @@ class ServiceNode(nodes.LazyNode):
 
     def get_service_method(self, *args, **kwargs):
         uname = platform.uname()[0]
+
         # look for systemd
         is_systemctl = False
         try:
@@ -149,32 +150,53 @@ class ServiceNode(nodes.LazyNode):
                 pass
         return services
 
+    # ---------------------------------
+    # Special functions to test if a service is running or not
+    # ---------------------------------
+
+    def get_initd_service_status(self, service):
+        p = subprocess.Popen(['service', service, 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        if p.returncode > 0:
+            return 'stopped' # Service is likely not running
+        elif p.returncode == 1:
+            return 'stopped' # Service not found
+        elif p.returncode == 0:
+            out = out.lower()
+            if not out:
+                return 'running' # Service is likely running (no output but return 0)
+            elif out in 'not running' or out in 'stopped': # Service returned 0 but had 'stopped' or 'not running' message
+                return 'stopped'
+            else:
+                return 'running' # Service is assumed running due to return 0
+        return 'stopped'
+
     @filter_services
     def get_services_via_initd(self, *args, **kwargs):
         # Only look at executable files in init.d (there is no README service)
         possible_services = filter(lambda x: os.stat('/etc/init.d/'+x)[ST_MODE] & (S_IXUSR|S_IXGRP|S_IXOTH), os.listdir('/etc/init.d'))
-        services = {x: 'stopped' for x in possible_services}
+        services = { x: 'stopped' for x in possible_services }
         devnull = open(os.devnull, 'w')
 
-        # Services that need to be checked via 'service <service> status'
-        service_calls = ['iptables']
-
         for service in possible_services:
-            if service in service_calls:
-                p = subprocess.Popen(['service', service, 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                out, err = p.communicate()
-                if 'is not running' not in out:
-                    srevices[service] = 'running'
-            else:
-                grep_search = '[%s]%s' % (service[0], service[1:])
-                ps_call = subprocess.Popen(['ps', 'aux'], stdout=subprocess.PIPE)
-                grep_call = subprocess.Popen(['grep', grep_search], stdout=devnull, stdin=ps_call.stdout)
-                ps_call.wait()
-                ps_call.stdout.close()
-                grep_call.wait()
+            status = services[service]
 
-                if grep_call.returncode == 0:
-                    services[service] = 'running'
+            # Check if service is running via 'ps' since its faster that calling 'service'
+            grep_search = '[%s]%s' % (service[0], service[1:])
+            ps_call = subprocess.Popen(['ps', 'aux'], stdout=subprocess.PIPE)
+            grep_call = subprocess.Popen(['grep', grep_search], stdout=devnull, stdin=ps_call.stdout)
+            ps_call.wait()
+            ps_call.stdout.close()
+            grep_call.wait()
+
+            if grep_call.returncode == 0:
+                status = 'running'
+
+            # Verify with 'service' if status is still stopped
+            if status == 'stopped': 
+                status = self.get_initd_service_status(service)
+
+            services[service] = status
 
         devnull.close()
         return services
