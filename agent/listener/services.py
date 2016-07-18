@@ -235,23 +235,30 @@ class ServiceNode(nodes.LazyNode):
 
     def run_check(self, *args, **kwargs):
         service_names = self.get_service_name(kwargs)
-        target_statuses = self.get_target_status(kwargs)
+        target_status = self.get_target_status(kwargs)
         method = self.get_service_method(*args, **kwargs)
 
+        # Default to running status, so it will alert on not running
+        if not target_status:
+            target_status = 'running'
+
+        # Return that no services have been selected if none are sent
         if not service_names:
-            return {'stdout': 'OK: No services requested. That was too easy, give me something to do.', 'returncode': 0}
+            return { 'stdout': 'OK: No services requested.', 'returncode': 0 }
 
         services = method(*args, **kwargs)
         returncode = 0
         status = 'not a problem'
         stdout_builder = []
+
         for service in service_names:
             priority = 0
             if service in services:
                 status = services[service]
                 builder = 'Service %s is %s' % (service, status)
-                if not status in target_statuses:
+                if not status in target_status:
                     priority = 1
+                    builder = '%s (should be %s)' % (builder, ''.join(target_status))
             else:
                 priority = 2
                 builder = 'Service %s was not found' % service
@@ -259,12 +266,12 @@ class ServiceNode(nodes.LazyNode):
             if priority > returncode:
                 returncode = priority
 
-            stdout_builder.append({'info': builder, 'priority': priority})
+            stdout_builder.append({ 'info': builder, 'priority': priority })
 
         if returncode > 0:
             returncode = 2
         stdout = self.make_stdout(returncode, stdout_builder)
-        return {'stdout': stdout, 'returncode': returncode}
+        return { 'stdout': stdout, 'returncode': returncode }
 
 def get_node():
     return ServiceNode('services', None)
