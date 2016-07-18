@@ -74,7 +74,7 @@ input.form-control, select.form-control, .btn { font-size: 1.2rem; }
 .input-group-addon i.fa-question-circle { font-size: 1.3rem; cursor: help; }
 .form-control[readonly] { background-color: #FFF; }
 .dropdown-menu { font-size: 1.2rem; border-radius: 0; box-shadow: none; width: 100%; }
-.dropdown-menu > li > a { padding: 3px 14px 3px 10px; cursor: pointer; }
+.dropdown-menu > li > a { padding: 3px 12px 3px 9px; cursor: pointer; }
 
 .well .table { background-color: #FFF; }
 
@@ -103,6 +103,7 @@ input.form-control, select.form-control, .btn { font-size: 1.2rem; }
 .selector .submod { margin-top: 5px; }
 .service-settings .list .service { margin-bottom: 5px; }
 .selection-box { margin-bottom: 20px; }
+.filter-group { margin-bottom: 5px; }
 
 /* Top processes page */
 .table-top { font-size: 1.1rem; }

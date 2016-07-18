@@ -100,6 +100,25 @@ $(document).ready(function() {
         clear_load();
     });
 
+    // Special CPU module selector to show aggregation field
+    $('.selector').on('change', '.submod', function() {
+        var module = $('#module').val();
+        var selected = $(this).val();
+        if (module == 'cpu') {
+            if (selected != '') {
+                if (selected != 'count') {
+                    $('.aggregation-settings').show();
+                } else {
+                    $('.aggregation-settings').hide();
+                }
+                $('.check-settings').show();
+                $('.wc-thresholds').show();
+            } else {
+                $('.settings').hide();
+            }
+        }
+    });
+
 });
 
 function load() {
@@ -173,6 +192,12 @@ function generate_url(skip_settings=false) {
         });
     }
 
+    // Grab aggregation settings
+    var aggregate = $('.aggregate').val();
+    if (aggregate != '') {
+        extra += '&aggregate=' + aggregate;
+    }
+
     // Grab check settings
     if ($('.check').is(':checked')) {
         if (extra) { extra += '&'; }
@@ -197,6 +222,7 @@ function generate_url(skip_settings=false) {
 
     // Add extra to url
     if (extra) {
+        extra = extra.replace(/^&/, '');
         url = url + '?' + extra;
     }
 
@@ -268,8 +294,33 @@ function resize_api_window() {
                     </div>
                 </div>
                 <div class="settings filter-settings">
-                    <label>Filter</label>
-
+                    <label>Filter(s)</label>
+                    <div class="list">
+                        <div class="filter-group">
+                            <select class="form-control" style="display: inline-block; width: 35%; border-right: 0;">
+                                <option value="name">name</option>
+                                <option value="exe">exe</option>
+                            </select><input type="text" class="form-control" style="display: inline-block; width: 65%;">
+                        </div>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-xs btn-default add-filter">
+                            <i class="fa fa-plus"></i> Add Filter
+                        </button>
+                    </div>
+                </div>
+                <div class="settings aggregation-settings">
+                    <label>Data Settings</label>
+                    <div class="input-group">
+                        <div class="input-group-addon">aggregate</div>
+                        <select class="form-control aggregate">
+                            <option></option>
+                            <option value="avg">average</option>
+                            <option value="min">minumum</option>
+                            <option value="max">maximum</option>
+                            <option value="sum">sum</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="settings check-settings">
                     <label>Check Settings</label>
