@@ -63,8 +63,8 @@ Changelog
 
 **Deprecated**
 
-- Both api/service/<servicename> and api/process/<processname> endpoints will be removed in version 2.1.0 and should be replaced by api/services?service=<servicename> and api/processes?name=<processname> instead
-- Endpoint api/agent/plugin will be removed in 2.1.0 in favor of api/plugins which better matches the current design of API nodes
+- Both API endoints api/service/<servicename> and api/process/<processname> will be removed in version 2.1.0 and should be replaced by api/services?service=<servicename> and api/processes?name=<processname> instead
+- The API endpoint api/agent/plugin/<pluginname> will be removed in version 2.1.0 in favor of api/plugins/<pluginame> which better matches the current API node naming conventions and is a less confusing name
 
 1.8.1 - 04/09/2015
 ==================
