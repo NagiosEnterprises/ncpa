@@ -1,37 +1,4 @@
-<style>
-    th {
-        text-align: center;
-    }
-    
-    * {
-        font-size: 1em;
-    }
-    
-    tr.highlight {
-        background-color: teal;
-    }
-    
-    td.critical {
-        background-color: red;
-    }
-    
-    td.warning {
-        background-color: yellow;
-    }
-
-    .full-width {
-        width: 900px;
-        margin: 0 auto;
-    }
-
-    .spacer {
-        padding-right: 85px;
-    }
-
-    .form-inline {
-        margin: 0 auto;
-    }
-</style>
+{% block headerjs %}
 <script src='/static/js/smoothie.js'></script>
 <script>
     $(document).ready(function() {
@@ -218,41 +185,41 @@
         }
     })
 </script>
+{% endblock headerjs %}
+
+<div id='top-container'>
+    <div class="well">
+        <form class="form-inline" id="top-form">
+            <div style="float: left;">
+                <input class="form-control" style="width: 260px;" type="text" id="highlight-input" placeholder="Highlight Name">
+            </div>
+            <div style="float: right;">
+                <input class="form-control" type="text" id="warning-input" placeholder="Warning Threshold">
+                <input class="form-control" type="text" id="critical-input" placeholder="Critical Threshold">
+            </div>
+            <div style="clear: both;"></div>
+        </form>
+    </div>
+</div>
 
 <div class="container">
-    <div class="row">
+    <div class="row" style="padding-bottom: 30px;">
         <div class="col-sm-12">
-
-        <div id='top-container'>
-            <div class="well">
-                <form class="form-inline" id="top-form">
-                    <div style="float: left;">
-                        <input class="form-control" style="width: 260px;" type="text" id="highlight-input" placeholder="Highlight Name">
-                    </div>
-                    <div style="float: right;">
-                        <input class="form-control" type="text" id="warning-input" placeholder="Warning Threshold">
-                        <input class="form-control" type="text" id="critical-input" placeholder="Critical Threshold">
-                    </div>
-                    <div style="clear: both;"></div>
-                </form>
-            </div>
             <div style="padding-bottom: 20px;">
-                <table class="table table-bordered table-condensed">
+                <table class="table table-top table-bordered table-condensed">
                     <tr>
-                        <td id='load' style="width: 33.3%;"><b>CPU Load</b> <span class='current'></span></td>
+                        <td id='load' style="width: 33.3%;"><b>CPU Percent</b> <span class='current'></span></td>
                         <td id='virtual' style="width: 33.3%;"><b>RAM Usage</b> <span class='current'></span></td>
                         <td id='swap' style="width: 33.3%;"><b>Swap Usage</b> <span class='current'></span></td>
                     </tr>
                 </table>
             </div>
-            <table class='processes table table-bordered table-condensed'>
+            <table class='processes table table-top table-hover table-bordered table-condensed'>
                 <thead>
                     <tr id='titles'></tr>
                 </thead>
                 <tbody></tbody>
             </table>
-        </div>
-
         </div>
     </div>
 </div>

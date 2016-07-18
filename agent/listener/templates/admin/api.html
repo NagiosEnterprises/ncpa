@@ -7,10 +7,14 @@
 $(document).ready(function() {
 
     $('.tt-bind').tooltip();
+    $('.pop-bind').popover({ 'html': true });
     
     // Set nav header active link and resize API window
     $('#api-nav').addClass('active');
     resize_api_window();
+
+    var url = generate_url();
+    $('#api-input').val(url);
 
     $(window).resize(function() {
         resize_api_window();
@@ -24,30 +28,49 @@ $(document).ready(function() {
         $('.selector .submod').remove();
 
         // Show settings based on module
+        $('.settings').hide();
+        $('.hide-by-default').hide();
+        $('.service-settings .list').html('');
+
         switch (module) {
             case 'processes':
                 $('.check-settings').show();
+                $('.wc-thresholds').show();
+                $('.filter-settings').show();
                 break;
-            default:
-                $('.settings').hide();
+            case 'services':
+                $('.service-settings').show();
+                $('.check-settings').show();
+                $('.status-check').show();
                 break;
         }
 
         // Generate the full API URL
-        var url = generate_url();
+        var url = generate_url(true);
 
         // Grab the actual json data and show module accessors
-        if (module != 'processes') {
+        if (module != 'processes' && module != 'windowscounters' && module != 'logs' && module != 'services') {
             $.get(url, { }, function(data) {
-                var keys = Object.keys(data[module]);
                 var select = $('<select>', { class: 'form-control submod' });
                 select.append('<option></option>');
-                $(keys).each(function(i, obj) {
-                    var opt = $('<option>' + obj + '</option>');
-                    select.append(opt);
-                });
+
+                if (module == 'plugins') {
+                    $(data[module]).each(function(i, obj) {
+                        var opt = $('<option>' + obj + '</option>');
+                        select.append(opt);
+                    });
+                } else {
+                    var keys = Object.keys(data[module]);
+                    $(keys).each(function(i, obj) {
+                        var opt = $('<option>' + obj + '</option>');
+                        select.append(opt);
+                    });
+                }
+
                 $('.selector').append(select);
             }, 'json');
+        } else if (module == 'services') {
+            add_service_selector();
         }
 
         // Set URL of link and iframe
@@ -56,6 +79,7 @@ $(document).ready(function() {
     });
 
     $('#reload').click(function() {
+        load();
         var url = generate_url();
         $('#api-frame').attr('src', url);
         $('#api-input').val(url);
@@ -67,9 +91,48 @@ $(document).ready(function() {
         toggle_check_ncpa_btn();
     });
 
+    // Add services for service checks
+    $('.add-service').click(function() {
+        add_service_selector();
+    });
+
+    $('iframe').load(function() {
+        clear_load();
+    });
+
 });
 
-function generate_url() {
+function load() {
+    var top = $('#api-input').outerHeight() + $('.navbar').outerHeight();
+    var h = $('iframe').outerHeight();
+    var w = $('iframe').outerWidth();
+    $('.whiteout').css('top', top)
+                  .css('height', h)
+                  .css('width', w);
+    $('.whiteout').show();
+}
+
+function clear_load() {
+    $('.whiteout').hide();
+}
+
+function add_service_selector() {
+    var select = $('<select>', { class: 'form-control service' });
+    select.append('<option></option>');
+
+    // Special output for selecting service(s)
+    $.get(generate_url(true), { }, function(data) {
+        var keys = Object.keys(data['services']);
+        $(keys).each(function(i, obj) {
+            var opt = $('<option>' + obj + '</option>');
+            select.append(opt);
+        });
+    });
+
+    $('.service-settings .list').append(select);
+}
+
+function generate_url(skip_settings=false) {
     var api = window.location.protocol + '//' + window.location.hostname;
     if (window.location.port) {
         api += ':' + window.location.port;
@@ -92,14 +155,30 @@ function generate_url() {
         });
     }
 
-    console.log(api);
+    if (skip_settings) {
+        return api;
+    }
 
+    //console.log(api);
+    var extra = '';
     var url = api;
 
+    // Apply filters based on type
+    if (module == 'services') {
+        $('.service').each(function(i, service) {
+            var val = $(service).val();
+            if (val != '') {
+                extra += '&service=' + val;
+            }
+        });
+    }
+
     // Grab check settings
-    var extra = '';
     if ($('.check').is(':checked')) {
-        extra += 'check';
+        if (extra) { extra += '&'; }
+        extra += 'check=true';
+
+        // Do warning / critical checks
         var warn = $('.warn').val();
         var crit = $('.crit').val();
         if (warn) {
@@ -107,6 +186,12 @@ function generate_url() {
         }
         if (crit) {
             extra += '&critical=' + crit;
+        }
+
+        // Check for status if services
+        var status = $('.status').val();
+        if (status) {
+            extra += '&status=' + status;
         }
     }
 
@@ -134,6 +219,17 @@ function clear_settings() {
 function resize_api_window() {
     var h = $(window).height() - $('nav').outerHeight();
     $('#api-input-control').css('height', h);
+    $('#api-input-control .max').css('max-height', h-40);
+    if (h-92 < $('#api-input-control .selection-box').outerHeight()) {
+        $('.btn-check-ncpa').css('position', 'relative')
+                            .css('width', '100%')
+                            .css('bottom', 0);
+        $('#api-input-control .max').css('padding-right', 10);
+    } else {
+        $('.btn-check-ncpa').css('position', 'absolute')
+                            .css('width', '260px')
+                            .css('bottom', 20);
+    }
     $('#api-frame').css('height', h - $('#api-input').outerHeight());
 }
 </script>
@@ -142,47 +238,87 @@ function resize_api_window() {
 {% block content %}
 <div style="display: table; width: 100%;">
     <div class="well" id="api-input-control" style="width: 300px; vertical-align: top; display: table-cell; position: relative;">
-        <div class="selector">
-            <label>Module</label>
-            <select class="form-control" id="module">
-                <option></option>
-                <option>cpu</option>
-                <option>disk</option>
-                <option>agent</option>
-                <option>interface</option>
-                <option>memory</option>
-                <option>processes</option>
-                <option>services</option>
-                <option>system</option>
-                {% if system == "Windows" %}
-                <option>logs</option>
-                <option>windowscounters</option>
-                {% endif %}
-            </select>
-        </div>
-        <div class="settings check-settings">
-            <label>Check Settings</label>
-            <div class="checkbox">
-                <label><input type="checkbox" class="check" name="check" value="1"> Run as a Nagios check</label>
-            </div>
-            <div class="form-inline">
-                <div class="input-group">
-                    <div class="input-group-addon"><img src="../../static/img/warning.png" class="tt-bind" title="Warning threshold"></div>
-                    <input type="text" class="form-control warn" placeholder="Warning">
+        <div class="max" style="overflow-y: auto;">
+            <div class="selection-box">
+                <div class="selector">
+                    <label>API Endpoint</label>
+                    <select class="form-control" id="module">
+                        <option></option>
+                        <option>cpu</option>
+                        <option>disk</option>
+                        <option>plugins</option>
+                        <option>interface</option>
+                        <option>memory</option>
+                        <option>processes</option>
+                        <option>services</option>
+                        <option>system</option>
+                        {% if system == "Windows" %}
+                        <option>logs</option>
+                        <option>windowscounters</option>
+                        {% endif %}
+                    </select>
                 </div>
-                <div class="input-group">
-                    <div class="input-group-addon"><img src="../../static/img/critical.png" class="tt-bind" title="Critical threshold"></div>
-                    <input type="text" class="form-control crit" placeholder="Critical">
+                <div class="settings service-settings">
+                    <label>Select Service(s)</label>
+                    <div class="list"></div>
+                    <div>
+                        <button type="button" class="btn btn-xs btn-default add-service">
+                            <i class="fa fa-plus"></i> Add Service
+                        </button>
+                    </div>
+                </div>
+                <div class="settings filter-settings">
+                    <label>Filter</label>
+
+                </div>
+                <div class="settings check-settings">
+                    <label>Check Settings</label>
+                    <div class="checkbox">
+                        <label><input type="checkbox" class="check" name="check" value="1"> Run as a Nagios check</label>
+                    </div>
+                    <div class="status-check hide-by-default">
+                        <div class="input-group">
+                            <div class="input-group-addon">Status <i class="fa fa-question-circle pop-bind" title="Service Status" data-content="<b>Default is running</b>.<br>The status option is what the service's status should be. If it does not match the set status, it will return a critical result."></i></div>
+                            <select class="status form-control">
+                                <option></option>
+                                <option value="running">running</option>
+                                <option value="stopped">stopped</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="wc-thresholds hide-by-default form-inline">
+                        <div class="input-group">
+                            <div class="input-group-addon"><img src="../../static/img/warning.png" class="tt-bind" title="Warning threshold"></div>
+                            <input type="text" class="form-control warn" placeholder="Warning">
+                        </div>
+                        <div class="input-group">
+                            <div class="input-group-addon"><img src="../../static/img/critical.png" class="tt-bind" title="Critical threshold"></div>
+                            <input type="text" class="form-control crit" placeholder="Critical">
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" id="reload"><i class="fa fa-refresh fa-l"></i> Reload</button>
                 </div>
             </div>
+            <div class="btn-check-ncpa btn-group dropup">
+                <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-external-link-square fa-l"></i> View in alternate format <i class="fa fa-chevron-up fa-r"></i></button>
+                <ul class="dropdown-menu">
+                    <li><a>As active check using <em>check_ncpa.py</em></a></li>
+                    <li><a>As passive check config definition</a></li>
+                </ul>
+            </div>
         </div>
-        <div style="margin-top: 20px;">
-            <button class="btn btn-primary" id="reload"><i class="fa fa-refresh fa-l"></i> Reload</button>
-        </div>
-        <button type="button" class="btn-check-ncpa btn btn-sm btn-default"><i class="fa fa-external-link-square fa-l"></i> View check in <em>check_ncpa</em> format</button>
     </div>
     <div style="display: table-cell;">
-        <input class="form-control" id="api-input" style="vertical-align: top;" type="text" value="https://localhost:5900/api">
+        <div class="whiteout">
+            <div class="spinner">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+            </div>
+        </div>
+        <input class="form-control" id="api-input" style="vertical-align: top;" readonly type="text">
         <iframe src="/api" name="api-frame" style="vertical-align: top;" id="api-frame"></iframe>
     </div>
 </div>
