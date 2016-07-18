@@ -19,6 +19,7 @@ Changelog
 
 **Updates**
 
+- Updated api/agent/plugin to just api/plugins (check deprecation to see more about api/agent/plugins)
 - Updated web UI with modern theme with better graph styling
 - Updated self-signed SSL certs to use 2048bit RSA and sha256 signature
 - Updated unit names that were set to c that weren't actually generic counters for better graphing
@@ -32,6 +33,8 @@ Changelog
 - Updated Linux and Mac OS X installs to use nagios group instead of nagcmd group like other Nagios products
 - Updated Windows installer to now have multiple sections that edit listener, passive, and passive check configs
 - Updated RPM, DEB, and DMG to allow upgrading from older versions without issues
+- Updated api/services check to default to running (currently leaving off status=x will always return critical)
+- Updated output of certain checks to have more information (api/services, api/memory/logical/percent)
 
 **Bug Fixes**
 
@@ -60,7 +63,8 @@ Changelog
 
 **Deprecated**
 
-- Both api/service/<servicename> and api/process/<processname> will be remove in version 2.1.0 and should be replaced by api/services?service=<servicename> and api/processes?name=<processname> instead
+- Both api/service/<servicename> and api/process/<processname> endpoints will be removed in version 2.1.0 and should be replaced by api/services?service=<servicename> and api/processes?name=<processname> instead
+- Endpoint api/agent/plugin will be removed in 2.1.0 in favor of api/plugins which better matches the current design of API nodes
 
 1.8.1 - 04/09/2015
 ==================
