@@ -213,6 +213,7 @@ def api_websocket(accessor=None):
             except (AttributeError, geventwebsocket.WebSocketError) as e:
                 # Socket was probably closed by the browser changing pages
                 logging.debug(e)
+                ws.close()
                 break
     return ''
 
@@ -298,6 +299,7 @@ def top_websocket():
             except geventwebsocket.WebSocketError as e:
                 # Socket was probably closed by the browser changing pages
                 logging.debug(e)
+                ws.close()
                 break
     return ''
 
@@ -457,10 +459,22 @@ def api(accessor=''):
     for value in request.values:
         sane_args[value] = request.args.getlist(value)
 
-    # TODO: Rewrite this part, this needs to be moved to the Service/Process nodes rather than here.
-    # Special cases for 'service' and 'process' to make NCPA v1.7 backwards compatible
-    # with probably the most disgusting code ever written but needed to work ASAP for
-    # those who had checks set up before the changes.
+    #
+    # As of version 2.0.0 there are now 3 different paths that are backwards
+    # compatible using this section. After looking into it further the location
+    # of this should be around here. Changing the incoming request is the only
+    # way to make something happen without updating the way the API looks/returns.
+    # You can think of these as aliases. Below explains the aliases and when they
+    # will be removed. As of 2.0.0 they are deprecated. Will be removed in 2.1.0.
+    #
+    # Deprecated Aliases:
+    #
+    #   Aliases (up to 1.8.1)     || Location (2.0.0)
+    #   ---------------------------------------------------------------------
+    #   api/service/<servicename> -> api/services?service=<servicename>
+    #   api/process/<processname> -> api/processes?name=<processname>
+    #   api/agent/plugin/<plugin> -> api/plugins/<plugin>
+    #
     path = [re.sub('%2f', '/', x, flags=re.I) for x in accessor.split('/') if x]
     if len(path) > 0 and path[0] == 'api':
         path = path[1:]
@@ -481,6 +495,10 @@ def api(accessor=''):
                 if len(rest_path) == 2:
                     if rest_path[1] == "count":
                         sane_args['check'] = True
+        elif node_name == "agent":
+            accessor = "plugins"
+            if 'plugin' in rest_path[0] and len(rest_path) > 1:
+                accessor = "plugins/" + rest_path[1]
             
     try:
         config = listener.config['iconfig']
