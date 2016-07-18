@@ -143,9 +143,8 @@ def get_interface_node():
     return ParentNode('interface', children=if_children)
 
 
-def get_agent_node():
-    plugin = PluginAgentNode('plugin')
-    return ParentNode('agent', children=(plugin,))
+def get_plugins_node():
+    return PluginAgentNode('plugins')
 
 
 def get_user_node():
@@ -159,13 +158,13 @@ def get_root_node():
     memory = get_memory_node()
     disk = get_disk_node()
     interface = get_interface_node()
-    agent = get_agent_node()
+    plugins = get_plugins_node()
     user = get_user_node()
     system = get_system_node()
     service = services.get_node()
     process = processes.get_node()
 
-    children = [cpu, memory, disk, interface, agent, user, system, service, process]
+    children = [cpu, memory, disk, interface, plugins, user, system, service, process]
 
     if environment.SYSTEM == "Windows":
         for importable in importables:
