@@ -50,7 +50,7 @@ Changelog
 - Fixed errors thrown by clients ending websocket connections by changing pages not being caught and handled properly
 - Fixed issue where having no passive NRDP checks would give errors in ncpa_passive.log
 - Fixed regex issue for warning and critical values
-- Fixed stdout and returncode swapped when doing checks on nodes that can't be checked (user/list, system/agent_version)
+- Fixed stdout and returncode swapped when doing checks on nodes that can't be checked (ex: user/list)
 - Fixed RPM uninstall to stop the NCPA processes before it removes the NCPA files
 - Fixed issue on OS X where plugin directory was not readable by nagios due to LaunchDaemon permissions
 - Fixed issue on Windows systems not having accurate network I/O if bytes > 4.3GB
