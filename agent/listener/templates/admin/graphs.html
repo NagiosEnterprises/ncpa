@@ -19,12 +19,6 @@ function get_next_select(api_address, selection) {
         var bind_graph = false;
         $.each(element, function(k, v) {
 
-            // This is a special case for when we are in the root node
-            // and we target a node that has no graphable children.
-            if (selection == 'root' && GRAPHABLES.indexOf(k) == -1) {
-                return;
-            }
-
             select.append($('<option>', {value: k, text: k, 'data-children': k}));
 
             if (element[k] instanceof Array) {
@@ -50,25 +44,33 @@ function get_next_select(api_address, selection) {
     return select;
 }
 
-function get_graph_url(api_url) {
-    if (api_url == undefined) {
-        var raw_api_url = $('#graph-address-url').val();
-        api_url = raw_api_url.replace(/\?.*/g, '');
-    }
+function get_graph_url() {
+    var graph_url = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/graph';
 
-    var graph_url = api_url.replace(/^\/api/g, '/graph').replace(/ /g, '%20');
+    // Add on API endpoints
+    $('.api-select select').each(function(i, v) {
+        var endpoint = $(v).val();
+        if (endpoint != '') {
+            graph_url += '/' + endpoint;
+        }
+    });
 
     var delta = $('input[name=delta]:checked').val();
     var units = $('input[name=units]:checked').val();
     var unit = $('input[name=unit]').val();
+    var agg = $('input[name=agg]').val();
 
     var query_args = {};
+
+    if (agg != '') {
+        query_args['aggregate'] = agg;
+    }
 
     if (delta == 'on') {
         query_args['delta'] = 1;
     }
 
-    if (units != 'None') {
+    if (units != '') {
         query_args['units'] = units;
     }
 
@@ -82,16 +84,7 @@ function get_graph_url(api_url) {
 
 function render_graph(target) {
     var graph_content = $('#graph-content');
-    var graph_url = '';
-    var api_url = '';
-
-    if (target == undefined) {
-        graph_url = get_graph_url()
-    }
-    else {
-        api_url = target.attr('data-children') + '/' + target.val();
-        graph_url = get_graph_url(api_url);
-    }
+    var graph_url = get_graph_url();
 
     $('#not-renderable').hide();
     $('#graph-address-url').val(graph_url);
@@ -136,6 +129,10 @@ $(document).ready(function() {
         get_module_selects('/api/' + $(this).val());
     });
 
+    $('#graph-address-url').click(function() {
+        $(this).select();
+    });
+
     $('#refresh-graph').click(function() {
         render_graph();
     });
@@ -149,15 +146,38 @@ $(document).ready(function() {
 
 {% block undernav %}
 <div class="undernav">
-    <div class="well">
-        <span style="font-weight: bold; margin-right: 10px;">API Endpoint</span>
-        <select id="modules" style="display: inline-block; width: auto;" class="form-control">
-            <option value="interface">interface</option>
-            <option value="memory">memory</option>
-            <option value="disk">disk</option>
-            <option value="cpu">cpu</option>
-        </select>
-        <div id="graph-selector-div"></div>
+    <div class="well" style="margin: 0; border-bottom: 0;">
+
+        <div class="api-select fl">
+            <span style="font-weight: bold; margin-right: 10px;">API Endpoint</span>
+            <select id="modules" style="display: inline-block; width: auto;" class="form-control">
+                <option value="cpu">cpu</option>
+                <option value="interface">interface</option>
+                <option value="memory">memory</option>
+                <option value="disk">disk</option>
+            </select>
+            <div id="graph-selector-div"></div>
+        </div>
+
+        <div class="input-group fl" style="width: 140px; margin: 0 20px;">
+            <label class="input-group-addon">Unit Prefix</label>
+            <select name="unit" class="form-control">
+                <option></option>
+                <option>k</option>
+                <option>Ki</option>
+                <option>M</option>
+                <option>Mi</option>
+                <option>G</option>
+                <option>Gi</option>
+                <option>T</option>
+                <option>Ti</option>
+            </select>
+        </div>
+
+        <button id="refresh-graph" class="btn btn-sm btn-primary" type="button">Generate</button>
+    </div>
+    <div class="control-group graph-url-input">
+        <input type="text" class="form-control" style="width: 100%;" id="graph-address-url" value="" placeholder="Graph URL" readonly>
     </div>
 </div>
 {% endblock %}
@@ -165,7 +185,7 @@ $(document).ready(function() {
 {% block content %}
 <div class="container">
 
-    <div class="well row">
+    <div class="well row hide">
         <div id="graph-options-div">
             <form class="form-horizontal">
                 <div>
@@ -177,45 +197,23 @@ $(document).ready(function() {
                         <input type="radio" name="delta" value="on">On
                     </label>
                 </div>
-                <div>
-                    <label for="label-factor" class="control-label extra-label">Unit Prefix</label>
-                    <label class="radio-inline">
-                        <input type="radio" id="label-factor" name="units" value="None" checked>None
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" name="units" value="K">K
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" name="units" value="M">M
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" name="units" value="G">G
-                    </label>
-                </div>
                 <div class="control-group">
                     <label for="input-unit" class="control-label extra-label">Unit</label>
                     <div class="control">
                         <input type="text" name="unit" id="input-unit" placeholder="Use Default">
                     </div>
                 </div>
-                <div class="control-group pull-right">
-                    <button id="refresh-graph" class="btn" type="button">Refresh</button>
-                </div>
+                <input type="text" name="agg">
             </form>
         </div>
     </div>
 
-    <div id="graph-render-target">
-        <span id="not-renderable" class="centered">Not Renderable</span>
+    <div id="graph-render-target" style="margin-top: 70px;">
+        <div id="not-renderable">
+            <h3>Not Options Selected</h3>
+            <p>Select an API endpoint and graphing options above and hit 'Generate' to create a custom real-time graph</p>
+        </div>
         <div id="graph-content"></div>
-    </div>
-
-    <div id="graph-url-target" class="well row">
-        <form class="form-horizontal">
-            <div class="control-group graph-url-input">
-                <input type="text" class="form-control" style="width: 100%;" id="graph-address-url" value="" placeholder="Graph URL" readonly>
-            </div>
-        </form>
     </div>
 
 </div>

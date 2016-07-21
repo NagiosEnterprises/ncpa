@@ -1,4 +1,7 @@
 body { padding-top: 50px; font-size: 1.2rem; font-family: verdana, sans-serif; }
+.fl { float: left; }
+.fr { float: right; }
+.clear { clear: both; }
 .fa-l { margin-right: 2px; }
 .fa-r { margin-left: 2px; }
 
@@ -46,7 +49,9 @@ body { padding-top: 50px; font-size: 1.2rem; font-family: verdana, sans-serif; }
 }
 
 /* Bootstrap overrides */
-.form-control { border-radius: 0; padding: 6px 10px; }
+.form-control { border-radius: 0; height: 30px; line-height: 1.2rem; vertical-align: middle; }
+select.form-control { padding: 4px 5px; }
+input.form-control { padding: 4px 8px; }
 .form-control:focus { border-color: #BBB; box-shadow: none; }
 .btn { border-radius: 0; }
 .btn:focus, .btn:active, .btn:active:focus { outline: none; }
@@ -79,7 +84,7 @@ input.form-control, select.form-control, .btn { font-size: 1.2rem; }
 .well .table { background-color: #FFF; }
 
 #graph-selector-div { display: inline-block; }
-#graph-selector-div select { display: inline-block; width: auto; margin-right: 4px;}
+#graph-selector-div select { display: inline-block; width: auto; }
 
 .whiteout { display: none; background-color: #FFF; opacity: 0.90; z-index: 9000; position: absolute; }
 
@@ -92,7 +97,9 @@ input.form-control, select.form-control, .btn { font-size: 1.2rem; }
 
 #top-container { }
 
-#not-renderable { position: relative; font-size: 5em; padding-top: 90px; color: #CCC; }
+#not-renderable { height: 220px; text-align: center; color: #999; background-color: #FBFBFB; border: 1px solid #BBB; padding-top: 48px; }
+#not-renderable h3 { font-size: 2.5rem; margin-bottom: 20px; }
+#not-renderable p { font-size: 1.4rem; }
 #graph-render-target { height: 220px; margin-bottom: 25px; vertical-align: middle; }
 
 /* API section specifics */

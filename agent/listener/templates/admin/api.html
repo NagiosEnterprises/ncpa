@@ -7,7 +7,7 @@
 $(document).ready(function() {
 
     $('.tt-bind').tooltip();
-    $('.pop-bind').popover({ 'html': true });
+    $('.pop-bind').popover({ html: true, container: 'body' });
     
     // Set nav header active link and resize API window
     $('#api-nav').addClass('active');
@@ -107,13 +107,14 @@ $(document).ready(function() {
         if (module == 'cpu') {
             if (selected != '') {
                 if (selected != 'count') {
-                    $('.aggregation-settings').show();
+                    $('.data-settings').show();
                 } else {
-                    $('.aggregation-settings').hide();
+                    $('.data-settings').hide();
                 }
                 $('.check-settings').show();
                 $('.wc-thresholds').show();
             } else {
+                clear_settings();
                 $('.settings').hide();
             }
         }
@@ -240,6 +241,7 @@ function toggle_check_ncpa_btn() {
 function clear_settings() {
     $('.settings input[type="checkbox"]').attr('checked', false);
     $('.settings input').val('');
+    $('.data-settings select.aggregate').val('');
 }
 
 function resize_api_window() {
@@ -309,7 +311,7 @@ function resize_api_window() {
                         </button>
                     </div>
                 </div>
-                <div class="settings aggregation-settings">
+                <div class="settings data-settings">
                     <label>Data Settings</label>
                     <div class="input-group">
                         <div class="input-group-addon">aggregate</div>
@@ -349,7 +351,7 @@ function resize_api_window() {
                     </div>
                 </div>
                 <div style="margin-top: 20px;">
-                    <button class="btn btn-primary" id="reload"><i class="fa fa-refresh fa-l"></i> Reload</button>
+                    <button class="btn btn-sm btn-primary" id="reload"><i class="fa fa-refresh fa-l"></i> Reload</button>
                 </div>
             </div>
             <div class="btn-check-ncpa btn-group dropup">
