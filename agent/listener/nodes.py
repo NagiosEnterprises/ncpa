@@ -8,6 +8,10 @@ import copy
 import re
 
 
+# Valid nodes is updated as it gets set when calling a node via accessor
+valid_nodes = []
+
+
 class ParentNode(object):
 
     def __init__(self, name, children=None, *args, **kwargs):
@@ -16,8 +20,13 @@ class ParentNode(object):
 
         self.children = {}
         self.name = name
+
         for child in children:
             self.add_child(child)
+
+    def reset_valid_nodes(self):
+        global valid_nodes
+        valid_nodes = []
 
     def add_child(self, new_node):
         self.children[new_node.name] = new_node
@@ -27,16 +36,24 @@ class ParentNode(object):
             next_child_name, rest_path = path[0], path[1:]
             try:
                 child = self.children[next_child_name]
+                valid_nodes.append(next_child_name)
             except KeyError:
+                # Record all proper valid nodes
+                for child in self.children:
+                    valid_nodes.append(child)
+
+                # Create a does not exist node to return error message
                 if self.__class__.__name__ == 'PluginAgentNode':
                     return DoesNotExistNode(next_child_name, 'plugin', full_path)
                 return DoesNotExistNode(next_child_name, 'node', full_path)
+
+            # Continue down the node path
             return child.accessor(rest_path, config, full_path)
         else:
             return copy.deepcopy(self)
 
     def walk(self, *args, **kwargs):
-        stat = { }
+        stat = {}
         for name, child in self.children.iteritems():
             try:
                 if kwargs.get('first', None) is None:
@@ -445,9 +462,18 @@ class DoesNotExistNode():
         self.failed_node_name = failed_node_name
         self.full_path = full_path
         self.node_type = node_type
+        self.extra_message = ''
+
+        # Check if the node is valid
+        for node in valid_nodes:
+            if self.failed_node_name in node or node in self.failed_node_name:
+                self.extra_message = 'You may be trying to access the \'%s\' node.' % node
+
 
     def walk(self, *args, **kwargs):
         err = "The %s requested does not exist." % self.node_type
+        if self.extra_message:
+            err = "%s %s" % (err, self.extra_message)
         obj = {
                     "error" :
                     {

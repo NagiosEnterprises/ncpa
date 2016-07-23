@@ -210,4 +210,5 @@ def getter(accessor, config, full_path, cache=False):
     if not cache:
         root = get_root_node()
 
+    root.reset_valid_nodes()
     return root.accessor(path, config, full_path)
