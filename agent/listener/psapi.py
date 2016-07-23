@@ -194,7 +194,7 @@ def refresh():
     return True
 
 
-def getter(accessor, config, cache=False):
+def getter(accessor, config, full_path, cache=False):
     global root
 
     # Sanity check. If accessor is None, we can do nothing meaningfully, and we need to stop.
@@ -210,4 +210,4 @@ def getter(accessor, config, cache=False):
     if not cache:
         root = get_root_node()
 
-    return root.accessor(path, config)
+    return root.accessor(path, config, full_path)

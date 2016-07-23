@@ -8,6 +8,8 @@ import copy
 import re
 
 
+
+
 class ParentNode(object):
 
     def __init__(self, name, children=None, *args, **kwargs):
@@ -22,19 +24,19 @@ class ParentNode(object):
     def add_child(self, new_node):
         self.children[new_node.name] = new_node
 
-    def accessor(self, path, config):
+    def accessor(self, path, config, full_path):
         if path:
             next_child_name, rest_path = path[0], path[1:]
             try:
                 child = self.children[next_child_name]
             except KeyError:
-                child = ERROR_NODE
-            return child.accessor(rest_path, config)
+                return DoesNotExistNode(next_child_name, full_path)
+            return child.accessor(rest_path, config, full_path)
         else:
             return copy.deepcopy(self)
 
     def walk(self, *args, **kwargs):
-        stat = {}
+        stat = { }
         for name, child in self.children.iteritems():
             try:
                 if kwargs.get('first', None) is None:
@@ -42,12 +44,39 @@ class ParentNode(object):
                 stat.update(child.walk(*args, **kwargs))
             except Exception as exc:
                 logging.exception(exc)
-                stat.update({name: 'Error retrieving child: %r' % str(exc)})
-        return {self.name: stat}
+                stat.update({ name: 'Error retrieving child: %r' % str(exc) })
+        return { self.name: stat }
 
     def run_check(self, *args, **kwargs):
-        return {'stdout': 'Unable to run check on non-child node. Revise your query.',
-                'returncode': 3}
+        err = 'Unable to run check on node without check method. Requested %s node.' % self.name
+        return { 'stdout': err,
+                 'returncode': 3 }
+
+
+# If node does not exist, we should give a decent error message with helpful
+# information about the name of the node they are trying to find is
+class DoesNotExistNode(ParentNode):
+
+    def __init__(self, failed_node_name, full_path):
+        self.failed_node_name = failed_node_name
+        self.full_path = full_path
+
+    def walk(self, *args, **kwargs):
+        error = {
+                    "error" :
+                    {
+                        "path" : self.full_path,
+                        "node" : self.failed_node_name,
+                        "code" : 100,
+                        "message" : "The node requested does not exist."
+                    }
+                }
+        return error
+
+    def run_check(self, *args, **kwargs):
+        err = 'The node (%s) requested does not exist.' % self.failed_node_name
+        return { 'stdout': err,
+                 'returncode': 3 }
 
 
 class RunnableParentNode(ParentNode):
@@ -66,19 +95,20 @@ class RunnableParentNode(ParentNode):
         for name, child in self.children.iteritems():
             if name in self.include:
                 if name == self.primary:
-                    primary_info  = child.run_check(use_prefix=True, use_perfdata=True,
-                                                    primary=True, *args, **kwargs)
+                    primary_info  = child.run_check(use_prefix=True,
+                                                    use_perfdata=True,
+                                                    primary=True,
+                                                    secondary_data=True,
+                                                    *args, **kwargs)
                 else:
                     result = child.run_check(use_prefix=False, use_perfdata=False,
-                                             primary=False, *args, **kwargs)
+                                             primary=False, secondary_data=True,
+                                             *args, **kwargs)
                     stdout = result.get('stdout', None)
                     secondary_results.append(stdout)
-        secondary_stdout = ' -- '.join(x for x in secondary_results if x)
+        secondary_stdout = '(' + ', '.join(x for x in secondary_results if x) + ')'
         primary_info['stdout'] = primary_info['stdout'].format(extra_data=secondary_stdout)
         return primary_info
-
-
-ERROR_NODE = ParentNode(name='NodeDoesNotExist', children=[])
 
 
 class RunnableNode(ParentNode):
@@ -90,9 +120,9 @@ class RunnableNode(ParentNode):
         self.unit = ''
         self.delta = False
 
-    def accessor(self, path, config):
+    def accessor(self, path, config, full_path):
         if path:
-            raise IndexError('End of path node called with more path')
+            return DoesNotExistNode(', '.join(path), full_path)
         else:
             return copy.deepcopy(self)
 
@@ -107,9 +137,8 @@ class RunnableNode(ParentNode):
         values = self.get_aggregated_values(values, kwargs)
 
         if self.unit != '':
-            return {self.name: [values, self.unit]}
-
-        return {self.name: values}
+            return { self.name: [values, self.unit] }
+        return { self.name: values }
 
     def set_unit(self, unit, request_args):
         if 'unit' in request_args:
@@ -180,7 +209,8 @@ class RunnableNode(ParentNode):
         else:
             return values
 
-    def run_check(self, use_perfdata=True, use_prefix=True, primary=False, *args, **kwargs):
+    def run_check(self, use_perfdata=True, use_prefix=True, primary=False,
+                  secondary_data=False, *args, **kwargs):
         try:
             values, unit = self.method(*args, **kwargs)
         except TypeError:
@@ -210,7 +240,7 @@ class RunnableNode(ParentNode):
                 is_warning = any([self.is_within_range(self.warning, x) for x in values])
             if self.critical:
                 is_critical = any([self.is_within_range(self.critical, x) for x in values])
-            returncode, stdout = self.get_nagios_return(values, is_warning, is_critical, use_perfdata, use_prefix, primary)
+            returncode, stdout = self.get_nagios_return(values, is_warning, is_critical, use_perfdata, use_prefix, primary, secondary_data)
         except Exception as exc:
             returncode = 3
             stdout = str(exc)
@@ -218,7 +248,8 @@ class RunnableNode(ParentNode):
 
         return { 'returncode': returncode, 'stdout': stdout }
 
-    def get_nagios_return(self, values, is_warning, is_critical, use_perfdata=True, use_prefix=True, primary=False):
+    def get_nagios_return(self, values, is_warning, is_critical, use_perfdata=True,
+                          use_prefix=True, primary=False, secondary_data=False):
         proper_name = self.title.replace('|', '/')
 
         if self.delta:
@@ -285,14 +316,17 @@ class RunnableNode(ParentNode):
         
         perfdata = ' '.join(perfdata)
 
-        stdout = '%s was %s' % (proper_name.capitalize(), values_for_info_line)
+        if secondary_data is True:
+            stdout = '%s: %s' % (proper_name.capitalize(), values_for_info_line)
+        else:
+            stdout = '%s was %s' % (proper_name.capitalize(), values_for_info_line)
         stdout = stdout.rstrip()
 
         if use_prefix is True:
             stdout = '%s: %s' % (info_prefix, stdout)
 
         if primary is True:
-            stdout = '%s -- {extra_data}' % stdout
+            stdout = '%s {extra_data}' % stdout
 
         if use_perfdata is True:
             stdout = '%s | %s' % (stdout, perfdata)
@@ -421,4 +455,4 @@ class LazyNode(RunnableNode):
         if kwargs.get('first', True):
             return super(LazyNode, self).walk(*args, **kwargs)
         else:
-            return {self.name: []}
+            return { self.name: [] }

@@ -499,10 +499,13 @@ def api(accessor=''):
             accessor = "plugins"
             if 'plugin' in rest_path[0] and len(rest_path) > 1:
                 accessor = "plugins/" + rest_path[1]
-            
+
+    # Set the full requested path
+    full_path = request.path
+
     try:
         config = listener.config['iconfig']
-        node = psapi.getter(accessor, config)
+        node = psapi.getter(accessor, config, full_path)
     except ValueError as exc:
         logging.exception(exc)
         return error(msg='Referencing node that does not exist: %s' % accessor)
@@ -520,6 +523,7 @@ def api(accessor=''):
         value = node.run_check(**sane_args)
     else:
         value = node.walk(**sane_args)
+
     return Response(json.dumps(dict(value),
                     indent=None if request.is_xhr else 4),
                     mimetype='application/json')
