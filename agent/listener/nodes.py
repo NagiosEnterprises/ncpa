@@ -8,8 +8,6 @@ import copy
 import re
 
 
-
-
 class ParentNode(object):
 
     def __init__(self, name, children=None, *args, **kwargs):
@@ -30,7 +28,9 @@ class ParentNode(object):
             try:
                 child = self.children[next_child_name]
             except KeyError:
-                return DoesNotExistNode(next_child_name, full_path)
+                if self.__class__.__name__ == 'PluginAgentNode':
+                    return DoesNotExistNode(next_child_name, 'plugin', full_path)
+                return DoesNotExistNode(next_child_name, 'node', full_path)
             return child.accessor(rest_path, config, full_path)
         else:
             return copy.deepcopy(self)
@@ -49,32 +49,6 @@ class ParentNode(object):
 
     def run_check(self, *args, **kwargs):
         err = 'Unable to run check on node without check method. Requested %s node.' % self.name
-        return { 'stdout': err,
-                 'returncode': 3 }
-
-
-# If node does not exist, we should give a decent error message with helpful
-# information about the name of the node they are trying to find is
-class DoesNotExistNode(ParentNode):
-
-    def __init__(self, failed_node_name, full_path):
-        self.failed_node_name = failed_node_name
-        self.full_path = full_path
-
-    def walk(self, *args, **kwargs):
-        error = {
-                    "error" :
-                    {
-                        "path" : self.full_path,
-                        "node" : self.failed_node_name,
-                        "code" : 100,
-                        "message" : "The node requested does not exist."
-                    }
-                }
-        return error
-
-    def run_check(self, *args, **kwargs):
-        err = 'The node (%s) requested does not exist.' % self.failed_node_name
         return { 'stdout': err,
                  'returncode': 3 }
 
@@ -456,3 +430,36 @@ class LazyNode(RunnableNode):
             return super(LazyNode, self).walk(*args, **kwargs)
         else:
             return { self.name: [] }
+
+
+# -----------------------------
+# Error related class definitions
+# -----------------------------
+
+
+# If node does not exist, we should give a decent error message with helpful
+# information about the name of the node they are trying to find is
+class DoesNotExistNode():
+
+    def __init__(self, failed_node_name, node_type, full_path):
+        self.failed_node_name = failed_node_name
+        self.full_path = full_path
+        self.node_type = node_type
+
+    def walk(self, *args, **kwargs):
+        err = "The %s requested does not exist." % self.node_type
+        obj = {
+                    "error" :
+                    {
+                        "path" : self.full_path,
+                        "code" : 100,
+                        "message" : err
+                    }
+                }
+        obj['error'][self.node_type] = self.failed_node_name
+        return obj
+
+    def run_check(self, *args, **kwargs):
+        err = 'The %s (%s) requested does not exist.' % (self.node_type, self.failed_node_name)
+        return { 'stdout': err,
+                 'returncode': 3 }

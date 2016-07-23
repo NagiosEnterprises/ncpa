@@ -16,7 +16,7 @@ class PluginNode(nodes.RunnableNode):
         self.plugin_abs_path = plugin_abs_path
         self.arguments = []
 
-    def accessor(self, path, config):
+    def accessor(self, path, config, full_path):
         self.arguments = path
         return copy.deepcopy(self)
 
@@ -127,9 +127,9 @@ class PluginAgentNode(nodes.ParentNode):
             logging.warning('Unable to access directory %s', plugin_path)
             logging.warning('Unable to assemble plugins. Does the directory exist? - %r', exc)
 
-    def accessor(self, path, config):
+    def accessor(self, path, config, full_path):
         self.setup_plugin_children(config)
-        return super(PluginAgentNode, self).accessor(path, config)
+        return super(PluginAgentNode, self).accessor(path, config, full_path)
 
     def walk(self, *args, **kwargs):
         self.setup_plugin_children(kwargs['config'])
