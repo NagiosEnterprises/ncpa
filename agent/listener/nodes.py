@@ -72,9 +72,10 @@ class ParentNode(object):
 
 class RunnableParentNode(ParentNode):
 
-    def __init__(self, name, children, primary, include=None, *args, **kwargs):
+    def __init__(self, name, children, primary, custom_output=None, include=None, *args, **kwargs):
         super(RunnableParentNode, self).__init__(name, children)
         self.primary = primary
+        self.custom_output = custom_output
         if include is None:
             self.include = [x for x in self.children]
         else:
@@ -89,7 +90,8 @@ class RunnableParentNode(ParentNode):
                     primary_info  = child.run_check(use_prefix=True,
                                                     use_perfdata=True,
                                                     primary=True,
-                                                    secondary_data=True,
+                                                    secondary_data=False,
+                                                    custom_output=self.custom_output,
                                                     *args, **kwargs)
                 else:
                     result = child.run_check(use_prefix=False, use_perfdata=False,
@@ -201,7 +203,7 @@ class RunnableNode(ParentNode):
             return values
 
     def run_check(self, use_perfdata=True, use_prefix=True, primary=False,
-                  secondary_data=False, *args, **kwargs):
+                  secondary_data=False, custom_output=None, *args, **kwargs):
         try:
             values, unit = self.method(*args, **kwargs)
         except TypeError:
@@ -231,7 +233,9 @@ class RunnableNode(ParentNode):
                 is_warning = any([self.is_within_range(self.warning, x) for x in values])
             if self.critical:
                 is_critical = any([self.is_within_range(self.critical, x) for x in values])
-            returncode, stdout = self.get_nagios_return(values, is_warning, is_critical, use_perfdata, use_prefix, primary, secondary_data)
+            returncode, stdout = self.get_nagios_return(values, is_warning, is_critical, use_perfdata,
+                                                        use_prefix, primary, secondary_data,
+                                                        custom_output)
         except Exception as exc:
             returncode = 3
             stdout = str(exc)
@@ -240,7 +244,8 @@ class RunnableNode(ParentNode):
         return { 'returncode': returncode, 'stdout': stdout }
 
     def get_nagios_return(self, values, is_warning, is_critical, use_perfdata=True,
-                          use_prefix=True, primary=False, secondary_data=False):
+                          use_prefix=True, primary=False, secondary_data=False,
+                          custom_output=None):
         proper_name = self.title.replace('|', '/')
 
         if self.delta:
@@ -310,7 +315,10 @@ class RunnableNode(ParentNode):
         if secondary_data is True:
             stdout = '%s: %s' % (proper_name.capitalize(), values_for_info_line)
         else:
-            stdout = '%s was %s' % (proper_name.capitalize(), values_for_info_line)
+            output = proper_name.capitalize() + ' was'
+            if custom_output:
+                output = custom_output
+            stdout = '%s %s' % (output, values_for_info_line)
         stdout = stdout.rstrip()
 
         if use_prefix is True:

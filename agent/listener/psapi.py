@@ -88,8 +88,8 @@ def get_system_node():
     sys_agent = RunnableNode('agent_version', method=lambda: (server.__VERSION__, ''))
     sys_time = RunnableNode('time', method=lambda: (time.time(), ''))
     sys_timezone = RunnableNode('timezone', method=get_timezone)
-    return ParentNode('system', children=[sys_system, sys_node, sys_release, sys_version, sys_machine, sys_processor, sys_uptime,
-        sys_agent, sys_timezone, sys_time])
+    return ParentNode('system', children=[sys_system, sys_node, sys_release, sys_version,
+                      sys_machine, sys_processor, sys_uptime, sys_agent, sys_timezone, sys_time])
 
 
 def get_cpu_node():
@@ -107,14 +107,17 @@ def get_memory_node():
     mem_virt_percent = RunnableNode('percent', method=lambda: (ps.virtual_memory().percent, '%'))
     mem_virt_used = RunnableNode('used', method=lambda: (ps.virtual_memory().used, 'B'))
     mem_virt_free = RunnableNode('free', method=lambda: (ps.virtual_memory().free, 'B'))
-    mem_virt = RunnableParentNode('virtual',
-                          primary='percent',
-                          children=(mem_virt_total, mem_virt_available, mem_virt_free, mem_virt_percent, mem_virt_used))
+    mem_virt = RunnableParentNode('virtual', primary='percent',
+                    children=(mem_virt_total, mem_virt_available, mem_virt_free,
+                              mem_virt_percent, mem_virt_used),
+                    custom_output='Used was')
     mem_swap_total = RunnableNode('total', method=lambda: (ps.swap_memory().total, 'B'))
     mem_swap_percent = RunnableNode('percent', method=lambda: (ps.swap_memory().percent, '%'))
     mem_swap_used = RunnableNode('used', method=lambda: (ps.swap_memory().used, 'B'))
     mem_swap_free = RunnableNode('free', method=lambda: (ps.swap_memory().free, 'B'))
-    mem_swap = RunnableParentNode('swap', primary='percent', children=[mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used])
+    mem_swap = RunnableParentNode('swap', primary='percent',
+                    children=[mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used],
+                    custom_output='Used was')
     return ParentNode('memory', children=[mem_virt, mem_swap])
 
 
