@@ -9,3 +9,5 @@
 agent/build/*
 docs/_build
 *.exe
+agent/listener/static/help
+agent/plugins/*

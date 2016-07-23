@@ -60,6 +60,8 @@ Changelog
 - Fixed graphs tab not displaying graphs of interfaces with multiple spaces in their names
 - Fixed passive service on Windows only able to successfully run a plugin-based check once after restarting
 - Fixed filtering processes by 'name' and 'exe' field to no longer need a perfect match and to not be case sensitive
+- Fixed output of disk space on Linux servers not showing reserved root disk space as used
+- Fixed check output on parent nodes (ex: memory/virtual?check=true)
 
 **Deprecated**
 
