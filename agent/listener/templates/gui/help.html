@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Help{% endblock %}
+
+{% block headerjs %}
+<script type="text/javascript">
+$(document).ready(function() {
+
+    // Set nav header active link and resize API window
+    $('#help-nav').addClass('active');
+
+    // Set help section height
+    resize_iframe();
+
+    $(window).resize(function() {
+    	resize_iframe();
+    });
+
+});
+
+function resize_iframe() {
+	var height = $(window).height() - $('.navbar').outerHeight() - 4;
+    $('iframe').css('height', height);
+}
+</script>
+{% endblock headerjs %}
+
+{% block content %}
+
+<iframe src="../static/help/index.html" style="border: 0; width: 100%;"></iframe>
+
+{% endblock %}

@@ -79,10 +79,7 @@ $(document).ready(function() {
     });
 
     $('#reload').click(function() {
-        load();
-        var url = generate_url();
-        $('#api-frame').attr('src', url);
-        $('#api-input').val(url);
+        reload_api_browser();
     });
 
     // If the checkbox for running as a nagios check is checked, then we should
@@ -104,23 +101,59 @@ $(document).ready(function() {
     $('.selector').on('change', '.submod', function() {
         var module = $('#module').val();
         var selected = $(this).val();
-        if (module == 'cpu') {
-            if (selected != '') {
-                if (selected != 'count') {
-                    $('.data-settings').show();
+        
+        switch (module)
+        {
+            case 'cpu':
+                if (selected != '') {
+                    if (selected != 'count') {
+                        $('.data-settings').show();
+                    } else {
+                        $('.data-settings').hide();
+                    }
+                    $('.check-settings').show();
+                    $('.wc-thresholds').show();
                 } else {
-                    $('.data-settings').hide();
+                    clear_settings();
+                    $('.settings').hide();
                 }
-                $('.check-settings').show();
-                $('.wc-thresholds').show();
-            } else {
-                clear_settings();
-                $('.settings').hide();
-            }
+                break;
+
+            case 'memory':
+                if (selected != '') {
+                    $('.check-settings').show();
+                    $('.units-settings').show();
+                    $('.wc-thresholds').show();
+                }
+                break;
+
+            case 'plugins':
+                break;
+
+            case 'disk':
+                if (selected != '') {
+                    if (selected == 'mount') {
+                        break;
+                    }
+                    var url = generate_url(true);
+                    console.log(url);
+                    $.get(url, { }, function(data) {
+                        console.log(data[selected]);
+                    }, 'json');
+                }
+                break;
         }
+        reload_api_browser();
     });
 
 });
+
+function reload_api_browser() {
+    load();
+    var url = generate_url();
+    $('#api-frame').attr('src', url);
+    $('#api-input').val(url);
+}
 
 function load() {
     var top = $('#api-input').outerHeight() + $('.navbar').outerHeight();

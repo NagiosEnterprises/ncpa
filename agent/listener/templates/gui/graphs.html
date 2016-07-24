@@ -55,10 +55,12 @@ function get_graph_url() {
         }
     });
 
-    var delta = $('input[name=delta]:checked').val();
-    var units = $('input[name=units]:checked').val();
+    var delta = $('#delta:checked').val();
+    var unit_prefix = $('#unit-prefix').val();
     var unit = $('input[name=unit]').val();
     var agg = $('input[name=agg]').val();
+
+    console.log(delta);
 
     var query_args = {};
 
@@ -66,12 +68,12 @@ function get_graph_url() {
         query_args['aggregate'] = agg;
     }
 
-    if (delta == 'on') {
+    if (delta) {
         query_args['delta'] = 1;
     }
 
-    if (units != '') {
-        query_args['units'] = units;
+    if (unit_prefix != '') {
+        query_args['units'] = unit_prefix;
     }
 
     if (unit) {
@@ -159,9 +161,16 @@ $(document).ready(function() {
             <div id="graph-selector-div"></div>
         </div>
 
-        <div class="input-group fl" style="width: 140px; margin: 0 20px;">
+        <div class="input-group fl" style="width: 100px; margin-left: 20px;">
+            <label class="input-group-addon">Delta <i class="fa fa-question-circle"></i></label>
+            <span style="display: inline-block; background-color: #FFF; border: 1px solid #CCC; width: 30px; height: 30px; line-height: 28px; text-align: center;">
+                <input type="checkbox" id="delta" style="vertical-align: middle; margin: 0;" value="1">
+            </span>
+        </div>
+
+        <div class="input-group fl" style="width: 140px; margin-left: 20px;">
             <label class="input-group-addon">Unit Prefix</label>
-            <select name="unit" class="form-control">
+            <select id="unit_prefix" class="form-control">
                 <option></option>
                 <option>k</option>
                 <option>Ki</option>
@@ -174,7 +183,7 @@ $(document).ready(function() {
             </select>
         </div>
 
-        <button id="refresh-graph" class="btn btn-sm btn-primary" type="button">Generate</button>
+        <button id="refresh-graph" class="btn btn-sm btn-primary" style="margin-left: 20px;" type="button">Generate</button>
     </div>
     <div class="control-group graph-url-input">
         <input type="text" class="form-control" style="width: 100%;" id="graph-address-url" value="" placeholder="Graph URL" readonly>

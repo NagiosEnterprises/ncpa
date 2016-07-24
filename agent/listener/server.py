@@ -145,37 +145,37 @@ def error_page_not_found(e):
 
 
 # ------------------------------
-# Admin section
+# Basic GUI section
 # ------------------------------
 
 
 @listener.route('/')
 @requires_auth
 def index():
-    return redirect(url_for('admin_index'))
+    return redirect(url_for('gui_index'))
 
 
-@listener.route('/admin/')
+@listener.route('/gui/')
 @requires_auth
-def admin_index():
+def gui_index():
     info = make_info_dict()
     try:
-        return render_template('admin/dashboard.html', **info)
+        return render_template('gui/dashboard.html', **info)
     except Exception, e:
         logging.exception(e)
 
 
 # Help section (just a frame for the actual help)
-@listener.route('/admin/help')
+@listener.route('/gui/help')
 @requires_auth
 def help_section():
-    return render_template('admin/help.html')
+    return render_template('gui/help.html')
 
 
-@listener.route('/admin/stats', methods=['GET', 'POST'])
+@listener.route('/gui/stats', methods=['GET', 'POST'])
 @requires_auth
 def live_stats():
-    return render_template('admin/stats.html')
+    return render_template('gui/stats.html')
 
 
 # ------------------------------
@@ -205,7 +205,7 @@ def api_websocket(accessor=None):
         while True:
             try:
                 message = ws.receive()
-                node = psapi.getter(message, config, cache=True)
+                node = psapi.getter(message, config, request.path, cache=True)
                 prop = node.name
                 val = node.walk(first=True, **sane_args)
                 jval = json.dumps(val[prop])
@@ -218,10 +218,10 @@ def api_websocket(accessor=None):
     return ''
 
 
-@listener.route('/admin/top', methods=['GET', 'POST'])
+@listener.route('/gui/top', methods=['GET', 'POST'])
 @requires_auth
 def top_base():
-    return render_template('admin/top.html')
+    return render_template('gui/top.html')
 
 
 @listener.route('/top', methods=['GET', 'POST'])
@@ -358,7 +358,7 @@ def graph(accessor=None):
     # Refresh the root node before creating the websocket
     psapi.refresh()
 
-    node = psapi.getter(accessor, listener.config['iconfig'], cache=True)
+    node = psapi.getter(accessor, listener.config['iconfig'], request.path, cache=True)
     prop = node.name
 
     if request.values.get('delta'):
@@ -421,7 +421,7 @@ def nrdp():
         return error(msg=unicode(exc))
 
 
-@listener.route('/admin/graphs', methods=['GET', 'POST'])
+@listener.route('/gui/graphs', methods=['GET', 'POST'])
 @requires_auth
 def graph_picker():
     """
@@ -429,14 +429,14 @@ def graph_picker():
     the explorer for the graphs.
 
     """
-    return render_template('admin/graphs.html')
+    return render_template('gui/graphs.html')
 
 
-@listener.route('/admin/api', methods=['GET', 'POST'])
+@listener.route('/gui/api', methods=['GET', 'POST'])
 @requires_auth
 def view_api():
     info = make_info_dict()
-    return render_template('admin/api.html', **info)
+    return render_template('gui/api.html', **info)
 
 
 @listener.route('/api/', methods=['GET', 'POST'])

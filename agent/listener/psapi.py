@@ -50,6 +50,7 @@ def make_mountpoint_nodes(partition_name):
     return RunnableParentNode(safe_mountpoint,
                               children=[total_size, used, free, used_percent, device_name, fstype, opts],
                               primary='used_percent',
+                              custom_output='Used disk space was',
                               include=('total_size', 'used', 'free', 'used_percent'))
 
 def make_mount_other_nodes(partition):
@@ -70,7 +71,8 @@ def make_if_nodes(if_name):
     errout = RunnableNode('errout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errout, 'errors'))
     dropin = RunnableNode('dropin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropin, 'packets'))
     dropout = RunnableNode('dropout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropout, 'packets'))
-    return ParentNode(if_name, children=[bytes_sent, bytes_recv, packets_sent, packets_recv, errin, errout, dropin, dropout])
+    return ParentNode(if_name, children=[bytes_sent, bytes_recv, packets_sent,
+                      packets_recv, errin, errout, dropin, dropout])
 
 
 def get_timezone():
@@ -110,14 +112,14 @@ def get_memory_node():
     mem_virt = RunnableParentNode('virtual', primary='percent',
                     children=(mem_virt_total, mem_virt_available, mem_virt_free,
                               mem_virt_percent, mem_virt_used),
-                    custom_output='Used was')
+                    custom_output='Used memory was')
     mem_swap_total = RunnableNode('total', method=lambda: (ps.swap_memory().total, 'B'))
     mem_swap_percent = RunnableNode('percent', method=lambda: (ps.swap_memory().percent, '%'))
     mem_swap_used = RunnableNode('used', method=lambda: (ps.swap_memory().used, 'B'))
     mem_swap_free = RunnableNode('free', method=lambda: (ps.swap_memory().free, 'B'))
     mem_swap = RunnableParentNode('swap', primary='percent',
                     children=[mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used],
-                    custom_output='Used was')
+                    custom_output='Used swap was')
     return ParentNode('memory', children=[mem_virt, mem_swap])
 
 

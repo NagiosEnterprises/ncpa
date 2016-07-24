@@ -28,19 +28,19 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/admin/">NCPA</a>
+                    <a class="navbar-brand" href="/gui/">NCPA</a>
                 </div>
                 <div class="collapse navbar-collapse" id="navbar-collapse-left">
                     <ul class="nav navbar-nav">
                         {% if not hide_page_links %}
-                        <li id="dashboard-nav"><a href="/admin/"><i class="fa fa-desktop fa-l"></i> Dashboard</a></li>
-                        <li id="live-stats-nav"><a href="/admin/stats"><i class="fa fa-line-chart fa-l"></i> Live Stats</a></li>
-                        <li id="api-nav"><a href="/admin/api"><i class="fa fa-cubes fa-l"></i> API</a></li>
-                        <li id="top-nav"><a href="/admin/top"><i class="fa fa-tachometer fa-l"></i> Top Processes</a></li>
-                        <li id="graph-picker-nav"><a href="/admin/graphs"><i class="fa fa-area-chart fa-l"></i> Graphs</a></li>
+                        <li id="dashboard-nav"><a href="/gui/"><i class="fa fa-desktop fa-l"></i> Dashboard</a></li>
+                        <li id="live-stats-nav"><a href="/gui/stats"><i class="fa fa-line-chart fa-l"></i> Live Stats</a></li>
+                        <li id="api-nav"><a href="/gui/api"><i class="fa fa-cubes fa-l"></i> API</a></li>
+                        <li id="top-nav"><a href="/gui/top"><i class="fa fa-tachometer fa-l"></i> Top Processes</a></li>
+                        <li id="graph-picker-nav"><a href="/gui/graphs"><i class="fa fa-area-chart fa-l"></i> Graphs</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="/admin/help"><i class="fa fa-life-ring fa-l"></i> Help</a></li>
+                        <li id="help-nav"><a href="/gui/help"><i class="fa fa-life-ring fa-l"></i> Help</a></li>
                         <li class="divider-vertical"></li>
                         <li><a href="/logout"><i class="fa fa-power-off fa-l"></i> Logout</a></li>
                         {% endif %}
