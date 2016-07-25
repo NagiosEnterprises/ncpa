@@ -4,9 +4,11 @@
 
 {% block headerjs %}
 <script type="text/javascript">
+var TMP_JSON = { };
+
 $(document).ready(function() {
 
-    $('.tt-bind').tooltip();
+    $('.tt-bind').tooltip({ container: 'body' });
     $('.pop-bind').popover({ html: true, container: 'body' });
     
     // Set nav header active link and resize API window
@@ -26,6 +28,7 @@ $(document).ready(function() {
 
         // Remove all old module accessors
         $('.selector .submod').remove();
+        $('.selector-disk select').remove();
 
         // Show settings based on module
         $('.settings').hide();
@@ -33,6 +36,11 @@ $(document).ready(function() {
         $('.service-settings .list').html('');
 
         switch (module) {
+            case 'memory':
+                $('.data-settings').show();
+                $('.data-settings .unit-prefix').show();
+                $('.data-settings .agg').hide();
+                break;
             case 'processes':
                 $('.check-settings').show();
                 $('.wc-thresholds').show();
@@ -108,6 +116,8 @@ $(document).ready(function() {
                 if (selected != '') {
                     if (selected != 'count') {
                         $('.data-settings').show();
+                        $('.data-settings .agg').show();
+                        $('.data-settings .unit-prefix').hide();
                     } else {
                         $('.data-settings').hide();
                     }
@@ -120,10 +130,16 @@ $(document).ready(function() {
                 break;
 
             case 'memory':
+                $('.data-settings').show();
+                $('.data-settings .unit-prefix').show();
+                $('.data-settings .agg').hide();
                 if (selected != '') {
                     $('.check-settings').show();
                     $('.units-settings').show();
                     $('.wc-thresholds').show();
+                } else {
+                    clear_settings();
+                    $('.check-settings').hide();
                 }
                 break;
 
@@ -131,15 +147,56 @@ $(document).ready(function() {
                 break;
 
             case 'disk':
+                $('.selector-disk').html('').show();
                 if (selected != '') {
+                    $('.data-settings').show();
+                    $('.data-settings .unit-prefix').show();
+                    $('.data-settings .agg').hide();
                     if (selected == 'mount') {
+                        $('.check-settings').hide();
                         break;
                     }
                     var url = generate_url(true);
-                    console.log(url);
                     $.get(url, { }, function(data) {
-                        console.log(data[selected]);
+                        TMP_JSON = data[selected];
+                        var select = $('<select>', { class: 'form-control' });
+
+                        // Add first set of keys
+                        var keys = Object.keys(TMP_JSON);
+                        select.append('<option></option>');
+                        $(keys).each(function(i, val) {
+                            select.append('<option>' + val + '</option>');
+                        });
+
+                        // Add selector to the first select for the endnode
+                        select.change(function() {
+                            var endselect = $('<select>', { class: 'form-control end-node' });
+                            endselect.append('<option></option>');
+                            if ($(this).val() != '') {
+                                $('.check-settings').show();
+                                $('.wc-thresholds').show();
+                                var endnode = TMP_JSON[$(this).val()];
+                                var keys = Object.keys(endnode);
+                                $(keys).each(function(i, val) {
+                                    endselect.append('<option>' + val + '</option>');
+                                });
+                                endselect.change(function() {
+                                    reload_api_browser();
+                                });
+                            } else {
+                                endselect.prop('disabled', true);
+                                $('.check-settings').hide();
+                            }
+                            $('.selector-disk .end-node').replaceWith(endselect);
+                            reload_api_browser();
+                        });
+
+                        var emptyselect = $('<select>', { class: 'form-control end-node' }).prop('disabled', true);
+                        $('.selector-disk').append(select).append(emptyselect).show();
+
                     }, 'json');
+                } else {
+                    $('.check-settings').hide();
                 }
                 break;
         }
@@ -208,6 +265,14 @@ function generate_url(skip_settings=false) {
         });
     }
 
+    // Grab values from other modules
+    $('.selector-disk select').each(function(i, v) {
+        var sel = $(v).val();
+        if (sel != '' && sel != null) {
+            api += '/' + $(v).val();
+        }
+    });
+
     if (skip_settings) {
         return api;
     }
@@ -230,6 +295,11 @@ function generate_url(skip_settings=false) {
     var aggregate = $('.aggregate').val();
     if (aggregate != '') {
         extra += '&aggregate=' + aggregate;
+    }
+
+    var units = $('.units').val();
+    if (units != '') {
+        extra += '&units=' + units;
     }
 
     // Grab check settings
@@ -275,6 +345,7 @@ function clear_settings() {
     $('.settings input[type="checkbox"]').attr('checked', false);
     $('.settings input').val('');
     $('.data-settings select.aggregate').val('');
+    $('.data-settings select.units').val('');
 }
 
 function resize_api_window() {
@@ -319,6 +390,7 @@ function resize_api_window() {
                         {% endif %}
                     </select>
                 </div>
+                <div class="selector-disk"></div>
                 <div class="settings service-settings">
                     <label>Select Service(s)</label>
                     <div class="list"></div>
@@ -346,14 +418,28 @@ function resize_api_window() {
                 </div>
                 <div class="settings data-settings">
                     <label>Data Settings</label>
-                    <div class="input-group">
-                        <div class="input-group-addon">aggregate</div>
+                    <div class="input-group agg">
+                        <div class="input-group-addon">Aggregate</div>
                         <select class="form-control aggregate">
                             <option></option>
                             <option value="avg">average</option>
                             <option value="min">minumum</option>
                             <option value="max">maximum</option>
                             <option value="sum">sum</option>
+                        </select>
+                    </div>
+                    <div class="input-group unit-prefix">
+                        <div class="input-group-addon">Unit prefix</div>
+                        <select class="form-control units">
+                            <option></option>
+                            <option value="k">k</option>
+                            <option value="Ki">Ki</option>
+                            <option value="M">M</option>
+                            <option value="Mi">Mi</option>
+                            <option value="G">G</option>
+                            <option value="Gi">Gi</option>
+                            <option value="T">T</option>
+                            <option value="Ti">Ti</option>
                         </select>
                     </div>
                 </div>

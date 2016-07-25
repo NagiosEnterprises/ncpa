@@ -118,3 +118,7 @@ input.form-control, select.form-control, .btn { font-size: 1.2rem; }
 .table-top tr.highlight { background-color: #a6c4fc; }
 .table-top td.critical { background-color: red; }
 .table-top td.warning { background-color: yellow; }
+
+.selector-disk { display: none; margin-top: 5px; }
+.selector-disk select:first-child { width: 127px; margin-right: 5px; display: inline-block; }
+.selector-disk select:last-child { width: 128px; display: inline-block; }

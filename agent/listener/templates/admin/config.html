@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 
-{% block headercss %}
-{{ super() }}
-<link rel='stylesheet' href='/static/css/configuration.css' />
-{% endblock %}
+{% block title %}Admin{% endblock %}
 
 {% block headerjs %}
-<script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $('#admin-nav').addClass('active');
+
+});
+
 function add_to_directive_list(i, d) {
 
     var ta = $('#plugin-directives');
@@ -90,13 +93,8 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
-<div class='alert alert-warning'>This feature has been changed to READONLY as of version 1.3 as it was showing too much strange behavior. It is scheduled to be part of a future release.</div>
-<!--
-Once again this part is commented out as of 1.3. When this feature is fixed
-this can be uncommented
-<div class='alert alert-info'>Some entries are grayed out, which means they cannot be edited. This is due to possible complications if done from the web interface.</div>
--->
 
+<div style="padding: 20px;">
 <div class='tabbable'>
     <ul class='nav nav-tabs'>
         <li class='active'>
@@ -126,18 +124,18 @@ this can be uncommented
             <div class='tab-pane active' id='listener'>
                 <div>
                     <h4>Listener Daemon Settings</h4><br />
-                    # for id, description in (  ['ip', 'Listening IP'],
-                                                ['port', 'Listening Port'],
-                                                ['uid', 'User'],
-                                                ['gid', 'Group'],
-                                                ['pidfile', 'PID File Address'],
-                                                ['logfile', 'Log File Address'],
-                                                ['loglevel', 'Log Level'],
-                                                ['certificate', 'SSL Certificate']):
+                    # for id, description in (['ip', 'Listening IP'],
+                                              ['port', 'Listening Port'],
+                                              ['uid', 'User'],
+                                              ['gid', 'Group'],
+                                              ['pidfile', 'PID File Address'],
+                                              ['logfile', 'Log File Address'],
+                                              ['loglevel', 'Log Level'],
+                                              ['certificate', 'SSL Certificate']):
                     <div class='control-group'>
                         <label class='control-label' for='listener|{{ id }}'>{{ description }}</label>
                         <div class='controls'>
-                            <input type='text' class='input' name='listener|{{ id }}' id='listener|{{ id  }}' value='{{ config.get("listener").get(id) }}' readonly>
+                            <input type='text' class='input' name='listener|{{ id }}' id='listener|{{ id  }}' value='{{ config.get("listener", id) }}' readonly>
                         </div>
                     </div>
                     # endfor
@@ -146,17 +144,17 @@ this can be uncommented
             <div class='tab-pane' id='passive'>
                 <div>
                     <h4>Passive Daemon Settings</h4><br />
-                    # for id, description, accessibility in (   ['sleep', 'Sleep Interval', ''],
-                                                                ['handlers', 'Activated Handlers', ''],
-                                                                ['uid', 'User', 'readonly'],
-                                                                ['gid', 'Group', 'readonly'],
-                                                                ['pidfile', 'PID File Address', 'readonly'],
-                                                                ['logfile', 'Log File Address', 'readonly'],
-                                                                ['loglevel', 'Log Level', 'readonly']):
+                    # for id, description, accessibility in (['sleep', 'Sleep Interval', ''],
+                                                             ['handlers', 'Activated Handlers', ''],
+                                                             ['uid', 'User', 'readonly'],
+                                                             ['gid', 'Group', 'readonly'],
+                                                             ['pidfile', 'PID File Address', 'readonly'],
+                                                             ['logfile', 'Log File Address', 'readonly'],
+                                                             ['loglevel', 'Log Level', 'readonly']):
                     <div class='control-group'>
                         <label class='control-label' for='passive|{{ id }}'>{{ description }}</label>
                         <div class='controls'>
-                            <input type='text' class='input' name='passive|{{ id }}' id='passive|{{ id  }}' value='{{ config.get("passive").get(id) }}' {{ accessibility }}>
+                            <input type='text' class='input' name='passive|{{ id }}' id='passive|{{ id  }}' value='{{ config.get("passive", id) }}' {{ accessibility }}>
                         </div>
                     </div>
                     # endfor
@@ -169,7 +167,7 @@ this can be uncommented
                     <div class='control-group'>
                         <label class='control-label' for='api|{{ id }}'>{{ description }}</label>
                         <div class='controls'>
-                            <input type='text' class='input' name='api|{{ id }}' id='api|{{ id  }}' value='{{ config.get("api").get(id) }}'>
+                            <input type='text' class='input' name='api|{{ id }}' id='api|{{ id  }}' value='{{ config.get("api", id) }}'>
                         </div>
                     </div>
                     # endfor
@@ -178,13 +176,13 @@ this can be uncommented
             <div class='tab-pane' id='nrdp'>
                 <div>
                     <h4>NRDP Settings</h4><br />
-                    # for id, description in (  ['hostname', 'Hostname'],
-                                                ['parent', 'NRDP Server'],
-                                                ['token', 'Token for NRDP Server']):
+                    # for id, description in (['hostname', 'Hostname'],
+                                              ['parent', 'NRDP Server'],
+                                              ['token', 'Token for NRDP Server']):
                     <div class='control-group'>
                         <label class='control-label' for='nrdp|{{ id }}'>{{ description }}</label>
                         <div class='controls'>
-                            <input type='text' class='input' name='nrdp|{{ id  }}' id='nrdp|{{ id  }}' value='{{ config.get("nrdp").get(id) }}'>
+                            <input type='text' class='input' name='nrdp|{{ id  }}' id='nrdp|{{ id  }}' value='{{ config.get("nrdp", id) }}'>
                         </div>
                     </div>
                     # endfor
@@ -193,24 +191,23 @@ this can be uncommented
             <div class='tab-pane' id='nrds'>
                 <div>
                     <h4>NRDS Settings</h4><br />
-                    # for id, description, accessibility in (   ['config_name', 'Config Name', ''],
-                                                                ['config_version', 'Config Version Number', ''],
-                                                                ['url', 'NRDS URL', ''],
-                                                                ['config_os', 'OS Type', 'readonly'],
-                                                                ['token', 'NRDS Token', '']):
+                    # for id, description, accessibility in (['CONFIG_NAME', 'Config Name', ''],
+                                                             ['CONFIG_VERSION', 'Config Version Number', ''],
+                                                             ['URL', 'NRDS URL', ''],
+                                                             ['TOKEN', 'NRDS Token', '']):
                     <div class='control-group'>
                         <label class='control-label' for='nrdp|{{ id }}'>{{ description }}</label>
                         <div class='controls'>
-                            <input type='text' class='input' name='nrds|{{ id  }}' id='nrds|{{ id  }}' value='{{ config.get("nrds").get(id) }}' {{ accessibility }}>
+                            <input type='text' class='input' name='nrds|{{ id  }}' id='nrds|{{ id  }}' value='{{ config.get("nrds", id) }}' {{ accessibility }}>
                         </div>
                     </div>
                     # endfor
-                    # for id, description in (  ['update_config', 'Update Config?'],
-                                                ['update_plugins', 'Update Plugins?']):
+                    # for id, description in (['UPDATE_CONFIG', 'Update Config?'],
+                                              ['UPDATE_PLUGINS', 'Update Plugins?']):
                     <div class='control-group'>
                         <div class='controls'>
                             <label class='checkbox'>
-                                <input type='checkbox' name='nrds|{{ id }}' id='nrds|{{ id  }}' {% if config.get("nrds").get(id) == '1' %}checked{% endif %}>{{ description }}
+                                <input type='checkbox' name='nrds|{{ id }}' id='nrds|{{ id  }}' {% if config.get("nrds", id) == '1' %}checked{% endif %}>{{ description }}
                             </label>
                         </div>
                     </div>
@@ -220,10 +217,9 @@ this can be uncommented
             <div class='tab-pane' id='checks'>
                 <div>
                     <h4>Passive Check Settings</h4><br />
-                    # for check in config.get('passive checks') if check != '__name__'
+                    # for check in config.items('passive checks')
                         <div class='controls controls-row'>
                             <input type='text' class='span4' id='passivecheck|{{loop.index}}' name='passivecheck|name|{{loop.index}}' value='{{check}}'>
-                            <input type='text' class='span6' id='passivecheck|{{loop.index}}' name='passivecheck|exec|{{loop.index}}' value="{{config.get('passive checks').get(check)}}">
                         </div>
                         <br />
                     # endfor
@@ -232,11 +228,11 @@ this can be uncommented
             <div class='tab-pane' id='directives'>
                 <div>
                     <h4>Plugin Directives</h4><br />
-                    # for id, description, accessibility in (   ['plugin_path', 'Plugin Directory', 'readonly'],):
+                    # for id, description in (['plugin_path', 'Plugin Directory'],):
                     <div class='control-group'>
                         <label class='control-label' for='passivecheck|{{ id }}'>{{ description }}</label>
                         <div class='controls'>
-                            <input type='text' class='input' name='directives|{{ id  }}' id='directives|{{ id  }}' value='{{ config.get("plugin directives").get(id) }}' {{ accessibility }}>
+                            <input type='text' class='input' name='directives|{{ id  }}' id='directives|{{ id }}' value='{{ config.get("plugin directives", id) }}' readonly>
                         </div>
                     </div>
                     # endfor
@@ -259,7 +255,8 @@ this can be uncommented
         </div>
     </form>
 </div>
-<hr />
+</div>
+
 <!--
 <button type='button' id='savethisconfig' class='btn btn-primary'>Save</button>
 <button type='button' class='btn'>Cancel</button>
