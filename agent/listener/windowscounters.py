@@ -10,7 +10,7 @@ import copy
 
 class WindowsCountersNode(nodes.LazyNode):
 
-    def accessor(self, path, config):
+    def accessor(self, path, config, full_path):
         new_node = copy.deepcopy(self)
         new_node.path = path
         new_node.config = config
