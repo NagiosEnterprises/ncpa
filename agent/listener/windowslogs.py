@@ -44,8 +44,8 @@ by Log Names. It should also contain the summed value of all log counts. Perfdat
 all log counts as well with corresponding Log Names for labels. Standard out should also contain a human readable
 adaptation of the input Logged After specification.
 
-
 """
+
 import logging
 import nodes
 import datetime
@@ -58,23 +58,18 @@ import pywintypes
 
 class WindowsLogsNode(nodes.LazyNode):
     def walk(self, *args, **kwargs):
-        try:
-            logtypes = get_logtypes(kwargs)
-            filters = get_filter_dict(kwargs)
-            if not logtypes:
-                raise AttributeError('No log types given.')
+        logtypes = get_logtypes(kwargs)
+        filters = get_filter_dict(kwargs)
 
-            def log_method(*args, **kwargs):
-                return WindowsLogsNode.get_logs(logtypes, filters, *args, **kwargs)
+        def log_method(*args, **kwargs):
+            return WindowsLogsNode.get_logs(logtypes, filters, *args, **kwargs)
 
-            self.method = log_method
-            return {self.name: self.method(*args, **kwargs)}
-        except AttributeError:
-            return {self.name: []}
+        self.method = log_method
+        return { self.name: self.method(*args, **kwargs) }
 
     @staticmethod
     def get_logs(logtypes, filters, *args, **kwargs):
-        logs = {}
+        logs = {  }
         server = kwargs.get('server', None)
         if server:
             server = server[0]
@@ -88,6 +83,11 @@ class WindowsLogsNode(nodes.LazyNode):
                 logging.exception(exc)
                 raise Exception('General error occurred while getting log %s: %r' % (logtype, exc))
 
+        # If the logs are empty, and we had no name selected, give a good
+        # explanation of what is going on instead of being empty
+        if not logtypes and not logs:
+            return { 'message': 'No log type selected. Select log types using \'name=<type>\'. Example: api/logs?name=System. Multiple log types can be selected.' }
+
         return logs, 'logs'
 
     def run_check(self, *args, **kwargs):
@@ -95,8 +95,8 @@ class WindowsLogsNode(nodes.LazyNode):
             logs = self.walk(*args, **kwargs)['logs'][0]
             log_names = sorted(logs.keys())
         except Exception as exc:
-            return {'stdout': 'UNKNOWN: %s, cannot continue meaningfully.' % exc.message,
-                    'returncode': 3}
+            return { 'stdout': 'UNKNOWN: %s, cannot continue meaningfully.' % exc.message,
+                     'returncode': 3 }
 
         log_counts = [len(logs[x]) for x in log_names]
 
@@ -128,7 +128,7 @@ class WindowsLogsNode(nodes.LazyNode):
         info_line = '%s: %s that are younger than %s' % (prefix, info, nice_timedelta)
 
         stdout = '%s | %s' % (info_line, perfdata)
-        return {'stdout': stdout, 'returncode': returncode}
+        return { 'stdout': stdout, 'returncode': returncode }
 
     @staticmethod
     def translate_timedelta(time_delta):
@@ -194,6 +194,8 @@ class WindowsLogsNode(nodes.LazyNode):
 
 def get_logtypes(request_args):
     logtypes = request_args.get('name', [])
+    #if logtypes is None:
+    #    logtypes = ['Application', 'Security', 'Setup', 'System', 'Forwarded Events']
     return logtypes
 
 

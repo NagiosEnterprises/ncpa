@@ -20,6 +20,7 @@ Changelog
 - Added API browser which allows going thorugh the API and creating checks, understanding units, etc
 - Added admin web GUI section for in-browser viewing of passive checks, process control, etc
 - Added admin_x config values for Web GUI admin section
+- Added information into api/logs node to explain how to get logs to be populated
 
 **Updates**
 
