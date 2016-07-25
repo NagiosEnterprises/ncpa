@@ -77,6 +77,21 @@ def requires_auth(f):
     return decorated
 
 
+def requires_admin_auth(f):
+    @functools.wraps(f)
+    def decorated2(*args, **kwargs):
+        try:
+            admin_password = listener.config['iconfig'].get('listener', 'admin_password')
+        except Exception as e:
+            admin_password = ''
+
+        if not admin_password:
+            session['admin_logged'] = False
+
+        return f(*args, **kwargs)
+
+    return decorated2
+
 @listener.route('/login', methods=['GET', 'POST'])
 def login():
 
@@ -176,6 +191,20 @@ def help_section():
 @requires_auth
 def live_stats():
     return render_template('gui/stats.html')
+
+
+# ------------------------------
+# Admin GUI section
+# ------------------------------
+
+
+@listener.route('/gui/admin', methods=['GET', 'POST'])
+@requires_auth
+@requires_admin_auth
+def admin_config():
+    tmp_args = {}
+    tmp_args['config'] = listener.config['iconfig']
+    return render_template('admin/config.html', **tmp_args)
 
 
 # ------------------------------

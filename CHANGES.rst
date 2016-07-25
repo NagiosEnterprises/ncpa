@@ -13,9 +13,13 @@ Changelog
 - Added plugin_timeout config option in ncpa.cfg [plugin directives] section
 - Added default __HOST__ passive check definition so it doesn't show up as unknown forever
 - Added delay_start option to listener and passive section of ncpa.cfg to actually run after a # of seconds
-- Added ability to relocate RPM install (ex. --prefix=/opt would install /opt/ncpa)
+- Added ability to relocate RPM install (ex: --prefix=/opt would install /opt/ncpa)
 - Added disk/mount for giving information on partitions that aren't currently accessible, such as cdroms
 - Added redirection when logging in if the user was trying to access a protected page
+- Added better output messages for multi-checks (ex: memory/virtual?check=true, disk/C:|?check=true)
+- Added API browser which allows going thorugh the API and creating checks, understanding units, etc
+- Added admin web GUI section for in-browser viewing of passive checks, process control, etc
+- Added admin_x config values for Web GUI admin section
 
 **Updates**
 
@@ -61,7 +65,7 @@ Changelog
 - Fixed passive service on Windows only able to successfully run a plugin-based check once after restarting
 - Fixed filtering processes by 'name' and 'exe' field to no longer need a perfect match and to not be case sensitive
 - Fixed output of disk space on Linux servers not showing reserved root disk space as used
-- Fixed check output on parent nodes (ex: memory/virtual?check=true)
+- Fixed check output formatting on parent nodes when running multi-checks
 
 **Deprecated**
 

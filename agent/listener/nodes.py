@@ -65,7 +65,7 @@ class ParentNode(object):
         return { self.name: stat }
 
     def run_check(self, *args, **kwargs):
-        err = 'Unable to run check on node without check method. Requested %s node.' % self.name
+        err = 'Unable to run check on node without check method. Requested \'%s\' node.' % self.name
         return { 'stdout': err,
                  'returncode': 3 }
 
@@ -378,7 +378,7 @@ class RunnableNode(ParentNode):
         units = units.upper()
         factor = 1.0
 
-        if units in ['G', 'M', 'K']:
+        if units in ['T', 'G', 'M', 'K']:
             if units == 'T':
                 factor = 1e12
             elif units == 'G':
