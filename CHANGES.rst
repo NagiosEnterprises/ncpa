@@ -67,6 +67,7 @@ Changelog
 - Fixed filtering processes by 'name' and 'exe' field to no longer need a perfect match and to not be case sensitive
 - Fixed output of disk space on Linux servers not showing reserved root disk space as used
 - Fixed check output formatting on parent nodes when running multi-checks
+- Fixed device_name on api/disk/logical node when units passed giving an error
 
 **Deprecated**
 
