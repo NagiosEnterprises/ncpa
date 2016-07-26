@@ -48,7 +48,7 @@ Changelog
 - Fixed using multiple values passed to nodes for filtering in API and active checks (ex. service=x&service=y)
 - Fixed units=x setting to only affecting b and B units not all unit types
 - Fixed API showing b instead of B for bytes in multiple locations
-- Fixed single value objects that have been updated via units (K, M, G, T) from becoming lists in the API
+- [#250] Fixed single value objects that are given a conversion value via units from becoming lists
 - Fixed ncpa.cfg ssl_version option not actually working for Windows version
 - Fixed handlers config variable from throwing errors when empty or set to None
 - Fixed issue with large plugin output (4KB+ on windows and 64KB+ on linux) could crash NCPA
