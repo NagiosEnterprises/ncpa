@@ -369,9 +369,7 @@ class RunnableNode(ParentNode):
     @staticmethod
     def adjust_scale(self, values, units):
 
-        # It was either adjust it here or adjust every single node that only returns a single value. I'm putting this
-        # on the TODO for 2.0 to change all nodes to return lists rather than single values, as thats a API breaking
-        # change.
+        # Turn into a list for conversion
         if not isinstance(values, (list, tuple)):
             values = [values]
 
@@ -405,6 +403,10 @@ class RunnableNode(ParentNode):
                 factor = 1.024e3
 
         values = [round(x/factor, 2) for x in values]
+
+        # Do not return as a list if we only have 1 value to return
+        if len(values) == 1:
+            values = values[0]
 
         if factor != 1.0:
             self.unit = '%s%s' % (units, self.unit)
