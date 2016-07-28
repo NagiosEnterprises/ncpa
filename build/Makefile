@@ -4,7 +4,6 @@ CXFREEZEVER = cx_Freeze-4.3.4
 PYTHONBIN = $(shell which python2.7)
 SPHINXBIN = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION)
-BUILDBRANCH = master
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = /usr/src/redhat
 
@@ -38,10 +37,10 @@ update_packages:
 	$(PYTHONBIN) -m pip install -r $(BASEDIR)/build/resources/require.txt --upgrade
 
 update_git:
+	git reset --hard
 	git pull
-	git checkout -f $(BUILDBRANCH)
 
-build_tarball: update_packages build_exe
+build_tarball: update_packages update_git build_exe
 	rm -rf ncpa-$(NCPAVER)
 	mv ../agent/build/* ncpa-$(NCPAVER)
 	tar zcvf ncpa-$(NCPAVER).tar.gz ncpa-$(NCPAVER)
