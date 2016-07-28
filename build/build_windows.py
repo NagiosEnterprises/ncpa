@@ -4,7 +4,9 @@ import subprocess
 import sys
 
 # Grab command line arguements
-buildtype = sys.argv[1]
+buildtype = 'release'
+if len(sys.argv) > 1:
+    buildtype = sys.argv[1]
 
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 nsi_store = os.path.join(basedir, 'agent', 'build_resources', 'ncpa.nsi')
