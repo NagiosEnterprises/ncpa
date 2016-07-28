@@ -20,6 +20,7 @@ bundled version of Python.
 %setup -q
 
 %build
+%define _python_bytecompile_errors_terminate_build 0
 
 %install
 rm -rf %{buildroot} 
