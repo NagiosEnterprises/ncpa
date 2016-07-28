@@ -33,17 +33,17 @@ echo '/usr/local/lib' >> /etc/ld.so.conf
 # Install cx_Freeze patched version
 cd ..
 tar xf $CXFREEZETAR.tar.gz
-cd $CXFREEZEVER && $PYTHONBIN setup.py
+cd $CXFREEZEVER && $PYTHONBIN setup.py install
 
 # Install cx_Logging
 cd ..
 tar xf $CXLOGGINGVER.tar.gz
-cd $CXLOGGINGVER && $PYTHONBIN setup.py
+cd $CXLOGGINGVER && $PYTHONBIN setup.py install
 
 # Install cx_PyGenLib
 cd ..
 tar xf $CXPYGENLIBVER.tar.gz
-cd $CXPYGENLIBVER && $PYTHONBIN setup.py
+cd $CXPYGENLIBVER && $PYTHONBIN setup.py install
 
 # Clean up resource directory
 rm -rf $PYTHONTAR
