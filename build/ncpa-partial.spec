@@ -11,8 +11,6 @@ URL:            http://assets.nagios.com/downloads/ncpa/docs/html/index.html
 Source:         ncpa-%{version}.tar.gz
 AutoReqProv:    no
 
-%define _python_bytecompile_errors_terminate_build 0
-
 %description
 The Nagios Cross-Platform Agent is used with Nagios XI and Nagios Core to run active
 and/or passive checks on any operating system. Installs with zero requirements using a
@@ -22,6 +20,7 @@ bundled version of Python.
 %setup -q
 
 %build
+%define _python_bytecompile_errors_terminate_build 0
 
 %install
 rm -rf %{buildroot} 
