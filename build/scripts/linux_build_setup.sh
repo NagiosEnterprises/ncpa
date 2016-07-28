@@ -70,6 +70,3 @@ $PYTHONBIN -m pip install gevent gevent-websocket flask jinja2 requests pyOpenSS
 # Add users if they don't exist
 useradd nagios
 groupadd nagios
-
-# Copy the autobuild script into root directory
-cp -f autobuild.sh /root
