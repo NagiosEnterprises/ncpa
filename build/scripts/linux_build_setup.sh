@@ -33,7 +33,7 @@ echo '/usr/local/lib' >> /etc/ld.so.conf
 # Install cx_Freeze patched version
 cd ..
 tar xf $CXFREEZETAR.tar.gz
-cd $CXFREEZEVER && $PYTHONBIN setup.py
+cd $CXFREEZEVER && $PYTHONBIN setup.py install
 
 # Install cx_Logging
 cd ..
