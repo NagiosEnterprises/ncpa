@@ -69,7 +69,7 @@ class WindowsLogsNode(nodes.LazyNode):
 
     @staticmethod
     def get_logs(logtypes, filters, *args, **kwargs):
-        logs = {  }
+        logs = {}
         server = kwargs.get('server', None)
         if server:
             server = server[0]

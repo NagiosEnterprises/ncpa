@@ -22,18 +22,27 @@ $(document).ready(function() {
         resize_api_window();
     });
 
+    // Definitely not the best way to do this, but simple enough to understand, essentially
+    // whatever is selected gets set as submod which will then show or hide special settings that
+    // can be used on the node that was selected.
     $('#module').change(function() {
         clear_settings();
         var module = $(this).val();
 
         // Remove all old module accessors
-        $('.selector .submod').remove();
+        $('.selector select:not(:first-of-type)').remove();
         $('.selector-disk select').remove();
 
         // Show settings based on module
         $('.settings').hide();
         $('.hide-by-default').hide();
         $('.service-settings .list').html('');
+        $('.filter-settings .list').html('');
+
+        if (module == '') {
+            reload_api_browser();
+            return;
+        }
 
         switch (module) {
             case 'memory':
@@ -79,6 +88,8 @@ $(document).ready(function() {
             }, 'json');
         } else if (module == 'services') {
             add_service_selector();
+        } else if (module == 'processes') {
+            add_filter_selector();
         }
 
         // Set URL of link and iframe
@@ -101,8 +112,17 @@ $(document).ready(function() {
         add_service_selector();
     });
 
+    $('.add-filter').click(function() {
+        add_filter_selector();
+    });
+
     $('iframe').load(function() {
         clear_load();
+    });
+
+    // Special refresh selector
+    $('.selector').on('change', '.refresh-select', function() {
+        reload_api_browser();
     });
 
     // Special CPU module selector to show aggregation field
@@ -135,11 +155,67 @@ $(document).ready(function() {
                 $('.data-settings .agg').hide();
                 if (selected != '') {
                     $('.check-settings').show();
-                    $('.units-settings').show();
                     $('.wc-thresholds').show();
+                    var url = generate_url(true);
+                    $.get(url, { }, function(data) {
+                        var endnode = data[selected];
+                        var keys = Object.keys(endnode);
+                        var endselect = $('<select>', { class: 'form-control refresh-select memory-end-node' });
+                        endselect.append('<option></option>');
+                        $(keys).each(function(i, val) {
+                            endselect.append('<option>' + val + '</option>');
+                        });
+                        if ($('.selector .memory-end-node').length > 0) {
+                            $('.selector .memory-end-node').replaceWith(endselect);
+                        } else {
+                            $('.selector').append(endselect);
+                        }
+                    });
                 } else {
                     clear_settings();
                     $('.check-settings').hide();
+                    $('.selector .memory-end-node').remove();
+                }
+                break;
+
+            case 'interface':
+                if (selected != '') {
+                    $('.check-settings').show();
+                    $('.data-settings').show();
+                    $('.data-settings .unit-prefix').show();
+                    $('.data-settings .agg').hide();
+                    $('.wc-thresholds').show();
+                    var url = generate_url(true);
+                    $.get(url, { }, function(data) {
+                        var endnode = data[selected];
+                        var keys = Object.keys(endnode);
+                        var endselect = $('<select>', { class: 'form-control refresh-select interface-end-node' });
+                        endselect.append('<option></option>');
+                        $(keys).each(function(i, val) {
+                            endselect.append('<option>' + val + '</option>');
+                        });
+
+                        // Add change selector to show data settings or not
+                        endselect.change(function() {
+                            var show_data = ['', 'bytes_recv', 'bytes_sent'];
+                            if (show_data.indexOf($(this).val()) == -1) {
+                                $('.data-settings').hide();
+                                $('.data-settings .units').val('');
+                            } else {
+                                $('.data-settings').show();
+                            }
+                        });
+
+                        if ($('.selector .interface-end-node').length > 0) {
+                            $('.selector .interface-end-node').replaceWith(endselect);
+                        } else {
+                            $('.selector').append(endselect);
+                        }
+                    });
+                } else {
+                    clear_settings();
+                    $('.check-settings').hide();
+                    $('.selector .interface-end-node').remove();
                 }
                 break;
 
@@ -242,6 +318,11 @@ function add_service_selector() {
     $('.service-settings .list').append(select);
 }
 
+function add_filter_selector() {
+    var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 35%; border-right: 0;"><option value="name">name</option><option value="exe">exe</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 65%;"></div>';
+    $('.filter-settings .list').append(filter);
+}
+
 function generate_url(skip_settings=false) {
     var api = window.location.protocol + '//' + window.location.hostname;
     if (window.location.port) {
@@ -257,8 +338,8 @@ function generate_url(skip_settings=false) {
     api += '/' + module;
 
     // Add in any submodules there are
-    if ($('.selector .submod').length > 0) {
-        $('.selector .submod').each(function(i, name) {
+    if ($('.selector select:not(:first-of-type)').length > 0) {
+        $('.selector select:not(:first-of-type)').each(function(i, name) {
             if ($(name).val() != '') {
                 api += '/' + $(name).val();
             }
@@ -291,12 +372,24 @@ function generate_url(skip_settings=false) {
         });
     }
 
+    // Apply filters for processes
+    if (module == 'processes') {
+        $('.filter-group').each(function(i, filter) {
+            var filter_text = $(filter).find('.filter-text').val();
+            var filter_name = $(filter).find('.filter-name').val();
+            if (filter_text != '' && filter_text != undefined) {
+                extra += '&' + filter_name + '=' + filter_text;
+            }
+        });
+    }
+
     // Grab aggregation settings
     var aggregate = $('.aggregate').val();
     if (aggregate != '') {
         extra += '&aggregate=' + aggregate;
     }
 
+    // Grab users
     var units = $('.units').val();
     if (units != '') {
         extra += '&units=' + units;
@@ -390,6 +483,7 @@ function resize_api_window() {
                         {% endif %}
                     </select>
                 </div>
+                <div class="selector-extra"></div>
                 <div class="selector-disk"></div>
                 <div class="settings service-settings">
                     <label>Select Service(s)</label>
@@ -402,14 +496,7 @@ function resize_api_window() {
                 </div>
                 <div class="settings filter-settings">
                     <label>Filter(s)</label>
-                    <div class="list">
-                        <div class="filter-group">
-                            <select class="form-control" style="display: inline-block; width: 35%; border-right: 0;">
-                                <option value="name">name</option>
-                                <option value="exe">exe</option>
-                            </select><input type="text" class="form-control" style="display: inline-block; width: 65%;">
-                        </div>
-                    </div>
+                    <div class="list"></div>
                     <div>
                         <button type="button" class="btn btn-xs btn-default add-filter">
                             <i class="fa fa-plus"></i> Add Filter
@@ -468,6 +555,9 @@ function resize_api_window() {
                             <input type="text" class="form-control crit" placeholder="Critical">
                         </div>
                     </div>
+                </div>
+                <div class="settings">
+                    Advanced Settings
                 </div>
                 <div style="margin-top: 20px;">
                     <button class="btn btn-sm btn-primary" id="reload"><i class="fa fa-refresh fa-l"></i> Reload</button>
