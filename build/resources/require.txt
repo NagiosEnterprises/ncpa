@@ -1,7 +1,7 @@
 psutil
 requests
 Jinja2
-flask
+flask==0.10.1
 werkzeug
 sphinx
 docutils
@@ -9,4 +9,4 @@ pyOpenSSL
 sphinx-bootstrap-theme
 gevent
 gevent-websocket
-cffi==1.5.2
+cffi
