@@ -4,6 +4,7 @@ body { padding-top: 50px; font-size: 1.2rem; font-family: verdana, sans-serif; }
 .clear { clear: both; }
 .fa-l { margin-right: 2px; }
 .fa-r { margin-left: 2px; }
+.fa-14 { font-size: 13px; }
 
 /* Loader CSS */
 .spinner {
@@ -80,6 +81,10 @@ input.form-control, select.form-control, .btn { font-size: 1.2rem; }
 .form-control[readonly] { background-color: #FFF; }
 .dropdown-menu { font-size: 1.2rem; border-radius: 0; box-shadow: none; width: 100%; }
 .dropdown-menu > li > a { padding: 3px 12px 3px 9px; cursor: pointer; }
+.popover { max-width: 350px; }
+.popover-content p:last-child { margin-bottom: 0; }
+h3.popover-title { font-weight: bold; font-size: 1.3rem; }
+pre { border-radius: 0; padding: 0.4rem 0.6rem; }
 
 .well .table { background-color: #FFF; }
 

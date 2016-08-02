@@ -60,6 +60,9 @@ $(document).ready(function() {
                 $('.check-settings').show();
                 $('.status-check').show();
                 break;
+            case 'windowscounters':
+                $('.selector-counters').show();
+                break;
         }
 
         // Generate the full API URL
@@ -485,6 +488,10 @@ function resize_api_window() {
                 </div>
                 <div class="selector-extra"></div>
                 <div class="selector-disk"></div>
+                <div class="settings selector-counters">
+                    <label>Windows Counter <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: help;" title="Windows Counter" data-content="<p>Since there are tons of windows counters, we cannot list them all. If you'd like a list of available counters, run the following command in the command prompt:</p> <pre>TypePerf.exe –q</pre> <p>The command should give you a list of available counters on any version of Windows over Windows 2000.</p> <p><em>Note: Not all counters have data that can be used by NCPA (must be numeric). Per second counters <b>must</b> be given a sleep amount or they will not return data.</em></p>"></i></label>
+                    <input type="text" class="form-control" placeholder="ex: /TCPv4/Connections Active">
+                </div>
                 <div class="settings service-settings">
                     <label>Select Service(s)</label>
                     <div class="list"></div>
