@@ -203,16 +203,14 @@ class RunnableNode(ParentNode):
             return values
 
     def run_check(self, use_perfdata=True, use_prefix=True, primary=False,
-                  secondary_data=False, custom_output=None, *args, **kwargs):
+                  secondary_data=False, custom_output=None, capitalize=True,
+                  *args, **kwargs):
         try:
             values, unit = self.method(*args, **kwargs)
         except TypeError:
             values, unit = self.method()
         except AttributeError:
             return self.execute_plugin(*args, **kwargs)
-
-        if not isinstance(values, (list, tuple)):
-            values = [values]
 
         self.set_unit(unit, kwargs)
         self.set_title(kwargs)
@@ -223,6 +221,9 @@ class RunnableNode(ParentNode):
             values = self.get_aggregated_values(values, kwargs)
         except TypeError:
             logging.warning('Error converting values to scale and delta. Values: %r' % values)
+
+        if not isinstance(values, (list, tuple)):
+            values = [values]
 
         try:
             self.set_warning(kwargs)
@@ -235,7 +236,7 @@ class RunnableNode(ParentNode):
                 is_critical = any([self.is_within_range(self.critical, x) for x in values])
             returncode, stdout = self.get_nagios_return(values, is_warning, is_critical, use_perfdata,
                                                         use_prefix, primary, secondary_data,
-                                                        custom_output)
+                                                        custom_output, capitalize)
         except Exception as exc:
             returncode = 3
             stdout = str(exc)
@@ -245,8 +246,12 @@ class RunnableNode(ParentNode):
 
     def get_nagios_return(self, values, is_warning, is_critical, use_perfdata=True,
                           use_prefix=True, primary=False, secondary_data=False,
-                          custom_output=None):
+                          custom_output=None, capitalize=True):
+
         proper_name = self.title.replace('|', '/')
+
+        if capitalize:
+            proper_name = proper_name.capitalize()
 
         if self.delta:
             nice_unit = '%s/sec' % self.unit
@@ -265,7 +270,7 @@ class RunnableNode(ParentNode):
                     nice_values.append('%0.2f %s' % (x, nice_unit))
             except TypeError:
                 logging.info('Did not receive normal values. Unable to find meaningful check.')
-                return 0, 'OK: %s was %s' % (str(proper_name).capitalize(), str(values))
+                return 0, 'OK: %s was %s' % (proper_name, str(values))
         values_for_info_line = ', '.join(nice_values)
 
         returncode = 0
@@ -313,9 +318,9 @@ class RunnableNode(ParentNode):
         perfdata = ' '.join(perfdata)
 
         if secondary_data is True:
-            stdout = '%s: %s' % (proper_name.capitalize(), values_for_info_line)
+            stdout = '%s: %s' % (proper_name, values_for_info_line)
         else:
-            output = proper_name.capitalize() + ' was'
+            output = proper_name + ' was'
             if custom_output:
                 output = custom_output
             stdout = '%s %s' % (output, values_for_info_line)

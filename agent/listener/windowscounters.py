@@ -19,7 +19,7 @@ class WindowsCountersNode(nodes.LazyNode):
     def walk(self, *args, **kwargs):
 
         if not getattr(self, 'path', None) or not self.path:
-            return {self.name: []}
+            return { self.name: [] }
 
         path = self.path
         counter_path = os.path.join('\\', *path)
@@ -45,7 +45,7 @@ class WindowsCountersNode(nodes.LazyNode):
                 return [0, 'c']
 
         self.method = counter_method
-        return super(WindowsCountersNode, self).run_check(*args, **kwargs)
+        return super(WindowsCountersNode, self).run_check(capitalize=False, *args, **kwargs)
 
     @staticmethod
     def get_counter_val(counter_path, *args, **kwargs):
