@@ -15,8 +15,7 @@ $(document).ready(function() {
     $('#api-nav').addClass('active');
     resize_api_window();
 
-    var url = generate_url();
-    $('#api-input').val(url);
+    reload_api_browser();
 
     $(window).resize(function() {
         resize_api_window();
@@ -62,6 +61,8 @@ $(document).ready(function() {
                 break;
             case 'windowscounters':
                 $('.selector-counters').show();
+                $('.check-settings').show();
+                $('.wc-thresholds').show();
                 break;
         }
 
@@ -96,7 +97,10 @@ $(document).ready(function() {
         }
 
         // Set URL of link and iframe
-        $('#api-frame').attr('src', url);
+        $.get(url, { }, function(json) {
+            $('#api-frame div').html(JSON.stringify(json, null, 4));
+            clear_load();
+        });
         $('#api-input').val(url);
     });
 
@@ -117,10 +121,6 @@ $(document).ready(function() {
 
     $('.add-filter').click(function() {
         add_filter_selector();
-    });
-
-    $('iframe').load(function() {
-        clear_load();
     });
 
     // Special refresh selector
@@ -287,14 +287,18 @@ $(document).ready(function() {
 function reload_api_browser() {
     load();
     var url = generate_url();
-    $('#api-frame').attr('src', url);
+    // Set URL of link and iframe
+    $.get(url, { }, function(json) {
+        $('#api-frame div').html(JSON.stringify(json, null, 4));
+        clear_load();
+    }, 'json');
     $('#api-input').val(url);
 }
 
 function load() {
     var top = $('#api-input').outerHeight() + $('.navbar').outerHeight();
-    var h = $('iframe').outerHeight();
-    var w = $('iframe').outerWidth();
+    var h = $('#api-frame').outerHeight();
+    var w = $('#api-frame').outerWidth();
     $('.whiteout').css('top', top)
                   .css('height', h)
                   .css('width', w);
@@ -356,6 +360,17 @@ function generate_url(skip_settings=false) {
             api += '/' + $(v).val();
         }
     });
+
+    // Grab windows-counter
+    if ($('.windows-counter').val() != '') {
+        var counter = decodeURIComponent($('.windows-counter').val());
+        counter = counter.replace(/\\/g, '/');
+        if (counter.charAt(0) == '/') {
+            counter = counter.substr(1);
+        }
+        api += '/' + counter.replace(/\/sec/, '%2Fsec');
+        $('.windows-counter').val('/' + decodeURIComponent(counter));
+    }
 
     if (skip_settings) {
         return api;
@@ -490,7 +505,7 @@ function resize_api_window() {
                 <div class="selector-disk"></div>
                 <div class="settings selector-counters">
                     <label>Windows Counter <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: help;" title="Windows Counter" data-content="<p>Since there are tons of windows counters, we cannot list them all. If you'd like a list of available counters, run the following command in the command prompt:</p> <pre>TypePerf.exe –q</pre> <p>The command should give you a list of available counters on any version of Windows over Windows 2000.</p> <p><em>Note: Not all counters have data that can be used by NCPA (must be numeric). Per second counters <b>must</b> be given a sleep amount or they will not return data.</em></p>"></i></label>
-                    <input type="text" class="form-control" placeholder="ex: /TCPv4/Connections Active">
+                    <input type="text" class="form-control windows-counter" placeholder="ex: /TCPv4/Connections Active">
                 </div>
                 <div class="settings service-settings">
                     <label>Select Service(s)</label>
@@ -588,7 +603,9 @@ function resize_api_window() {
             </div>
         </div>
         <input class="form-control" id="api-input" style="vertical-align: top;" readonly type="text">
-        <iframe src="/api" name="api-frame" style="vertical-align: top;" id="api-frame"></iframe>
+        <div style="vertical-align: top; overflow-y: scroll;" id="api-frame">
+            <div></div>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -303,7 +303,7 @@ class RunnableNode(ParentNode):
         v = len(values)
         for i, x in enumerate(values):
 
-            if isinstance(x, int):
+            if isinstance(x, (int, long)):
                 perf = "=%d%s;%s;%s;" % (x, perf_unit, self.warning, self.critical)
             else: 
                 perf = "=%0.2f%s;%s;%s;" % (x, perf_unit, self.warning, self.critical)

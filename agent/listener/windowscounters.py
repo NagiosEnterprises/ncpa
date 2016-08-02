@@ -6,6 +6,7 @@ import time
 import os
 import logging
 import copy
+from urllib import unquote
 
 
 class WindowsCountersNode(nodes.LazyNode):
@@ -19,7 +20,7 @@ class WindowsCountersNode(nodes.LazyNode):
     def walk(self, *args, **kwargs):
 
         if not getattr(self, 'path', None) or not self.path:
-            return { self.name: [] }
+            return {self.name: []}
 
         path = self.path
         counter_path = os.path.join('\\', *path)
@@ -65,8 +66,8 @@ class WindowsCountersNode(nodes.LazyNode):
 
         unit = info[-1]
 
-        if not isinstance(value, (list, tuple)):
-            value = [value]
+        if not isinstance(value, (int, long)):
+            value = round(value, 2)
 
         return [value, unit]
 
