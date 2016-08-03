@@ -461,6 +461,7 @@ function clear_settings() {
 
 function resize_api_window() {
     var h = $(window).height() - $('nav').outerHeight();
+    var w = $(window).width() - 300;
     $('#api-input-control').css('height', h);
     $('#api-input-control .max').css('max-height', h-40);
     if (h-92 < $('#api-input-control .selection-box').outerHeight()) {
@@ -474,13 +475,14 @@ function resize_api_window() {
                             .css('bottom', 20);
     }
     $('#api-frame').css('height', h - $('#api-input').outerHeight());
+    $('#api-table').css('max-width', w);
 }
 </script>
 {% endblock %}
 
 {% block content %}
 <div style="display: table; width: 100%;">
-    <div class="well" id="api-input-control" style="width: 300px; vertical-align: top; display: table-cell; position: relative;">
+    <div class="well" id="api-input-control" style="width: 300px; min-width: 300px; vertical-align: top; display: table-cell; position: relative;">
         <div class="max" style="overflow-y: auto;">
             <div class="selection-box">
                 <div class="selector">
@@ -594,7 +596,7 @@ function resize_api_window() {
             </div>
         </div>
     </div>
-    <div style="display: table-cell;">
+    <div id="api-table" style="display: table-cell;">
         <div class="whiteout">
             <div class="spinner">
                 <div class="bounce1"></div>

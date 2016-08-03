@@ -98,7 +98,7 @@ pre { border-radius: 0; padding: 0.4rem 0.6rem; }
 .current { font-weight: normal; margin-left: 6px; }
 
 #api-frame { width: 100%; height: 595px; border: none; background-color: #FFF; }
-#api-frame div { padding: 1rem; white-space: pre; font-family: 'Consolas', monospace; font-size: 1.3rem; }
+#api-frame div { padding: 1rem; white-space: pre-wrap; font-family: 'Consolas', monospace; font-size: 1.3rem; }
 #api-input { border-top: 0; border-left: 0; border-right: 0; border-bottom: 1px solid #DDD; }
 
 #top-container { }
@@ -122,8 +122,8 @@ pre { border-radius: 0; padding: 0.4rem 0.6rem; }
 .table-top { font-size: 1.1rem; }
 .table-top th { text-align: center; }
 .table-top tr.highlight { background-color: #a6c4fc; }
-.table-top td.critical { background-color: red; }
-.table-top td.warning { background-color: yellow; }
+.table-top>tbody>tr>td.critical, .table-top>tbody>tr>td.critical:hover { background-color: #FF795F; }
+.table-top>tbody>tr>td.warning, .table-top>tbody>tr>td.warning:hover { background-color: #FEFF5F; }
 
 .selector-disk, .selector-extra { display: none; margin-top: 5px; }
 .selector-disk select:first-child { width: 127px; margin-right: 5px; display: inline-block; }
