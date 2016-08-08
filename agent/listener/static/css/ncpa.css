@@ -129,3 +129,5 @@ pre { border-radius: 0; padding: 0.4rem 0.6rem; }
 .selector-disk select:first-child { width: 127px; margin-right: 5px; display: inline-block; }
 .selector-disk select:last-child { width: 128px; display: inline-block; }
 .refresh-select { margin-top: 5px; }
+
+a.example { cursor: pointer; margin: 0 2px; }

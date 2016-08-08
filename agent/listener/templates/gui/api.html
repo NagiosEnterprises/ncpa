@@ -60,6 +60,7 @@ $(document).ready(function() {
                 $('.selector-counters').show();
                 $('.check-settings').show();
                 $('.wc-thresholds').show();
+                $('.advanced-settings').show();
                 break;
         }
 
@@ -279,6 +280,22 @@ $(document).ready(function() {
         reload_api_browser();
     });
 
+    // Examples for counters (so it's easier to see how to use them)
+    $('.example').click(function() {
+        var counter = $(this).data('counter');
+        var sleep = $(this).data('sleep');
+
+        $('.windows-counter').val(counter);
+
+        if (sleep == 0) {
+            $('.sleep').val('');
+        } else {
+            $('.sleep').val(sleep);
+        }
+
+        reload_api_browser();
+    });
+
 });
 
 function reload_api_browser() {
@@ -410,6 +427,12 @@ function generate_url(skip_settings=false) {
         extra += '&units=' + units;
     }
 
+    // Grab sleep timer
+    var sleep = $('.sleep').val();
+    if (sleep != '') {
+        extra += '&sleep=' + sleep;
+    }
+
     // Grab check settings
     if ($('.check').is(':checked')) {
         if (extra) { extra += '&'; }
@@ -503,7 +526,11 @@ function resize_api_window() {
                 <div class="selector-extra"></div>
                 <div class="selector-disk"></div>
                 <div class="settings selector-counters">
-                    <label>Windows Counter <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: help;" title="Windows Counter" data-content="<p>Since there are tons of windows counters, we cannot list them all. If you'd like a list of available counters, run the following command in the command prompt:</p> <pre>TypePerf.exe –q</pre> <p>The command should give you a list of available counters on any version of Windows over Windows 2000.</p> <p><em>Note: Not all counters have data that can be used by NCPA (must be numeric). Per second counters <b>must</b> be given a sleep amount or they will not return data.</em></p>"></i></label>
+                    <div>
+                        <label class="fl">Windows Counter <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: help;" title="Windows Counter" data-content="<p>Since there are tons of windows counters, we cannot list them all. If you'd like a list of available counters, run the following command in the command prompt:</p> <pre>TypePerf.exe –q</pre> <p>The command should give you a list of available counters on any version of Windows over Windows 2000.</p> <p><em>Note: Not all counters have data that can be used by NCPA (must be numeric). Per second counters <b>must</b> be given a sleep amount or they will not return data.</em></p>"></i></label>
+                        <div class="fr">Examples: <a class="example tt-bind" data-counter="/TCPv4/Connections Active" data-sleep="0" title="Counter example"><i class="fa fa-asterisk fa-14"></i></a> <a class="example tt-bind" data-counter="/TCPv4/Segments Received/sec" data-sleep="5" title="Per second counter example"><i class="fa fa-bar-chart fa-14"></i></a></div>
+                        <div class="clear"></div>
+                    </div>
                     <input type="text" class="form-control windows-counter" placeholder="ex: /TCPv4/Connections Active">
                 </div>
                 <div class="settings service-settings">
@@ -577,8 +604,13 @@ function resize_api_window() {
                         </div>
                     </div>
                 </div>
-                <div class="settings">
-                    Advanced Settings
+                <div class="settings advanced-settings">
+                    <label>Advanced Settings</label>
+                    <div class="input-group">
+                        <div class="input-group-addon">Sleep for <i class="fa fa-question-circle pop-bind" title="Sleep (Generate Data Per Second)" data-content="<p>When checking for data such as per second counters or delta values, the sleep value is used to generate the data/sec value.</p><p>NCPA will wait the amount of sleep time specified, collecting the data that comes in between the start and end time of the sleep time.</p><p>The calculation when using a sleep value:<br><b>sum(data) / sleep = data/sec</b></p><p>Sleep value is in seconds.</p>"></i></div>
+                        <input type="text" class="form-control sleep" placeholder="# of">
+                        <div class="input-group-addon">seconds</div>
+                    </div>
                 </div>
                 <div style="margin-top: 20px;">
                     <button class="btn btn-sm btn-primary" id="reload"><i class="fa fa-refresh fa-l"></i> Reload</button>
