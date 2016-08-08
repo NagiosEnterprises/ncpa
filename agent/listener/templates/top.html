@@ -191,11 +191,20 @@
     <div class="well">
         <form class="form-inline" id="top-form">
             <div style="float: left;">
-                <input class="form-control" style="width: 260px;" type="text" id="highlight-input" placeholder="Highlight Name">
+                <div class="input-group" style="width: 320px;">
+                    <div class="input-group-addon">Highlight Name</div>
+                    <input class="form-control" type="text" id="highlight-input" placeholder="python.exe">
+                </div>
             </div>
             <div style="float: right;">
-                <input class="form-control" type="text" id="warning-input" placeholder="Warning Threshold">
-                <input class="form-control" type="text" id="critical-input" placeholder="Critical Threshold">
+                <div class="input-group" style="width: 120px;">
+                    <div class="input-group-addon"><img src="../../static/img/warning.png" class="tt-bind" data-placement="bottom" title="Warning threshold"></div>
+                    <input type="text" class="form-control" id="warning-input" placeholder="Warning">
+                </div>
+                <div class="input-group" style="width: 120px;">
+                    <div class="input-group-addon"><img src="../../static/img/critical.png" class="tt-bind" data-placement="bottom" title="Critical threshold"></div>
+                    <input type="text" class="form-control" id="critical-input" placeholder="Critical">
+                </div>
             </div>
             <div style="clear: both;"></div>
         </form>

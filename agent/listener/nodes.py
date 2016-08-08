@@ -288,7 +288,7 @@ class RunnableNode(ParentNode):
         else:
             perfdata_label = self.perfdata_label
 
-        if len(self.unit) > 2:
+        if len(self.unit) > 3:
             perf_unit = ''
         else:
             perf_unit = self.unit

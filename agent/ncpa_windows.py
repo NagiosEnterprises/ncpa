@@ -199,10 +199,11 @@ class Passive(Base):
         # Runs either nrds or nrdp (or both)
         for handler in handlers:
             try:
+                handler = handler.strip()
                 module_name = 'passive.%s' % handler
                 __import__(module_name)
                 tmp_handler = sys.modules[module_name]
-            except ImportError, e:
+            except ImportError as e:
                 logging.error('Could not import module passive.%s, skipping. %s' % (handler, str(e)))
                 logging.exception(e)
             else:
@@ -210,7 +211,7 @@ class Passive(Base):
                     ins_handler = tmp_handler.Handler(self.config)
                     ins_handler.run()
                     logging.debug('Successfully ran handler %s' % handler)
-                except Exception, e:
+                except Exception as e:
                     logging.exception(e)
 
     # Actual method that loops doing passive checks forever, using the sleep

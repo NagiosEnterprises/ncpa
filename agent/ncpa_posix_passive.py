@@ -32,18 +32,16 @@ class Passive(ncpadaemon.Daemon):
                 module_name = 'passive.%s' % handler
                 __import__(module_name)
                 tmp_handler = sys.modules[module_name]
-            except ImportError:
-                logging.error(u'Could not import module passive.%s, skipping...' % handler)
+            except ImportError as e:
+                logging.error('Could not import module passive.%s, skipping. %s' % (handler, str(e)))
+                logging.exception(e)
             else:
                 try:
-                    plugins_abs = os.path.abspath(self.config_parser.get(u'plugin directives', u'plugin_path'))
-                    self.config_parser.set(u'plugin directives', u'plugin_path', plugins_abs)
-                    self.config_parser.file_path = os.path.abspath(u'etc/ncpa.cfg')
                     ins_handler = tmp_handler.Handler(self.config_parser)
                     ins_handler.run()
                     logging.debug(u'Successfully ran handler %s' % handler)
-                except Exception as exc:
-                    logging.exception(exc)
+                except Exception as e:
+                    logging.exception(e)
 
     def run(self):
 
@@ -56,14 +54,20 @@ class Passive(ncpadaemon.Daemon):
         except Exception:
             pass
 
-        while True:
-            self.read_basic_config()
-            try:
+        # Read config once (restart required for new configs)
+        self.read_basic_config()
+        plugins_abs = os.path.abspath(self.config_parser.get(u'plugin directives', u'plugin_path'))
+        self.config_parser.set(u'plugin directives', u'plugin_path', plugins_abs)
+        self.config_parser.file_path = os.path.abspath(u'etc/ncpa.cfg')
+
+        try:
+            while True:
                 self.run_all_handlers()
-            except Exception, e:
-                logging.exception(e)
-            sleep = int(self.config_parser.get('passive', 'sleep'))
-            time.sleep(sleep)
+                sleep = int(self.config_parser.get('passive', 'sleep'))
+                time.sleep(sleep)
+        except Exception, e:
+            logging.exception(e)
+            
 
 
 if __name__ == u'__main__':
