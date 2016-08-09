@@ -91,6 +91,8 @@ pre { border-radius: 0; padding: 0.4rem 0.6rem; }
 #graph-selector-div { display: inline-block; }
 #graph-selector-div select { display: inline-block; width: auto; }
 
+.log-filters .input-group-addon { cursor: default; }
+
 .whiteout { display: none; background-color: #FFF; opacity: 0.90; z-index: 9000; position: absolute; }
 
 .undernav { margin-bottom: 30px; }
