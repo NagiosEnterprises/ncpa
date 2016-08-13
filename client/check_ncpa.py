@@ -83,7 +83,7 @@ def parse_args():
                       help="Arguments for the plugin to be run. Not necessary "
                            "unless you're running a custom plugin. Given in the same "
                            "as you would call from the command line. Example: -a '-w 10 -c 20 -f /usr/local'")
-    parser.add_option("-t", "--token", default=None,
+    parser.add_option("-t", "--token", default='',
                       help="The token for connecting.")
     parser.add_option("-T", "--timeout", default=60, type="int",
                       help="Enforced timeout, will terminate plugins after "
@@ -117,10 +117,6 @@ def parse_args():
     if not options.hostname:
         parser.print_help()
         parser.error("Hostname is required for use.")
-
-    elif not options.token:
-        parser.print_help()
-        parser.error("A token is most definitely required.")
 
     elif not options.metric and not options.list:
         parser.print_help()
