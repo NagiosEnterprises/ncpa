@@ -75,7 +75,7 @@ def parse_args():
     parser.add_option("-c", "--critical", default=None, type="str",
                       help="Critical value to be passed for the check.")
     parser.add_option("-u", "--unit", default=None,
-                      help="The unit prefix (M, G, T)")
+                      help="The unit prefix (k, Ki, M, Mi, G, Gi, T, Ti)")
     parser.add_option("-n", "--units", default=None,
                       help="What should be used in place of the default unit. As in, instead of 'b' as a unit, it will "
                       "use this.")
@@ -200,7 +200,7 @@ def get_arguments_from_options(options, **kwargs):
             arguments[key] = value
 
     #~ Encode the items in the dictionary that are not None
-    return urlencode(dict((k, v) for k, v in list(arguments.items()) if v))
+    return urlencode(dict((k, v) for k, v in list(arguments.items()) if v is not None))
 
 
 def get_json(options):
