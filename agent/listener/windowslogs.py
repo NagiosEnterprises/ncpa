@@ -122,10 +122,10 @@ class WindowsLogsNode(nodes.LazyNode):
             logged_after = logged_after[0]
         nice_timedelta = self.translate_timedelta(logged_after)
 
-        perfdata = ' '.join(["'%s'=%d;%s;%s;" % (name, count, self.warning, self.critical) for name, count in
+        perfdata = ' '.join(["'%s'=%d;%s;%s;" % (name, count, ''.join(self.warning), ''.join(self.critical)) for name, count in
                              zip(log_names, log_counts)])
         info = ', '.join(['%s has %d logs' % (name, count) for name, count in zip(log_names, log_counts)])
-        info_line = '%s: %s that are younger than %s' % (prefix, info, nice_timedelta)
+        info_line = '%s: %s (Time range: %s)' % (prefix, info, nice_timedelta)
 
         stdout = '%s | %s' % (info_line, perfdata)
         return { 'stdout': stdout, 'returncode': returncode }
@@ -133,7 +133,7 @@ class WindowsLogsNode(nodes.LazyNode):
     @staticmethod
     def translate_timedelta(time_delta):
         if not time_delta:
-            return 'the universe'
+            return 'last 24 hours'
         num, suffix = time_delta[:-1], time_delta[-1]
         if suffix == 's':
             nice_name = 'second'
@@ -149,8 +149,7 @@ class WindowsLogsNode(nodes.LazyNode):
             nice_name = 'month'
         if int(num) > 1:
             nice_name += 's'
-        nice_name += ' old'
-        return '%s %s' % (num, nice_name)
+        return 'last %s %s' % (num, nice_name)
 
     def set_log_check(self, request_args):
         log_check = request_args.get('type', 'all')

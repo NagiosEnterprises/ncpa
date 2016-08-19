@@ -239,7 +239,7 @@ def api_websocket(accessor=None):
                 val = node.walk(first=True, **sane_args)
                 jval = json.dumps(val[prop])
                 ws.send(jval)
-            except (AttributeError, geventwebsocket.WebSocketError) as e:
+            except Exception as e:
                 # Socket was probably closed by the browser changing pages
                 logging.debug(e)
                 ws.close()
@@ -325,7 +325,7 @@ def top_websocket():
             try:
                 ws.send(json_val)
                 gevent.sleep(1)
-            except geventwebsocket.WebSocketError as e:
+            except Exception as e:
                 # Socket was probably closed by the browser changing pages
                 logging.debug(e)
                 ws.close()
@@ -348,13 +348,10 @@ def tail_websocket(accessor=None):
                     ws.send(json_log)
 
                 gevent.sleep(2)
-            except geventwebsocket.WebSocketError as e:
-                ws.close()
-                logging.debug(e)
-                return
-            except BaseException as e:
+            except Exception as e:
                 ws.close()
                 logging.exception(e)
+                return
     return
 
 

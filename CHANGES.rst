@@ -68,6 +68,7 @@ Changelog
 - Fixed output of disk space on Linux servers not showing reserved root disk space as used
 - Fixed check output formatting on parent nodes when running multi-checks
 - Fixed device_name on api/disk/logical node when units passed giving an error
+- Fixed perfdata output for windows log checks
 
 **Deprecated**
 
