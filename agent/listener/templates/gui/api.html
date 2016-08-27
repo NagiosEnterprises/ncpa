@@ -16,6 +16,9 @@ $(document).ready(function() {
 
     $(window).resize(function() {
         resize_api_window();
+
+        // Resize log timeframe if visible
+        set_log_timeframe_size();
     });
 
     // Definitely not the best way to do this, but simple enough to understand, essentially
@@ -34,6 +37,7 @@ $(document).ready(function() {
         $('.hide-by-default').hide();
         $('.service-settings .list').html('');
         $('.filter-settings .list').html('');
+        $('.log-name-selector .list').html('');
 
         if (module == '') {
             reload_api_browser();
@@ -67,6 +71,8 @@ $(document).ready(function() {
                 $('.log-filters').show();
                 $('.check-settings').show();
                 $('.wc-thresholds').show();
+                add_log_name_selector();
+                set_log_timeframe_size();
                 break;
         }
 
@@ -123,8 +129,14 @@ $(document).ready(function() {
         add_service_selector();
     });
 
+    // Add filter selector
     $('.add-filter').click(function() {
         add_filter_selector();
+    });
+
+    // Add log name selector
+    $('.add-log-name').click(function() {
+        add_log_name_selector();
     });
 
     // Special refresh selector
@@ -227,6 +239,11 @@ $(document).ready(function() {
                 break;
 
             case 'plugins':
+                if (selected != '') {
+                    $('.btn-check-ncpa').show();
+                } else {
+                    $('.btn-check-ncpa').hide();
+                }
                 break;
 
             case 'disk':
@@ -302,6 +319,17 @@ $(document).ready(function() {
         reload_api_browser();
     });
 
+    // Logging example
+    $('.log-example').click(function() {
+        $('.log-name-selector .list').html('');
+        add_log_name_selector('System');
+        add_log_name_selector('Application');
+        $('.check').prop('checked', true);
+        $('.warn').val(100);
+        $('.crit').val(400);
+        reload_api_browser();
+    });
+
 });
 
 function reload_api_browser() {
@@ -348,6 +376,14 @@ function add_service_selector() {
 function add_filter_selector() {
     var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 35%; border-right: 0;"><option value="name">name</option><option value="exe">exe</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 65%;"></div>';
     $('.filter-settings .list').append(filter);
+}
+
+function add_log_name_selector(value='') {
+    var name = '<div class="input-group"><div class="input-group-addon">Name</div><input type="text" class="form-control name"></div>';
+    $('.log-name-selector .list').append(name);
+    if (value != '') {
+        $('.log-name-selector .list input').last().val(value);
+    }
 }
 
 function generate_url(skip_settings=false) {
@@ -441,9 +477,54 @@ function generate_url(skip_settings=false) {
 
     // Grab name if logs
     if (module == 'logs') {
-        var name = $('.name').val();
-        if (name != '') {
-            extra += '&name=' + name;
+        $('.name').each(function(i, obj) {
+            var name = $(obj).val();
+            if (name != '') {
+                extra += '&name=' + name;
+            }
+        });
+
+        // Add log timeframe to query
+        var timeframe = $('.time-frame').val();
+        var timeframe_suffix = $('.time-frame-suffix').val();
+        if (timeframe > 0 && timeframe != '') {
+            extra += '&logged_after=' + timeframe + timeframe_suffix;
+        }
+
+        // Add severity
+        var severity = $('.severity').val();
+        if (severity != '') {
+            extra += '&severity=' + severity;
+        }
+
+        // Add event id
+        var event_id = $('.event-id').val();
+        if (event_id != '') {
+            extra += '&event_id=' + event_id;
+        }
+
+        // Add source name
+        var application = $('.application').val();
+        if (application != '') {
+            extra += '&application=' + application;
+        }
+
+        // Add computer name
+        var computer_name = $('.computer-name').val();
+        if (computer_name != '') {
+            extra += '&computer_name=' + computer_name;
+        }
+
+        // Add category
+        var category = $('.category').val();
+        if (category != '') {
+            extra += '&category=' + category;
+        }
+
+        // Add message regex/search string
+        var message = $('.message').val();
+        if (message != '') {
+            extra += '&message=' + message;
         }
     }
 
@@ -491,6 +572,7 @@ function clear_settings() {
     $('.settings input').val('');
     $('.data-settings select.aggregate').val('');
     $('.data-settings select.units').val('');
+    toggle_check_ncpa_btn();
 }
 
 function resize_api_window() {
@@ -510,6 +592,14 @@ function resize_api_window() {
     }
     $('#api-frame').css('height', h - $('#api-input').outerHeight());
     $('#api-table').css('max-width', w);
+}
+
+function set_log_timeframe_size() {
+    if ($('.input-group.timeframe').is(':visible')) {
+        var width = $('.input-group.timeframe').width();
+        width = width - 100 - $('.input-group.timeframe .input-group-addon').outerWidth();
+        $('.input-group.timeframe input').css('width', width);
+    }
 }
 </script>
 {% endblock %}
@@ -540,13 +630,35 @@ function resize_api_window() {
                 <div class="selector-extra"></div>
                 <div class="selector-disk"></div>
                 <div class="settings log-name-selector">
-                    <label>Log Names <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: help;" title="Log Names" data-content="In order to see any logs in the logs endpoint you need to select the types of logs to get. In Windows, they are sorted by log names. Examples are <i>'Application', 'Security', 'Setup', 'System', 'Forwarded Events'</i>"></i></label>
-                    <div class="input-group">
-                        <div class="input-group-addon">Name</div>
-                        <input type="text" class="form-control name" placeholder="System">
+                    <div>
+                        <label class="fl">Log Names <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: help;" title="Log Names" data-content="In order to see any logs in the logs endpoint you need to select the types of logs to get. In Windows, they are sorted by log names. Examples are <i>'Application', 'Security', 'Setup', 'System', 'Forwarded Events'</i>"></i></label>
+                        <div class="fr">Examples: <a class="log-example tt-bind" title="Multiple event log types being used in a single check"><i class="fa fa-file-text-o fa-14"></i></a></div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="list"></div>
+                    <div>
+                        <button type="button" class="btn btn-xs btn-default add-log-name">
+                            <i class="fa fa-plus"></i> Add Log Name
+                        </button>
                     </div>
                 </div>
                 <div class="settings log-filters">
+                    <div style="margin-bottom: 15px;">
+                        <label>Log Timeframe</label>
+                        <div class="input-group timeframe" style="margin-bottom: 5px;">
+                            <div class="input-group-addon tt-bind" title="The amount of time to check for logs. All logs that came in after x amount of time will be shown.">Logged After</div>
+                            <input type="text" class="form-control time-frame" placeholder="24" style="width: 30px;">
+                            <select class="form-control time-frame-suffix" style="width: 100px; border-left: 0;">
+                                <option></option>
+                                <option value="s">Seconds</option>
+                                <option value="m">Minutes</option>
+                                <option value="h">Hours</option>
+                                <option value="d">Days</option>
+                                <option value="w">Weeks</option>
+                                <option value="M">Months</option>
+                            </select>
+                        </div>
+                    </div>
                     <label>Log Filter Settings</label>
                     <div class="input-group" style="margin-bottom: 5px;">
                         <div class="input-group-addon tt-bind" title="severity">EventType</div>
@@ -557,11 +669,12 @@ function resize_api_window() {
                             <option value="INFORMATION">Information</option>
                             <option value="AUDIT_FAILURE">Audit Failure</option>
                             <option value="AUDIT_SUCCESS">Audit Success</option>
+                            <option value="UNKNOWN">Unknown</option>
                         </select>
                     </div>
                     <div class="input-group" style="margin-bottom: 5px;">
                         <div class="input-group-addon tt-bind" title="event_id">EventID</div>
-                        <input type="text" class="form-control event_id" placeholder="# match">
+                        <input type="text" class="form-control event-id" placeholder="# match">
                     </div>
                     <div class="input-group" style="margin-bottom: 5px;">
                         <div class="input-group-addon tt-bind" title="application">SourceName</div>
@@ -569,7 +682,7 @@ function resize_api_window() {
                     </div>
                     <div class="input-group" style="margin-bottom: 5px;">
                         <div class="input-group-addon tt-bind" title="computer_name">ComputerName</div>
-                        <input type="text" class="form-control computer_name" placeholder="match">
+                        <input type="text" class="form-control computer-name" placeholder="match">
                     </div>
                     <div class="input-group" style="margin-bottom: 5px;">
                         <div class="input-group-addon tt-bind" title="category">EventCategory</div>

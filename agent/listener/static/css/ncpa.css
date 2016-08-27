@@ -116,7 +116,7 @@ pre { border-radius: 0; padding: 0.4rem 0.6rem; }
 .check-settings .form-inline .form-control { width: 85px; }
 .btn-check-ncpa { width: 260px; position: absolute; bottom: 20px; display: none; }
 .selector .submod { margin-top: 5px; }
-.service-settings .list .service { margin-bottom: 5px; }
+.service-settings .list .service, .log-name-selector .list .input-group { margin-bottom: 5px; }
 .selection-box { margin-bottom: 20px; }
 .filter-group { margin-bottom: 5px; }
 
@@ -133,3 +133,4 @@ pre { border-radius: 0; padding: 0.4rem 0.6rem; }
 .refresh-select { margin-top: 5px; }
 
 a.example { cursor: pointer; margin: 0 2px; }
+a.log-example { cursor: pointer; }
