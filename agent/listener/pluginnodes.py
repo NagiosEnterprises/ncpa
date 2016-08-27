@@ -120,6 +120,8 @@ class PluginAgentNode(nodes.ParentNode):
         try:
             plugins = os.listdir(plugin_path)
             for plugin in plugins:
+                if plugin == '.keep':
+                    continue
                 plugin_abs_path = os.path.join(plugin_path, plugin)
                 if os.path.isfile(plugin_abs_path):
                     self.children[plugin] = PluginNode(plugin, plugin_abs_path)

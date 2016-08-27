@@ -125,7 +125,7 @@ class WindowsLogsNode(nodes.LazyNode):
         perfdata = ' '.join(["'%s'=%d;%s;%s;" % (name, count, ''.join(self.warning), ''.join(self.critical)) for name, count in
                              zip(log_names, log_counts)])
         info = ', '.join(['%s has %d logs' % (name, count) for name, count in zip(log_names, log_counts)])
-        info_line = '%s: %s (Time range: %s)' % (prefix, info, nice_timedelta)
+        info_line = '%s: %s (Time range - %s)' % (prefix, info, nice_timedelta)
 
         stdout = '%s | %s' % (info_line, perfdata)
         return { 'stdout': stdout, 'returncode': returncode }
