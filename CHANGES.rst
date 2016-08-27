@@ -40,6 +40,8 @@ Changelog
 - Updated RPM, DEB, and DMG to allow upgrading from older versions without issues
 - Updated api/services check to default to running (currently leaving off status=x will always return critical)
 - Updated output of certain checks to have more information (api/services, api/memory/logical/percent)
+- Updated processes output to include 'mem_percent' since it can be used as a filter
+- Updated processes output of 'mem_rss' and 'mem_vms' to show units and respect the 'units' modifier
 
 **Bug Fixes**
 

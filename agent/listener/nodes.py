@@ -407,16 +407,23 @@ class RunnableNode(ParentNode):
                 units = 'Ki'
                 factor = 1.024e3
 
-        values = [round(x/factor, 2) for x in values]
+        # Process the values and put them back into list, also check if
+        # the value is just a bytes value - keep as integer
+        pvalues = []
+        for x in values:
+            val = round(x/factor, 2)
+            if units == 'B':
+                val = int(val)
+            pvalues.append(val)
 
         # Do not return as a list if we only have 1 value to return
-        if len(values) == 1:
-            values = values[0]
+        if len(pvalues) == 1:
+            pvalues = pvalues[0]
 
         if factor != 1.0:
             self.unit = '%s%s' % (units, self.unit)
 
-        return values, units
+        return pvalues, units
 
     @staticmethod
     def is_within_range(nagios_range, value):

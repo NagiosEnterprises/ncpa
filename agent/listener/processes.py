@@ -1,5 +1,6 @@
 import psutil
 import nodes
+import logging
 
 
 class ProcessNode(nodes.LazyNode):
@@ -21,31 +22,35 @@ class ProcessNode(nodes.LazyNode):
     @staticmethod
     def get_count(request_args):
         count = request_args.get('count', 0)
-        if count:
+        if isinstance(count, list):
             count = count[0]
-        return count
+        return int(count)
 
     @staticmethod
     def get_cpu_percent(request_args):
         cpu_percent = request_args.get('cpu_percent', None)
         if cpu_percent:
-            cpu_percent = cpu_percent[0]
+            if isinstance(cpu_percent, list):
+                cpu_percent = float(cpu_percent[0])
         return cpu_percent
 
     @staticmethod
     def get_mem_percent(request_args):
         mem_percent = request_args.get('mem_percent', None)
         if mem_percent:
-            mem_percent = mem_percent[0]
+            if isinstance(mem_percent, list):
+                mem_percent = float(mem_percent[0])
         return mem_percent
 
     @staticmethod
     def get_combiner(request_args):
         combiner = request_args.get('combiner', 'and')
-        if combiner == 'and':
-            return all
-        else:
+        if isinstance(combiner, list):
+            combiner = combiner[0]
+        if combiner == 'or':
             return any
+        else:
+            return all
 
     def make_filter(self, *args, **kwargs):
         exes = self.get_exe(kwargs)
@@ -72,7 +77,7 @@ class ProcessNode(nodes.LazyNode):
             if not cpu_percent is None:
                 comp.append(cpu_percent <= process.cpu_percent())
 
-            if not cpu_percent is None:
+            if not mem_percent is None:
                 comp.append(mem_percent <= process.memory_percent())
 
             return comparison(comp)
@@ -80,43 +85,55 @@ class ProcessNode(nodes.LazyNode):
         return proc_filter
 
     @staticmethod
-    def standard_form(process):
+    def standard_form(self, process, units):
         try:
             name = process.name()
         except BaseException:
             name = 'Unknown'
+
         try:
             exe = process.exe()
         except BaseException:
             exe = 'Unknown'
+
         try:
-            cpu_percent = process.cpu_percent()
+            cpu_percent = round(process.cpu_percent() / psutil.cpu_count(), 2)
         except BaseException:
             cpu_percent = 0
+
+        try:
+            mem_percent = round(process.memory_percent(), 2)
+        except BaseException:
+            mem_percent = 0;
+
         try:
             pmi = process.memory_info()
-            mem_rss = pmi.rss
-            mem_vms = pmi.vms
-        except BaseException:
+            mem_rss = self.adjust_scale(self, pmi.rss, units)
+            mem_vms = self.adjust_scale(self, pmi.vms, units)
+        except Exception as exc:
+            #logging.exception(exc)
             mem_rss, mem_vms = 0, 0
 
         return {'name': name,
                 'exe': exe,
                 'cpu_percent': cpu_percent,
+                'mem_percent': mem_percent,
                 'mem_rss': mem_rss,
                 'mem_vms': mem_vms}
 
     def get_process_dict(self, *args, **kwargs):
+        units = kwargs.get('units', ['B'])
         proc_filter = self.make_filter(*args, **kwargs)
         processes = []
 
         for process in psutil.process_iter():
             try:
                 if proc_filter(process):
-                    process_json = self.standard_form(process)
+                    process_json = self.standard_form(self, process, units[0])
                     processes.append(process_json)
-            except:
+            except Exception as exc:
                 # Could not access process, most likely because of windows permissions
+                #logging.exception(exc)
                 continue
         
         return processes
@@ -154,11 +171,11 @@ class ProcessNode(nodes.LazyNode):
                 if cpu_percent or mem_percent:
                     title += ' ' + combiner
             if cpu_percent:
-                title += ' CPU usage greater than %d%%' % cpu_percent
+                title += ' CPU usage greater than %.2f' % cpu_percent
                 if mem_percent:
                     title += ' ' + combiner
             if mem_percent:
-                title += ' Memory Usage greater than %d%%' % mem_percent
+                title += ' Memory Usage greater than %.2f' % mem_percent
         return [title]
 
     def run_check(self, *args, **kwargs):
