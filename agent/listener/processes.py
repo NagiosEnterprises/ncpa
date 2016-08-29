@@ -27,6 +27,14 @@ class ProcessNode(nodes.LazyNode):
         return int(count)
 
     @staticmethod
+    def get_sleep(request_args):
+        sleep = request_args.get('sleep', None)
+        if sleep:
+            if isinstance(sleep, list):
+                sleep = float(sleep[0])
+        return sleep
+
+    @staticmethod
     def get_cpu_percent(request_args):
         cpu_percent = request_args.get('cpu_percent', None)
         if cpu_percent:
@@ -41,6 +49,22 @@ class ProcessNode(nodes.LazyNode):
             if isinstance(mem_percent, list):
                 mem_percent = float(mem_percent[0])
         return mem_percent
+
+    @staticmethod
+    def get_mem_rss(request_args):
+        mem_rss = request_args.get('mem_rss', None)
+        if mem_rss:
+            if isinstance(mem_rss, list):
+                mem_rss = float(mem_rss[0])
+        return mem_rss
+
+    @staticmethod
+    def get_mem_vms(request_args):
+        mem_vms = request_args.get('mem_vms', None)
+        if mem_vms:
+            if isinstance(mem_vms, list):
+                mem_vms = float(mem_vms[0])
+        return mem_vms
 
     @staticmethod
     def get_combiner(request_args):
@@ -58,34 +82,42 @@ class ProcessNode(nodes.LazyNode):
         cpu_percent = self.get_cpu_percent(kwargs)
         mem_percent = self.get_mem_percent(kwargs)
         comparison = self.get_combiner(kwargs)
+        mem_rss = self.get_mem_rss(kwargs)
+        mem_vms = self.get_mem_vms(kwargs)
 
         def proc_filter(process):
             comp = []
 
             for exe in exes:
-                if exe.lower() in process.exe().lower():
+                if exe.lower() in process['exe'].lower():
                     comp.append(True)
                 else:
                     comp.append(False)
 
             for name in names:
-                if name.lower() in process.name().lower():
+                if name.lower() in process['name'].lower():
                     comp.append(True)
                 else:
                     comp.append(False)
 
             if not cpu_percent is None:
-                comp.append(cpu_percent <= process.cpu_percent())
+                comp.append(cpu_percent <= (process['cpu_percent'] / psutil.cpu_count()))
 
             if not mem_percent is None:
-                comp.append(mem_percent <= process.memory_percent())
+                comp.append(mem_percent <= process['mem_percent'])
+
+            if not mem_rss is None:
+                comp.append(mem_rss <= process['mem_rss'][0])
+
+            if not mem_vms is None:
+                comp.append(mem_vms <= process['mem_vms'][0])
 
             return comparison(comp)
 
         return proc_filter
 
     @staticmethod
-    def standard_form(self, process, units):
+    def standard_form(self, process, units='', sleep=None):
         try:
             name = process.name()
         except BaseException:
@@ -97,7 +129,7 @@ class ProcessNode(nodes.LazyNode):
             exe = 'Unknown'
 
         try:
-            cpu_percent = round(process.cpu_percent() / psutil.cpu_count(), 2)
+            cpu_percent = round(process.cpu_percent(sleep) / psutil.cpu_count(), 2)
         except BaseException:
             cpu_percent = 0
 
@@ -107,12 +139,20 @@ class ProcessNode(nodes.LazyNode):
             mem_percent = 0;
 
         try:
+            # Make unit types
+            u = 'B'
+            if units != 'B':
+                u = '%s%s' % (units, 'B')
+
+            # Get adjusted scales
             pmi = process.memory_info()
-            mem_rss = self.adjust_scale(self, pmi.rss, units)
-            mem_vms = self.adjust_scale(self, pmi.vms, units)
+            value, uts = self.adjust_scale(self, pmi.rss, units)
+            mem_rss = (value, u)
+            value, uts = self.adjust_scale(self, pmi.vms, units)
+            mem_vms = (value, u)
         except Exception as exc:
             #logging.exception(exc)
-            mem_rss, mem_vms = 0, 0
+            mem_rss, mem_vms = (0, 'B'), (0, 'B')
 
         return {'name': name,
                 'exe': exe,
@@ -123,13 +163,14 @@ class ProcessNode(nodes.LazyNode):
 
     def get_process_dict(self, *args, **kwargs):
         units = kwargs.get('units', ['B'])
+        sleep = self.get_sleep(kwargs)
         proc_filter = self.make_filter(*args, **kwargs)
         processes = []
 
         for process in psutil.process_iter():
             try:
-                if proc_filter(process):
-                    process_json = self.standard_form(self, process, units[0])
+                process_json = self.standard_form(self, process, units[0], sleep)
+                if proc_filter(process_json):
                     processes.append(process_json)
             except Exception as exc:
                 # Could not access process, most likely because of windows permissions
