@@ -73,7 +73,11 @@ class ServiceNode(nodes.LazyNode):
     def get_services_via_psutil(self, *args, **kwargs):
         services = {}
         for service in psutil.win_service_iter():
-            services[service.name()] = service.status()
+            name = service.name()
+            if service.status() == 'running':
+                services[name] = 'running'
+            else:
+                services[name] = 'stopped'
         return services
 
 #    @filter_services
