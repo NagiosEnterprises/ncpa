@@ -4,6 +4,7 @@ import re
 import subprocess
 import tempfile
 import os
+import psutil
 from stat import ST_MODE,S_IXUSR,S_IXGRP,S_IXOTH
 
 def filter_services(m):
@@ -56,7 +57,7 @@ class ServiceNode(nodes.LazyNode):
             pass
 
         if uname == 'Windows':
-            return self.get_services_via_sc
+            return self.get_services_via_psutil
         elif uname == 'Darwin':
             return self.get_services_via_launchctl
         else:
@@ -69,24 +70,31 @@ class ServiceNode(nodes.LazyNode):
                 return self.get_services_via_initd
 
     @filter_services
-    def get_services_via_sc(self, *args, **kwargs):
+    def get_services_via_psutil(self, *args, **kwargs):
         services = {}
-        status = tempfile.TemporaryFile()
-        service = subprocess.Popen(['sc', 'query', 'type=', 'service', 'state=', 'all'], stdout=status)
-        service.wait()
-        status.seek(0)
-
-        for line in status.readlines():
-            l = line.strip()
-            if l.startswith('SERVICE_NAME'):
-                service_name = l.split(' ', 1)[1]
-            if l.startswith('STATE'):
-                if 'RUNNING' in l:
-                    status = 'running'
-                else:
-                    status = 'stopped'
-                services[service_name] = status
+        for service in psutil.win_service_iter():
+            services[service.name()] = service.status()
         return services
+
+#    @filter_services
+#    def get_services_via_sc(self, *args, **kwargs):
+#        services = {}
+#        status = tempfile.TemporaryFile()
+#        service = subprocess.Popen(['sc', 'query', 'type=', 'service', 'state=', 'all'], stdout=status)
+#        service.wait()
+#        status.seek(0)
+#
+#        for line in status.readlines():
+#            l = line.strip()
+#            if l.startswith('SERVICE_NAME'):
+#                service_name = l.split(' ', 1)[1]
+#            if l.startswith('STATE'):
+#                if 'RUNNING' in l:
+#                    status = 'running'
+#                else:
+#                    status = 'stopped'
+#                services[service_name] = status
+#        return services
 
     @filter_services
     def get_services_via_launchctl(self, *args, **kwargs):
