@@ -25,6 +25,7 @@ $(document).ready(function() {
     // whatever is selected gets set as submod which will then show or hide special settings that
     // can be used on the node that was selected.
     $('#module').change(function() {
+        load();
         clear_settings();
         var module = $(this).val();
 
@@ -54,6 +55,9 @@ $(document).ready(function() {
                 $('.check-settings').show();
                 $('.wc-thresholds').show();
                 $('.filter-settings').show();
+                $('.data-settings').show();
+                $('.data-settings .unit-prefix').show();
+                $('.data-settings .agg').hide();
                 break;
             case 'services':
                 $('.service-settings').show();
@@ -330,6 +334,16 @@ $(document).ready(function() {
         reload_api_browser();
     });
 
+    // Filter list filter selection
+    $('.list').on('change', '.filter-name', function() {
+        var input = $(this).parents('.filter-group').find('input');
+        if ($(this).val() != 'name' && $(this).val() != 'exe') {
+            input.attr('placeholder', '<=');
+        } else {
+            input.attr('placeholder', '');
+        }
+    });
+
 });
 
 function reload_api_browser() {
@@ -374,7 +388,7 @@ function add_service_selector() {
 }
 
 function add_filter_selector() {
-    var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 35%; border-right: 0;"><option value="name">name</option><option value="exe">exe</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 65%;"></div>';
+    var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 45%; border-right: 0;"><option value="name">name</option><option value="exe">exe</option><option value="mem_percent">mem_percent</option><option value="cpu_percent">cpu_percent</option><option value="mem_vms">mem_vms</option><option value="mem_rss">mem_rss</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 55%;"></div>';
     $('.filter-settings .list').append(filter);
 }
 
@@ -455,6 +469,18 @@ function generate_url(skip_settings=false) {
                 extra += '&' + filter_name + '=' + filter_text;
             }
         });
+
+        // Add on match value if it exists
+        var match = $('select.match').val();
+        if (match != '') {
+            extra += '&match=' + match;
+        }
+
+        // Add combiner for all filters applied
+        var combiner = $('select.combiner').val();
+        if (combiner != '') {
+            extra += '&combiner=' + combiner;
+        }
     }
 
     // Grab aggregation settings
@@ -649,10 +675,9 @@ function set_log_timeframe_size() {
                             <div class="input-group-addon tt-bind" title="The amount of time to check for logs. All logs that came in after x amount of time will be shown.">Logged After</div>
                             <input type="text" class="form-control time-frame" placeholder="24" style="width: 30px;">
                             <select class="form-control time-frame-suffix" style="width: 100px; border-left: 0;">
-                                <option></option>
                                 <option value="s">Seconds</option>
                                 <option value="m">Minutes</option>
-                                <option value="h">Hours</option>
+                                <option value="h" selected>Hours</option>
                                 <option value="d">Days</option>
                                 <option value="w">Weeks</option>
                                 <option value="M">Months</option>
@@ -695,7 +720,7 @@ function set_log_timeframe_size() {
                 </div>
                 <div class="settings selector-counters">
                     <div>
-                        <label class="fl">Windows Counter <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: help;" title="Windows Counter" data-content="<p>Since there are tons of windows counters, we cannot list them all. If you'd like a list of available counters, run the following command in the command prompt:</p> <pre>TypePerf.exe –q</pre> <p>The command should give you a list of available counters on any version of Windows over Windows 2000.</p> <p><em>Note: Not all counters have data that can be used by NCPA (must be numeric). Per second counters <b>must</b> be given a sleep amount or they will not return data.</em></p>"></i></label>
+                        <label class="fl">Windows Counter <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: pointer;" title="Windows Counter" data-content="<p>Since there are tons of windows counters, we cannot list them all. If you'd like a list of available counters, run the following command in the command prompt:</p> <pre>TypePerf.exe –q</pre> <p>The command should give you a list of available counters on any version of Windows over Windows 2000.</p> <p><em>Note: Not all counters have data that can be used by NCPA (must be numeric). Per second counters <b>must</b> be given a sleep amount or they will not return data.</em></p>"></i></label>
                         <div class="fr">Examples: <a class="example tt-bind" data-counter="/TCPv4/Connections Active" data-sleep="0" title="Counter example"><i class="fa fa-asterisk fa-14"></i></a> <a class="example tt-bind" data-counter="/TCPv4/Segments Received/sec" data-sleep="5" title="Per second counter example"><i class="fa fa-bar-chart fa-14"></i></a></div>
                         <div class="clear"></div>
                     </div>
@@ -711,12 +736,27 @@ function set_log_timeframe_size() {
                     </div>
                 </div>
                 <div class="settings filter-settings">
-                    <label>Filter(s)</label>
+                    <label>Process Filter(s) <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: pointer;" title="Process Filtering Options" data-content="<p>You can add multiple filters of the same type and they will be combined using the <b>combiner</b> variable that you can set in <i>Filter Settings</i> below.</p><p><b>name</b> and <b>exe</b> - Value will be matched using the <i>search type</i> setting in <i>Filter Settings</i>. Defaults to exact match.</p><p><b>cpu_percent</b>, <b>mem_percent</b>, <b>mem_rss</b>, <b>mem_vms</b> - These filters can be floats, and will match anything less than or equal to (&lt;=) the value.</p>"></i></label>
                     <div class="list"></div>
                     <div>
                         <button type="button" class="btn btn-xs btn-default add-filter">
                             <i class="fa fa-plus"></i> Add Filter
                         </button>
+                    </div>
+                    <label style="margin-top: 15px;">Filter Settings</label>
+                    <div class="input-group combiner" style="margin-bottom: 5px;">
+                        <div class="input-group-addon">Combine using <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: pointer;" title="Combine Using And or Or" data-content="<p>This can either be set to <b>and</b> which is the default or to <b>or</b>. This setting determines how to add the filters to the query. When <b>and</b>, each process returned would need to match <i>all</i> supplied filters. If using <b>or</b>, then the matches must match <i>any</i> of the filters.</p>"></i></div>
+                        <select class="form-control combiner">
+                            <option value="">and</option>
+                            <option value="or">or</option>
+                        </select>
+                    </div>
+                    <div class="input-group match">
+                        <div class="input-group-addon">Search type <i class="fa fa-question-circle fa-r fa-14 tt-bind" style="cursor: help;" title="Only applies to <b><u>name</u></b> and <b><u>exe</u></b>"></i></div>
+                        <select class="form-control match">
+                            <option value="">exact match</option>
+                            <option value="search">search match</option>
+                        </select>
                     </div>
                 </div>
                 <div class="settings data-settings">
@@ -744,6 +784,12 @@ function set_log_timeframe_size() {
                             <option value="T">T</option>
                             <option value="Ti">Ti</option>
                         </select>
+                    </div>
+                </div>
+                <div class="settings arguments">
+                    <label>Arguments</label>
+                    <div class="list">
+                        
                     </div>
                 </div>
                 <div class="settings check-settings">
