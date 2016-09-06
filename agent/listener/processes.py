@@ -76,6 +76,14 @@ class ProcessNode(nodes.LazyNode):
         else:
             return all
 
+    @staticmethod
+    def get_match(request_args):
+        match = request_args.get('match', None)
+        if match:
+            if isinstance(match, list):
+                match = match[0]
+        return match
+
     def make_filter(self, *args, **kwargs):
         exes = self.get_exe(kwargs)
         names = self.get_name(kwargs)
@@ -84,27 +92,40 @@ class ProcessNode(nodes.LazyNode):
         comparison = self.get_combiner(kwargs)
         mem_rss = self.get_mem_rss(kwargs)
         mem_vms = self.get_mem_vms(kwargs)
+        match = self.get_match(kwargs)
 
         def proc_filter(process):
             comp = []
 
             for exe in exes:
-                if exe.lower() in process['exe'].lower():
-                    comp.append(True)
+                if match == 'search':
+                    if exe.lower() in process['exe'].lower():
+                        comp.append(True)
+                    else:
+                        comp.append(False)
                 else:
-                    comp.append(False)
+                    if process['exe'].lower() in exe.lower():
+                        comp.append(True)
+                    else:
+                        comp.append(False)
 
             for name in names:
-                if name.lower() in process['name'].lower():
-                    comp.append(True)
+                if match == 'search':
+                    if name.lower() in process['name'].lower():
+                        comp.append(True)
+                    else:
+                        comp.append(False)
                 else:
-                    comp.append(False)
+                    if process['name'].lower() in name.lower():
+                        comp.append(True)
+                    else:
+                        comp.append(False)
 
             if not cpu_percent is None:
-                comp.append(cpu_percent <= (process['cpu_percent'] / psutil.cpu_count()))
+                comp.append(cpu_percent <= process['cpu_percent'][0])
 
             if not mem_percent is None:
-                comp.append(mem_percent <= process['mem_percent'])
+                comp.append(mem_percent <= process['mem_percent'][0])
 
             if not mem_rss is None:
                 comp.append(mem_rss <= process['mem_rss'][0])
@@ -156,8 +177,8 @@ class ProcessNode(nodes.LazyNode):
 
         return {'name': name,
                 'exe': exe,
-                'cpu_percent': cpu_percent,
-                'mem_percent': mem_percent,
+                'cpu_percent': (cpu_percent, '%'),
+                'mem_percent': (mem_percent, '%'),
                 'mem_rss': mem_rss,
                 'mem_vms': mem_vms}
 

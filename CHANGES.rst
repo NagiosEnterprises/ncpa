@@ -42,6 +42,7 @@ Changelog
 - Updated output of certain checks to have more information (api/services, api/memory/logical/percent)
 - Updated processes output to include 'mem_percent' since it can be used as a filter
 - Updated processes output of 'mem_rss' and 'mem_vms' to show units and respect the 'units' modifier
+- Updated filtering processes by 'name' and 'exe' field to also be able to use 'match' to do a 'search' type query
 
 **Bug Fixes**
 
@@ -66,7 +67,6 @@ Changelog
 - Fixed zombie process error in Mac OS X top websocket making the GUI top display nothing
 - Fixed graphs tab not displaying graphs of interfaces with multiple spaces in their names
 - Fixed passive service on Windows only able to successfully run a plugin-based check once after restarting
-- Fixed filtering processes by 'name' and 'exe' field to no longer need a perfect match and to not be case sensitive
 - Fixed output of disk space on Linux servers not showing reserved root disk space as used
 - Fixed check output formatting on parent nodes when running multi-checks
 - Fixed device_name on api/disk/logical node when units passed giving an error
