@@ -39,6 +39,7 @@ $(document).ready(function() {
         $('.service-settings .list').html('');
         $('.filter-settings .list').html('');
         $('.log-name-selector .list').html('');
+        $('.arguments .list').html('');
 
         if (module == '') {
             reload_api_browser();
@@ -77,6 +78,9 @@ $(document).ready(function() {
                 $('.wc-thresholds').show();
                 add_log_name_selector();
                 set_log_timeframe_size();
+                break;
+            case 'plugins':
+                add_argument();
                 break;
         }
 
@@ -136,6 +140,11 @@ $(document).ready(function() {
     // Add filter selector
     $('.add-filter').click(function() {
         add_filter_selector();
+    });
+
+    // Add arguments for plugins
+    $('.add-argument').click(function() {
+        add_argument();
     });
 
     // Add log name selector
@@ -245,10 +254,12 @@ $(document).ready(function() {
             case 'plugins':
                 if (selected != '') {
                     $('.btn-check-ncpa').show();
+                    $('.arguments').show();
                 } else {
                     $('.btn-check-ncpa').hide();
+                    $('.arguments').hide();
                 }
-                break;
+                return;
 
             case 'disk':
                 $('.selector-disk').html('').show();
@@ -400,6 +411,11 @@ function add_log_name_selector(value='') {
     }
 }
 
+function add_argument() {
+    var arg = '<div style="margin-bottom: 5px;"><input type="text" class="form-control argument"></div>';
+    $('.arguments .list').append(arg);
+}
+
 function generate_url(skip_settings=false) {
     var api = window.location.protocol + '//' + window.location.hostname;
     if (window.location.port) {
@@ -415,8 +431,10 @@ function generate_url(skip_settings=false) {
     api += '/' + module;
 
     // Add in any submodules there are
+    var submodule = '';
     if ($('.selector select:not(:first-of-type)').length > 0) {
         $('.selector select:not(:first-of-type)').each(function(i, name) {
+            if (i == 0) { submodule = $(name).val(); }
             if ($(name).val() != '') {
                 api += '/' + $(name).val();
             }
@@ -440,6 +458,17 @@ function generate_url(skip_settings=false) {
         }
         api += '/' + counter.replace(/\/sec/, '%2Fsec');
         $('.windows-counter').val('/' + decodeURIComponent(counter));
+    }
+
+    // Apply arguments for plugins
+    if (module == 'plugins') {
+        if (submodule != '') {
+            $('input.argument').each(function(i, arg) {
+                if ($(arg).val() != '') {
+                    api += '/' + $(arg).val();
+                }
+            });
+        }
     }
 
     if (skip_settings) {
@@ -787,9 +816,12 @@ function set_log_timeframe_size() {
                     </div>
                 </div>
                 <div class="settings arguments">
-                    <label>Arguments</label>
-                    <div class="list">
-                        
+                    <label>Plugin Arguments</label>
+                    <div class="list"></div>
+                    <div>
+                        <button type="button" class="btn btn-xs btn-default add-argument">
+                            <i class="fa fa-plus"></i> Add Argument
+                        </button>
                     </div>
                 </div>
                 <div class="settings check-settings">
