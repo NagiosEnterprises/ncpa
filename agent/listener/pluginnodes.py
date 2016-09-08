@@ -7,6 +7,7 @@ import shlex
 import re
 import copy
 import Queue
+import environment
 from threading import Timer
 
 class PluginNode(nodes.RunnableNode):
@@ -49,6 +50,10 @@ class PluginNode(nodes.RunnableNode):
         # Get any special instructions from the config for executing the plugin
         instructions = self.get_plugin_instructions(config)
 
+        # Get user and group from config file
+        user_uid = config.get('listener', 'uid', 'nagios')
+        user_gid = config.get('listener', 'gid', 'nagios')
+
         # Get plugin command timeout value, if it exists
         try:
             timeout = int(config.get('plugin directives', 'plugin_timeout'))
@@ -59,7 +64,12 @@ class PluginNode(nodes.RunnableNode):
         cmd = self.get_cmdline(instructions)
         logging.debug('Running process with command line: `%s`', ' '.join(cmd))
 
-        running_check = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        # Demote the child process to the username/group specified in config
+        demote = None
+        if environment.SYSTEM != "Windows":
+            demote = PluginNode.demote(user_uid, user_gid)
+
+        running_check = subprocess.Popen(cmd, bufsize=-1, preexec_fn=demote, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         queue = Queue.Queue(maxsize=2)
         timer = Timer(timeout, self.kill_proc, [running_check, timeout, queue])
 
@@ -79,6 +89,13 @@ class PluginNode(nodes.RunnableNode):
         cleaned_stdout = ''.join(stdout).replace('\r\n', '\n').replace('\r', '\n').strip()
 
         return {'returncode': returncode, 'stdout': cleaned_stdout}
+
+    @staticmethod
+    def demote(user_uid, user_gid):
+        def result():
+            os.setgid(user_gid)
+            os.setuid(user_uid)
+        return result
 
     def get_cmdline(self, instruction):
         """Execute with special instructions.
