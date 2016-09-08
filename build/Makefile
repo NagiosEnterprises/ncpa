@@ -1,6 +1,4 @@
 PYTHONVER = python2.7
-PIPVER = pip2.7
-CXFREEZEVER = cx_Freeze-4.3.4
 PYTHONBIN = $(shell which python2.7)
 SPHINXBIN = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION)

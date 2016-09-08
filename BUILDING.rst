@@ -14,7 +14,7 @@ Build Requirements
 ------------------
 
 User Rights
-~~~~~~~~~~~  
+~~~~~~~~~~~
 Administrative privileges are required to install:
 * The Nullsoft Scriptable Install System.
 * OpenSSL for Windows
@@ -28,9 +28,10 @@ Prerequisite Packages
 * OpenSSL for Windows (32-bit) (http://slproweb.com/download/Win32OpenSSL-1_0_2d.exe)
 * Microsoft Visual C++ Compiler for Python 2.7 (http://aka.ms/vcpython27)
 * Microsoft Visual C++ 2010 runtime (32-bit) (http://www.microsoft.com/en-us/download/details.aspx?id=8328)
-* pywin32 (http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win32-py2.7.exe/download)
-* cx_Freeze
 * Nullsoft Scriptable Install System (NSIS) 2.4.6 (http://nsis.sourceforge.net/Download)
+* cx_Freeze (patched)
+* gevent-websocket (patched)
+
 
 Assumptions
 -----------
@@ -82,27 +83,27 @@ Install Prerequisites
   1. Download the installer from http://www.microsoft.com/en-us/download/details.aspx?id=8328
   2. Run the installer. 
 
-* pywin32
-
-  * Install via easy_install::
-
-    "%pydir%\Scripts\easy_install" http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20219/pywin32-219.win32-py2.7.exe
-
-* cx_Freeze
-
-  * Install cx_Freeze via pip::
-
-    "%pydir%\Scripts\pip" install cx_Freeze
-
 * NSIS
 
   1. Download NSIS from http://nsis.sourceforge.net/Download 
   2. Run the NSIS installer.
 
+* cx_Freeze (patched)
+
+  * Install cx_Freeze via the included patched version::
+    ncpa\build\resources\cx_Freeze-4.3.4-patched.tar.gz
+    "%pydir%\python" cx_Freeze-4.3.4\setup.py install
+
+* gevent-websocket (patched)
+
+  * Install gevent-websocket via the included patched version::
+    ncpa\build\resources\gevent-websocket-0.9.5-patched.tar.gz
+    "%pydir%\python" gevent-websocket-0.9.5\setup.py install
+
+
 Set Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-Two variables must be set for the build-setup.bat script to run
-properly:
+Two variables must be set for the win_build_setup.bat script to run properly:
 
 * **pydir**: The root directory of your Python installation.
 
@@ -120,39 +121,12 @@ Set these variables by running::
 
   set pydir=C:\Python27
   set openssldir=C:\OpenSSL-Win32
-  
-Patch cx_Freeze
-~~~~~~~~~~~~~~~
-cx_Freeze interacts poorly with the gevent package used by NCPA due to
-a namespace collision. The cx_Freeze package must be patched for the
-resulting binary to function properly. Without this patch, the build
-will appear to succeed, but the ncpa_listener.exe and ncpa_passive.exe
-executables will crash with an error similar to
-:code:`"AttributeError: 'module' object has no attribute 'path'"` when
-executed. See `cx_Freeze issue #42 <https://bitbucket.org/anthony_tuininga/cx_freeze/issues/42/recent-versions-of-gevent-break#comment-11421289>`_.
-for more details.
 
-1. Navigate to the cx_Freeze directory::
-
-     cd "%pydir%\Lib\site-packages\cx_Freeze"
-
-2. Open freezer.py in your favorite editor::
-
-     vim freezer.py
-
-3. Find the line which reads::
-
-     import imp, os, sys
-
-4. Replace the previous line with the following::
-
-     import imp, sys
-     os = sys.modules['os']
 
 Run the Pre-Build Script
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Run build-setup.bat. You should see some packages installed by pip then
+Run win_build_setup.bat located in build/scripts. You should see some packages installed by pip then
 a message saying "to build ncpa: python build\build_windows.py".
 
 

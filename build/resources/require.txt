@@ -8,5 +8,4 @@ docutils
 pyOpenSSL
 sphinx-bootstrap-theme
 gevent
-gevent-websocket
 cffi==1.5.2

@@ -9,6 +9,8 @@ PYTHONTAR="Python-2.7.12"
 PYTHONVER="python2.7"
 CXFREEZETAR="cx_Freeze-4.3.4-patched"
 CXFREEZEVER="cx_Freeze-4.3.4"
+GWEBSOCKETTAR="gevent-websocket-0.9.5-patched"
+GWEBSOCKETVER="gevent-websocket-0.9.5"
 CXLOGGINGVER="cx_Logging-2.1"
 CXPYGENLIBVER="cx_PyGenLib-3.0"
 PYTHONBIN="/usr/local/bin/python2.7"
@@ -30,7 +32,7 @@ cd $PYTHONTAR && ./configure --with-zlib=/usr/include --enable-shared && make &&
 echo '/usr/local/lib' >> /etc/ld.so.conf 
 /sbin/ldconfig
 
-# Install cx_Freeze patched version
+# Install the patched version of cx_Freeze
 cd ..
 tar xf $CXFREEZETAR.tar.gz
 cd $CXFREEZEVER && $PYTHONBIN setup.py install
@@ -45,11 +47,17 @@ cd ..
 tar xf $CXPYGENLIBVER.tar.gz
 cd $CXPYGENLIBVER && $PYTHONBIN setup.py install
 
+# Install patched version of gevent-websocket
+cd ..
+tar xf $GWEBSOCKETTAR.tar.gz
+cd $GWEBSOCKETVER && $PYTHONBIN setup.py install
+
 # Clean up resource directory
 rm -rf $PYTHONTAR
 rm -rf $CXFREEZEVER
 rm -rf $CXLOGGINGVER
 rm -rf $CXPYGENLIBVER
+rm -rf $GWEBSOCKETVER
 
 # --------------------------
 #  INSTALL PIP
@@ -61,7 +69,7 @@ cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $
 #  INSTALL PIP COMPONENTS
 # --------------------------
 
-$PYTHONBIN -m pip install gevent gevent-websocket flask jinja2 requests pyOpenSSL sphinx docutils sphinx-bootstrap-theme psutil
+$PYTHONBIN -m pip install gevent flask jinja2 requests pyOpenSSL sphinx docutils sphinx-bootstrap-theme psutil
 
 # --------------------------
 #  MISC SETUP
