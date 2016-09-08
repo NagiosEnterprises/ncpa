@@ -105,7 +105,7 @@ class ProcessNode(nodes.LazyNode):
                     else:
                         comp.append(False)
                 elif match == 'regex':
-                    if re.serach(exe, process['exe']):
+                    if re.search(exe, process['exe']):
                         comp.append(True)
                     else:
                         comp.append(False)
@@ -122,7 +122,7 @@ class ProcessNode(nodes.LazyNode):
                     else:
                         comp.append(False)
                 elif match == 'regex':
-                    if re.serach(name, process['name']):
+                    if re.search(name, process['name']):
                         comp.append(True)
                     else:
                         comp.append(False)
