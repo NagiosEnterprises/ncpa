@@ -42,7 +42,8 @@ Changelog
 - Updated output of certain checks to have more information (api/services, api/memory/logical/percent)
 - Updated processes output to include 'mem_percent' since it can be used as a filter
 - Updated processes output of 'mem_rss' and 'mem_vms' to show units and respect the 'units' modifier
-- Updated filtering processes by 'name' and 'exe' field to also be able to use 'match' to do a 'search' type query
+- Updated filtering processes by 'name' and 'exe' field to also be able to use 'match' type (exact, search, or regex)
+- Updated filtering services by 'service' field to allow using the 'match' type too (exact, search, or regex)
 
 **Bug Fixes**
 
