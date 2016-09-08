@@ -15,7 +15,7 @@ Build Requirements
 
 User Rights
 ~~~~~~~~~~~
-Administrative privileges are required to install:
+Administrative privileges are required to install::
 * The Nullsoft Scriptable Install System.
 * OpenSSL for Windows
 * Microsoft Visual C++ 2010 runtime
