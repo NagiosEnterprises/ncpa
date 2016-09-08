@@ -1,6 +1,7 @@
 import psutil
 import nodes
 import logging
+import re
 
 
 class ProcessNode(nodes.LazyNode):
@@ -103,6 +104,11 @@ class ProcessNode(nodes.LazyNode):
                         comp.append(True)
                     else:
                         comp.append(False)
+                elif match == 'regex':
+                    if re.serach(exe, process['exe']):
+                        comp.append(True)
+                    else:
+                        comp.append(False)
                 else:
                     if process['exe'].lower() in exe.lower():
                         comp.append(True)
@@ -112,6 +118,11 @@ class ProcessNode(nodes.LazyNode):
             for name in names:
                 if match == 'search':
                     if name.lower() in process['name'].lower():
+                        comp.append(True)
+                    else:
+                        comp.append(False)
+                elif match == 'regex':
+                    if re.serach(name, process['name']):
                         comp.append(True)
                     else:
                         comp.append(False)

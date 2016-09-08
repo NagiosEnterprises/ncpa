@@ -10,18 +10,41 @@ from stat import ST_MODE,S_IXUSR,S_IXGRP,S_IXOTH
 def filter_services(m):
     def wrapper(*args, **kwargs):
         services = m(*args, **kwargs)
+
+        # Match type for services
+        match = kwargs.get('match', None)
+        if isinstance(match, list):
+            match = match[0]
+
+        # Service names (or partials to match)
         filtered_services = kwargs.get('service', [])
         if not isinstance(filtered_services, list):
             filtered_services = [filtered_services]
+
+        # Filter by status (only really used for checks...)
         filter_statuses = kwargs.get('status', [])
         if not isinstance(filter_statuses, list):
             filter_statuses = [filter_statuses]
+
         if filtered_services or filter_statuses:
             accepted = {}
+
+            # Match filters, do like, or regex
             if filtered_services:
                 for service in filtered_services:
-                    if service in services:
-                        accepted[service] = services[service]
+                    if match == 'search':
+                        for s in services:
+                            if service.lower() in s.lower():
+                                accepted[s] = services[s]
+                    elif match == 'regex':
+                        for s in services:
+                            if re.search(service, s):
+                                accepted[s] = services[s]
+                    else:
+                        if service in services:
+                            accepted[service] = services[service]
+            
+            # Match statuses
             if filter_statuses:
                 for service in services:
                     if services[service] in filter_statuses:
@@ -36,31 +59,32 @@ class ServiceNode(nodes.LazyNode):
     def get_service_method(self, *args, **kwargs):
         uname = platform.uname()[0]
 
-        # look for systemd
-        is_systemctl = False
-        try:
-            process = subprocess.Popen(['which', 'systemctl'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            process.wait()
-            if process.returncode == 0:
-                is_systemctl = True
-        except:
-            pass
-
-        # look for upstart
-        is_upstart = False
-        try:
-            process = subprocess.Popen(['which', 'initctl'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            process.wait()
-            if process.returncode == 0:
-                is_upstart = True
-        except:
-            pass
-
         if uname == 'Windows':
             return self.get_services_via_psutil
         elif uname == 'Darwin':
             return self.get_services_via_launchctl
         else:
+
+            # look for systemd
+            is_systemctl = False
+            try:
+                process = subprocess.Popen(['which', 'systemctl'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                process.wait()
+                if process.returncode == 0:
+                    is_systemctl = True
+            except:
+                pass
+
+            # look for upstart
+            is_upstart = False
+            try:
+                process = subprocess.Popen(['which', 'initctl'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                process.wait()
+                if process.returncode == 0:
+                    is_upstart = True
+            except:
+                pass
+        
             if is_systemctl:
                 return self.get_services_via_systemctl
             elif is_upstart:
