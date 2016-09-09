@@ -21,6 +21,7 @@ Changelog
 - Added admin web GUI section for in-browser viewing of passive checks, process control, etc
 - Added admin_x config values into default ncpa.cfg for Web GUI admin section
 - Added information into api/logs node to explain how to get logs to be populated
+- Added plugins on Unix systems to actually run as the user/group specified in the ncpa.cfg
 
 **Updates**
 
