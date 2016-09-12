@@ -2,9 +2,15 @@
 
 {% block title %}API{% endblock %}
 
+{% block headercss %}
+<link rel='stylesheet' href='/static/css/ea.min.css'>
+{% endblock %}
+
 {% block headerjs %}
+<script src='/static/js/jquery.ea.1.3.5.min.js'></script>
 <script type="text/javascript">
 var TMP_JSON = { };
+var SERVICES = [ ];
 
 $(document).ready(function() {
     
@@ -37,7 +43,7 @@ $(document).ready(function() {
         $('.settings').hide();
         $('.hide-by-default').hide();
         $('.service-settings .list').html('');
-        $('.filter-settings .list').html('');
+        $('.proc-filters .list').html('');
         $('.log-name-selector .list').html('');
         $('.arguments .list').html('');
 
@@ -55,15 +61,28 @@ $(document).ready(function() {
             case 'processes':
                 $('.check-settings').show();
                 $('.wc-thresholds').show();
-                $('.filter-settings').show();
+                $('.proc-filters').show();
                 $('.data-settings').show();
                 $('.data-settings .unit-prefix').show();
                 $('.data-settings .agg').hide();
+                $('.filter-settings').show();
+                $('.combiner').show();
                 break;
             case 'services':
                 $('.service-settings').show();
                 $('.check-settings').show();
                 $('.status-check').show();
+                $('.filter-settings').show();
+                $('.combiner').hide();
+
+                // Get a list of services to use for service filters
+                SERVICES = [];
+                $.get(generate_url(true), { }, function(data) {
+                    var keys = Object.keys(data['services']);
+                    $(keys).each(function(i, obj) {
+                        SERVICES.push({ name: obj });
+                    });
+                });
                 break;
             case 'windowscounters':
                 $('.selector-counters').show();
@@ -383,24 +402,17 @@ function clear_load() {
 }
 
 function add_service_selector() {
-    var select = $('<select>', { class: 'form-control service' });
-    select.append('<option></option>');
+    var filter = '<div class="filter-group"><input type="text" name="service" class="form-control service"></div>';
+    $('.service-settings .list').append(filter);
 
-    // Special output for selecting service(s)
-    $.get(generate_url(true), { }, function(data) {
-        var keys = Object.keys(data['services']);
-        $(keys).each(function(i, obj) {
-            var opt = $('<option>' + obj + '</option>');
-            select.append(opt);
-        });
-    });
-
-    $('.service-settings .list').append(select);
+    // Add autocomplete to selector
+    var options = { data: SERVICES, getValue: 'name' };
+    $('.service-settings .list').find('.service').last().easyAutocomplete(options);
 }
 
 function add_filter_selector() {
     var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 45%; border-right: 0;"><option value="name">name</option><option value="exe">exe</option><option value="mem_percent">mem_percent</option><option value="cpu_percent">cpu_percent</option><option value="mem_vms">mem_vms</option><option value="mem_rss">mem_rss</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 55%;"></div>';
-    $('.filter-settings .list').append(filter);
+    $('.proc-filters .list').append(filter);
 }
 
 function add_log_name_selector(value='') {
@@ -499,17 +511,17 @@ function generate_url(skip_settings=false) {
             }
         });
 
-        // Add on match value if it exists
-        var match = $('select.match').val();
-        if (match != '') {
-            extra += '&match=' + match;
-        }
-
         // Add combiner for all filters applied
         var combiner = $('select.combiner').val();
         if (combiner != '') {
             extra += '&combiner=' + combiner;
         }
+    }
+
+    // Add on match value if it exists
+    var match = $('select.match').val();
+    if (match != '') {
+        extra += '&match=' + match;
     }
 
     // Grab aggregation settings
@@ -756,15 +768,15 @@ function set_log_timeframe_size() {
                     <input type="text" class="form-control windows-counter" placeholder="ex: /TCPv4/Connections Active">
                 </div>
                 <div class="settings service-settings">
-                    <label>Select Service(s)</label>
+                    <label>Service Filter(s)</label>
                     <div class="list"></div>
                     <div>
                         <button type="button" class="btn btn-xs btn-default add-service">
-                            <i class="fa fa-plus"></i> Add Service
+                            <i class="fa fa-plus"></i> Add Filter
                         </button>
                     </div>
                 </div>
-                <div class="settings filter-settings">
+                <div class="settings proc-filters">
                     <label>Process Filter(s) <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: pointer;" title="Process Filtering Options" data-content="<p>You can add multiple filters of the same type and they will be combined using the <b>combiner</b> variable that you can set in <i>Filter Settings</i> below.</p><p><b>name</b> and <b>exe</b> - Value will be matched using the <i>search type</i> setting in <i>Filter Settings</i>. Defaults to exact match.</p><p><b>cpu_percent</b>, <b>mem_percent</b>, <b>mem_rss</b>, <b>mem_vms</b> - These filters can be floats, and will match anything less than or equal to (&lt;=) the value.</p>"></i></label>
                     <div class="list"></div>
                     <div>
@@ -772,7 +784,9 @@ function set_log_timeframe_size() {
                             <i class="fa fa-plus"></i> Add Filter
                         </button>
                     </div>
-                    <label style="margin-top: 15px;">Filter Settings</label>
+                </div>
+                <div class="settings filter-settings">
+                    <label>Filter Settings</label>
                     <div class="input-group combiner" style="margin-bottom: 5px;">
                         <div class="input-group-addon">Combine using <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: pointer;" title="Combine Using And or Or" data-content="<p>This can either be set to <b>and</b> which is the default or to <b>or</b>. This setting determines how to add the filters to the query. When <b>and</b>, each process returned would need to match <i>all</i> supplied filters. If using <b>or</b>, then the matches must match <i>any</i> of the filters.</p>"></i></div>
                         <select class="form-control combiner">
@@ -781,10 +795,11 @@ function set_log_timeframe_size() {
                         </select>
                     </div>
                     <div class="input-group match">
-                        <div class="input-group-addon">Search type <i class="fa fa-question-circle fa-r fa-14 tt-bind" style="cursor: help;" title="Only applies to <b><u>name</u></b> and <b><u>exe</u></b>"></i></div>
+                        <div class="input-group-addon">Filter match type</div>
                         <select class="form-control match">
                             <option value="">exact match</option>
                             <option value="search">search match</option>
+                            <option value="regex">regex match</option>
                         </select>
                     </div>
                 </div>
@@ -814,9 +829,15 @@ function set_log_timeframe_size() {
                             <option value="Ti">Ti</option>
                         </select>
                     </div>
+                    <div class="input-group delta">
+                        <div class="input-group-addon">Delta value</div>
+                        <div>
+                            <input type="checkbox" class="delta" value="1">
+                        </div>
+                    </div>
                 </div>
                 <div class="settings arguments">
-                    <label>Plugin Arguments</label>
+                    <label>Plugin Arguments <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: pointer;" title="Plugin Arguments" data-content="<p>Each plugin argument will be added to the output with a space. An example is below:</p><p><pre>-a 100</pre><pre>-v 'testing'</pre></p><p>The above values in argument fields would create a command for the selected plugin like this:</p><p><pre>./test.sh -a 100 -v 'testing'</pre></p><p><b>Note</b>: You'll notice that each argument is passed into the URL with a <code>/</code> such as <code>/test.sh/-a 100/-v 'testing'</code>.</p>"></i></label>
                     <div class="list"></div>
                     <div>
                         <button type="button" class="btn btn-xs btn-default add-argument">

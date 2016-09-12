@@ -5,6 +5,7 @@ body { padding-top: 50px; font-size: 1.2rem; font-family: verdana, sans-serif; }
 .fa-l { margin-right: 2px; }
 .fa-r { margin-left: 2px; }
 .fa-14 { font-size: 13px; }
+.fa-btn { font-size: 14px; vertical-align: middle; }
 
 /* Loader CSS */
 .spinner {
