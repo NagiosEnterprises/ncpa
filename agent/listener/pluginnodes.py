@@ -1,4 +1,6 @@
 import os
+import pwd
+import grp
 import logging
 import nodes
 import ConfigParser
@@ -93,8 +95,22 @@ class PluginNode(nodes.RunnableNode):
     @staticmethod
     def demote(user_uid, user_gid):
         def result():
-            os.setgid(user_gid)
-            os.setuid(user_uid)
+
+            # Grab the uid if it's not specifically defined
+            uid = user_uid
+            if not isinstance(user_uid, int):
+                u = pwd.getpwnam(user_uid)
+                uid = u.pw_uid
+
+            # Grab the gid if not specifically defined
+            gid = user_gid
+            if not isinstance(user_gid, int):
+                g = grp.getgrnam(user_gid)
+                gid = g.gr_gid
+
+            # Set the actual uid and gid
+            os.setgid(gid)
+            os.setuid(uid)
         return result
 
     def get_cmdline(self, instruction):

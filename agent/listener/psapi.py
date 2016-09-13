@@ -54,10 +54,10 @@ def make_mountpoint_nodes(partition_name):
     # Unix specific inode counter ~ sorry Windows! :'(
     if environment.SYSTEM != 'Windows':
         st = os.statvfs(mountpoint)
-        iu = st.f_files - st.f_ffiles
+        iu = st.f_files - st.f_ffree
         inodes = RunnableNode('inodes', method=lambda: (st.f_files, 'inodes'))
         inodes_used = RunnableNode('inodes_used', method=lambda: (iu, 'inodes'))
-        inodes_free = RunnableNode('inodes_free', method=lambda: (st.f_ffiles, 'inodes'))
+        inodes_free = RunnableNode('inodes_free', method=lambda: (st.f_ffree, 'inodes'))
         node_children.append(inodes)
         node_children.append(inodes_used)
         node_children.append(inodes_free)
