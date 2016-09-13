@@ -152,7 +152,9 @@ class RunnableNode(ParentNode):
 
         if delta:
             self.delta = True
+            self.unit = self.unit + '/sec'
             values = self.deltaize_values(values, accessor)
+
         return values
 
     def get_adjusted_scale(self, values, request_args):
@@ -252,11 +254,6 @@ class RunnableNode(ParentNode):
 
         if capitalize:
             proper_name = proper_name.capitalize()
-
-        if self.delta:
-            nice_unit = '%s/sec' % self.unit
-        else:
-            nice_unit = '%s' % self.unit
 
         if not isinstance(values, (list, tuple)):
             values = [values]
@@ -369,7 +366,12 @@ class RunnableNode(ParentNode):
 
         #Calculate the return value and return it
         delta = time.time() - last_modified
-        return [abs((x - y) / delta) for x, y in itertools.izip(loaded_values, values)]
+        dvalues = [round(abs((x - y) / delta), 2) for x, y in itertools.izip(loaded_values, values)]
+
+        if len(dvalues) == 1:
+            dvalues = dvalues[0]
+
+        return dvalues
 
     @staticmethod
     def adjust_scale(self, values, units):
