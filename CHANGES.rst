@@ -22,6 +22,7 @@ Changelog
 - Added admin_x config values into default ncpa.cfg for Web GUI admin section
 - Added information into api/logs node to explain how to get logs to be populated
 - Added plugins on Unix systems to actually run as the user/group specified in the ncpa.cfg
+- Added '/s' onto the unit when using the delta argument outside of checks
 
 **Updates**
 

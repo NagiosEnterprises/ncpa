@@ -152,7 +152,7 @@ class RunnableNode(ParentNode):
 
         if delta:
             self.delta = True
-            self.unit = self.unit + '/sec'
+            self.unit = self.unit + '/s'
             values = self.deltaize_values(values, accessor)
 
         return values
