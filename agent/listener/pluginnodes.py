@@ -1,6 +1,4 @@
 import os
-import pwd
-import grp
 import logging
 import nodes
 import ConfigParser
@@ -11,6 +9,18 @@ import copy
 import Queue
 import environment
 from threading import Timer
+
+# Windows does not have the pwd and grp module and does not need it since only Unix
+# uses these modules to change permissions.
+try:
+    import pwd
+except ImportError:
+    pass
+
+try:
+    import grp
+except ImportError:
+    pass
 
 class PluginNode(nodes.RunnableNode):
 
