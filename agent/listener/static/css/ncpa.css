@@ -78,7 +78,7 @@ input[type=checkbox], input[type=radio] { margin: 2px 0 0; }
 input.form-control, select.form-control, .btn { font-size: 1.2rem; }
 .input-group-addon { border-radius: 0; }
 .popover, .popover h3, .input-group-addon { font-size: 1.2rem; }
-.input-group-addon i.fa-question-circle { font-size: 1.3rem; cursor: help; }
+i.fa-question-circle { font-size: 1.3rem; cursor: pointer; }
 .form-control[readonly] { background-color: #FFF; }
 .dropdown-menu { font-size: 1.2rem; border-radius: 0; box-shadow: none; width: 100%; }
 .dropdown-menu > li > a { padding: 3px 12px 3px 9px; cursor: pointer; }
@@ -135,3 +135,5 @@ pre { border-radius: 0; padding: 0.4rem 0.6rem; }
 
 a.example { cursor: pointer; margin: 0 2px; }
 a.log-example { cursor: pointer; }
+
+.white-box { display: inline-block; background-color: #FFF; border: 1px solid #CCC; width: 34px; height: 30px; line-height: 28px; text-align: center; }

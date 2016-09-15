@@ -41,7 +41,7 @@ function load_interface() {
     $.getJSON(INTERFACE_API, function(d) {
         $.each(d['interface'], function(key) {
 
-            if (key.indexOf("isatap") != -1) {
+            if (key.indexOf("isatap") != -1 || key.indexOf("Loopback") != -1) {
                 return;
             }
 

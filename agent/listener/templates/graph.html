@@ -94,16 +94,11 @@
                 all.push(lmean);
                 asum = all.reduce(function(a, b) {return a+b});
                 amean = asum / all.length;
-
-                if (delta) {
-                    units += '/s';
-                }
-
+                
                 td_min.text(min.toFixed(2) + ' ' + units);
                 td_max.text(max.toFixed(2) + ' ' + units);
                 td_cur.text(lmean.toFixed(2) + ' ' + units);
                 td_avg.text(amean.toFixed(2) + ' ' + units);
-
             };
 
             var websocket_thread;

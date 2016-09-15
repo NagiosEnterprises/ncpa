@@ -162,14 +162,14 @@ $(document).ready(function() {
         </div>
 
         <div class="input-group fl" style="width: 100px; margin-left: 20px;">
-            <label class="input-group-addon">Delta <i class="fa fa-question-circle"></i></label>
-            <span style="display: inline-block; background-color: #FFF; border: 1px solid #CCC; width: 30px; height: 30px; line-height: 28px; text-align: center;">
+            <label class="input-group-addon">Delta <i class="fa fa-question-circle pop-bind" title="Delta Values" data-content="When using the delta setting, the value given will be calculated 'per second' and will update the units to show this change. Only certain endpoints allow for delta values."></i></label>
+            <span class="white-box">
                 <input type="checkbox" id="delta" style="vertical-align: middle; margin: 0;" value="1">
             </span>
         </div>
 
         <div class="input-group fl" style="width: 140px; margin-left: 20px;">
-            <label class="input-group-addon">Unit Prefix</label>
+            <label class="input-group-addon">Unit prefix</label>
             <select id="unit_prefix" class="form-control">
                 <option></option>
                 <option>k</option>
