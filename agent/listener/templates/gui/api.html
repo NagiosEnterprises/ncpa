@@ -57,6 +57,7 @@ $(document).ready(function() {
                 $('.data-settings').show();
                 $('.data-settings .unit-prefix').show();
                 $('.data-settings .agg').hide();
+                $('.data-settings .delta-box').hide();
                 break;
             case 'processes':
                 $('.check-settings').show();
@@ -65,6 +66,7 @@ $(document).ready(function() {
                 $('.data-settings').show();
                 $('.data-settings .unit-prefix').show();
                 $('.data-settings .agg').hide();
+                $('.data-settings .delta-box').hide();
                 $('.filter-settings').show();
                 $('.combiner').show();
                 break;
@@ -190,6 +192,7 @@ $(document).ready(function() {
                         $('.data-settings .agg').show();
                         $('.data-settings .unit-prefix').hide();
                     } else {
+                        $('.data-settings .delta-box').show();
                         $('.data-settings').hide();
                     }
                     $('.check-settings').show();
@@ -216,6 +219,15 @@ $(document).ready(function() {
                         $(keys).each(function(i, val) {
                             endselect.append('<option>' + val + '</option>');
                         });
+
+                        endselect.change(function() {
+                            if ($(this).val() == '') {
+                                $('.data-settings .delta-box').hide();
+                            } else {
+                                $('.data-settings .delta-box').show();
+                            }
+                        });
+
                         if ($('.selector .memory-end-node').length > 0) {
                             $('.selector .memory-end-node').replaceWith(endselect);
                         } else {
@@ -225,6 +237,7 @@ $(document).ready(function() {
                 } else {
                     clear_settings();
                     $('.check-settings').hide();
+                    $('.data-settings .delta-box').hide();
                     $('.selector .memory-end-node').remove();
                 }
                 break;
@@ -248,12 +261,19 @@ $(document).ready(function() {
 
                         // Add change selector to show data settings or not
                         endselect.change(function() {
+                            if ($(this).val() == '') {
+                                $('.data-settings .delta-box').hide();
+                                $('.data-settings').hide();
+                            } else {
+                                $('.data-settings .delta-box').show();
+                                $('.data-settings').show();
+                            }
                             var show_data = ['', 'bytes_recv', 'bytes_sent'];
                             if (show_data.indexOf($(this).val()) == -1) {
-                                $('.data-settings').hide();
                                 $('.data-settings .units').val('');
+                                $('.data-settings .unit-prefix').hide();
                             } else {
-                                $('.data-settings').show();
+                                $('.data-settings .unit-prefix').show();
                             }
                         });
 
@@ -288,6 +308,7 @@ $(document).ready(function() {
                     $('.data-settings .agg').hide();
                     if (selected == 'mount') {
                         $('.check-settings').hide();
+                        $('.data-settings .delta-box').hide();
                         break;
                     }
                     var url = generate_url(true);
@@ -315,6 +336,12 @@ $(document).ready(function() {
                                     endselect.append('<option>' + val + '</option>');
                                 });
                                 endselect.change(function() {
+                                    var x = $(this).val();
+                                    if (x != '' && x != 'opts' && x != 'fstype') {
+                                        $('.data-settings .delta-box').show();
+                                    } else {
+                                        $('.data-settings .delta-box').hide();
+                                    }
                                     reload_api_browser();
                                 });
                             } else {
@@ -322,6 +349,7 @@ $(document).ready(function() {
                                 $('.check-settings').hide();
                             }
                             $('.selector-disk .end-node').replaceWith(endselect);
+                            $('.data-settings .delta-box').hide();
                             reload_api_browser();
                         });
 
@@ -332,6 +360,7 @@ $(document).ready(function() {
                 } else {
                     $('.check-settings').hide();
                 }
+                $('.data-settings .delta-box').hide();
                 break;
         }
         reload_api_browser();
@@ -834,10 +863,12 @@ function set_log_timeframe_size() {
                             <option value="Ti">Ti</option>
                         </select>
                     </div>
-                    <div class="input-group delta" style="margin-top: 5px;">
-                        <label class="input-group-addon">Delta <i class="fa fa-question-circle pop-bind" title="Delta Values" data-content="When using the delta setting, the value given will be calculated 'per second' and will update the units to show this change. Only certain endpoints allow for delta values."></i></label>
-                        <div class="white-box">
-                            <input type="checkbox" class="delta" value="1" style="vertical-align: middle; margin: 0;">
+                    <div class="delta-box hide">
+                        <div class="input-group delta" style="margin-top: 5px;">
+                            <label class="input-group-addon">Delta <i class="fa fa-question-circle pop-bind" title="Delta Values" data-content="When using the delta setting, the value given will be calculated 'per second' and will update the units to show this change. Only certain endpoints allow for delta values."></i></label>
+                            <div class="white-box">
+                                <input type="checkbox" class="delta" value="1" style="vertical-align: middle; margin: 0;">
+                            </div>
                         </div>
                     </div>
                 </div>
