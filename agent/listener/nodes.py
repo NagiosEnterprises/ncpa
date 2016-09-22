@@ -262,9 +262,9 @@ class RunnableNode(ParentNode):
         for x in values:
             try:
                 if isinstance(x, int):
-                    nice_values.append('%d %s' % (x, nice_unit))
+                    nice_values.append('%d %s' % (x, self.unit))
                 else:
-                    nice_values.append('%0.2f %s' % (x, nice_unit))
+                    nice_values.append('%0.2f %s' % (x, self.unit))
             except TypeError:
                 logging.info('Did not receive normal values. Unable to find meaningful check.')
                 return 0, 'OK: %s was %s' % (proper_name, str(values))
