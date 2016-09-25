@@ -1,4 +1,6 @@
 body { padding-top: 50px; font-size: 1.2rem; font-family: verdana, sans-serif; }
+a { color: #4d89f9; }
+a:hover, a:focus, a:active { text-decoration: underline; color: #1b59cd; }
 .fl { float: left; }
 .fr { float: right; }
 .clear { clear: both; }
