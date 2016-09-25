@@ -14,12 +14,12 @@
         var delta = !!{{ delta }};
         var query_string = '{{ query_string }}';
         var graph_title = $('#graph-{{ graph_hash }}-title');
-        var default_smoothie = {maxValue: 100,
-                                minValue: 0,
-                                millisPerPixel: 40,
-                                labels: { fillStyle: '#OOO' },
-                                interpolation: 'bezier',
-                                grid: { fillStyle:'#FFF', strokeStyle:'#F8F8F8', sharpLines:true, borderVisible:false,verticalSections:6}};
+        var default_smoothie = { maxValue: 100,
+                                 minValue: 0,
+                                 millisPerPixel: 40,
+                                 labels: { fillStyle: '#OOO' },
+                                 interpolation: 'bezier',
+                                 grid: { fillStyle: '#FFF', strokeStyle: '#F8F8F8', sharpLines: true, borderVisible: false, verticalSections: 6 }};
 
         var get_ws_address = function() {
             var loc = window.location;
@@ -116,7 +116,7 @@
             });
 
             $.each(lines, function(i) {
-                smoothie.addTimeSeries(lines[i], {lineWidth: 1, strokeStyle: '#000', fillStyle: 'rgba(0,0,0,0.1)'});
+                smoothie.addTimeSeries(lines[i], { lineWidth: 1, strokeStyle: '#4d89f9', fillStyle: 'rgba(77,137,249,0.15)' });
             });
             smoothie.streamTo(document.getElementById('canvas-{{ graph_hash }}'), 1000);
         });
