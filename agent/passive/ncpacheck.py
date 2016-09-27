@@ -2,8 +2,12 @@ import logging
 import json
 import urllib
 import urlparse
+import time
+import hashlib
 import listener.server
 
+# Constants to keep track of the passive check runs 
+NEXT_RUN = { }
 
 class NCPACheck(object):
     """
@@ -18,12 +22,18 @@ class NCPACheck(object):
     child classes and running the results.
     """
 
-    def __init__(self, config, instruction, hostname, servicename):
+    def __init__(self, config, instruction, hostname, servicename, duration):
         logging.debug('Initializing NCPA check with %s', instruction)
         self.config = config
         self.hostname = hostname
         self.servicename = servicename
         self.instruction = instruction
+        self.duration = float(duration)
+
+        # Set the next run for this specific check
+        key = hashlib.sha256(self.hostname + self.servicename).hexdigest()
+        if not key in NEXT_RUN:
+            NEXT_RUN[key] = 0
 
     @staticmethod
     def get_api_url_from_instruction(instruction):
@@ -50,7 +60,7 @@ class NCPACheck(object):
         logging.debug('Determined instruction to be: %s', instruction)
         return api_url, api_args
 
-    def run(self):
+    def run(self, default_duration=300):
         """
         The primary method for running an NCPA check. Once the method has been
         instantiated this is the only function you should run.
@@ -101,6 +111,28 @@ class NCPACheck(object):
             response_json = '{}'
 
         return response_json
+
+    def needs_to_run(self):
+        """
+        Check if we need to run the check again, or if it was ran within it's duration
+        """
+        key = hashlib.sha256(self.hostname + self.servicename).hexdigest()
+        nrun = NEXT_RUN[key]
+
+        logging.debug('Next run set to be at %s', nrun)
+        if nrun <= time.time():
+            return True
+        return False
+
+    def set_next_run(self, run_time):
+        """
+        Set next run time to the duration given or the default duration set in ncpa.cfg
+        """
+        key = hashlib.sha256(self.hostname + self.servicename).hexdigest()
+
+        NEXT_RUN[key] = run_time + self.duration
+        logging.debug('Next run is %s', NEXT_RUN[key])
+        return
 
     @staticmethod
     def handle_agent_response(response):

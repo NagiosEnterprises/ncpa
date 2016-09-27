@@ -179,7 +179,6 @@ class Listener(Base):
         logging.info("Parsed config from: %s" % str(self.config_filenames))
         logging.info("Looking for plugins at: %s" % self.abs_plugin_path)
 
-
 class Passive(Base):
 
     def run_all_handlers(self, *args, **kwargs):
@@ -191,6 +190,7 @@ class Passive(Base):
         - Terminate in a timely fashion
         """
         handlers = self.config.get('passive', 'handlers').split(',')
+        run_time = time.time()
 
         # Empty passive handlers will skip trying to run any handlers
         if handlers[0] == 'None' or handlers[0] == '':
@@ -209,7 +209,7 @@ class Passive(Base):
             else:
                 try:
                     ins_handler = tmp_handler.Handler(self.config)
-                    ins_handler.run()
+                    ins_handler.run(run_time)
                     logging.debug('Successfully ran handler %s' % handler)
                 except Exception as e:
                     logging.exception(e)
@@ -239,8 +239,7 @@ class Passive(Base):
         try:
             while True:
                 self.run_all_handlers()
-                wait_time = self.config.getint('passive', 'sleep')
-                time.sleep(wait_time)
+                time.sleep(1)
         except Exception, e:
             logging.exception(e)
 

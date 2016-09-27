@@ -21,6 +21,7 @@ class Passive(ncpadaemon.Daemon):
         - Terminate in a timely fashion
         """
         handlers = self.config_parser.get('passive', 'handlers').split(',')
+        run_time = time.time()
 
         # Empty passive handlers will skip trying to run any handlers
         if handlers[0] == 'None' or handlers[0] == '':
@@ -38,7 +39,7 @@ class Passive(ncpadaemon.Daemon):
             else:
                 try:
                     ins_handler = tmp_handler.Handler(self.config_parser)
-                    ins_handler.run()
+                    ins_handler.run(run_time)
                     logging.debug(u'Successfully ran handler %s' % handler)
                 except Exception as e:
                     logging.exception(e)
@@ -63,8 +64,7 @@ class Passive(ncpadaemon.Daemon):
         try:
             while True:
                 self.run_all_handlers()
-                sleep = int(self.config_parser.get('passive', 'sleep'))
-                time.sleep(sleep)
+                time.sleep(1)
         except Exception, e:
             logging.exception(e)
             
