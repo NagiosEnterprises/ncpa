@@ -7,6 +7,11 @@ import OpenSSL
 import socket
 import os
 import time
+import appdirs
+import packaging
+import packaging.version
+import packaging.specifiers
+import packaging.requirements
 
 
 def create_self_signed_cert(cert_dir, cert_file, key_file):
