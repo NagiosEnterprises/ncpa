@@ -9,3 +9,5 @@ pyOpenSSL
 sphinx-bootstrap-theme
 gevent
 cffi==1.5.2
+appdirs
+packaging
