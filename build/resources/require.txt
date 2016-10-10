@@ -1,13 +1,13 @@
 psutil
 requests
 Jinja2
-flask==0.10.1
+flask
 werkzeug
 sphinx
 docutils
 pyOpenSSL
 sphinx-bootstrap-theme
 gevent
-cffi==1.5.2
+cffi
 appdirs
 packaging
