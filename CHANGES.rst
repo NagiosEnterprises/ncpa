@@ -74,6 +74,7 @@ Changelog
 - Fixed check output formatting on parent nodes when running multi-checks
 - Fixed device_name on api/disk/logical node when units passed giving an error
 - Fixed perfdata output for windows log checks
+- Fixed issue on Mac OS X where running as nagios (default) would cause process data not to show
 
 **Deprecated**
 
