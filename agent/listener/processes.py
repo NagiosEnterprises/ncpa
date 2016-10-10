@@ -166,6 +166,11 @@ class ProcessNode(nodes.LazyNode):
             exe = 'Unknown'
 
         try:
+            username = process.username()
+        except BaseException:
+            username = 'Unknown'
+
+        try:
             # Check if process pid is in ps_procs
             if pid in ps_procs:
                 proc = ps_procs.get(pid)
@@ -201,8 +206,10 @@ class ProcessNode(nodes.LazyNode):
             #logging.exception(exc)
             mem_rss, mem_vms = (0, 'B'), (0, 'B')
 
-        return {'name': name,
+        return {'pid': int(pid),
+                'name': name,
                 'exe': exe,
+                'username': username,
                 'cpu_percent': (cpu_percent, '%'),
                 'mem_percent': (mem_percent, '%'),
                 'mem_rss': mem_rss,

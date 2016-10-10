@@ -8,7 +8,7 @@
         var highlight = '{{ highlight }}';
         var plbody = $('table.processes tbody');
         var plhead = $('table.processes thead tr#titles')
-        var order = ['pid', 'name', 'username', 'cpu_percent', 'memory_percent'];
+        var order = ['pid', 'name', 'username', 'cpu_percent', 'mem_percent'];
         var current_pl = [];
 
         $('#highlight-input').on('keyup', function(e) {
@@ -90,7 +90,7 @@
                         create_plbody(current_pl);
                     });
                 }
-                if (order[i] == 'memory_percent') {                    
+                if (order[i] == 'mem_percent') {                    
                     th.append(s);
                     th.click(function() {
                         $('.signia').hide();
@@ -107,20 +107,20 @@
         }
         
         var cpu_compare = function(a, b) {
-            if (a.cpu_percent < b.cpu_percent) {
+            if (a.cpu_percent[0] < b.cpu_percent[0]) {
                 return 1
             }
-            if (a.cpu_percent > b.cpu_percent) {
+            if (a.cpu_percent[0] > b.cpu_percent[0]) {
                 return -1
             }
             return 0;
         }
         
         var mem_compare = function(a, b) {
-            if (a.memory_percent < b.memory_percent) {
+            if (a.mem_percent[0] < b.mem_percent[0]) {
                 return 1
             }
-            if (a.memory_percent > b.memory_percent) {
+            if (a.mem_percent[0] > b.mem_percent[0]) {
                 return -1
             }
             return 0;
@@ -147,14 +147,18 @@
                 var p = pl[i];
                 var tr = $('<tr>', {id: p.pid});
                 $.each(order, function(j) {
-                    var td = $('<td>', {text: p[order[j]]});
+                    var data = p[order[j]];
+                    if (data.constructor === Array) {
+                        data = data[0];
+                    }
+                    var td = $('<td>', { text: data });
                     if (highlight != null && order[j] == 'name' && p[order[j]].indexOf(highlight) > -1) {
                         tr.addClass('highlight');
                     }
-                    if ((order[j] == 'cpu_percent' || order[j] == 'memory_percent') && critical > 0 && p[order[j]] > critical) {
+                    if ((order[j] == 'cpu_percent' || order[j] == 'mem_percent') && critical > 0 && p[order[j]] > critical) {
                         td.addClass('critical');
                     }
-                    else if ((order[j] == 'cpu_percent' || order[j] == 'memory_percent') && warning > 0 && p[order[j]] > warning) {
+                    else if ((order[j] == 'cpu_percent' || order[j] == 'mem_percent') && warning > 0 && p[order[j]] > warning) {
                         td.addClass('warning');
                     }
                     tr.append(td);    

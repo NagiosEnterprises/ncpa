@@ -44,6 +44,13 @@ else:
 listener.jinja_env.line_statement_prefix = '#'
 
 
+@listener.context_processor
+def inject_variables():
+    admin_gui_access = int(listener.config['iconfig'].get('listener', 'admin_gui_access'))
+    values = { 'admin_visible': admin_gui_access }
+    return values
+
+
 def make_info_dict():
     now = datetime.datetime.now()
     uptime = unicode(now - __STARTED__)
@@ -82,6 +89,12 @@ def requires_auth(f):
 def requires_admin_auth(f):
     @functools.wraps(f)
     def decorated2(*args, **kwargs):
+
+        # Check if access to admin is okay
+        admin_gui_access = int(listener.config['iconfig'].get('listener', 'admin_gui_access'))
+        if not admin_gui_access:
+            return redirect(url_for('gui_index'))
+
         try:
             admin_password = listener.config['iconfig'].get('listener', 'admin_password')
         except Exception as e:
@@ -296,11 +309,14 @@ def top_websocket():
             load = psutil.cpu_percent()
             vir_mem = psutil.virtual_memory().percent
             swap_mem = psutil.swap_memory().percent
-            processes = processes.get_process_dict()
+            pnode = processes.get_node()
+            procs = pnode.get_process_dict()
 
             process_list = []
 
-            for process in processes:
+            for process in procs:
+                if process['pid'] == 0:
+                    continue
                 process_list.append(process)
 
             json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
