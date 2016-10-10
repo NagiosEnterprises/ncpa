@@ -14,6 +14,8 @@ import re
 import psutil
 import gevent
 import geventwebsocket
+import processes
+
 
 __VERSION__ = '2.0.0.a'
 __STARTED__ = datetime.datetime.now()
@@ -294,32 +296,12 @@ def top_websocket():
             load = psutil.cpu_percent()
             vir_mem = psutil.virtual_memory().percent
             swap_mem = psutil.swap_memory().percent
-            processes = psutil.process_iter()
+            processes = processes.get_process_dict()
+
             process_list = []
 
             for process in processes:
-                if process.pid == 0:
-                    continue
-
-                process_dict = process.as_dict(['username', 'name', 'pid'])
-
-                # Set these to unknown and 0 if they fail
-                if not process_dict['name']:
-                    process_dict['name'] = "unknown"
-                if not process_dict['username']:
-                    process_dict['username'] = "unknown"
-                if not process_dict['pid']:
-                    process_dict['pid'] = 0
-
-                try:
-                    process_dict['memory_percent'] = round(process.memory_percent(), 2)
-                    process_dict['cpu_percent'] = round(process.cpu_percent() / psutil.cpu_count(), 2)
-                except:
-                    # Mac OS X has problems reading processes that are zombies
-                    process_dict['memory_percent'] = 0.00
-                    process_dict['cpu_percent'] = 0.00
-                
-                process_list.append(process_dict)
+                process_list.append(process)
 
             json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
             try:

@@ -2,6 +2,9 @@ import psutil
 import nodes
 import logging
 import re
+import platform
+import tempfile
+import subprocess
 
 
 class ProcessNode(nodes.LazyNode):
@@ -149,7 +152,9 @@ class ProcessNode(nodes.LazyNode):
         return proc_filter
 
     @staticmethod
-    def standard_form(self, process, units='', sleep=None):
+    def standard_form(self, process, ps_procs, units='', sleep=None):
+        pid = str(process.pid)
+
         try:
             name = process.name()
         except BaseException:
@@ -161,12 +166,22 @@ class ProcessNode(nodes.LazyNode):
             exe = 'Unknown'
 
         try:
-            cpu_percent = round(process.cpu_percent(sleep) / psutil.cpu_count(), 2)
+            # Check if process pid is in ps_procs
+            if pid in ps_procs:
+                proc = ps_procs.get(pid)
+                cpu_percent = proc[0]
+            else:
+                cpu_percent = round(process.cpu_percent(sleep) / psutil.cpu_count(), 2)
         except BaseException:
             cpu_percent = 0
 
         try:
-            mem_percent = round(process.memory_percent(), 2)
+            # Check if process pid is in ps_procs
+            if pid in ps_procs:
+                proc = ps_procs.get(pid)
+                mem_percent = proc[1]
+            else:
+                mem_percent = round(process.memory_percent(), 2)
         except BaseException:
             mem_percent = 0;
 
@@ -198,17 +213,37 @@ class ProcessNode(nodes.LazyNode):
         sleep = self.get_sleep(kwargs)
         proc_filter = self.make_filter(*args, **kwargs)
         processes = []
+        ps_procs = {}
+
+        # Mac OS X requires using ps command to get cpu/memory data (as nagios)
+        uname = platform.uname()[0]
+        if uname == 'Darwin':
+            ps_out = tempfile.TemporaryFile()
+            procs = subprocess.Popen(['ps', 'aux'], stdout=ps_out)
+            procs.wait()
+            ps_out.seek(0)
+            
+            # The first line is the header
+            ps_out.readline()
+
+            # Loop through each line and get data on procs then find the matching
+            # proc in the psutils data and give the cpu/memory usage to it
+            for line in ps_out.readlines():
+                cols = line.split()
+                ps_procs[cols[1]] = [cols[2], cols[3]]
+
+        #print ps_procs
 
         for process in psutil.process_iter():
             try:
-                process_json = self.standard_form(self, process, units[0], sleep)
-                if proc_filter(process_json):
-                    processes.append(process_json)
-            except Exception as exc:
+                proc_obj = self.standard_form(self, process, ps_procs, units[0], sleep)
+                if proc_filter(proc_obj):
+                    processes.append(proc_obj)
+            except Exception as e:
                 # Could not access process, most likely because of windows permissions
-                #logging.exception(exc)
+                logging.exception(e)
                 continue
-        
+
         return processes
 
     def walk(self, *args, **kwargs):
