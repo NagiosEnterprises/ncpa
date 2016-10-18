@@ -9,6 +9,16 @@ a:hover, a:focus, a:active { text-decoration: underline; color: #1b59cd; }
 .fa-14 { font-size: 13px; }
 .fa-btn { font-size: 14px; vertical-align: middle; }
 
+.console { font-family: "Consolas", "Courier New", Courier, monospace; }
+.tab-content { padding: 2rem; }
+.passive-check-box { margin-bottom: 1rem; }
+
+pre, code { border-radius: 0; }
+code { color: #4089F9; background-color: #ecf4ff; }
+.bold { font-weight: bold; }
+.modal-body p:last-child { margin-bottom: 0; }
+.modal-dialog { margin: 10rem auto;  }
+
 /* Loader CSS */
 .spinner {
   margin: 100px auto 0;

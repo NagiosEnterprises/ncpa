@@ -27,6 +27,18 @@ $(document).ready(function() {
         set_log_timeframe_size();
     });
 
+    // When selecting "view in different format"
+    $('.show-check').click(function() {
+        var type = $(this).data('type');
+        if (type == 'passive') {
+            generate_passive_check();
+            $('.passive-check-modal').modal('show');
+        } else {
+            generate_active_check();
+            $('.active-check-modal').modal('show');
+        }
+    });
+
     // Definitely not the best way to do this, but simple enough to understand, essentially
     // whatever is selected gets set as submod which will then show or hide special settings that
     // can be used on the node that was selected.
@@ -457,12 +469,8 @@ function add_argument() {
     $('.arguments .list').append(arg);
 }
 
-function generate_url(skip_settings=false) {
-    var api = window.location.protocol + '//' + window.location.hostname;
-    if (window.location.port) {
-        api += ':' + window.location.port;
-    }
-    api += '/api';
+function get_api_endpoints() {
+    var api = '';
 
     // Add module to api call
     var module = $('#module').val();
@@ -511,6 +519,18 @@ function generate_url(skip_settings=false) {
             });
         }
     }
+
+    return api;
+}
+
+function generate_url(skip_settings=false) {
+    var api = window.location.protocol + '//' + window.location.hostname;
+    if (window.location.port) {
+        api += ':' + window.location.port;
+    }
+    api += '/api';
+
+    api += get_api_endpoints(); 
 
     if (skip_settings) {
         return api;
@@ -701,6 +721,64 @@ function set_log_timeframe_size() {
         width = width - 100 - $('.input-group.timeframe .input-group-addon').outerWidth();
         $('.input-group.timeframe input').css('width', width);
     }
+}
+
+function generate_active_check() {
+    $('.active-check-out').html('...');
+    var active = "python ./check_ncpa.py -H &lt;ncpa server&gt; -t '&lt;your token&gt;'";
+
+    // Run the active checck and get the result
+    var url = generate_url();
+    $.get(url, { }, function(data) {
+        if (data) {
+            $('.active-check-out').html(data.stdout);
+        }
+    }, 'json');
+
+    // Grab the current endpoint and set it as -M
+    var api = get_api_endpoints();
+    api = api.slice(1, api.length);
+    active += " -M '" + api + "'";
+
+    var warn = $('.warn').val();
+    var crit = $('.crit').val();
+    if (warn) { active += ' -w ' + warn; }
+    if (crit) { active += ' -c ' + crit; }
+
+    var aggregate = $('.aggregate').val();
+    var units = $('.units').val();
+    var unit = $('.unit').val();
+    var delta = $('.delta').is(':checked');
+    if (aggregate) { active += " -q 'aggregate=" + aggregate + "'"; }
+    if (units) { active += ' --units ' + units; }
+    if (unit) { active += ' --unit ' + unit; }
+    if (delta) { active += ' --delta 1'; }
+
+    $('.active-check-val').html(active);
+}
+
+function generate_passive_check() {
+    var passive = '%HOSTNAME%|&lt;service name&gt; = ';
+
+    // Get the values that we need to make the passive check definition
+    var api = get_api_endpoints();
+    passive += api;
+
+    var warn = $('.warn').val();
+    var crit = $('.crit').val();
+    if (warn) { passive += ' --warning ' + warn; }
+    if (crit) { passive += ' --critical ' + crit; }
+
+    var aggregate = $('.aggregate').val();
+    var units = $('.units').val();
+    var unit = $('.unit').val();
+    var delta = $('.delta').is(':checked');
+    if (aggregate) { passive += ' --aggregate ' + aggregate; }
+    if (units) { passive += ' --units ' + units; }
+    if (unit) { passive += ' --unit ' + unit; }
+    if (delta) { passove += ' --delta 1'; }
+
+    $('.passive-check-val').html(passive);
 }
 </script>
 {% endblock %}
@@ -922,8 +1000,8 @@ function set_log_timeframe_size() {
             <div class="btn-check-ncpa btn-group dropup">
                 <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-external-link-square fa-l"></i> View in alternate format <i class="fa fa-chevron-up fa-r"></i></button>
                 <ul class="dropdown-menu">
-                    <li><a>As active check using <em>check_ncpa.py</em></a></li>
-                    <li><a>As passive check config definition</a></li>
+                    <li><a class="show-check" data-type="active">As active check using <em>check_ncpa.py</em></a></li>
+                    <li><a class="show-check" data-type="passive">As passive check config definition</a></li>
                 </ul>
             </div>
         </div>
@@ -942,4 +1020,46 @@ function set_log_timeframe_size() {
         </div>
     </div>
 </div>
+
+<div class="modal active-check-modal" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Active Check Example</h4>
+            </div>
+            <div class="modal-body">
+                <p>Running the following active check from the command line:</p>
+                <pre class="active-check-val"></pre>
+                <p>Would result in the following output:</p>
+                <pre class="active-check-out">...</pre>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal passive-check-modal" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Passive Check Example</h4>
+            </div>
+            <div class="modal-body">
+                <p>You can create a passive check using the following example. We recommend putting your passive checks in a file called something like <code>passive.cfg</code> in the <code>&lt;ncpa path&gt;/etc/ncpa.cfg.d</code> folder. You must add in the <code>[passive directives]</code> header before adding the definitions. Default installs of NCPA come with an <code>example.cfg</code> that shows what a basic passive check setup looks like.</p>
+                <pre class="passive-check-val"></pre> 
+                <p><i>Make sure that you restart the passive service once you've updated the configuration.</i></p>
+                <p><b>Note:</b> Passive checks also allow you to define individual check intervals. Add <code>|&lt;check duration&gt;</code> to the end of the service name in order to use the specified vlaue in seconds. If no check interval is defined, the default interval in the ncpa.cfg will be used.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

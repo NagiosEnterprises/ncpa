@@ -44,21 +44,19 @@ function add_to_directive_list(i, d) {
 }
 
 function load_plugin_directives() {
-    var api_url = '/config';
+    var api_url = '/gui/admin';
     var api_data = {section: 'plugin directives'};
 
+    /*
     $.getJSON(api_url, api_data, function(data) {
-
         var directives = {}
-        // For each item that starts with a ., append it to the command
-        // list.
         $.each(data, function(i, d) {
             if(i[0] == '.') {
                 add_to_directive_list(i, d);
             }
         });
     });
-
+    */
 }
 
 function do_save_config() {
@@ -94,14 +92,13 @@ $(document).ready(function() {
 
 {% block content %}
 
-<div style="padding: 20px;">
-<div class='tabbable'>
-    <ul class='nav nav-tabs'>
+<div>
+    <ul class="nav graph-tabs nav-tabs">
         <li class='active'>
-            <a href='#listener' data-toggle='tab'>Listener Daemon</a>
+            <a href='#listener' data-toggle='tab'>Listener Settings</a>
         </li>
         <li>
-            <a href='#passive' data-toggle='tab'>Passive Daemon</a>
+            <a href='#passive' data-toggle='tab'>Passive Settings</a>
         </li>
         <li>
             <a href='#api' data-toggle='tab'>API</a>
@@ -109,14 +106,16 @@ $(document).ready(function() {
         <li>
             <a href='#nrdp' data-toggle='tab'>NRDP</a>
         </li>
+        <!--
         <li>
             <a href='#nrds' data-toggle='tab'>NRDS</a>
         </li>
+        -->
         <li>
             <a href='#checks' data-toggle='tab'>Passive Checks</a>
         </li>
         <li>
-            <a href='#directives' data-toggle='tab'>Plugin Directives</a>
+            <a href='#plugins' data-toggle='tab'>Plugins</a>
         </li>
     </ul>
     <form class='form-horizontal' id='config-form'>
@@ -188,6 +187,7 @@ $(document).ready(function() {
                     # endfor
                 </div>
             </div>
+            <!--
             <div class='tab-pane' id='nrds'>
                 <div>
                     <h4>NRDS Settings</h4><br />
@@ -214,28 +214,34 @@ $(document).ready(function() {
                     # endfor
                 </div>
             </div>
-            <div class='tab-pane' id='checks'>
+            -->
+            <div class="tab-pane" id="checks">
                 <div>
-                    <h4>Passive Check Settings</h4><br />
-                    # for check in config.items('passive checks')
-                        <div class='controls controls-row'>
-                            <input type='text' class='span4' id='passivecheck|{{loop.index}}' name='passivecheck|name|{{loop.index}}' value='{{check}}'>
-                        </div>
-                        <br />
-                    # endfor
-                </div>
-            </div>
-            <div class='tab-pane' id='directives'>
-                <div>
-                    <h4>Plugin Directives</h4><br />
-                    # for id, description in (['plugin_path', 'Plugin Directory'],):
-                    <div class='control-group'>
-                        <label class='control-label' for='passivecheck|{{ id }}'>{{ description }}</label>
-                        <div class='controls'>
-                            <input type='text' class='input' name='directives|{{ id  }}' id='directives|{{ id }}' value='{{ config.get("plugin directives", id) }}' readonly>
+                    <p style="margin-bottom: 2rem;">Passive check configurations are what the NCPA passive daemon/service will send out. These configurations are normally located in config files separate from the <i>ncpa.cfg</i>. By default you will have a few passive checks that are commented out in an <i>example.cfg</i> in your <i>etc/ncpa.cfg.d</i> directory.</p>
+                    <div class="well">
+                        <div class="row">
+                        # for check in config.items('passive checks')
+                            <div class="passive-check-box col-sm-12 col-lg-6">
+                                <input type="text" readonly class="form-control console" id="passivecheck|{{loop.index}}" name="passivecheck|name|{{loop.index}}" value="{{ ' '.join(check) }}">
+                            </div>
+                        # endfor
                         </div>
                     </div>
-                    # endfor
+                </div>
+            </div>
+            <div class='tab-pane' id='plugins'>
+                <div>
+                    <h4>Plugin Directives</h4>
+                    <div>
+                        # for id, description in (['plugin_path', 'Plugin Directory'],):
+                        <div class='control-group'>
+                            <label class='control-label' for='passivecheck|{{ id }}'>{{ description }}</label>
+                            <div class='controls'>
+                                <input type='text' class='input' name='directives|{{ id  }}' id='directives|{{ id }}' value='{{ config.get("plugin directives", id) }}' readonly>
+                            </div>
+                        </div>
+                        # endfor
+                    </div>
                     <h5>Suffix Expressions</h5>
                     <hr />
                     <div id='directive-container'>
@@ -255,12 +261,6 @@ $(document).ready(function() {
         </div>
     </form>
 </div>
-</div>
-
-<!--
-<button type='button' id='savethisconfig' class='btn btn-primary'>Save</button>
-<button type='button' class='btn'>Cancel</button>
--->
 
 <div id='addrule' class='modal modal-large hide fade' tabindex='-1' role='dialog' aria-labelledby='addrulelabel' aria-hidden='true'>
     <div class='modal-header'>
