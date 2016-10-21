@@ -24,7 +24,6 @@ includefiles = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
 
 # It does not appear the cx_Freeze honors the package directive
 includes = ['xml.dom.minidom',
-            'OpenSSL',
             'jinja2.ext',
             'passive.nrdp',
             'passive.nrds']

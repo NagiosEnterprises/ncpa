@@ -8,6 +8,6 @@ docutils
 pyOpenSSL
 sphinx-bootstrap-theme
 gevent
-cffi
+cffi==1.5.2
 appdirs
 packaging
