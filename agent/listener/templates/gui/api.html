@@ -447,7 +447,7 @@ function add_service_selector() {
     $('.service-settings .list').append(filter);
 
     // Add autocomplete to selector
-    var options = { data: SERVICES, getValue: 'name' };
+    var options = { data: SERVICES, getValue: 'name', list: { match: { enabled: true } } };
     $('.service-settings .list').find('.service').last().easyAutocomplete(options);
 }
 
@@ -524,6 +524,7 @@ function get_api_endpoints() {
 }
 
 function generate_url(skip_settings=false) {
+    var module = $('#module').val();
     var api = window.location.protocol + '//' + window.location.hostname;
     if (window.location.port) {
         api += ':' + window.location.port;
@@ -776,7 +777,7 @@ function generate_passive_check() {
     if (aggregate) { passive += ' --aggregate ' + aggregate; }
     if (units) { passive += ' --units ' + units; }
     if (unit) { passive += ' --unit ' + unit; }
-    if (delta) { passove += ' --delta 1'; }
+    if (delta) { passive += ' --delta 1'; }
 
     $('.passive-check-val').html(passive);
 }
