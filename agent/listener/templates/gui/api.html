@@ -725,8 +725,9 @@ function set_log_timeframe_size() {
 }
 
 function generate_active_check() {
+    var module = $('#module').val();
     $('.active-check-out').html('...');
-    var active = "python ./check_ncpa.py -H &lt;ncpa server&gt; -t '&lt;your token&gt;'";
+    var active = "./check_ncpa.py -H &lt;ncpa server&gt; -t '&lt;your token&gt;'";
 
     // Run the active checck and get the result
     var url = generate_url();
@@ -754,6 +755,31 @@ function generate_active_check() {
     if (units) { active += ' --units ' + units; }
     if (unit) { active += ' --unit ' + unit; }
     if (delta) { active += ' --delta 1'; }
+
+    switch (module) {
+
+        // Apply special services module sections
+        case 'services':
+            q = [];
+
+            // Add service names
+            $('.service').each(function(i, service) {
+                var val = $(service).val();
+                if (val != '') {
+                    q.push('service=' + val);
+                }
+            });
+
+            // Add match type and status
+            var status = $('.status').val();
+            var match = $('.match').val();
+            if (status) { q.push('status=' + status); }
+            if (match) { q.push('match=' + match); }
+
+            active += " -q '" + q.join(',') + "'";
+            break;
+
+    }
 
     $('.active-check-val').html(active);
 }

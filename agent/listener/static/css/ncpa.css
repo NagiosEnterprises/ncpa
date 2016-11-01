@@ -8,6 +8,7 @@ a:hover, a:focus, a:active { text-decoration: underline; color: #1b59cd; }
 .fa-r { margin-left: 2px; }
 .fa-14 { font-size: 13px; }
 .fa-btn { font-size: 14px; vertical-align: middle; }
+pre { white-space: pre-wrap; }
 
 .console { font-family: "Consolas", "Courier New", Courier, monospace; }
 .tab-content { padding: 2rem; }

@@ -153,7 +153,8 @@ class RunnableNode(ParentNode):
         if delta:
             self.delta = True
             self.unit = self.unit + '/s'
-            values = self.deltaize_values(values, accessor)
+            remote_addr = request_args.get('remote_addr', None)
+            values = self.deltaize_values(values, accessor, remote_addr)
 
         return values
 
@@ -218,8 +219,8 @@ class RunnableNode(ParentNode):
         self.set_title(kwargs)
         self.set_perfdata_label(kwargs)
         try:
-            values = self.get_delta_values(values, kwargs)
             values = self.get_adjusted_scale(values, kwargs)
+            values = self.get_delta_values(values, kwargs)
             values = self.get_aggregated_values(values, kwargs)
         except TypeError:
             logging.warning('Error converting values to scale and delta. Values: %r' % values)
@@ -335,8 +336,10 @@ class RunnableNode(ParentNode):
         return returncode, stdout
 
     @staticmethod
-    def deltaize_values(values, accessor):
-        filename = "ncpa-%d.tmp" % hash(accessor)
+    def deltaize_values(values, hash_val, remote_addr=None):
+        if remote_addr:
+            hash_val = hash_val + remote_addr
+        filename = "ncpa-%d.tmp" % hash(hash_val)
         tmpfile = os.path.join(tempfile.gettempdir(), filename)
 
         if not isinstance(values, (list, tuple)):
@@ -351,16 +354,16 @@ class RunnableNode(ParentNode):
         except (IOError, EOFError):
             #Otherwise load the loaded_values and last_modified with values that will cause zeros
             #to show up.
-            logging.info('No pickle file found for accessor %s', accessor)
+            logging.info('No pickle file found for hash_val "%s"', hash_val)
             loaded_values = values
             last_modified = 0
         except (KeyError, pickle.UnpicklingError):
-            logging.info('Problem unpickling data for accessor %s', accessor)
+            logging.info('Problem unpickling data for hash_val "%s"', hash_val)
             loaded_values = values
             last_modified = 0
 
         #Update the pickled data
-        logging.debug('Updating pickle for %s. Filename is %s.', accessor, tmpfile)
+        logging.debug('Updating pickle for hash_val "%s". Filename is %s.', hash_val, tmpfile)
         with open(tmpfile, 'w') as values_file:
             pickle.dump(values, values_file)
 

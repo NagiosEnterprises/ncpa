@@ -8,18 +8,20 @@ Downloads
 
 Current versions:
 
-+--------+-----------+---------------------------------------------------------------------+
-| Stable | **1.8.1** | `Downloads <http://assets.nagios.com/downloads/ncpa/download.php>`_ |
-+--------+-----------+---------------------------------------------------------------------+
++--------+-------------+---------------------------------------------------------------------+
+| Stable | **1.8.1**   | `Downloads <http://assets.nagios.com/downloads/ncpa/download.php>`_ |
++--------+-------------+---------------------------------------------------------------------+
+| Dev    | **2.0.0.a** | `Dev Downloads <http://assets.nagios.com/downloads/ncpa/dev>`_      |
++--------+-------------+---------------------------------------------------------------------+
 
 We currently build for the following operating systems:
 
 - Windows
 - Mac OS X
-- CentOS / RHEL 5, 6, 7
-- Fedora 21
+- CentOS / RHEL 5-7
+- Fedora 21-24
 - Debian / Ubuntu
-- OpenSUSE 11, 12, 13
+- OpenSUSE 11-13
 - SLES 11, 12
 
 If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here by creating a new GitHub issue.

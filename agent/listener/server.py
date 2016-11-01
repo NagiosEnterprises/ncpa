@@ -362,8 +362,7 @@ def tail(accessor=None):
     query_string = request.query_string
     info['query_string'] = urllib.quote(query_string)
 
-    return render_template('tail.html',
-                           **info)
+    return render_template('tail.html', **info)
 
 
 @listener.route('/graph/<path:accessor>', methods=['GET', 'POST'])
@@ -394,8 +393,7 @@ def graph(accessor=None):
     query_string = request.query_string
     info['query_string'] = urllib.quote(query_string)
 
-    return render_template('graph.html',
-                           **info)
+    return render_template('graph.html', **info)
 
 
 @listener.route('/error/')
@@ -538,6 +536,7 @@ def api(accessor=''):
         return error(msg='Could not access location specified. Changes to API calls were made in NCPA v1.7, check documentation on making API calls.')
 
     # Set the accessor and variables
+    sane_args['remote_addr'] = request.remote_addr
     sane_args['accessor'] = accessor
     sane_args['config'] = config
     if not 'check' in sane_args:

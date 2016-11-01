@@ -46,6 +46,7 @@ Changelog
 - Updated processes output of 'mem_rss' and 'mem_vms' to show units and respect the 'units' modifier
 - Updated filtering processes by 'name' and 'exe' field to also be able to use 'match' type (exact, search, or regex)
 - Updated filtering services by 'service' field to allow using the 'match' type too (exact, search, or regex)
+- Updated delta values to not cause weird issues when calling the same endpoint from different sources
 
 **Bug Fixes**
 
