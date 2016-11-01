@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta charset='utf-8'>
+        <title>Documentation &mdash; NCPA</title>
+        <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
+        <link rel="stylesheet" href="../css/ncpa.css" type="text/css" />
+    </head>
+    <body>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="active-checks">
+<span id="id1"></span><h1>Active Checks</h1>
+<p>Running active checks against the NCPA agent is trivial and follows in a somewhat similar style as check_nrpe. There is a <a class="reference external" href="http://exchange.nagios.org/directory/Plugins/Network-and-Systems-Management/check_ncpa/details">check_ncpa.py plugin script</a> that is available to use. This plugin is the standard method for executing active checks. However, because of the design of NCPA, it makes it <strong>very</strong> easy to use your own methods to collect data at perform active checks.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Everything on this particular page is referring to your Nagios server. Active checks do not require you to change the NCPA agent&#8217;s computer.</p>
+</div>
+<p>Specifying these checks will take some familiarity with the API tree. It may be useful to familiarize yourself with the documentation on the <a class="reference internal" href="api.html#introduction-api"><span class="std std-ref">API tree</span></a>.</p>
+<div class="section" id="getting-check-ncpa-py">
+<h2>Getting check_ncpa.py</h2>
+<p>The check_ncpa.py plugin script is hosted on Nagios&#8217;s plugin exchange. Please download it from the following link:</p>
+<blockquote>
+<div><a class="reference external" href="http://exchange.nagios.org/directory/Plugins/Network-and-Systems-Management/check_ncpa/details">check_ncpa.py</a></div></blockquote>
+<p>This file must exist on your Nagios server in order to use any of the following directives.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The check_ncpa.py is downloaded and installed as part of the NCPA monitoring wizard in Nagios XI.</p>
+</div>
+</div>
+<div class="section" id="using-check-ncpa-py">
+<h2>Using check_ncpa.py</h2>
+<p>Once check_ncpa.py is installed in the nagios/libexec directory, you can use it like you would any other plugin. This is where knowing the tree comes in handy. You&#8217;ll need to specify the path in the tree that you&#8217;d like to access. So if we were interested in getting the CPU Usage (percent-wise) of our NCPA agent, we would run the check_ncpa.py as follows:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">check_ncpa</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">H</span> <span class="n">ncpaserver</span> <span class="o">-</span><span class="n">t</span> <span class="n">yourtoken</span> <span class="o">-</span><span class="n">M</span> <span class="n">cpu</span><span class="o">/</span><span class="n">percent</span>
+</pre></div>
+</div>
+<p>Returns:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">OK</span><span class="p">:</span> <span class="n">Percent</span> <span class="n">was</span> <span class="mf">6.8</span><span class="o">%</span><span class="p">,</span><span class="mf">0.0</span><span class="o">%</span><span class="p">,</span><span class="mf">7.5</span><span class="o">%</span><span class="p">,</span><span class="mf">0.0</span><span class="o">%</span><span class="p">,</span><span class="mf">5.5</span><span class="o">%</span><span class="p">,</span><span class="mf">0.1</span><span class="o">%</span><span class="p">,</span><span class="mf">7.0</span><span class="o">%</span><span class="p">,</span><span class="mf">0.0</span><span class="o">%|</span><span class="s1">&#39;percent_0&#39;</span><span class="o">=</span><span class="mf">6.8</span><span class="o">%</span> <span class="s1">&#39;percent_1&#39;</span><span class="o">=</span><span class="mf">0.0</span><span class="o">%</span> <span class="s1">&#39;percent_2&#39;</span><span class="o">=</span><span class="mf">7.5</span><span class="o">%</span> <span class="s1">&#39;percent_3&#39;</span><span class="o">=</span><span class="mf">0.0</span><span class="o">%</span> <span class="s1">&#39;percent_4&#39;</span><span class="o">=</span><span class="mf">5.5</span><span class="o">%</span> <span class="s1">&#39;percent_5&#39;</span><span class="o">=</span><span class="mf">0.1</span><span class="o">%</span> <span class="s1">&#39;percent_6&#39;</span><span class="o">=</span><span class="mf">7.0</span><span class="o">%</span> <span class="s1">&#39;percent_7&#39;</span><span class="o">=</span><span class="mf">0.0</span><span class="o">%</span>
+</pre></div>
+</div>
+<p>The values returned are the CPU usage on each core of the system.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">If you encounter problems with check_ncpa.py, enable -v when calling to enable verbose logging of problems.</p>
+</div>
+<p>It should also be noted that you can use check_ncpa.py to return a tree representing all the values you can monitor via NCPA. This is very useful if you are in a terminal without the luxury of a web browser. You can use check_ncpa.py&#8217;s &#8211;list command to have it list, rather than run a check, on a particular node:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">check_ncpa</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">H</span> <span class="n">ncpaserver</span> <span class="o">-</span><span class="n">t</span> <span class="n">yourtoken</span> <span class="o">-</span><span class="n">M</span> <span class="n">cpu</span> <span class="o">--</span><span class="nb">list</span>
+</pre></div>
+</div>
+<p>This command will return a tree representing all of the values you can monitor via NCPA under the cpu tree. To look at everything you could possibly monitor, simply omit the -M flag and its argument.</p>
+</div>
+<div class="section" id="specifying-arguments-for-ncpa-builtins">
+<h2>Specifying Arguments for NCPA Builtins</h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">What is a NCPA built-in? Its a metric that is bundled with NCPA. For example, if you have a plugin you are using NCPA to execute, that is <strong>not</strong> considered a built-in.</p>
+</div>
+<p>You can use the built-in &#8211;warning, &#8211;critical, etc of check_ncpa.py, or you can simply bundle those into the check address:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">check_ncpa</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">H</span> <span class="n">ncpaserver</span> <span class="o">-</span><span class="n">t</span> <span class="n">yourtoken</span> <span class="o">-</span><span class="n">M</span> <span class="n">cpu</span><span class="o">/</span><span class="n">percent</span> <span class="o">--</span><span class="n">warning</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>Please note that NCPA uses the | character when referring to file system. For example, on a Windows machine,
+the C:drive is referred to as C:<a href="#id2"><span class="problematic" id="id3">|</span></a>. This is to avoid escaping issues. However, it should be noted that | is
+a special character in sh (the shell). In order to get around this, when you are specifying disks, use single
+quotes around your disk call. Example:</p>
+<p>./check_ncpa.py -H ncpaserver -t yourtoken -M &#8216;disk/logical/C:<a href="#id4"><span class="problematic" id="id5">|</span></a>&#8216;</p>
+<p class="last">So that the shell does not interpret the special character <a href="#id6"><span class="problematic" id="id7">|</span></a>.</p>
+</div>
+</div>
+<div class="section" id="specifying-arguments-for-plugins-run-by-ncpa">
+<h2>Specifying Arguments for Plugins Run by NCPA</h2>
+<p>In order to specify arguments plugins that NCPA will be running, you must use the -a flag when calling check_ncpa.py. You can also use the long argument for the -a flag, which is &#8211;arguments.</p>
+<p>Imagine we are going to run the test.sh plugin installed on our NCPA server. If we were running the test.sh plugin on our server with NCPA installed we would run something like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">ncpa</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">test</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">u</span> <span class="s1">&#39;one argument&#39;</span> <span class="o">-</span><span class="n">p</span> <span class="s1">&#39;another argument&#39;</span>
+</pre></div>
+</div>
+<p>In order to run this properly with NCPA you would call check_ncpa.py like so:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">check_ncpa</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">H</span> <span class="n">ncpaserver</span> <span class="o">-</span><span class="n">t</span> <span class="n">yourtoken</span> <span class="o">-</span><span class="n">M</span> <span class="n">agent</span><span class="o">/</span><span class="n">plugin</span><span class="o">/</span><span class="n">test</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">a</span> <span class="s2">&quot;-u &#39;one argument&#39; -p &#39;another argument&#39;&quot;</span>
+</pre></div>
+</div>
+<p>Notice that items with spaces are wrapped in quotes. There is some shell splitting that goes on under
+the hood with NCPA, so the quotes are important if you need to keep the spaces. Lets take
+a look at what can happen.</p>
+<p>How NCPA actually processes these is by calling the URL as follows:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ncpaserver</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">agent</span><span class="o">/</span><span class="n">plugin</span><span class="o">/</span><span class="n">test</span><span class="o">.</span><span class="n">sh</span><span class="o">/-</span><span class="n">u</span><span class="o">/</span><span class="n">one</span> <span class="n">argument</span><span class="o">/-</span><span class="n">p</span><span class="o">/</span><span class="n">another</span> <span class="n">argument</span>
+</pre></div>
+</div>
+<p>You can also call it this way if you please, however I believe most people prefer
+the -a method as it keeps some of the dirty details hidden away. Now if you remove
+the quotes around &#8216;one argument in the above example call, it would actually call:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ncpaserver</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">agent</span><span class="o">/</span><span class="n">plugin</span><span class="o">/</span><span class="n">test</span><span class="o">.</span><span class="n">sh</span><span class="o">/-</span><span class="n">u</span><span class="o">/</span><span class="n">one</span><span class="o">/</span><span class="n">argument</span><span class="o">/-</span><span class="n">p</span><span class="o">/</span><span class="n">another</span> <span class="n">argument</span>
+</pre></div>
+</div>
+<p>See the difference? It interprets as if it were the shell, so wrap the arguments
+that need to maintain spaces in quotes.</p>
+</div>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+    </body>
+</html>

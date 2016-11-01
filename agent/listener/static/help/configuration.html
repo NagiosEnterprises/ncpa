@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta charset='utf-8'>
+        <title>Documentation &mdash; NCPA</title>
+        <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
+        <link rel="stylesheet" href="../css/ncpa.css" type="text/css" />
+    </head>
+    <body>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="configuration">
+<h1>Configuration</h1>
+<p>NCPA should start working right out of the box. However, to tailor it to your needs and for security reasons, you should at least change the API&#8217;s community string for non-Windows installations.</p>
+<p>If you wish to send passive results, you will also need to specify additional information related to passive checks to the configuration file.</p>
+<p>This document is meant to be a reference as to what these directives mean, not necessarily a friendly way to define them.</p>
+<p>One last item that should be noted is that you do not need to restart the NCPA server upon changing any of the configuration used by the passive agent. Every time the passive agent wakes up, it re-parses its configuration file. However, for the active agent there are some items that are parsed once at service start, mainly the section named &#8216;[listener]&#8217;. For this reason you should restart the NCPA service if you want to reflect the changes made for active checks.</p>
+<div class="section" id="config-file-location">
+<h2>Config File Location</h2>
+<p>In order to configure NCPA, you will need to edit its configuration file, which is kept on the file system.</p>
+<p>Windows keeps this file at:</p>
+<div class="highlight-default"><div class="highlight"><pre>
+<span class="n">C</span><span class="p">:</span>\<span class="n">Program</span> <span class="n">Files</span> <span class="p">(</span><span class="n">x86</span><span class="p">)</span>\<span class="n">Nagios</span>\<span class="n">NCPA</span>\<span class="n">etc</span>\<span class="n">ncpa</span><span class="o">.</span><span class="n">cfg</span>
+</pre></div>
+</div>
+<p>Linux keeps this file at:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">ncpa</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ncpa</span><span class="o">.</span><span class="n">cfg</span>
+</pre></div>
+</div>
+<p>Once you have located this file, you can start editing it. This file is a standard INI file.</p>
+</div>
+<div class="section" id="config-file-directives">
+<h2>Config File Directives</h2>
+<p>Lets take a look at some of the directives in a the configuration file. Note that the config file is sectioned off by the square brackets. These different sections affect different portions of NCPA&#8217;s operation.</p>
+<p>We will break the configuration file down by section.</p>
+
+    <div class="alert alert-info">
+        <b>Note</b> You might notice that there appears to be duplicate entries. For instance, both [listener] and [passive] sections have a specification for <em>logfile</em>. They maintain separate log files as they are considered two different processes and are treated as such.
+    </div>
+
+    <div class="section" id="listener">
+        <h3>[listener]</h3>
+        <p>This section controls NCPA&#8217;s active check settings including how you actively connect to this agent to ask it for information. NCPA starts up an HTTP server to handle Nagios requests which makes much of the specification in this section relevant to that server.</p>
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <th style="width: 10%;">ip</th>
+                    <td>This determines what IP the agent will listen on. By default, it will listen on 0.0.0.0, which means it will listen on all interfaces and all name references. Specify this if you would only like the agent to listen on a specific IP or name.</td>
+                </tr>
+                <tr>
+                    <th>port</th>
+                    <td>This specifies the TCP port the NCPA listener service will bind to.</td>
+                </tr>
+                <tr>
+                    <th>uid</th>
+                    <td>Determines which user the NCPA listener service will run as.</td>
+                </tr>
+                <tr>
+                    <th>gid</th>
+                    <td>Determines the group by which the NCPA listener service will run as.</td>
+                </tr>
+                <tr>
+                    <th>pidfile</th>
+                    <td>The named file location where the PID file for the NCPA server will be stored and maintained.</td>
+                </tr>
+                <tr>
+                    <th>logfile</th>
+                    <td>The named file location where the log file for the NCPA server will be stored.</td>
+                </tr>
+                <tr>
+                    <th>logmaxmb</th>
+                    <td>The max size allowed for a log file in megabytes. When the log becomes larger than this, the log will be rolled over and a new log will be started.</td>
+                </tr>
+                <tr>
+                    <th>logbackups</th>
+                    <td>The max number of log rollovers that will be kept.</td>
+                </tr>
+                <tr>
+                    <th>loglevel</th>
+                    <td>The level of message that will be deemed important enough to be logged to the log file. Valid loglevels are INFO, NOTICE, WARNING and ERROR.</td>
+                </tr>
+                <tr>
+                    <th>ssl_version</th>
+                    <td>Set the SSL protocol to use when using HTTPS, valid selections are TLSv1, TLSv1_1, TLSv1_2 (default).</td>
+                </tr>
+                <tr>
+                    <th>certificate</th>
+                    <td>Allows you to specify the file name for the SSL certificate you wish to use with the NCPA listener service. If left adhoc, a new self-signed certificate will be generated and used for the server.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section" id="api">
+        <h3>[api]</h3>
+        <p>This section controls how the API is accessed, and currently sports only one item.</p>
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <th style="width: 10%;">community_string</th>
+                    <td>The token that you use to authenticate when accessing the web interface. This should be something non-trivial.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section" id="passive">
+        <h3>[passive]</h3>
+        <p>This section controls how the passive service behaves. It will specify things such as what it should do and how often it should be done.</p>
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <th style="width: 10%;">sleep</th>
+                    <td>The time in seconds which the service will wait until running again. Upon waking up, the service will check to see if it has anything to do. If it has nothing to do it will sleep again for the specified time.</td>
+                </tr>
+                <tr>
+                    <th>handlers</th>
+                    <td>This is where the magic happens with the NCPA passive agent. Handlers are items that are run whenever the passive daemon wakes up. The currently supported handlers are nrds and nrdp. This handlers list should be a comma-delimited list of handlers that are to be run. To run both nrds and nrdp handlers, this entry would be <em>handlers = nrds,nrdp</em>. More information is provided about what each of these handlers do under the <a class="reference internal" href="#nrds">[nrds]</a> and <a class="reference internal" href="#nrdp">[nrdp]</a> sections, respectively.</td>
+                </tr>
+                <tr>
+                    <th>uid</th>
+                    <td>Determines which user the NCPA passive service will run as during execution.</td>
+                </tr>
+                <tr>
+                    <th>gid</th>
+                    <td>Determines the group by which the NCPA passive service will run as during execution.</td>
+                </tr>
+                <tr>
+                    <th>pidfile</th>
+                    <td>The named file location where the PID file for the NCPA passive service will be stored and maintained.</td>
+                </tr>
+                <tr>
+                    <th>logfile</th>
+                    <td>The named file location where the log file for the NCPA passive service will be stored.</td>
+                </tr>
+                <tr>
+                    <th>loglevel</th>
+                    <td>The level of message that will be deemed important enough to be logged to the log file. Valid loglevels are INFO, NOTICE, WARNING and ERROR.</td>
+                </tr>
+                <tr>
+                    <th>logmaxmb</th>
+                    <td>The max size allowed for a log file in megabytes. When the log becomes larger than this, the log will be rolled over and a new log will be started.</td>
+                </tr>
+                <tr>
+                    <th>logbackups</th>
+                    <td>The max number of log rollovers that will be kept.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section" id="nrdp">
+        <h3>[nrdp]</h3>
+        <p>The value <em>nrdp</em> must be present in the passive handlers declaration (above) to send any results back to the Nagios server. This section dictates where NRDP results will be sent and what tokens will be used.</p>
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <th style="width: 10%;">parent</th>
+                    <td>The IP address of the Nagios server to which the passive check results should be sent. The wording on this may seem a bit confusing, but it&#8217;s for a reason. The NCPA agent can also function as a NRDP forwarder. If you sent NRDP results to the NCPA listener&#8217;s IP with the proper token, it will forward the NRDP check results to its parent which is this directive. This allows for you to have a chain of NRDP forwards if firewall constraints are incredibly heavy.</td>
+                </tr>
+                <tr>
+                    <th>token</th>
+                    <td>The token to use to access its parent. Should not be the same as the token NCPA uses for its own server for security reasons.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!--
+    <div class="section" id="nrds">
+        <h3>[nrds]</h3>
+        <p>The value <em>nrds</em> must be present in the passive handler declaration (above) in order to pull down any new configuration. <a class="reference external" href="https://exchange.nagios.org/directory/Addons/Components/Nagios-Remote-Data-Sender-(NRDS)/details">NRDS</a> is a slick way to manage your configuration files. Many of these directives are boilerplate. The interesting directives are identified in the following. For more information on NRDS see the above link for further definitions of these terms.</p>
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <th style="width: 10%;">CONFIG_NAME</th>
+                    <td>This is the name that the NCPA passive service will query for updates and is set up in Nagios XI.</td>
+                </tr>
+                <tr>
+                    <th>TOKEN</th>
+                    <td>The token the NCPA passive service will use when connecting to the NRDS server.</td>
+                </tr>
+                <tr>
+                    <th>URL</th>
+                    <td>The URL to be queried for NRDS information.</td>
+                </tr>
+                <tr>
+                    <th>UPDATE_CONFIG</th>
+                    <td>If this is set to 1, then the config will be updated automatically when a new config becomes available. If anything else, it will not be updated.</td>
+                </tr>
+                <tr>
+                    <th>UPDATE_PLUGINS</th>
+                    <td>If this is set to 1, then the plugins in the plugins/ directory will be automatically maintained using NRDS.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    -->
+
+    <div class="section" id="passive-checks">
+        <h3>[passive checks]</h3>
+        <p>This section does have a hard and fast set of concrete instructions. For information on setting up passive checks, see the section <a class="reference internal" href="passive.html#passive-checks"><span class="std std-ref">Setting Up Passive Checks</span></a>.</p>
+    </div>
+
+    <div class="section" id="plugin-directives">
+        <h3>[plugin directives]</h3>
+        <p>This section is where you can specify both the plugin directory and special operations that should be executed when a given file type is executed as part of a service check. Some examples for the special directives are given.</p>
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <th style="width: 10%;">plugin_path</th>
+                    <td>The path to the directory containing any third party plugins that need to be run.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    </div>
+    </div>
+    </div>
+      
+  </div>
+</div>
+    </body>
+</html>

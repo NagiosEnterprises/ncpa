@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta charset='utf-8'>
+        <title>Documentation &mdash; NCPA</title>
+        <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
+        <link rel="stylesheet" href="../css/ncpa.css" type="text/css" />
+    </head>
+    <body>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="passive-checks">
+<span id="id1"></span><h1>Passive Checks<a class="headerlink" href="#passive-checks" title="Permalink to this headline">¶</a></h1>
+<p>Specifying passive checks with NCPA is done by amending the [passive checks] section on the ncpa.cfg.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Specifying a host and service on the Nagios side to receive these checks is beyond the scope of this document. Please refer to the <a class="reference external" href="http://nagios.sourceforge.net/docs/nagioscore/4/en/passivechecks.html">Nagios documentation on setting up passive checks</a> for a better understanding of how to manage passive checks.</p>
+</div>
+<p>Specifying these checks will take some familiarity with the NCPA API. For on that see the documentation on the <a class="reference internal" href="api.html#introduction-api"><span class="std std-ref">NCPA API</span></a>.</p>
+<div class="section" id="specifying-the-nagios-server">
+<h2>Specifying the Nagios Server<a class="headerlink" href="#specifying-the-nagios-server" title="Permalink to this headline">¶</a></h2>
+<p>You&#8217;ll need to specify where the passive checks will be sent. This can be accomplished by setting the [nrdp] section with the proper values, where the <em>parent</em> would be the target NRDP address to send check results to. While the <em>token</em> is the connection token that particular NRDP server is expecting for authentication. Set these in the ncpa.cfg before continuing.</p>
+</div>
+<div class="section" id="specifying-checks">
+<h2>Specifying Checks<a class="headerlink" href="#specifying-checks" title="Permalink to this headline">¶</a></h2>
+<p>In the ncpa.cfg there is a section titled [passive checks]. In the default configuration there are a few example services specified. Let&#8217;s take a look at one:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">HOSTNAME</span><span class="o">%|</span><span class="n">CPU</span> <span class="n">Usage</span> <span class="o">=</span> <span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">percent</span> <span class="o">--</span><span class="n">warning</span> <span class="mi">20</span> <span class="o">--</span><span class="n">critical</span> <span class="mi">30</span>
+</pre></div>
+</div>
+<p>When NCPA is running, it parses through this config file and looks for all the entries under the passive checks section.</p>
+<p>For each entry in this section, it takes the string of text before the equals, and splits it on |. The result is the hostname and servicename, while the instructions to execute to find its status are on the left hand side of the = sign.</p>
+<p>To be more generic, the general form goes like this:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">hostname</span><span class="o">&gt;|&lt;</span><span class="n">servicename</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">instructions</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<div class="topic">
+<p class="topic-title first">Hostname Hijinks</p>
+<p>%HOSTNAME% is a magic word that gets replaced by what is specified in the [nrdp] hostname&#8217;s declaration.</p>
+<p>This might seem backwards at first, but it allows for flexibility. You could have the NCPA agent send results for checks made on remote computers or on a different host like so:</p>
+<p>computer1|cpu usage = /agent/plugin/&lt;plugin that checks cpu on remote system&gt;
+computer2|cpu usage = /agent/plugin/&lt;plugin that checks cpu on other remote system&gt;
+%HOSTNAME%|cpu usage = /agent/cpu/percent</p>
+<p>This will make the NCPA send back results under hostnames computer1, computer2 and itself.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">While the NCPA HTTP server does not have to be running and active in order for the passive agent to work, the &lt;instructions&gt; must be an API address.</p>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+    </body>
+</html>
