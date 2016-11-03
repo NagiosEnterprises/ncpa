@@ -15,9 +15,9 @@ BASEDIR = $(patsubst %/,%,$(dir $(makefile_dir)))
 
 FLAGS = ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
 
-.PHONY: build_exe build_doc update_git update_packages build_rpm build_spec update_version
+.PHONY: build_exe update_git update_packages build_rpm build_spec update_version
 
-build_exe: clean build_doc
+build_exe: clean
 	find $(BASEDIR) -name *.pyc -delete
 	mkdir -p $(BASEDIR)/agent/plugins
 	mkdir -p $(BASEDIR)/agent/var
@@ -26,10 +26,6 @@ build_exe: clean build_doc
 	echo -n '' > $(BASEDIR)/agent/var/log/ncpa_listener.log
 	cd $(BASEDIR)/agent && $(PYTHONVER) setup_posix.py build_exe
 	mv $(BASEDIR)/agent/build/exe.* $(BASEDIR)/agent/build/NCPA
-	cp -rf $(BASEDIR)/docs/_build/html $(BASEDIR)/agent/build/NCPA/listener/static/help
-
-build_doc:
-	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBIN)" html
 
 update_packages:
 	$(PYTHONBIN) -m pip install -r $(BASEDIR)/build/resources/require.txt --upgrade
