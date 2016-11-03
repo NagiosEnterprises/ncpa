@@ -31,11 +31,7 @@ if buildtype == 'nightly':
 # Remove old build
 subprocess.Popen(['rmdir', os.path.join(basedir, 'agent', 'build'), '/s', '/q'], shell=True).wait()
 
-# Make new docs HTML files
-os.chdir('docs')
-subprocess.Popen(['make.bat', 'html']).wait()
-
-os.chdir('../agent')
+os.chdir('agent')
 
 if not os.path.exists('var'):
     os.mkdir('var')
@@ -48,9 +44,6 @@ if not os.path.exists('plugins'):
 
 sys.path.append(os.getcwd())
 subprocess.Popen(['python', 'setup_windows.py', 'build_exe']).wait()
-
-shutil.copytree(os.path.join(basedir, 'docs', '_build', 'html'), 
-                os.path.join(basedir, 'agent', 'build', 'NCPA', 'listener', 'static', 'help'))
 
 environ = os.environ.copy()
 environ['NCPA_BUILD_VER'] = version
