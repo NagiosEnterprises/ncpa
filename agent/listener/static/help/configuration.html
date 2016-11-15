@@ -3,44 +3,63 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta charset='utf-8'>
-        <title>Documentation &mdash; NCPA</title>
+        <title>Configuration &middot; Documentation &middot; NCPA</title>
+        <link rel="shortcut icon" type="image/png" href="../img/ncpa.png" />
+        <link rel="icon" type="image/png" href="../img/ncpa.png" />
         <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
         <link rel="stylesheet" href="../css/ncpa.css" type="text/css" />
+        <script src='../js/jquery.2.2.4.min.js'></script>
+        <script src='../js/bootstrap.min.js'></script>
     </head>
-    <body>
+    <body class="help">
 
-<div class="container">
-  <div class="row">
-    <div class="col-md-12 content">
-      
-  <div class="section" id="configuration">
-<h1>Configuration</h1>
-<p>NCPA should start working right out of the box. However, to tailor it to your needs and for security reasons, you should at least change the API&#8217;s community string for non-Windows installations.</p>
-<p>If you wish to send passive results, you will also need to specify additional information related to passive checks to the configuration file.</p>
-<p>This document is meant to be a reference as to what these directives mean, not necessarily a friendly way to define them.</p>
-<p>One last item that should be noted is that you do not need to restart the NCPA server upon changing any of the configuration used by the passive agent. Every time the passive agent wakes up, it re-parses its configuration file. However, for the active agent there are some items that are parsed once at service start, mainly the section named &#8216;[listener]&#8217;. For this reason you should restart the NCPA service if you want to reflect the changes made for active checks.</p>
-<div class="section" id="config-file-location">
-<h2>Config File Location</h2>
-<p>In order to configure NCPA, you will need to edit its configuration file, which is kept on the file system.</p>
-<p>Windows keeps this file at:</p>
-<div class="highlight-default"><div class="highlight"><pre>
-<span class="n">C</span><span class="p">:</span>\<span class="n">Program</span> <span class="n">Files</span> <span class="p">(</span><span class="n">x86</span><span class="p">)</span>\<span class="n">Nagios</span>\<span class="n">NCPA</span>\<span class="n">etc</span>\<span class="n">ncpa</span><span class="o">.</span><span class="n">cfg</span>
-</pre></div>
-</div>
-<p>Linux keeps this file at:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">ncpa</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ncpa</span><span class="o">.</span><span class="n">cfg</span>
-</pre></div>
-</div>
-<p>Once you have located this file, you can start editing it. This file is a standard INI file.</p>
-</div>
-<div class="section" id="config-file-directives">
-<h2>Config File Directives</h2>
-<p>Lets take a look at some of the directives in a the configuration file. Note that the config file is sectioned off by the square brackets. These different sections affect different portions of NCPA&#8217;s operation.</p>
-<p>We will break the configuration file down by section.</p>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <h1>Configuration</h1>
+
+                <p>On a successful install, NCPA will start working right out of the box. However, to tailor it to your needs, you will want to edit the configuration. You can set up NCPA security and web GUI settings, along with configuring passive check settings.</p>
+                <p>This is meant to be a reference for all the configuration options available. Some configuration options are required, while others are just optional. We recommend keeping the configuration options that are defined by default, and tweaking them to your desired configuration. Doing it this way ensures that all non-default options will be defined.</p>
+                <p>After editing the configuration, you must <a href="index.html#restarting-ncpa">restart the <em>NCPA Passive</em> and <em>NCPA Listener</em> services</a> to apply the new configuration.</p>
+
+                <p>
+                    <div class="alert alert-info">
+                        <b>Note</b>: On Linux and Mac OS X, the default API token is set to <em>mytoken</em> and you will want to change this after install. Windows sets the token on install based on user input in the installer.
+                    </div>
+                </p>
+
+                <div class="section">
+
+                    <h2>Config Locations</h2>
+                    <p>In order to configure NCPA, you will need to edit its configuration file, which is kept on the file system. On a default install, most of the configuration will be located in the <code>ncpa.cfg</code> file in the following directories on the selected operating system:</p>
+                    
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#windows" role="tab" data-toggle="tab"><i class="fa fa-windows fa-l fa-14"></i> Windows</a></li>
+                        <li role="presentation"><a href="#linux" role="tab" data-toggle="tab"><i class="fa fa-linux fa-l fa-14"></i> Linux</a></li>
+                        <li role="presentation"><a href="#mac" role="tab" data-toggle="tab"><i class="fa fa-apple fa-l fa-14"></i> Mac OS X</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="windows"><pre>C:\Program Files (x86)\Nagios\NCPA\etc\</pre></div>
+                        <div role="tabpanel" class="tab-pane" id="linux"><pre>/usr/local/ncpa/etc/</pre></div>
+                        <div role="tabpanel" class="tab-pane" id="mac"><pre>/usr/local/ncpa/etc/</pre></div>
+                    </div>
+
+                    <p>As of NCPA 2, there is also an <code>ncpa.cfg.d</code> folder which follows the standard of including all <b>.cfg</b> files inside of it into the main <code>nagios.cfg</code> when parsing the configuration. Another change to the way configuration works in NCPA 2 is that changing the passive check configuration <em>requires a restart of the NCPA Passive service</em>. By default NCPA 2 will create an <code>nrdp.cfg</code> file in <code>ncpa.cfg.d</code> directory on Linux and Mac OS X systems. On windows, you are able to select whether or not you are going to enable NRDP during the install - including setting up your basic default checks - and the installer will write it's own <code>nrdp.cfg</code> in the same directory.</p>
+
+                </div>
+
+                <a name="config-option-reference"></a>
+                <div class="section">
+
+                    <h2>Config Option Reference</h2>
+
+                    <p>Lets take a look at some of the directives in a the configuration file. Note that the config file is sectioned off by the square brackets. These different sections affect different portions of NCPA's operation.</p>
+                    <p>We will break the configuration file down by section.</p>
 
     <div class="alert alert-info">
-        <b>Note</b> You might notice that there appears to be duplicate entries. For instance, both [listener] and [passive] sections have a specification for <em>logfile</em>. They maintain separate log files as they are considered two different processes and are treated as such.
+        <b>Note</b>: You might notice that there appears to be duplicate entries. For instance, both [listener] and [passive] sections have a specification for <em>logfile</em>. They maintain separate log files as they are considered two different processes and are treated as such.
     </div>
 
     <div class="section" id="listener">
@@ -222,9 +241,11 @@
 
     </div>
     </div>
+
+
     </div>
-      
   </div>
 </div>
+
     </body>
 </html>

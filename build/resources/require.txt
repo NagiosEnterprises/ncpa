@@ -3,10 +3,8 @@ requests
 Jinja2
 flask==0.10.1
 werkzeug
-sphinx
 docutils
 pyOpenSSL
-sphinx-bootstrap-theme
 gevent
 cffi==1.5.2
 appdirs

@@ -5,28 +5,91 @@
 {% block headerjs %}
 <script type="text/javascript">
 $(document).ready(function() {
-
-    // Set nav header active link and resize API window
     $('#help-nav').addClass('active');
-
-    // Set help section height
-    resize_iframe();
-
+    resize_help_window();
     $(window).resize(function() {
-    	resize_iframe();
+        resize_help_window();
     });
-
 });
 
-function resize_iframe() {
-	var height = $(window).height() - $('.navbar').outerHeight() - 4;
-    $('iframe').css('height', height);
+function resize_help_window() {
+    var h = $(window).height() - $('nav').height();
+    var w = $(window).width() - 300;
+    $('#help-section').css('height', h).css('width', $(window).width()).css('max-width', $(window).width());
+    $('.well.help').css('height', h);
+    $('.right-content').css('height', h).css('width', w);
+
+    // Resize iframe
+    $('iframe').css('height', h).css('width', w);
 }
 </script>
 {% endblock headerjs %}
 
 {% block content %}
 
-<iframe src="../static/help/index.html" style="border: 0; width: 100%;"></iframe>
+<div id="help-section" style="display: table; position: fixed; margin: 0; padding: 0;">
+    <div class="left-content" style="display: table-cell; vertical-align: top; min-width: 300px; width: 300px;">
+        <div class="well help">
+            <h4>Help Documentation</h4>
+            <ul>
+                <li class="separator"><a target="help-frame" href="../static/help/index.html">Introduction</a></li>
+                <li>
+                    <a target="help-frame" href="../static/help/configuration.html">Configuration</a>
+                    <ul>
+                        <li><a target="help-frame" href="../static/help/configuration.html#config-option-reference">Config Option Reference</a></li>
+                    </ul>
+                </li>
+                <li class="separator">
+                    <a target="help-frame" href="active.html">Active Checks</a>
+                </li>
+                <li class="separator">
+                    <a target="help-frame" href="passive.html">Passive Checks</a>
+                </li>
+                <li>
+                    <a target="help-frame" href="../static/help/api.html">API Node Usage</a>
+                    <ul class="npb">
+                        <li><a href="api.html#looking-at-the-tree">Overview of the API</a></li>
+                        <li><a href="api.html#getting-nagios-return-results">Getting API node check results</a></li>
+                        <li><a href="api.html#using-nagios-plugins">Running plugins</a></li>
+                        <li>
+                            <a href="../static/help/api.html#reference">API Node Reference</a>
+                            <ul class="npb">
+                            <li>
+                                <a href="../static/help/api.html#reference">Standard Nodes</a>
+                                <span class="tt-bind" title="Available on all OS"><i class="fa fa-fw fa-windows"></i><i class="fa fa-fw fa-linux"></i><i class="fa fa-fw fa-apple"></i></span>
+                                <ul class="npb">
+                                    <li><a href="">cpu</a></li>
+                                    <li><a href="">disk</a></li>
+                                    <li><a href="">interface</a></li>
+                                    <li><a href="">memory</a></li>
+                                    <li><a href="">processes</a></li>
+                                    <li><a href="">services</a></li>
+                                    <li><a href="">system</a></li>
+                                    <li><a href="">plugins</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="../static/help/api.html#reference">Extended Nodes</a> <i class="fa fa-fw fa-windows tt-bind" title="Currently these nodes are only available on Windows"></i>
+                                <ul>
+                                    <li><a href="">logs</a></li>
+                                    <li><a href="">windowscounters</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </ul>
+                </li>
+                <li>
+                    <a href="../static/help/graphs.html">Graphing</a>
+                    <ul>
+                        <li><a href="">Integrating live graphs</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="right-content" style="display: table-cell; vertical-align: top;">
+        <iframe name="help-frame" src="../static/help/index.html" style="border: 0;"></iframe>
+    </div>
+</div>
 
 {% endblock %}

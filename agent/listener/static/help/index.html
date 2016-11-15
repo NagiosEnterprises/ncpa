@@ -4,53 +4,89 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta charset='utf-8'>
         <title>Documentation &mdash; NCPA</title>
+        <link rel="shortcut icon" type="image/png" href="../img/ncpa.png" />
+        <link rel="icon" type="image/png" href="../img/ncpa.png" />
         <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
         <link rel="stylesheet" href="../css/ncpa.css" type="text/css" />
+        <script src='../js/jquery.2.2.4.min.js'></script>
+        <script src='../js/bootstrap.min.js'></script>
     </head>
-    <body>
-
-    <div class="container">
+    <body class="help">
+        
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12">
-          
-                <div class="section" id="ncpa-documentation">
-                    <h1>NCPA Documentation</h1>
-                    <p>Contents:</p>
-                    <div class="toctree-wrapper compound">
-                    <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a><ul>
-                    <li class="toctree-l2"><a class="reference internal" href="configuration.html#config-file-location">Config File Location</a></li>
-                    <li class="toctree-l2"><a class="reference internal" href="configuration.html#config-file-directives">Config File Directives</a></li>
-                    </ul>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="api.html">The API</a><ul>
-                    <li class="toctree-l2"><a class="reference internal" href="api.html#looking-at-the-tree">Looking at the tree</a></li>
-                    <li class="toctree-l2"><a class="reference internal" href="api.html#accessing-specific-items-in-the-tree">Accessing specific items in the tree</a></li>
-                    <li class="toctree-l2"><a class="reference internal" href="api.html#getting-nagios-return-results">Getting Nagios return results</a></li>
-                    <li class="toctree-l2"><a class="reference internal" href="api.html#combined-results">Combined Results</a></li>
-                    <li class="toctree-l2"><a class="reference internal" href="api.html#using-nagios-plugins">Using Nagios Plugins</a></li>
-                    <li class="toctree-l2"><a class="reference internal" href="api.html#api-services">API/Services</a></li>
-                    </ul>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="active.html">Active Checks</a><ul>
-                    <li class="toctree-l2"><a class="reference internal" href="active.html#getting-check-ncpa-py">Getting check_ncpa.py</a></li>
-                    <li class="toctree-l2"><a class="reference internal" href="active.html#using-check-ncpa-py">Using check_ncpa.py</a></li>
-                    <li class="toctree-l2"><a class="reference internal" href="active.html#specifying-arguments-for-ncpa-builtins">Specifying Arguments for NCPA Builtins</a></li>
-                    <li class="toctree-l2"><a class="reference internal" href="active.html#specifying-arguments-for-plugins-run-by-ncpa">Specifying Arguments for Plugins Run by NCPA</a></li>
-                    <li class="toctree-l2"><a class="reference internal" href="active.html#when-all-else-fails">When All Else Fails...</a></li>
-                    </ul>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="passive.html">Passive Checks</a><ul>
-                    <li class="toctree-l2"><a class="reference internal" href="passive.html#specifying-the-nagios-server">Specifying the Nagios Server</a></li>
-                    <li class="toctree-l2"><a class="reference internal" href="passive.html#specifying-checks">Specifying Checks</a></li>
-                    </ul>
-                    </li>
-                    </ul>
+            <div class="col-sm-12">
+
+                <h1>Introduction</h1>
+
+                <p>While NCPA has many features, configuring your initial NCPA install can be tricky. This help documentation is here to help you as a reference when configuring and setting up NCPA instances. If you've never used NCPA before, and have not yet installed it on a machine - you can take a look at the <a href="https://nagios.org/ncpa/getting-started.php">getting started guide</a> available on the NCPA website. This guide will go through the initial installation, setup, and show you how start monitoring with passive or active checks using either Nagios XI or Nagios Core.</p>
+                <p>This help documentation is geared towards those who have already installed NCPA and are looking at more advanced configuration and setup. To start off, below is a brief overview of the parts of NCPA and what they are responsible for.</p>
+
+                <div class="section">
+                    <h2>The Two Parts of NCPA</h2>
+                    <p>NCPA is actually two separate services that make up a single monitoring agent. This separation allows the ability for the agent to run passive checks without needing to allow connections to the web GUI or allow external calls to the API. It also allows the passive portion of the agent to be disabled if it's not in use to save resources even though the passive portion requires very little resources while running in the background.</p>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6 col-lg-4">
+                                <h3>NCPA Listener</h3>
+                                <p>
+                                    The <em>NCPA Listener</em> service does the following:
+                                    <ul>
+                                        <li>Serves and handles connections to the web GUI</li>
+                                        <li>Handles external API requests (including those for active checks)</li>
+                                        <li>Provides API for live graphing and top processes</li>
+                                        <li>Provides and "offline" internal API for the <em>NCPA Passive</em> service</li>
+                                    </ul>
+                                </p>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <h3>NCPA Passive</h3>
+                                <p>
+                                    The <em>NCPA Passive</em> service does the following:
+                                    <ul>
+                                        <li>Runs passive checks defined in the [passive checks] configuration section</li>
+                                        <li>Connects and sends passive check results to the defined NRDP server</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-            </div>  
+
+                <a name="restarting-ncpa"></a>
+                <div class="section">
+                    <h2>Restarting the NCPA Services</h2>
+                    <p>Because NCPA is made up of these two separate services, you will need to restart both of them if you are using both the active and passive capabilities. Below is the naming conventions and the command line way of starting and stopping services. In the configuration section you'll find that you will need to restart the services each time configuration changes are made.</p>
+
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#windows" role="tab" data-toggle="tab"><i class="fa fa-windows fa-l fa-14"></i> Windows</a></li>
+                        <li role="presentation"><a href="#linux" role="tab" data-toggle="tab"><i class="fa fa-linux fa-l fa-14"></i> Linux</a></li>
+                        <li role="presentation"><a href="#mac" role="tab" data-toggle="tab"><i class="fa fa-apple fa-l fa-14"></i> Mac OS X</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="windows">
+                            <p>You can also view the services in the windows services administration panel, but you can also do it easily from the command line.</p>
+<pre>net restart ncpalistener</pre>
+<pre>net restart ncpapassive</pre>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="linux">
+                            <p>This is an example for <em>CentOS 6</em>. However, the services are named the same in all Linux distros we build for.</p>
+<pre>service restart ncpa_listener</pre>
+<pre>service restart ncpa_passive</pre>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="mac">
+                            <p>Unfortunately there is not a <b>restart</b> command for <code>launchctl</code> at this time.</p>
+<pre>sudo launchctl stop com.nagios.ncpa.listener
+sudo launchctl start com.nagios.ncpa.listener</pre>
+<pre>sudo launchctl stop com.nagios.ncpa.passive
+sudo launchctl start com.nagios.ncpa.passive</pre>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
     </div>
 

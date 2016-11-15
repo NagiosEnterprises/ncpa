@@ -39,7 +39,7 @@ if ERRORLEVEL 1 (
 pip install pypiwin32
 pip install cx_Logging --allow-external cx-Logging --allow-unverified cx-Logging
 pip install cx_PyGenLib --allow-external cx-PyGenLib --allow-unverified cx-PyGenLib
-pip install psutil requests Jinja2 flask werkzeug sphinx docutils pyOpenSSL sphinx-bootstrap-theme gevent cffi appdirs packaging
+pip install psutil requests Jinja2 flask werkzeug docutils pyOpenSSL gevent cffi appdirs packaging
 
 echo to build ncpa:
 echo python build\build_windows.py
