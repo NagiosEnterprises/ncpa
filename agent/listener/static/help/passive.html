@@ -3,31 +3,33 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta charset='utf-8'>
-        <title>Documentation &mdash; NCPA</title>
+        <title>Passive Checks &middot; Documentation &mdash; NCPA</title>
+        <link rel="shortcut icon" type="image/png" href="../img/ncpa.png" />
+        <link rel="icon" type="image/png" href="../img/ncpa.png" />
         <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
         <link rel="stylesheet" href="../css/ncpa.css" type="text/css" />
     </head>
-    <body>
+    <body class="help">
 
-<div class="container">
-  <div class="row">
-    <div class="col-md-12 content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12 col-lg-10">
       
-  <div class="section" id="passive-checks">
-<span id="id1"></span><h1>Passive Checks<a class="headerlink" href="#passive-checks" title="Permalink to this headline">¶</a></h1>
-<p>Specifying passive checks with NCPA is done by amending the [passive checks] section on the ncpa.cfg.</p>
+            <h1>Passive Checks</h1>
+            <p>Specifying passive checks with NCPA is done by amending the [passive checks] section on the ncpa.cfg.</p>
+
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Specifying a host and service on the Nagios side to receive these checks is beyond the scope of this document. Please refer to the <a class="reference external" href="http://nagios.sourceforge.net/docs/nagioscore/4/en/passivechecks.html">Nagios documentation on setting up passive checks</a> for a better understanding of how to manage passive checks.</p>
 </div>
 <p>Specifying these checks will take some familiarity with the NCPA API. For on that see the documentation on the <a class="reference internal" href="api.html#introduction-api"><span class="std std-ref">NCPA API</span></a>.</p>
 <div class="section" id="specifying-the-nagios-server">
-<h2>Specifying the Nagios Server<a class="headerlink" href="#specifying-the-nagios-server" title="Permalink to this headline">¶</a></h2>
+<h2>Specifying the Nagios Server</h2>
 <p>You&#8217;ll need to specify where the passive checks will be sent. This can be accomplished by setting the [nrdp] section with the proper values, where the <em>parent</em> would be the target NRDP address to send check results to. While the <em>token</em> is the connection token that particular NRDP server is expecting for authentication. Set these in the ncpa.cfg before continuing.</p>
 </div>
 <div class="section" id="specifying-checks">
-<h2>Specifying Checks<a class="headerlink" href="#specifying-checks" title="Permalink to this headline">¶</a></h2>
+<h2>Specifying Checks</h2>
 <p>In the ncpa.cfg there is a section titled [passive checks]. In the default configuration there are a few example services specified. Let&#8217;s take a look at one:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">HOSTNAME</span><span class="o">%|</span><span class="n">CPU</span> <span class="n">Usage</span> <span class="o">=</span> <span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">percent</span> <span class="o">--</span><span class="n">warning</span> <span class="mi">20</span> <span class="o">--</span><span class="n">critical</span> <span class="mi">30</span>
 </pre></div>

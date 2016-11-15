@@ -3,19 +3,22 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta charset='utf-8'>
-        <title>Documentation &mdash; NCPA</title>
+        <title>Active Checks &middot; Documentation &mdash; NCPA</title>
+        <link rel="shortcut icon" type="image/png" href="../img/ncpa.png" />
+        <link rel="icon" type="image/png" href="../img/ncpa.png" />
         <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
         <link rel="stylesheet" href="../css/ncpa.css" type="text/css" />
     </head>
-    <body>
-<div class="container">
-  <div class="row">
-    <div class="col-md-12 content">
-      
-  <div class="section" id="active-checks">
-<span id="id1"></span><h1>Active Checks</h1>
-<p>Running active checks against the NCPA agent is trivial and follows in a somewhat similar style as check_nrpe. There is a <a class="reference external" href="http://exchange.nagios.org/directory/Plugins/Network-and-Systems-Management/check_ncpa/details">check_ncpa.py plugin script</a> that is available to use. This plugin is the standard method for executing active checks. However, because of the design of NCPA, it makes it <strong>very</strong> easy to use your own methods to collect data at perform active checks.</p>
+    <body class="help">
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12 col-lg-10">
+              
+            <h1>Active Checks</h1>
+            <p>Running active checks against the NCPA agent is trivial and follows in a somewhat similar style as check_nrpe. There is a <a class="reference external" href="http://exchange.nagios.org/directory/Plugins/Network-and-Systems-Management/check_ncpa/details">check_ncpa.py plugin script</a> that is available to use. This plugin is the standard method for executing active checks. However, because of the design of NCPA, it makes it <strong>very</strong> easy to use your own methods to collect data at perform active checks.</p>
+
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Everything on this particular page is referring to your Nagios server. Active checks do not require you to change the NCPA agent&#8217;s computer.</p>

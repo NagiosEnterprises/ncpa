@@ -16,11 +16,11 @@
         
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-md-12 col-lg-10">
 
                 <h1>Introduction</h1>
 
-                <p>While NCPA has many features, configuring your initial NCPA install can be tricky. This help documentation is here to help you as a reference when configuring and setting up NCPA instances. If you've never used NCPA before, and have not yet installed it on a machine - you can take a look at the <a href="https://nagios.org/ncpa/getting-started.php">getting started guide</a> available on the NCPA website. This guide will go through the initial installation, setup, and show you how start monitoring with passive or active checks using either Nagios XI or Nagios Core.</p>
+                <p>While NCPA has many features, configuring your initial NCPA install can be tricky. This help documentation is here to explain the inner workings of NCPA as well as a reference when configuring and setting up NCPA instances. If you've never used NCPA before, and have not yet installed it on a machine - you can take a look at the <a href="https://nagios.org/ncpa/getting-started.php">getting started guide</a> available on the NCPA website. This guide will go through the initial installation, setup, and show you how start monitoring with passive or active checks using either Nagios XI or Nagios Core.</p>
                 <p>This help documentation is geared towards those who have already installed NCPA and are looking at more advanced configuration and setup. To start off, below is a brief overview of the parts of NCPA and what they are responsible for.</p>
 
                 <div class="section">
@@ -28,7 +28,7 @@
                     <p>NCPA is actually two separate services that make up a single monitoring agent. This separation allows the ability for the agent to run passive checks without needing to allow connections to the web GUI or allow external calls to the API. It also allows the passive portion of the agent to be disabled if it's not in use to save resources even though the passive portion requires very little resources while running in the background.</p>
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-sm-6 col-lg-4">
+                            <div class="col-sm-6 col-lg-5">
                                 <h3>NCPA Listener</h3>
                                 <p>
                                     The <em>NCPA Listener</em> service does the following:
@@ -40,7 +40,7 @@
                                     </ul>
                                 </p>
                             </div>
-                            <div class="col-sm-6 col-lg-4">
+                            <div class="col-sm-6 col-lg-5">
                                 <h3>NCPA Passive</h3>
                                 <p>
                                     The <em>NCPA Passive</em> service does the following:
@@ -57,8 +57,7 @@
                 <a name="restarting-ncpa"></a>
                 <div class="section">
                     <h2>Restarting the NCPA Services</h2>
-                    <p>Because NCPA is made up of these two separate services, you will need to restart both of them if you are using both the active and passive capabilities. Below is the naming conventions and the command line way of starting and stopping services. In the configuration section you'll find that you will need to restart the services each time configuration changes are made.</p>
-
+                    <p>Because NCPA is made up of these two separate services, you will need to restart both of them if you are using both the active and passive capabilities. Below is the naming conventions and the command line way of restarting both services. In the configuration section you'll find that you will need to restart the services each time configuration changes are made.</p>
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#windows" role="tab" data-toggle="tab"><i class="fa fa-windows fa-l fa-14"></i> Windows</a></li>
                         <li role="presentation"><a href="#linux" role="tab" data-toggle="tab"><i class="fa fa-linux fa-l fa-14"></i> Linux</a></li>
@@ -83,7 +82,22 @@ sudo launchctl start com.nagios.ncpa.listener</pre>
 sudo launchctl start com.nagios.ncpa.passive</pre>
                         </div>
                     </div>
+                </div>
 
+                <a name="changes-in-2"></a>
+                <div class="section">
+                    <h2>Changes from 1.x to 2.x</h2>
+                    <p>The latest version of NCPA has a lot of major changes that affect users of older versions of NCPA. Since these changes are in multiple sections of NCPA 2, we have created list of the most notable changes that could affect your system when upgrading from an older version. You can also view the full changelog on the <a target="_parent" href="https://github.com/NagiosEnterprises/ncpa">NCPA GitHub repository</a>.</p>
+                    <p>
+                        <ol>
+                            <li><b>Updated plugin</b> - There is a new version of <code>check_ncpa.py</code> (version 1.0) and should be updated. <em>Version 1.0+ is compatible with NCPA 1.x and 2.x so you can update at any time.</em> If you are using Nagios XI, update your NCPA wizard in the Admin &gt; Manage Config Wizards section. If you are using Nagios Core, you can <a target="_parent" href="https://raw.githubusercontent.com/NagiosEnterprises/ncpa/master/client/check_ncpa.py">download the new plugin from GitHub</a>.</li>
+                            <li><b>API output JSON format</b> - With NCPA 2, the JSON output no longer sends <code>value</code>. Instead, it's output is just a JSON object, formatted the way it should be returned based on the node that was called and whether or not it is a check. This change is already accounted for in the new <code>check_ncpa.py</code> plugin (version 1.0+) and is available in both Nagios XI and Nagios Core. See above for instructions on updating the plugin.</li>
+                            <li><b>Configuration folder</b> - You can now put configuration files into the <code>ncpa.cfg.d</code> folder to be included into the main <code>ncpa.cfg</code> configuration file.</li>
+                            <li><b>Renamed <em>agent/plugin</em> node to <em>plugins</em></b> - Due to the confusion of the naming convention for the <code>api/agent/plugin</code> node, we have renamed this node to <code>api/plugins</code> which fits the current node layout better. This change affects both active and passive checks. <em>The old node is still able to be used, so no immediate changes are necessary, but it is deprecated and will be removed in future versions of NCPA.</em></li>
+                            <li><b>Changes to unit types</b> - Most units that were considered bytes were shoing the unit <b>b</b> instead of the proper unit <b>B</b>. The <code>units</code> variable also now will only affect the <b>B</b> unit types. All other types can only be overriden by <code>unit</code>, which sets the unit to something other than the default unit used.</li>
+                            <li><b>Deprecated <em>service</em> and <em>process</em> nodes</b> - With older versions of NCPA, it was typical to use the format <code>api/service/&lt;servicename&gt;</code> and <code>api/process/&lt;processname&gt;</code> for both the service and process nodes. However, in NCPA 2, the nodes will forward to the new <code>api/services?service=&lt;servicename&gt;</code> and <code>api/processes?name=&lt;processname&gt;</code> instead. <em>The old node endpoints will be removed in future versions of NCPA.</em></li>
+                        </ol>
+                    </p>
                 </div>
 
             </div>

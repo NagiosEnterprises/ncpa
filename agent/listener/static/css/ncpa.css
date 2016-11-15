@@ -158,16 +158,19 @@ select.nodes { margin-left: 4px; }
 
 body.help { margin: 1.5rem 1.5rem 3rem 1.5rem; padding: 0; }
 body.help h1 { font-size: 26px; font-weight: bold; line-height: 26px; margin: 1.5rem 0; }
-body.help h2 { font-size: 20px; line-height: 20px; margin: 1.5rem 0; }
+body.help h2 { font-size: 20px; line-height: 20px; margin: 0 0 1.5rem 0; }
 body.help h3 { font-size: 16px; line-height: 16px; font-weight: bold; margin: 1rem 0; }
 
-body.help .section { padding: 2rem 0 1rem 0; }
+body.help .section { padding: 3rem 0 0 0; }
 
 body.help .nav > li > a { padding: 5px 10px; }
 body.help .nav > li:not(.active) > a:hover { background-color: #F9F9F9; }
 body.help .tab-content { margin: 1rem 0; padding: 0; }
 
 body.help p { line-height: 1.75rem; }
+
+body.help ol { padding: 1rem 2rem; list-style-type: none; }
+body.help ol li { padding-bottom: 1.25rem; }
 
 .well.help { width: 100%; margin: 0; }
 .well.help ul { padding: 0 0 10px 20px; }
