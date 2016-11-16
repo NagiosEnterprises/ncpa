@@ -10,6 +10,13 @@ $(document).ready(function() {
     $(window).resize(function() {
         resize_help_window();
     });
+
+    $(document).keydown(function(e) {
+        if (e.keyCode == 82 && e.ctrlKey || e.keyCode == 116) {
+            document.getElementById('help-iframe').contentWindow.location.reload(true);
+            return false;
+        }
+    });
 });
 
 function resize_help_window() {
@@ -85,16 +92,13 @@ function resize_help_window() {
                     </ul>
                 </li>
                 <li>
-                    <a target="help-frame" href="../static/help/graphs.html">Graphing</a>
-                    <ul>
-                        <li><a target="help-frame" href="">Integrating live graphs</a></li>
-                    </ul>
+                    <a target="help-frame" href="../static/help/graphs.html">Real Time Graphing</a>
                 </li>
             </ul>
         </div>
     </div>
     <div class="right-content" style="display: table-cell; vertical-align: top;">
-        <iframe name="help-frame" src="../static/help/index.html" style="border: 0;"></iframe>
+        <iframe id="help-iframe" name="help-frame" src="../static/help/index.html" style="border: 0;"></iframe>
     </div>
 </div>
 

@@ -9,37 +9,39 @@
         <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
         <link rel="stylesheet" href="../css/ncpa.css" type="text/css" />
+        <script src='../js/jquery.2.2.4.min.js'></script>
+        <script src='../js/bootstrap.min.js'></script>
+        <script src='../js/help.js'></script>
     </head>
     <body class="help">
 
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12 col-lg-10">
+        <div class="row">
+            <div class="col-md-12 col-lg-10">
       
-            <h1>Passive Checks</h1>
-            <p>Specifying passive checks with NCPA is done by amending the [passive checks] section on the ncpa.cfg.</p>
+                <h1>Passive Checks</h1>
+                <p>Specifying passive checks for the <em>NCPA Passive</em> service is done by editing the <b>[passive checks]</b> section in the configuration. If you installed on Linux or Mac OS X, your <b>[passive checks]</b> section is defined by default in a file such as <code>nrdp.cfg</code> in the <code>etc/ncpa.cfg.d</code> directory. If you installed on Windows, you may not have any passive checks defined by default if you didn't set up passive checks over NRDP while installing.</p>
+                <p>Specifying passive checks will use the API to create checks. You can read about it in the API Node Usage section or you can try it out in the web GUI under the API tab.</p>
 
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Specifying a host and service on the Nagios side to receive these checks is beyond the scope of this document. Please refer to the <a class="reference external" href="http://nagios.sourceforge.net/docs/nagioscore/4/en/passivechecks.html">Nagios documentation on setting up passive checks</a> for a better understanding of how to manage passive checks.</p>
-</div>
-<p>Specifying these checks will take some familiarity with the NCPA API. For on that see the documentation on the <a class="reference internal" href="api.html#introduction-api"><span class="std std-ref">NCPA API</span></a>.</p>
-<div class="section" id="specifying-the-nagios-server">
-<h2>Specifying the Nagios Server</h2>
-<p>You&#8217;ll need to specify where the passive checks will be sent. This can be accomplished by setting the [nrdp] section with the proper values, where the <em>parent</em> would be the target NRDP address to send check results to. While the <em>token</em> is the connection token that particular NRDP server is expecting for authentication. Set these in the ncpa.cfg before continuing.</p>
-</div>
-<div class="section" id="specifying-checks">
-<h2>Specifying Checks</h2>
-<p>In the ncpa.cfg there is a section titled [passive checks]. In the default configuration there are a few example services specified. Let&#8217;s take a look at one:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">HOSTNAME</span><span class="o">%|</span><span class="n">CPU</span> <span class="n">Usage</span> <span class="o">=</span> <span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">percent</span> <span class="o">--</span><span class="n">warning</span> <span class="mi">20</span> <span class="o">--</span><span class="n">critical</span> <span class="mi">30</span>
-</pre></div>
-</div>
-<p>When NCPA is running, it parses through this config file and looks for all the entries under the passive checks section.</p>
-<p>For each entry in this section, it takes the string of text before the equals, and splits it on |. The result is the hostname and servicename, while the instructions to execute to find its status are on the left hand side of the = sign.</p>
-<p>To be more generic, the general form goes like this:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">hostname</span><span class="o">&gt;|&lt;</span><span class="n">servicename</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">instructions</span><span class="o">&gt;</span>
-</pre></div>
-</div>
+                <div class="section">
+                    <h2>Configure NCPA to Send Passive Checks via NRDP</h2>
+                    <p>First thing you will need to do is configure your <em>NCPA Passive</em> service to send passive checks to NRDP. Once you've configured your NRDP server you can define the checks that you'd like to send.</p>
+                    <p>You'll need to specify where the passive checks will be sent. This can be accomplished by setting the [nrdp] section with the proper values, where the <em>parent</em> would be the target NRDP address to send check results to. While the <em>token</em> is the connection token that particular NRDP server is expecting for authentication. Set these in the ncpa.cfg before continuing.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Specifying Checks</h2>
+
+                    <p>In the ncpa.cfg there is a section titled [passive checks]. In the default configuration there are a few example services specified. Let's take a look at one:</p>
+                    <pre>%HOSTNAME%|CPU Usage = /cpu/percent --warning 20 --critical 30</pre>
+
+                    <p>When NCPA is running, it parses through this config file and looks for all the entries under the passive checks section.</p>
+                    <p>For each entry in this section, it takes the string of text before the equals, and splits it on |. The result is the hostname and servicename, while the instructions to execute to find its status are on the left hand side of the = sign.</p>
+
+                    <p>To be more generic, the general form goes like this:</p>
+                    <pre>&lt;hostname&gt;|&lt;servicename&gt;|&lt;checkinterval&gt; = &lt;instructions&gt;</pre>
+                </div>
+
 <div class="topic">
 <p class="topic-title first">Hostname Hijinks</p>
 <p>%HOSTNAME% is a magic word that gets replaced by what is specified in the [nrdp] hostname&#8217;s declaration.</p>
@@ -57,10 +59,9 @@ computer2|cpu usage = /agent/plugin/&lt;plugin that checks cpu on other remote s
 </div>
 
 
+            </div>
+        </div>
     </div>
-      
-  </div>
-</div>
 
     </body>
 </html>
