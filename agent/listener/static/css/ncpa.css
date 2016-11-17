@@ -169,8 +169,9 @@ body.help .tab-content { margin: 1rem 0; padding: 0; }
 
 body.help p { line-height: 1.75rem; }
 
-body.help ol { padding: 1rem 2rem; list-style-type: none; }
+body.help ol { padding: 1rem 2rem 0 2rem; list-style-type: none; }
 body.help ol li { padding-bottom: 1.25rem; }
+body.help ol li:last-child { padding-bottom: 0; }
 
 .well.help { width: 100%; margin: 0; }
 .well.help ul { padding: 0 0 10px 20px; }

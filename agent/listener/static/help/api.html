@@ -24,10 +24,15 @@
                 <p>The NCPA API may seem complex but it is actually very simple. NCPA was designed to make it easy for administrators to set-up checks, troubleshoot, test new checks, and keep the options for running these checks very flexible.</p>
                 <p>Let&#8217;s try out a quick example to illustrate what this means. In these following examples I will be running my checks against &#8220;ncpaserver&#8221;, a fictitious server, so when addresses are used. Substitute the IP of your NCPA agent&#8217;s computer in for &#8220;ncpaserver&#8221; as well as your NCPA token for the token &#8220;nagios&#8221; that I use.</p>
 
-                <h2>Looking at the tree</h2>
+                <a name="api-overview"></a>
+                <div class="section">
+                    <h2>Overview of the API</h2>
+                    <p>The API is constructed in a way that allows easily follow the hirearchy downwards, creating a URL. In the example of this systems API return we see what we call <em>nodes</em>. Each node is a specific part of the API that gets specific data and functions a certain way. These are also sometimes referred to as "API endpoints" when farther down the list, when we have reached the end of a node.</p>
+                </div>
 
                 <p>Open up your web browser, and navigate to:</p>
                 <pre>https://ncpaserver:5693/api/?token=nagios</pre>
+
 </pre></div>
 </div>
 <p>This returns:</p>
