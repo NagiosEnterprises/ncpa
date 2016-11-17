@@ -42,7 +42,7 @@
                         <div role="tabpanel" class="tab-pane" id="linux"><pre>/usr/local/ncpa/etc/</pre></div>
                         <div role="tabpanel" class="tab-pane" id="mac"><pre>/usr/local/ncpa/etc/</pre></div>
                     </div>
-                    <p>As of NCPA 2, there is also an <code>ncpa.cfg.d</code> folder which follows the standard of including all <b>.cfg</b> files inside of it into the main <code>nagios.cfg</code> when parsing the configuration. Another change to the way configuration works in NCPA 2 is that changing the passive check configuration <em>requires a restart of the NCPA Passive service</em>. By default NCPA 2 will create an <code>nrdp.cfg</code> file in <code>ncpa.cfg.d</code> directory on Linux and Mac OS X systems. On windows, you are able to select whether or not you are going to enable NRDP during the install - including setting up your basic default checks - placed in <code>nrdp.cfg</code> in <code>nrdp.cfg.d</code>.</p>
+                    <p>As of NCPA 2, there is also an <code>ncpa.cfg.d</code> folder which follows the standard of including all <b>.cfg</b> files inside of it into the main <code>nagios.cfg</code> when parsing the configuration. Another change to the way configuration works in NCPA 2 is that changing the passive check configuration <em>requires a restart of the NCPA Passive service</em>. By default NCPA 2 will have an <code>example.cfg</code> file in <code>ncpa.cfg.d</code> directory on Linux and Mac OS X systems. On windows, you are able to select whether or not you are going to enable NRDP during the install - including setting up your basic default checks - placed in <code>nrdp.cfg</code> in <code>nrdp.cfg.d</code>.</p>
                 </div>
 
                 <a name="config-option-reference"></a>
@@ -51,9 +51,10 @@
                     <p>Below is a list of all available options for the configuration file. The configuration is a standard INI-style config using the <code>name = value</code> notation. However, note that the config file is sectioned off by the square brackets. These different sections affect different portions of NCPA's operation. Each section is seperately listed below.</p>
                     <p>
                         <div class="alert alert-info">
-                            <b>Note</b>: You might notice that there appears to be duplicate entries. For instance, both <a href="#listener">[listener]</a> and <a href="#passive">[passive]</a> sections have a specification for <code>logfile</code>. Since these are two separate services, they maintain separate log files.
+                            <b>Note</b>: You might notice that there appears to be duplicate entries. For instance, both <a href="#listener">[listener]</a> and <a href="#passive">[passive]</a> sections have a specification for <code>logfile</code>. Since these are two separate services, they maintain separate log files and each sections log related options only apply to that service's log files.
                         </div>
                     </p>
+                    <p><i class="fa fa-asterisk"></i> = Required option</p>
                 </div>
 
                 <a name="listener"></a>
@@ -61,50 +62,98 @@
                     <h3>[listener]</h3>
                     <p>This section is for the <em>NCPA Listener</em> service. It controls the web GUI, external authentication, the external API location, graphing integration, and active check settings. The <em>NCPA Listener</em> also runs an HTTP server to handle the API requests for both the API, GUI, and graphing sections. For this reason, this section is the only one that will require an address and a port to listen on.</p>
                     <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 20px;"></th>
+                                <th style="width: 12%;">Option</th>
+                                <th style="width: 15%;">Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
-                                <th style="width: 10%;">ip</th>
-                                <td>This determines what IP the agent will listen on. By default, it will listen on 0.0.0.0, which means it will listen on all interfaces and all name references. Specify this if you would only like the agent to listen on a specific IP or name.</td>
-                            </tr>
-                            <tr>
-                                <th>port</th>
-                                <td>This specifies the TCP port the NCPA listener service will bind to.</td>
-                            </tr>
-                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
                                 <th>uid</th>
-                                <td>Determines which user the NCPA listener service will run as.</td>
+                                <td>nagios</td>
+                                <td>Determines which user the service will run as.</td>
                             </tr>
                             <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
                                 <th>gid</th>
-                                <td>Determines the group by which the NCPA listener service will run as.</td>
+                                <td>nagios</td>
+                                <td>Determines which group the service will run as.</td>
                             </tr>
                             <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>ip</th>
+                                <td>0.0.0.0</td>
+                                <td>This determines what IP the service will listen on. By default, it uses the value 0.0.0.0, which means it will listen on all interfaces and all hostname references. Change this if you would like the service to listen on a specific IP or hostname.</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>port</th>
+                                <td>5693</td>
+                                <td>This specifies the TCP port the service will bind to.</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>ssl_version</th>
+                                <td>TLSv1_2</td>
+                                <td>Set the SSL protocol version to allow for connecting to the HTTPS server. Valid selections are <em>TLSv1</em>, <em>TLSv1_1</em>, or <em>TLSv1_2</em>.</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>certificate</th>
+                                <td>adhoc</td>
+                                <td>Allows you to specify the file name for the SSL certificate you wish to use with the internal HTTPS server. If using <em>adhoc</em> - a new self-signed certificate will be generated and used for the server. The default cert is located in the main install directory at <code>/usr/local/ncpa/ncpa.crt</code> on a normal install.</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
                                 <th>pidfile</th>
-                                <td>The named file location where the PID file for the NCPA server will be stored and maintained.</td>
+                                <td>var/run/ncpa_listener.pid</td>
+                                <td>The name and location of where to place the <em>NCPA Listener</em> PID file. <em>Linux and Mac OS X only.</em></td>
                             </tr>
                             <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>loglevel</th>
+                                <td>info</td>
+                                <td>The level of message that will be logged to the log file. Valid loglevels are <em>info</em>, <em>notice</em>, <em>warning</em>, and <em>error</em>.</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
                                 <th>logfile</th>
-                                <td>The named file location where the log file for the NCPA server will be stored.</td>
+                                <td>var/log/ncpa_listener.log</td>
+                                <td>The named file location where the log file for the <em>NCPA Listener</em> will be stored.</td>
                             </tr>
                             <tr>
+                                <td></td>
                                 <th>logmaxmb</th>
-                                <td>The max size allowed for a log file in megabytes. When the log becomes larger than this, the log will be rolled over and a new log will be started.</td>
+                                <td></td>
+                                <td>The max size allowed for a log file in MB. When the log becomes larger than this size, the log will be rolled over and a new log will be started.</td>
                             </tr>
                             <tr>
+                                <td></td>
                                 <th>logbackups</th>
+                                <td></td>
                                 <td>The max number of log rollovers that will be kept.</td>
                             </tr>
                             <tr>
-                                <th>loglevel</th>
-                                <td>The level of message that will be deemed important enough to be logged to the log file. Valid loglevels are INFO, NOTICE, WARNING and ERROR.</td>
+                                <td></td>
+                                <th>admin_gui_access</th>
+                                <td>1</td>
+                                <td>This setting controls the Admin section. Setting this to <b>0</b> will cause the Admin panel to not be accessible from the GUI.</td>
                             </tr>
                             <tr>
-                                <th>ssl_version</th>
-                                <td>Set the SSL protocol to use when using HTTPS, valid selections are TLSv1, TLSv1_1, TLSv1_2 (default).</td>
+                                <td></td>
+                                <th>admin_password</th>
+                                <td>None</td>
+                                <td>If the admin panel is available by having <code>admin_gui_access = 1</code>, this option is used for adding extra authentication. Leaving this as <em>None</em> will cause it to automatically allow access to the admin seciton once authenticated into the GUI. If it's set to any other value, it will require that password when trying to access the Admin section. This password is also used as a way to authenticate GUI access if <code>admin_auth_only = 1</code>.</td>
                             </tr>
                             <tr>
-                                <th>certificate</th>
-                                <td>Allows you to specify the file name for the SSL certificate you wish to use with the NCPA listener service. If left adhoc, a new self-signed certificate will be generated and used for the server.</td>
+                                <td></td>
+                                <th>admin_auth_only</th>
+                                <td>0</td>
+                                <td>Setting this variable to <b>1</b> will force NCPA to require admin authentication on GUI login/access. This is useful if you don't want anyone to log into the GUI using the API token defined by <code>community_string</code> in the section below. This requires you to have a password set for <code>admin_password</code> too, since it will never allow authentication when set to <em>None</em>.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -112,12 +161,22 @@
 
                 <div class="section">
                     <h3>[api]</h3>
-                    <p>This section controls how the API is accessed, and currently sports only one item.</p>
+                    <p>This section controls the authentication token for the API and any other options that control access or change the way the API works. Currently there is only one option for this section.</p>
                     <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 20px;"></th>
+                                <th style="width: 12%;">Option</th>
+                                <th style="width: 15%;">Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
-                                <th style="width: 10%;">community_string</th>
-                                <td>The token that you use to authenticate when accessing the web interface. This should be something non-trivial.</td>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>community_string</th>
+                                <td>mytoken</td>
+                                <td>The token used to authenticate when accessing the API.<br>The token is also used to authenticate to the web GUI unless <code>admin_auth_only = 1</code> in the <a href="#listener">[listener]</a> section an <code>admin_password</code> is provided.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -128,41 +187,67 @@
                     <h3>[passive]</h3>
                     <p>This section controls how the passive service behaves. It will specify things such as what it should do and how often it should be done.</p>
                     <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 20px;"></th>
+                                <th style="width: 12%;">Option</th>
+                                <th style="width: 15%;">Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
-                                <th style="width: 10%;">sleep</th>
-                                <td>The time in seconds which the service will wait until running again. Upon waking up, the service will check to see if it has anything to do. If it has nothing to do it will sleep again for the specified time.</td>
-                            </tr>
-                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
                                 <th>handlers</th>
+                                <td>None</td>
                                 <td>This is where the magic happens with the NCPA passive agent. Handlers are items that are run whenever the passive daemon wakes up. The currently supported handlers are nrds and nrdp. This handlers list should be a comma-delimited list of handlers that are to be run. To run both nrds and nrdp handlers, this entry would be <em>handlers = nrds,nrdp</em>. More information is provided about what each of these handlers do under the <a class="reference internal" href="#nrds">[nrds]</a> and <a class="reference internal" href="#nrdp">[nrdp]</a> sections, respectively.</td>
                             </tr>
                             <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
                                 <th>uid</th>
+                                <td>nagios</td>
                                 <td>Determines which user the NCPA passive service will run as during execution.</td>
                             </tr>
                             <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
                                 <th>gid</th>
+                                <td>nagios</td>
                                 <td>Determines the group by which the NCPA passive service will run as during execution.</td>
                             </tr>
                             <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>sleep</th>
+                                <td>300</td>
+                                <td>The time in seconds which the service will wait until running again. Upon waking up, the service will check to see if it has anything to do. If it has nothing to do it will sleep again for the specified time.</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
                                 <th>pidfile</th>
+                                <td>var/run/ncpa_passive.pid</td>
                                 <td>The named file location where the PID file for the NCPA passive service will be stored and maintained.</td>
                             </tr>
                             <tr>
-                                <th>logfile</th>
-                                <td>The named file location where the log file for the NCPA passive service will be stored.</td>
-                            </tr>
-                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
                                 <th>loglevel</th>
+                                <td>info</td>
                                 <td>The level of message that will be deemed important enough to be logged to the log file. Valid loglevels are INFO, NOTICE, WARNING and ERROR.</td>
                             </tr>
                             <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>logfile</th>
+                                <td>var/log/ncpa_passive.log</td>
+                                <td>The named file location where the log file for the NCPA passive service will be stored.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
                                 <th>logmaxmb</th>
+                                <td></td>
                                 <td>The max size allowed for a log file in megabytes. When the log becomes larger than this, the log will be rolled over and a new log will be started.</td>
                             </tr>
                             <tr>
+                                <td></td>
                                 <th>logbackups</th>
+                                <td></td>
                                 <td>The max number of log rollovers that will be kept.</td>
                             </tr>
                         </tbody>
@@ -217,11 +302,6 @@
                 </div>
                 -->
 
-                <div class="section" id="passive-checks">
-                    <h3>[passive checks]</h3>
-                    <p>This section does have a hard and fast set of concrete instructions. For information on setting up passive checks, see the section <a class="reference internal" href="passive.html#passive-checks"><span class="std std-ref">Setting Up Passive Checks</span></a>.</p>
-                </div>
-
                 <div class="section" id="plugin-directives">
                     <h3>[plugin directives]</h3>
                     <p>This section is where you can specify both the plugin directory and special operations that should be executed when a given file type is executed as part of a service check. Some examples for the special directives are given.</p>
@@ -233,6 +313,11 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <div class="section" id="passive-checks">
+                    <h3>[passive checks]</h3>
+                    <p>This section does have a hard and fast set of concrete instructions. For information on setting up passive checks, see the section <a class="reference internal" href="passive.html#passive-checks"><span class="std std-ref">Setting Up Passive Checks</span></a>.</p>
                 </div>
 
             </div>
