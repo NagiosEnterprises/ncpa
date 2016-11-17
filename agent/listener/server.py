@@ -162,7 +162,7 @@ def login():
         has_admin_password = True
 
     # Get GUI admin auth only variable
-    gui_admin_auth_only = int(get_config_value('listener', 'gui_admin_auth_only', 0))
+    admin_auth_only = int(get_config_value('listener', 'admin_auth_only', 0))
 
     message = session.get('message', None)
     url = session.get('redirect', None)
@@ -172,12 +172,12 @@ def login():
                       'message': message,
                       'url': url,
                       'has_admin_password': has_admin_password,
-                      'gui_admin_auth_only': gui_admin_auth_only }
+                      'admin_auth_only': admin_auth_only }
 
     session['message'] = None
 
     # Do actual athentication check
-    if token == ncpa_token and not gui_admin_auth_only:
+    if token == ncpa_token and not admin_auth_only:
         session['logged'] = True
     elif token == admin_password and admin_password is not None:
         session['logged'] = True
@@ -192,7 +192,7 @@ def login():
     
     # Display error messages depending on what was given
     if token is not None:
-        if not gui_admin_auth_only:
+        if not admin_auth_only:
             if token != ncpa_token or token != admin_password:
                 template_args['error'] = 'Invalid token or password.'
         else:
