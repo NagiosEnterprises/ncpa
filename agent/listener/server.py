@@ -21,6 +21,7 @@ __VERSION__ = '2.0.0.a'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
+
 base_dir = os.path.dirname(sys.path[0])
 
 # The following if statement is a workaround that is allowing us to run this
@@ -44,9 +45,20 @@ else:
 listener.jinja_env.line_statement_prefix = '#'
 
 
+# Get a configuration value or default
+def get_config_value(section, option, default=None):
+    try:
+        value = listener.config['iconfig'].get(section, option)
+        if value == 'None':
+            value = None
+    except Exception as e:
+        value = default
+    return value
+
+
 @listener.context_processor
 def inject_variables():
-    admin_gui_access = int(listener.config['iconfig'].get('listener', 'admin_gui_access'))
+    admin_gui_access = int(get_config_value('listener', 'admin_gui_access', 0))
     values = { 'admin_visible': admin_gui_access }
     return values
 
@@ -67,7 +79,7 @@ def make_info_dict():
 
 def requires_auth(f):
     @functools.wraps(f)
-    def decorated(*args, **kwargs):
+    def auth_decoration(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
         token = request.values.get('token', None)
 
@@ -83,29 +95,37 @@ def requires_auth(f):
             return error(msg='Incorrect credentials given.')
         return f(*args, **kwargs)
 
-    return decorated
+    return auth_decoration
 
 
+# Does admin authentication check for admin panel if set
 def requires_admin_auth(f):
     @functools.wraps(f)
-    def decorated2(*args, **kwargs):
+    def admin_auth_decoration(*args, **kwargs):
+
+        # Verify that regular auth has happened
+        if not session.get('logged', False):
+            return redirect(url_for('login'))
 
         # Check if access to admin is okay
-        admin_gui_access = int(listener.config['iconfig'].get('listener', 'admin_gui_access'))
+        admin_gui_access = int(get_config_value('listener', 'admin_gui_access', 0))
         if not admin_gui_access:
             return redirect(url_for('gui_index'))
 
-        try:
-            admin_password = listener.config['iconfig'].get('listener', 'admin_password')
-        except Exception as e:
-            admin_password = ''
+        # Admin password
+        admin_password = get_config_value('listener', 'admin_password', None)
 
-        if not admin_password:
-            session['admin_logged'] = False
+        # Special case if admin password not set - log in automatically
+        if admin_password is None:
+            session['admin_logged'] = True
+
+        if not session.get('admin_logged', False):
+            return redirect(url_for('admin_login'))
 
         return f(*args, **kwargs)
 
-    return decorated2
+    return admin_auth_decoration
+
 
 @listener.route('/login', methods=['GET', 'POST'])
 def login():
@@ -115,32 +135,86 @@ def login():
         return redirect(url_for('index'))
 
     ncpa_token = listener.config['iconfig'].get('api', 'community_string')
+
+    # Admin password
+    has_admin_password = False
+    admin_password = get_config_value('listener', 'admin_password', None)
+    if admin_password is not None:
+        has_admin_password = True
+
+    # Get GUI admin auth only variable
+    gui_admin_auth_only = int(get_config_value('listener', 'gui_admin_auth_only', 0))
+
     message = session.get('message', None)
     url = session.get('redirect', None)
     token = request.values.get('token', None)
 
     template_args = { 'hide_page_links': True,
                       'message': message,
-                      'url': url }
+                      'url': url,
+                      'has_admin_password': has_admin_password,
+                      'gui_admin_auth_only': gui_admin_auth_only }
 
     session['message'] = None
 
-    if token == ncpa_token:
+    # Do actual athentication check
+    if token == ncpa_token and not gui_admin_auth_only:
         session['logged'] = True
+    elif token == admin_password and admin_password is not None:
+        session['logged'] = True
+        session['admin_logged'] = True
+
+    if session.get('logged', False):
         if url:
             session['redirect'] = None
             return redirect(url)
         else:
             return redirect(url_for('index'))
-    elif token != ncpa_token and token is not None:
-        template_args['error'] = 'Token was invalid.'
+    
+    # Display error messages depending on what was given
+    if token is not None:
+        if not gui_admin_auth_only:
+            if token != ncpa_token or token != admin_password:
+                template_args['error'] = 'Invalid token or password.'
+        else:
+            if token == ncpa_token:
+                template_args['error'] = 'Admin authentication only.'
+            else:
+                template_args['error'] = 'Invalid password.'
 
     return render_template('login.html', **template_args)
 
 
+@listener.route('/gui/admin/login', methods=['GET', 'POST'])
+@requires_auth
+def admin_login():
+
+    # Verify authentication and redirect if we are authenticated
+    if session.get('admin_logged', False):
+        return redirect(url_for('admin_config'))
+
+    # Admin password
+    admin_password = get_config_value('listener', 'admin_password', None)
+
+    message = session.get('message', None)
+    password = request.values.get('password', None)
+    template_args = { 'hide_page_links': False,
+                      'message': message }
+
+    session['message'] = None
+
+    if password == admin_password and admin_password is not None:
+        session['admin_logged'] = True
+        return redirect(url_for('admin_config'))
+    elif password is not None:
+        template_args['error'] = 'Password was invalid.'
+
+    return render_template('admin/login.html', **template_args)
+
+
 @listener.route('/logout', methods=['GET', 'POST'])
 def logout():
-    session['logged'] = False
+    session.clear()
     session['message'] = 'Successfully logged out.'
     return redirect(url_for('login'))
 
@@ -214,7 +288,6 @@ def live_stats():
 
 
 @listener.route('/gui/admin', methods=['GET', 'POST'])
-@requires_auth
 @requires_admin_auth
 def admin_config():
     tmp_args = {}

@@ -78,7 +78,7 @@ input.form-control { padding: 4px 8px; }
 .modal-content { border-radius: 0; }
 .modal-header { font-weight: bold; font-size: 18px; }
 .navbar-inverse { background: url('../img/footer_lodyas.png'); border: none; }
-.navbar-inverse .navbar-brand { font-size: 24px; font-weight: bold; color: #EEE; letter-spacing: 2px; }
+.navbar-inverse .navbar-brand { font-size: 24px; font-weight: bold; color: #EEE; letter-spacing: 2px; text-decoration: none !important; }
 .navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:hover { background-color: #222; }
 .navbar { margin-bottom: 0; }
 .table-border { border: 1px solid #DDD; }
