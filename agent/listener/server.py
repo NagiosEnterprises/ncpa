@@ -77,17 +77,18 @@ def make_info_dict():
             'version': platform.uname()[3]}
 
 
-def requires_auth(f):
+# Token authentication for authentication or actual auth
+def requires_token_or_auth(f):
     @functools.wraps(f)
-    def auth_decoration(*args, **kwargs):
+    def token_auth_decoration(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
         token = request.values.get('token', None)
 
+        # This is an internal call, we don't check
         if __INTERNAL__ is True:
-            # This is an internal call, we don't check. (Passive agent call.)
             pass
         elif session.get('logged', False) or token == ncpa_token:
-            session['logged'] = True
+            pass
         elif token is None:
             session['redirect'] = request.url
             return redirect(url_for('login'))
@@ -95,10 +96,28 @@ def requires_auth(f):
             return error(msg='Incorrect credentials given.')
         return f(*args, **kwargs)
 
+    return token_auth_decoration
+
+
+# Standard auth check, no token-only access
+def requires_auth(f):
+    @functools.wraps(f)
+    def auth_decoration(*args, **kwargs):
+
+        # This is an internal call, we don't check
+        if __INTERNAL__ is True:
+            pass
+        elif session.get('logged', False):
+            pass
+        else:
+            session['redirect'] = request.url
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+
     return auth_decoration
 
 
-# Does admin authentication check for admin panel if set
+# Admin auth check, admin access via password if applicable
 def requires_admin_auth(f):
     @functools.wraps(f)
     def admin_auth_decoration(*args, **kwargs):
@@ -301,7 +320,7 @@ def admin_config():
 
 
 @listener.route('/api-websocket/<path:accessor>', methods=['GET', 'POST'])
-@requires_auth
+@requires_token_or_auth
 def api_websocket(accessor=None):
     """Meant for use with the websocket and API.
 
@@ -374,7 +393,7 @@ def top():
 
 
 @listener.route('/top-websocket/')
-@requires_auth
+@requires_token_or_auth
 def top_websocket():
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
@@ -405,7 +424,7 @@ def top_websocket():
 
 
 @listener.route('/tail-websocket/<path:accessor>')
-@requires_auth
+@requires_token_or_auth
 def tail_websocket(accessor=None):
     if request.environ.get('wsgi.websocket'):
         last_ts = datetime.datetime.now()
@@ -427,7 +446,7 @@ def tail_websocket(accessor=None):
 
 
 @listener.route('/tail/<path:accessor>', methods=['GET', 'POST'])
-@requires_auth
+@requires_token_or_auth
 def tail(accessor=None):
     info = {'tail_path': accessor,
             'tail_hash': hash(accessor)}
@@ -439,7 +458,7 @@ def tail(accessor=None):
 
 
 @listener.route('/graph/<path:accessor>', methods=['GET', 'POST'])
-@requires_auth
+@requires_token_or_auth
 def graph(accessor=None):
     """
     Accessor method for fetching the HTML for the real-time graphing.
@@ -493,6 +512,7 @@ def testconnect():
 
 
 @listener.route('/nrdp/', methods=['GET', 'POST'])
+@requires_token_or_auth
 def nrdp():
     """
     Function acts an an NRDP forwarder.
@@ -536,7 +556,7 @@ def view_api():
 
 @listener.route('/api/', methods=['GET', 'POST'])
 @listener.route('/api/<path:accessor>', methods=['GET', 'POST'])
-@requires_auth
+@requires_token_or_auth
 def api(accessor=''):
     """
     The function that serves up all the metrics. Given some path/to/a/metric it will
