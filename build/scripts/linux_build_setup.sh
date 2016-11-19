@@ -50,18 +50,12 @@ tar xf $CXPYGENLIBVER.tar.gz
 cd $CXPYGENLIBVER
 $PYTHONBIN setup.py install
 
-# Install patched version of gevent-websocket
-cd ..
-tar xf $GWEBSOCKETTAR.tar.gz
-cd "$GWEBSOCKETVER"
-$PYTHONBIN setup.py install
-
 # Clean up resource directory
+cd ..
 rm -rf $PYTHONTAR
 rm -rf $CXFREEZEVER
 rm -rf $CXLOGGINGVER
 rm -rf $CXPYGENLIBVER
-rm -rf $GWEBSOCKETVER
 
 # --------------------------
 #  INSTALL PIP
@@ -73,7 +67,23 @@ cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $
 #  INSTALL PIP COMPONENTS
 # --------------------------
 
+cd $DIR
 $PYTHONBIN -m pip install -r ../resources/require.txt --upgrade
+
+# --------------------------
+#  INSTALL RESOURCES
+# --------------------------
+
+# Install patched version of gevent-websocket
+cd $DIR/../resources
+
+tar xf $GWEBSOCKETTAR.tar.gz
+cd $GWEBSOCKETVER
+$PYTHONBIN setup.py install
+
+# Clean up resources directory again
+cd ..
+rm -rf $GWEBSOCKETVER
 
 # --------------------------
 #  MISC SETUP
