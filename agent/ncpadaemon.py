@@ -1,10 +1,3 @@
-u"""
-Provides a simple Daemon class to ease the process of forking a
-python application on Unix systems.
-"""
-
-VERSION = (2, 0, 0)
-
 import ConfigParser
 import errno
 import glob
@@ -21,8 +14,11 @@ import filename
 from itertools import imap
 from io import open
 
+
+VERSION = (2, 0, 0)
+
+
 class Daemon(object):
-    u"""Daemon base class"""
 
     def __init__(self):
         u"""Override to change where the daemon looks for config information.
@@ -148,6 +144,9 @@ class Daemon(object):
             # - check_pid_writable must come after set_uid in order to
             # detect whether the daemon user can write to the pidfile
             self.check_pid_writable()
+
+            self.set_uid_gid()
+
             # - set up with user privileges before daemonizing, so that
             # startup failures can appear on the console
             self.setup_user()
@@ -207,7 +206,7 @@ class Daemon(object):
                 os.makedirs(parent)
                 self.chown(parent)
 
-    def set_uid(self):
+    def set_uid_gid(self):
         u"""Drop root privileges"""
         if self.gid:
             try:
@@ -320,31 +319,18 @@ class Daemon(object):
 
 
 def get_uid_gid(cp, section):
-    u"""Get a numeric uid/gid from a configuration file.
+    user_uid = cp.get(section, 'uid')
+    user_gid = cp.get(section, 'gid')
 
-    May return an empty uid and gid.
-    """
-    uid = cp.get(section, u'uid')
-    if uid:
-        try:
-            uid = int(uid)
-        except ValueError:
-            # convert user name to uid
-            try:
-                uid = pwd.getpwnam(uid)[2]
-            except KeyError:
-                raise ValueError(u"user is not in password database: %s" % uid)
+    uid = user_uid
+    if not isinstance(user_uid, int):
+        u = pwd.getpwnam(user_uid)
+        uid = u.pw_uid
 
-    gid = cp.get(section, u'gid')
-    if gid:
-        try:
-            gid = int(gid)
-        except ValueError:
-            # convert group name to gid
-            try:
-                gid = grp.getgrnam(gid)[2]
-            except KeyError:
-                raise ValueError(u"group is not in group database: %s" % gid)
+    gid = user_gid
+    if not isinstance(user_gid, int):
+        g = grp.getgrnam(user_gid)
+        gid = g.gr_gid
 
     return uid, gid
 
@@ -363,7 +349,7 @@ def daemonize():
     for i in xrange(3):
         try:
             os.dup2(null, i)
-        except OSError, e:
+        except OSError as e:
             if e.errno != errno.EBADF:
                 raise
     os.close(null)
