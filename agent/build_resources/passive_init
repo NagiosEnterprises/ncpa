@@ -29,23 +29,12 @@ PIDFILE=$BASEDIR/$PIDFILE
 
 # Start NCPA Passive service
 start() {
-    PID=`pidofproc -p $PIDFILE`
-    if [ checkpid $PID ]; then
-        (
-            cd $BASEDIR
-            action "Starting ncpa_passive" ./ncpa_posix_passive --start
-        )
-    else
-        failure && echo "ncpa_passive is already running ($PID)"
-    fi
+    action "Starting NCPA Passive: " $BASEDIR/ncpa_posix_passive --start
 }
 
 # Stop NCPA Passive service
 stop() {
-    (
-        cd $BASEDIR
-        action "Stopping ncpa_passive" ncpa_posix_passive --stop
-    )
+    action "Stopping NCPA Passive: " ncpa_posix_passive --stop
 }
 
 # Get the status of the NCPA Passive service

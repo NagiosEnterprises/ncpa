@@ -29,23 +29,12 @@ PIDFILE=$BASEDIR/$PIDFILE
 
 # Start NCPA Listener service
 start() {
-    PID=`pidofproc -p $PIDFILE`
-    if [ checkpid $PID ]; then
-        (
-            cd $BASEDIR
-            action "Starting ncpa_listener" ./ncpa_posix_listener --start
-        )
-    else
-        failure && echo "ncpa_listener is already running ($PID)"
-    fi
+    action "Starting NCPA Listener: " $BASEDIR/ncpa_posix_listener --start
 }
 
 # Stop NCPA Listener service
 stop() {
-    (
-        cd $BASEDIR
-        action "Stopping ncpa_listener" ncpa_posix_listener --stop
-    )
+    action "Stopping NCPA Listener: " $BASEDIR/ncpa_posix_listener --stop
 }
 
 # Get the status of the NCPA Listener service
