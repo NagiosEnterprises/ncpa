@@ -65,6 +65,8 @@ class Daemon(object):
             self.start()
         elif action == u'stop':
             self.stop()
+        elif action == u'status':
+            self.status()
         else:
             raise ValueError(action)
 
@@ -77,6 +79,9 @@ class Daemon(object):
         p.add_option(u'-s', u'--stop', dest=u'action',
                      action=u'store_const', const=u'stop', default=u'start',
                      help=u'Stop the daemon')
+        p.add_option(u'--status', dest=u'action',
+                     action=u'store_const', const=u'status', default=u'start',
+                     help=u'Status of the daemon')
         p.add_option(u'-c', dest=u'config_filename',
                      action=u'store', default=self.default_conf,
                      help=u'Specify alternate configuration file name')
@@ -185,8 +190,8 @@ class Daemon(object):
                 try:
                     # poll the process state
                     os.kill(pid, 0)
-                except OSError, why:
-                    if why.errno == errno.ESRCH:
+                except OSError as err:
+                    if err.errno == errno.ESRCH:
                         # process has died
                         break
                     else:
@@ -195,6 +200,21 @@ class Daemon(object):
                 sys.exit(u"pid %d did not die" % pid)
         else:
             sys.exit(u"not running")
+
+    def status(self):
+        if self.pidfile and os.path.exists(self.pidfile):
+            pid = int(open(self.pidfile).read())
+
+            # Check if the value is in ps aux
+            if pid > 0:
+                try:
+                    os.kill(pid, 0)
+                    sys.exit(u"service is running (pid %d)" % pid)
+                except OSError as err:
+                    if err.errno != errno.ESRCH:
+                        sys.exit(u"service is not running but pid file exists")
+        else:
+            sys.exit(u"service is not running")
 
     def prepare_dirs(self):
         u"""Ensure the log and pid file directories exist and are writable"""

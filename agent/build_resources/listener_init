@@ -23,10 +23,6 @@ fi
 
 _BASEDIR_
 
-# Grab variables to start the daemon
-PIDFILE=$(grep pidfile -r $BASEDIR/etc/*.cfg | grep listener | sed '/^#/ d' | cut -d '=' -f 2 | awk '{$1=$1};1' | head -1)
-PIDFILE=$BASEDIR/$PIDFILE
-
 # Start NCPA Listener service
 start() {
     action "Starting NCPA Listener: " $BASEDIR/ncpa_posix_listener --start
@@ -38,8 +34,9 @@ stop() {
 }
 
 # Get the status of the NCPA Listener service
-status() {
-    status -p $PIDFILE ncpa_listener
+ncpa_l_status() {
+    echo -n "NCPA Listener "
+    $BASEDIR/ncpa_posix_listener --status
 }
 
 # Main init script logic
@@ -51,7 +48,7 @@ case "$1" in
         stop
         ;;
     status)
-        status
+        ncpa_l_status
         ;;
     restart|reload|condrestart)
         stop

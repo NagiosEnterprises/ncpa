@@ -23,10 +23,6 @@ fi
 
 _BASEDIR_
 
-# Grab the PID file location
-PIDFILE=$(grep pidfile -r $BASEDIR/etc/*.cfg | grep passive | sed '/^#/ d' | cut -d '=' -f 2 | awk '{$1=$1};1' | head -1)
-PIDFILE=$BASEDIR/$PIDFILE
-
 # Start NCPA Passive service
 start() {
     action "Starting NCPA Passive: " $BASEDIR/ncpa_posix_passive --start
@@ -34,12 +30,13 @@ start() {
 
 # Stop NCPA Passive service
 stop() {
-    action "Stopping NCPA Passive: " ncpa_posix_passive --stop
+    action "Stopping NCPA Passive: " $BASEDIR/ncpa_posix_passive --stop
 }
 
 # Get the status of the NCPA Passive service
-status() {
-    status -p $PIDFILE ncpa_passive
+ncpa_p_status() {
+    echo -n "NCPA Passive "
+    $BASEDIR/ncpa_posix_passive --status
 }
 
 # Main init script logic
@@ -51,7 +48,7 @@ case "$1" in
         stop
         ;;
     status)
-        status
+        ncpa_p_status
         ;;
     restart|reload|condrestart)
         stop
