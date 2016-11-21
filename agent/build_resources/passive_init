@@ -6,43 +6,51 @@
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Description:       Enables the NCPA passive service.
+# Short-Description: This manages the NCPA Passive service
+# Description:       NCPA is a cross platform monitoring agent for Nagios that requires no dependencies.
 ### END INIT INFO
+
+# init.d / servicectl compatibility (openSUSE)
+if [ -f /etc/rc.status ]; then
+    . /etc/rc.status
+    rc_reset
+fi
+
+# Source function library
+if [ -f /etc/rc.d/init.d/functions ]; then
+    . /etc/rc.d/init.d/functions
+fi
 
 _BASEDIR_
 
 # Grab the PID file location
-# Someday the py file should get status so this doesn't need to happen
 PIDFILE=$(grep pidfile -r $BASEDIR/etc/*.cfg | grep passive | sed '/^#/ d' | cut -d '=' -f 2 | awk '{$1=$1};1' | head -1)
 PIDFILE=$BASEDIR/$PIDFILE
 
-# Start passive service
+# Start NCPA Passive service
 start() {
-    (
-        cd $BASEDIR
-        ./ncpa_posix_passive --start
-    )
-    echo "Started passive."
+    PID=`pidofproc -p $PIDFILE`
+    if [ checkpid $PID ]; then
+        (
+            cd $BASEDIR
+            action "Starting ncpa_passive" ./ncpa_posix_passive --start
+        )
+    else
+        failure && echo "ncpa_passive is already running ($PID)"
+    fi
 }
 
-# Restart passive service
+# Stop NCPA Passive service
 stop() {
     (
         cd $BASEDIR
-        ./ncpa_posix_passive --stop
+        action "Stopping ncpa_passive" ncpa_posix_passive --stop
     )
-    echo "Stopped passive."
 }
 
-# Get the status
+# Get the status of the NCPA Passive service
 status() {
-    if [ -f "$BASEDIR/var/run/ncpa_posix_passive.pid" ];
-    then
-        pid=`cat $BASEDIR/var/run/ncpa_posix_passive.pid`
-        echo "Process running with PID $pid"
-    else
-        echo "Process is not running."
-    fi
+    status -p $PIDFILE ncpa_passive
 }
 
 # Main init script logic

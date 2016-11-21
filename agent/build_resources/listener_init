@@ -6,43 +6,51 @@
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Description:       Enables the NCPA listener service.
+# Short-Description: This manages the NCPA Listener service
+# Description:       NCPA is a cross platform monitoring agent for Nagios that requires no dependencies.
 ### END INIT INFO
+
+# init.d / servicectl compatibility (openSUSE)
+if [ -f /etc/rc.status ]; then
+    . /etc/rc.status
+    rc_reset
+fi
+
+# Source function library
+if [ -f /etc/rc.d/init.d/functions ]; then
+    . /etc/rc.d/init.d/functions
+fi
 
 _BASEDIR_
 
-# Grab the PID file location
-# Someday the py file should get status so this doesn't need to happen
+# Grab variables to start the daemon
 PIDFILE=$(grep pidfile -r $BASEDIR/etc/*.cfg | grep listener | sed '/^#/ d' | cut -d '=' -f 2 | awk '{$1=$1};1' | head -1)
 PIDFILE=$BASEDIR/$PIDFILE
 
-# Start listener service
+# Start NCPA Listener service
 start() {
-    (
-        cd $BASEDIR
-        ./ncpa_posix_listener --start
-    )
-    echo "Started listener."
+    PID=`pidofproc -p $PIDFILE`
+    if [ checkpid $PID ]; then
+        (
+            cd $BASEDIR
+            action "Starting ncpa_listener" ./ncpa_posix_listener --start
+        )
+    else
+        failure && echo "ncpa_listener is already running ($PID)"
+    fi
 }
 
-# Restart listener service
+# Stop NCPA Listener service
 stop() {
     (
         cd $BASEDIR
-        ./ncpa_posix_listener --stop
-        echo "Stopped listener."
+        action "Stopping ncpa_listener" ncpa_posix_listener --stop
     )
 }
 
-# Get the status
+# Get the status of the NCPA Listener service
 status() {
-    if [ -f "$PIDFILE" ];
-    then
-        pid=`cat $PIDFILE`
-        echo "Process running with PID $pid"
-    else
-        echo "Process is not running."
-    fi
+    status -p $PIDFILE ncpa_listener
 }
 
 # Main init script logic
