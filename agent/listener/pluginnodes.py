@@ -77,9 +77,11 @@ class PluginNode(nodes.RunnableNode):
         logging.debug('Running process with command line: `%s`', ' '.join(cmd))
 
         # Demote the child process to the username/group specified in config
+        # Note: We are no longer demoting here - instead we are setting the actual perms
+        #       when we daemonize the process making this pointless.
         demote = None
-        if environment.SYSTEM != "Windows":
-            demote = PluginNode.demote(user_uid, user_gid)
+        #if environment.SYSTEM != "Windows":
+        #    demote = PluginNode.demote(user_uid, user_gid)
 
         running_check = subprocess.Popen(cmd, bufsize=-1, preexec_fn=demote, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         queue = Queue.Queue(maxsize=2)

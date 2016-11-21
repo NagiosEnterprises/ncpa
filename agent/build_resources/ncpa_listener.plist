@@ -5,9 +5,9 @@
         <key>RunAtLoad</key>
         <true/>
         <key>UserName</key>
-        <string>nagios</string>
+        <string>root</string>
         <key>GroupName</key>
-        <string>nagios</string>
+        <string>root</string>
         <key>WorkingDirectory</key>
         <string>/usr/local/ncpa</string>
         <key>ProgramArguments</key>
