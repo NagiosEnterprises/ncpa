@@ -21,7 +21,6 @@ Changelog
 - Added admin web GUI section for in-browser viewing of passive checks, process control, etc
 - Added admin_x config values into default ncpa.cfg for Web GUI admin section
 - Added information into api/logs node to explain how to get logs to be populated
-- Added plugins on Unix systems to actually run as the user/group specified in the ncpa.cfg
 - Added '/s' onto the unit when using the delta argument outside of checks
 
 **Updates**
@@ -47,6 +46,7 @@ Changelog
 - Updated filtering processes by 'name' and 'exe' field to also be able to use 'match' type (exact, search, or regex)
 - Updated filtering services by 'service' field to allow using the 'match' type too (exact, search, or regex)
 - Updated delta values to not cause weird issues when calling the same endpoint from different sources
+- Updated ncpa_listener and ncpa_passive init.d files to be more reliable
 
 **Bug Fixes**
 
@@ -76,6 +76,8 @@ Changelog
 - Fixed device_name on api/disk/logical node when units passed giving an error
 - Fixed perfdata output for windows log checks
 - Fixed issue on Mac OS X where running as nagios (default) would cause process data not to show
+- Fixed issue where global config parser defaults caused issues with sections in separate files
+- Fixed issue where services in Unix systems ran as root no matter what the uid/gid specified in ncpa.cfg
 
 **Deprecated**
 
