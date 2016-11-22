@@ -97,27 +97,32 @@ class Daemon(object):
         u"""Read basic options from the daemon config file"""
         self.config_filenames = [self.options.config_filename]
         self.config_filenames.extend(sorted(glob.glob(os.path.join(self.options.config_filename + ".d", "*.cfg"))))
-        cp = ConfigParser.ConfigParser(defaults={
+        cp = ConfigParser.ConfigParser()
+        cp.optionxform = unicode
+        cp.read(self.config_filenames)
+        self.config_parser = cp
+
+        # Set defaults for below section
+        defaults={
             u'logmaxmb': u'5',
             u'logbackups': u'5',
             u'loglevel': u'info',
             u'uid': unicode(os.getuid()),
             u'gid': unicode(os.getgid()),
-        })
-        cp.optionxform = unicode
-        cp.read(self.config_filenames)
-        self.config_parser = cp
+        }
 
         try:
             self.uid, self.gid = list(imap(int, get_uid_gid(cp, self.section)))
         except ValueError, e:
             sys.exit(unicode(e))
 
-        self.logmaxmb = int(cp.get(self.section, u'logmaxmb'))
-        self.logbackups = int(cp.get(self.section, u'logbackups'))
-        self.pidfile = os.path.abspath(os.path.join(filename.get_dirname_file(), cp.get(self.section, u'pidfile')))
-        self.logfile = os.path.abspath(os.path.join(filename.get_dirname_file(), cp.get(self.section, u'logfile')))
-        self.loglevel = cp.get(self.section, u'loglevel')
+        self.logmaxmb = int(cp.get(self.section, u'logmaxmb', vars=defaults))
+        self.logbackups = int(cp.get(self.section, u'logbackups', vars=defaults))
+        self.pidfile = os.path.abspath(os.path.join(filename.get_dirname_file(),
+                                                    cp.get(self.section, u'pidfile', vars=defaults)))
+        self.logfile = os.path.abspath(os.path.join(filename.get_dirname_file(),
+                                                    cp.get(self.section, u'logfile', vars=defaults)))
+        self.loglevel = cp.get(self.section, u'loglevel', vars=defaults)
 
     def on_sigterm(self, signalnum, frame):
         u"""Handle segterm by treating as a keyboard interrupt"""
