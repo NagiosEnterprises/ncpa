@@ -1,7 +1,6 @@
 import logging
 import platform
 import ncpacheck
-import sys
 
 
 class NagiosHandler(object):
