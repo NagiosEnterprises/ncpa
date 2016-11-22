@@ -35,8 +35,8 @@ stop() {
 
 # Get the status of the NCPA Passive service
 ncpa_p_status() {
-    echo -n "NCPA Passive "
-    $BASEDIR/ncpa_posix_passive --status
+    output=`$BASEDIR/ncpa_posix_passive --status`
+    echo "NCPA Passive $output"
 }
 
 # Main init script logic

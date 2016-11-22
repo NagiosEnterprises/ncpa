@@ -25,18 +25,18 @@ _BASEDIR_
 
 # Start NCPA Listener service
 start() {
-    action "Starting NCPA Listener: " $BASEDIR/ncpa_posix_listener --start
+    action "Starting NCPA Listener:" $BASEDIR/ncpa_posix_listener --start
 }
 
 # Stop NCPA Listener service
 stop() {
-    action "Stopping NCPA Listener: " $BASEDIR/ncpa_posix_listener --stop
+    action "Stopping NCPA Listener:" $BASEDIR/ncpa_posix_listener --stop
 }
 
 # Get the status of the NCPA Listener service
 ncpa_l_status() {
-    echo -n "NCPA Listener "
-    $BASEDIR/ncpa_posix_listener --status
+    output=`$BASEDIR/ncpa_posix_listener --status`
+    echo "NCPA Listener $output"
 }
 
 # Main init script logic
