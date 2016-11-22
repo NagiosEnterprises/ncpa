@@ -107,8 +107,8 @@ class Daemon(object):
             u'logmaxmb': u'5',
             u'logbackups': u'5',
             u'loglevel': u'info',
-            u'uid': unicode(os.getuid()),
-            u'gid': unicode(os.getgid()),
+            u'uid': int(os.getuid()),
+            u'gid': int(os.getgid()),
         }
 
         try:
