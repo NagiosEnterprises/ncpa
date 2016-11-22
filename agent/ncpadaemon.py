@@ -112,7 +112,7 @@ class Daemon(object):
         }
 
         try:
-            self.uid, self.gid = list(imap(int, get_uid_gid(cp, self.section)))
+            self.uid, self.gid = list(imap(int, get_uid_gid(cp, self.section, defaults)))
         except ValueError, e:
             sys.exit(unicode(e))
 
@@ -343,9 +343,9 @@ class Daemon(object):
             os.remove(self.pidfile)
 
 
-def get_uid_gid(cp, section):
-    user_uid = cp.get(section, 'uid')
-    user_gid = cp.get(section, 'gid')
+def get_uid_gid(cp, section, defaults={}):
+    user_uid = cp.get(section, 'uid', vars=defaults)
+    user_gid = cp.get(section, 'gid', vars=defaults)
 
     uid = user_uid
     if not isinstance(user_uid, int):
