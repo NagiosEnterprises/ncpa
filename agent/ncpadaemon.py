@@ -15,9 +15,6 @@ from itertools import imap
 from io import open
 
 
-VERSION = (2, 0, 0)
-
-
 class Daemon(object):
 
     def __init__(self):

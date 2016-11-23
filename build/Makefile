@@ -15,7 +15,7 @@ BASEDIR = $(patsubst %/,%,$(dir $(makefile_dir)))
 
 FLAGS = ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
 
-.PHONY: build_exe update_git update_packages build_rpm build_spec update_version
+.PHONY: build_exe update_git update_packages build_rpm build_spec
 
 build_exe: clean
 	find $(BASEDIR) -name *.pyc -delete
@@ -79,5 +79,3 @@ build_dmg: build_tarball
 	mv NCPA-INSTALL-$(NCPAVER)/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$(NCPAVER)/install.sh
 	hdiutil create -volname NCPA-$(NCPAVER) -srcfolder NCPA-INSTALL-$(NCPAVER) -ov -format UDZO ncpa-$(NCPAVER).dmg
 
-update_version:
-	$(PYTHONVER) $(BASEDIR)/build/scripts/apply_version.py
