@@ -187,34 +187,6 @@ $(document).ready(function() {
                     # endfor
                 </div>
             </div>
-            <!--
-            <div class='tab-pane' id='nrds'>
-                <div>
-                    <h4>NRDS Settings</h4><br />
-                    # for id, description, accessibility in (['CONFIG_NAME', 'Config Name', ''],
-                                                             ['CONFIG_VERSION', 'Config Version Number', ''],
-                                                             ['URL', 'NRDS URL', ''],
-                                                             ['TOKEN', 'NRDS Token', '']):
-                    <div class='control-group'>
-                        <label class='control-label' for='nrdp|{{ id }}'>{{ description }}</label>
-                        <div class='controls'>
-                            <input type='text' class='input' name='nrds|{{ id  }}' id='nrds|{{ id  }}' value='{{ config.get("nrds", id) }}' {{ accessibility }}>
-                        </div>
-                    </div>
-                    # endfor
-                    # for id, description in (['UPDATE_CONFIG', 'Update Config?'],
-                                              ['UPDATE_PLUGINS', 'Update Plugins?']):
-                    <div class='control-group'>
-                        <div class='controls'>
-                            <label class='checkbox'>
-                                <input type='checkbox' name='nrds|{{ id }}' id='nrds|{{ id  }}' {% if config.get("nrds", id) == '1' %}checked{% endif %}>{{ description }}
-                            </label>
-                        </div>
-                    </div>
-                    # endfor
-                </div>
-            </div>
-            -->
             <div class="tab-pane" id="checks">
                 <div>
                     <p style="margin-bottom: 2rem;">Passive check configurations are what the NCPA passive daemon/service will send out. These configurations are normally located in config files separate from the <i>ncpa.cfg</i>. By default you will have a few passive checks that are commented out in an <i>example.cfg</i> in your <i>etc/ncpa.cfg.d</i> directory.</p>
