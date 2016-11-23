@@ -8,6 +8,7 @@ a:focus { text-decoration: none; color: #4d89f9; }
 .fa-l { margin-right: 2px; }
 .fa-r { margin-left: 2px; }
 .fa-14 { font-size: 13px; }
+.fa-16 { font-size: 15px; }
 .fa-btn { font-size: 14px; vertical-align: middle; }
 pre { white-space: pre-wrap; }
 
@@ -174,8 +175,11 @@ body.help ol { padding: 1rem 2rem 0 2rem; list-style-type: none; }
 body.help ol li { padding-bottom: 1.25rem; }
 body.help ol li:last-child { padding-bottom: 0; }
 
-.well.help { width: 100%; margin: 0; }
+.well.help { width: 100%; margin: 0; overflow-y: auto; }
 .well.help ul { padding: 0 0 10px 20px; }
 .well.help ul.npb { padding-bottom: 0; }
 .well.help h4 { margin: 0 0 20px 0; font-weight: bold; }
 .well.help li.separator { margin-bottom: 10px; }
+
+
+.help-list > li { margin-bottom: 8px; }

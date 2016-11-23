@@ -38,24 +38,25 @@ function resize_help_window() {
     <div class="left-content" style="display: table-cell; vertical-align: top; min-width: 300px; width: 300px;">
         <div class="well help">
             <h4>Help Documentation</h4>
-            <ul>
+            <ul class="help-list">
                 <li>
                     <a target="help-frame" href="../static/help/index.html">Overview</a>
-                    <ul>
+                    <ul class="npb">
+                        <li><a target="help-frame" href="../static/help/index.html#restarting-ncpa">Restarting the NCPA Services</a></li>
                         <li><a target="help-frame" href="../static/help/index.html#changes-in-2">Changes from 1.x to 2.x</a></li>
                         <li><a target="help-frame" href="../static/help/index.html#troubleshooting">Troubleshooting</a></li>
                     </ul>
                 </li>
                 <li>
                     <a target="help-frame" href="../static/help/configuration.html">Configuration</a>
-                    <ul>
+                    <ul class="npb">
                         <li><a target="help-frame" href="../static/help/configuration.html#config-option-reference">Config Option Reference</a></li>
                     </ul>
                 </li>
-                <li class="separator">
+                <li>
                     <a target="help-frame" href="../static/help/active.html">Active Checks</a>
                 </li>
-                <li class="separator">
+                <li>
                     <a target="help-frame" href="../static/help/passive.html">Passive Checks</a>
                 </li>
                 <li>
@@ -84,7 +85,7 @@ function resize_help_window() {
                             <li>
                                 <a target="help-frame" href="../static/help/api.html#reference">Extended Nodes</a>
                                 <i class="fa fa-fw fa-windows tt-bind" title="Currently these nodes are only available on Windows"></i>
-                                <ul>
+                                <ul class="npb">
                                     <li><a target="help-frame" href="">logs</a></li>
                                     <li><a target="help-frame" href="">windowscounters</a></li>
                                 </ul>
@@ -92,7 +93,7 @@ function resize_help_window() {
                         </ul>
                     </ul>
                 </li>
-                <li class="separator">
+                <li>
                     <a target="help-frame" href="../static/help/graphs.html">Real Time Graphing</a>
                 </li>
                 <li>

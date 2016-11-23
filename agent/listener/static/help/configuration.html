@@ -42,7 +42,7 @@
                         <div role="tabpanel" class="tab-pane" id="linux"><pre>/usr/local/ncpa/etc/</pre></div>
                         <div role="tabpanel" class="tab-pane" id="mac"><pre>/usr/local/ncpa/etc/</pre></div>
                     </div>
-                    <p>As of NCPA 2, there is also an <code>ncpa.cfg.d</code> folder which follows the standard of including all <b>.cfg</b> files inside of it into the main <code>nagios.cfg</code> when parsing the configuration. Another change to the way configuration works in NCPA 2 is that changing the passive check configuration <em>requires a restart of the NCPA Passive service</em>. By default NCPA 2 will have an <code>example.cfg</code> file in <code>ncpa.cfg.d</code> directory on Linux and Mac OS X systems. On windows, you are able to select whether or not you are going to enable NRDP during the install - including setting up your basic default checks - placed in <code>nrdp.cfg</code> in <code>nrdp.cfg.d</code>.</p>
+                    <p>As of NCPA 2, there is also an <code>ncpa.cfg.d</code> folder which includes all <b>.cfg</b> files inside of it into the main <code>nagios.cfg</code> when parsing the configuration. Another change to the way configuration works in NCPA 2 is that changing the passive check configuration <em>requires a restart of the NCPA Passive service</em>. By default NCPA 2 will have an <code>example.cfg</code> file in <code>ncpa.cfg.d</code> directory on Linux and Mac OS X systems. On windows, you are able to select whether or not you are going to enable NRDP during the install - including setting up your basic default checks - placed in <code>nrdp.cfg</code> in <code>nrdp.cfg.d</code>.</p>
                 </div>
 
                 <a name="config-option-reference"></a>
@@ -64,7 +64,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th style="width: 20px;"></th>
+                                <th style="width: 28px;"></th>
                                 <th style="width: 12%;">Option</th>
                                 <th style="width: 15%;">Default</th>
                                 <th>Description</th>
@@ -134,13 +134,13 @@
                             <tr>
                                 <td></td>
                                 <th>logmaxmb</th>
-                                <td></td>
+                                <td>5</td>
                                 <td>The max size allowed for a log file in MB. When the log becomes larger than this size, the log will be rolled over and a new log will be started.</td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <th>logbackups</th>
-                                <td></td>
+                                <td>5</td>
                                 <td>The max number of log rollovers that will be kept.</td>
                             </tr>
                             <tr>
@@ -171,7 +171,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th style="width: 20px;"></th>
+                                <th style="width: 28px;"></th>
                                 <th style="width: 12%;">Option</th>
                                 <th style="width: 15%;">Default</th>
                                 <th>Description</th>
@@ -195,7 +195,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th style="width: 20px;"></th>
+                                <th style="width: 28px;"></th>
                                 <th style="width: 12%;">Option</th>
                                 <th style="width: 15%;">Default</th>
                                 <th>Description</th>
@@ -250,13 +250,13 @@
                             <tr>
                                 <td></td>
                                 <th>logmaxmb</th>
-                                <td></td>
+                                <td>5</td>
                                 <td>The max size allowed for a log file in megabytes. When the log becomes larger than this, the log will be rolled over and a new log will be started.</td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <th>logbackups</th>
-                                <td></td>
+                                <td>5</td>
                                 <td>The max number of log rollovers that will be kept.</td>
                             </tr>
                             <tr>
@@ -275,7 +275,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th style="width: 20px;"></th>
+                                <th style="width: 28px;"></th>
                                 <th style="width: 12%;">Option</th>
                                 <th style="width: 15%;">Default</th>
                                 <th>Description</th>
@@ -286,13 +286,13 @@
                                 <td></td>
                                 <th>parent</th>
                                 <td></td>
-                                <td>The IP address of the Nagios server to which the passive check results should be sent. The wording on this may seem a bit confusing, but it&#8217;s for a reason. The NCPA agent can also function as a NRDP forwarder. If you sent NRDP results to the NCPA listener&#8217;s IP with the proper token, it will forward the NRDP check results to its parent which is this directive. This allows for you to have a chain of NRDP forwards if firewall constraints are incredibly heavy.</td>
+                                <td>The Nagios server's NRDP URL to which the passive check results should be sent. The reason for the option name of <code>parent</code> is because you can use NCPA as an <a href="other.html#nrdp-forwarder">NRDP forwarder</a> for those who have restrictive firewall configurations.</td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <th>token</th>
                                 <td></td>
-                                <td>The token to use to access its parent. Should not be the same as the token NCPA uses for its own server for security reasons.</td>
+                                <td>The token to use to send check results to the NRDP server URL specified in <code>parent</code>. This token is created on the NRDP server side.</td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -311,23 +311,23 @@
                     <table class="table table-striped">
                         <tbody>
                             <tr>
-                                <th style="width: 10%;">CONFIG_NAME</th>
+                                <th style="width: 10%;">config_name</th>
                                 <td>This is the name that the NCPA passive service will query for updates and is set up in Nagios XI.</td>
                             </tr>
                             <tr>
-                                <th>TOKEN</th>
+                                <th>token</th>
                                 <td>The token the NCPA passive service will use when connecting to the NRDS server.</td>
                             </tr>
                             <tr>
-                                <th>URL</th>
+                                <th>url</th>
                                 <td>The URL to be queried for NRDS information.</td>
                             </tr>
                             <tr>
-                                <th>UPDATE_CONFIG</th>
+                                <th>update_config</th>
                                 <td>If this is set to 1, then the config will be updated automatically when a new config becomes available. If anything else, it will not be updated.</td>
                             </tr>
                             <tr>
-                                <th>UPDATE_PLUGINS</th>
+                                <th>update_plugins</th>
                                 <td>If this is set to 1, then the plugins in the plugins/ directory will be automatically maintained using NRDS.</td>
                             </tr>
                         </tbody>
@@ -342,7 +342,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th style="width: 20px;"></th>
+                                <th style="width: 28px;"></th>
                                 <th style="width: 12%;">Option</th>
                                 <th style="width: 15%;">Default</th>
                                 <th>Description</th>
@@ -389,7 +389,24 @@
                 <a name="passive-checks"></a>
                 <div class="section">
                     <h3>[passive checks]</h3>
-                    <p>This section does have a hard and fast set of concrete instructions. For information on setting up passive checks, see the section <a class="reference internal" href="passive.html#passive-checks"><span class="std std-ref">Setting Up Passive Checks</span></a>.</p>
+                    <p>This section, in NCPA 2, is typically in a separate file located in the <code>etc/ncpa.cfg.d</code> directory. You can view the <code>example.cfg</code> configuration to see how you can create these files. For information on the specifics of setting up passive checks, see the section on creating <a href="passive.html">Passive Checks</a>.</p>
+                    <h6>Check Definitions</h6>
+                    <p>Shown below is the basis for how to define a check. Typically hostname is set to %HOSTNAME%. Check interval is optional, and you can define a check without the last |. The servicename of __HOST__ is special, and refers to the host check - so the results of that check will appear as the specified host's check results.</p>
+                    <pre>&lt;hostname&gt;|&lt;servicename&gt;|&lt;check interaval in sec&gt; = &lt;api endpoint&gt; --warning &lt;value&gt; --critical &lt;value&gt; &lt;other options&gt;</pre>
+                    <h6>Examples</h6>
+                    <table class="table table-striped console">
+                        <tbody>
+                            <tr>
+                                <td>%HOSTNAME%|__HOST__ = /system/agent_version</td>
+                            </tr>
+                            <tr>
+                                <td>%HOSTNAME%|CPU Usage = /cpu/percent --warning 60 --critical 80 --aggregate avg</td>
+                            </tr>
+                            <tr>
+                                <td>%HOSTNAME%|Memory Usage = /memory/virtual --warning 80 --critical 90 --units G</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
             </div>

@@ -22,7 +22,16 @@
                 <h1>Real Time Graphing</h1>
                 <p>One of the newest features of NCPA is real time graphing. Real time graphs are available for certain generic system metrics. These graphs show live data on a per second basis using D3.js and websockets. This means that in order to use them, you will need a browser that supports websockets. Most modern browsers, besides Safari, support websockets in their latest versions.</p>
                 <p>You can currently use the graphing module with the following API nodes: <code>cpu</code>, <code>interface</code>, <code>memory</code>, and <code>disk</code>. In future versions, we will likely add more API endpoints as we create ways to manage how the graphing module tells the backend to graph.</p>
-                <p>The easiest way to start using the graphing module is to click the <em>Graphs</em> tab in the GUI and select an API endpoint to graph. You should see a real time graph appear.</p>
+                <p>The easiest way to start using the graphing module is to click the <em>Graphs</em> tab in the GUI and select an API endpoint to graph. You should see a real time graph appear and then follow the directions below.</p>
+
+                <div class="section">
+                    <h2>Embedding Graphs</h2>
+                    <p>In NCPA 2 you can embed graphs in your own pages. In order to do so, you'll ned to add both <code>smoothie.js</code> and <code>d3.v4.min.js</code> to your page. Typically you add these to the head section of your HTML. Be sure to change <em>localhost:5693</em> to your defined NCPA hostname and port. Using the ones provided will ensure up-to-date versions when you upgrade NCPA.</p>
+                    <pre>&lt;script type="text/javascript" src="https://localhost:5693/static/js/smoothie.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="https://localhost:5693/static/js/d3.v4.min.js"&gt;&lt;/script&gt;</pre>
+                    <p>If you are planning on using the basic styling that we use inside NCPA's GUI, you can also add the CSS included.</p>
+                    <pre>&lt;link type="text/css" href="https://localhost:5693/static/css/ncpa-graph.css" rel="stylesheet"&gt;</pre>
+                </div>
 
             </div>
         </div>

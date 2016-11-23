@@ -48,7 +48,7 @@
                                     The <em>NCPA Passive</em> service does the following:
                                     <ul>
                                         <li>Runs passive checks defined in the [passive checks] configuration section</li>
-                                        <li>Connects and sends passive check results to the defined NRDP server</li>
+                                        <li>Connects and sends passive check results to the defined NRDP URL</li>
                                     </ul>
                                 </p>
                             </div>
@@ -99,6 +99,7 @@ sudo launchctl start com.nagios.ncpa.passive</pre>
                             <li><b>Changes to unit types</b> - Most units that were considered bytes were shoing the unit <b>b</b> instead of the proper unit <b>B</b>. The <code>units</code> variable also now will only affect the <b>B</b> unit types. All other types can only be overriden by <code>unit</code>, which sets the unit to something other than the default unit used.</li>
                             <li><b>Deprecated <em>service</em> and <em>process</em> nodes</b> - With older versions of NCPA, it was typical to use the format <code>api/service/&lt;servicename&gt;</code> and <code>api/process/&lt;processname&gt;</code> for both the service and process nodes. However, in NCPA 2, the nodes will forward to the new <code>api/services?service=&lt;servicename&gt;</code> and <code>api/processes?name=&lt;processname&gt;</code> instead. <em>The old node endpoints will be removed in future versions of NCPA.</em></li>
                             <li><b>Individual passive check intervals</b> - You can now define an individual passive check interval by appending <code>|&lt;check interval in sec&gt;</code> after there service name. If an individual check interval is not defined, the global default sleep value set in your config will be used.</li>
+                            <li><b>Renamed ncpa_posix_listener and ncpa_posix_passive service names to ncpa_listener and ncpa_passive</b> - Due to the services being named ncpa_listener and ncpa_passive in the init.d scripts, it makes more sense to not name them with the posix section anymore.</li>
                         </ol>
                     </p>
                 </div>
@@ -106,7 +107,15 @@ sudo launchctl start com.nagios.ncpa.passive</pre>
                 <a name="troubleshooting"></a>
                 <div class="section">
                     <h2>Troubleshooting</h2>
-                    <p>Sometimes things just don't work out the first time. We've compiled a few troubleshooting tips and things that could happen that might give people headaches.</p>
+                    <p>Sometimes when setting up NCPA things don't work out the first time. We've compiled a few troubleshooting tips and things that could happen that might give people headaches.</p>
+                    <h6>Checking for problems in the logs</h6>
+                    <p>Typically if there is an <em>error</em> you will always see that error logged, no matter what your log level since error is the most filtered log level available. However, sometimes Python errors will occur before logging starts in Windows systems. You can normally find these errors in the log files located in the same directory as the .exe files in the Windows Program Files directory that you installed NCPA into.</p>
+                    <p>That being said, a good habit to get into is setting your <code>loglevel</code> to <em>debug</em> when you are running into trouble where something is not working correctly. If you do this, and restart your NCPA services, we can get a better idea of what is going on and when it's going in the code. If you can't figure out the issue from reading the debug log, post it in an issue on GitHub and the developers can take a look.</p>
+                    <h6>Make sure your checks do not use <em>api</em> node</h6>
+                    <p>For both passive and active checks, when you are configuring them, do not use the <em>api</em> section when specifying the endpoint to run. Examples below:</p>
+                    <pre>./check_ncpa.py -H &lt;ncpa server&gt; -t '&lt;your token&gt;' -M 'disk/logical/C:|' --units G</pre>
+                    <pre>%HOSTNAME%|&lt;service name&gt; = /disk/logical/C:| --units G</pre>
+                    <p>Note that the <code>/api/disk/logical/C:|</code> does not have the <code>api</code> portion applied. Remember that active checks do not have a beginning forward slash. A good way to avoid using the wrong path is by viewing an example check for the endpoint you are making a check for from the GUI API browser tab.</p>
                 </div>
 
             </div>
