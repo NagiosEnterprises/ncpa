@@ -51,5 +51,5 @@ setup(name = "NCPA",
       version = version,
       description = "NCPA",
       options = dict(build_exe=buildOptions),
-      executables = [Executable("ncpa_posix_listener.py", base=base),
-                     Executable("ncpa_posix_passive.py", base=base)])
+      executables = [Executable("ncpa_listener.py", base=base),
+                     Executable("ncpa_passive.py", base=base)])

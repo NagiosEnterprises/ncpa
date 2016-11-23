@@ -29,8 +29,9 @@ class NagiosHandler(object):
         :return: dict of ncpacheck.NCPACheck objects
         :rtype: dict
         """
+
         logging.debug('Parsing config for passive commands...')
-        commands = self.config.items('passive checks')
+        commands = [x for x in self.config.items('passive checks') if x[0] not in self.config.defaults()]
         ncpa_commands = []
 
         for name_blob, instruction in commands:

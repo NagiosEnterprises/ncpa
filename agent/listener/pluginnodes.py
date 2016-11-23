@@ -111,14 +111,20 @@ class PluginNode(nodes.RunnableNode):
             # Grab the uid if it's not specifically defined
             uid = user_uid
             if not isinstance(user_uid, int):
-                u = pwd.getpwnam(user_uid)
-                uid = u.pw_uid
+                if not user_uid.isdigit():
+                    u = pwd.getpwnam(user_uid)
+                    uid = u.pw_uid
+                else:
+                    uid = int(user_uid)
 
             # Grab the gid if not specifically defined
             gid = user_gid
             if not isinstance(user_gid, int):
-                g = grp.getgrnam(user_gid)
-                gid = g.gr_gid
+                if not user_gid.isdigit():
+                    g = grp.getgrnam(user_gid)
+                    gid = g.gr_gid
+                else:
+                    gid = int(user_gid)
 
             # Set the actual uid and gid
             os.setgid(gid)
