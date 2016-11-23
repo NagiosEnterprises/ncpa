@@ -12,7 +12,7 @@
         <string>/usr/local/ncpa</string>
         <key>ProgramArguments</key>
         <array>
-                <string>/usr/local/ncpa/ncpa_posix_passive</string>
+                <string>/usr/local/ncpa/ncpa_passive</string>
                 <string>-n</string>
         </array>
         <key>Label</key>

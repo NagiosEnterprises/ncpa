@@ -25,17 +25,17 @@ _BASEDIR_
 
 # Start NCPA Passive service
 start() {
-    action "Starting NCPA Passive: " $BASEDIR/ncpa_posix_passive --start
+    action "Starting NCPA Passive: " $BASEDIR/ncpa_passive --start
 }
 
 # Stop NCPA Passive service
 stop() {
-    action "Stopping NCPA Passive: " $BASEDIR/ncpa_posix_passive --stop
+    action "Stopping NCPA Passive: " $BASEDIR/ncpa_passive --stop
 }
 
 # Get the status of the NCPA Passive service
 ncpa_p_status() {
-    output=`$BASEDIR/ncpa_posix_passive --status`
+    output=`$BASEDIR/ncpa_passive --status`
     echo "NCPA Passive $output"
 }
 
