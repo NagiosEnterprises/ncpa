@@ -97,32 +97,33 @@ class Daemon(object):
         u"""Read basic options from the daemon config file"""
         self.config_filenames = [self.options.config_filename]
         self.config_filenames.extend(sorted(glob.glob(os.path.join(self.options.config_filename + ".d", "*.cfg"))))
-        cp = ConfigParser.ConfigParser()
-        cp.optionxform = unicode
-        cp.read(self.config_filenames)
-        self.config_parser = cp
 
         # Set defaults for below section
         defaults={
             u'logmaxmb': u'5',
             u'logbackups': u'5',
             u'loglevel': u'info',
-            u'uid': int(os.getuid()),
-            u'gid': int(os.getgid()),
+            u'uid': unicode(os.getuid()),
+            u'gid': unicode(os.getgid()),
         }
 
+        cp = ConfigParser.ConfigParser(defaults)
+        cp.optionxform = unicode
+        cp.read(self.config_filenames)
+        self.config_parser = cp
+
         try:
-            self.uid, self.gid = list(imap(int, get_uid_gid(cp, self.section, defaults)))
+            self.uid, self.gid = list(imap(int, get_uid_gid(cp, self.section)))
         except ValueError, e:
             sys.exit(unicode(e))
 
-        self.logmaxmb = int(cp.get(self.section, u'logmaxmb', vars=defaults))
-        self.logbackups = int(cp.get(self.section, u'logbackups', vars=defaults))
+        self.logmaxmb = int(cp.get(self.section, u'logmaxmb'))
+        self.logbackups = int(cp.get(self.section, u'logbackups'))
         self.pidfile = os.path.abspath(os.path.join(filename.get_dirname_file(),
-                                                    cp.get(self.section, u'pidfile', vars=defaults)))
+                                                    cp.get(self.section, u'pidfile')))
         self.logfile = os.path.abspath(os.path.join(filename.get_dirname_file(),
-                                                    cp.get(self.section, u'logfile', vars=defaults)))
-        self.loglevel = cp.get(self.section, u'loglevel', vars=defaults)
+                                                    cp.get(self.section, u'logfile')))
+        self.loglevel = cp.get(self.section, u'loglevel')
 
     def on_sigterm(self, signalnum, frame):
         u"""Handle segterm by treating as a keyboard interrupt"""
@@ -351,9 +352,9 @@ class Daemon(object):
             os.remove(self.pidfile)
 
 
-def get_uid_gid(cp, section, defaults={}):
-    user_uid = cp.get(section, 'uid', vars=defaults)
-    user_gid = cp.get(section, 'gid', vars=defaults)
+def get_uid_gid(cp, section):
+    user_uid = cp.get(section, 'uid')
+    user_gid = cp.get(section, 'gid')
 
     uid = user_uid
     if not isinstance(user_uid, int):
