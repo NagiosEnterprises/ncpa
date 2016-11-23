@@ -134,43 +134,51 @@ class Daemon(object):
 
     def start(self):
         u"""Initialize and run the daemon"""
-        # The order of the steps below is chosen carefully.
-        # - don't proceed if another instance is already running.
+
+        # Don't proceed if another instance is already running.
         self.check_pid()
-        # - start handling signals
+
+        # Start handling signals
         self.add_signal_handlers()
-        # - create log file and pid file directories if they don't exist
+
+        # Create log file and pid file directories if they don't exist
         self.prepare_dirs()
 
-        # - start_logging must come after check_pid so that two
+        # Start_logging must come after check_pid so that two
         # processes don't write to the same log file, but before
         # setup_root so that work done with root privileges can be
         # logged.
         try:
-            # - set up with root privileges
-            self.setup_root()
-            # - drop privileges
-            self.start_logging()
-            # - check_pid_writable must come after set_uid in order to
-            # detect whether the daemon user can write to the pidfile
-            self.check_pid_writable()
 
+            # Setup with root privileges
+            self.setup_root()
+
+            # Start logging
+            self.start_logging()
+
+            # Drop permissions to specified user/group in ncpa.cfg
             self.set_uid_gid()
 
-            # - set up with user privileges before daemonizing, so that
-            # startup failures can appear on the console
+            # Function check_pid_writable must come after set_uid_gid in 
+            # order to detect whether the daemon user can write to the pidfile
+            self.check_pid_writable()
+
+            # Set up with user before daemonizing, so that startup failures
+            # can appear on the console
             self.setup_user()
 
-            # - daemonize
+            # Daemonize
             if self.options.daemonize:
                 daemonize()
+
         except:
             logging.exception(u"failed to start due to an exception")
             raise
 
-        # - write_pid must come after daemonizing since the pid of the
+        # Function write_pid must come after daemonizing since the pid of the
         # long running process is known only after daemonizing
         self.write_pid()
+
         try:
             logging.info(u"started")
             try:
@@ -349,13 +357,19 @@ def get_uid_gid(cp, section, defaults={}):
 
     uid = user_uid
     if not isinstance(user_uid, int):
-        u = pwd.getpwnam(user_uid)
-        uid = u.pw_uid
+        if not user_uid.isdigit():
+            u = pwd.getpwnam(user_uid)
+            uid = u.pw_uid
+        else:
+            uid = int(user_uid)
 
     gid = user_gid
     if not isinstance(user_gid, int):
-        g = grp.getgrnam(user_gid)
-        gid = g.gr_gid
+        if not user_gid.isdigit():
+            g = grp.getgrnam(user_gid)
+            gid = g.gr_gid
+        else:
+            gid = int(user_gid)
 
     return uid, gid
 
