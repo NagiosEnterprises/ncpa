@@ -3,11 +3,12 @@
 {% block title %}Live Stats{% endblock %}
 
 {% block headercss %}
-<link rel='stylesheet' href='/static/css/ncpa-graph.css'>
+<link href="/static/css/ncpa-graph.css" rel="stylesheet" />
 {% endblock %}
 
 {% block headerjs %}
-<script>
+<script src="/static/js/smoothie.js"></script>
+<script type="text/javascript">
 function load_cmu() {
     var cmu_div = $('#cmu');
     var GRAPH_URL = '/graph/';

@@ -1,8 +1,7 @@
 
-<div id='graph-{{ graph_hash }}' class='ncpa-graph'>
-    <script src='/static/js/smoothie.js'></script>
+<div id="graph-{{ graph_hash }}" class="ncpa-graph">
     <script type="text/javascript">
-    $(document).ready(function() {
+    $(function() {
         var interval = 1000;
 
         // Set the size of the chart
@@ -22,18 +21,14 @@
                                  grid: { fillStyle: '#FFF', strokeStyle: '#F8F8F8', sharpLines: true, borderVisible: false, verticalSections: 6 }};
 
         var get_ws_address = function() {
-            var loc = window.location;
-            var ws_protocol = (loc.protocol === 'https:') ? 'wss' : 'ws';
-            var ws_loc = ws_protocol + '://' + loc.hostname + ':' + loc.port + '/api-websocket/' + '{{ graph_path }}';
-
+            var ws_loc = 'wss://{{ load_websocket }}/api-websocket/' + '{{ graph_path }}';
             if (query_string) {
                 ws_loc += '?' + decodeURIComponent(query_string);
             }
-
             return ws_loc;
         };
 
-        var API_URL = '/api/{{graph_path}}';
+        var API_URL = '{{ load_from }}/api/{{graph_path}}';
         if (query_string) {
             API_URL += '?' + decodeURIComponent(query_string);
         }

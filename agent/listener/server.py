@@ -1,6 +1,7 @@
-from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session
+from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response
 import logging
 import urllib
+import urlparse
 import os
 import sys
 import platform
@@ -485,7 +486,15 @@ def graph(accessor=None):
     query_string = request.query_string
     info['query_string'] = urllib.quote(query_string)
 
-    return render_template('graph.html', **info)
+    url = urlparse.urlparse(request.url)
+    info['load_from'] = url.scheme + '://' + url.netloc
+    info['load_websocket'] = url.netloc
+
+    # Generate page and add cross-domain loading
+    response = make_response(render_template('graph.html', **info))
+    response.headers['Access-Control-Allow-Origin'] = '*'
+
+    return response
 
 
 @listener.route('/error/')
@@ -640,6 +649,7 @@ def api(accessor=''):
     else:
         value = node.walk(**sane_args)
 
-    return Response(json.dumps(dict(value),
-                    indent=None if request.is_xhr else 4),
-                    mimetype='application/json')
+    # Generate page and add cross-domain loading
+    response = Response(json.dumps(dict(value), indent=None if request.is_xhr else 4), mimetype='application/json')
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
