@@ -12,6 +12,17 @@
         <script src='../js/jquery.2.2.4.min.js'></script>
         <script src='../js/bootstrap.min.js'></script>
         <script src='../js/help.js'></script>
+        <script type="text/javascript">
+        $(document).ready(function() {
+            $('.api-output').css('height', $('.api-output').parents('.row').height());
+
+            // Get the API data
+            var json_url = 'https://' + location.hostname+(location.port ? ':' + location.port : '') + '/api';
+            $.get(json_url, { }, function(json) {
+                $('.api-output').html(JSON.stringify(json, null, 4));
+            }, 'json');
+        });
+        </script>
     </head>
     <body class="help">
 
@@ -21,43 +32,32 @@
 
                 <h1>API Reference</h1>
                 
-                <p>The NCPA API may seem complex but it is actually very simple. NCPA was designed to make it easy for administrators to set-up checks, troubleshoot, test new checks, and keep the options for running these checks very flexible.</p>
-                <p>Let&#8217;s try out a quick example to illustrate what this means. In these following examples I will be running my checks against &#8220;ncpaserver&#8221;, a fictitious server, so when addresses are used. Substitute the IP of your NCPA agent&#8217;s computer in for &#8220;ncpaserver&#8221; as well as your NCPA token for the token &#8220;nagios&#8221; that I use.</p>
+                <p>The core of NCPA is the API, which works the same accross all platforms. It was designed to make it easy for administrators to set-up checks, troubleshoot problems, test checks, while still being flexible. This section covers how the API works with individual references for each API node. Some of the extended nodes are specific to an operating system, but the standard nodes are available on any platform.</p>
 
                 <a name="api-overview"></a>
                 <div class="section">
                     <h2>Overview of the API</h2>
-                    <p>The API is constructed in a way that allows easily follow the hirearchy downwards, creating a URL. In the example of this systems API return we see what we call <em>nodes</em>. Each node is a specific part of the API that gets specific data and functions a certain way. These are also sometimes referred to as "API endpoints" when farther down the list, when we have reached the end of a node.</p>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+                                <p>The API is constructed in a way that allows users to easily follow the hirearchy downwards, creating a URL that will access specific requested data.</p>
+                                <p>In the example of this systems API return we see what we call <em>nodes</em>. Each node is a specific part of the API that gets specific data and functions a certain way. These are also sometimes referred to as <em>API endpoints</em> when farther down the list, when we have reached the end of a node.</p>
+                                <p>Open up your web browser, and navigate to the URL below, replacing <em>localhost:5693</em> with your NCPA server hostname/IP and port.</p>
+                                <pre>https://localhost:5693/api?token=mytoken</pre>
+                                <p>Looks like a very large list. If you take a close look at this list, you'll see that amongst all the weird characters, there are actual numbers and descriptions of those numbers. This format is JSON, and those who are familiar with accessing APIs should be familiar with it.</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <pre class="api-output"></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
 
-                <p>Open up your web browser, and navigate to:</p>
-                <pre>https://ncpaserver:5693/api/?token=nagios</pre>
+            </div>
+        </div>
+    </div>
 
-</pre></div>
-</div>
-<p>This returns:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">---</span> <span class="n">snip</span> <span class="o">---</span>
-<span class="p">{</span>
-<span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-  <span class="s2">&quot;root&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;process&quot;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="s2">&quot;list&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;nscott&quot;</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;memory&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s2">&quot;swap&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;used&quot;</span><span class="p">:</span> <span class="p">[</span>
-          <span class="mi">8245542912</span><span class="p">,</span>
-          <span class="s2">&quot;b&quot;</span>
-        <span class="p">],</span>
-<span class="o">---</span> <span class="n">snip</span> <span class="o">---</span>
-</pre></div>
-</div>
-<p>Looks like a very large list. If you take a close look at this list, you&#8217;ll see that amongst all the weird characters, there are actual numbers and descriptions of those numbers. This format is JSON, and those who are familiar with accessing APIs should be familiar with it.</p>
-</div>
 <div class="section" id="accessing-specific-items-in-the-tree">
 <h2>Accessing specific items in the tree<a class="headerlink" href="#accessing-specific-items-in-the-tree" title="Permalink to this headline"></a></h2>
 <p>So notice that there is a &#8220;memory&#8221; string. Let us amend our address a bit and see what comes out. Try:</p>
