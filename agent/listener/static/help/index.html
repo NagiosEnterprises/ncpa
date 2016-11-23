@@ -26,7 +26,8 @@
 
                 <div class="section">
                     <h2>The Two Parts of NCPA</h2>
-                    <p>NCPA is actually two separate services that make up a single monitoring agent. This separation allows the ability for the agent to run passive checks without needing to allow connections to the web GUI or allow external calls to the API. It also allows the passive portion of the agent to be disabled if it's not in use to save resources even though the passive portion requires very little resources while running in the background.</p>
+                    <p>NCPA is actually two separate services that make up a single monitoring agent. This separation allows the ability for the agent to run passive checks without needing to allow connections to the web GUI or allow external calls to the API. It also allows the passive portion of the agent to be disabled if it's not in use to save resources even though the passive portion requires very few resources while running in the background.</p>
+                    <p>By default in NCPA 2, both services run as the <b>nagios</b> user and <b>nagios</b> group. The user and group can be changed in the <em>ncpa.cfg</em>.</p>
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-sm-6 col-lg-5">
@@ -88,7 +89,7 @@ sudo launchctl start com.nagios.ncpa.passive</pre>
                 <a name="changes-in-2"></a>
                 <div class="section">
                     <h2>Changes from 1.x to 2.x</h2>
-                    <p>The latest version of NCPA has a lot of major changes that affect users of older versions of NCPA. Since these changes are in multiple sections of NCPA 2, we have created list of the most notable changes that could affect your system when upgrading from an older version. You can also view the full changelog on the <a target="_parent" href="https://github.com/NagiosEnterprises/ncpa">NCPA GitHub repository</a>.</p>
+                    <p>The latest version of NCPA has a lot of major changes that affect users of older versions of NCPA. Since these changes are in multiple sections of NCPA 2, we have created list of the most notable changes that could affect your system when upgrading from an older version. You can also view the full changelog on the <a target="_parent" href="https://github.com/NagiosEnterprises/ncpa">NCPA GitHub repository</a> <i class="fa fa-external-link"></i>.</p>
                     <p>
                         <ol>
                             <li><b>Updated check_ncpa.py plugin</b> - There is a new version of <code>check_ncpa.py</code> (version 1.0) and should be updated. <em>Version 1.0+ is compatible with NCPA 1.x and 2.x so you can update at any time.</em> If you are using Nagios XI, update your NCPA wizard in the Admin &gt; Manage Config Wizards section. If you are using Nagios Core, you can <a target="_parent" href="https://raw.githubusercontent.com/NagiosEnterprises/ncpa/master/client/check_ncpa.py">download the new plugin from GitHub</a> <i class="fa fa-external-link"></i>.</li>
@@ -105,7 +106,7 @@ sudo launchctl start com.nagios.ncpa.passive</pre>
                 <a name="troubleshooting"></a>
                 <div class="section">
                     <h2>Troubleshooting</h2>
-                    <p></p>
+                    <p>Sometimes things just don't work out the first time. We've compiled a few troubleshooting tips and things that could happen that might give people headaches.</p>
                 </div>
 
             </div>

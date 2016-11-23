@@ -73,18 +73,6 @@
                         <tbody>
                             <tr>
                                 <td><i class="fa fa-asterisk"></i></td>
-                                <th>uid</th>
-                                <td>nagios</td>
-                                <td>Determines which user the service will run as.</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-asterisk"></i></td>
-                                <th>gid</th>
-                                <td>nagios</td>
-                                <td>Determines which group the service will run as.</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-asterisk"></i></td>
                                 <th>ip</th>
                                 <td>0.0.0.0</td>
                                 <td>This determines what IP the service will listen on. By default, it uses the value 0.0.0.0, which means it will listen on all interfaces and all hostname references. Change this if you would like the service to listen on a specific IP or hostname.</td>
@@ -94,6 +82,18 @@
                                 <th>port</th>
                                 <td>5693</td>
                                 <td>This specifies the TCP port the service will bind to.</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>uid</th>
+                                <td>nagios</td>
+                                <td>Determines which user the service will run as. <em>Linux and Mac OS X only.</em></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>gid</th>
+                                <td>nagios</td>
+                                <td>Determines which group the service will run as. <em>Linux and Mac OS X only.</em></td>
                             </tr>
                             <tr>
                                 <td><i class="fa fa-asterisk"></i></td>
@@ -207,22 +207,21 @@
                                 <th>handlers</th>
                                 <td>None</td>
                                 <td>
-
-                                    This is where the magic happens with the NCPA passive agent. Handlers are items that are run whenever the passive daemon wakes up. The currently supported handlers are nrds and nrdp. This handlers list should be a comma-delimited list of handlers that are to be run. To run both nrds and nrdp handlers, this entry would be <em>handlers = nrds,nrdp</em>. More information is provided about what each of these handlers do under the <a class="reference internal" href="#nrds">[nrds]</a> and <a class="reference internal" href="#nrdp">[nrdp]</a> sections, respectively.
-                                    <div><b>Options:</b> <em>None</em> or <em>NRDP</em></div>
+                                    Handlers are what tell the <em>NCPA Passive</em> service what to do while running. There is currently only one handler available: NRDP. The NRDP handler handles sending passive check results to the NRDP server you choose. This is a comma separated list. Example of this setting is <code>handlers = nrdp</code>.
+                                    <div><b>Options:</b> <em>None</em> or <a href="#nrdp"><em>nrdp</em></a></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td><i class="fa fa-asterisk"></i></td>
                                 <th>uid</th>
                                 <td>nagios</td>
-                                <td>Determines which user the NCPA passive service will run as during execution.</td>
+                                <td>Determines which user the service will run as. <em>Linux and Mac OS X only.</em></td>
                             </tr>
                             <tr>
                                 <td><i class="fa fa-asterisk"></i></td>
                                 <th>gid</th>
                                 <td>nagios</td>
-                                <td>Determines the group by which the NCPA passive service will run as during execution.</td>
+                                <td>Determines which group the service will run as. <em>Linux and Mac OS X only.</em></td>
                             </tr>
                             <tr>
                                 <td><i class="fa fa-asterisk"></i></td>
@@ -234,7 +233,7 @@
                                 <td><i class="fa fa-asterisk"></i></td>
                                 <th>pidfile</th>
                                 <td>var/run/ncpa_passive.pid</td>
-                                <td>The named file location where the PID file for the NCPA passive service will be stored and maintained.</td>
+                                <td>The named file location where the PID file for the NCPA passive service will be stored and maintained. <em>Linux and Mac OS X only.</em></td>
                             </tr>
                             <tr>
                                 <td><i class="fa fa-asterisk"></i></td>
@@ -260,29 +259,53 @@
                                 <td></td>
                                 <td>The max number of log rollovers that will be kept.</td>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <th>delay_start</th>
+                                <td>0</td>
+                                <td>The amount to seconds to wait before running the defined <a href="#passive-checks">[passive checks]</a>. Typically passive checks are ran right away when the service is restarted so if you would like to force the <em>NCPA Passive</em> service to wait before running the cheks, set this value.</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
 
                 <div class="section" id="nrdp">
                     <h3>[nrdp]</h3>
-                    <p>The value <em>nrdp</em> must be present in the passive handlers declaration (above) to send any results back to the Nagios server. This section dictates where NRDP results will be sent and what tokens will be used.</p>
+                    <p>The value <em>nrdp</em> must be present in the <a href="#passive">[passive]</a> <code>handlers</code> option for the <em>NCPA Passive</em> service to run the checks and send the results to the specified NRDP server. While this section is optional, you must set all configuratoion options in order for the service to send the passive checks to NRDP.</p>
                     <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 20px;"></th>
+                                <th style="width: 12%;">Option</th>
+                                <th style="width: 15%;">Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
-                                <th style="width: 10%;">parent</th>
+                                <td></td>
+                                <th>parent</th>
+                                <td></td>
                                 <td>The IP address of the Nagios server to which the passive check results should be sent. The wording on this may seem a bit confusing, but it&#8217;s for a reason. The NCPA agent can also function as a NRDP forwarder. If you sent NRDP results to the NCPA listener&#8217;s IP with the proper token, it will forward the NRDP check results to its parent which is this directive. This allows for you to have a chain of NRDP forwards if firewall constraints are incredibly heavy.</td>
                             </tr>
                             <tr>
+                                <td></td>
                                 <th>token</th>
+                                <td></td>
                                 <td>The token to use to access its parent. Should not be the same as the token NCPA uses for its own server for security reasons.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>hostname</th>
+                                <td>NCPA</td>
+                                <td>This is the value that will be used for the <code>%HOSTNAME%</code> macro in the <a href="#passive-checks">[passive checks]</a> configuration section.</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
                 <!--
-                <div class="section" id="nrds">
+                <div class="section">
                     <h3>[nrds]</h3>
                     <p>The value <em>nrds</em> must be present in the passive handler declaration (above) in order to pull down any new configuration. <a class="reference external" href="https://exchange.nagios.org/directory/Addons/Components/Nagios-Remote-Data-Sender-(NRDS)/details">NRDS</a> is a slick way to manage your configuration files. Many of these directives are boilerplate. The interesting directives are identified in the following. For more information on NRDS see the above link for further definitions of these terms.</p>
                     <table class="table table-striped">
@@ -312,20 +335,59 @@
                 </div>
                 -->
 
-                <div class="section" id="plugin-directives">
+                <a name="plugin-directives"></a>
+                <div class="section">
                     <h3>[plugin directives]</h3>
-                    <p>This section is where you can specify both the plugin directory and special operations that should be executed when a given file type is executed as part of a service check. Some examples for the special directives are given.</p>
+                    <p>This section is where you can specify both the plugin directory and special command line arguments that should passed to a given file type when it is executed by NCPA.</p>
                     <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 20px;"></th>
+                                <th style="width: 12%;">Option</th>
+                                <th style="width: 15%;">Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
-                                <th style="width: 10%;">plugin_path</th>
-                                <td>The path to the directory containing any third party plugins that need to be run.</td>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>plugin_path</th>
+                                <td>plugins/</td>
+                                <td>
+                                    The path to the directory containing any third party plugins that you would like to be able to run. Note that the forward slash at the beginning is left off. This makes it a relative path to the location of the NCPA directory. You can use a full directory path also.
+                                    <div><em>Requires nagios:nagios (or whatever your uid:gid is set to) permissions on the plugin location. The user must also be able to execute the plugins.</em></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>plugin_timeout</th>
+                                <td>60</td>
+                                <td>The plugin execution timeout on the NCPA side. For both active and passive checks. There is also a timeout specified in <code>check_ncpa.py</code>.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h6>Plugin Extensions</h6>
+                    <p>Part of the plugin directives, we define file type extensions of valid plugins. The option is the name of the extension while the value denotes how NCPA will try to run the plugin from the command line. There are two special macros, <code>$plugin_name</code> and <code>$plugin_args</code>, that will be replaced with the filename and all arguments passed. <em>The default values for this section are shown below.</em></p>
+                    <table class="table table-striped console">
+                        <tbody>
+                            <tr>
+                                <td>.sh = /bin/sh $plugin_name $plugin_args</td>
+                            </tr>
+                            <tr>
+                                <td>.ps1 = powershell -ExecutionPolicy Bypass -File $plugin_name $plugin_args</td>
+                            </tr>
+                            <tr>
+                                <td>.vbs = cscript $plugin_name $plugin_args //NoLogo</td>
+                            </tr>
+                            <tr>
+                                <td>.py = python $plugin_name $plugin_args</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div class="section" id="passive-checks">
+                <a name="passive-checks"></a>
+                <div class="section">
                     <h3>[passive checks]</h3>
                     <p>This section does have a hard and fast set of concrete instructions. For information on setting up passive checks, see the section <a class="reference internal" href="passive.html#passive-checks"><span class="std std-ref">Setting Up Passive Checks</span></a>.</p>
                 </div>

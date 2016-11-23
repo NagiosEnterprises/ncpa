@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta charset='utf-8'>
+        <title>Graphing &middot; Documentation &mdash; NCPA</title>
+        <link rel="shortcut icon" type="image/png" href="../img/ncpa.png" />
+        <link rel="icon" type="image/png" href="../img/ncpa.png" />
+        <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
+        <link rel="stylesheet" href="../css/ncpa.css" type="text/css" />
+        <script src='../js/jquery.2.2.4.min.js'></script>
+        <script src='../js/bootstrap.min.js'></script>
+        <script src='../js/help.js'></script>
+    </head>
+    <body class="help">
+        
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-lg-10">
+
+                <h1>Real Time Graphing</h1>
+                <p>One of the newest features of NCPA is real time graphing. Real time graphs are available for certain generic system metrics. These graphs show live data on a per second basis using D3.js and websockets. This means that in order to use them, you will need a browser that supports websockets. Most modern browsers, besides Safari, support websockets in their latest versions.</p>
+                <p>You can currently use the graphing module with the following API nodes: <code>cpu</code>, <code>interface</code>, <code>memory</code>, and <code>disk</code>. In future versions, we will likely add more API endpoints as we create ways to manage how the graphing module tells the backend to graph.</p>
+                <p>The easiest way to start using the graphing module is to click the <em>Graphs</em> tab in the GUI and select an API endpoint to graph. You should see a real time graph appear.</p>
+
+            </div>
+        </div>
+    </div>
+
+    </body>
+</html>
