@@ -42,9 +42,7 @@ class Listener(ncpadaemon.Daemon):
 
             user_cert = self.config_parser.get('listener', 'certificate')
 
-            ssl_str_version = self.config_parser.get('listener',
-                                                     'ssl_version',
-                                                     'TLSv1')
+            ssl_str_version = self.config_parser.get('listener', 'ssl_version')
             try:
                 ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
             except:
@@ -57,6 +55,7 @@ class Listener(ncpadaemon.Daemon):
                 cert, key = listener.certificate.create_self_signed_cert(basepath, 'ncpa.crt', 'ncpa.key')
             else:
                 cert, key = user_cert.split(',')
+
             ssl_context = {
                 'certfile': cert,
                 'keyfile': key,
