@@ -99,12 +99,12 @@ class Daemon(object):
         self.config_filenames.extend(sorted(glob.glob(os.path.join(self.options.config_filename + ".d", "*.cfg"))))
 
         # Set defaults for below section
-        defaults={
+        defaults = {
             u'logmaxmb': u'5',
             u'logbackups': u'5',
-            u'loglevel': u'info',
-            u'uid': unicode(os.getuid()),
-            u'gid': unicode(os.getgid()),
+            u'loglevel': u'warning',
+            u'uid': u'nagios',
+            u'gid': u'nagios',
         }
 
         cp = ConfigParser.ConfigParser(defaults)
