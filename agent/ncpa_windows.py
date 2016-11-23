@@ -127,7 +127,6 @@ class Listener(Base):
             pass
 
         try:
-
             address = self.config.get('listener', 'ip')
             port = self.config.getint('listener', 'port')
             listener.server.listener.config_files = self.config_filenames
@@ -164,7 +163,7 @@ class Listener(Base):
                                      spawn=Pool(200),
                                      **ssl_context)
             http_server.serve_forever()
-        except Exception, e:
+        except Exception as e:
             logging.exception(e)
 
     # called when the service is starting
@@ -240,7 +239,7 @@ class Passive(Base):
             while True:
                 self.run_all_handlers()
                 time.sleep(1)
-        except Exception, e:
+        except Exception as e:
             logging.exception(e)
 
     # Called when the service is starting to initiate variables required by the main

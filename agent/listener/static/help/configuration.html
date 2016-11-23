@@ -51,7 +51,7 @@
                     <p>Below is a list of all available options for the configuration file. The configuration is a standard INI-style config using the <code>name = value</code> notation. However, note that the config file is sectioned off by the square brackets. These different sections affect different portions of NCPA's operation. Each section is seperately listed below.</p>
                     <p>
                         <div class="alert alert-info">
-                            <b>Note</b>: You might notice that there appears to be duplicate entries. For instance, both <a href="#listener">[listener]</a> and <a href="#passive">[passive]</a> sections have a specification for <code>logfile</code>. Since these are two separate services, they maintain separate log files and each sections log related options only apply to that service's log files.
+                            <b>Note</b>: You might notice that there appears to be duplicate entries. For instance, both <a href="#listener">[listener]</a> and <a href="#passive">[passive]</a> sections have a specification for <code>logfile</code>. Since these are two separate services, they maintain separate log files and each sections log related options only apply to that service's log files. Many other options follow similar logic.
                         </div>
                     </p>
                     <p><i class="fa fa-asterisk"></i> = Required option</p>
@@ -161,6 +161,12 @@
                                 <td>0</td>
                                 <td>Setting this variable to <b>1</b> will force NCPA to require admin authentication on GUI login/access. This is useful if you don't want anyone to log into the GUI using the API token defined by <code>community_string</code> in the section below. This requires you to have a password set for <code>admin_password</code> too, since it will never allow authentication when set to <em>None</em>.</td>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <th>delay_start</th>
+                                <td>0</td>
+                                <td>The amount to seconds to wait before starting the <em>NCPA Listener</em> service.</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -263,7 +269,7 @@
                                 <td></td>
                                 <th>delay_start</th>
                                 <td>0</td>
-                                <td>The amount to seconds to wait before running the defined <a href="#passive-checks">[passive checks]</a>. Typically passive checks are ran right away when the service is restarted so if you would like to force the <em>NCPA Passive</em> service to wait before running the cheks, set this value.</td>
+                                <td>The amount to seconds to wait before starting the <em>NCPA Passive</em> service. Typically passive checks are ran right away when the service is restarted so if you would like to force the <em>NCPA Passive</em> service to wait before running the cheks, set this value.</td>
                             </tr>
                         </tbody>
                     </table>
