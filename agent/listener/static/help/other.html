@@ -20,6 +20,42 @@
             <div class="col-md-12 col-lg-10">
 
                 <h1>Other Features</h1>
+                <p>There are some extra features in NCPA that aren't well known. This section aims to go over these features and how to use them.</p>
+
+                <a name="nrdp-forwarder"></a>
+                <div class="section">
+                    <h2>NRDP Forwarder</h2>
+                    <p>The ability to be used as an NRDP forwarder has existed since NCPA 1.x. This is an inherent ability that is currently always enabled. The forwarding capability is why the config option in the <a href="configuration.html#nrdp">[nrdp]</a> section is called <code>parent</code> instead of something like host or url. You must authenticate to the module like you would any other section by passing your token. Example URL for the NRDP forwarder is below:</p>
+                    <pre>https://localhost:5693/nrdp/?token=mytoken</pre>
+                    <p>You would send your NRDP XML directly to this URL just like it is a normal NRDP server. The NRDP module is essentially acting as a proxy; sending the data on to the defined NRDP <code>parent</code> url in your configuration.</p>
+                    <p>
+                        <div class="alert alert-info">
+                             <b>Note:</b> You do not need the <b>nrdp</b> handler added to your <code>handlers</code> option in the <a href="configuration.html#passive">[passive]</a> config section this module to function. You do, however, have to have a valid NRDP <code>parent</code> and <code>token</code> set.
+                        </div>
+                    </p>
+                </div>
+
+                <a name="test-connect"></a>
+                <div class="section">
+                    <h2>Testing Connection</h2>
+                    <p>NCPA has always had a module to test the connection using the token. Below is an example of the test URL and it's response.</p>
+                    <pre>https://localhost:5693/testconnect/?token=mytoken</pre>
+                    <p>You should get a JSON response if the connection is successful. You will also recieve a different repsonse based on if your token is correct.</p>
+                     <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#token" role="tab" data-toggle="tab">Valid Token</a></li>
+                        <li role="presentation"><a href="#inv-token" role="tab" data-toggle="tab">Invalid Token</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="token"><pre>{
+  "value": "Success."
+}</pre></div>
+                        <div role="tabpanel" class="tab-pane" id="inv-token"><pre>{
+  "error": "Bad token."
+}</pre></div>
+                    </div>
+                    
+                    
+                </div>
 
             </div>
         </div>
