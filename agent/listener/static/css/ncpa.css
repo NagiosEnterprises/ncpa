@@ -154,6 +154,12 @@ a.log-example { cursor: pointer; }
 
 .white-box { display: inline-block; background-color: #FFF; border: 1px solid #CCC; width: 34px; height: 30px; line-height: 28px; text-align: center; }
 
+.dropdown-link:hover { background-color: #222; }
+.dropdown-link:hover .menu { display: block; }
+.dropdown-link .menu { width: 150px; list-style-type: none; margin: 0; padding: 0.5rem; background-color: #222; display: none; position: absolute; z-index: 9000; }
+.dropdown-link .menu li a { display: block; color: #BBB; margin: 1rem; }
+.dropdown-link .menu li a:hover { text-decoration: none; color: #FFF; }
+
 /* Graph selection page */
 select.nodes { margin-left: 4px; }
 
@@ -180,6 +186,5 @@ body.help ol li:last-child { padding-bottom: 0; }
 .well.help ul.npb { padding-bottom: 0; }
 .well.help h4 { margin: 0 0 20px 0; font-weight: bold; }
 .well.help li.separator { margin-bottom: 10px; }
-
 
 .help-list > li { margin-bottom: 8px; }

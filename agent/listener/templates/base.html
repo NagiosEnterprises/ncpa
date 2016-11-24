@@ -34,19 +34,25 @@
                 <div class="collapse navbar-collapse" id="navbar-collapse-left">
                     <ul class="nav navbar-nav">
                         {% if not hide_page_links %}
-                        <li id="dashboard-nav"><a href="/gui/"><i class="fa fa-desktop fa-l"></i> Dashboard</a></li>
-                        <li id="live-stats-nav"><a href="/gui/stats"><i class="fa fa-line-chart fa-l"></i> Live Stats</a></li>
-                        <li id="api-nav"><a href="/gui/api"><i class="fa fa-cubes fa-l"></i> API</a></li>
-                        <li id="top-nav"><a href="/gui/top"><i class="fa fa-tachometer fa-l"></i> Top Processes</a></li>
-                        <li id="graph-picker-nav"><a href="/gui/graphs"><i class="fa fa-area-chart fa-l"></i> Graphs</a></li>
+                        <li id="dashboard-nav"><a href="/gui/"><i class="fa fa-desktop fa-14 fa-l"></i> Dashboard</a></li>
+                        <li id="checks-nav"><a href="/gui/checks"><i class="fa fa-check fa-14 fa-l"></i> Checks</a></li>
+                        <li id="live-nav" class="dropdown-link">
+                            <a href="/gui/stats"><i class="fa fa-play-circle fa-14 fa-l"></i> Live Data</a>
+                            <ul class="menu">
+                                <li><a href="/gui/stats"><i class="fa fa-line-chart fa-14 fa-l"></i> Stats Graphs</a></li>
+                                <li><a href="/gui/top"><i class="fa fa-tachometer fa-14 fa-l"></i> Top Processes</a></li>
+                            </ul>
+                        </li>
+                        <li id="api-nav"><a href="/gui/api"><i class="fa fa-sitemap fa-14 fa-l"></i> API</a></li>
+                        <li id="graphs-nav"><a href="/gui/graphs"><i class="fa fa-area-chart fa-14 fa-l"></i> Graphs</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if admin_visible %}
-                        <li id="admin-nav"><a href="/gui/admin"><i class="fa fa-cog fa-l"></i> Admin</a></li>
+                        <li id="admin-nav"><a href="/gui/admin"><i class="fa fa-cog fa-14 fa-l"></i> Admin</a></li>
                         {% endif %}
-                        <li id="help-nav"><a href="/gui/help"><i class="fa fa-life-ring fa-l"></i> Help</a></li>
+                        <li id="help-nav"><a href="/gui/help"><i class="fa fa-life-ring fa-14 fa-l"></i> Help</a></li>
                         <li class="divider-vertical"></li>
-                        <li><a href="/logout"><i class="fa fa-power-off fa-l"></i> Logout</a></li>
+                        <li><a href="/logout"><i class="fa fa-power-off fa-14 fa-l"></i> Logout</a></li>
                         {% endif %}
                     </ul>
                 </div>
