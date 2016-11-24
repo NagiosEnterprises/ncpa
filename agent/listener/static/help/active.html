@@ -20,24 +20,25 @@
         <div class="col-md-12 col-lg-10">
               
             <h1>Active Checks</h1>
-            <p>Running active checks against the NCPA agent is trivial and follows in a somewhat similar style as check_nrpe. There is a <a class="reference external" href="http://exchange.nagios.org/directory/Plugins/Network-and-Systems-Management/check_ncpa/details">check_ncpa.py plugin script</a> that is available to use. This plugin is the standard method for executing active checks. However, because of the design of NCPA, it makes it <strong>very</strong> easy to use your own methods to collect data at perform active checks.</p>
+            <p>Running active checks against the NCPA agent is fairly straight-forward and follows a similar style as <code>check_nrpe</code>. You should download the latest version of the <a href="https://github.com/NagiosEnterprises/ncpa/blob/master/client/check_ncpa.py" target="_new">check_ncpa.py plugin</a> <i class="fa fa-external-link"></i> from GitHub. This plugin works with NCPA 2+ and is backwards compatible with NCPA 1. This plugin is the standard method for executing active checks. However, because of the design of NCPA, it makes it <em>very</em> easy to use your own methods to collect data at perform active checks, even from a simple <code>curl</code> command. We will leave the choice to you, but we will support active checks through the <code>check_ncpa.py</code> plugin.</p>
+            <p>
+                <div class="alert alert-info">
+                    <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> All the examples in this page are from a Nagios server (either <b>Nagios XI</b> or <b>Nagios Core</b>) because the active checks are set up in Nagios and do not require any changes to be done in NCPA, besides setting up plugin directives or configuring how to access the API.
+                </div>
+            </p>
+            <p>Using the plugin will require some knowledge of how the API works. You will also need to make sure you install the plugin in the Nagios libexec (typically <code>/usr/local/nagios/libexec</code>) directory.</p>
+            <p>
+                <div class="alert alert-success">
+                    <i class="fa fa-lightbulb-o fa-14 fa-l"></i> <b>Tip:</b> If you are using <b>Nagios XI</b>, you can skip installing the plugin manually. By default, <b>Nagios XI</b> comes with a config wizard for NCPA. You can check for updates by going to the <em>Admin > Manage Config Wizards</em> page and clicking on <em>Check for Updates</em>. You can then click the <em>install</em> link in the NCPA config wizard table row to upgrade to the latest version if a new one is available. The config wizard upgrade script will install the latest version of the plugin for you. <em>Running the config wizard is the fastest way to get started with NCPA active checks since it requires no manual configuration.</em>
+                </div>
+            </p>
 
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Everything on this particular page is referring to your Nagios server. Active checks do not require you to change the NCPA agent&#8217;s computer.</p>
-</div>
-<p>Specifying these checks will take some familiarity with the API tree. It may be useful to familiarize yourself with the documentation on the <a class="reference internal" href="api.html#introduction-api"><span class="std std-ref">API tree</span></a>.</p>
-<div class="section" id="getting-check-ncpa-py">
-<h2>Getting check_ncpa.py</h2>
-<p>The check_ncpa.py plugin script is hosted on Nagios&#8217;s plugin exchange. Please download it from the following link:</p>
-<blockquote>
-<div><a class="reference external" href="http://exchange.nagios.org/directory/Plugins/Network-and-Systems-Management/check_ncpa/details">check_ncpa.py</a></div></blockquote>
-<p>This file must exist on your Nagios server in order to use any of the following directives.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The check_ncpa.py is downloaded and installed as part of the NCPA monitoring wizard in Nagios XI.</p>
-</div>
-</div>
+            <div class="section">
+                <h2>Running an Active Check</h2>
+                <p>While you can run a check through the API in your browser, you will want to use the <code>check_ncpa.py</code> plugin to run these active checks from your Nagios server to have your results show up in Nagios.</p>
+            </div>
+
+
 <div class="section" id="using-check-ncpa-py">
 <h2>Using check_ncpa.py</h2>
 <p>Once check_ncpa.py is installed in the nagios/libexec directory, you can use it like you would any other plugin. This is where knowing the tree comes in handy. You&#8217;ll need to specify the path in the tree that you&#8217;d like to access. So if we were interested in getting the CPU Usage (percent-wise) of our NCPA agent, we would run the check_ncpa.py as follows:</p>

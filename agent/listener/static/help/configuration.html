@@ -25,7 +25,7 @@
                 <p>After editing the configuration, you must <a href="index.html#restarting-ncpa">restart the <em>NCPA Passive</em> and <em>NCPA Listener</em> services</a> to apply the new configuration.</p>
                 <p>
                     <div class="alert alert-info">
-                        <b>Note</b>: On Linux and Mac OS X, the default API token is set to <em>mytoken</em> and you will want to change this after install. Windows sets the token on install based on user input in the installer.
+                        <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note</b>: On Linux and Mac OS X, the default API token is set to <em>mytoken</em> and you will want to change this after install. Windows sets the token on install based on user input in the installer.
                     </div>
                 </p>
 
@@ -42,7 +42,7 @@
                         <div role="tabpanel" class="tab-pane" id="linux"><pre>/usr/local/ncpa/etc/</pre></div>
                         <div role="tabpanel" class="tab-pane" id="mac"><pre>/usr/local/ncpa/etc/</pre></div>
                     </div>
-                    <p>As of NCPA 2, there is also an <code>ncpa.cfg.d</code> folder which includes all <b>.cfg</b> files inside of it into the main <code>nagios.cfg</code> when parsing the configuration. Another change to the way configuration works in NCPA 2 is that changing the passive check configuration <em>requires a restart of the NCPA Passive service</em>. By default NCPA 2 will have an <code>example.cfg</code> file in <code>ncpa.cfg.d</code> directory on Linux and Mac OS X systems. On windows, you are able to select whether or not you are going to enable NRDP during the install - including setting up your basic default checks - placed in <code>nrdp.cfg</code> in <code>nrdp.cfg.d</code>.</p>
+                    <p>As of NCPA 2, there is also an <code>ncpa.cfg.d</code> folder which includes all <b>.cfg</b> files inside of it into the main <code>nagios.cfg</code> when parsing the configuration. Another change to the way configuration works in NCPA 2 is that changing the passive check configuration <em>requires a restart of the NCPA Passive service</em>. By default NCPA 2 will have an <code>ncpa.cfg.d/example.cfg</code> file in the config directory on all operating systems. On windows, you are able to select whether or not you are going to enable NRDP during the install - including setting up your basic default checks - placed in <code>nrdp.cfg.d/nrdp.cfg</code>.</p>
                 </div>
 
                 <a name="config-option-reference"></a>
@@ -51,7 +51,7 @@
                     <p>Below is a list of all available options for the configuration file. The configuration is a standard INI-style config using the <code>name = value</code> notation. However, note that the config file is sectioned off by the square brackets. These different sections affect different portions of NCPA's operation. Each section is seperately listed below.</p>
                     <p>
                         <div class="alert alert-info">
-                            <b>Note</b>: You might notice that there appears to be duplicate entries. For instance, both <a href="#listener">[listener]</a> and <a href="#passive">[passive]</a> sections have a specification for <code>logfile</code>. Since these are two separate services, they maintain separate log files and each sections log related options only apply to that service's log files. Many other options follow similar logic.
+                            <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note</b>: You might notice that there appears to be duplicate entries. For instance, both <a href="#listener">[listener]</a> and <a href="#passive">[passive]</a> sections have a specification for <code>logfile</code>. Since these are two separate services, they maintain separate log files and each sections log related options only apply to that service's log files. Many other options follow similar logic.
                         </div>
                     </p>
                     <p><i class="fa fa-asterisk"></i> = Required option</p>

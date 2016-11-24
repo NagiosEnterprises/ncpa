@@ -11,6 +11,7 @@ import signal
 import sys
 import time
 import filename
+import listener.database
 from itertools import imap
 from io import open
 
@@ -46,6 +47,9 @@ class Daemon(object):
         Like setup_root, the terminal is still attached and the pid is
         temporary.  However, the process has dropped root privileges.
         """
+        # Set up database
+        db = listener.database.DB()
+        db.setup()
 
     def run(self):
         u"""Override.

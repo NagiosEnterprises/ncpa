@@ -10,5 +10,56 @@ $(document).ready(function() {
 
 {% block content %}
 
+<div id='top-container'>
+    <div class="well">
+        <h1 class="fl">Checks</h1>
+        <div class="fr">
+            <form class="form-inline" action="checks" id="top-form">
+                <input class="form-control" type="text" name="search" placeholder="Search..">
+                <button type="submit" class="btn btn-sm btn-default btn-apply"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
 
-{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div style="padding: 0.25rem 0.75rem 3rem 0.75rem;">
+                <table class="table table-bordered table-striped table-condensed">
+                    <thead> 
+                        <tr>
+                            <th style="min-width: 10%;">Node Endpoint</th>
+                            <th style="width: 160px;">Check Time</th>
+                            <th style="width: 100px;">Status</th>
+                            <th>Status Information</th>
+                            <th style="min-width: 120px;">Executed By</th>
+                            <th style="min-width: 100px;">Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if checks|length > 0 %}
+                            {% for check in checks %}
+                            <tr>
+                                <td>{{ check.accessor }}</td>
+                                <td>{{ check.run_time_start|strftime }}</td>
+                                <td class="check-result {{ check.result|human_check_result }}">{{ check.result|human_check_result }}</td>
+                                <td>{{ check.output }}</td>
+                                <td>{{ check.sender }}</td>
+                                <td>{{ check.type }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="6">No checks have been ran yet. Run them through the API, using check_ncpa.py, or send passive checks to NRDP.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

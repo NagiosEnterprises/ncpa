@@ -23,6 +23,7 @@ Changelog
 - Added information into api/logs node to explain how to get logs to be populated
 - Added '/s' onto the unit when using the delta argument outside of checks
 - Added all new documentation and examples for setting up NCPA on any type of system
+- Added in the Windows Event Log tail functionality that was never released
 
 **Updates**
 
@@ -49,6 +50,7 @@ Changelog
 - Updated delta values to not cause weird issues when calling the same endpoint from different sources
 - Updated ncpa_listener and ncpa_passive init.d files to be more reliable
 - Updated the services ncpa_posix_type to now be ncpa_type on Unix systems to conform to init.d service names
+- Updated websocket endpoints to be /ws/top, /ws/tail, /ws/api instead of <vlaue>-websocket
 
 **Bug Fixes**
 

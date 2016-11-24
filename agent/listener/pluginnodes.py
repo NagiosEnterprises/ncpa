@@ -8,6 +8,7 @@ import re
 import copy
 import Queue
 import environment
+import database
 from threading import Timer
 
 # Windows does not have the pwd and grp module and does not need it since only Unix
@@ -83,6 +84,7 @@ class PluginNode(nodes.RunnableNode):
         #if environment.SYSTEM != "Windows":
         #    demote = PluginNode.demote(user_uid, user_gid)
 
+        run_time_start = time.time()
         running_check = subprocess.Popen(cmd, bufsize=-1, preexec_fn=demote, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         queue = Queue.Queue(maxsize=2)
         timer = Timer(timeout, self.kill_proc, [running_check, timeout, queue])
@@ -93,7 +95,11 @@ class PluginNode(nodes.RunnableNode):
         finally:
             timer.cancel()
 
+        run_time_end = time.time()
         returncode = running_check.returncode
+
+        print run_time_start
+        print run_time_end
 
         # Pull from the queue if we have a error and the stdout is empty
         if returncode == 1 and not stdout:

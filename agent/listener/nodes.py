@@ -6,6 +6,7 @@ import logging
 import pickle
 import copy
 import re
+import database
 
 
 # Valid nodes is updated as it gets set when calling a node via accessor
@@ -92,15 +93,26 @@ class RunnableParentNode(ParentNode):
                                                     primary=True,
                                                     secondary_data=False,
                                                     custom_output=self.custom_output,
+                                                    child_check=True,
                                                     *args, **kwargs)
                 else:
                     result = child.run_check(use_prefix=False, use_perfdata=False,
                                              primary=False, secondary_data=True,
-                                             *args, **kwargs)
+                                             child_check=True, *args, **kwargs)
                     stdout = result.get('stdout', None)
                     secondary_results.append(stdout)
         secondary_stdout = '(' + ', '.join(x for x in secondary_results if x) + ')'
         primary_info['stdout'] = primary_info['stdout'].format(extra_data=secondary_stdout)
+
+        # Send check results to database
+        db = database.DB()
+        dbc = db.get_cursor()
+        current_time = time.time()
+        data = (kwargs['accessor'], current_time, current_time, primary_info['returncode'],
+                primary_info['stdout'], kwargs['remote_addr'], 'active')
+        dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+        db.commit()
+
         return primary_info
 
 
@@ -207,7 +219,7 @@ class RunnableNode(ParentNode):
 
     def run_check(self, use_perfdata=True, use_prefix=True, primary=False,
                   secondary_data=False, custom_output=None, capitalize=True,
-                  *args, **kwargs):
+                  child_check=False, *args, **kwargs):
         try:
             values, unit = self.method(*args, **kwargs)
         except TypeError:
@@ -244,6 +256,16 @@ class RunnableNode(ParentNode):
             returncode = 3
             stdout = str(exc)
             logging.exception(exc)
+
+        # Send check results to database
+        if not child_check:
+            db = database.DB()
+            dbc = db.get_cursor()
+            current_time = time.time()
+            data = (kwargs['accessor'], current_time, current_time, returncode,
+                    stdout, kwargs['remote_addr'], 'active')
+            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+            db.commit()
 
         return { 'returncode': returncode, 'stdout': stdout }
 

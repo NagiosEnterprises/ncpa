@@ -39,8 +39,11 @@
                         <li id="live-nav" class="dropdown-link">
                             <a href="/gui/stats"><i class="fa fa-play-circle fa-14 fa-l"></i> Live Data</a>
                             <ul class="menu">
-                                <li><a href="/gui/stats"><i class="fa fa-line-chart fa-14 fa-l"></i> Stats Graphs</a></li>
-                                <li><a href="/gui/top"><i class="fa fa-tachometer fa-14 fa-l"></i> Top Processes</a></li>
+                                <li><a href="/gui/stats"><i class="fa fa-line-chart fa-14 fa-fw fa-l"></i> Stats Graphs</a></li>
+                                {% if is_windows %}
+                                <li><a href="/gui/tail"><i class="fa fa-file-text-o fa-14 fa-fw fa-l"></i> Tail Event Logs</a></li>
+                                {% endif %}
+                                <li><a href="/gui/top"><i class="fa fa-tachometer fa-14 fa-fw fa-l"></i> Top Processes</a></li>
                             </ul>
                         </li>
                         <li id="api-nav"><a href="/gui/api"><i class="fa fa-sitemap fa-14 fa-l"></i> API</a></li>

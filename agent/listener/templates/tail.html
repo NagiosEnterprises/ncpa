@@ -1,95 +1,120 @@
-<style>
-    th {
-        text-align: center;
-    }
+<script type="text/javascript">
+var ws;
+var ws_loc;
+var logbody = $('.table tbody')
+var query_string = '{{ query_string }}'
 
-    * {
-        font-size: .9em;
-    }
+$(document).ready(function() {
 
-    tr.highlight {
-        background-color: teal;
-    }
-
-    td.critical {
-        background-color: red;
-    }
-
-    td.warning {
-        background-color: yellow;
-    }
-</style>
-
-<script src='/static/js/jquery-1.12.3.min.js'></script>
-<link rel='stylesheet' href='/static/css/bootstrap.min.css' />
-<link rel='stylesheet' href='/static/css/bootstrap-responsive.min.css' />
-<script>
-    $(document).ready(function() {
-
-        var logbody = $('#tail-{{ tail_hash }}-container tbody')
-        var query_string = '{{ query_string }}'
-
-        var get_ws_address = function() {
-            var loc = window.location;
-            if(loc.protocol === 'https:') {
-                var ws_proto = 'wss';
-            } else {
-                var ws_proto = 'ws';
-            }
-            var ws_loc = ws_proto + '://' + loc.hostname + ':5693/tail-websocket/' + '{{ tail_path }}';
-            return ws_loc;
+    var get_ws_address = function() {
+        var loc = window.location;
+        if(loc.protocol === 'https:') {
+            var ws_proto = 'wss';
+        } else {
+            var ws_proto = 'ws';
         }
+        var ws_loc = ws_proto + '://' + loc.hostname + ':5693/ws/tail';
+        return ws_loc;
+    }
 
-        var get_ws_args = function() {
-            var decoded = decodeURIComponent(query_string);
-            return decoded;
-        }
+    var get_ws_args = function() {
+        var decoded = decodeURIComponent(query_string);
+        return decoded;
+    }
 
-        var get_ws_total = function() {
-            return get_ws_address() + '?' + get_ws_args();
-        }
+    var get_ws_total = function() {
+        return get_ws_address() + '?' + get_ws_args();
+    }
 
-        var ws_loc = get_ws_total();
-        console.log(ws_loc);
-        var ws = new WebSocket(ws_loc);
+    var add_log = function(log) {
+        var tr = $('<tr>');
+        $('<td>', {text: log.time_generated}).appendTo(tr);
+        $('<td>', {text: log.application}).appendTo(tr);
+        $('<td>', {text: log.computer_name}).appendTo(tr);
+        $('<td>', {text: log.category}).appendTo(tr);
+        $('<td>', {text: log.severity}).appendTo(tr);
+        $('<td>', {text: log.event_id}).appendTo(tr);
+        $('<td>', {text: log.message}).appendTo(tr);
 
-        var add_log = function(log) {
-            var tr = $('<tr>');
-            $('<td>', {text: log.time_generated}).appendTo(tr);
-            $('<td>', {text: log.application}).appendTo(tr);
-            $('<td>', {text: log.computer_name}).appendTo(tr);
-            $('<td>', {text: log.category}).appendTo(tr);
-            $('<td>', {text: log.severity}).appendTo(tr);
-            $('<td>', {text: log.event_id}).appendTo(tr);
-            $('<td>', {text: log.message}).appendTo(tr);
+        logbody.append(tr)
+    };
 
-            logbody.append(tr)
-        }
+    var start_websocket = function() {
+        ws_loc = get_ws_total();
+        ws = new WebSocket(ws_loc);
 
+        // Set up what to do when websocket recieves data
         ws.onmessage = function(d) {
-            logs = $.parseJSON(d.data);
+            if ($('.tbl-message').length > 0) {
+                $('.tbl-message').remove();
+            }
 
+            logs = $.parseJSON(d.data);
             $.each(logs, function(i, log) {
                 add_log(log);
             })
-        }
+        };
+    };
 
-    })
+    start_websocket();
+
+    $('.btn-apply').click(function() {
+        var name = $('input[name="name"]').val();
+        query_string = "name=" + name;
+        $('.name').html(name);
+
+        // Restart the websocket
+        ws.close();
+        logbody.html('<tr class="tbl-message"><td colspan="7">No logs have came in yet.</td></tr>');
+        start_websocket();
+    });
+
+});
 </script>
 
-<div id='tail-{{ tail_hash }}-container'>
-    <table class='table table-striped table-bordered table-condensed'>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Application</th>
-                <th>Hostname</th>
-                <th>Category</th>
-                <th>Severity</th>
-                <th>Event ID</th>
-                <th>Message</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+<div id='top-container'>
+    <div class="well form-inline">
+        <h1 class="fl">Tail Event Logs</h1>
+        <div class="fl" style="line-height: 30px; margin-right: 2.5rem;">
+            <i class="fa fa-refresh fa-14 fa-l"></i> Refreshing every 5 seconds
+        </div>
+        <div class="fl" style="line-height: 30px;">
+            <i class="fa fa-filter fa-14 fa-l"></i> Filtered to <b class="name">System</b> logs
+        </div>
+        <div class="fr">
+            <div class="input-group" style="width: 320px;">
+                <div class="input-group-addon">Event Log Name</div>
+                <input class="form-control" type="text" name="name" placeholder="System">
+            </div>
+            <button type="button" class="btn btn-sm btn-default btn-apply"><i class="fa fa-exchange fa-l"></i> Apply</button>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div style="padding: 0.25rem 0.75rem 3rem 0.75rem;">
+                <table class="table table-striped table-bordered table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Application</th>
+                            <th>Hostname</th>
+                            <th>Category</th>
+                            <th>Severity</th>
+                            <th>Event ID</th>
+                            <th>Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tbl-message">
+                            <td colspan="7">No logs have came in yet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>

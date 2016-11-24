@@ -159,9 +159,16 @@ a.log-example { cursor: pointer; }
 .dropdown-link .menu { width: 150px; list-style-type: none; margin: 0; padding: 0.5rem; background-color: #222; display: none; position: absolute; z-index: 9000; }
 .dropdown-link .menu li a { display: block; color: #BBB; margin: 1rem; }
 .dropdown-link .menu li a:hover { text-decoration: none; color: #FFF; }
+/* .dropdown-link .menu li .fa { width: 15px; } */
 
 /* Graph selection page */
 select.nodes { margin-left: 4px; }
+
+#cpu_percent, #mem_percent { cursor: pointer; }
+.check-result { text-align: center; }
+.check-result.OK { background-color: #B2FF5F; }
+.check-result.WARNING { background-color: #FEFF5F; }
+.check-result.CRITICAL { background-color: #FF795F; }
 
 body.help { margin: 1.5rem 1.5rem 6rem 1.5rem; padding: 0; }
 body.help h1 { font-size: 26px; font-weight: bold; line-height: 26px; margin: 1.5rem 0; }
@@ -188,3 +195,5 @@ body.help ol li:last-child { padding-bottom: 0; }
 .well.help li.separator { margin-bottom: 10px; }
 
 .help-list > li { margin-bottom: 8px; }
+
+#top-container h1 { font-weight: bold; font-size: 20px; line-height: 28px; margin: 0 2.5rem 0 0; padding: 0; }

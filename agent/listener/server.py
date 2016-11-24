@@ -16,12 +16,12 @@ import psutil
 import gevent
 import geventwebsocket
 import processes
+import database
 
 
 __VERSION__ = '2.0.0.a'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
-
 
 base_dir = os.path.dirname(sys.path[0])
 
@@ -46,6 +46,11 @@ else:
 listener.jinja_env.line_statement_prefix = '#'
 
 
+# ------------------------------
+# Helper functions
+# ------------------------------
+
+
 # Get a configuration value or default
 def get_config_value(section, option, default=None):
     try:
@@ -57,13 +62,7 @@ def get_config_value(section, option, default=None):
     return value
 
 
-@listener.context_processor
-def inject_variables():
-    admin_gui_access = int(get_config_value('listener', 'admin_gui_access', 0))
-    values = { 'admin_visible': admin_gui_access }
-    return values
-
-
+# Misc function for making information for main page
 def make_info_dict():
     now = datetime.datetime.now()
     uptime = unicode(now - __STARTED__)
@@ -76,6 +75,42 @@ def make_info_dict():
             'system': platform.uname()[0],
             'release': platform.uname()[2],
             'version': platform.uname()[3]}
+
+
+# ------------------------------
+# Authentication Wrappers
+# ------------------------------
+
+
+# Variable injection for all pages that flask creates
+@listener.context_processor
+def inject_variables():
+    admin_gui_access = int(get_config_value('listener', 'admin_gui_access', 0))
+    windows = False
+    if os.name == 'nt':
+        windows = True
+    values = { 'admin_visible': admin_gui_access, 'is_windows': windows }
+    return values
+
+
+@listener.template_filter('strftime')
+def _jinja2_filter_datetime(date, fmt=None):
+    dt = datetime.datetime.fromtimestamp(date)
+    if not fmt:
+        fmt = '%m/%d/%Y %H:%M:%S'
+    return dt.strftime(fmt)
+
+
+@listener.template_filter('human_check_result')
+def _jinja2_filter_datetime(result):
+    check_result = 'UNKNOWN'
+    if result == 0:
+        check_result = 'OK'
+    elif result == 1:
+        check_result = 'WARNING'
+    elif result == 2:
+        check_result = 'CRITICAL'
+    return check_result
 
 
 # Token authentication for authentication or actual auth
@@ -145,6 +180,11 @@ def requires_admin_auth(f):
         return f(*args, **kwargs)
 
     return admin_auth_decoration
+
+
+# ------------------------------
+# Authentication
+# ------------------------------
 
 
 @listener.route('/login', methods=['GET', 'POST'])
@@ -269,7 +309,7 @@ def error_page_not_found(e):
 
 
 # ------------------------------
-# Basic GUI section
+# Basic GUI
 # ------------------------------
 
 
@@ -289,17 +329,57 @@ def gui_index():
         logging.exception(e)
 
 
-# Help section (just a frame for the actual help)
-@listener.route('/gui/help')
+@listener.route('/gui/checks')
 @requires_auth
-def help_section():
-    return render_template('gui/help.html')
+def checks():
+    data = { }
+    db = database.DB()
+
+    search = request.values.get('search', '')
+    data['search'] = search
+    data['checks'] = db.get_checks(search)
+
+    return render_template('gui/checks.html', **data)
 
 
 @listener.route('/gui/stats', methods=['GET', 'POST'])
 @requires_auth
 def live_stats():
     return render_template('gui/stats.html')
+
+
+@listener.route('/gui/top', methods=['GET', 'POST'])
+@requires_auth
+def top_base():
+    return render_template('gui/top.html')
+
+
+@listener.route('/gui/tail', methods=['GET', 'POST'])
+@requires_auth
+def tail_base():
+    return render_template('gui/tail.html')
+
+
+# This function renders the graph picker page, which can be though of the
+# the explorer for the graphs.
+@listener.route('/gui/graphs', methods=['GET', 'POST'])
+@requires_auth
+def graph_picker():
+    return render_template('gui/graphs.html')
+
+
+@listener.route('/gui/api', methods=['GET', 'POST'])
+@requires_auth
+def view_api():
+    info = make_info_dict()
+    return render_template('gui/api.html', **info)
+
+
+# Help section (just a frame for the actual help)
+@listener.route('/gui/help')
+@requires_auth
+def help_section():
+    return render_template('gui/help.html')
 
 
 # ------------------------------
@@ -316,11 +396,11 @@ def admin_config():
 
 
 # ------------------------------
-# API access sections
+# Web Sockets
 # ------------------------------
 
 
-@listener.route('/api-websocket/<path:accessor>', methods=['GET', 'POST'])
+@listener.route('/ws/api/<path:accessor>', methods=['GET', 'POST'])
 @requires_token_or_auth
 def api_websocket(accessor=None):
     """Meant for use with the websocket and API.
@@ -355,10 +435,62 @@ def api_websocket(accessor=None):
     return ''
 
 
-@listener.route('/gui/top', methods=['GET', 'POST'])
-@requires_auth
-def top_base():
-    return render_template('gui/top.html')
+@listener.route('/ws/top')
+@requires_token_or_auth
+def top_websocket():
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        while True:
+            load = psutil.cpu_percent()
+            vir_mem = psutil.virtual_memory().percent
+            swap_mem = psutil.swap_memory().percent
+            pnode = processes.get_node()
+            procs = pnode.get_process_dict()
+
+            process_list = []
+
+            for process in procs:
+                if process['pid'] == 0:
+                    continue
+                process_list.append(process)
+
+            json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
+            try:
+                ws.send(json_val)
+                gevent.sleep(1)
+            except Exception as e:
+                # Socket was probably closed by the browser changing pages
+                logging.debug(e)
+                ws.close()
+                break
+    return ''
+
+
+@listener.route('/ws/tail')
+@requires_token_or_auth
+def tail_websocket():
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        last_ts = datetime.datetime.now()
+        while True:
+            try:
+                last_ts, logs = listener.tail_method(last_ts=last_ts, **request.args)
+
+                if logs:
+                    json_log = json.dumps(logs)
+                    ws.send(json_log)
+
+                gevent.sleep(5)
+            except Exception as e:
+                logging.debug(e)
+                ws.close()
+                break
+    return ''
+
+
+# ------------------------------
+# Internal (loaded internally)
+# ------------------------------
 
 
 @listener.route('/top', methods=['GET', 'POST'])
@@ -393,64 +525,10 @@ def top():
     return render_template('top.html', **info)
 
 
-@listener.route('/top-websocket/')
-@requires_token_or_auth
-def top_websocket():
-    if request.environ.get('wsgi.websocket'):
-        ws = request.environ['wsgi.websocket']
-        while True:
-            load = psutil.cpu_percent()
-            vir_mem = psutil.virtual_memory().percent
-            swap_mem = psutil.swap_memory().percent
-            pnode = processes.get_node()
-            procs = pnode.get_process_dict()
-
-            process_list = []
-
-            for process in procs:
-                if process['pid'] == 0:
-                    continue
-                process_list.append(process)
-
-            json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
-            try:
-                ws.send(json_val)
-                gevent.sleep(1)
-            except Exception as e:
-                # Socket was probably closed by the browser changing pages
-                logging.debug(e)
-                ws.close()
-                break
-    return ''
-
-
-@listener.route('/tail-websocket/<path:accessor>')
-@requires_token_or_auth
-def tail_websocket(accessor=None):
-    if request.environ.get('wsgi.websocket'):
-        last_ts = datetime.datetime.now()
-        ws = request.environ['wsgi.websocket']
-        while True:
-            try:
-                last_ts, logs = listener.tail_method(last_ts=last_ts, **request.args)
-
-                if logs:
-                    json_log = json.dumps(logs)
-                    ws.send(json_log)
-
-                gevent.sleep(2)
-            except Exception as e:
-                ws.close()
-                logging.exception(e)
-                return
-    return
-
-
-@listener.route('/tail/<path:accessor>', methods=['GET', 'POST'])
+@listener.route('/tail', methods=['GET', 'POST'])
 @requires_token_or_auth
 def tail(accessor=None):
-    info = {'tail_path': accessor,
-            'tail_hash': hash(accessor)}
+    info = { }
 
     query_string = request.query_string
     info['query_string'] = urllib.quote(query_string)
@@ -495,6 +573,11 @@ def graph(accessor=None):
     response.headers['Access-Control-Allow-Origin'] = '*'
 
     return response
+
+
+# ------------------------------
+# Misc Endpoints
+# ------------------------------
 
 
 @listener.route('/error/')
@@ -545,22 +628,9 @@ def nrdp():
         return error(msg=unicode(exc))
 
 
-@listener.route('/gui/graphs', methods=['GET', 'POST'])
-@requires_auth
-def graph_picker():
-    """
-    This function renders the graph picker page, which can be though of the
-    the explorer for the graphs.
-
-    """
-    return render_template('gui/graphs.html')
-
-
-@listener.route('/gui/api', methods=['GET', 'POST'])
-@requires_auth
-def view_api():
-    info = make_info_dict()
-    return render_template('gui/api.html', **info)
+# ------------------------------
+# API Endpoint
+# ------------------------------
 
 
 @listener.route('/api/', methods=['GET', 'POST'])

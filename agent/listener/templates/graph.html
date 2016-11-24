@@ -1,4 +1,3 @@
-
 <div id="graph-{{ graph_hash }}" class="ncpa-graph">
     <script type="text/javascript">
     $(function() {
@@ -21,7 +20,7 @@
                                  grid: { fillStyle: '#FFF', strokeStyle: '#F8F8F8', sharpLines: true, borderVisible: false, verticalSections: 6 }};
 
         var get_ws_address = function() {
-            var ws_loc = 'wss://{{ load_websocket }}/api-websocket/' + '{{ graph_path }}';
+            var ws_loc = 'wss://{{ load_websocket }}/ws/api/' + '{{ graph_path }}';
             if (query_string) {
                 ws_loc += '?' + decodeURIComponent(query_string);
             }

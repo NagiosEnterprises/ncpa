@@ -1,6 +1,5 @@
 {% block headerjs %}
-<script src='/static/js/smoothie.js'></script>
-<script>
+<script type="text/javascript">
     $(document).ready(function() {
         var display = {{ display }};
         var critical = {{ critical }};
@@ -58,10 +57,6 @@
             }
         });
 
-        $('.sortby').click(function(e) {
-            console.log($(e.target).val());
-        });
-
         var get_ws_address = function() {
             var loc = window.location;
             if(loc.protocol === 'https:') {
@@ -69,7 +64,7 @@
             } else {
                 var ws_proto = 'ws';
             }
-            var ws_loc = ws_proto + '://' + loc.hostname + ':' + loc.port + '/top-websocket/';
+            var ws_loc = ws_proto + '://' + loc.hostname + ':' + loc.port + '/ws/top';
             return ws_loc;
         }
         
@@ -77,11 +72,12 @@
             plhead.empty();
             
             $.each(order, function(i) {
-                var th = $('<th>', {id: order[i], text: order[i]});
-                var s = $('<span>', {class: 'signia', html: '&#x21a7;'});
+                var th = $('<th>', { id: order[i], text: order[i].replace(/_/g, ' ') });
+                var s = $('<span>', { class: 'signia', html: ' <i class="fa fa-caret-down fa-l"></i>'});
                 
-                if (order[i] == 'cpu_percent') {                    
+                if (order[i] == 'cpu_percent') {
                     th.append(s);
+                    th.css('width', '12%');
                     th.click(function() {
                         $('.signia').hide();
                         s.show();
@@ -92,6 +88,7 @@
                 }
                 if (order[i] == 'mem_percent') {                    
                     th.append(s);
+                    th.css('width', '12%');
                     th.click(function() {
                         $('.signia').hide();
                         s.show();
@@ -100,6 +97,9 @@
                         create_plbody(current_pl);
                     });
                     s.hide();
+                }
+                if (order[i] == 'pid') {
+                    th.css('width', '8%');
                 }
                 
                 plhead.append(th);

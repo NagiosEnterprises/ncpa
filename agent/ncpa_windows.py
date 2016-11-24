@@ -26,6 +26,7 @@ import listener.psapi
 import listener.windowscounters
 import listener.windowslogs
 import listener.certificate
+import listener.database
 import jinja2.ext
 import webhandler
 import filename
@@ -42,6 +43,10 @@ class Base(object):
         logging.getLogger().handlers = []
         self.stopEvent = cx_Threads.Event()
         self.debug = debug
+
+        # Set up database
+        db = listener.database.DB()
+        db.setup()
 
     def determine_relative_filename(self, file_name, *args, **kwargs):
         """Gets the relative pathname of the executable being run.

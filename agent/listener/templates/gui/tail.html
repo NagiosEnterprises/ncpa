@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Tail Event Logs{% endblock %}
+
+{% block headerjs %}
+<script>
+$(document).ready(function() {
+	$('#live-nav').addClass('active');
+    $('#main-content-container').load('/tail');
+})
+</script>
+{% endblock headerjs %}
