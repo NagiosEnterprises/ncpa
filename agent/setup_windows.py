@@ -23,8 +23,6 @@ if not version[-1].isdigit():
     x = version.rsplit('.', 1)
     version = x[0]
 
-sys.argv += ['-p', 'xml']
-
 includefiles = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
                 ('var/log/ncpa_passive.log', 'var/log/ncpa_passive.log'),
                 ('listener/templates', 'listener/templates'),
@@ -33,7 +31,8 @@ includefiles = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
                 'plugins',
                 'passive']
 
-includes = ['xml.dom.minidom']
+packages = []
+includes = ['ncpa_windows', 'cx_Logging']
 
 includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                  ('build_resources/nsis_listener_options.ini', 'build_resources/nsis_listener_options.ini'),
@@ -43,8 +42,9 @@ includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/Licen
                  ('build_resources/nagios_installer.bmp', 'build_resources/nagios_installer.bmp'),
                  ('build_resources/nagios_installer_logo.bmp', 'build_resources/nagios_installer_logo.bmp')]
 
-buildOptions = dict(includes=includes + ["ncpa_windows"],
-                    include_files=includefiles)
+buildOptions = dict(includes=includes,
+                    include_files=includefiles,
+                    packages=packages)
 
 listener = Executable("ncpa_windows_listener.py", 
                       base = "Win32Service",

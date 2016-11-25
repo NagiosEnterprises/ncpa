@@ -1,6 +1,7 @@
 import os
 import time
 import sqlite3
+import sys
 
 # A module to wrap sqllite3 for use with a small database to store things
 # like checks accross both passive and active sections
@@ -8,11 +9,15 @@ import sqlite3
 class DB(object):
 
     def __init__(self):
+        if getattr(sys, u'frozen', False):
+            self.dbfile = os.path.abspath(os.path.dirname(sys.executable) + '/var/ncpa.db')
+        else:
+            self.dbfile = os.path.abspath(os.path.dirname(__file__) + '/../var/ncpa.db')
         self.connect()
 
+    # Connect to the NCPA database
     def connect(self):
-        # Connect to checks database
-        self.conn = sqlite3.connect('var/checks.db')
+        self.conn = sqlite3.connect(self.dbfile)
         self.cursor = self.conn.cursor()
 
     def get_cursor(self):

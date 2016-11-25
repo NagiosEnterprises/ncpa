@@ -5,7 +5,6 @@ See below for more information on what methods must be implemented and how they
 are called.
 """
 
-import cx_Logging
 import cx_Threads
 import threading
 import ConfigParser
