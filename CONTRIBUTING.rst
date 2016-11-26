@@ -23,8 +23,10 @@ been installed and working.
 
 **Set Up Windows Environment**
 
-You will need to install git for windows. Then, download and install `Python 2.7.12 on Windows <https://www.python.org/downloads/release/python-2712/>`_
-and OpenSSL for Windows (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_0c.exe>`_)
+You will need to install git for windows. Then, download and install:
+
+* `Python 2.7.12 on Windows <https://www.python.org/downloads/release/python-2712/>`_
+* OpenSSL for Windows (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_0c.exe>`_)
 
 To set up the python requirements, in `cmd.exe` clone the NCPA repo and run::
 

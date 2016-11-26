@@ -23,8 +23,7 @@ Prerequisites
 * `Microsoft Visual C++ 2010 runtime (32-bit) <http://www.microsoft.com/en-us/download/details.aspx?id=8328>`_ *Requires admin rights*
 * `NSIS <http://nsis.sourceforge.net/Download>`_ *Requires admin rights*
 
-
-*Python Packages*
+**Python Packages**
 
 * pip (installed by default in Python 2.7 for Windows)
 * cx_Freeze (patched)
@@ -40,6 +39,7 @@ Configure the Build Environment
 
 Install Prerequisites
 ~~~~~~~~~~~~~~~~~~~~~
+
 * Python
 
   1. Download and install Python 2.7.12. (*`see prerequisites <#prerequisites>`_*)
@@ -104,7 +104,7 @@ Run win_build_setup.bat located in build/scripts. You should see some packages
 installed by pip then a message saying "to build ncpa: python build\build_windows.py".
 
 Install the Last Modules
-========================
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 * cx_Freeze (patched)
 
