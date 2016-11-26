@@ -34,7 +34,7 @@ update_git:
 	git reset --hard
 	git pull
 
-build_tarball: update_packages update_git build_exe
+build_tarball: update_packages build_exe
 	rm -rf ncpa-$(NCPAVER)
 	mv ../agent/build/* ncpa-$(NCPAVER)
 	tar zcvf ncpa-$(NCPAVER).tar.gz ncpa-$(NCPAVER)

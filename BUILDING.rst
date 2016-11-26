@@ -32,7 +32,7 @@ Prerequisites
 * gevent-websocket (patched)
 
 There are more Python packages that need to be installed too but they are installed
-later on with a setup script that you can run.
+later on with a setup script that you can run. A full list of required packages is available in `ncpa/build/resources/requires.txt`.
 
 Configure the Build Environment
 -------------------------------
@@ -129,9 +129,7 @@ Building on Linux
 =================
 
 Building from most Linux distros is much less complicated than Windows. We have a
-couple helpful scripts that make it much easier.
-
-*We assume you have wget and git installed*
+couple helpful scripts that make it much easier. *We will assume you have wget and git installed*
 
 To start, clone the repository in your directory::
 

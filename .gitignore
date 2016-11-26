@@ -10,3 +10,4 @@ agent/build/*
 docs/_build
 *.exe
 agent/plugins/*
+ncpa.db
