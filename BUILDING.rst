@@ -13,32 +13,27 @@ in mind.*
 Build Requirements
 ------------------
 
-User Rights
-~~~~~~~~~~~
-Administrative privileges are required to install:
+Prerequisites
+~~~~~~~~~~~~~
 
-* The Nullsoft Scriptable Install System.
-* OpenSSL for Windows
-* Microsoft Visual C++ 2010 runtime
+* `Git for Windows <https://git-scm.com/download/win>`_
+* Python 2.7.12 (32-Bit) (`Download <https://www.python.org/downloads/release/python-2712/>`_)
+* OpenSSL for Windows (32-bit) (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_0c.exe>`_) *Requires admin rights*
+* `Microsoft Visual C++ Compiler for Python 2.7 <http://aka.ms/vcpython27>`_
+* `Microsoft Visual C++ 2010 runtime (32-bit) <http://www.microsoft.com/en-us/download/details.aspx?id=8328>`_ *Requires admin rights*
+* `NSIS <http://nsis.sourceforge.net/Download>`_ *Requires admin rights*
 
-Prerequisite Packages
-~~~~~~~~~~~~~~~~~~~~~
-* Git for Windows (https://git-scm.com/download/win)
-* Python 2.7.10 (32-Bit) (https://www.python.org/downloads/release/python-2710/)
-* pip
-* OpenSSL for Windows (32-bit) (http://slproweb.com/download/Win32OpenSSL-1_0_2d.exe)
-* Microsoft Visual C++ Compiler for Python 2.7 (http://aka.ms/vcpython27)
-* Microsoft Visual C++ 2010 runtime (32-bit) (http://www.microsoft.com/en-us/download/details.aspx?id=8328)
-* Nullsoft Scriptable Install System (NSIS) 2.4.6 (http://nsis.sourceforge.net/Download)
+
+*Python Packages*
+
+* pip (installed by default in Python 2.7 for Windows)
 * cx_Freeze (patched)
+* cx_Logging
+* cx_PyGenLib
 * gevent-websocket (patched)
 
-
-Assumptions
------------
-This document assumes that the packages in the prerequisites section are
-installed from the URLs specified. While other packages may function,
-they have not been tested with the build procedure listed below. 
+There are more Python packages that need to be installed too but they are installed
+later on with a setup script that you can run.
 
 Configure the Build Environment
 -------------------------------
@@ -47,32 +42,20 @@ Install Prerequisites
 ~~~~~~~~~~~~~~~~~~~~~
 * Python
 
-  1. Download the Python installer from
-     https://www.python.org/downloads/release/python-2710/
+  1. Download and install Python 2.7.12. (*`see prerequisites <#prerequisites>`_*)
   2. Execute the installer as usual. It's important that the
      installation path is not changed from the default of
-     C:\python27 as cx_Freeze can have difficulty finding
+     C:\\python27 as cx_Freeze can have difficulty finding
      Python resources if it's installed at a custom path.
-
-* pip
-  
-  1. Since Python version 2.7.9, pip can be installed by running::
-    
-      "%pydir%\python" -m ensurepip
-
-  2. Pip should then be updated::
-
-      "%pydir%\Scripts\pip" install --upgrade pip
 
 * OpenSSL
 
-  1. Download the OpenSSL package from http://slproweb.com/download/Win32OpenSSL-1_0_2d.exe
-  2. Run the installer. Be sure to make a not of the installation directory.
+  1. Download and install the OpenSSL package. (*`see prerequisites <#prerequisites>`_*)
+  2. Be sure to make a not of the installation directory while installing.
 
 * Microsoft Visual C++ Compiler for Python 2.7
 
-  1. Download the installer from http://aka.ms/vcpython27.
-  2. Run the installer.
+  1. Download and run the installer. (*`see prerequisites <#prerequisites>`_*)
 
   Running the installer without administrator privileges will
   cause the files to be installed to::
@@ -81,26 +64,17 @@ Install Prerequisites
 
 * Microsoft Visual C++ 2010 runtime (32-bit)
   
-  1. Download the installer from http://www.microsoft.com/en-us/download/details.aspx?id=8328
-  2. Run the installer. 
+  1. Download and run the installer. (*`see prerequisites <#prerequisites>`_*)
 
 * NSIS
 
-  1. Download NSIS from http://nsis.sourceforge.net/Download 
-  2. Run the NSIS installer.
+  1. Download and run the installer. (*`see prerequisites <#prerequisites>`_*)
 
-* cx_Freeze (patched)
+* pip
+  
+  * Pip is installed by default in Python 2.7.12 but should be updated before continuing::
 
-  * Install cx_Freeze via the included patched version::
-    ncpa\build\resources\cx_Freeze-4.3.4-patched.tar.gz
-    "%pydir%\python" cx_Freeze-4.3.4\setup.py install
-
-* gevent-websocket (patched)
-
-  * Install gevent-websocket via the included patched version::
-    ncpa\build\resources\gevent-websocket-0.9.5-patched.tar.gz
-    "%pydir%\python" gevent-websocket-0.9.5\setup.py install
-
+      "%pydir%" -m pip install --upgrade pip
 
 Set Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -123,13 +97,26 @@ Set these variables by running::
   set pydir=C:\Python27
   set openssldir=C:\OpenSSL-Win32
 
-
 Run the Pre-Build Script
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Run win_build_setup.bat located in build/scripts. You should see some packages installed by pip then
-a message saying "to build ncpa: python build\build_windows.py".
+Run win_build_setup.bat located in build/scripts. You should see some packages
+installed by pip then a message saying "to build ncpa: python build\build_windows.py".
 
+Install the Last Modules
+========================
+
+* cx_Freeze (patched)
+
+  * Install cx_Freeze via the included patched version::
+    ncpa\build\resources\cx_Freeze-4.3.4-patched.tar.gz
+    "%pydir%\python" cx_Freeze-4.3.4\setup.py install
+
+* gevent-websocket (patched)
+
+  * Install gevent-websocket via the included patched version::
+    ncpa\build\resources\gevent-websocket-0.9.5-patched.tar.gz
+    "%pydir%\python" gevent-websocket-0.9.5\setup.py install
 
 Build NCPA
 ~~~~~~~~~~
@@ -137,3 +124,77 @@ Build NCPA
 Run the build script::
 
   "%pydir%\python" build\build_windows.py
+
+Building on Linux
+=================
+
+Building from most Linux distros is much less complicated than Windows. We have a
+couple helpful scripts that make it much easier.
+
+*We assume you have wget and git installed*
+
+To start, clone the repository in your directory::
+
+  cd ~
+  git clone https://github.com/NagiosEnterprises/ncpa
+
+*Note: Running the following scripts on CentOS 7 will make yum not work due to the
+Python version that yum uses. You can build the CentOS 7 version with the Python version
+that comes with it, but you will have to install things manually.*
+
+Now run the setup scripts to install the requirements::
+
+  cd ncpa/build/scripts
+  ./linux_build_prereqs.sh
+  ./linux_build_setup.sh
+
+Once these have completed you can do an actual build. You can run make differently depending
+on which type of Linux you have.
+
+*Warning: Be careful when making changes to NCPA while building, you should commit your
+changes since `make all` will do a `git reset --hard` before building.*
+
+On RPM-based systems::
+
+  cd build
+  make build_rpm
+
+On DEB-based systems::
+
+  cd build
+  make build_deb
+
+
+Building on Mac OS X
+====================
+
+Working on this section. It's basically the same as Linux, however you may need to
+install the libraries and python differently.
+
+Building Tips
+=============
+
+There are plenty of derivative operating systems that will not work by following just
+the instructions given in this document. NCPA is capable of being built on any system
+that supports Python, so not to worry - it is possible!
+
+The common problem is going to be getting the libraries for all the python modules
+to be compiled and behave correctly with Python. We recommend compiling them from
+source if you must, and compiling Python from source too - with any changes you need
+to give the Python build process for library locations. Once that's done, you can
+continue by installing the required `pip` modules and trying the build process.
+
+Making NCPA is pretty easy once the requirements are done, just run make:
+
+*Warning: Be careful when making changes to NCPA while building, you should commit your
+changes since `make all` will do a `git reset --hard` before building.*
+
+On RPM-based systems::
+
+  cd build
+  make build_rpm
+
+On DEB-based systems::
+
+  cd build
+  make build_deb

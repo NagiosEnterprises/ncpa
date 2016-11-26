@@ -11,7 +11,7 @@ Current versions:
 +--------+-------------+---------------------------------------------------------------------+
 | Stable | **1.8.1**   | `Downloads <http://assets.nagios.com/downloads/ncpa/download.php>`_ |
 +--------+-------------+---------------------------------------------------------------------+
-| Dev    | **2.0.0.a** | `Dev Downloads <http://assets.nagios.com/downloads/ncpa/dev>`_      |
+| Dev    | **2.0.0**   | `Downloads <http://assets.nagios.com/downloads/ncpa/dev>`_          |
 +--------+-------------+---------------------------------------------------------------------+
 
 We currently build for the following operating systems:
@@ -43,6 +43,6 @@ We are always looking to improve NCPA. If you can add a feature or fix a bug, yo
 
 While we recommend using the pre-built version above, sometimes you may find the need to build your own binaries from the source. Mostly, this consists of installing the newest version of *Python 2.7* and a few modules installed through pip. There are some issues on certain systems that are explained in the build docs below.
 
-+----------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------+
-| `Building for Windows <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst>`_ | `Building for Linux <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst>`_ |
-+----------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------+
++-------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------+
+| `Building for Windows <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-for-windows>`_ | `Building for Linux <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-for-linux>`_ | `Building for Mac OS X <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-for-mac-os-x>`_ |
++-------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------+
