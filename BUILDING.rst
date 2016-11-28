@@ -10,11 +10,8 @@ must be executed by cmd.exe. For this reason, any Windows commands
 listed in this document will be written with cmd.exe compatibility
 in mind.*
 
-Build Requirements
-------------------
-
 Prerequisites
-~~~~~~~~~~~~~
+-------------
 
 * `Git for Windows <https://git-scm.com/download/win>`_
 * Python 2.7.12 (32-Bit) (`Download <https://www.python.org/downloads/release/python-2712/>`_)
@@ -167,7 +164,11 @@ Building on Mac OS X
 ====================
 
 Working on this section. It's basically the same as Linux, however you may need to
-install the libraries and python differently.
+install the libraries and python differently. You'll also have to use the following command
+to build the dmg::
+
+  cd build
+  make build_dmg
 
 Building Tips
 =============
