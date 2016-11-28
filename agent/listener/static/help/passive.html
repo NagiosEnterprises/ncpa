@@ -20,8 +20,8 @@
             <div class="col-md-12 col-lg-10">
       
                 <h1>Passive Checks</h1>
-                <p>Specifying passive checks for the <em>NCPA Passive</em> service is done by editing the <b>[passive checks]</b> section in the configuration. If you installed on Linux or Mac OS X, your <b>[passive checks]</b> section is defined by default in a file such as <code>nrdp.cfg</code> in the <code>etc/ncpa.cfg.d</code> directory. If you installed on Windows, you may not have any passive checks defined by default if you didn't set up passive checks over NRDP while installing.</p>
-                <p>Specifying passive checks will use the API to create checks. You can read about it in the API Node Usage section or you can try it out in the web GUI under the API tab.</p>
+                <p>Specifying passive checks for the <em>NCPA Passive</em> service is done by editing the <b>[passive checks]</b> section in the configuration. By default, your NCPA install will have an example <b>[passive checks]</b> section in <code>etc/ncpa.cfg.d/example.cfg</code>. If you installed on Windows, you may have some checks already defined and running if you set them up during the install process.</p>
+                <p>To set up passive checks, you'll need to use the API endpoints, much like you do with active checks and the <code>check_ncpa.py</code> plugin. If you are not that familiar with the API endpoints, you can read more about them in the <a href="api.html">API reference</a> section or you can try it out in the GUI under the API tab.</p>
 
                 <div class="section">
                     <h2>Configing Passive Checks</h2>
