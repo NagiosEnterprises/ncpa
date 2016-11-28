@@ -1,4 +1,5 @@
 import os
+import time
 import logging
 import nodes
 import ConfigParser
@@ -9,6 +10,7 @@ import copy
 import Queue
 import environment
 import database
+import server
 from threading import Timer
 
 # Windows does not have the pwd and grp module and does not need it since only Unix
@@ -35,7 +37,7 @@ class PluginNode(nodes.RunnableNode):
         return copy.deepcopy(self)
 
     def walk(self, config, **kwargs):
-        result = self.execute_plugin(config)
+        result = self.execute_plugin(config, **kwargs)
         return result
 
     def get_plugin_instructions(self, config):
@@ -98,15 +100,20 @@ class PluginNode(nodes.RunnableNode):
         run_time_end = time.time()
         returncode = running_check.returncode
 
-        print run_time_start
-        print run_time_end
-
         # Pull from the queue if we have a error and the stdout is empty
         if returncode == 1 and not stdout:
             if queue.qsize() > 0:
                 stdout = queue.get()
 
         cleaned_stdout = ''.join(stdout).replace('\r\n', '\n').replace('\r', '\n').strip()
+
+        if not server.__INTERNAL__:
+            db = database.DB()
+            dbc = db.get_cursor()
+            data = (kwargs['accessor'].rstrip('/'), run_time_start, run_time_end, returncode,
+                    stdout, kwargs['remote_addr'], 'Active')
+            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+            db.commit()
 
         return {'returncode': returncode, 'stdout': cleaned_stdout}
 

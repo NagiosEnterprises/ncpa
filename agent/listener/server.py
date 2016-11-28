@@ -17,6 +17,7 @@ import gevent
 import geventwebsocket
 import processes
 import database
+import math
 
 
 __VERSION__ = '2.0.0.a'
@@ -332,12 +333,70 @@ def gui_index():
 @listener.route('/gui/checks')
 @requires_auth
 def checks():
-    data = { }
+    data = { 'filters': False, 'show_fp': False, 'show_lp': False }
     db = database.DB()
 
+    data['senders'] = db.get_check_senders()
+
     search = request.values.get('search', '')
+    size = int(request.values.get('size', 20))
+    page = int(request.values.get('page', 1))
+
+    status = request.values.get('status', '')
+    if status != '':
+        status = int(status)
+
+    check_senders = request.values.getlist('check_senders')
+
+    # Add data values for page
+    data['check_senders'] = check_senders
     data['search'] = search
-    data['checks'] = db.get_checks(search)
+    data['checks'] = db.get_checks(search, size, page, status=status, senders=check_senders)
+    data['size'] = size
+    data['page'] = format(page, ",d")
+    data['page_raw'] = page
+    data['status'] = status
+
+    # Do some page math magic
+    total = db.get_checks_count(search, status=status, senders=check_senders)
+    total_pages = int(math.ceil(total / size))
+    if total_pages < 1:
+        total_pages = 1
+
+    data['total_pages'] = format(total_pages, ",d")
+    data['total'] = format(total, ",d")
+
+    # Get a URL for the next/last pages
+    link = 'checks?page='
+    link_vals = ''
+    if size != 20:
+        link_vals += '&size=' + str(size)
+    if status != '':
+        link_vals += '&status=' + str(status)
+    if search != '':
+        link_vals += '&search=' + str(search)
+    if len(check_senders) > 0:
+        for sender in check_senders:
+            link_vals += '&check_senders=' + sender
+
+    # Get list of pages to display
+    data['page_links'] = { page: link + str(page) }
+    for x in range(1, 5):
+        if not (page - x) <= 0:
+            data['page_links'][page - x] = link + str(page - x) + link_vals
+            if page > 5:
+                data['show_fp'] = True
+                data['show_fp_link'] = link + '1' + link_vals
+        if not (page + x) > total_pages:
+            data['page_links'][page + x] = link + str(page + x) + link_vals
+            if page < total_pages:
+                data['show_lp'] = True
+                data['show_lp_link'] = link + str(total_pages) + link_vals
+    data['page_link_iters'] = sorted(data['page_links'].keys())
+
+    # Switch if we have any filters applied
+    if search != '' or status != '' or check_senders != []:
+        data['filters'] = True
 
     return render_template('gui/checks.html', **data)
 
@@ -711,6 +770,7 @@ def api(accessor=''):
     sane_args['remote_addr'] = request.remote_addr
     sane_args['accessor'] = accessor
     sane_args['config'] = config
+
     if not 'check' in sane_args:
         sane_args['check'] = request.args.get('check', False);
 

@@ -197,3 +197,6 @@ body.help ol li:last-child { padding-bottom: 0; }
 .help-list > li { margin-bottom: 8px; }
 
 #top-container h1 { font-weight: bold; font-size: 20px; line-height: 28px; margin: 0 2.5rem 0 0; padding: 0; }
+
+.page-links a { font-size: 1.05rem; }
+.page-links a:active, .page-links a:focus, .page-links a:focus:hover { color: #000; text-decoration: none; }

@@ -42,7 +42,7 @@ Install Prerequisites
 
 * Python
 
-  1. Download and install Python 2.7.12. (*`see prerequisites <#prerequisites>`_*)
+  1. Download and install Python 2.7.12. (*`see prerequisites <BUILDING.rst#prerequisites>`_*)
   2. Execute the installer as usual. It's important that the
      installation path is not changed from the default of
      C:\\python27 as cx_Freeze can have difficulty finding
@@ -50,12 +50,12 @@ Install Prerequisites
 
 * OpenSSL
 
-  1. Download and install the OpenSSL package. (*`see prerequisites <#prerequisites>`_*)
+  1. Download and install the OpenSSL package. (*`see prerequisites <BUILDING.rst#prerequisites>`_*)
   2. Be sure to make a not of the installation directory while installing.
 
 * Microsoft Visual C++ Compiler for Python 2.7
 
-  1. Download and run the installer. (*`see prerequisites <#prerequisites>`_*)
+  1. Download and run the installer. (*`see prerequisites <BUILDING.rst#prerequisites>`_*)
 
   Running the installer without administrator privileges will
   cause the files to be installed to::
@@ -64,11 +64,11 @@ Install Prerequisites
 
 * Microsoft Visual C++ 2010 runtime (32-bit)
   
-  1. Download and run the installer. (*`see prerequisites <#prerequisites>`_*)
+  1. Download and run the installer. (*`see prerequisites <BUILDING.rst#prerequisites>`_*)
 
 * NSIS
 
-  1. Download and run the installer. (*`see prerequisites <#prerequisites>`_*)
+  1. Download and run the installer. (*`see prerequisites <BUILDING.rst#prerequisites>`_*)
 
 * pip
   

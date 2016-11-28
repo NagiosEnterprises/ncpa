@@ -69,6 +69,12 @@ $(document).ready(function() {
         start_websocket();
     });
 
+    $('#log-name').keypress(function(e) {
+        if (e.which == 13) {
+            $('.btn-apply').trigger('click');
+        }
+    });
+
 });
 </script>
 
@@ -84,7 +90,7 @@ $(document).ready(function() {
         <div class="fr">
             <div class="input-group" style="width: 320px;">
                 <div class="input-group-addon">Event Log Name</div>
-                <input class="form-control" type="text" name="name" placeholder="System">
+                <input class="form-control" id="log-name" type="text" name="name" placeholder="System">
             </div>
             <button type="button" class="btn btn-sm btn-default btn-apply"><i class="fa fa-exchange fa-l"></i> Apply</button>
         </div>

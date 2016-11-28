@@ -1,9 +1,25 @@
 {% extends 'base.html' %}
 
+{% block title %}Checks{% endblock %}
+
+{% block headercss %}
+<link href="/static/css/sumoselect.css" rel="stylesheet" />
+{% endblock %}
+
 {% block headerjs %}
+<script type="text/javascript" src="/static/js/jquery.ss.3.0.2.min.js"></script>
 <script>
 $(document).ready(function() {
     $('#checks-nav').addClass('active');
+
+    $('.check_senders').SumoSelect({
+        placeholder: "Select senders",
+        triggerChangeCombined: true
+    });
+
+    $('.btn-search').click(function() {
+        $('#top-form').submit();
+    });
 });
 </script>
 {% endblock %}
@@ -12,21 +28,68 @@ $(document).ready(function() {
 
 <div id='top-container'>
     <div class="well">
-        <h1 class="fl">Checks</h1>
-        <div class="fr">
-            <form class="form-inline" action="checks" id="top-form">
-                <input class="form-control" type="text" name="search" placeholder="Search..">
-                <button type="submit" class="btn btn-sm btn-default btn-apply"><i class="fa fa-search"></i></button>
-            </form>
-        </div>
-        <div class="clear"></div>
+        <form class="form-inline" action="checks" method="get" id="top-form">
+            <h1 class="fl">Checks</h1>
+            <div class="fl">
+                <div class="input-group" style="width: 170px; display: inline-table; vertical-align: top;">
+                    <label class="input-group-addon">Status</label>
+                    <select name="status" class="form-control">
+                        <option value="">Any</option>
+                        <option value="0"{% if status == 0 %} selected{% endif %}>OK</option>
+                        <option value="1"{% if status == 1 %} selected{% endif %}>WARNING</option>
+                        <option value="2"{% if status == 2 %} selected{% endif %}>CRITICAL</option>
+                        <option value="3"{% if status == 3 %} selected{% endif %}>UNKNOWN</option>
+                    </select>
+                </div>
+                <div class="input-group" style="width: 280px;">
+                    <label class="input-group-addon" style="width: 100px;">Executed By</label>
+                    <select name="check_senders" class="check_senders" multiple>
+                        {% for sender in senders %}
+                        <option value="{{ sender }}"{% for s in check_senders %}{% if s == sender %} selected{% endif %}{% endfor %}>{{ sender }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-sm btn-default"><i class="fa fa-filter fa-l"></i> Filter</button>
+            </div>
+            <div class="fr form-inline">
+                <input class="form-control" type="text" name="search" value="{{ search }}" placeholder="Search..">
+                <button type="button" class="btn btn-sm btn-default btn-search"><i class="fa fa-search"></i></button>
+            </div>
+            <div class="clear"></div>
+        </form>
     </div>
 </div>
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
-            <div style="padding: 0.25rem 0.75rem 3rem 0.75rem;">
+            <div style="padding: 0rem 0.75rem 3rem 0.75rem;">
+                <div style="padding: 0 0 1.25rem 0; line-height: 30px;">
+                    <div class="fl">
+                        Page <b>{{ page }}</b> of <b>{{ total_pages }}</b>
+                        <span style="padding: 0 2rem;"><i class="fa fa-check-square fa-14 fa-l"></i> Displaying <b>{{ total }}</b> check records</span>
+                        {% if filters %}
+                        <span>
+                            <i class="fa fa-filter fa-14 fa-l"></i> Filtering by 
+                            {% if search != '' %}"<b>{{ search }}</b>"{% endif %}{% if status != '' %}{% if search != '' %}, {% endif %}status = <b>{{ status|human_check_result }}</b>{% endif %}
+                            {% if check_senders %}{% if status != '' or search != '' %}and{% endif %} executed by <b>{{ ', '.join(check_senders) }}</b>{% endif %}
+                            <a href="checks" class="tt-bind" title="Clear filters"><i class="fa fa-times fa-r" style="font-size: 14px;"></i></a>
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="fr page-links">
+                        {% if show_fp %}
+                        <a href="{{ show_fp_link }}" class="btn btn-sm btn-default"><i class="fa fa-chevron-left"></i></a>
+                        {% endif %}
+                        {% for p in page_link_iters %}
+                        <a href="{% if p != page_raw %}{{ page_links[p] }}{% endif %}" class="btn btn-sm btn-default" {% if p == page_raw %}style="background-color: #E3E3E3;"{% endif %}>{{ p }}</a>
+                        {% endfor %}
+                        {% if show_lp %}
+                        <a href="{{ show_lp_link }}" class="btn btn-sm btn-default"><i class="fa fa-chevron-right"></i></a>
+                        {% endif %}
+                    </div>
+                    <div class="clear"></div>
+                </div>
                 <table class="table table-bordered table-striped table-condensed">
                     <thead> 
                         <tr>
@@ -52,11 +115,38 @@ $(document).ready(function() {
                             {% endfor %}
                         {% else %}
                         <tr>
+                            {% if filters %}
+                            <td colspan="6">No check records found with current filters applied.</td>
+                            {% else %}
                             <td colspan="6">No checks have been ran yet. Run them through the API, using check_ncpa.py, or send passive checks to NRDP.</td>
+                            {% endif %}
                         </tr>
                         {% endif %}
                     </tbody>
                 </table>
+                <div style="line-height: 30px; padding-top: 1.25rem;">
+                    <!--
+                    <div class="fl">
+                        <div class="input-group" style="width: 150px; display: inline-table; vertical-align: top;">
+                            <div class="input-group-addon">Jump to page</div>
+                            <input type="text" class="form-control" id="jumpto">
+                        </div>
+                        <button type="button" class="btn btn-sm btn-default" style="vertical-align: top;">Go</button>
+                    </div>
+                    -->
+                    <div class="fr page-links">
+                        {% if show_fp %}
+                        <a href="{{ show_fp_link }}" class="btn btn-sm btn-default"><i class="fa fa-chevron-left"></i></a>
+                        {% endif %}
+                        {% for p in page_link_iters %}
+                        <a href="{% if p != page_raw %}{{ page_links[p] }}{% endif %}" class="btn btn-sm btn-default" {% if p == page_raw %}style="background-color: #E3E3E3;"{% endif %}>{{ p }}</a>
+                        {% endfor %}
+                        {% if show_lp %}
+                        <a href="{{ show_lp_link }}" class="btn btn-sm btn-default"><i class="fa fa-chevron-right"></i></a>
+                        {% endif %}
+                    </div>
+                    <div class="clear"></div>
+                </div>
             </div>
         </div>
     </div>

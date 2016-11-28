@@ -7,6 +7,7 @@ import pickle
 import copy
 import re
 import database
+import server
 
 
 # Valid nodes is updated as it gets set when calling a node via accessor
@@ -105,13 +106,14 @@ class RunnableParentNode(ParentNode):
         primary_info['stdout'] = primary_info['stdout'].format(extra_data=secondary_stdout)
 
         # Send check results to database
-        db = database.DB()
-        dbc = db.get_cursor()
-        current_time = time.time()
-        data = (kwargs['accessor'], current_time, current_time, primary_info['returncode'],
-                primary_info['stdout'], kwargs['remote_addr'], 'active')
-        dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-        db.commit()
+        if not server.__INTERNAL__:
+            db = database.DB()
+            dbc = db.get_cursor()
+            current_time = time.time()
+            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, primary_info['returncode'],
+                    primary_info['stdout'], kwargs['remote_addr'], 'Active')
+            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+            db.commit()
 
         return primary_info
 
@@ -258,12 +260,12 @@ class RunnableNode(ParentNode):
             logging.exception(exc)
 
         # Send check results to database
-        if not child_check:
+        if not child_check and not server.__INTERNAL__:
             db = database.DB()
             dbc = db.get_cursor()
             current_time = time.time()
-            data = (kwargs['accessor'], current_time, current_time, returncode,
-                    stdout, kwargs['remote_addr'], 'active')
+            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
+                    stdout, kwargs['remote_addr'], 'Active')
             dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
             db.commit()
 

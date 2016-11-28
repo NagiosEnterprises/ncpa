@@ -5,6 +5,7 @@ import urlparse
 import time
 import hashlib
 import listener.server
+import listener.database
 
 # Constants to keep track of the passive check runs 
 NEXT_RUN = { }
@@ -81,6 +82,20 @@ class NCPACheck(object):
             raise ValueError("Stdout or returncode was None, cannot return "
                              "meaningfully.")
 
+        # Save returned check results to the DB if we don't error out
+        db = listener.database.DB()
+        dbc = db.get_cursor()
+
+        # Get some info about the check
+        current_time = time.time()
+        accessor = api_url.replace('/api/', '').rstrip('/')
+
+        # Send to databsae
+        data = (accessor, current_time, current_time, int(returncode),
+                stdout, 'Internal', 'Passive')
+        dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+        db.commit()
+
         return stdout, returncode
 
     def run_check(self, api_url, api_args):
@@ -152,13 +167,13 @@ class NCPACheck(object):
             stdout = response_dict['stdout']
             returncode = unicode(response_dict['returncode'])
         except ValueError as exc:
-            logging.error("Error with JSON: %s. JSON was: %s", str(exc),
-                          response)
+            logging.error("Error with JSON: %s. JSON was: %s", str(exc), response)
         except TypeError as exc:
             logging.error("Error response was not a string: %s", str(exc))
 
         logging.debug("JSON response handled found stdout='%s', returncode=%s",
                       stdout, returncode)
+
         return stdout, returncode
 
     @staticmethod

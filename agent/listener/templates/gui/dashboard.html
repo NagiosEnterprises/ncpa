@@ -14,8 +14,17 @@ $(document).ready(function() {
     <div class="row">
 
         <div class="col-sm-6">
-            <div class='well'>
-                <table class='table table-striped table-border'>
+            <div class="well">
+                
+            </div>
+            <div style="padding-bottom: 20px;">
+                <a href="/gui/stats" class="btn btn-primary">See Live Stats <i class="fa fa-chevron-right fa-r"></i></a>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="well">
+                <table class="table table-striped table-border" style="margin-bottom: 2rem;">
                     <thead>
                         <tr>
                             <th class="description" colspan="2">Agent Information</th>
@@ -23,8 +32,8 @@ $(document).ready(function() {
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="width: 40%;">Version</td>
-                            <td style="width: 60%;">{{ agent_version }}</td>
+                            <td style="width: 120px;">Version</td>
+                            <td>{{ agent_version }}</td>
                         </tr>
                         <tr>
                             <td>Agent Uptime</td>
@@ -32,15 +41,7 @@ $(document).ready(function() {
                         </tr>
                     </tbody>
                 </table>
-            </div>
-            <div style="padding-bottom: 20px;">
-                <a href='/gui/stats' class='btn btn-primary btn-large'>See Live Stats <i class="fa fa-chevron-right fa-r"></i></a>
-            </div>
-        </div>
-
-        <div class="col-sm-6">
-            <div class='well'>
-                <table class='table table-striped table-border'>
+                <table class="table table-striped table-border">
                     <thead>
                         <tr>
                             <th class="description" colspan="2">System Information</th>
@@ -48,24 +49,16 @@ $(document).ready(function() {
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Processor Type</td>
-                            <td>{{ processor }}</td>
-                        </tr>
-                        <tr>
-                            <td>Node Name</td>
+                            <td style="width: 120px;">Node Name</td>
                             <td>{{ node }}</td>
                         </tr>
                         <tr>
-                            <td>Version</td>
-                            <td>{{ version }}</td>
-                        </tr>
-                        <tr>
                             <td>System</td>
-                            <td>{{ system }}</td>
+                            <td>{{ system }} {{ release }} ({{ version }})</td>
                         </tr>
                         <tr>
-                            <td>Release</td>
-                            <td>{{ release }}</td>
+                            <td>Processor Type</td>
+                            <td>{{ processor }}</td>
                         </tr>
                     </tbody>
                 </table>

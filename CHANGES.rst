@@ -6,6 +6,8 @@ Changelog
 
 **Additions**
 
+- Added SQLite3 DB backend for check results
+- Added a new tab in the GUI for viewing past check results
 - Added support for SSL protocols TLSv1.1 & TLSv1.2
 - Added ability to adjust units B and b with T, Ti, Gi, Mi, Ki to match windows disk sizes using untis=x
 - Added comments/help to the config file itself to help understand certain areas of the config that are confusing
@@ -24,6 +26,7 @@ Changelog
 - Added '/s' onto the unit when using the delta argument outside of checks
 - Added all new documentation and examples for setting up NCPA on any type of system
 - Added in the Windows Event Log tail functionality that was never released
+- Added new config options for managing check result retention and if check results should be retained
 
 **Updates**
 
