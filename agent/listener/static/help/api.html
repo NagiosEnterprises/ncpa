@@ -42,9 +42,10 @@
                             <div class="col-sm-6">
                                 <p>The API is constructed in a way that allows users to easily follow the hirearchy downwards, creating a URL that will access specific requested data.</p>
                                 <p>In the example of this systems API return we see what we call <em>nodes</em>. Each node is a specific part of the API that gets specific data and functions a certain way. These are also sometimes referred to as <em>API endpoints</em> when farther down the list, when we have reached the end of a node.</p>
-                                <p>Open up your web browser, and navigate to the URL below, replacing <em>localhost:5693</em> with your NCPA server hostname/IP and port.</p>
+                                <p>Open up your web browser, and navigate to the URL below, replacing <em>localhost:5693</em> with your NCPA server hostname/IP and port or if you're reading this inside NCPA, you can look at the box.</p>
                                 <pre>https://localhost:5693/api?token=mytoken</pre>
-                                <p>Looks like a very large list. If you take a close look at this list, you'll see that amongst all the weird characters, there are actual numbers and descriptions of those numbers. This format is JSON, and those who are familiar with accessing APIs should be familiar with it.</p>
+                                <p>The API is fromatted as JSON. If you're used to interacting with APIs, this shouldn't be too much of a surprise. However, something unique to NCPA is the way the API is accessed.</p>
+                                <p>NCPA is structured with a set of base modules and each module has nodes. The nodes end up forming a URL, which is used to get data about that specific item or to run a check on that specific item's data.</p>
                             </div>
                             <div class="col-sm-6">
                                 <pre class="api-output"></pre>
