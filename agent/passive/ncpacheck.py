@@ -181,7 +181,7 @@ class NCPACheck(object):
         """
         Parse the commandline to support calls such as:
 
-        /api/cpu/percent --warning 10 --critical 20 --delta 1
+        /cpu/percent --warning 10 --critical 20 --delta 1
 
         As opposed to the URL encoded version
 

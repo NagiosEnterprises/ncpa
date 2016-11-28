@@ -20,44 +20,54 @@
             <div class="col-md-12 col-lg-10">
       
                 <h1>Passive Checks</h1>
-                <p>Specifying passive checks for the <em>NCPA Passive</em> service is done by editing the <b>[passive checks]</b> section in the configuration. By default, your NCPA install will have an example <b>[passive checks]</b> section in <code>etc/ncpa.cfg.d/example.cfg</code>. If you installed on Windows, you may have some checks already defined and running if you set them up during the install process.</p>
-                <p>To set up passive checks, you'll need to use the API endpoints, much like you do with active checks and the <code>check_ncpa.py</code> plugin. If you are not that familiar with the API endpoints, you can read more about them in the <a href="api.html">API reference</a> section or you can try it out in the GUI under the API tab.</p>
+                <p>Telling NCPA to run passive checks in the <em>NCPA Passive</em> service is done by editing the <b>[passive checks]</b> section in the configuration. By default, your NCPA install will have an example <b>[passive checks]</b> section in <code>etc/ncpa.cfg.d/example.cfg</code>. If you installed on Windows, you may have some checks already defined and running if you set them up during the install process.</p>
+                <p>To set up passive checks, you'll use the API endpoint just like we do with active checks and the <code>check_ncpa.py</code> plugin. If you are not that familiar with the API endpoints, you can read the <a href="api.html">API reference</a> section or you can use it live in the GUI under the API tab.</p>
+                <p>
+                    <div class="alert alert-info">
+                        <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> If you are only using active checks and don't want the GUI to be available, you can turn off the <em>NCPA Listener</em> service since it does not need to be running for the passive checks to be ran. The <em>NCPA Passive</em> service accesses the API endpoints internally to get the check results.
+                    </div>
+                </p>
 
                 <div class="section">
+
                     <h2>Configing Passive Checks</h2>
-                    <p>First thing you will need to do is configure your <em>NCPA Passive</em> service to send passive checks to NRDP. Once you've configured your NRDP server you can define the checks that you'd like to send.</p>
-                    <p>You'll need to specify where the passive checks will be sent. This can be accomplished by setting the [nrdp] section with the proper values, where the <em>parent</em> would be the target NRDP address to send check results to. While the <em>token</em> is the connection token that particular NRDP server is expecting for authentication. Set these in the ncpa.cfg before continuing.</p>
+                    <p>The first step is to configure your <em>NCPA Passive</em> service to send passive checks to NRDP. Once you've configured your NRDP server you can define the checks that you'd like to send. This can be accomplished by updating the <a href="configuration.html#nrdp">[nrdp]</a> section with the proper values. You should set the <code>parent</code> to the target NRDP URL and set the <code>token</code> to the value of a token you've set up on the NRDP server side.</p>
+                    <p>
+                        <div class="alert alert-success">
+                            <i class="fa fa-lightbulb-o fa-14 fa-l"></i> <b>Tip:</b> If you are using <b>Nagios XI</b>, then NRDP is already installed. You can find the NRDP URL and the available tokens in the <em>Admin > Inbound Transfers</em> and use these values for your NCPA configuration.
+                        </div>
+                    </p>
+
+                    <h6>Defining Passive Checks</h6>
+                    <p>Somewhere in your NCPA configuration there should be a section titled <b>[passive checks]</b>. On a fresh, default install of NCPA, it should come with a configuration file that has some examples of standard passive checks that you would use in <code>etc/ncpa.cfg.d/example.cfg</code>.</p>
+                    <p>The structure of a passive check is straightforward. Here are some of the examples from the example config:</p>
+
+                    <pre>%HOSTNAME%|__HOST__ = system/agent_version
+%HOSTNAME%|CPU Usage = cpu/percent --warning 60 --critical 80 --aggregate avg
+%HOSTNAME%|Swap Usage = memory/swap --warning 60 --critical 80 --units Gi
+%HOSTNAME%|Memory Usage = memory/virtual --warning 80 --critical 90 --units Gi
+%HOSTNAME%|Process Count = processes --warning 300 --critical 400</pre>
+
+                    <p>When the <em>NCPA Passive</em> service starts, it parses any definitions that it finds defined. For each entry, NCPA takes the string of text before the equals, and splits it on <code>|</code>. The result is the hostname, servicename, and sometimes a check interaval in seconds.</p>
+                    <p>The <code>%HOSTNAME%</code> macro is populated when running the check with the hostname defined in the config file. The <code>__HOST__</code> is a special service name, which represents the host check in Nagios.</p>
+
+                    <h6>Check Definition Format</h6>
+                    <p>Tthe general passive check definition format is below. <em>Options in <b>bold</b> are optional</em></p>
+                    <pre>&lt;hostname&gt;|&lt;servicename&gt;<b>|&lt;checkinterval&gt;</b> = &lt;api endpoint&gt; <b>--warning x --critical y &lt;other arguments&gt;</b></pre>
+
+                    <h6>Check Intervals</h6>
+                    <p>In NCPA 2, there is now the option to set per-check intervals. The check interval is determined by the value given after the second <code>|</code> character. If no check interval is defined, then the <code>sleep</code> value from the <a href="configuration.html#passive">[passive]</a> configuration section is used as the default. This value is set to 300 seconds (5 minutes) in a default installation.</p>
+                    <p>An example of a <em>CPU Usage</em> check that is performed every 30 seconds would look like this:</p>
+                    <pre>%HOSTNAME%|CPU Usage<b>|30</b> = cpu/percent --warning 60 --critical 80 --aggregate avg</pre>
+                    <p>The bold portion represents the amount of seconds between checks.</p>
+
+                    <h6>Sending Multiple Hosts</h6>
+                    <p>While <code>%HOSTNAME%</code> gets replaced by the <code>hostname</code> option in the [nrdp] section of the configuration, you can also define your own hostnames. The reason for allowing this is so that if you have plugins that are actually checking another host, you have the flexability of sending the passive check to Nagios with a different hostname. Here is an example set of passive checks that demonstrate this:</p>
+                    <pre>server1.local|CPU Usage = plugins/check_cpu/-H server1.local/-w 60/-c 80
+server2.local|CPU Usage = plugins/check_cpu/-H server2.local/-w 60/-c 80
+%HOSTNAME%|CPU Usage = cpu/percent --warning 60 --critical 80 --aggregate avg</pre>
+                    <p>You can see how the above could be helpful if these hosts were not accessible from anything but the host that NCPA is installed on. The hostname provides the ability to </p>
                 </div>
-
-                <div class="section">
-                    <h2>Specifying Checks</h2>
-
-                    <p>In the ncpa.cfg there is a section titled [passive checks]. In the default configuration there are a few example services specified. Let's take a look at one:</p>
-                    <pre>%HOSTNAME%|CPU Usage = /cpu/percent --warning 20 --critical 30</pre>
-
-                    <p>When NCPA is running, it parses through this config file and looks for all the entries under the passive checks section.</p>
-                    <p>For each entry in this section, it takes the string of text before the equals, and splits it on |. The result is the hostname and servicename, while the instructions to execute to find its status are on the left hand side of the = sign.</p>
-
-                    <p>To be more generic, the general form goes like this:</p>
-                    <pre>&lt;hostname&gt;|&lt;servicename&gt;|&lt;checkinterval&gt; = &lt;instructions&gt;</pre>
-                </div>
-
-<div class="topic">
-<p class="topic-title first">Hostname Hijinks</p>
-<p>%HOSTNAME% is a magic word that gets replaced by what is specified in the [nrdp] hostname&#8217;s declaration.</p>
-<p>This might seem backwards at first, but it allows for flexibility. You could have the NCPA agent send results for checks made on remote computers or on a different host like so:</p>
-<p>computer1|cpu usage = /agent/plugin/&lt;plugin that checks cpu on remote system&gt;
-computer2|cpu usage = /agent/plugin/&lt;plugin that checks cpu on other remote system&gt;
-%HOSTNAME%|cpu usage = /agent/cpu/percent</p>
-<p>This will make the NCPA send back results under hostnames computer1, computer2 and itself.</p>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">While the NCPA HTTP server does not have to be running and active in order for the passive agent to work, the &lt;instructions&gt; must be an API address.</p>
-</div>
-</div>
-</div>
-
 
             </div>
         </div>
