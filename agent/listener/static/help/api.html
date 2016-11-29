@@ -16,6 +16,8 @@
         $(document).ready(function() {
             $('.api-output').css('height', $('.api-output').parents('.row').height());
 
+            $('.tt-bind').tooltip();
+
             // Get the API data
             var json_url = 'https://' + location.hostname+(location.port ? ':' + location.port : '') + '/api';
             $.get(json_url, { }, function(json) {
@@ -46,6 +48,9 @@
                                 <pre>https://localhost:5693/api?token=mytoken</pre>
                                 <p>The API is fromatted as JSON. If you're used to interacting with APIs, this shouldn't be too much of a surprise. However, something unique to NCPA is the way the API is accessed.</p>
                                 <p>NCPA is structured with a set of base modules and each module has nodes. The nodes end up forming a URL, which is used to get data about that specific item or to run a check on that specific item's data.</p>
+                                <p>Take a look at how an API call is formatted by hovering over each section:</p>
+                                <pre>https://localhost:5693/api  /  <span class="tt-bind" title="Module"><b>memory</b></span>  /  <span class="tt-bind" title="Nodes"><b>virtual/total</b></span>  ?  <b>token=mytoken</b></pre>
+                                <p>The module and nodes together form the endpoint requested. The additional URL parameters after the <code>?</code> are used to filter datasets, convert values, and authenticate using the token.</p>
                             </div>
                             <div class="col-sm-6">
                                 <pre class="api-output"></pre>
