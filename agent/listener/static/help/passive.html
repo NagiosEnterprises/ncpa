@@ -50,6 +50,11 @@
 
                     <p>When the <em>NCPA Passive</em> service starts, it parses any definitions that it finds defined. For each entry, NCPA takes the string of text before the equals, and splits it on <code>|</code>. The result is the hostname, servicename, and sometimes a check interaval in seconds.</p>
                     <p>The <code>%HOSTNAME%</code> macro is populated when running the check with the hostname defined in the config file. The <code>__HOST__</code> is a special service name, which represents the host check in Nagios.</p>
+                    <p>
+                        <div class="alert alert-info">
+                        <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> Certain nodes in the above example have <em><b>combined check results</b></em>, such as <code>memory/virtual</code>, <code>memory/swap</code>, and <code>processes</code>. For a full list, check out the <a href="api.html#check-results">API reference for combined check results</a>.
+                        </div>
+                    </p>
 
                     <h6>Check Definition Format</h6>
                     <p>Tthe general passive check definition format is below. <em>Options in <b>bold</b> are optional</em></p>

@@ -38,19 +38,20 @@
 
                 <a name="api-overview"></a>
                 <div class="section">
+
                     <h2>Overview of the API</h2>
                     <div class="container-fluid">
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-6">
-                                <p>The API is constructed in a way that allows users to easily follow the hirearchy downwards, creating a URL that will access specific requested data.</p>
+                                <p>The API is constructed in a way that allows users to easily follow the hirearchy down, creating a URL that will access specific requested data.</p>
                                 <p>In the example of this systems API return we see what we call <em>nodes</em>. Each node is a specific part of the API that gets specific data and functions a certain way. These are also sometimes referred to as <em>API endpoints</em> when farther down the list, when we have reached the end of a node.</p>
                                 <p>Open up your web browser, and navigate to the URL below, replacing <em>localhost:5693</em> with your NCPA server hostname/IP and port or if you're reading this inside NCPA, you can look at the box.</p>
                                 <pre>https://localhost:5693/api?token=mytoken</pre>
                                 <p>The API is fromatted as JSON. If you're used to interacting with APIs, this shouldn't be too much of a surprise. However, something unique to NCPA is the way the API is accessed.</p>
                                 <p>NCPA is structured with a set of base modules and each module has nodes. The nodes end up forming a URL, which is used to get data about that specific item or to run a check on that specific item's data.</p>
                                 <p>Take a look at how an API call is formatted by hovering over each section:</p>
-                                <pre>https://localhost:5693/api  /  <span class="tt-bind" title="Module"><b>memory</b></span>  /  <span class="tt-bind" title="Nodes"><b>virtual/total</b></span>  ?  <b>token=mytoken</b></pre>
-                                <p>The module and nodes together form the endpoint requested. The additional URL parameters after the <code>?</code> are used to filter datasets, convert values, and authenticate using the token.</p>
+                                <pre style="cursor: default;"><span class="tt-bind" title="API URL">https://localhost:5693/api</span>  /  <span class="tt-bind" title="Module"><b>memory</b></span>  /  <span class="tt-bind" title="Nodes"><b>virtual/total</b></span>  ?  <span class="tt-bind" title="Extra URL GET parameters"><b>token=mytoken</b></span></pre>
+                                <p>Nodes are direct key names shown in the JSON, so essentially you are creating a way to access the endpoint by selecting which nodes to follow. The module and nodes together form the endpoint requested. In this case, the endpoint would be <code>memory/virtual/total</code>. The additional URL parameters after the <code>?</code> are used to filter datasets, convert values or units, and authenticate using the token.</p>
                             </div>
                             <div class="col-sm-6">
                                 <pre class="api-output"></pre>
@@ -58,6 +59,30 @@
                         </div>
                     </div>
                     
+                </div>
+
+                <a name="standard-parameters"></a>
+                <div class="section">
+                
+                    <h2>Standard Parameters</h2>
+                    <p>Accessing the API is just the starting point, there are set parameters that can be used on all modules and nodes. There are also some parameters, such as <code>delta</code> that are only available on certain nodes. The API reference at the end of this document explains the parameters that are abailable for use.</p>
+
+                    <p>The most common parameters that are always available:</p>
+                    <table class="table table-condensed table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%; min-width: 100px;">Parameter</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>token</b></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                 </div>
 
             </div>
@@ -71,32 +96,7 @@
 </pre></div>
 </div>
 <p>This returns:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">snip</span><span class="o">&gt;</span>
-<span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;memory&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s2">&quot;swap&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;used&quot;</span><span class="p">:</span> <span class="p">[</span>
-          <span class="mi">8202797056</span><span class="p">,</span>
-          <span class="s2">&quot;b&quot;</span>
-        <span class="p">],</span>
-        <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="p">[</span>
-          <span class="mi">17087578112</span><span class="p">,</span>
-          <span class="s2">&quot;b&quot;</span>
-        <span class="p">],</span>
-        <span class="s2">&quot;percent&quot;</span><span class="p">:</span> <span class="p">[</span>
-          <span class="mf">48.0</span><span class="p">,</span>
-          <span class="s2">&quot;%&quot;</span>
-        <span class="p">],</span>
-        <span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="p">[</span>
-          <span class="mi">8884781056</span><span class="p">,</span>
-          <span class="s2">&quot;b&quot;</span>
-        <span class="p">]</span>
-      <span class="p">},</span>
-      <span class="s2">&quot;virtual&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;available&quot;</span><span class="p">:</span> <span class="p">[</span>
-<span class="o">&lt;</span><span class="n">snip</span><span class="o">&gt;</span>
-</pre></div>
-</div>
+
 <p>It cut out everything except all the items that had to do with memory. This is because the API is a tree we explicitly specified we wanted only the &#8220;memory&#8221; branch. We did this by adding the memory item in the URL.</p>
 <div class="topic">
 <p class="topic-title first">Accessible Branches</p>
