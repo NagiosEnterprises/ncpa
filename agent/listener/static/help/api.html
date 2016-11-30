@@ -34,7 +34,7 @@
 
                 <h1>API Reference</h1>
                 
-                <p>The core of NCPA is the API, which works the same accross all platforms. It was designed to make it easy for administrators to set-up checks, troubleshoot problems, test checks, while still being flexible. This section covers how the API works with individual references for each API node. Some of the extended nodes are specific to an operating system, but the standard nodes are available on any platform.</p>
+                <p>The core of NCPA is the API, which works the same accross all platforms. It was designed to make it easy for administrators to set-up checks, troubleshoot problems, test checks, while still being flexible. This section covers how the API works with individual references for each module. Some of the extended nodes are specific to an operating system, but the standard nodes are available on any platform.</p>
 
                 <a name="api-overview"></a>
                 <div class="section">
@@ -68,20 +68,32 @@
                     <p>Accessing the API is just the starting point, there are set parameters that can be used on all modules and nodes. There are also some parameters, such as <code>delta</code> that are only available on certain nodes. The API reference at the end of this document explains the parameters that are abailable for use.</p>
 
                     <p>The most common parameters that are always available:</p>
-                    <table class="table table-condensed table-striped">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th style="width: 15%; min-width: 100px;">Parameter</th>
+                                <th style="width: 10%; min-width: 100px;">Parameter</th>
                                 <th>Description</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td><b>token</b></td>
-                                <td></td>
+                                <td>The token used to authenticate. You must pass this with every API call. Corresponds to the <code>community_string</code> value in the config.</td>
+                            </tr>
+                            <tr>
+                                <td><b>units</b></td>
+                                <td>
+                                    This is a special parameter that will only work on endpoints that return <b>B</b> and <b>b</b>. It will convert the values into the type passed. An example is <code>units=Ki</code> would give you KiB. It converts the value (<code>KiB = B / 1024</code>) and returns the new value with the update unit. <em>Available options are <b>k</b>, <b>Ki</b>, <b>M</b>, <b>Mi</b>, <b>G</b>, <b>Gi</b>, <b>T</b>, <b>Ti</b>.</em>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>unit</b></td>
+                                <td>Unlike the units parameter, this value overwrites the unit name. If an endpoint returns no unit but you want it to return 'ms' then you can set this value.</td>
                             </tr>
                         </tbody>
                     </table>
+
+                    <h6></h6>
 
                 </div>
 
@@ -91,36 +103,11 @@
 
 <div class="section" id="accessing-specific-items-in-the-tree">
 <h2>Accessing specific items in the tree<a class="headerlink" href="#accessing-specific-items-in-the-tree" title="Permalink to this headline"></a></h2>
-<p>So notice that there is a &#8220;memory&#8221; string. Let us amend our address a bit and see what comes out. Try:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>https://ncpaserver:5693/api/memory?token=nagios
-</pre></div>
-</div>
-<p>This returns:</p>
 
-<p>It cut out everything except all the items that had to do with memory. This is because the API is a tree we explicitly specified we wanted only the &#8220;memory&#8221; branch. We did this by adding the memory item in the URL.</p>
-<div class="topic">
-<p class="topic-title first">Accessible Branches</p>
-<p>There are a few selectable branches in the main root of the tree, they are:</p>
-<ul class="simple">
-<li>memory</li>
-<li>interface</li>
-<li>agent</li>
-<li>cpu</li>
-<li>disk</li>
-<li>agent</li>
-<li>process</li>
-<li>services</li>
-</ul>
-<p>These are meant to provide a platform independent way of accessing basic metrics on a server that are most often monitored. These are not run from plugins, these are built into the NCPA program itself.</p>
-<p>Each of these branches contains its own metrics. Some of these metrics are enumerated upon NCPA server start-up. For instance, disks and interfaces will be enumerated and will be listed in this tree as well.</p>
-</div>
 <div class="admonition caution">
 <p class="first admonition-title">Caution</p>
 <p>Accessing disks is indicated with the pipe | character, rather than the / or \ character to avoid escaping issues. Keep this in mind when writing queries. The | character is a special character in bash, so you will generally have to wrap it in single quotes when using it as an argument to avoid problems.</p>
-<p class="last">It is a known issue that counter rollover can happen with specific metrics
-that are direction concerned octet counting (such as interface byte counts).
-NCPA&#8217;s indication may differ from your operating systems count if the
-operating systems count uses a larger counter.</p>
+
 </div>
 <p>So hopefully, you&#8217;re noticing what&#8217;s going on here. To be overt, we can pare down the information to the actual metric we want in much the same way that we specify the file we want to a computer. We specify a path and then we access that file or directory. The individual metrics we wish to find (CPU Usage, Memory Usage, etc) are the files, while the general groupings (CPU, Memory) are the directories, in this analogy.</p>
 <p>So now let us make a bigger leap and actually grab a specific memory metric. Let us grab the the percent of real memory used. If you look at the tree, you&#8217;d notice that the accessors URL is:</p>

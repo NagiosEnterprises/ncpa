@@ -24,7 +24,9 @@
                 <p>While NCPA has many features, configuring your initial NCPA install can be tricky. This help documentation is here to explain the inner workings of NCPA as well as a reference when configuring and setting up NCPA instances. If you've never used NCPA before, and have not yet installed it on a machine - you can take a look at the <a target="_new" href="https://nagios.org/ncpa/getting-started.php">getting started guide</a> <i class="fa fa-external-link"></i> available on the NCPA website. This guide will go through the initial installation, setup, and show you how start monitoring with passive or active checks using either Nagios XI or Nagios Core.</p>
                 <p>This help documentation is geared towards those who have already installed NCPA and are looking at more advanced configuration and setup using this help as a reference. To start off, below is a brief overview of the parts of NCPA and what they are responsible for. More guides and documentation can be found on the <a target="_new" href="https://nagios.org/ncpa/">NCPA website</a> <i class="fa fa-external-link"></i>.</p>
 
+                <a name="two-parts-of-ncpa"></a>
                 <div class="section">
+
                     <h2>The Two Parts of NCPA</h2>
                     <p>NCPA is actually two separate services that make up a single monitoring agent. This separation allows the ability for the agent to run passive checks without needing to allow connections to the web GUI or allow external calls to the API. It also allows the passive portion of the agent to be disabled if it's not in use to save resources even though the passive portion requires very few resources while running in the background.</p>
                     <p>By default in NCPA 2, both services run as the <b>nagios</b> user and <b>nagios</b> group. The user and group can be changed in the <em>ncpa.cfg</em>.</p>
@@ -54,10 +56,12 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <a name="restarting-ncpa"></a>
                 <div class="section">
+
                     <h2>Restarting the NCPA Services</h2>
                     <p>Because NCPA is made up of these two separate services, you will need to restart both of them if you are using both the active and passive capabilities. Below is the naming conventions and the command line way of restarting both services. In the configuration section you'll find that you will need to restart the services each time configuration changes are made.</p>
                     <ul class="nav nav-tabs" role="tablist">
@@ -84,10 +88,12 @@ sudo launchctl start com.nagios.ncpa.listener</pre>
 sudo launchctl start com.nagios.ncpa.passive</pre>
                         </div>
                     </div>
+
                 </div>
 
                 <a name="changes-in-2"></a>
                 <div class="section">
+
                     <h2>Changes from 1.x to 2.x</h2>
                     <p>The latest version of NCPA has a lot of major changes that affect users of older versions of NCPA. Since these changes are in multiple sections of NCPA 2, we have created list of the most notable changes that could affect your system when upgrading from an older version. You can also view the full changelog on the <a target="_parent" href="https://github.com/NagiosEnterprises/ncpa">NCPA GitHub repository</a> <i class="fa fa-external-link"></i>.</p>
                     <p>
@@ -102,20 +108,25 @@ sudo launchctl start com.nagios.ncpa.passive</pre>
                             <li><b>Renamed ncpa_posix_listener and ncpa_posix_passive service names to ncpa_listener and ncpa_passive</b> - Due to the services being named ncpa_listener and ncpa_passive in the init.d scripts, it makes more sense to not name them with the posix section anymore.</li>
                         </ol>
                     </p>
+
                 </div>
 
                 <a name="troubleshooting"></a>
                 <div class="section">
+
                     <h2>Troubleshooting</h2>
                     <p>Sometimes when setting up NCPA things don't work out the first time. We've compiled a few troubleshooting tips and things that could happen that might give people headaches.</p>
+
                     <h6>Checking for problems in the logs</h6>
                     <p>Typically if there is an <em>error</em> you will always see that error logged, no matter what your log level since error is the most filtered log level available. However, sometimes Python errors will occur before logging starts in Windows systems. You can normally find these errors in the log files located in the same directory as the .exe files in the Windows Program Files directory that you installed NCPA into.</p>
                     <p>That being said, a good habit to get into is setting your <code>loglevel</code> to <em>debug</em> when you are running into trouble where something is not working correctly. If you do this, and restart your NCPA services, we can get a better idea of what is going on and when it's going in the code. If you can't figure out the issue from reading the debug log, post it in an issue on <a href="https://github.com/NagiosEnterprises/ncpa" target="_new">GitHub</a> <i class="fa fa-external-link"></i> and the developers can take a look.</p>
+
                     <h6>Make sure your checks do not use <em>api</em> node</h6>
                     <p>For both passive and active checks, when you are configuring them, do not use the <em>api</em> section when specifying the endpoint to run. Examples below:</p>
                     <pre>./check_ncpa.py -H &lt;ncpa server&gt; -t '&lt;your token&gt;' -M 'disk/logical/C:|' --units G</pre>
                     <pre>%HOSTNAME%|&lt;service name&gt; = /disk/logical/C:| --units G</pre>
                     <p>Note that the <code>/api/disk/logical/C:|</code> does not have the <code>api</code> portion applied. Remember that active checks do not need a beginning forward slash. A good way to avoid using the wrong path is by viewing an example check for the endpoint you are making a check for from the API tab.</p>
+
                 </div>
 
             </div>
