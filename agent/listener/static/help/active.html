@@ -52,6 +52,12 @@
                 <pre>OK: Percent was 36.20 % | 'percent'=36.20%;;;</pre>
                 <p>This is a pretty simple check - you can do a lot of tweaking to get different output. Read on in the <a href="#using-the-plugin">section that explains how to use the plugin</a> to see more options. Most of the base nodes, such as <code>memory/virtual</code>, have special checks that encompass all the child endpoints. You can see an example of  that below.</p>
 
+                <h6>Example Check and Specifying Units</h6>
+                <p>Say we want to see the amount of memory we are using in GB, but NCPA returns the value in B by default. Typically we would add <code>units=G</code> in the API call, but the plugin will do this for us. See the example below:</p>
+                <pre>python check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'memory/virtual/used' -u G</pre>
+                <p>Will return the GB value instead of the B value:</p>
+                <pre>OK: Used was 13.16 GB | 'used'=13.16GB;;;</pre>
+
             </div>
 
             <a name="using-the-plugin"></a>

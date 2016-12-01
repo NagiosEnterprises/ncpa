@@ -67,7 +67,97 @@
                     <h2>Standard Parameters</h2>
                     <p>Accessing the API is just the starting point, there are set parameters that can be used on all modules and nodes. There are also some parameters, such as <code>delta</code> that are only available on certain nodes. The API reference at the end of this document explains the parameters that are abailable for use.</p>
 
-                    <p>The most common parameters that are always available:</p>
+                    <p>The most common parameters (via GET or POST) that are always available:</p>
+                    <p>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%; min-width: 100px;">Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><b>token</b></td>
+                                    <td>The token used to authenticate. You must pass this with every API call. Corresponds to the <code>community_string</code> value in the config.</td>
+                                </tr>
+                                <tr>
+                                    <td><b>units</b></td>
+                                    <td>
+                                        This is a special <em>prefix parameter</em> that will only work on endpoints that return <b>B</b> and <b>b</b>. It will convert the values into the type passed. An example is <code>units=Ki</code> would give you KiB. It converts the value (<code>KiB = B / 1024</code>) and returns the new value with the update unit. <em>Available options are <b>k</b>, <b>Ki</b>, <b>M</b>, <b>Mi</b>, <b>G</b>, <b>Gi</b>, <b>T</b>, <b>Ti</b>.</em>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>unit</b></td>
+                                    <td>Unlike the units parameter, this value overwrites the unit name. If an endpoint returns no unit but you want it to return 'ms' then you can set this value.</td>
+                                </tr>
+                                <tr>
+                                There are some results that are counters. Specifically, the interface counters simply count the bytes that pass through the interface. Set delta=1 for the NCPA server to calculate the change in the counter divided by the amount of time that has past since last check to create bytes/sec.
+                                    <td><b>delta</b></td>
+                                    <td>This is used on certain endpoints to create <em>per second</em> values. Particularly on interfaces, but can also be used in other places too. Setting <code>delta=1</code> will have NCPA calculate the change in the the value divided by the amount of time passed (in seconds) since the last check creating unit/sec values.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </p>
+
+                    <h6>The Different Unit(s) Parameters</h6>
+                    <p>The distinction between <code>units</code> and <code>unit</code> can be a bit confusing. Check out the examples below to see what these parameters do.</p>
+
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12 col-lg-4">
+
+                                <h6 style="margin-top: 1rem;">Example: Without Any Parameter</h6>
+                                <p>This example shows what the standard value and unit would be without passing any special parameters.</p>
+                                <pre>https://localhost:5693/api/disk/logical/C:|/used?token=mytoken</pre>
+                                <p>This would output:</p>
+                                <pre>{
+    "total_size": [
+        379222138880,
+        "B"
+    ]
+}</pre>
+
+                            </div>
+                            <div class="col-sm-12 col-lg-4">
+                                
+                                <h6 style="margin-top: 1rem;">Example: Using <code>units</code> Parameter</h6>
+                                <p>This example shows how the value and unit change when passing the <code>units</code> parameter to an endpoint that returns <b>B</b>.</p>
+                                <pre>https://localhost:5693/api/disk/logical/C:|/used?token=mytoken&units=Gi</pre>
+                                <p>This would return the value and units:</p>
+                                <pre>{
+    "total_size": [
+        353.09,
+        "GiB"
+    ]
+}</pre>
+
+                            </div>
+                            <div class="col-sm-12 col-lg-4">
+
+                                <h6 style="margin-top: 1rem;">Example: Using <code>unit</code> Parameter</h6>
+                                <p>This example shows how the value <em>does not change</em> but the unit, <em>no matter what the default unit is</em>, changes to <code>unit</code>.</p>
+                                <pre>https://localhost:5693/api/disk/logical/C:|/used?token=mytoken&unit=Units</pre>
+                                <p>This would return the value and units:</p>
+                                <pre>{
+    "total_size": [
+        379222138880,
+        "Units"
+    ]
+}</pre>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <a name="check-results"></a>
+                <div class="section">
+
+                    <h2>Returning Nagios Check Results</h2>
+                    <p>Most of the endpoints in NCPA can be ran as a check, and return Nagios plugin-style check results. This is helpful for testing, and production. This style of API call is what the <code>check_ncpa.py</code> plugin uses to get the check results for things like the CPU, interface, memory, and disk.</p>
+                    <p>The parameters (via GET or POST) available for running an API endpoint as a check:</p>
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -77,23 +167,66 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><b>token</b></td>
-                                <td>The token used to authenticate. You must pass this with every API call. Corresponds to the <code>community_string</code> value in the config.</td>
+                                <td><b>check</b></td>
+                                <td>In order to run the API endpoint as a check, you must pass <code>check=1</code> with the URL.</td>
                             </tr>
                             <tr>
-                                <td><b>units</b></td>
-                                <td>
-                                    This is a special parameter that will only work on endpoints that return <b>B</b> and <b>b</b>. It will convert the values into the type passed. An example is <code>units=Ki</code> would give you KiB. It converts the value (<code>KiB = B / 1024</code>) and returns the new value with the update unit. <em>Available options are <b>k</b>, <b>Ki</b>, <b>M</b>, <b>Mi</b>, <b>G</b>, <b>Gi</b>, <b>T</b>, <b>Ti</b>.</em>
-                                </td>
+                                <td><b>warning</b></td>
+                                <td>Specifies the warning threshold for the check. <em>Conforms to the <a target="_new" href="https://nagios-plugins.org/doc/guidelines.html#THRESHOLDFORMAT">Nagios Plugins format guidelines</a> <i class="fa fa-external-link"></i>.</em></td>
                             </tr>
                             <tr>
-                                <td><b>unit</b></td>
-                                <td>Unlike the units parameter, this value overwrites the unit name. If an endpoint returns no unit but you want it to return 'ms' then you can set this value.</td>
+                                <td><b>critical</b></td>
+                                <td>Specifies the critical threshold for the check. <em>Conforms to the <a target="_new" href="https://nagios-plugins.org/doc/guidelines.html#THRESHOLDFORMAT">Nagios Plugins format guidelines</a> <i class="fa fa-external-link"></i>.</em></td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <h6></h6>
+                    <h6>Example of an API Check</h6>
+                    <p>You can get check results on most API endpoints. Below is an example of running a check on the API endpoint <code>memory/virtual/percent</code> which will return the used percent:</p>
+                    <pre>https://localhost:5693/api/memory/virtual/percent?token=mytoken&warning=50&critical=60&check=1</pre>
+                    <p>This would return the following result:</p>
+                    <pre>{
+    "returncode": 2, 
+    "stdout": "CRITICAL: Percent was 76.80 % | 'percent'=76.80%;50;60;"
+}</pre>
+                    <p>If you are familiar with how a Nagios check works, this data should look familiar. The API will return the returncode and stdout for the check just like it would if it was running it from the command line. The <code>check_ncpa.py</code> plugin passes this data to Nagios by being a sort of proxy, printing the stdout and exiting with the return code given.</p>
+
+                    <h6>Combined Check Results</h6>
+                    <p>
+                        <div class="alert alert-success">
+                            <i class="fa fa-lightbulb-o fa-14 fa-l"></i> <b>Tip:</b> You can get combined checks using select node endpoints. Combined results are available from <code>disk/logical/&lt;partition&gt;</code>, <code>memory/swap</code>, <code>memory/virtual</code>, and <code>processes</code>.
+                        </div>
+                    </p>
+                    <p>Certain node endpoints have the ability to combine all the nodes inside of them into a single check. This is really handy when you want to see all the data that the node has in a single line output. The warning and critical values will be applied to the main value given - but you will still see all the details so that in your Nagios display you can see what value of disk or memory is actually being used when it says a percent.</p>
+                    <pre>https://localhost:5693/api/memory/virtual?token=mytoken&units=G&check=1</pre>
+                    <p>Since we are using <code>memory/virtual</code> instead of <code>memory/virtual/&lt;option&gt;</code> we will get:</p>
+                    <pre>{
+    "returncode": 0, 
+    "stdout": "OK: Used memory was 76.80 % (Available: 3.98 GB, Total: 17.13 GB, Free: 3.98 GB, Used: 13.15 GB) | 'percent'=76.80%;;;"
+}</pre>
+                    <p>You can see that it returns the value as a percentage, but also gives you values for available, total, free, and used.</p>
+
+                </div>
+
+                <a name="running-plugins"></a>
+                <div class="section">
+
+                    <h2>Running Nagios Plugins</h2>
+                    <p>The NCPA API is flexible enough to let you run your own Nagios plugins. In order to do so, you'll need to place them in your plugins directory (plugin_path) defined in the <a href="configuration.html#plugin-directives">[plugin directives]</a> section of the config.</p>
+                    <p>
+                        <div class="alert alert-info">
+                            <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> Make sure that your plugins have the proper permissions on Linux and Mac OS X systems. They need to be able to be executed by the user and group you have specified the NCPA services to run as. <em>The default user and group is <b>nagios:nagios</b>. No permissions settings need to be edited for Windows.</em>
+                        </div>
+                    </p>
+                    <p>You can see a list of all available plugins by going to the <code>plugins</code> API node:</p>
+                    <pre>https://localhost:5693/api/plugins?token=mytoken</pre>
+                    <pre>{
+    "plugins": [
+        "check_test.ps1",
+        "check_mssql.vbs"
+    ]
+}</pre>
+                    <p>The list above shows you the plugins that are available to run.</p>
 
                 </div>
 
@@ -101,146 +234,9 @@
         </div>
     </div>
 
-<div class="section" id="accessing-specific-items-in-the-tree">
-<h2>Accessing specific items in the tree<a class="headerlink" href="#accessing-specific-items-in-the-tree" title="Permalink to this headline"></a></h2>
 
-<div class="admonition caution">
-<p class="first admonition-title">Caution</p>
-<p>Accessing disks is indicated with the pipe | character, rather than the / or \ character to avoid escaping issues. Keep this in mind when writing queries. The | character is a special character in bash, so you will generally have to wrap it in single quotes when using it as an argument to avoid problems.</p>
-
-</div>
-<p>So hopefully, you&#8217;re noticing what&#8217;s going on here. To be overt, we can pare down the information to the actual metric we want in much the same way that we specify the file we want to a computer. We specify a path and then we access that file or directory. The individual metrics we wish to find (CPU Usage, Memory Usage, etc) are the files, while the general groupings (CPU, Memory) are the directories, in this analogy.</p>
-<p>So now let us make a bigger leap and actually grab a specific memory metric. Let us grab the the percent of real memory used. If you look at the tree, you&#8217;d notice that the accessors URL is:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">api</span><span class="o">/</span><span class="n">memory</span><span class="o">/</span><span class="n">virtual</span><span class="o">/</span><span class="n">available</span>
-</pre></div>
-</div>
-<p>So let us try plugging that in to our fictitious &#8220;ncpaserver&#8221;:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>https://ncpaserver:5693/api/memory/virtual/available?token=nagios
-</pre></div>
-</div>
-<p>This returns:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;available&quot;</span><span class="p">:</span> <span class="p">[</span>
-      <span class="mi">1115017216</span><span class="p">,</span>
-      <span class="s2">&quot;b&quot;</span>
-    <span class="p">]</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>So we see that we have exactly 1115017216 bytes of available RAM.</p>
-<p>Take this method that we&#8217;ve done, going through the tree one thing at a time to find other metrics.</p>
-</div>
-<div class="section" id="getting-nagios-return-results">
-<h2>Getting Nagios return results<a class="headerlink" href="#getting-nagios-return-results" title="Permalink to this headline"></a></h2>
-<p>Well it&#8217;s good that we can pull these numbers, but it would pretty cool if we could turn these into Nagios return results. Now that we&#8217;ve spoke about accessing these items, lets talk about what we can do with these.</p>
-<p>When you are working on a metric, rather than a group of metrics, you can turn it into a Nagios result very easily. The NCPA API supports quite a bit of specifications using GET (or POST) variables. To illustrate this let&#8217;s turn the above RAM number into a Nagios return results.</p>
-<p>We are going to add <em>&amp;warning=60&amp;critical=80&amp;check=true</em> onto the end of the above URL:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>https://ncpaserver:5693/api/memory/virtual/available?token=nagios&amp;warning=1&amp;critical=2&amp;check=true
-</pre></div>
-</div>
-<p>Returns:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;returncode&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="s2">&quot;stdout&quot;</span><span class="p">:</span> <span class="s2">&quot;CRITICAL: Available was 1112682496.0b|&#39;available_0&#39;=1112682496.0b;1;2&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>Using a GET request (we could also use POST, with the same variables) we were able to have the NCPA API dump this Nagios result formatted JSON output. We can clearly see the output which has a return code and the standard out that will give the status information for a service.</p>
-<p>Bytes are kind of ugly though and I&#8217;d rather that number be in GB. So add &amp;unit=G to the end of the request:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;returncode&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">&quot;stdout&quot;</span><span class="p">:</span> <span class="s2">&quot;WARNING: Available was 1.114Gb|&#39;available_0&#39;=1.114Gb;1;2&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>That&#8217;s better, much more human readable.</p>
-<div class="topic">
-<p class="topic-title first">Nagios Check Result Specifiers</p>
-<p>There are a couple things we can tack onto the request URL to get what we want out of our check</p>
-<dl class="glossary docutils">
-<dt id="term-check">check</dt>
-<dd>Set to true if you&#8217;d like to result to be transformed into a check result rather than just raw data.</dd>
-<dt id="term-warning">warning</dt>
-<dd>Specify the Nagios warning threshold.*</dd>
-<dt id="term-critical">critical</dt>
-<dd>Specify the Nagios critical threshold.*</dd>
-<dt id="term-unit">unit</dt>
-<dd>This will be what the unit of the item should be. So if there is
-something you would rather see as bytes rather than B, specify
-unit=bytes instead of B. This is not recommended, but in the case
-that NCPA guesses the wrong unit, it can be rectified using this.</dd>
-<dt id="term-units">units</dt>
-<dd>This is the prefix that will be appended to the unit. You can
-specify K, M, G or T for kilo, mega, giga or tera in regards to
-units. This will modify the size of the number returns and tack
-the appropriate prefix onto the unit. <strong>Note this will not affect
-items whose unit is %.</strong></dd>
-<dt id="term-delta">delta</dt>
-<dd>There are some results that are counters. Specifically, the interface counters simply count the bytes that pass through the interface. Set delta=1 for the NCPA server to calculate the change in the counter divided by the amount of time that has past since last check to create bytes/sec.</dd>
-</dl>
-</div>
-</div>
-<div class="section" id="combined-results">
-<h2>Combined Results<a class="headerlink" href="#combined-results" title="Permalink to this headline"></a></h2>
-<p>There are some metrics that make sense to combine into information for one
-check result, but only use one aspect of that check for a warning or critical.
-For example, hard drive status. Generally, you might only care about the
-percent of disk that is left. However, in your Nagios display, you might wish
-to see how much disk space is actually left (1% of 1PB is a lot of disk left.)</p>
-<p>In order to take advantage of this, you can simply target specific nodes that
-that are tailored for this exact situation. The nodes that are prepared for this
-are</p>
-<ul class="simple">
-<li>Logical hard disk nodes</li>
-<li>Memory nodes</li>
-</ul>
-<p>This means that any node under <code class="docutils literal"><span class="pre">api/disk/logical</span></code> or <code class="docutils literal"><span class="pre">api/memory</span></code>
-support accessing and getting a general health readout, while still only warning
-on special metrics.</p>
-<p>For example, let us say that we have a Linux server (this works just as well
-on Windows servers, just that <code class="docutils literal"><span class="pre">/</span></code> would be <code class="docutils literal"><span class="pre">C:/</span></code>). And we wish to monitor the
-space left on C:/. We can simply hit this API URL:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>https://ncpaserver:5693/api/disk/logical/|?check=1&amp;units=G
-</pre></div>
-</div>
-<p>This greets us with this response:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;returncode&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s2">&quot;stdout&quot;</span><span class="p">:</span> <span class="s2">&quot;OK: percent was 37% -- available was 10GB -- total was 17GB -- free was 10GB -- used was 6GB | &#39;percent_0&#39;=37%;90;92;&quot;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>We can see it shows several disk metrics that we care about: how much is left,
-size of the disk, how much free space we have; but at the same time it is also
-making the decision that percentage is important and only returns percent used
-in the performance data. It tells you what you need to know, without making
-Nagios remember more that what is necesssary or helpful to continue.</p>
-</div>
 <div class="section" id="using-nagios-plugins">
-<h2>Using Nagios Plugins<a class="headerlink" href="#using-nagios-plugins" title="Permalink to this headline"></a></h2>
-<p>Using existing Nagios plugins is not an issue either. In fact we can list all the plugins that are installed on the system by accessing the address:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ncpaserver</span><span class="p">:</span><span class="mi">5693</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">agent</span><span class="o">/</span><span class="n">plugin</span>
-</pre></div>
-</div>
-<p>This returns:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;plugins&quot;</span><span class="p">:</span> <span class="p">[</span>
-      <span class="s2">&quot;check_msmq.vbs&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;test.vbs&quot;</span><span class="p">,</span>
-    <span class="p">]</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
+
 <p>Which shows all of the plugins that are installed. Now if we want to execute those plugins, we follow the same logic as we did above (for the non-plugin metrics). One new introduction is for plugins that take arguments. Simply separate them with the forward slashes. So for instance, to pass one argument to my test.vbs script, I would call:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>https://ncpaserver:5693/api/agent/plugin/test.vbs/&quot;First Arg&quot;?token=nagios
 </pre></div>
