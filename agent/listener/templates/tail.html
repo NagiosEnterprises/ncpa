@@ -54,6 +54,12 @@ $(document).ready(function() {
                 add_log(log);
             })
         };
+
+        // Set websocket close on page change
+        window.onbeforeunload = function() {
+            ws.onclose = function () {};
+            ws.close()
+        };
     };
 
     start_websocket();

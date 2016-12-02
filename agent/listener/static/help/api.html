@@ -212,7 +212,7 @@
                 <div class="section">
 
                     <h2>Running Nagios Plugins</h2>
-                    <p>The NCPA API is flexible enough to let you run your own Nagios plugins. In order to do so, you'll need to place them in your plugins directory (plugin_path) defined in the <a href="configuration.html#plugin-directives">[plugin directives]</a> section of the config.</p>
+                    <p>The NCPA API is flexible enough to let you run your own Nagios plugins. In order to do so, you'll need to place them in your plugins directory defined in the <a href="configuration.html#plugin-directives">[plugin directives]</a> section of the config.</p>
                     <p>
                         <div class="alert alert-info">
                             <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> Make sure that your plugins have the proper permissions on Linux and Mac OS X systems. They need to be able to be executed by the user and group you have specified the NCPA services to run as. <em>The default user and group is <b>nagios:nagios</b>. No permissions settings need to be edited for Windows.</em>
@@ -228,36 +228,68 @@
 }</pre>
                     <p>The list above shows you the plugins that are available to run.</p>
 
+                    <h6>Sending Arguments to Plugins</h6>
+                    <p>You can pass arguments to the plugins that you call by appending each argument after the plugin name. Separate each argument by a <code>/</code>.</p>
+                    <p>
+                        <div class="alert alert-info">
+                            <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> You cannot use the built-in <code>warning</code> and <code>critical</code> URL parameters for custom plugins, you must specify them however the plugin requires and pass them as arguments.
+                        </div>
+                    </p>
+                    <p>An example of running a plugin with arguments:</p>
+                    <pre>https://localhost:5693/api/plugins/test.ps1/-u local/-p one,two/?token=mytoken</pre>
+                    <pre>{
+    "returncode": 0,
+    "stdout": "Arg1: -u local - Arg2: -p one,two"
+}</pre>
+
                 </div>
 
-            </div>
-        </div>
-    </div>
+                <a name="api-modules"></a>
+                <div class="section">
+
+                    <h2>API Module Reference</h2>
+                    <p style="margin-bottom: 0;">This section is a reference for the API's modules. Since some of the modules have special properties, they are explained here. There are two types of modules: <em>standard modules</em> and <em>extended modules</em>. The <em>standard modules</em> are built directly into NCPA and run the same accross all operating systems. <em>Extended modules</em> are separate Python modules that are included into NCPA. The current <em>extended modules</em> do not work on all operating systems, but we are working on extending NCPA for future releases.</p>
+
+                </div>
+
+                <a name="api-modules-standard"></a>
+                <div class="section">
+
+                    <h3>Standard Modules</h3>
+
+                    <h4>cpu</h4>
+
+                    <h4>disk</h4>
+
+                    <h4>interface</h4>
+
+                    <h4>memory</h4>
+
+                    <h4>processes</h4>
+
+                    <h4>services</h4>
+
+                    <h4>system</h4>
+
+                    <h4>plugins</h4>
+
+                </div>
+
+                <a name="api-modules-extended"></a>
+                <div class="section">
+
+                    <h3>Extended Modules</h3>
+
+                    <h4>logs</h4>
+
+                    <h4>windowscounters</h4>
+
+                </div>
 
 
-<div class="section" id="using-nagios-plugins">
 
-<p>Which shows all of the plugins that are installed. Now if we want to execute those plugins, we follow the same logic as we did above (for the non-plugin metrics). One new introduction is for plugins that take arguments. Simply separate them with the forward slashes. So for instance, to pass one argument to my test.vbs script, I would call:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>https://ncpaserver:5693/api/agent/plugin/test.vbs/&quot;First Arg&quot;?token=nagios
-</pre></div>
-</div>
-<p>Which shows us the output:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;returncode&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="s2">&quot;stdout&quot;</span><span class="p">:</span> <span class="s2">&quot;This worked! First Arg</span><span class="se">\n</span><span class="s2">&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>Which is what our script is supposed to do, return 2 and print &#8220;This Worked!&#8221; along with the first argument.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">For plugins, the Check Result Specified do not apply. The result specified will work only for NCPA tree results.</p>
-</div>
-</div>
-<div class="section" id="api-services">
-<h2>API/Services<a class="headerlink" href="#api-services" title="Permalink to this headline"></a></h2>
+                <div class="section">
+<h3>Services</h3>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Although the services tree changed in 1.7.0, backwards compatibility to the way the API worked in previous versions was added in 1.7.1 which allows old check_ncpa.py checks to work regardless of the version of the plugin script and the version of the NCPA agent installed.</p>
@@ -316,11 +348,9 @@ or
 </div>
 </div>
 
-
+            </div>
+        </div>
     </div>
-      
-  </div>
-</div>
 
     </body>
 </html>

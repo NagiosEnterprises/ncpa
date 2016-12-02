@@ -174,6 +174,7 @@ body.help { margin: 1.5rem 1.5rem 3rem 1.5rem; padding: 0; }
 body.help h1 { font-size: 26px; font-weight: bold; line-height: 26px; margin: 1.5rem 0; }
 body.help h2 { font-size: 20px; line-height: 20px; margin: 0 0 1.5rem 0; }
 body.help h3 { font-size: 16px; line-height: 16px; font-weight: bold; margin: 1rem 0; }
+body.help h4 { font-size: 15px; line-height: 15px; font-weight: bold; margin: 3rem 0 1rem 0; }
 body.help h6 { font-size: 12px; line-height: 12px; font-weight: bold; margin: 2.75rem 0 1rem 0; }
 
 body.help .section { padding: 3.5rem 0 0 0; }
