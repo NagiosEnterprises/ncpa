@@ -69,7 +69,7 @@
 
                     <p>The most common parameters (via GET or POST) that are always available:</p>
                     <p>
-                        <table class="table table-striped">
+                        <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th style="width: 10%; min-width: 100px;">Parameter</th>
@@ -92,7 +92,6 @@
                                     <td>Unlike the units parameter, this value overwrites the unit name. If an endpoint returns no unit but you want it to return 'ms' then you can set this value.</td>
                                 </tr>
                                 <tr>
-                                There are some results that are counters. Specifically, the interface counters simply count the bytes that pass through the interface. Set delta=1 for the NCPA server to calculate the change in the counter divided by the amount of time that has past since last check to create bytes/sec.
                                     <td><b>delta</b></td>
                                     <td>This is used on certain endpoints to create <em>per second</em> values. Particularly on interfaces, but can also be used in other places too. Setting <code>delta=1</code> will have NCPA calculate the change in the the value divided by the amount of time passed (in seconds) since the last check creating unit/sec values.</td>
                                 </tr>
@@ -158,7 +157,8 @@
                     <h2>Returning Nagios Check Results</h2>
                     <p>Most of the endpoints in NCPA can be ran as a check, and return Nagios plugin-style check results. This is helpful for testing, and production. This style of API call is what the <code>check_ncpa.py</code> plugin uses to get the check results for things like the CPU, interface, memory, and disk.</p>
                     <p>The parameters (via GET or POST) available for running an API endpoint as a check:</p>
-                    <table class="table table-striped">
+                    <p>
+                    <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th style="width: 10%; min-width: 100px;">Parameter</th>
@@ -180,6 +180,7 @@
                             </tr>
                         </tbody>
                     </table>
+                    </p>
 
                     <h6>Example of an API Check</h6>
                     <p>You can get check results on most API endpoints. Below is an example of running a check on the API endpoint <code>memory/virtual/percent</code> which will return the used percent:</p>
@@ -248,7 +249,7 @@
                 <div class="section">
 
                     <h2>API Module Reference</h2>
-                    <p style="margin-bottom: 0;">This section is a reference for the API's modules. Since some of the modules have special properties, they are explained here. There are two types of modules: <em>standard modules</em> and <em>extended modules</em>. The <em>standard modules</em> are built directly into NCPA and run the same accross all operating systems. <em>Extended modules</em> are separate Python modules that are included into NCPA. The current <em>extended modules</em> do not work on all operating systems, but we are working on extending NCPA for future releases.</p>
+                    <p style="margin-bottom: 0;">This section is a reference for the paramaters available for each of the API's modules. Since some of the modules have special properties, they are explained in detail here. There are two types of modules: <em>standard modules</em> and <em>extended modules</em>. The <em>standard modules</em> are built directly into NCPA and run the same accross all operating systems. <em>Extended modules</em> are separate Python modules that are included into NCPA. The current <em>extended modules</em> do not work on all operating systems, but we are working on extending NCPA for future releases.</p>
 
                 </div>
 
@@ -256,22 +257,392 @@
                 <div class="section">
 
                     <h3>Standard Modules</h3>
+                    <p>These modules are <em>available and work the same</em> on all supported operating systems.</p>
 
+                    <a name="api-modules-cpu"></a>
                     <h4>cpu</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>The CPU module let's you get information on the currently used system-wide percentage. You can also view the CPU's idle, user, and system time. Since most modern day systems have multiple CPU cores, there is a <code>cpu/count</code> endpoint that gives the amount of cores. This may be helpful when interpretting the other endpoints, since each core is reported separately.</p>
+                                <p>If you'd like to see an aggregated view of the endpoints, the CPU module has a special parameter called <code>aggregate</code> that will aggregate all values by a specific aggregation type.</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
 
+                                <h6 style="margin-top: 1rem;">Example of CPU Usage Per Core</h6>
+                                <pre>https://localhost:5693/api/cpu/percent?token=mytoken</pre>
+                                <pre>{
+    "percent": [
+        [
+            18.8, 
+            0.0, 
+            1.5, 
+            0.0, 
+            13.8, 
+            0.0, 
+            3.2, 
+            0.0
+        ], 
+        "%"
+    ]
+}</pre>
+
+                                <h6>Example of Aggregation</h6>
+                                <pre>https://localhost:5693/api/cpu/percent?token=mytoken&aggregate=avg</pre>
+                                <pre>{
+    "percent": [
+        [
+            3.81
+        ],
+        "%"
+    ]
+}</pre>
+                                
+
+                            </div>
+                            <div class="col-sm-6">
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>aggregate</b></td>
+                                            <td>
+                                                Aggregate the values in the endpoint. This can be helpful for systems with a lot of cores or when making a CPU usage check.
+                                                <div><em>Options are: <b>avg</b>, <b>min</b>, <b>max</b>, <b>sum</b></em></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>You can make checks out of the services module calls.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to all cores or total aggregated value.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to all cores or total aggregated value.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>delta</b></td>
+                                            <td>Delta allows you to get the change in value (in seconds) over time since the last check result. It will return a different unit, value/sec.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>unit</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a name="api-modules-disk"></a>
                     <h4>disk</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>The disk module is fairly large and one of the few modules to have combined check results for multiple nodes inside the disk/logical node. The disk module shows mount information, logical partition usage, and physical disk statistics through three main nodes shown below:</p>
+                                <p>
+                                    <ul>
+                                        <li style="padding-bottom: 0.5rem;"><code>disk/mount</code> - Will return information on all mounted devices.</li>
+                                        <li style="padding-bottom: 0.5rem;"><code>disk/logical</code> - Information on each partition or drive. <em>Remember all \ and / must be represented as |.</em></li>
+                                        <li><code>disk/physical</code> - Hardware related drive information.</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
 
+                                <h6 style="margin-top: 1rem;">Example of Disk Data</h6>
+                                <pre>https://localhost:5693/api/disk/logical/C:|?token=mytoken&units=Gi</pre>
+                                <pre>{
+    "C:|": {
+        "used_percent": [
+            76.8,
+            "%"
+        ],
+        "used": [
+            356.94,
+            "GiB"
+        ],
+        "opts": "rw,fixed",
+        "total_size": [
+            464.87,
+            "GiB"
+        ],
+        "fstype": "NTFS",
+        "free": [
+            107.93,
+            "GiB"
+        ],
+        "device_name": [
+            "C:\\"
+        ]
+    }
+}</pre>
+                            </div>
+                            <div class="col-sm-6">
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>units</b></td>
+                                            <td>
+                                                Converts the value into the type passed for <b>b</b> and <b>B</b> values and prefixes the unit returned with the value given.
+                                                <div><em>Options are <b>k</b>, <b>Ki</b>, <b>M</b>, <b>Mi</b>, <b>G</b>, <b>Gi</b>, <b>T</b>, <b>Ti</b>.</em>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>delta</b></td>
+                                            <td>Delta allows you to get the change in value (in seconds) over time since the last check result. It will return a different unit, value/sec.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>unit</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <a name="api-modules-interface"></a>
                     <h4>interface</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>The interface module is a group of <em>counters</em> for each of the available network interfaces that exist. You can see by the example below that there is quite a lot of information. The most important part for most people is going to be the <code>bytes_recv</code> and <code>bytes_sent</code> values.</p>
+                                <p>This particular node can use <code>delta=1</code> to get the change in bytes send or recieved since the last check, making it able to produce bandwidth usage data.</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
 
+                                <h6 style="margin-top: 1rem;">Example of Interface Data</h6>
+                                <pre>https://localhost:5693/api/interface/Local Area Connection?token=mytoken&units=Gi</pre>
+                                <pre>{
+    "Local Area Connection": {
+        "packets_sent": [
+            24194869,
+            "packets"
+        ],
+        "bytes_recv": [
+            20.95,
+            "GiB"
+        ],
+        "packets_recv": [
+            25115980,
+            "packets"
+        ],
+        "bytes_sent": [
+            9.87,
+            "GiB"
+        ],
+        ...
+    }
+}</pre>
+                            
+                                <h6>Example of Bytes Recieved/Second</h6>
+                                <p>This example shows the average of bytes recieved per second <em>since the last check</em>.</p>
+                                <pre>https://localhost:5693/api/interface/Local%20Area%20Connection/bytes_recv?token=mytoken&delta=1&units=k</pre>
+                                <pre>{
+    "bytes_recv": [
+        3.56, 
+        "kB/s"
+    ]
+}</pre>
+
+                            </div>
+                            <div class="col-sm-6">
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>units</b></td>
+                                            <td>
+                                                Converts the value into the type passed for <b>b</b> and <b>B</b> values and prefixes the unit returned with the value given.
+                                                <div><em>Options are <b>k</b>, <b>Ki</b>, <b>M</b>, <b>Mi</b>, <b>G</b>, <b>Gi</b>, <b>T</b>, <b>Ti</b>.</em>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>delta</b></td>
+                                            <td>Delta allows you to get the change in value (in seconds) over time since the last check result. It will return a different unit, value/sec.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>unit</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a name="api-modules-memory"></a>
                     <h4>memory</h4>
 
+                    <a name="api-modules-processes"></a>
                     <h4>processes</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>Processes shows the list of currently running processes. It also includes data about the process such as the PID, memory, CPU usage, user, and binary name. You can filter the processes list to get specific processes. You can also get a combined check on <code>processes</code> giving the total process count. This combined check is special since you can filter the total processes that the check is looking for.</p>
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+                                
+                                <h6 style="margin-top: 1rem;">Example of Total Process Count Check</h6>
+                                <pre>https://localhost:5693/api/processes?token=mytoken&check=1</pre>
+                                <pre>{
+    "returncode": 0, 
+    "stdout": "OK: Process count was 119 | 'process_count'=119;;;"
+}</pre>
 
+                            </div>
+                        </div>
+                    </div>
+
+                    <a name="api-modules-services"></a>
                     <h4>services</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>
+                                    <div class="alert alert-warning">
+                                        <i class="fa fa-exclamation-triangle fa-14 fa-l"></i> <b>Warning!</b> In NCPA 2 the API endpoint for checking services was <em><b>deprecated</b></em> and will be removed in NCPA 2.1 and above. Example deprecated version: <b>service/&lt;servicename&gt;/&lt;status&gt;</b> 
+                                    </div>
+                                </p>
 
+                                <p>This node is different than most of the standard nodes. When using just the <code>services</code> endpoint you will see a list of all services NCPA can find and their current state. You can select a single service by adding the <code>service=&lt;servicename&gt;</code> parameter. You can also turn the <code>service</code> parameter into a search by adding the <code>match=search</code> parameter to the query.</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Example of Service Filtering</h6>
+                                <pre>https://localhost:5693/api/services?service=sshd&service=httpd</pre>
+                                <pre>{
+    "services": {
+        "sshd": "running",
+        "httpd": "stopped"
+    }
+}</pre>
+
+                                <h6>Example of Service Check</h6>
+                                <pre>https://localhost:5693/api/services?service=sshd&status=running&check=1</pre>
+                                <pre>{
+    "returncode": 0, 
+    "stdout": "OK: Service sshd is running"
+}</pre>
+
+                            </div>
+                            <div class="col-sm-6">
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>service</b></td>
+                                            <td>You can select service(s) by passinf this parameter. Multiples of this parameter are acceptable. Example: <code>service=sshd&service=crond</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>match</b></td>
+                                            <td>
+                                                When not set, the service parameter an exact match. If you set this parameter you can make the <code>service</code> values searches instead.
+                                                <div><em>Options are: <b>search</b> or <b>regex</b></em></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>You can make checks out of the services module calls.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>status</b></td>
+                                            <td>
+                                                When <code>check=1</code> you can set the status that the services <em>should be in</em>. If the service is not in the status value defined then the check it will return CRITICAL, otherwise it will return OK.
+                                                <div><em>Options are: <b>running</b> or <b>stopped</b></em></div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a name="api-modules-system"></a>
                     <h4>system</h4>
+                    <p>This module is used for getting information about the system that NCPA is running on and the agent version. It doesn't currently have the ability to perform many checks. However, we do use the output of the <code>system/agent_version</code> check to give the default <code>__HOST__</code> service an output in passive checks and for the host in active checks created by running the Nagios XI NCPA config wizard.</p>
+                    <p><em>You cannot use any special parameters on this module. This module is just for getting system information.</em></p>
 
+                    <a name="api-modules-plugins"></a>
                     <h4>plugins</h4>
+                    <p>
+                        <div class="alert alert-warning">
+                            <i class="fa fa-exclamation-triangle fa-14 fa-l"></i> <b>Warning!</b> In NCPA 2 the API endpoint for <b>agent/plugin</b> was <em><b>deprecated</b></em> in favor of <b>plugins</b> and will be removed in NCPA 2.1 and above. Example deprecated version: <b>agent/plugin/&lt;plugin name&gt;</b> 
+                        </div>
+                    </p>
+                    <p>This module will show you a list of all available plugins (that are in the directory defined <code>plugin_path</code>) and let's you run them.</p>
+                    <p>You can run a custom plugin by following this format in the URL:</p>
+                    <pre>https://localhost:5693/api/plugins/&lt;plugin name&gt;/&lt;arg1&gt;/&lt;arg2&gt;/?token=mytoken</pre>
+                    <p>Some examples of the kinds of arguments you would be passing this way are <code>"/usr/local/program/test.log"</code>, <code>-c 'test.sh'</code>, and <code>--critical=20</code>. Each argument is specified by another <code>/</code> after the plugin name. The built-in parameters for <code>warning</code> and <code>critical</code> do not work with custom plugins and must be passed as arguments. <em>Read more about <a href="#running-plugins">how to run plugins from the API</a>.</em></p> 
+                    <p>Custom plugins should conform to the <a target="_new" href="https://nagios-plugins.org/doc/guidelines.html">Nagios plugin guidelines</a> <i class="fa fa-external-link"></i> for exit code and text output or NCPA may not accurately return the proper exit code and output.</p>
 
                 </div>
 
@@ -279,74 +650,15 @@
                 <div class="section">
 
                     <h3>Extended Modules</h3>
+                    <p>These modules are extensions of NCPA's core and are <em>only available on Windows</em> right now.</p>
 
+                    <a name="api-modules-logs"></a>
                     <h4>logs</h4>
 
+                    <a name="api-modules-windowscounters"></a>
                     <h4>windowscounters</h4>
 
                 </div>
-
-
-
-                <div class="section">
-<h3>Services</h3>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the services tree changed in 1.7.0, backwards compatibility to the way the API worked in previous versions was added in 1.7.1 which allows old check_ncpa.py checks to work regardless of the version of the plugin script and the version of the NCPA agent installed.</p>
-</div>
-<p>The service tree has changed in NCPA 1.7.0 and now uses a more hybrid form of request. Like before, you can see the existing services and their current status by going to <code class="docutils literal"><span class="pre">api/service</span></code> but this is the end of the tree:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ncpaserver</span><span class="p">:</span><span class="mi">5693</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">services</span>
-
-<span class="p">{</span>
-    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;services&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;auditd&quot;</span><span class="p">:</span> <span class="s2">&quot;running&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;netfs&quot;</span><span class="p">:</span> <span class="s2">&quot;stopped&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;sshd&quot;</span><span class="p">:</span> <span class="s2">&quot;running&quot;</span><span class="p">,</span>
-            <span class="o">...</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>Using the above example should give you a list of all the services on your system in alphabetical order. Now if you would like to see a specific service, such as <strong>sshd</strong> in our instance, try:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>https://ncpaserver:5693/api/services?service=sshd
-
-or
-
-(Deprecated) https://ncpaserver:5693/api/service/sshd
-
-{
-    &quot;value&quot;: {
-        &quot;service&quot;: {
-            &quot;sshd&quot;: &quot;running&quot;
-        }
-    }
-}
-</pre></div>
-</div>
-<p>This will filter the list of services down to the service specified, <strong>sshd</strong> by using the <em>service</em> paramter. The output also shows it&#8217;s current status (running or stopped). You can also filter by multiple services by adding multipe parameters to the request. If we would have done <code class="docutils literal"><span class="pre">service=sshd&amp;service=auditd</span></code> we would have got two services back. You can also filter by status using the <em>status</em> parameter.</p>
-<div class="section" id="monitoring-services-with-the-api">
-<h3>Monitoring Services With the API<a class="headerlink" href="#monitoring-services-with-the-api" title="Permalink to this headline"></a></h3>
-<p>Now in order for us to check if the service is running and give us the normal Nagios output, use:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>https://ncpaserver:5693/api/service?service=sshd&amp;status=running&amp;check=true
-
-or
-
-(Deprecated) https://ncpaserver:5693/api/service/sshd/running
-
-{
-    &quot;value&quot;: {
-        &quot;returncode&quot;: 0,
-        &quot;stdout&quot;: &quot;OK: Service sshd is running&quot;
-    }
-}
-</pre></div>
-</div>
-<p>Using this type of request on <code class="docutils literal"><span class="pre">api/services</span></code> is how you will check to see if a service is running or not. Notice that the <em>status</em> parameter is set to what the status should be when the check is executed. In other words, the check above would have returned a CRITICAL stdout if the <em>status</em> parameter was set to stopped since it was running when the check was performed.</p>
-</div>
-</div>
-</div>
 
             </div>
         </div>

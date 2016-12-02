@@ -47,14 +47,14 @@
 
                 <h6>Example Check</h6>
                 <p>A simple check to demonstrate how the plugin works is checking for the used memory percent:</p>
-                <pre>python check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'memory/virtual/percent'</pre>
+                <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'memory/virtual/percent'</pre>
                 <p>The above check will return the following:</p>
                 <pre>OK: Percent was 36.20 % | 'percent'=36.20%;;;</pre>
-                <p>This is a pretty simple check - you can do a lot of tweaking to get different output. Read on in the <a href="#using-the-plugin">section that explains how to use the plugin</a> to see more options. Most of the base nodes, such as <code>memory/virtual</code>, have special checks that encompass all the child endpoints. You can see an example of  that below.</p>
+                <p>This is a pretty simple check - you can do a lot of tweaking to get different output. Read on in the <a href="#using-the-plugin">section that explains how to use the check_ncpa.py plugin</a> to see more options. Most of the base nodes, such as <code>memory/virtual</code>, have special checks that encompass all the child endpoints. You can see an example of  that below.</p>
 
                 <h6>Example Check and Specifying Units</h6>
                 <p>Say we want to see the amount of memory we are using in GB, but NCPA returns the value in B by default. Typically we would add <code>units=G</code> in the API call, but the plugin will do this for us. See the example below:</p>
-                <pre>python check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'memory/virtual/used' -u G</pre>
+                <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'memory/virtual/used' -u G</pre>
                 <p>Will return the GB value instead of the B value:</p>
                 <pre>OK: Used was 13.16 GB | 'used'=13.16GB;;;</pre>
 
@@ -63,7 +63,7 @@
             <a name="using-the-plugin"></a>
             <div class="section">
 
-                <h2>Using the Plugin</h2>
+                <h2>Using the check_ncpa.py Plugin</h2>
                 <p>In this section, we will cover some of the standard use cases and how to use the plugin to achieve specific output. While this section will go over most of the arguments that are available in the plugin, you can also view all the available arguments by using <code>--help</code>.</p>
                 <p>
                     <div class="alert alert-info">
@@ -73,14 +73,14 @@
 
                 <h6>Warning and Critical Values</h6>
                 <p>You can send warning (<code>-w</code> or <code>--warning=</code>) and critical (<code>-c</code> or <code>--critical=</code>) values to any value that comes from the API nodes besides the <code>plugins</code> node since <em>these values do not work with plugins</em>. If you need to send the warning and critical values to your plugins, <a href="#plugins">you'll have to pass them as plugin arguments</a>.</p>
-                <pre>python check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'processes' <b>--warning=100 --critical=200</b></pre>
+                <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'processes' <b>--warning=100 --critical=200</b></pre>
                 <p>The output would look something like this:</p>
                 <pre>WARNING: Process count was 177 | 'process_count'=177;100;200;</pre>
                 <p>You can see that now the perfdata has the warning and critical values set. Also, we see that the system we are checking has over 100 processes and so it shows up as a warning.</p>
 
                 <h6>Sending a Query String</h6>
                 <p>You can send additional query string arguments in a <b><em>comma separated list of <code>key=value</code> pairs</em></b>. If we were interested in getting the CPU Usage (average percent over all cores) of the host that we installed NCPA on, we would run the <code>check_ncpa.py</code> with the <code>-q</code> argument because we need to tell NCPA how to aggregate the CPU usage results. The check would be the following:</p>
-                <pre>python check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'cpu/percent' <b>-q 'aggregate=avg'</b></pre>
+                <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'cpu/percent' <b>-q 'aggregate=avg'</b></pre>
                 <p>The above would output the following:</p>
                 <pre>OK: Percent was 2.16 % | 'percent'=2.16%;;;</pre>
                 <p>If we removed the <code>-q 'aggregate=avg'</code>, which is passing arguments to the URL that the plugin is generating, we would get:</p>
@@ -92,7 +92,7 @@
                 <p>If we had a script called <code>test.sh</code>, running it from the crommand line may look something like this:</p>
                 <pre>./test.sh -u 'one argument' -p 'another argument'</pre>
                 <p>To run the above script using NCPA and the <code>check_ncpa.py</code> plugin:</p>
-                <pre>python check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -a "-u 'one argument' -p 'another argument'"</pre>
+                <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -a "-u 'one argument' -p 'another argument'"</pre>
                 <p>The quotes around the <code>-a</code> value are double. Inside the option, there are single quotes wrapping arguments that are to be passed <em>with spaces in them</em>. Without single quotes, the <code>-a</code> value will be broken on spaces and each value that is separated by space (and not quoted) will be passed as an argument. To see this clearly, check out these examples of how the plugin would create the API call for each quoting example:</p>
 
                 <ul class="nav nav-tabs" role="tablist">
@@ -101,12 +101,12 @@
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="with-quotes">
-                        <pre>python check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -a "-u 'one argument' -p 'another argument'"</pre>
+                        <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -a "-u 'one argument' -p 'another argument'"</pre>
                         <p>The above would give you the following URL:</p>
                         <pre>https://&lt;ncpaserver&gt;/api/plugins/test.sh/-u/one argument/-p/another argument</pre>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="without-quotes">
-                        <pre>python check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -a "-u one argument -p another argument"</pre>
+                        <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -a "-u one argument -p another argument"</pre>
                         <p>The above would give you the following URL:</p>
                         <pre>https://&lt;ncpaserver&gt;/api/plugins/test.sh/-u/one/argument/-p/another/argument</pre>
                     </div>
@@ -122,7 +122,7 @@
 
                 <h6>Listing Available Nodes</h6>
                 <p>You can also use <code>check_ncpa.py</code> to return a representation of all the values you can monitor in a specific API node. This can be very helpful when you are in a terminal without the use of a web browser. You can use the <code>--list</code> (or <code>-l</code>) command to have it list, rather than run a check, on a particular node:</p>
-                <pre>python check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'disk' --list</pre>
+                <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'disk' --list</pre>
                 <p>The list command will also work with no specified <code>-M</code> and will list all the base modules available in the API.</p>
 
             </div>

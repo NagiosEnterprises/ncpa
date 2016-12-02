@@ -124,8 +124,8 @@ sudo launchctl start com.nagios.ncpa.passive</pre>
                     <h6>Make sure your checks do not use <em>api</em> node</h6>
                     <p>For both passive and active checks, when you are configuring them, do not use the <em>api</em> section when specifying the endpoint to run. Examples below:</p>
                     <pre>./check_ncpa.py -H &lt;ncpa server&gt; -t '&lt;your token&gt;' -M 'disk/logical/C:|' --units G</pre>
-                    <pre>%HOSTNAME%|&lt;service name&gt; = /disk/logical/C:| --units G</pre>
-                    <p>Note that the <code>/api/disk/logical/C:|</code> does not have the <code>api</code> portion applied. Remember that active checks do not need a beginning forward slash. A good way to avoid using the wrong path is by viewing an example check for the endpoint you are making a check for from the API tab.</p>
+                    <pre>%HOSTNAME%|&lt;service name&gt; = disk/logical/C:| --units G</pre>
+                    <p>Note that the <code>disk/logical/C:|</code> does not have the <code>api</code> portion applied. Remember that checks do not need a beginning forward slash. A good way to avoid using the wrong path is by viewing an example check for the endpoint you are making a check for from the API tab.</p>
 
                 </div>
 
