@@ -69,13 +69,18 @@ def make_info_dict():
     uptime = unicode(now - __STARTED__)
     uptime = uptime.split('.', 1)[0]
 
+    # Get check status
+    db = database.DB()
+    total_checks = db.get_checks_count()
+
     return {'agent_version': __VERSION__,
             'uptime': uptime,
             'processor': platform.uname()[5],
             'node': platform.uname()[1],
             'system': platform.uname()[0],
             'release': platform.uname()[2],
-            'version': platform.uname()[3]}
+            'version': platform.uname()[3],
+            'total_checks': total_checks}
 
 
 # ------------------------------
@@ -341,6 +346,7 @@ def checks():
     search = request.values.get('search', '')
     size = int(request.values.get('size', 20))
     page = int(request.values.get('page', 1))
+    page_raw = page
 
     status = request.values.get('status', '')
     if status != '':
@@ -354,12 +360,13 @@ def checks():
     data['checks'] = db.get_checks(search, size, page, status=status, senders=check_senders)
     data['size'] = size
     data['page'] = format(page, ",d")
-    data['page_raw'] = page
+    data['page_raw'] = page_raw
     data['status'] = status
 
     # Do some page math magic
     total = db.get_checks_count(search, status=status, senders=check_senders)
-    total_pages = int(math.ceil(total / size))
+
+    total_pages = int(math.ceil(float(total)/size))
     if total_pages < 1:
         total_pages = 1
 
@@ -382,17 +389,28 @@ def checks():
     # Get list of pages to display
     data['page_links'] = { page: link + str(page) }
     for x in range(1, 5):
-        if not (page - x) <= 0:
-            data['page_links'][page - x] = link + str(page - x) + link_vals
-            if page > 5:
+        if not (page_raw - x) <= 0:
+            data['page_links'][page_raw - x] = link + str(page - x) + link_vals
+            if page_raw > 5:
                 data['show_fp'] = True
                 data['show_fp_link'] = link + '1' + link_vals
-        if not (page + x) > total_pages:
-            data['page_links'][page + x] = link + str(page + x) + link_vals
-            if page < total_pages:
+        if not (page_raw + x) > total_pages:
+            data['page_links'][page_raw + x] = link + str(page + x) + link_vals
+            if page_raw < total_pages:
                 data['show_lp'] = True
                 data['show_lp_link'] = link + str(total_pages) + link_vals
     data['page_link_iters'] = sorted(data['page_links'].keys())
+
+    # Get start and end record display
+    data['show_start_end'] = False
+    if total > size:
+        data['show_start_end'] = True
+        start_record = (page_raw - 1) * size
+        data['start_record'] = format(start_record + 1, ",d")
+        end_record = start_record + size
+        if end_record > total:
+            end_record = total 
+        data['end_record'] = format(end_record, ",d")
 
     # Switch if we have any filters applied
     if search != '' or status != '' or check_senders != []:

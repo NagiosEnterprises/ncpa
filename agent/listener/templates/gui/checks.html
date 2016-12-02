@@ -67,7 +67,9 @@ $(document).ready(function() {
                 <div style="padding: 0 0 1.25rem 0; line-height: 30px;">
                     <div class="fl">
                         Page <b>{{ page }}</b> of <b>{{ total_pages }}</b>
-                        <span style="padding: 0 2rem;"><i class="fa fa-check-square fa-14 fa-l"></i> Displaying <b>{{ total }}</b> check records</span>
+                        <span style="padding: 0 2rem;"><i class="fa fa-check-square fa-14 fa-l"></i>
+                            Showing {% if show_start_end %}<b>{{ start_record }}</b> - <b>{{ end_record }}</b> of{% endif %} <b>{{ total }}</b> total check records
+                        </span>
                         {% if filters %}
                         <span>
                             <i class="fa fa-filter fa-14 fa-l"></i> Filtering by 
