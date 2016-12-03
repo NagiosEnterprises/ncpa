@@ -500,13 +500,13 @@ function get_api_endpoints() {
 
     // Grab windows-counter
     if ($('.windows-counter').val() != '') {
-        var counter = decodeURIComponent($('.windows-counter').val());
+        var counter = $('.windows-counter').val();
         counter = counter.replace(/\\/g, '/');
         if (counter.charAt(0) == '/') {
             counter = counter.substr(1);
         }
-        api += '/' + counter.replace(/\/sec/, '%2Fsec');
-        $('.windows-counter').val('/' + decodeURIComponent(counter));
+        api += '/' + counter;
+        $('.windows-counter').val('/' + counter);
     }
 
     // Apply arguments for plugins
