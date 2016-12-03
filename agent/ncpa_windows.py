@@ -27,11 +27,11 @@ import listener.windowslogs
 import listener.certificate
 import listener.database
 import jinja2.ext
-import webhandler
 import filename
 import ssl
 import gevent.builtins
 from gevent import monkey
+from geventwebsocket.handler import WebSocketHandler
 
 monkey.patch_all(subprocess=True, thread=False)
 
@@ -163,7 +163,7 @@ class Listener(Base):
             listener.server.listener.secret_key = os.urandom(24)
             http_server = WSGIServer(listener=(address, port),
                                      application=listener.server.listener,
-                                     handler_class=webhandler.PatchedWSGIHandler,
+                                     handler_class=WebSocketHandler,
                                      spawn=Pool(200),
                                      **ssl_context)
             http_server.serve_forever()
