@@ -53,7 +53,7 @@ Changelog
 - Updated delta values to not cause weird issues when calling the same endpoint from different sources
 - Updated ncpa_listener and ncpa_passive init.d files to be more reliable
 - Updated the services ncpa_posix_type to now be ncpa_type on Unix systems to conform to init.d service names
-- Updated websocket endpoints to be /ws/top, /ws/tail, /ws/api instead of <vlaue>-websocket
+- Updated websocket endpoints to be /ws/top, /ws/tail, /ws/api instead of <name>-websocket
 - Updated the way that the init scripts work on Linux systems to give better output
 
 **Bug Fixes**
