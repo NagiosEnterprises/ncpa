@@ -54,6 +54,9 @@ import re
 import win32evtlogutil
 import win32con
 import pywintypes
+import database
+import time
+import server
 
 
 class WindowsLogsNode(nodes.LazyNode):
@@ -128,6 +131,17 @@ class WindowsLogsNode(nodes.LazyNode):
         info_line = '%s: %s (Time range - %s)' % (prefix, info, nice_timedelta)
 
         stdout = '%s | %s' % (info_line, perfdata)
+
+        # Put check results in the check database
+        if not server.__INTERNAL__:
+            db = database.DB()
+            dbc = db.get_cursor()
+            current_time = time.time()
+            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
+                    stdout, kwargs['remote_addr'], 'Active')
+            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+            db.commit()
+
         return { 'stdout': stdout, 'returncode': returncode }
 
     @staticmethod
