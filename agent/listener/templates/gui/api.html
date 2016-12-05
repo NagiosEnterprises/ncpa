@@ -103,6 +103,10 @@ $(document).ready(function() {
                 $('.check-settings').show();
                 $('.wc-thresholds').show();
                 $('.advanced-settings').show();
+                $('.data-settings').show();
+                $('.data-settings .unit-prefix').hide();
+                $('.data-settings .agg').hide();
+                $('.data-settings .delta-box').show();
                 break;
             case 'logs':
                 $('.log-name-selector').show();
@@ -409,7 +413,7 @@ $(document).ready(function() {
     $('.list').on('change', '.filter-name', function() {
         var input = $(this).parents('.filter-group').find('input');
         if ($(this).val() != 'name' && $(this).val() != 'exe') {
-            input.attr('placeholder', '<=');
+            input.attr('placeholder', '>=');
         } else {
             input.attr('placeholder', '');
         }
@@ -970,7 +974,7 @@ function generate_passive_check() {
                     </div>
                     <div class="delta-box hide">
                         <div class="input-group delta" style="margin-top: 5px;">
-                            <label class="input-group-addon">Delta <i class="fa fa-question-circle pop-bind" title="Delta Values" data-content="When using the delta setting, the value given will be calculated 'per second' and will update the units to show this change. Only certain endpoints allow for delta values."></i></label>
+                            <label class="input-group-addon">Delta <i class="fa fa-question-circle pop-bind" title="Delta Values (Change in Value Over Time)" data-content="Delta will take the last check call for this endpoint (that delta was applied to) and subtract it from the current data. It will then divide that by the amount of time since the last call giving a per second average value since the last call.<br><br><em>Only certain endpoints work with delta.</em>"></i></label>
                             <div class="white-box">
                                 <input type="checkbox" class="delta" value="1" style="vertical-align: middle; margin: 0;">
                             </div>
