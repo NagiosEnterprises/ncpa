@@ -303,6 +303,7 @@
 
                             </div>
                             <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Basic Parameters</h6>
                                 <p>
                                 <table class="table table-striped table-bordered">
                                     <thead>
@@ -316,7 +317,7 @@
                                             <td><b>aggregate</b></td>
                                             <td>
                                                 Aggregate the values in the endpoint. This can be helpful for systems with a lot of cores or when making a CPU usage check.
-                                                <div><em>Options are: <b>avg</b>, <b>min</b>, <b>max</b>, <b>sum</b></em></div>
+                                                <div><em>Options are <b>avg</b>, <b>min</b>, <b>max</b>, <b>sum</b></em></div>
                                             </td>
                                         </tr>
                                         <tr>
@@ -393,6 +394,7 @@
 }</pre>
                             </div>
                             <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Basic Parameters</h6>
                                 <p>
                                 <table class="table table-striped table-bordered">
                                     <thead>
@@ -485,6 +487,7 @@
 
                             </div>
                             <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Basic Parameters</h6>
                                 <p>
                                 <table class="table table-striped table-bordered">
                                     <thead>
@@ -530,6 +533,89 @@
 
                     <a name="api-modules-memory"></a>
                     <h4>memory</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>The memory module shows the <em>virtual</em> and <em>swap</em> memory information. This module supports combined check results on both nodes. The percent used is probably the most commonly used value here and it is the primary value that is displayed in combined checks, along with the other node values.</p>
+                                <p><em>Percent is actually <b>percent used</b> based on available memory (which includes free) and calculated like so:</em> <code>percent = total - available / 100</code></p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+
+                                <h6 style="margin-top: 1rem;">Example of Memory Data</h6>
+                                <pre>https://localhost:5693/api/memory/virtual?token=mytoken&units=Gi</pre>
+                                <pre>{
+    "virtual": {
+        "available": [
+            19.83,
+            "GiB"
+        ],
+        "total": [
+            31.89,
+            "GiB"
+        ],
+        "percent": [
+            37.8,
+            "%"
+        ],
+        "free": [
+            19.83,
+            "GiB"
+        ],
+        "used": [
+            12.07,
+            "GiB"
+        ]
+    }
+}</pre>
+
+                            </div>
+                            <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Basic Parameters</h6>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>units</b></td>
+                                            <td>
+                                                Converts the value into the type passed for <b>b</b> and <b>B</b> values and prefixes the unit returned with the value given.
+                                                <div><em>Options are <b>k</b>, <b>Ki</b>, <b>M</b>, <b>Mi</b>, <b>G</b>, <b>Gi</b>, <b>T</b>, <b>Ti</b>.</em>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>delta</b></td>
+                                            <td>Delta allows you to get the change in value (in seconds) over time since the last check result. It will return a different unit, value/sec.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>unit</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
 
                     <a name="api-modules-processes"></a>
                     <h4>processes</h4>
@@ -537,7 +623,6 @@
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-12">
                                 <p>Processes shows the list of currently running processes. It also includes data about the process such as the PID, memory, CPU usage, user, and binary name. You can filter the processes list to get specific processes. You can also get a combined check on <code>processes</code> giving the total process count. This combined check is special since you can filter the total processes that the check is looking for.</p>
-                                <p></p>
                             </div>
                         </div>
                         <div class="row" style="margin: 0 -30px;">
@@ -550,6 +635,110 @@
     "stdout": "OK: Process count was 119 | 'process_count'=119;;;"
 }</pre>
 
+                                <h6>Example Search for Processes Check</h6>
+                                <p>This example is searching for the word "steam" in all processes and reporting the amount it finds in the form of check results. This can be helpful if you need to make sure only so many processes are running.</p>
+                                <pre>https://localhost:5693/api/processes?token=mytoken&name=Steam&match=search&check=true</pre>
+                                <pre>{
+    "returncode": 0,
+    "stdout": "OK: Process count for processes named steam was 5 | 'process_count'=5;;;"
+}</pre>
+    
+                                <h6>Example Search for Processes Check with Multiple Names</h6>
+                                <p>An example that displays searching with multiple process names and how it adds them with <b>or</b>.</p>
+                                <pre>https://localhost:5693/api/processes?token=mytoken&name=steam&name=chrome&combiner=or&match=search&check=true</pre>
+                                <pre>{
+    "returncode": 0,
+    "stdout": "OK: Process count for processes named steam,chrome was 15 | 'process_count'=15;;;"
+}</pre>
+
+                                <p><em>These are pretty basic examples of how to use the processes module. You can view, in real time, the available output of processes by using the API section of the GUI.</em></p>
+
+                            </div>
+                            <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Filter Parameters</h6>
+                                <p>These are special parameters that are applied to the processes module and filter out processes. You can apply as many filters as you want and multiple of each if necessary. These are combined using the <code>combiner</code> parameter which is <b>and</b> by default and not specified.</p>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>name</b></td>
+                                            <td>The name of the binary that is running for this process.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>exe</b></td>
+                                            <td>The path to the binary file that is being used.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>mem_percent</b></td>
+                                            <td>Filters by <code>mem_percent >= value</code>.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>mem_vms</b></td>
+                                            <td>Filters by <code>mem_vms >= value</code>.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>mem_rss</b></td>
+                                            <td>Filters by <code>mem_rss >= value</code>.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>cpu_percent</b></td>
+                                            <td>Filters by <code>cpu_percent >= value</code>.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                                <h6>Basic Parameters</h6>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>combiner</b></td>
+                                            <td>
+                                                When combining the filter values to form a query, combine using this method. By default, filters are combined with an and.
+                                                <div><em>Options are <b>and</b>, <b>or</b></em></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>match</b></td>
+                                            <td>
+                                                The name and exe parameters are an exact match by default. If you set this parameter you can make the <code>name</code> and <code>exe</code> values searches instead.
+                                                <div><em>Options are <b>search</b>, <b>regex</b></em></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>units</b></td>
+                                            <td>
+                                                Converts the value into the type passed for <b>b</b> and <b>B</b> values and prefixes the unit returned with the value given.
+                                                <div><em>Options are <b>k</b>, <b>Ki</b>, <b>M</b>, <b>Mi</b>, <b>G</b>, <b>Gi</b>, <b>T</b>, <b>Ti</b>.</em>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -564,7 +753,6 @@
                                         <i class="fa fa-exclamation-triangle fa-14 fa-l"></i> <b>Warning!</b> In NCPA 2 the API endpoint for checking services was <em><b>deprecated</b></em> and will be removed in NCPA 2.1 and above. Example deprecated version: <b>service/&lt;servicename&gt;/&lt;status&gt;</b> 
                                     </div>
                                 </p>
-
                                 <p>This node is different than most of the standard nodes. When using just the <code>services</code> endpoint you will see a list of all services NCPA can find and their current state. You can select a single service by adding the <code>service=&lt;servicename&gt;</code> parameter. You can also turn the <code>service</code> parameter into a search by adding the <code>match=search</code> parameter to the query.</p>
                             </div>
                         </div>
@@ -588,6 +776,8 @@
 
                             </div>
                             <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Filter Parameters</h6>
+                                <p>You can filter down the list of services during a query and during a check by defining the service names. You can also use the service parameter as a search if you set the <code>match</code> parameter to <em>search</em> or <em>regex</em>.</p>
                                 <p>
                                 <table class="table table-striped table-bordered">
                                     <thead>
@@ -599,13 +789,26 @@
                                     <tbody>
                                         <tr>
                                             <td><b>service</b></td>
-                                            <td>You can select service(s) by passinf this parameter. Multiples of this parameter are acceptable. Example: <code>service=sshd&service=crond</code></td>
+                                            <td>You can select service(s) by service name using this parameter. Multiples of this parameter are acceptable. Example: <code>service=sshd&service=crond</code></td>
                                         </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                                <h6>Basic Parameters</h6>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                         <tr>
                                             <td><b>match</b></td>
                                             <td>
                                                 When not set, the service parameter an exact match. If you set this parameter you can make the <code>service</code> values searches instead.
-                                                <div><em>Options are: <b>search</b> or <b>regex</b></em></div>
+                                                <div><em>Options are <b>search</b>, <b>regex</b></em></div>
                                             </td>
                                         </tr>
                                         <tr>
@@ -616,7 +819,7 @@
                                             <td><b>status</b></td>
                                             <td>
                                                 When <code>check=1</code> you can set the status that the services <em>should be in</em>. If the service is not in the status value defined then the check it will return CRITICAL, otherwise it will return OK.
-                                                <div><em>Options are: <b>running</b> or <b>stopped</b></em></div>
+                                                <div><em>Options are <b>running</b>, <b>stopped</b></em></div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -654,9 +857,214 @@
 
                     <a name="api-modules-logs"></a>
                     <h4>logs</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>This extended module currently only works for Windows event logs. This module will not show any data by default since it does not know the name of logs to look for. Instead, you will see a short explanation on how to get data. You can start seeing logs by setting the <code>name</code> parameter. The name should correspond to a name of event log. Typically Windows systems have <em>System</em> and <em>Application</em> so our examples will use those.</p>
+                                <p>Like other filter parameters, <code>name</code> can have multiple values. So <code>name=Application&name=System</code> would give <em>Application</em> and <em>System</em> logs.</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+
+                                <h6 style="margin-top: 1rem;">Example of Application Logs</h6>
+                                <p>This will list all Application logs within the last 24 hours (the default lookback period) in a list. The list has been truncated due to the amount of logs.</p>
+                                <pre>https://localhost:5693/api/logs?token=mytoken&name=Application</pre>
+                                <pre>{
+    "logs": [
+        {
+            "Application": [
+                {
+                    "category": "0",
+                    "severity": "INFORMATION",
+                    "event_id": "0",
+                    "application": "Service1",
+                    "computer_name": "Win10-PC",
+                    "message": "PowerEvent handled successfully by the service.\r\n",
+                    "time_generated": "12/04/16 01:15:37"
+                },
+                ...
+            ]
+        },
+        "logs"
+    ]
+}</pre>
+
+                                <h6>Example Check with Multiple Types</h6>
+                                <p>Check results for multiple log types over the last 1 week period.</p>
+                                <pre>https://localhost:5693/api/logs?token=mytoken&name=System&name=Application&logged_after=1w&check=true</pre>
+                                <pre>{
+    "returncode": 0,
+    "stdout": "OK: Application has 362 logs, System has 205 logs, Total Count has 567 logs (Time range - last 1 week) | 'Application'=362;;; 'System'=205;;; 'Total Count'=567;;;"
+}</pre>
+
+                            </div>
+                            <div class="col-sm-6">
+
+                                <h6 style="margin-top: 1rem;">Filter Parameters</h6>
+                                <p>These parameters are what filter the logs that are returned. Each event log type (defined by <code>name</code>) is listed separately by the name with it's own list of logs.</p>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>name</b></td>
+                                            <td>The name of the Windows event logs that will be retrieved. Multiple event log names can be specified here.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>logged_after</b></td>
+                                            <td>
+                                                The lookback period for the check. This defaults to 24 hours.
+                                                <div>Examples: 30m, 24h, 3d, 1w, 2m, 1y</div>
+                                                <div><em>Options are <b>s</b>, <b>m</b>, <b>h</b>, <b>d</b>, <b>w</b>, <b>m</b></em></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>severity</b></td>
+                                            <td>Exact match for event log's <em>EventType</em>.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>event_id</b></td>
+                                            <td>Exact match for event log's <em>EventID</em> field.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>application</b></td>
+                                            <td>Exact match for event log's <em>SourceName</em> field.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>computer_name</b></td>
+                                            <td>Exact match for event log's <em>ComputerName</em> field.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>category</b></td>
+                                            <td>Exact match for event log's <em>EventCategory</em> field.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>message</b></td>
+                                            <td>Search (or Python regex) match to the event log's <em>Message</em> field.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <h6>Basic Parameters</h6>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>Turn the call into check results output.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to total log count too.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to total log count too.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
                     <a name="api-modules-windowscounters"></a>
                     <h4>windowscounters</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>This extended module gives access to Windows counters. There are multiple types of counters that are available should work. Per second counters, or counters that show data over time, must be passed a <code>sleep</code> value given or they will always return a 0 result.</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+
+                                <h6 style="margin-top: 1rem;">Example of a Windows Counter</h6>
+                                <pre>https://localhost:5693/api/windowscounters/TCPv4/Connections Active?token=mytoken</pre>
+                                <pre>{
+    "windowscounters": [
+        1421,
+        "Connections Active"
+    ]
+}</pre>
+
+                                <h6>Examples of Counters Over Time</h6>
+                                <p>Any counter that requires data over time can be shown by adding <code>sleep</code>.</p>
+                                <pre>https://localhost:5693/api/windowscounters/Processor(_Total)/% User Time?token=mytoken&sleep=5</pre>
+                                <pre>{
+    "windowscounters": [
+        6.43,
+        "% User Time"
+    ]
+}</pre>
+                                <p>Per second counters also use the <code>sleep</code> parameter.</p>
+                                <pre>https://localhost:5693/api/windowscounters/TCPv4/Segments Received/sec?token=mytoken&sleep=5</pre>
+                                <pre>{
+    "windowscounters": [
+        1069.79,
+        "Segments Received/sec"
+    ]
+}</pre>
+
+                                <h6>Example of Per Second Counters Using Delta</h6>
+                                <p>Counters that are not typically per second can use the <code>delta</code> parameter to show the average change over time (in seconds) since the last query.</p>
+                                <pre>https://localhost:5693/api/windowscounters/TCPv4/Connections Active?token=mytoken&delta=1</pre>
+                                <pre>{
+    "windowscounters": [
+        3.61,
+        "Connections Active/s"
+    ]
+}</pre>
+
+                            </div>
+                            <div class="col-sm-6">
+                            <h6 style="margin-top: 1rem;">Basic Parameters</h6>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>sleep</b></td>
+                                            <td>The sleep value is a value that represents a time frame to generate data for. Some counters (% values, /sec values) sometimes require a sleep value to get data over a certain amount of time or a result of 0 will be returned.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>delta</b></td>
+                                            <td>Delta allows you to get the change in value (in seconds) over time since the last check result. It will return a different unit, value/sec.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>Turn the call into check results output.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to total log count too.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to total log count too.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
 
