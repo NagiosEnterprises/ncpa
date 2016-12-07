@@ -141,7 +141,7 @@ class RunnableNode(ParentNode):
 
         self.set_unit(unit, kwargs)
         values = self.get_adjusted_scale(values, kwargs)
-        values = self.get_delta_values(values, kwargs)
+        values = self.get_delta_values(values, kwargs, *args, **kwargs)
         values = self.get_aggregated_values(values, kwargs)
 
         if self.unit != '':
@@ -154,7 +154,7 @@ class RunnableNode(ParentNode):
         else:
             self.unit = unit
 
-    def get_delta_values(self, values, request_args, hasher=False):
+    def get_delta_values(self, values, request_args, hasher=False, *args, **kwargs):
         delta = request_args.get('delta', False)
         # Here we check which value we should hash against for the delta pickle
         # If the value is empty string, empty list, empty object, 0, False or None,
@@ -169,7 +169,19 @@ class RunnableNode(ParentNode):
             self.delta = True
             self.unit = self.unit + '/s'
             remote_addr = request_args.get('remote_addr', None)
+
             values = self.deltaize_values(values, accessor, remote_addr)
+
+            # Wait 1 second and try again if no value was given due to no pickle
+            # file having been created yet (check doesn't have old data)
+            if values is False:
+                time.sleep(1)
+                logging.debug('Re-running check for 1 second of data.')
+                try:
+                    values, unit = self.method(*args, **kwargs)
+                except TypeError:
+                    values, unit = self.method()
+                values = self.deltaize_values(values, accessor, remote_addr)
 
         return values
 
@@ -360,8 +372,7 @@ class RunnableNode(ParentNode):
 
         return returncode, stdout
 
-    @staticmethod
-    def deltaize_values(values, hash_val, remote_addr=None):
+    def deltaize_values(self, values, hash_val, remote_addr=None):
         if remote_addr:
             hash_val = hash_val + remote_addr
         filename = "ncpa-%d.tmp" % hash(hash_val)
@@ -371,28 +382,30 @@ class RunnableNode(ParentNode):
             values = [values]
 
         try:
-            #If the file exists, we extract the data from it and save it to our loaded_values
-            #variable.
+            # If the file exists, we extract the data from it and save it to our loaded_values variable.
             with open(tmpfile, 'r') as values_file:
                 loaded_values = pickle.load(values_file)
                 last_modified = os.path.getmtime(tmpfile)
         except (IOError, EOFError):
-            #Otherwise load the loaded_values and last_modified with values that will cause zeros
-            #to show up.
-            logging.info('No pickle file found for hash_val "%s"', hash_val)
+            # Otherwise load the loaded_values and last_modified with values that will cause zeros to show up.
+            logging.debug('No pickle file found for hash_val "%s"', hash_val)
             loaded_values = values
             last_modified = 0
         except (KeyError, pickle.UnpicklingError):
-            logging.info('Problem unpickling data for hash_val "%s"', hash_val)
+            logging.error('Problem unpickling data for hash_val "%s"', hash_val)
             loaded_values = values
             last_modified = 0
 
-        #Update the pickled data
+        # Update the pickled data
         logging.debug('Updating pickle for hash_val "%s". Filename is %s.', hash_val, tmpfile)
         with open(tmpfile, 'w') as values_file:
             pickle.dump(values, values_file)
 
-        #Calculate the return value and return it
+        # If last modified is 0, then return false
+        if last_modified == 0:
+            return False
+
+        # Calculate the return value and return it
         delta = time.time() - last_modified
         dvalues = [round(abs((x - y) / delta), 2) for x, y in itertools.izip(loaded_values, values)]
 
