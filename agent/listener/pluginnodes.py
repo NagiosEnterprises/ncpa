@@ -66,8 +66,8 @@ class PluginNode(nodes.RunnableNode):
         instructions = self.get_plugin_instructions(config)
 
         # Get user and group from config file
-        user_uid = config.get('listener', 'uid', 'nagios')
-        user_gid = config.get('listener', 'gid', 'nagios')
+        #user_uid = config.get('listener', 'uid', 'nagios')
+        #user_gid = config.get('listener', 'gid', 'nagios')
 
         # Get plugin command timeout value, if it exists
         try:

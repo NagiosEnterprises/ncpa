@@ -37,7 +37,7 @@ To set up the python requirements, in `cmd.exe` clone the NCPA repo and run::
 
 You will need `git` installed in order to clone the repo to do the following.
 
-Once cloned, to install the prereqs:
+Once cloned, to install the prereqs::
 
     cd ncpa
     ./build/scripts/linux_build_prereqs.sh
