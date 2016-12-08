@@ -8,6 +8,7 @@ import copy
 import re
 import database
 import server
+import ConfigParser
 
 
 # Valid nodes is updated as it gets set when calling a node via accessor
@@ -105,8 +106,14 @@ class RunnableParentNode(ParentNode):
         secondary_stdout = '(' + ', '.join(x for x in secondary_results if x) + ')'
         primary_info['stdout'] = primary_info['stdout'].format(extra_data=secondary_stdout)
 
+        # Get the check logging value
+        try:
+            check_logging = int(kwargs['config'].get('general', 'check_logging'))
+        except ConfigParser.NoOptionError:
+            check_logging = 1
+
         # Send check results to database
-        if not server.__INTERNAL__:
+        if not server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
             dbc = db.get_cursor()
             current_time = time.time()
@@ -272,8 +279,14 @@ class RunnableNode(ParentNode):
             stdout = str(exc)
             logging.exception(exc)
 
+        # Get the check logging value
+        try:
+            check_logging = int(kwargs['config'].get('general', 'check_logging'))
+        except ConfigParser.NoOptionError:
+            check_logging = 1
+
         # Send check results to database
-        if not child_check and not server.__INTERNAL__:
+        if not child_check and not server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
             dbc = db.get_cursor()
             current_time = time.time()

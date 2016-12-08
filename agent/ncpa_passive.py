@@ -1,13 +1,17 @@
 import ncpadaemon
 import logging
 import time
+import datetime
 import sys
 import os
 import filename
 import passive.nrds
 import passive.nrdp
+import listener.database
+
 
 class Passive(ncpadaemon.Daemon):
+
     default_conf = os.path.abspath(os.path.join(filename.get_dirname_file(), 'etc', 'ncpa.cfg'))
     section = u'passive'
 
@@ -61,13 +65,21 @@ class Passive(ncpadaemon.Daemon):
         self.config_parser.set(u'plugin directives', u'plugin_path', plugins_abs)
         self.config_parser.file_path = os.path.abspath(u'etc/ncpa.cfg')
 
+        # Set next DB maintenance period to +1 day
+        next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
+
         try:
             while True:
                 self.run_all_handlers()
+
+                # Do DB maintenance if the time is greater than next DB maintenance run
+                if datetime.datetime.now() > next_db_maintenance:
+                    self.db.run_db_maintenance()
+                    next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
+
                 time.sleep(1)
         except Exception, e:
             logging.exception(e)
-            
 
 
 if __name__ == u'__main__':

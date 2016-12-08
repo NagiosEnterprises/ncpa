@@ -57,6 +57,7 @@ import pywintypes
 import database
 import time
 import server
+import ConfigParser
 
 
 class WindowsLogsNode(nodes.LazyNode):
@@ -133,8 +134,14 @@ class WindowsLogsNode(nodes.LazyNode):
 
         stdout = '%s | %s' % (info_line, perfdata)
 
+        # Get the check logging value
+        try:
+            check_logging = int(kwargs['config'].get('general', 'check_logging'))
+        except ConfigParser.NoOptionError:
+            check_logging = 1
+
         # Put check results in the check database
-        if not server.__INTERNAL__:
+        if not server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
             dbc = db.get_cursor()
             current_time = time.time()
@@ -238,8 +245,10 @@ def get_filter_dict(request_args):
             fdict['logged_after'] = logged_after
     return fdict
 
+
 def get_node():
     return WindowsLogsNode('logs', None)
+
 
 EVENT_TYPE = {win32con.EVENTLOG_AUDIT_FAILURE: 'AUDIT_FAILURE',
               win32con.EVENTLOG_AUDIT_SUCCESS: 'AUDIT_SUCCESS',
@@ -251,6 +260,7 @@ EVENT_TYPE = {win32con.EVENTLOG_AUDIT_FAILURE: 'AUDIT_FAILURE',
               'INFORMATION': win32con.EVENTLOG_INFORMATION_TYPE,
               'AUDIT_FAILURE': win32con.EVENTLOG_AUDIT_FAILURE,
               'AUDIT_SUCCESS': win32con.EVENTLOG_AUDIT_SUCCESS}
+
 
 def get_timedelta(offset, time_frame):
     if time_frame == 's':
@@ -283,8 +293,7 @@ def get_datetime_from_date_input(date_input):
 
 def datetime_from_event_date(evt_date):
     """
-    This function converts dates with format
-    '12/23/99 15:54:09' to seconds since 1970.
+    This function converts dates with format '12/23/99 15:54:09' to seconds since 1970.
 
     Note - NS:
     The fact that this is required is really dubious. Not sure why the win32 API
