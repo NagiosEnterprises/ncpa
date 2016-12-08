@@ -60,6 +60,7 @@ import server
 
 
 class WindowsLogsNode(nodes.LazyNode):
+
     def walk(self, *args, **kwargs):
         logtypes = get_logtypes(kwargs)
         filters = get_filter_dict(kwargs)
@@ -106,7 +107,7 @@ class WindowsLogsNode(nodes.LazyNode):
         self.set_warning(kwargs)
         self.set_critical(kwargs)
         self.set_log_check(kwargs)
-        self.get_delta_values(log_counts, kwargs, log_names)
+        self.get_delta_values(log_counts, kwargs, log_names, *args, **kwargs)
 
         returncode = 0
         prefix = 'OK'
