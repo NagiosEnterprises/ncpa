@@ -48,7 +48,6 @@ class DB(object):
         except Exception as e:
             days = 30;
         timestamp = time.time() - (days * 86400)
-        print days
         self.cursor.execute('DELETE FROM checks WHERE run_time_start < %d' % timestamp)
         self.conn.commit()
 
