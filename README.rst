@@ -16,13 +16,14 @@ Current versions:
 
 We currently build for the following operating systems:
 
-- Windows
-- Mac OS X
-- CentOS / RHEL 5-7
-- Fedora 21-24
-- Debian / Ubuntu
-- OpenSUSE 11-13
-- SLES 11, 12
+- Windows XP+
+- Mac OS X 10.7+
+- CentOS / RHEL 5+
+- Fedora 21+
+- Debian 7+
+- Ubuntu 12+
+- OpenSUSE 11+
+- SLES 11+
 
 If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here by creating a new GitHub issue.
 
