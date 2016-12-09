@@ -244,12 +244,12 @@ Section # "Create Config.ini"
     WriteINIStr $INSTDIR\etc\ncpa.cfg passive "handlers" "nrdp"
 
     ; Set the passive checks into a new config file
-    ${StrRep} $7 "$passive_checks" "\r\n" "$\n"
+    ${StrRep} $7 "$passive_checks" "\n\n" "$\r$\n"
     FileOpen $8 $INSTDIR\etc\ncpa.cfg.d\nrdp.cfg w
-    FileWrite $8 "#$\n"
-    FileWrite $8 "# AUTO GENERATED NRDP CONFIG FROM WINDOWS INSTALLER$\n"
-    FileWrite $8 "#$\n$\n"
-    FileWrite $8 "[passive checks]$\n$\n"
+    FileWrite $8 "#$\r$\n"
+    FileWrite $8 "# AUTO GENERATED NRDP CONFIG FROM WINDOWS INSTALLER$\r$\n"
+    FileWrite $8 "#$\r$\n$\r$\n"
+    FileWrite $8 "[passive checks]$\r$\n$\r$\n"
     FileWrite $8 "$7"
     FileClose $8
     ${Else}
