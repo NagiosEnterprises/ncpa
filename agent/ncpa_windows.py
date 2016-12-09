@@ -131,6 +131,9 @@ class Listener(Base):
         except Exception:
             pass
 
+        # Run DB maintenance on start
+        self.db.run_db_maintenance(self.config)
+
         try:
             address = self.config.get('listener', 'ip')
             port = self.config.getint('listener', 'port')

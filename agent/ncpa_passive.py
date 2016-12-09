@@ -73,8 +73,8 @@ class Passive(ncpadaemon.Daemon):
                 self.run_all_handlers()
 
                 # Do DB maintenance if the time is greater than next DB maintenance run
-                if datetime.datetime.now(self.config_parser) > next_db_maintenance:
-                    self.db.run_db_maintenance()
+                if datetime.datetime.now() > next_db_maintenance:
+                    self.db.run_db_maintenance(self.config_parser)
                     next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
 
                 time.sleep(1)
