@@ -7,7 +7,6 @@ import os
 import filename
 import passive.nrds
 import passive.nrdp
-import listener.database
 
 
 class Passive(ncpadaemon.Daemon):
@@ -50,22 +49,23 @@ class Passive(ncpadaemon.Daemon):
 
     def run(self):
 
-        # Check if there is a start delay
-        try:
-            delay_start = self.config.get('passive', 'delay_start')
-            if delay_start:
-                logging.info('Delayed start in configuration. Waiting %s seconds to start.', delay_start)
-                time.sleep(int(delay_start))
-        except Exception:
-            pass
-
         # Read config once (restart required for new configs)
         self.read_basic_config()
         plugins_abs = os.path.abspath(self.config_parser.get(u'plugin directives', u'plugin_path'))
         self.config_parser.set(u'plugin directives', u'plugin_path', plugins_abs)
         self.config_parser.file_path = os.path.abspath(u'etc/ncpa.cfg')
 
+        # Check if there is a start delay
+        try:
+            delay_start = self.config_parser.get('passive', 'delay_start')
+            if delay_start:
+                logging.info('Delayed start in configuration. Waiting %s seconds to start.', delay_start)
+                time.sleep(int(delay_start))
+        except Exception:
+            pass
+
         # Set next DB maintenance period to +1 day
+        self.db.run_db_maintenance(self.config_parser)
         next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
 
         try:
@@ -73,7 +73,7 @@ class Passive(ncpadaemon.Daemon):
                 self.run_all_handlers()
 
                 # Do DB maintenance if the time is greater than next DB maintenance run
-                if datetime.datetime.now() > next_db_maintenance:
+                if datetime.datetime.now(self.config_parser) > next_db_maintenance:
                     self.db.run_db_maintenance()
                     next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
 

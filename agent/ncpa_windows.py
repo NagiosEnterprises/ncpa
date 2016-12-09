@@ -241,6 +241,7 @@ class Passive(Base):
             pass
 
         # Set next DB maintenance period to +1 day
+        self.db.run_db_maintenance(self.config)
         next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
 
         try:
@@ -249,7 +250,7 @@ class Passive(Base):
 
                 # Do DB maintenance if the time is greater than next DB maintenance run
                 if datetime.datetime.now() > next_db_maintenance:
-                    self.db.run_db_maintenance()
+                    self.db.run_db_maintenance(self.config)
                     next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
 
                 time.sleep(1)

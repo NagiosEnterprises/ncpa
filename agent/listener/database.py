@@ -42,12 +42,13 @@ class DB(object):
         # Run migrations
         self.run_migrations()
 
-        # Run maintenance on startup
-        self.run_db_maintenance()
-
-    def run_db_maintenance(self):
-        days = int(server.get_config_value('general', 'check_logging_time', 30))
+    def run_db_maintenance(self, config):
+        try:
+            days = int(config.get('general', 'check_logging_time'))
+        except Exception as e:
+            days = 30;
         timestamp = time.time() - (days * 86400)
+        print days
         self.cursor.execute('DELETE FROM checks WHERE run_time_start < %d' % timestamp)
         self.conn.commit()
 
