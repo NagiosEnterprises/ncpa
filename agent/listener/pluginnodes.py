@@ -75,6 +75,12 @@ class PluginNode(nodes.RunnableNode):
         except ConfigParser.NoOptionError:
             timeout = 60
 
+        # Get the check logging value
+        try:
+            check_logging = int(config.get('general', 'check_logging'))
+        except ConfigParser.NoOptionError:
+            check_logging = 1
+
         # Make our command line
         cmd = self.get_cmdline(instructions)
         logging.debug('Running process with command line: `%s`', ' '.join(cmd))
@@ -107,7 +113,7 @@ class PluginNode(nodes.RunnableNode):
 
         cleaned_stdout = ''.join(stdout).replace('\r\n', '\n').replace('\r', '\n').strip()
 
-        if not server.__INTERNAL__:
+        if not server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
             dbc = db.get_cursor()
             data = (kwargs['accessor'].rstrip('/'), run_time_start, run_time_end, returncode,

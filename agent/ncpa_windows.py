@@ -13,6 +13,7 @@ import logging
 import logging.handlers
 import os
 import time
+import datetime
 import sys
 from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
@@ -44,8 +45,8 @@ class Base(object):
         self.debug = debug
 
         # Set up database
-        db = listener.database.DB()
-        db.setup()
+        self.db = listener.database.DB()
+        self.db.setup()
 
     def determine_relative_filename(self, file_name, *args, **kwargs):
         """Gets the relative pathname of the executable being run.
@@ -129,6 +130,9 @@ class Listener(Base):
                 time.sleep(int(delay_start))
         except Exception:
             pass
+
+        # Run DB maintenance on start
+        self.db.run_db_maintenance(self.config)
 
         try:
             address = self.config.get('listener', 'ip')
@@ -239,9 +243,19 @@ class Passive(Base):
         except Exception:
             pass
 
+        # Set next DB maintenance period to +1 day
+        self.db.run_db_maintenance(self.config)
+        next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
+
         try:
             while True:
                 self.run_all_handlers()
+
+                # Do DB maintenance if the time is greater than next DB maintenance run
+                if datetime.datetime.now() > next_db_maintenance:
+                    self.db.run_db_maintenance(self.config)
+                    next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
+
                 time.sleep(1)
         except Exception as e:
             logging.exception(e)

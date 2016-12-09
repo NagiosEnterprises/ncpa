@@ -2,6 +2,7 @@ import os
 import time
 import sqlite3
 import sys
+import server
 
 # A module to wrap sqllite3 for use with a small database to store things
 # like checks accross both passive and active sections
@@ -38,8 +39,17 @@ class DB(object):
         self.cursor.execute('CREATE TABLE IF NOT EXISTS migrations (id, version)')
         self.conn.commit()
 
+        # Run migrations
         self.run_migrations()
-        self.close()
+
+    def run_db_maintenance(self, config):
+        try:
+            days = int(config.get('general', 'check_logging_time'))
+        except Exception as e:
+            days = 30;
+        timestamp = time.time() - (days * 86400)
+        self.cursor.execute('DELETE FROM checks WHERE run_time_start < %d' % timestamp)
+        self.conn.commit()
 
     # Function that will run migrations in future versions if there needs to be some
     # changes to the database layout

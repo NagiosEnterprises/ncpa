@@ -72,15 +72,22 @@ def make_info_dict():
     # Get check status
     db = database.DB()
     total_checks = db.get_checks_count()
+    check_logging_time = int(get_config_value('general', 'check_logging_time', 30))
 
-    return {'agent_version': __VERSION__,
-            'uptime': uptime,
-            'processor': platform.uname()[5],
-            'node': platform.uname()[1],
-            'system': platform.uname()[0],
-            'release': platform.uname()[2],
-            'version': platform.uname()[3],
-            'total_checks': total_checks}
+    uname = platform.uname()
+    proc_type = uname[5]
+    if proc_type == '':
+        proc_type = uname[4];
+
+    return { 'agent_version': __VERSION__,
+             'uptime': uptime,
+             'processor': proc_type,
+             'node': uname[1],
+             'system': uname[0],
+             'release': uname[2],
+             'version': uname[3],
+             'total_checks': format(total_checks, ",d"),
+             'check_logging_time': check_logging_time }
 
 
 # ------------------------------

@@ -48,8 +48,8 @@ class Daemon(object):
         temporary.  However, the process has dropped root privileges.
         """
         # Set up database
-        db = listener.database.DB()
-        db.setup()
+        self.db = listener.database.DB()
+        self.db.setup()
 
     def run(self):
         u"""Override.
