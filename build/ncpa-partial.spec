@@ -39,11 +39,11 @@ rm -rf %{buildroot}
 
 %pre
 if [ `command -v systemctl` ]; then
-    systemctl stop ncpa_listener 2> /dev/null
-    systemctl stop ncpa_passive 2> /dev/null
+    systemctl stop ncpa_listener &> /dev/null || true
+    systemctl stop ncpa_passive &> /dev/null || true
 else
-    service ncpa_listener stop 2> /dev/null
-    service ncpa_passive stop 2> /dev/null
+    service ncpa_listener stop &> /dev/null || true
+    service ncpa_passive stop &> /dev/null || true
 fi
 
 if ! getent group nagios > /dev/null;
