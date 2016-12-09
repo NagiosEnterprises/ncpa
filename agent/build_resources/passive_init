@@ -25,18 +25,29 @@ _BASEDIR_
 
 # Start NCPA Passive service
 start() {
-    action "Starting NCPA Passive: " $BASEDIR/ncpa_passive --start
+    if [ -n "$(type -t action)" ] && [ "$(type -t action)" = function ]; then
+        action "Starting NCPA Passive: " $BASEDIR/ncpa_passive --start
+    else
+        echo -e "Started NCPA Passive"
+        $BASEDIR/ncpa_passive --start
+    fi
 }
 
 # Stop NCPA Passive service
 stop() {
-    action "Stopping NCPA Passive: " $BASEDIR/ncpa_passive --stop
+    if [ -n "$(type -t action)" ] && [ "$(type -t action)" = function ]; then
+        action "Stopping NCPA Passive: " $BASEDIR/ncpa_passive --stop
+    else
+        echo -e "Stopped NCPA Passive"
+        $BASEDIR/ncpa_passive --stop
+    fi
 }
 
 # Get the status of the NCPA Passive service
 ncpa_p_status() {
     output=`$BASEDIR/ncpa_passive --status`
-    echo "NCPA Passive $output"
+    echo -e "NCPA Passive "
+    echo $output
 }
 
 # Main init script logic
