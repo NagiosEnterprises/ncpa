@@ -1,4 +1,4 @@
-body { padding-top: 50px; font-size: 1.2rem; font-family: verdana, sans-serif; }
+body { padding: 0; font-size: 1.2rem; font-family: verdana, sans-serif; }
 a { color: #4d89f9; }
 a:hover, a:active, a:focus:hover { text-decoration: underline; color: #1b59cd; }
 a:focus { text-decoration: none; color: #4d89f9; }
@@ -86,7 +86,7 @@ input.form-control { padding: 4px 8px; }
 .navbar-inverse .navbar-nav>li>a { color: #BBB; }
 input[type=checkbox], input[type=radio] { margin: 2px 0 0; }
 .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] { margin-left: -18px; }
-.form-horizontal .checkbox, .form-horizontal .checkbox-inline, .form-horizontal .radio, .form-horizontal .radio-inline, .form-horizontal .control-label { padding-top: 0; }
+.form-horizontal .checkbox, .form-horizontal .checkbox-inline, .form-horizontal .radio, .form-horizontal .radio-inline { padding-top: 0; }
 .nav-tabs>li>a { border-radius: 0; }
 .btn-primary { background-color: #4d89f9; border-color: #3371e6; }
 .btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary:active:focus { background-color: #3371e6; border-color: #1b59cd; }
@@ -202,3 +202,9 @@ body.help ol li:last-child { padding-bottom: 0; }
 
 .page-links a { font-size: 1.05rem; }
 .page-links a:active, .page-links a:focus, .page-links a:focus:hover { color: #000; text-decoration: none; }
+
+.well.links { padding: 0; }
+.well.links .section {  }
+.well.links .section > div { font-weight: bold; padding: 0.60rem 1.2rem; background-color: #EBEBEB; }
+.well.links .section ul { margin: 0; padding: 0.80rem 1.2rem; list-style: none; }
+.well.links .section ul li { height: 1.9rem; line-height: 1.9rem; }

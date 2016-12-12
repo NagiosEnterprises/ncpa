@@ -93,51 +93,12 @@ $(document).ready(function() {
 {% block content %}
 
 <div>
-    <ul class="nav graph-tabs nav-tabs">
-        <li class='active'>
-            <a href='#listener' data-toggle='tab'>Listener Settings</a>
-        </li>
-        <li>
-            <a href='#passive' data-toggle='tab'>Passive Settings</a>
-        </li>
-        <li>
-            <a href='#api' data-toggle='tab'>API</a>
-        </li>
-        <li>
-            <a href='#nrdp' data-toggle='tab'>NRDP</a>
-        </li>
-        <!--
-        <li>
-            <a href='#nrds' data-toggle='tab'>NRDS</a>
-        </li>
-        -->
-        <li>
-            <a href='#checks' data-toggle='tab'>Passive Checks</a>
-        </li>
-        <li>
-            <a href='#plugins' data-toggle='tab'>Plugins</a>
-        </li>
-    </ul>
     <form class='form-horizontal' id='config-form'>
         <div class='tab-content'>
             <div class='tab-pane active' id='listener'>
                 <div>
                     <h4>Listener Daemon Settings</h4><br />
-                    # for id, description in (['ip', 'Listening IP'],
-                                              ['port', 'Listening Port'],
-                                              ['uid', 'User'],
-                                              ['gid', 'Group'],
-                                              ['pidfile', 'PID File Address'],
-                                              ['logfile', 'Log File Address'],
-                                              ['loglevel', 'Log Level'],
-                                              ['certificate', 'SSL Certificate']):
-                    <div class='control-group'>
-                        <label class='control-label' for='listener|{{ id }}'>{{ description }}</label>
-                        <div class='controls'>
-                            <input type='text' class='input' name='listener|{{ id }}' id='listener|{{ id  }}' value='{{ config.get("listener", id) }}' readonly>
-                        </div>
-                    </div>
-                    # endfor
+                    
                 </div>
             </div> <!-- Closes listener -->
             <div class='tab-pane' id='passive'>
@@ -260,4 +221,5 @@ $(document).ready(function() {
         <a id='savethisrule' data-dismiss='modal' class='btn btn-primary'>Save</a>
     </div>
 </div>
+
 {% endblock %}

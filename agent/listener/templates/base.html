@@ -19,7 +19,8 @@
         {% block headerjs %}
         {% endblock %}
     </head>
-    <body>
+    <body{% if not no_nav %} style="padding-top: 50px;"{% endif %}>
+        {% if not no_nav %}
         <nav class="navbar navbar-inverse navbar-default navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -61,6 +62,7 @@
                 </div>
             </div>
         </nav>
+        {% endif %}
         {% block undernav %}
         {% endblock %}
         <div id="main-content-container">

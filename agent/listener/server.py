@@ -102,7 +102,7 @@ def inject_variables():
     windows = False
     if os.name == 'nt':
         windows = True
-    values = { 'admin_visible': admin_gui_access, 'is_windows': windows }
+    values = { 'admin_visible': admin_gui_access, 'is_windows': windows, 'no_nav': False }
     return values
 
 
@@ -472,11 +472,29 @@ def help_section():
 
 
 @listener.route('/gui/admin', methods=['GET', 'POST'])
+@listener.route('/gui/admin/', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin():
+    tmp_args = {}
+    tmp_args['config'] = listener.config['iconfig']
+    return render_template('admin/index.html', **tmp_args)
+
+
+@listener.route('/gui/admin/config', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_config():
     tmp_args = {}
     tmp_args['config'] = listener.config['iconfig']
     return render_template('admin/config.html', **tmp_args)
+
+
+@listener.route('/gui/admin/global', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_global():
+    tmp_args = {}
+    tmp_args['config'] = listener.config['iconfig']
+    tmp_args['no_nav'] = True
+    return render_template('admin/global.html', **tmp_args)
 
 
 # ------------------------------

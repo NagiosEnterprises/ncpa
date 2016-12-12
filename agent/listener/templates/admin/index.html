@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin{% endblock %}
+
+{% block headerjs %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#admin-nav').addClass('active');
+    resize_help_window();
+    $(window).resize(function() {
+        resize_help_window();
+    });
+
+    $(document).keydown(function(e) {
+        if (e.keyCode == 82 && e.ctrlKey || e.keyCode == 116) {
+            document.getElementById('help-iframe').contentWindow.location.reload(true);
+            return false;
+        }
+    });
+});
+
+function resize_help_window() {
+    var h = $(window).height() - $('nav').height();
+    var w = $(window).width() - $('.left-content').width();
+    $('#admin-section').css('height', h).css('width', $(window).width()).css('max-width', $(window).width());
+    $('.well.links').css('height', h);
+    $('.right-content').css('height', h).css('width', w);
+
+    // Resize iframe
+    $('iframe').css('height', h).css('width', w);
+}
+</script>
+{% endblock headerjs %}
+
+{% block content %}
+
+<div id="admin-section" style="display: table; position: fixed; margin: 0; padding: 0;">
+    <div class="left-content" style="display: table-cell; vertical-align: top; min-width: 200px; width: 200px;">
+        <div class="well links">
+            <div class="section">
+                <div>General</div>
+                <ul>
+                    <li><i class="fa fa-fw fa-cogs fa-14"></i> <a href="global" target="admin-frame">Global Settings</a></li>
+                </ul>
+            </div>
+            <div class="section">
+                <div>Listener Service</div>
+                <ul>
+                    <li><i class="fa fa-fw fa-cog fa-14"></i> <a href="listener" target="admin-frame">Settings</a></li>
+                </ul>
+            </div>
+            <div class="section">
+                <div>Passive Service</div>
+                <ul>
+                    <li><i class="fa fa-fw fa-cog fa-14"></i> <a href="passive" target="admin-frame">Settings</a></li>
+                    <li><i class="fa fa-fw fa-send fa-14"></i> <a href="nrdp" target="admin-frame">NRDP</a></li>
+                    <li><i class="fa fa-fw fa-file-code-o fa-14"></i> <a href="plugin-directives" target="admin-frame">Plugin Directives</a></li>
+                    <li><i class="fa fa-fw fa-check fa-14"></i> <a href="passive-checks" target="admin-frame">Passive Checks</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="right-content" style="display: table-cell; vertical-align: top;">
+        <iframe id="admin-iframe" name="admin-frame" src="global" style="border: 0;"></iframe>
+    </div>
+</div>
+
+{% endblock %}

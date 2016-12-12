@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Global{% endblock %}
+
+{% block content %}
+
+<div class="alert alert-info">
+    This section is currently in <b>read only</b> mode. This will be updated in future versions.
+</div>
+
+<div style="padding: 3rem;">
+
+    <h3 style="margin-top: 0; font-weight: bold;">Global Settings</h3>
+
+    <div class="container-fluid" style="margin-top: 3rem;">
+        <div class="row">
+
+            <div class="col-lg-12">
+                <div class="form-horizontal">
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Logging</label>
+                        <div class="col-sm-6">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-sm btn-default active">
+                                    <input type="radio" name="check_logging" value="1" autocomplete="off" checked> Enabled
+                                </label>
+                                <label class="btn btn-sm btn-default">
+                                    <input type="radio" name="check_logging" value="0" autocomplete="off"> Disabled
+                                </label>
+                            </div>
+                            <span style="margin-left: 1.5rem;">
+                                <i class="fa fa-trash-o fa-14"></i> <a href="">Clear Check Logs</a>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Log Retention</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="log_checks" value="{{ config.get("general", "check_logging_time") }}" readonly>
+                                <div class="input-group-addon">Days</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2"></label>
+                        <div class="col-sm-6">
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
