@@ -57,6 +57,36 @@
                     <p><i class="fa fa-asterisk"></i> = Required option</p>
                 </div>
 
+                <a name="general"></a>
+                <div class="section">
+                    <h3>[general]</h3>
+                    <p>This section holds general options that are typically for all of NCPA such as database settings, limits, and other global variables.</p>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 28px;"></th>
+                                <th style="width: 12%;">Option</th>
+                                <th style="width: 15%;">Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>check_logging</th>
+                                <td>1</td>
+                                <td>This option enables logging of checks ran through NCPA (both active and passive) and is on by default. If you'd like to turn logging off, set this to <b>0</b>.</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>check_logging_time</th>
+                                <td>30</td>
+                                <td>The amount of time to retain log data for, if you have logging enabled. THe value is in days. The default is 30 days.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
                 <a name="listener"></a>
                 <div class="section">
                     <h3>[listener]</h3>

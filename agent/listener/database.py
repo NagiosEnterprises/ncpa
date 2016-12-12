@@ -27,6 +27,12 @@ class DB(object):
     def close(self):
         self.conn.close()
 
+    def truncate(self, dbname):
+        self.cursor.execute('DROP TABLE %s' % dbname)
+        self.cursor.execute('VACUUM')
+        self.setup()
+        return True
+
     # This is called on both passive and listener startup
     def setup(self):
         

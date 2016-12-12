@@ -95,31 +95,6 @@ $(document).ready(function() {
 <div>
     <form class='form-horizontal' id='config-form'>
         <div class='tab-content'>
-            <div class='tab-pane active' id='listener'>
-                <div>
-                    <h4>Listener Daemon Settings</h4><br />
-                    
-                </div>
-            </div> <!-- Closes listener -->
-            <div class='tab-pane' id='passive'>
-                <div>
-                    <h4>Passive Daemon Settings</h4><br />
-                    # for id, description, accessibility in (['sleep', 'Sleep Interval', ''],
-                                                             ['handlers', 'Activated Handlers', ''],
-                                                             ['uid', 'User', 'readonly'],
-                                                             ['gid', 'Group', 'readonly'],
-                                                             ['pidfile', 'PID File Address', 'readonly'],
-                                                             ['logfile', 'Log File Address', 'readonly'],
-                                                             ['loglevel', 'Log Level', 'readonly']):
-                    <div class='control-group'>
-                        <label class='control-label' for='passive|{{ id }}'>{{ description }}</label>
-                        <div class='controls'>
-                            <input type='text' class='input' name='passive|{{ id }}' id='passive|{{ id  }}' value='{{ config.get("passive", id) }}' {{ accessibility }}>
-                        </div>
-                    </div>
-                    # endfor
-                </div>
-            </div> <!-- Closes passive -->
             <div class='tab-pane' id='api'>
                 <div>
                     <h4>API Settings</h4><br />

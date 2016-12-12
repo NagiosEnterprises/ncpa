@@ -102,7 +102,8 @@ def inject_variables():
     windows = False
     if os.name == 'nt':
         windows = True
-    values = { 'admin_visible': admin_gui_access, 'is_windows': windows, 'no_nav': False }
+    values = { 'admin_visible': admin_gui_access, 'is_windows': windows,
+               'no_nav': False, 'flash_msg': False }
     return values
 
 
@@ -491,10 +492,39 @@ def admin_config():
 @listener.route('/gui/admin/global', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_global():
-    tmp_args = {}
-    tmp_args['config'] = listener.config['iconfig']
-    tmp_args['no_nav'] = True
+    tmp_args = { 'no_nav': True,
+                 'check_logging': int(get_config_value('general', 'check_logging', 1)),
+                 'check_logging_time': get_config_value('general', 'check_logging_time', 30) }
+
+    # Check session for flash message
+    flash_msg_text = session.get('flash_msg_text', '')
+    if flash_msg_text is not '':
+        flash_msg_type = session.get('flash_msg_type', 'info')
+        tmp_args['flash_msg_text'] = flash_msg_text
+        tmp_args['flash_msg_type'] = flash_msg_type
+        tmp_args['flash_msg'] = True
+        session['flash_msg_text'] = ''
+
     return render_template('admin/global.html', **tmp_args)
+
+
+@listener.route('/gui/admin/listener', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_listener_config():
+    tmp_args = { 'no_nav': True }
+    tmp_args['config'] = listener.config['iconfig']
+    return render_template('admin/listener.html', **tmp_args)
+
+
+# Page that removes all checks from the DB
+@listener.route('/gui/admin/clear-check-log', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_clear_check_log():
+    db = database.DB()
+    db.truncate('checks')
+    session['flash_msg_type'] = 'success'
+    session['flash_msg_text'] = 'Cleared checks log of all check values.'
+    return redirect(url_for('admin_global'))
 
 
 # ------------------------------

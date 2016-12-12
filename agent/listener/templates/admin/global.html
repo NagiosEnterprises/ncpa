@@ -5,12 +5,22 @@
 {% block content %}
 
 <div class="alert alert-info">
-    This section is currently in <b>read only</b> mode. This will be updated in future versions.
+    This section is currently in <b>read only</b> mode and any setting changes will not be saved. This will be updated in future versions.
 </div>
+
+{% if flash_msg %}
+<div class="alert alert-{{ flash_msg_type }}">
+    {{ flash_msg_text }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
 
 <div style="padding: 3rem;">
 
-    <h3 style="margin-top: 0; font-weight: bold;">Global Settings</h3>
+    <h3>Global Settings</h3>
+    <p>These are generic settings that apply to all of NCPA's services and utilities.</p>
 
     <div class="container-fluid" style="margin-top: 3rem;">
         <div class="row">
@@ -22,15 +32,15 @@
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Logging</label>
                         <div class="col-sm-6">
                             <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default active">
-                                    <input type="radio" name="check_logging" value="1" autocomplete="off" checked> Enabled
+                                <label class="btn btn-sm btn-default{% if check_logging %} active{% endif %}">
+                                    <input type="radio" name="check_logging" value="1" autocomplete="off"{% if check_logging %} checked{% endif %}> Enabled
                                 </label>
-                                <label class="btn btn-sm btn-default">
-                                    <input type="radio" name="check_logging" value="0" autocomplete="off"> Disabled
+                                <label class="btn btn-sm btn-default{% if not check_logging %} active{% endif %}">
+                                    <input type="radio" name="check_logging" value="0" autocomplete="off"{% if not check_logging %} checked{% endif %}> Disabled
                                 </label>
                             </div>
                             <span style="margin-left: 1.5rem;">
-                                <i class="fa fa-trash-o fa-14"></i> <a href="">Clear Check Logs</a>
+                                <i class="fa fa-trash-o fa-14"></i> <a href="clear-check-log">Clear Check Log</a>
                             </span>
                         </div>
                     </div>
@@ -39,7 +49,7 @@
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Log Retention</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="log_checks" value="{{ config.get("general", "check_logging_time") }}" readonly>
+                                <input type="text" class="form-control" name="log_checks" value="{{ check_logging_time }}" readonly>
                                 <div class="input-group-addon">Days</div>
                             </div>
                         </div>
