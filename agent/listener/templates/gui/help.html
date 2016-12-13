@@ -5,28 +5,123 @@
 {% block headerjs %}
 <script type="text/javascript">
 $(document).ready(function() {
-
-    // Set nav header active link and resize API window
     $('#help-nav').addClass('active');
-
-    // Set help section height
-    resize_iframe();
-
+    resize_help_window();
     $(window).resize(function() {
-    	resize_iframe();
+        resize_help_window();
     });
 
+    $(document).keydown(function(e) {
+        if (e.keyCode == 82 && e.ctrlKey || e.keyCode == 116) {
+            document.getElementById('help-iframe').contentWindow.location.reload(true);
+            return false;
+        }
+    });
 });
 
-function resize_iframe() {
-	var height = $(window).height() - $('.navbar').outerHeight() - 4;
-    $('iframe').css('height', height);
+function resize_help_window() {
+    var h = $(window).height() - $('nav').height();
+    var w = $(window).width() - 300;
+    $('#help-section').css('height', h).css('width', $(window).width()).css('max-width', $(window).width());
+    $('.well.help').css('height', h);
+    $('.right-content').css('height', h).css('width', w);
+
+    // Resize iframe
+    $('iframe').css('height', h).css('width', w);
 }
 </script>
 {% endblock headerjs %}
 
 {% block content %}
 
-<iframe src="../static/help/index.html" style="border: 0; width: 100%;"></iframe>
+<div id="help-section" style="display: table; position: fixed; margin: 0; padding: 0;">
+    <div class="left-content" style="display: table-cell; vertical-align: top; min-width: 300px; width: 300px;">
+        <div class="well help">
+            <h4>Help Documentation</h4>
+            <ul class="help-list">
+                <li>
+                    <a target="help-frame" href="../static/help/index.html">Overview</a>
+                    <ul class="npb">
+                        <li><a target="help-frame" href="../static/help/index.html#two-parts-of-ncpa">The Two Parts of NCPA</a></li>
+                        <li><a target="help-frame" href="../static/help/index.html#restarting-ncpa">Restarting the NCPA Services</a></li>
+                        <li><a target="help-frame" href="../static/help/index.html#changes-in-2">Changes from 1.x to 2.x</a></li>
+                        <li><a target="help-frame" href="../static/help/index.html#troubleshooting">Troubleshooting</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a target="help-frame" href="../static/help/configuration.html">Configuration</a>
+                    <ul class="npb">
+                        <li><a target="help-frame" href="../static/help/configuration.html#config-option-reference">Config Option Reference</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a target="help-frame" href="../static/help/active.html">Active Checks</a>
+                    <ul class="npb">
+                        <li><a target="help-frame" href="../static/help/active.html#running-an-active-check">Running an Active Check</a></li>
+                        <li><a target="help-frame" href="../static/help/active.html#using-the-plugin">Using the check_ncpa.py Plugin</a></li>
+                        <li><a target="help-frame" href="../static/help/active.html#additional-features">Additional Features</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a target="help-frame" href="../static/help/passive.html">Passive Checks</a>
+                    <ul class="npb">
+                        <li><a target="help-frame" href="../static/help/passive.html#configuring">Configuring Passive Checks</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a target="help-frame" href="../static/help/api.html">API Reference</a>
+                    <ul class="npb">
+                        <li><a target="help-frame" href="../static/help/api.html#api-overview">Overview of the API</a></li>
+                        <li><a target="help-frame" href="../static/help/api.html#standard-parameters">Standard Parameters</a></li>
+                        <li><a target="help-frame" href="../static/help/api.html#check-results">Returning Nagios Check Results</a></li>
+                        <li><a target="help-frame" href="../static/help/api.html#running-plugins">Running Nagios Plugins</a></li>
+                        <li>
+                            <a target="help-frame" href="../static/help/api.html#api-modules">API Module Reference</a>
+                            <ul class="npb">
+                            <li>
+                                <a target="help-frame" href="../static/help/api.html#api-modules-standard">Standard Modules</a>
+                                <span class="tt-bind" title="Available on all OS"><i class="fa fa-fw fa-windows"></i><i class="fa fa-fw fa-linux"></i><i class="fa fa-fw fa-apple"></i></span>
+                                <ul class="npb">
+                                    <li><a target="help-frame" href="../static/help/api.html#api-modules-cpu">cpu</a></li>
+                                    <li><a target="help-frame" href="../static/help/api.html#api-modules-disk">disk</a></li>
+                                    <li><a target="help-frame" href="../static/help/api.html#api-modules-interface">interface</a></li>
+                                    <li><a target="help-frame" href="../static/help/api.html#api-modules-memory">memory</a></li>
+                                    <li><a target="help-frame" href="../static/help/api.html#api-modules-processes">processes</a></li>
+                                    <li><a target="help-frame" href="../static/help/api.html#api-modules-services">services</a></li>
+                                    <li><a target="help-frame" href="../static/help/api.html#api-modules-system">system</a></li>
+                                    <li><a target="help-frame" href="../static/help/api.html#api-modules-plugins">plugins</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a target="help-frame" href="../static/help/api.html#api-modules-extended">Extended Modules</a>
+                                <i class="fa fa-fw fa-windows tt-bind" title="Currently these modules are only available on Windows"></i>
+                                <ul class="npb">
+                                    <li><a target="help-frame" href="../static/help/api.html#api-modules-logs">logs</a></li>
+                                    <li><a target="help-frame" href="../static/help/api.html#api-modules-windowscounters">windowscounters</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </ul>
+                </li>
+                <li>
+                    <a target="help-frame" href="../static/help/graphs.html">Real-time Graphing</a>
+                    <ul class="npb">
+                        <li><a target="help-frame" href="../static/help/graphs.html#embedding">Embedding Graphs</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a target="help-frame" href="../static/help/other.html">Other Features</a>
+                    <ul class="npb">
+                        <li><a target="help-frame" href="../static/help/other.html#nrdp-forwarder">NRDP Forwarder</a></li>
+                        <li><a target="help-frame" href="../static/help/other.html#test-connect">Testing Connection</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="right-content" style="display: table-cell; vertical-align: top;">
+        <iframe id="help-iframe" name="help-frame" src="../static/help/index.html" style="border: 0;"></iframe>
+    </div>
+</div>
 
 {% endblock %}

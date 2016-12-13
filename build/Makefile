@@ -1,10 +1,7 @@
 PYTHONVER = python2.7
-PIPVER = pip2.7
-CXFREEZEVER = cx_Freeze-4.3.4
 PYTHONBIN = $(shell which python2.7)
 SPHINXBIN = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION)
-BUILDBRANCH = master
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = /usr/src/redhat
 
@@ -18,9 +15,9 @@ BASEDIR = $(patsubst %/,%,$(dir $(makefile_dir)))
 
 FLAGS = ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
 
-.PHONY: build_exe build_doc update_git update_packages build_rpm build_spec update_version
+.PHONY: build_exe update_git update_packages build_rpm build_spec
 
-build_exe: clean update_version build_doc
+build_exe: clean
 	find $(BASEDIR) -name *.pyc -delete
 	mkdir -p $(BASEDIR)/agent/plugins
 	mkdir -p $(BASEDIR)/agent/var
@@ -29,19 +26,15 @@ build_exe: clean update_version build_doc
 	echo -n '' > $(BASEDIR)/agent/var/log/ncpa_listener.log
 	cd $(BASEDIR)/agent && $(PYTHONVER) setup_posix.py build_exe
 	mv $(BASEDIR)/agent/build/exe.* $(BASEDIR)/agent/build/NCPA
-	cp -rf $(BASEDIR)/docs/_build/html $(BASEDIR)/agent/build/NCPA/listener/static/help
-
-build_doc:
-	cd ../docs && make -e SPHINXBUILD="$(PYTHONVER) $(SPHINXBIN)" html
 
 update_packages:
 	$(PYTHONBIN) -m pip install -r $(BASEDIR)/build/resources/require.txt --upgrade
 
 update_git:
+	git reset --hard
 	git pull
-	git checkout -f $(BUILDBRANCH)
 
-build_tarball: update_git update_packages build_exe
+build_tarball: update_packages build_exe
 	rm -rf ncpa-$(NCPAVER)
 	mv ../agent/build/* ncpa-$(NCPAVER)
 	tar zcvf ncpa-$(NCPAVER).tar.gz ncpa-$(NCPAVER)
@@ -84,7 +77,7 @@ build_dmg: build_tarball
 	mkdir NCPA-INSTALL-$(NCPAVER)
 	mv ncpa-$(NCPAVER) NCPA-INSTALL-$(NCPAVER)/ncpa
 	mv NCPA-INSTALL-$(NCPAVER)/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$(NCPAVER)/install.sh
+	install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$(NCPAVER)/ncpa/ncpa_listener
+	install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$(NCPAVER)/ncpa/ncpa_passive
 	hdiutil create -volname NCPA-$(NCPAVER) -srcfolder NCPA-INSTALL-$(NCPAVER) -ov -format UDZO ncpa-$(NCPAVER).dmg
 
-update_version:
-	$(PYTHONVER) $(BASEDIR)/build/scripts/apply_version.py

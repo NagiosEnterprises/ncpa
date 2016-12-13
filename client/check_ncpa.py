@@ -43,7 +43,7 @@ import shlex
 import re
 import signal
 
-__VERSION__ = '1.0.0'
+__VERSION__ = '1.0.1'
 
 def pretty(d, indent=0, indenter=' ' * 4):
     info_str = ''
@@ -74,16 +74,15 @@ def parse_args():
                       help="Warning value to be passed for the check.")
     parser.add_option("-c", "--critical", default=None, type="str",
                       help="Critical value to be passed for the check.")
-    parser.add_option("-u", "--unit", default=None,
-                      help="The unit prefix (M, G, T)")
-    parser.add_option("-n", "--units", default=None,
-                      help="What should be used in place of the default unit. As in, instead of 'b' as a unit, it will "
-                      "use this.")
+    parser.add_option("-u", "--unitprefix", default=None,
+                      help="The unit prefix (k, Ki, M, Mi, G, Gi, T, Ti) for b and B unit types.")
+    parser.add_option("-n", "--unit", default=None,
+                      help="Overrides the unit with whatever unit you define.")
     parser.add_option("-a", "--arguments", default=None,
                       help="Arguments for the plugin to be run. Not necessary "
                            "unless you're running a custom plugin. Given in the same "
                            "as you would call from the command line. Example: -a '-w 10 -c 20 -f /usr/local'")
-    parser.add_option("-t", "--token", default=None,
+    parser.add_option("-t", "--token", default='',
                       help="The token for connecting.")
     parser.add_option("-T", "--timeout", default=60, type="int",
                       help="Enforced timeout, will terminate plugins after "
@@ -117,10 +116,6 @@ def parse_args():
     if not options.hostname:
         parser.print_help()
         parser.error("Hostname is required for use.")
-
-    elif not options.token:
-        parser.print_help()
-        parser.error("A token is most definitely required.")
 
     elif not options.metric and not options.list:
         parser.print_help()
@@ -185,18 +180,17 @@ def get_arguments_from_options(options, **kwargs):
 
     """
 
-    # Note that the distinction between units/unit is a bit confusing. According to the API, the units the is
-    # the unit prefix, like K, M or G. Unit is the unit that will be ascribed like B, b, bytes, etc. We have them
-    # flip-flopped here and cannot change them due to API versions.
-    arguments = {'token': options.token,
-                 'units': options.unit}
+    # Note: Changed to unitprefix due to it being a prefix which then makes it
+    # easier to understand from the API side of things...
+    arguments = { 'token': options.token,
+                  'units': options.unitprefix }
     
     if not options.list:
         arguments['warning'] = options.warning
         arguments['critical'] = options.critical
         arguments['delta'] = options.delta
         arguments['check'] = 1
-        arguments['unit'] = options.units
+        arguments['unit'] = options.unit
 
     if options.queryargs:
         for argument in options.queryargs.split(','):
@@ -204,7 +198,7 @@ def get_arguments_from_options(options, **kwargs):
             arguments[key] = value
 
     #~ Encode the items in the dictionary that are not None
-    return urlencode(dict((k, v) for k, v in list(arguments.items()) if v))
+    return urlencode(dict((k, v) for k, v in list(arguments.items()) if v is not None))
 
 
 def get_json(options):

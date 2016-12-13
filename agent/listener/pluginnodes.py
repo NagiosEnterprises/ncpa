@@ -1,4 +1,5 @@
 import os
+import time
 import logging
 import nodes
 import ConfigParser
@@ -7,7 +8,22 @@ import shlex
 import re
 import copy
 import Queue
+import environment
+import database
+import server
 from threading import Timer
+
+# Windows does not have the pwd and grp module and does not need it since only Unix
+# uses these modules to change permissions.
+try:
+    import pwd
+except ImportError:
+    pass
+
+try:
+    import grp
+except ImportError:
+    pass
 
 class PluginNode(nodes.RunnableNode):
 
@@ -21,7 +37,7 @@ class PluginNode(nodes.RunnableNode):
         return copy.deepcopy(self)
 
     def walk(self, config, **kwargs):
-        result = self.execute_plugin(config)
+        result = self.execute_plugin(config, **kwargs)
         return result
 
     def get_plugin_instructions(self, config):
@@ -49,17 +65,35 @@ class PluginNode(nodes.RunnableNode):
         # Get any special instructions from the config for executing the plugin
         instructions = self.get_plugin_instructions(config)
 
+        # Get user and group from config file
+        #user_uid = config.get('listener', 'uid', 'nagios')
+        #user_gid = config.get('listener', 'gid', 'nagios')
+
         # Get plugin command timeout value, if it exists
         try:
             timeout = int(config.get('plugin directives', 'plugin_timeout'))
         except ConfigParser.NoOptionError:
             timeout = 60
 
+        # Get the check logging value
+        try:
+            check_logging = int(config.get('general', 'check_logging'))
+        except ConfigParser.NoOptionError:
+            check_logging = 1
+
         # Make our command line
         cmd = self.get_cmdline(instructions)
         logging.debug('Running process with command line: `%s`', ' '.join(cmd))
 
-        running_check = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        # Demote the child process to the username/group specified in config
+        # Note: We are no longer demoting here - instead we are setting the actual perms
+        #       when we daemonize the process making this pointless.
+        demote = None
+        #if environment.SYSTEM != "Windows":
+        #    demote = PluginNode.demote(user_uid, user_gid)
+
+        run_time_start = time.time()
+        running_check = subprocess.Popen(cmd, bufsize=-1, preexec_fn=demote, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         queue = Queue.Queue(maxsize=2)
         timer = Timer(timeout, self.kill_proc, [running_check, timeout, queue])
 
@@ -69,6 +103,7 @@ class PluginNode(nodes.RunnableNode):
         finally:
             timer.cancel()
 
+        run_time_end = time.time()
         returncode = running_check.returncode
 
         # Pull from the queue if we have a error and the stdout is empty
@@ -78,7 +113,42 @@ class PluginNode(nodes.RunnableNode):
 
         cleaned_stdout = ''.join(stdout).replace('\r\n', '\n').replace('\r', '\n').strip()
 
+        if not server.__INTERNAL__ and check_logging == 1:
+            db = database.DB()
+            dbc = db.get_cursor()
+            data = (kwargs['accessor'].rstrip('/'), run_time_start, run_time_end, returncode,
+                    stdout, kwargs['remote_addr'], 'Active')
+            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+            db.commit()
+
         return {'returncode': returncode, 'stdout': cleaned_stdout}
+
+    @staticmethod
+    def demote(user_uid, user_gid):
+        def result():
+
+            # Grab the uid if it's not specifically defined
+            uid = user_uid
+            if not isinstance(user_uid, int):
+                if not user_uid.isdigit():
+                    u = pwd.getpwnam(user_uid)
+                    uid = u.pw_uid
+                else:
+                    uid = int(user_uid)
+
+            # Grab the gid if not specifically defined
+            gid = user_gid
+            if not isinstance(user_gid, int):
+                if not user_gid.isdigit():
+                    g = grp.getgrnam(user_gid)
+                    gid = g.gr_gid
+                else:
+                    gid = int(user_gid)
+
+            # Set the actual uid and gid
+            os.setgid(gid)
+            os.setuid(uid)
+        return result
 
     def get_cmdline(self, instruction):
         """Execute with special instructions.
@@ -120,6 +190,8 @@ class PluginAgentNode(nodes.ParentNode):
         try:
             plugins = os.listdir(plugin_path)
             for plugin in plugins:
+                if plugin == '.keep':
+                    continue
                 plugin_abs_path = os.path.join(plugin_path, plugin)
                 if os.path.isfile(plugin_abs_path):
                     self.children[plugin] = PluginNode(plugin, plugin_abs_path)

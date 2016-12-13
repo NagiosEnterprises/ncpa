@@ -1,5 +1,5 @@
 *.pyc
-*.log
+*.log*
 *.csr
 *.key
 *.crt
@@ -9,5 +9,5 @@
 agent/build/*
 docs/_build
 *.exe
-agent/listener/static/help
 agent/plugins/*
+ncpa.db

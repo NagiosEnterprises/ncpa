@@ -6,6 +6,9 @@ import logging
 import pickle
 import copy
 import re
+import database
+import server
+import ConfigParser
 
 
 # Valid nodes is updated as it gets set when calling a node via accessor
@@ -92,15 +95,33 @@ class RunnableParentNode(ParentNode):
                                                     primary=True,
                                                     secondary_data=False,
                                                     custom_output=self.custom_output,
+                                                    child_check=True,
                                                     *args, **kwargs)
                 else:
                     result = child.run_check(use_prefix=False, use_perfdata=False,
                                              primary=False, secondary_data=True,
-                                             *args, **kwargs)
+                                             child_check=True, *args, **kwargs)
                     stdout = result.get('stdout', None)
                     secondary_results.append(stdout)
         secondary_stdout = '(' + ', '.join(x for x in secondary_results if x) + ')'
         primary_info['stdout'] = primary_info['stdout'].format(extra_data=secondary_stdout)
+
+        # Get the check logging value
+        try:
+            check_logging = int(kwargs['config'].get('general', 'check_logging'))
+        except ConfigParser.NoOptionError:
+            check_logging = 1
+
+        # Send check results to database
+        if not server.__INTERNAL__ and check_logging == 1:
+            db = database.DB()
+            dbc = db.get_cursor()
+            current_time = time.time()
+            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, primary_info['returncode'],
+                    primary_info['stdout'], kwargs['remote_addr'], 'Active')
+            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+            db.commit()
+
         return primary_info
 
 
@@ -124,9 +145,10 @@ class RunnableNode(ParentNode):
             values, unit = self.method(*args, **kwargs)
         except TypeError:
             values, unit = self.method()
+
         self.set_unit(unit, kwargs)
         values = self.get_adjusted_scale(values, kwargs)
-        values = self.get_delta_values(values, kwargs)
+        values = self.get_delta_values(values, kwargs, *args, **kwargs)
         values = self.get_aggregated_values(values, kwargs)
 
         if self.unit != '':
@@ -139,7 +161,7 @@ class RunnableNode(ParentNode):
         else:
             self.unit = unit
 
-    def get_delta_values(self, values, request_args, hasher=False):
+    def get_delta_values(self, values, request_args, hasher=False, *args, **kwargs):
         delta = request_args.get('delta', False)
         # Here we check which value we should hash against for the delta pickle
         # If the value is empty string, empty list, empty object, 0, False or None,
@@ -152,7 +174,22 @@ class RunnableNode(ParentNode):
 
         if delta:
             self.delta = True
-            values = self.deltaize_values(values, accessor)
+            self.unit = self.unit + '/s'
+            remote_addr = request_args.get('remote_addr', None)
+
+            values = self.deltaize_values(values, accessor, remote_addr)
+
+            # Wait 1 second and try again if no value was given due to no pickle
+            # file having been created yet (check doesn't have old data)
+            if values is False:
+                time.sleep(1)
+                logging.debug('Re-running check for 1 second of data.')
+                try:
+                    values, unit = self.method(*args, **kwargs)
+                except TypeError:
+                    values, unit = self.method()
+                values = self.deltaize_values(values, accessor, remote_addr)
+
         return values
 
     def get_adjusted_scale(self, values, request_args):
@@ -203,7 +240,8 @@ class RunnableNode(ParentNode):
             return values
 
     def run_check(self, use_perfdata=True, use_prefix=True, primary=False,
-                  secondary_data=False, custom_output=None, *args, **kwargs):
+                  secondary_data=False, custom_output=None, capitalize=True,
+                  child_check=False, *args, **kwargs):
         try:
             values, unit = self.method(*args, **kwargs)
         except TypeError:
@@ -211,18 +249,18 @@ class RunnableNode(ParentNode):
         except AttributeError:
             return self.execute_plugin(*args, **kwargs)
 
-        if not isinstance(values, (list, tuple)):
-            values = [values]
-
         self.set_unit(unit, kwargs)
         self.set_title(kwargs)
         self.set_perfdata_label(kwargs)
         try:
-            values = self.get_delta_values(values, kwargs)
             values = self.get_adjusted_scale(values, kwargs)
+            values = self.get_delta_values(values, kwargs)
             values = self.get_aggregated_values(values, kwargs)
         except TypeError:
             logging.warning('Error converting values to scale and delta. Values: %r' % values)
+
+        if not isinstance(values, (list, tuple)):
+            values = [values]
 
         try:
             self.set_warning(kwargs)
@@ -235,23 +273,38 @@ class RunnableNode(ParentNode):
                 is_critical = any([self.is_within_range(self.critical, x) for x in values])
             returncode, stdout = self.get_nagios_return(values, is_warning, is_critical, use_perfdata,
                                                         use_prefix, primary, secondary_data,
-                                                        custom_output)
+                                                        custom_output, capitalize)
         except Exception as exc:
             returncode = 3
             stdout = str(exc)
             logging.exception(exc)
 
+        # Get the check logging value
+        try:
+            check_logging = int(kwargs['config'].get('general', 'check_logging'))
+        except ConfigParser.NoOptionError:
+            check_logging = 1
+
+        # Send check results to database
+        if not child_check and not server.__INTERNAL__ and check_logging == 1:
+            db = database.DB()
+            dbc = db.get_cursor()
+            current_time = time.time()
+            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
+                    stdout, kwargs['remote_addr'], 'Active')
+            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+            db.commit()
+
         return { 'returncode': returncode, 'stdout': stdout }
 
     def get_nagios_return(self, values, is_warning, is_critical, use_perfdata=True,
                           use_prefix=True, primary=False, secondary_data=False,
-                          custom_output=None):
+                          custom_output=None, capitalize=True):
+
         proper_name = self.title.replace('|', '/')
 
-        if self.delta:
-            nice_unit = '%s/sec' % self.unit
-        else:
-            nice_unit = '%s' % self.unit
+        if capitalize:
+            proper_name = proper_name.capitalize()
 
         if not isinstance(values, (list, tuple)):
             values = [values]
@@ -260,12 +313,12 @@ class RunnableNode(ParentNode):
         for x in values:
             try:
                 if isinstance(x, int):
-                    nice_values.append('%d %s' % (x, nice_unit))
+                    nice_values.append('%d %s' % (x, self.unit))
                 else:
-                    nice_values.append('%0.2f %s' % (x, nice_unit))
+                    nice_values.append('%0.2f %s' % (x, self.unit))
             except TypeError:
                 logging.info('Did not receive normal values. Unable to find meaningful check.')
-                return 0, 'OK: %s was %s' % (str(proper_name).capitalize(), str(values))
+                return 0, 'OK: %s was %s' % (proper_name, str(values))
         values_for_info_line = ', '.join(nice_values)
 
         returncode = 0
@@ -283,7 +336,7 @@ class RunnableNode(ParentNode):
         else:
             perfdata_label = self.perfdata_label
 
-        if len(self.unit) > 2:
+        if len(self.unit) > 3:
             perf_unit = ''
         else:
             perf_unit = self.unit
@@ -298,7 +351,7 @@ class RunnableNode(ParentNode):
         v = len(values)
         for i, x in enumerate(values):
 
-            if isinstance(x, int):
+            if isinstance(x, (int, long)):
                 perf = "=%d%s;%s;%s;" % (x, perf_unit, self.warning, self.critical)
             else: 
                 perf = "=%0.2f%s;%s;%s;" % (x, perf_unit, self.warning, self.critical)
@@ -313,9 +366,9 @@ class RunnableNode(ParentNode):
         perfdata = ' '.join(perfdata)
 
         if secondary_data is True:
-            stdout = '%s: %s' % (proper_name.capitalize(), values_for_info_line)
+            stdout = '%s: %s' % (proper_name, values_for_info_line)
         else:
-            output = proper_name.capitalize() + ' was'
+            output = proper_name + ' was'
             if custom_output:
                 output = custom_output
             stdout = '%s %s' % (output, values_for_info_line)
@@ -332,39 +385,47 @@ class RunnableNode(ParentNode):
 
         return returncode, stdout
 
-    @staticmethod
-    def deltaize_values(values, accessor):
-        filename = "ncpa-%d.tmp" % hash(accessor)
+    def deltaize_values(self, values, hash_val, remote_addr=None):
+        if remote_addr:
+            hash_val = hash_val + remote_addr
+        filename = "ncpa-%d.tmp" % hash(hash_val)
         tmpfile = os.path.join(tempfile.gettempdir(), filename)
 
         if not isinstance(values, (list, tuple)):
             values = [values]
 
         try:
-            #If the file exists, we extract the data from it and save it to our loaded_values
-            #variable.
+            # If the file exists, we extract the data from it and save it to our loaded_values variable.
             with open(tmpfile, 'r') as values_file:
                 loaded_values = pickle.load(values_file)
                 last_modified = os.path.getmtime(tmpfile)
         except (IOError, EOFError):
-            #Otherwise load the loaded_values and last_modified with values that will cause zeros
-            #to show up.
-            logging.info('No pickle file found for accessor %s', accessor)
+            # Otherwise load the loaded_values and last_modified with values that will cause zeros to show up.
+            logging.debug('No pickle file found for hash_val "%s"', hash_val)
             loaded_values = values
             last_modified = 0
         except (KeyError, pickle.UnpicklingError):
-            logging.info('Problem unpickling data for accessor %s', accessor)
+            logging.error('Problem unpickling data for hash_val "%s"', hash_val)
             loaded_values = values
             last_modified = 0
 
-        #Update the pickled data
-        logging.debug('Updating pickle for %s. Filename is %s.', accessor, tmpfile)
+        # Update the pickled data
+        logging.debug('Updating pickle for hash_val "%s". Filename is %s.', hash_val, tmpfile)
         with open(tmpfile, 'w') as values_file:
             pickle.dump(values, values_file)
 
-        #Calculate the return value and return it
+        # If last modified is 0, then return false
+        if last_modified == 0:
+            return False
+
+        # Calculate the return value and return it
         delta = time.time() - last_modified
-        return [abs((x - y) / delta) for x, y in itertools.izip(loaded_values, values)]
+        dvalues = [round(abs((x - y) / delta), 2) for x, y in itertools.izip(loaded_values, values)]
+
+        if len(dvalues) == 1:
+            dvalues = dvalues[0]
+
+        return dvalues
 
     @staticmethod
     def adjust_scale(self, values, units):
@@ -402,16 +463,23 @@ class RunnableNode(ParentNode):
                 units = 'Ki'
                 factor = 1.024e3
 
-        values = [round(x/factor, 2) for x in values]
+        # Process the values and put them back into list, also check if
+        # the value is just a bytes value - keep as integer
+        pvalues = []
+        for x in values:
+            val = round(x/factor, 2)
+            if units == 'B':
+                val = int(val)
+            pvalues.append(val)
 
         # Do not return as a list if we only have 1 value to return
-        if len(values) == 1:
-            values = values[0]
+        if len(pvalues) == 1:
+            pvalues = pvalues[0]
 
         if factor != 1.0:
             self.unit = '%s%s' % (units, self.unit)
 
-        return values, units
+        return pvalues, units
 
     @staticmethod
     def is_within_range(nagios_range, value):

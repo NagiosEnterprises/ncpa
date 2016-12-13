@@ -54,9 +54,14 @@ import re
 import win32evtlogutil
 import win32con
 import pywintypes
+import database
+import time
+import server
+import ConfigParser
 
 
 class WindowsLogsNode(nodes.LazyNode):
+
     def walk(self, *args, **kwargs):
         logtypes = get_logtypes(kwargs)
         filters = get_filter_dict(kwargs)
@@ -103,7 +108,7 @@ class WindowsLogsNode(nodes.LazyNode):
         self.set_warning(kwargs)
         self.set_critical(kwargs)
         self.set_log_check(kwargs)
-        self.get_delta_values(log_counts, kwargs, log_names)
+        self.get_delta_values(log_counts, kwargs, log_names, *args, **kwargs)
 
         returncode = 0
         prefix = 'OK'
@@ -122,18 +127,35 @@ class WindowsLogsNode(nodes.LazyNode):
             logged_after = logged_after[0]
         nice_timedelta = self.translate_timedelta(logged_after)
 
-        perfdata = ' '.join(["'%s'=%d;%s;%s;" % (name, count, self.warning, self.critical) for name, count in
+        perfdata = ' '.join(["'%s'=%d;%s;%s;" % (name, count, ''.join(self.warning), ''.join(self.critical)) for name, count in
                              zip(log_names, log_counts)])
         info = ', '.join(['%s has %d logs' % (name, count) for name, count in zip(log_names, log_counts)])
-        info_line = '%s: %s that are younger than %s' % (prefix, info, nice_timedelta)
+        info_line = '%s: %s (Time range - %s)' % (prefix, info, nice_timedelta)
 
         stdout = '%s | %s' % (info_line, perfdata)
+
+        # Get the check logging value
+        try:
+            check_logging = int(kwargs['config'].get('general', 'check_logging'))
+        except ConfigParser.NoOptionError:
+            check_logging = 1
+
+        # Put check results in the check database
+        if not server.__INTERNAL__ and check_logging == 1:
+            db = database.DB()
+            dbc = db.get_cursor()
+            current_time = time.time()
+            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
+                    stdout, kwargs['remote_addr'], 'Active')
+            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+            db.commit()
+
         return { 'stdout': stdout, 'returncode': returncode }
 
     @staticmethod
     def translate_timedelta(time_delta):
         if not time_delta:
-            return 'the universe'
+            return 'last 24 hours'
         num, suffix = time_delta[:-1], time_delta[-1]
         if suffix == 's':
             nice_name = 'second'
@@ -149,8 +171,7 @@ class WindowsLogsNode(nodes.LazyNode):
             nice_name = 'month'
         if int(num) > 1:
             nice_name += 's'
-        nice_name += ' old'
-        return '%s %s' % (num, nice_name)
+        return 'last %s %s' % (num, nice_name)
 
     def set_log_check(self, request_args):
         log_check = request_args.get('type', 'all')
@@ -224,8 +245,10 @@ def get_filter_dict(request_args):
             fdict['logged_after'] = logged_after
     return fdict
 
+
 def get_node():
     return WindowsLogsNode('logs', None)
+
 
 EVENT_TYPE = {win32con.EVENTLOG_AUDIT_FAILURE: 'AUDIT_FAILURE',
               win32con.EVENTLOG_AUDIT_SUCCESS: 'AUDIT_SUCCESS',
@@ -237,6 +260,7 @@ EVENT_TYPE = {win32con.EVENTLOG_AUDIT_FAILURE: 'AUDIT_FAILURE',
               'INFORMATION': win32con.EVENTLOG_INFORMATION_TYPE,
               'AUDIT_FAILURE': win32con.EVENTLOG_AUDIT_FAILURE,
               'AUDIT_SUCCESS': win32con.EVENTLOG_AUDIT_SUCCESS}
+
 
 def get_timedelta(offset, time_frame):
     if time_frame == 's':
@@ -269,8 +293,7 @@ def get_datetime_from_date_input(date_input):
 
 def datetime_from_event_date(evt_date):
     """
-    This function converts dates with format
-    '12/23/99 15:54:09' to seconds since 1970.
+    This function converts dates with format '12/23/99 15:54:09' to seconds since 1970.
 
     Note - NS:
     The fact that this is required is really dubious. Not sure why the win32 API

@@ -24,7 +24,6 @@ includefiles = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
 
 # It does not appear the cx_Freeze honors the package directive
 includes = ['xml.dom.minidom',
-            'OpenSSL',
             'jinja2.ext',
             'passive.nrdp',
             'passive.nrds']
@@ -52,5 +51,5 @@ setup(name = "NCPA",
       version = version,
       description = "NCPA",
       options = dict(build_exe=buildOptions),
-      executables = [Executable("ncpa_posix_listener.py", base=base),
-                     Executable("ncpa_posix_passive.py", base=base)])
+      executables = [Executable("ncpa_listener.py", base=base),
+                     Executable("ncpa_passive.py", base=base)])

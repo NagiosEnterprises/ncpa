@@ -1,0 +1,109 @@
+2016-12-08 00:42:34,516:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-12-08 00:42:34,516:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-12-08 00:42:49,743:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-12-08 00:42:49,743:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-12-08 00:48:46,775:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-12-08 00:48:46,775:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-12-08 00:48:46,775:INFO:ncpacheck:Running check: system/agent_version
+2016-12-08 00:48:46,779:INFO:nodes:Did not receive normal values. Unable to find meaningful check.
+2016-12-08 00:48:46,793:INFO:ncpacheck:Running check: cpu/percent --warning 60 --critical 80 --aggregate avg
+2016-12-08 00:48:47,812:INFO:ncpacheck:Running check: memory/swap --warning 60 --critical 80 --units Gi
+2016-12-08 00:48:47,825:INFO:ncpacheck:Running check: memory/virtual --warning 80 --critical 90 --units Gi
+2016-12-08 00:48:47,836:INFO:ncpacheck:Running check: processes --warning 300 --critical 400
+2016-12-08 00:48:55,821:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-12-08 00:48:55,821:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-12-08 00:48:55,822:INFO:ncpacheck:Running check: system/agent_version
+2016-12-08 00:48:55,826:INFO:nodes:Did not receive normal values. Unable to find meaningful check.
+2016-12-08 00:48:55,845:INFO:ncpacheck:Running check: cpu/percent --warning 60 --critical 80 --aggregate avg
+2016-12-08 00:48:56,858:INFO:ncpacheck:Running check: memory/swap --warning 60 --critical 80 --units Gi
+2016-12-08 00:48:56,871:INFO:ncpacheck:Running check: memory/virtual --warning 80 --critical 90 --units Gi
+2016-12-08 00:48:56,885:INFO:ncpacheck:Running check: processes --warning 300 --critical 400
+2016-12-08 00:48:57,398:INFO:connectionpool:Starting new HTTP connection (1): 192.168.1.12
+2016-12-08 01:07:28,691:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-12-08 01:07:28,691:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-12-08 01:07:28,691:INFO:ncpacheck:Running check: system/agent_version
+2016-12-08 01:07:28,696:INFO:nodes:Did not receive normal values. Unable to find meaningful check.
+2016-12-08 01:07:28,706:INFO:ncpacheck:Running check: cpu/percent --warning 60 --critical 80 --aggregate avg
+2016-12-08 01:07:29,717:INFO:ncpacheck:Running check: memory/swap --warning 60 --critical 80 --units Gi
+2016-12-08 01:07:29,727:INFO:ncpacheck:Running check: memory/virtual --warning 80 --critical 90 --units Gi
+2016-12-08 01:07:29,737:INFO:ncpacheck:Running check: processes --warning 300 --critical 400
+2016-12-08 01:07:30,229:INFO:connectionpool:Starting new HTTP connection (1): 192.168.1.12
+2016-12-08 01:08:10,081:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-12-08 01:08:10,082:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-12-08 01:08:10,082:INFO:ncpacheck:Running check: system/agent_version
+2016-12-08 01:08:10,085:INFO:nodes:Did not receive normal values. Unable to find meaningful check.
+2016-12-08 01:08:10,096:INFO:ncpacheck:Running check: cpu/percent --warning 60 --critical 80 --aggregate avg
+2016-12-08 01:08:11,108:INFO:ncpacheck:Running check: memory/swap --warning 60 --critical 80 --units Gi
+2016-12-08 01:08:11,118:INFO:ncpacheck:Running check: memory/virtual --warning 80 --critical 90 --units Gi
+2016-12-08 01:08:11,128:INFO:ncpacheck:Running check: processes --warning 300 --critical 400
+2016-12-08 01:08:11,625:INFO:connectionpool:Starting new HTTP connection (1): 192.168.1.12
+2016-12-08 01:08:32,628:ERROR:ncpa_windows:HTTPConnectionPool(host='192.168.1.12', port=80): Max retries exceeded with url: /nrdp/ (Caused by NewConnectionError('<requests.packages.urllib3.connection.HTTPConnection object at 0x04ECBD30>: Failed to establish a new connection: [Errno 10060] [Error 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.',))
+Traceback (most recent call last):
+  File "C:\Users\Jake\Documents\ncpa\agent\ncpa_windows.py", line 216, in run_all_handlers
+    ins_handler.run(run_time)
+  File "C:\Users\Jake\Documents\ncpa\agent\passive\nrdp.py", line 124, in run
+    self.submit_to_nagios(checkresults)
+  File "C:\Users\Jake\Documents\ncpa\agent\passive\nrdp.py", line 178, in submit_to_nagios
+    ret_xml = utils.send_request(url=server, token=token, XMLDATA=checkresults, cmd='submitcheck')
+  File "C:\Users\Jake\Documents\ncpa\agent\passive\utils.py", line 13, in send_request
+    r = requests.post(url, data=kwargs, verify=False, allow_redirects=True)
+  File "C:\Python27\lib\site-packages\requests\api.py", line 111, in post
+    return request('post', url, data=data, json=json, **kwargs)
+  File "C:\Python27\lib\site-packages\requests\api.py", line 57, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "C:\Python27\lib\site-packages\requests\sessions.py", line 475, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Python27\lib\site-packages\requests\sessions.py", line 585, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Python27\lib\site-packages\requests\adapters.py", line 467, in send
+    raise ConnectionError(e, request=request)
+ConnectionError: HTTPConnectionPool(host='192.168.1.12', port=80): Max retries exceeded with url: /nrdp/ (Caused by NewConnectionError('<requests.packages.urllib3.connection.HTTPConnection object at 0x04ECBD30>: Failed to establish a new connection: [Errno 10060] [Error 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.',))
+2016-12-08 01:09:41,352:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-12-08 01:09:41,352:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-12-08 01:09:41,352:INFO:ncpacheck:Running check: system/agent_version
+2016-12-08 01:09:41,357:INFO:nodes:Did not receive normal values. Unable to find meaningful check.
+2016-12-08 01:09:41,368:INFO:ncpacheck:Running check: cpu/percent --warning 60 --critical 80 --aggregate avg
+2016-12-08 01:09:42,380:INFO:ncpacheck:Running check: memory/swap --warning 60 --critical 80 --units Gi
+2016-12-08 01:09:42,391:INFO:ncpacheck:Running check: memory/virtual --warning 80 --critical 90 --units Gi
+2016-12-08 01:09:42,401:INFO:ncpacheck:Running check: processes --warning 300 --critical 400
+2016-12-08 01:09:42,892:INFO:connectionpool:Starting new HTTP connection (1): 192.168.1.12
+2016-12-08 01:11:22,914:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-12-08 01:11:22,914:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-12-08 01:11:22,914:INFO:ncpacheck:Running check: system/agent_version
+2016-12-08 01:11:22,917:INFO:nodes:Did not receive normal values. Unable to find meaningful check.
+2016-12-08 01:11:22,927:INFO:ncpacheck:Running check: cpu/percent --warning 60 --critical 80 --aggregate avg
+2016-12-08 01:11:23,938:INFO:ncpacheck:Running check: memory/swap --warning 60 --critical 80 --units Gi
+2016-12-08 01:11:23,948:INFO:ncpacheck:Running check: memory/virtual --warning 80 --critical 90 --units Gi
+2016-12-08 01:11:23,959:INFO:ncpacheck:Running check: processes --warning 300 --critical 400
+2016-12-08 01:11:24,453:INFO:connectionpool:Starting new HTTP connection (1): 192.168.1.12
+2016-12-08 01:11:45,457:ERROR:ncpa_windows:HTTPConnectionPool(host='192.168.1.12', port=80): Max retries exceeded with url: /nrdp/ (Caused by NewConnectionError('<requests.packages.urllib3.connection.HTTPConnection object at 0x04240D90>: Failed to establish a new connection: [Errno 10060] [Error 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.',))
+Traceback (most recent call last):
+  File "C:\Users\Jake\Documents\ncpa\agent\ncpa_windows.py", line 216, in run_all_handlers
+    ins_handler.run(run_time)
+  File "C:\Users\Jake\Documents\ncpa\agent\passive\nrdp.py", line 124, in run
+    self.submit_to_nagios(checkresults)
+  File "C:\Users\Jake\Documents\ncpa\agent\passive\nrdp.py", line 178, in submit_to_nagios
+    ret_xml = utils.send_request(url=server, token=token, XMLDATA=checkresults, cmd='submitcheck')
+  File "C:\Users\Jake\Documents\ncpa\agent\passive\utils.py", line 13, in send_request
+    r = requests.post(url, data=kwargs, verify=False, allow_redirects=True)
+  File "C:\Python27\lib\site-packages\requests\api.py", line 111, in post
+    return request('post', url, data=data, json=json, **kwargs)
+  File "C:\Python27\lib\site-packages\requests\api.py", line 57, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "C:\Python27\lib\site-packages\requests\sessions.py", line 475, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Python27\lib\site-packages\requests\sessions.py", line 585, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Python27\lib\site-packages\requests\adapters.py", line 467, in send
+    raise ConnectionError(e, request=request)
+ConnectionError: HTTPConnectionPool(host='192.168.1.12', port=80): Max retries exceeded with url: /nrdp/ (Caused by NewConnectionError('<requests.packages.urllib3.connection.HTTPConnection object at 0x04240D90>: Failed to establish a new connection: [Errno 10060] [Error 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.',))
+2016-12-08 17:32:44,125:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-12-08 17:32:44,127:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-12-08 17:33:03,798:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-12-08 17:33:03,799:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-12-08 17:33:21,500:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-12-08 17:33:21,500:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-12-08 17:33:30,464:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-12-08 17:33:30,464:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins
+2016-12-08 17:34:39,707:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\Jake\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2016-12-08 17:34:39,707:INFO:ncpa_windows:Looking for plugins at: C:\Users\Jake\Documents\ncpa\agent\plugins

@@ -1,11 +1,13 @@
-Changelog
+﻿Changelog
 +++++++++
 
-2.0.0 - ??/??/2016
+2.0.0 - 12/15/2016
 ==================
 
 **Additions**
 
+- Added SQLite3 DB backend for check results
+- Added a new tab in the GUI for viewing past check results
 - Added support for SSL protocols TLSv1.1 & TLSv1.2
 - Added ability to adjust units B and b with T, Ti, Gi, Mi, Ki to match windows disk sizes using untis=x
 - Added comments/help to the config file itself to help understand certain areas of the config that are confusing
@@ -21,6 +23,10 @@ Changelog
 - Added admin web GUI section for in-browser viewing of passive checks, process control, etc
 - Added admin_x config values into default ncpa.cfg for Web GUI admin section
 - Added information into api/logs node to explain how to get logs to be populated
+- Added '/s' onto the unit when using the delta argument outside of checks
+- Added all new documentation and examples for setting up NCPA on any type of system
+- Added in the Windows Event Log tail functionality that was never released
+- Added new config options for managing check result retention and if check results should be retained
 
 **Updates**
 
@@ -40,6 +46,15 @@ Changelog
 - Updated RPM, DEB, and DMG to allow upgrading from older versions without issues
 - Updated api/services check to default to running (currently leaving off status=x will always return critical)
 - Updated output of certain checks to have more information (api/services, api/memory/logical/percent)
+- Updated processes output to include 'mem_percent' since it can be used as a filter
+- Updated processes output of 'mem_rss' and 'mem_vms' to show units and respect the 'units' modifier
+- Updated filtering processes by 'name' and 'exe' field to also be able to use 'match' type (exact, search, or regex)
+- Updated filtering services by 'service' field to allow using the 'match' type too (exact, search, or regex)
+- Updated delta values to not cause weird issues when calling the same endpoint from different sources
+- Updated ncpa_listener and ncpa_passive init.d files to be more reliable
+- Updated the services ncpa_posix_type to now be ncpa_type on Unix systems to conform to init.d service names
+- Updated websocket endpoints to be /ws/top, /ws/tail, /ws/api instead of <name>-websocket
+- Updated the way that the init scripts work on Linux systems to give better output
 
 **Bug Fixes**
 
@@ -64,10 +79,16 @@ Changelog
 - Fixed zombie process error in Mac OS X top websocket making the GUI top display nothing
 - Fixed graphs tab not displaying graphs of interfaces with multiple spaces in their names
 - Fixed passive service on Windows only able to successfully run a plugin-based check once after restarting
-- Fixed filtering processes by 'name' and 'exe' field to no longer need a perfect match and to not be case sensitive
 - Fixed output of disk space on Linux servers not showing reserved root disk space as used
 - Fixed check output formatting on parent nodes when running multi-checks
 - Fixed device_name on api/disk/logical node when units passed giving an error
+- Fixed perfdata output for windows log checks
+- Fixed issue on Mac OS X where running as nagios (default) would cause process data not to show
+- Fixed issue where global config parser defaults caused issues with sections in separate files
+- Fixed issue where services in Unix systems ran as root no matter what the uid/gid specified in ncpa.cfg
+- Fixed delta value returning 0 the first time it's called even if there should be 1 second of data
+- Fixed Mac OS X plist to no longer set user/group (bug fix for Unix systems running as specified uid/gid is related)
+- Fixed processor type not showing up on all Linux distros on GUI dashboard
 
 **Deprecated**
 

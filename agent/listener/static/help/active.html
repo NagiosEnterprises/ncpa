@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta charset='utf-8'>
+        <title>Active Checks &middot; Documentation &mdash; NCPA</title>
+        <link rel="shortcut icon" type="image/png" href="../img/ncpa.png" />
+        <link rel="icon" type="image/png" href="../img/ncpa.png" />
+        <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
+        <link rel="stylesheet" href="../css/ncpa.css" type="text/css" />
+        <script src='../js/jquery.2.2.4.min.js'></script>
+        <script src='../js/bootstrap.min.js'></script>
+        <script src='../js/help.js'></script>
+    </head>
+    <body class="help">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-lg-10">
+              
+            <h1>Active Checks</h1>
+            <p>Running active checks against NCPA is fairly straight-forward and follows a similar style as <code>check_nrpe</code>. You should download the latest version of the <a href="https://github.com/NagiosEnterprises/ncpa/blob/master/client/check_ncpa.py" target="_new">check_ncpa.py plugin</a> <i class="fa fa-external-link"></i> from GitHub. This plugin works with NCPA 2+ and is backwards compatible with NCPA 1. This plugin is the standard method for executing active checks. However, because of the design of NCPA, it makes it <em>very</em> easy to use your own methods to collect data at perform active checks, even from a simple <code>curl</code> command. We will leave the choice to you, but we will support active checks through the <code>check_ncpa.py</code> plugin.</p>
+            <p>
+                <div class="alert alert-info">
+                    <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> All the examples in this page are from a Nagios server (either <b>Nagios XI</b> or <b>Nagios Core</b>) because the active checks are set up in Nagios and do not require any changes to be done in NCPA, besides setting up plugin directives or configuring how to access the API.
+                </div>
+            </p>
+            <p>Using the plugin will require some knowledge of how the API works. You will also need to make sure you install the plugin in the Nagios libexec (typically <code>/usr/local/nagios/libexec</code>) directory.</p>
+            <p>
+                <div class="alert alert-success">
+                    <i class="fa fa-lightbulb-o fa-14 fa-l"></i> <b>Tip:</b> If you are using <b>Nagios XI</b>, you can skip installing the plugin manually. By default, <b>Nagios XI</b> comes with a config wizard for NCPA. You can check for updates by going to the <em>Admin > Manage Config Wizards</em> page and clicking on <em>Check for Updates</em>. You can then click the <em>install</em> link in the NCPA config wizard table row to upgrade to the latest version if a new one is available. The config wizard upgrade script will install the latest version of the plugin for you. <em>Running the config wizard is the fastest way to get started with NCPA active checks since it requires no manual configuration.</em>
+                </div>
+            </p>
+
+            <a name="running-an-active-check"></a>
+            <div class="section">
+
+                <h2>Running an Active Check</h2>
+                <p>While you can run a check through the API in your browser, you will want to use the <code>check_ncpa.py</code> plugin to run these active checks from your Nagios server to have your results show up in Nagios. Once you've installed your plugin on the Nagios server in your <code>libexec</code> directory, you can run it just like any other plugin.</p>
+                <p>The most important part you'll need to do is specify the API endpoint that you want to run the check on. This is done by passing the node endpoint (or as the plugin calls this value, the metric) by the <code>-M</code> argument.</p>
+                <p>
+                    <div class="alert alert-info">
+                        <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> You will need to make sure to wrap any node endpoint that uses the <code>disk</code> module with single quotes. This is because NCPA uses the <code>|</code> character instead of slashes. This is to help with running values from URLs in the API. However, the pipe character is a special character in the linux shell and must be escaped by single quotes. Example: <code>-M 'disk/logical/C:|'</code>
+                    </div>
+                </p>
+
+                <h6>Example Check</h6>
+                <p>A simple check to demonstrate how the plugin works is checking for the used memory percent:</p>
+                <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'memory/virtual/percent'</pre>
+                <p>The above check will return the following:</p>
+                <pre>OK: Percent was 36.20 % | 'percent'=36.20%;;;</pre>
+                <p>This is a pretty simple check - you can do a lot of tweaking to get different output. Read on in the <a href="#using-the-plugin">section that explains how to use the check_ncpa.py plugin</a> to see more options. Most of the base nodes, such as <code>memory/virtual</code>, have special checks that encompass all the child endpoints. You can see an example of  that below.</p>
+
+                <h6>Example Check and Specifying Units</h6>
+                <p>Say we want to see the amount of memory we are using in GB, but NCPA returns the value in B by default. Typically we would add <code>units=G</code> in the API call, but the plugin will do this for us. See the example below:</p>
+                <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'memory/virtual/used' -u G</pre>
+                <p>Will return the GB value instead of the B value:</p>
+                <pre>OK: Used was 13.16 GB | 'used'=13.16GB;;;</pre>
+
+            </div>
+
+            <a name="using-the-plugin"></a>
+            <div class="section">
+
+                <h2>Using the check_ncpa.py Plugin</h2>
+                <p>In this section, we will cover some of the standard use cases and how to use the plugin to achieve specific output. While this section will go over most of the arguments that are available in the plugin, you can also view all the available arguments by using <code>--help</code>.</p>
+                <p>
+                    <div class="alert alert-info">
+                        <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> If you encounter problems with the plugin, you can use the <code>-v</code> argument to enable verbose output of problems. There is also a <code>-D</code> argument that enables debugging output.
+                    </div>
+                </p>
+
+                <h6>Warning and Critical Values</h6>
+                <p>You can send warning (<code>-w</code> or <code>--warning=</code>) and critical (<code>-c</code> or <code>--critical=</code>) values to any value that comes from the API nodes besides the <code>plugins</code> node since <em>these values do not work with plugins</em>. If you need to send the warning and critical values to your plugins, <a href="#plugins">you'll have to pass them as plugin arguments</a>.</p>
+                <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'processes' <b>--warning=100 --critical=200</b></pre>
+                <p>The output would look something like this:</p>
+                <pre>WARNING: Process count was 177 | 'process_count'=177;100;200;</pre>
+                <p>You can see that now the perfdata has the warning and critical values set. Also, we see that the system we are checking has over 100 processes and so it shows up as a warning.</p>
+
+                <h6>Sending a Query String</h6>
+                <p>You can send additional query string arguments in a <b><em>comma separated list of <code>key=value</code> pairs</em></b>. If we were interested in getting the CPU Usage (average percent over all cores) of the host that we installed NCPA on, we would run the <code>check_ncpa.py</code> with the <code>-q</code> argument because we need to tell NCPA how to aggregate the CPU usage results. The check would be the following:</p>
+                <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'cpu/percent' <b>-q 'aggregate=avg'</b></pre>
+                <p>The above would output the following:</p>
+                <pre>OK: Percent was 2.16 % | 'percent'=2.16%;;;</pre>
+                <p>If we removed the <code>-q 'aggregate=avg'</code>, which is passing arguments to the URL that the plugin is generating, we would get:</p>
+                <pre>OK: Percent was 7.70 %, 0.00 %, 11.10 %, 0.00 %, 0.00 %, 0.00 %, 3.00 %, 0.00 %, 0.00 %, 0.00 %, 0.00 %, 1.50 %, 0.00 %, 1.50 %, 0.00 %, 3.20 % | 'percent_0'=7.70%;;; 'percent_1'=0.00%;;; 'percent_2'=11.10%;;; 'percent_3'=0.00%;;; 'percent_4'=0.00%;;; 'percent_5'=0.00%;;; 'percent_6'=3.00%;;; 'percent_7'=0.00%;;; 'percent_8'=0.00%;;; 'percent_9'=0.00%;;; 'percent_10'=0.00%;;; 'percent_11'=1.50%;;; 'percent_12'=0.00%;;; 'percent_13'=1.50%;;; 'percent_14'=0.00%;;; 'percent_15'=3.20%;;;</pre>
+                <p>This check represents an 8 core processor with 16 threads. You can see how it might be helpful to send these extra variables in your checks. If we were to define a warning and critical value above, it would apply to each of the threads instead of the check as a whole.</p>
+
+                <h6>Running Plugins with Arguments</h6>
+                <p>If you are using the <code>plugins</code> module to execute your own custom scripts, you will likely want to be able to pass arguments to the executed script. To do this, <code>check_ncpa.py</code> has <code>-a</code>, which allows you to send a set of arguments to your script. <em>Pay close attention to how the arguments are quoted in these examples; single quotes and double quotes matter here.</em></p>
+                <p>If we had a script called <code>test.sh</code>, running it from the crommand line may look something like this:</p>
+                <pre>./test.sh -u 'one argument' -p 'another argument'</pre>
+                <p>To run the above script using NCPA and the <code>check_ncpa.py</code> plugin:</p>
+                <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -a "-u 'one argument' -p 'another argument'"</pre>
+                <p>The quotes around the <code>-a</code> value are double. Inside the option, there are single quotes wrapping arguments that are to be passed <em>with spaces in them</em>. Without single quotes, the <code>-a</code> value will be broken on spaces and each value that is separated by space (and not quoted) will be passed as an argument. To see this clearly, check out these examples of how the plugin would create the API call for each quoting example:</p>
+
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#with-quotes" role="tab" data-toggle="tab">With Quotes</a></li>
+                    <li role="presentation"><a href="#without-quotes" role="tab" data-toggle="tab">Without Quotes</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="with-quotes">
+                        <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -a "-u 'one argument' -p 'another argument'"</pre>
+                        <p>The above would give you the following URL:</p>
+                        <pre>https://&lt;ncpaserver&gt;/api/plugins/test.sh/-u/one argument/-p/another argument</pre>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="without-quotes">
+                        <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -a "-u one argument -p another argument"</pre>
+                        <p>The above would give you the following URL:</p>
+                        <pre>https://&lt;ncpaserver&gt;/api/plugins/test.sh/-u/one/argument/-p/another/argument</pre>
+                    </div>
+                </div>
+
+            </div>
+
+            <a name="additional-features"></a>
+            <div class="section">
+
+                <h2>Additional Features</h2>
+                <p>There are some special arguments that do not run checks that can be used to help test out using the plugin for a specific check.</p>
+
+                <h6>Listing Available Nodes</h6>
+                <p>You can also use <code>check_ncpa.py</code> to return a representation of all the values you can monitor in a specific API node. This can be very helpful when you are in a terminal without the use of a web browser. You can use the <code>--list</code> (or <code>-l</code>) command to have it list, rather than run a check, on a particular node:</p>
+                <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'disk' --list</pre>
+                <p>The list command will also work with no specified <code>-M</code> and will list all the base modules available in the API.</p>
+
+            </div>
+
+            </div>
+        </div>
+    </div>
+
+    </body>
+</html>

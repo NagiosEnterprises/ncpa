@@ -3,11 +3,12 @@
 {% block title %}Live Stats{% endblock %}
 
 {% block headercss %}
-<link rel='stylesheet' href='/static/css/ncpa-graph.css'>
+<link href="/static/css/ncpa-graph.css" rel="stylesheet" />
 {% endblock %}
 
 {% block headerjs %}
-<script>
+<script src="/static/js/smoothie.js"></script>
+<script type="text/javascript">
 function load_cmu() {
     var cmu_div = $('#cmu');
     var GRAPH_URL = '/graph/';
@@ -41,7 +42,7 @@ function load_interface() {
     $.getJSON(INTERFACE_API, function(d) {
         $.each(d['interface'], function(key) {
 
-            if (key.indexOf("isatap") != -1) {
+            if (key.indexOf("isatap") != -1 || key.indexOf("Loopback") != -1) {
                 return;
             }
 
@@ -64,7 +65,7 @@ function load_interface() {
 
 $(document).ready(function() {
     
-    $('#live-stats-nav').addClass('active');
+    $('#live-nav').addClass('active');
     load_cmu();
     load_disk();
     load_interface();
@@ -103,10 +104,13 @@ function resize_graphs()
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class='tab-content'>
-            <div id='cmu' class='tab-pane active'></div>
-            <div id='disk' class='tab-pane'></div>
-            <div id='interface' class='tab-pane'></div>
+        <div class="col-sm-12">
+            <div class='tab-content'>
+                <div id='cmu' class='tab-pane active'></div>
+                <div id='disk' class='tab-pane'></div>
+                <div id='interface' class='tab-pane'></div>
+                <div class="clear"></div>
+            </div>
         </div>
     </div>
 </div>

@@ -20,6 +20,7 @@ bundled version of Python.
 %setup -q
 
 %build
+%define _python_bytecompile_errors_terminate_build 0
 
 %install
 rm -rf %{buildroot} 
@@ -37,10 +38,12 @@ install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{bui
 rm -rf %{buildroot}
 
 %pre
-if [ $1 -gt 1 ];
-then
-    /etc/init.d/ncpa_listener stop > /dev/null
-    /etc/init.d/ncpa_passive stop > /dev/null
+if [ `command -v systemctl` ]; then
+    systemctl stop ncpa_listener &> /dev/null || true
+    systemctl stop ncpa_passive &> /dev/null || true
+else
+    service ncpa_listener stop &> /dev/null || true
+    service ncpa_passive stop &> /dev/null || true
 fi
 
 if ! getent group nagios > /dev/null;
@@ -59,14 +62,11 @@ else
 fi
 
 %post
-if [ $1 -eq 1 ];
-then
-    if which chkconfig > /dev/null;
-    then
+if [ ! -f "/etc/init.d/ncpa_listener" ]; then
+    if which chkconfig > /dev/null; then
         chkconfig --level 3,5 --add ncpa_listener
         chkconfig --level 3,5 --add ncpa_passive
-    elif which update-rc.d > /dev/null;
-    then
+    elif which update-rc.d > /dev/null; then
         update-rc.d ncpa_listener defaults
         update-rc.d ncpa_passive defaults
     fi
@@ -81,12 +81,22 @@ sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_passive
 rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
 rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
 
-/etc/init.d/ncpa_listener start
-/etc/init.d/ncpa_passive start
+if [ `command -v systemctl` ]; then
+    systemctl start ncpa_listener
+    systemctl start ncpa_passive
+else
+    service ncpa_listener start
+    service ncpa_passive start
+fi
 
 %preun
-/etc/init.d/ncpa_listener stop > /dev/null
-/etc/init.d/ncpa_passive stop > /dev/null
+if [ `command -v systemctl` ]; then
+    systemctl stop ncpa_listener
+    systemctl stop ncpa_passive
+else
+    service ncpa_listener stop
+    service ncpa_passive stop
+fi
 
 %files
 %defattr(0755,root,root,-)

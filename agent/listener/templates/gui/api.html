@@ -2,30 +2,48 @@
 
 {% block title %}API{% endblock %}
 
+{% block headercss %}
+<link rel='stylesheet' href='/static/css/ea.min.css'>
+{% endblock %}
+
 {% block headerjs %}
+<script src='/static/js/jquery.ea.1.3.5.min.js'></script>
 <script type="text/javascript">
 var TMP_JSON = { };
+var SERVICES = [ ];
 
 $(document).ready(function() {
-
-    $('.tt-bind').tooltip({ container: 'body' });
-    $('.pop-bind').popover({ html: true, container: 'body' });
     
     // Set nav header active link and resize API window
     $('#api-nav').addClass('active');
     resize_api_window();
 
-    var url = generate_url();
-    $('#api-input').val(url);
+    reload_api_browser();
 
     $(window).resize(function() {
         resize_api_window();
+
+        // Resize log timeframe if visible
+        set_log_timeframe_size();
+    });
+
+    // When selecting "view in different format"
+    $('.show-check').click(function() {
+        var type = $(this).data('type');
+        if (type == 'passive') {
+            generate_passive_check();
+            $('.passive-check-modal').modal('show');
+        } else {
+            generate_active_check();
+            $('.active-check-modal').modal('show');
+        }
     });
 
     // Definitely not the best way to do this, but simple enough to understand, essentially
     // whatever is selected gets set as submod which will then show or hide special settings that
     // can be used on the node that was selected.
     $('#module').change(function() {
+        load();
         clear_settings();
         var module = $(this).val();
 
@@ -37,7 +55,9 @@ $(document).ready(function() {
         $('.settings').hide();
         $('.hide-by-default').hide();
         $('.service-settings .list').html('');
-        $('.filter-settings .list').html('');
+        $('.proc-filters .list').html('');
+        $('.log-name-selector .list').html('');
+        $('.arguments .list').html('');
 
         if (module == '') {
             reload_api_browser();
@@ -49,16 +69,55 @@ $(document).ready(function() {
                 $('.data-settings').show();
                 $('.data-settings .unit-prefix').show();
                 $('.data-settings .agg').hide();
+                $('.data-settings .delta-box').hide();
                 break;
             case 'processes':
                 $('.check-settings').show();
                 $('.wc-thresholds').show();
+                $('.proc-filters').show();
+                $('.data-settings').show();
+                $('.data-settings .unit-prefix').show();
+                $('.data-settings .agg').hide();
+                $('.data-settings .delta-box').hide();
                 $('.filter-settings').show();
+                $('.combiner').show();
                 break;
             case 'services':
                 $('.service-settings').show();
                 $('.check-settings').show();
                 $('.status-check').show();
+                $('.filter-settings').show();
+                $('.combiner').hide();
+
+                // Get a list of services to use for service filters
+                SERVICES = [];
+                $.get(generate_url(true), { }, function(data) {
+                    var keys = Object.keys(data['services']);
+                    $(keys).each(function(i, obj) {
+                        SERVICES.push({ name: obj });
+                    });
+                });
+                break;
+            case 'windowscounters':
+                $('.selector-counters').show();
+                $('.check-settings').show();
+                $('.wc-thresholds').show();
+                $('.advanced-settings').show();
+                $('.data-settings').show();
+                $('.data-settings .unit-prefix').hide();
+                $('.data-settings .agg').hide();
+                $('.data-settings .delta-box').show();
+                break;
+            case 'logs':
+                $('.log-name-selector').show();
+                $('.log-filters').show();
+                $('.check-settings').show();
+                $('.wc-thresholds').show();
+                add_log_name_selector();
+                set_log_timeframe_size();
+                break;
+            case 'plugins':
+                add_argument();
                 break;
         }
 
@@ -93,7 +152,10 @@ $(document).ready(function() {
         }
 
         // Set URL of link and iframe
-        $('#api-frame').attr('src', url);
+        $.get(url, { }, function(json) {
+            $('#api-frame div').html(JSON.stringify(json, null, 4));
+            clear_load();
+        });
         $('#api-input').val(url);
     });
 
@@ -112,12 +174,19 @@ $(document).ready(function() {
         add_service_selector();
     });
 
+    // Add filter selector
     $('.add-filter').click(function() {
         add_filter_selector();
     });
 
-    $('iframe').load(function() {
-        clear_load();
+    // Add arguments for plugins
+    $('.add-argument').click(function() {
+        add_argument();
+    });
+
+    // Add log name selector
+    $('.add-log-name').click(function() {
+        add_log_name_selector();
     });
 
     // Special refresh selector
@@ -139,6 +208,7 @@ $(document).ready(function() {
                         $('.data-settings .agg').show();
                         $('.data-settings .unit-prefix').hide();
                     } else {
+                        $('.data-settings .delta-box').show();
                         $('.data-settings').hide();
                     }
                     $('.check-settings').show();
@@ -165,6 +235,15 @@ $(document).ready(function() {
                         $(keys).each(function(i, val) {
                             endselect.append('<option>' + val + '</option>');
                         });
+
+                        endselect.change(function() {
+                            if ($(this).val() == '') {
+                                $('.data-settings .delta-box').hide();
+                            } else {
+                                $('.data-settings .delta-box').show();
+                            }
+                        });
+
                         if ($('.selector .memory-end-node').length > 0) {
                             $('.selector .memory-end-node').replaceWith(endselect);
                         } else {
@@ -174,6 +253,7 @@ $(document).ready(function() {
                 } else {
                     clear_settings();
                     $('.check-settings').hide();
+                    $('.data-settings .delta-box').hide();
                     $('.selector .memory-end-node').remove();
                 }
                 break;
@@ -197,12 +277,19 @@ $(document).ready(function() {
 
                         // Add change selector to show data settings or not
                         endselect.change(function() {
+                            if ($(this).val() == '') {
+                                $('.data-settings .delta-box').hide();
+                                $('.data-settings').hide();
+                            } else {
+                                $('.data-settings .delta-box').show();
+                                $('.data-settings').show();
+                            }
                             var show_data = ['', 'bytes_recv', 'bytes_sent'];
                             if (show_data.indexOf($(this).val()) == -1) {
-                                $('.data-settings').hide();
                                 $('.data-settings .units').val('');
+                                $('.data-settings .unit-prefix').hide();
                             } else {
-                                $('.data-settings').show();
+                                $('.data-settings .unit-prefix').show();
                             }
                         });
 
@@ -220,7 +307,14 @@ $(document).ready(function() {
                 break;
 
             case 'plugins':
-                break;
+                if (selected != '') {
+                    $('.btn-check-ncpa').show();
+                    $('.arguments').show();
+                } else {
+                    $('.btn-check-ncpa').hide();
+                    $('.arguments').hide();
+                }
+                return;
 
             case 'disk':
                 $('.selector-disk').html('').show();
@@ -230,6 +324,7 @@ $(document).ready(function() {
                     $('.data-settings .agg').hide();
                     if (selected == 'mount') {
                         $('.check-settings').hide();
+                        $('.data-settings .delta-box').hide();
                         break;
                     }
                     var url = generate_url(true);
@@ -257,6 +352,12 @@ $(document).ready(function() {
                                     endselect.append('<option>' + val + '</option>');
                                 });
                                 endselect.change(function() {
+                                    var x = $(this).val();
+                                    if (x != '' && x != 'opts' && x != 'fstype') {
+                                        $('.data-settings .delta-box').show();
+                                    } else {
+                                        $('.data-settings .delta-box').hide();
+                                    }
                                     reload_api_browser();
                                 });
                             } else {
@@ -264,6 +365,7 @@ $(document).ready(function() {
                                 $('.check-settings').hide();
                             }
                             $('.selector-disk .end-node').replaceWith(endselect);
+                            $('.data-settings .delta-box').hide();
                             reload_api_browser();
                         });
 
@@ -274,9 +376,47 @@ $(document).ready(function() {
                 } else {
                     $('.check-settings').hide();
                 }
+                $('.data-settings .delta-box').hide();
                 break;
         }
         reload_api_browser();
+    });
+
+    // Examples for counters (so it's easier to see how to use them)
+    $('.example').click(function() {
+        var counter = $(this).data('counter');
+        var sleep = $(this).data('sleep');
+
+        $('.windows-counter').val(counter);
+
+        if (sleep == 0) {
+            $('.sleep').val('');
+        } else {
+            $('.sleep').val(sleep);
+        }
+
+        reload_api_browser();
+    });
+
+    // Logging example
+    $('.log-example').click(function() {
+        $('.log-name-selector .list').html('');
+        add_log_name_selector('System');
+        add_log_name_selector('Application');
+        $('.check').prop('checked', true);
+        $('.warn').val(100);
+        $('.crit').val(400);
+        reload_api_browser();
+    });
+
+    // Filter list filter selection
+    $('.list').on('change', '.filter-name', function() {
+        var input = $(this).parents('.filter-group').find('input');
+        if ($(this).val() != 'name' && $(this).val() != 'exe') {
+            input.attr('placeholder', '>=');
+        } else {
+            input.attr('placeholder', '');
+        }
     });
 
 });
@@ -284,14 +424,18 @@ $(document).ready(function() {
 function reload_api_browser() {
     load();
     var url = generate_url();
-    $('#api-frame').attr('src', url);
+    // Set URL of link and iframe
+    $.get(url, { }, function(json) {
+        $('#api-frame div').html(JSON.stringify(json, null, 4));
+        clear_load();
+    }, 'json');
     $('#api-input').val(url);
 }
 
 function load() {
     var top = $('#api-input').outerHeight() + $('.navbar').outerHeight();
-    var h = $('iframe').outerHeight();
-    var w = $('iframe').outerWidth();
+    var h = $('#api-frame').outerHeight();
+    var w = $('#api-frame').outerWidth();
     $('.whiteout').css('top', top)
                   .css('height', h)
                   .css('width', w);
@@ -303,32 +447,34 @@ function clear_load() {
 }
 
 function add_service_selector() {
-    var select = $('<select>', { class: 'form-control service' });
-    select.append('<option></option>');
+    var filter = '<div class="filter-group"><input type="text" name="service" class="form-control service"></div>';
+    $('.service-settings .list').append(filter);
 
-    // Special output for selecting service(s)
-    $.get(generate_url(true), { }, function(data) {
-        var keys = Object.keys(data['services']);
-        $(keys).each(function(i, obj) {
-            var opt = $('<option>' + obj + '</option>');
-            select.append(opt);
-        });
-    });
-
-    $('.service-settings .list').append(select);
+    // Add autocomplete to selector
+    var options = { data: SERVICES, getValue: 'name', list: { match: { enabled: true } } };
+    $('.service-settings .list').find('.service').last().easyAutocomplete(options);
 }
 
 function add_filter_selector() {
-    var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 35%; border-right: 0;"><option value="name">name</option><option value="exe">exe</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 65%;"></div>';
-    $('.filter-settings .list').append(filter);
+    var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 45%; border-right: 0;"><option value="name">name</option><option value="exe">exe</option><option value="mem_percent">mem_percent</option><option value="cpu_percent">cpu_percent</option><option value="mem_vms">mem_vms</option><option value="mem_rss">mem_rss</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 55%;"></div>';
+    $('.proc-filters .list').append(filter);
 }
 
-function generate_url(skip_settings=false) {
-    var api = window.location.protocol + '//' + window.location.hostname;
-    if (window.location.port) {
-        api += ':' + window.location.port;
+function add_log_name_selector(value='') {
+    var name = '<div class="input-group"><div class="input-group-addon">Name</div><input type="text" class="form-control name"></div>';
+    $('.log-name-selector .list').append(name);
+    if (value != '') {
+        $('.log-name-selector .list input').last().val(value);
     }
-    api += '/api';
+}
+
+function add_argument() {
+    var arg = '<div style="margin-bottom: 5px;"><input type="text" class="form-control argument"></div>';
+    $('.arguments .list').append(arg);
+}
+
+function get_api_endpoints() {
+    var api = '';
 
     // Add module to api call
     var module = $('#module').val();
@@ -338,8 +484,10 @@ function generate_url(skip_settings=false) {
     api += '/' + module;
 
     // Add in any submodules there are
+    var submodule = '';
     if ($('.selector select:not(:first-of-type)').length > 0) {
         $('.selector select:not(:first-of-type)').each(function(i, name) {
+            if (i == 0) { submodule = $(name).val(); }
             if ($(name).val() != '') {
                 api += '/' + $(name).val();
             }
@@ -353,6 +501,41 @@ function generate_url(skip_settings=false) {
             api += '/' + $(v).val();
         }
     });
+
+    // Grab windows-counter
+    if ($('.windows-counter').val() != '') {
+        var counter = $('.windows-counter').val();
+        counter = counter.replace(/\\/g, '/');
+        if (counter.charAt(0) == '/') {
+            counter = counter.substr(1);
+        }
+        api += '/' + counter;
+        $('.windows-counter').val('/' + counter);
+    }
+
+    // Apply arguments for plugins
+    if (module == 'plugins') {
+        if (submodule != '') {
+            $('input.argument').each(function(i, arg) {
+                if ($(arg).val() != '') {
+                    api += '/' + $(arg).val();
+                }
+            });
+        }
+    }
+
+    return api;
+}
+
+function generate_url(skip_settings=false) {
+    var module = $('#module').val();
+    var api = window.location.protocol + '//' + window.location.hostname;
+    if (window.location.port) {
+        api += ':' + window.location.port;
+    }
+    api += '/api';
+
+    api += get_api_endpoints(); 
 
     if (skip_settings) {
         return api;
@@ -381,6 +564,18 @@ function generate_url(skip_settings=false) {
                 extra += '&' + filter_name + '=' + filter_text;
             }
         });
+
+        // Add combiner for all filters applied
+        var combiner = $('select.combiner').val();
+        if (combiner != '') {
+            extra += '&combiner=' + combiner;
+        }
+    }
+
+    // Add on match value if it exists
+    var match = $('select.match').val();
+    if (match != '') {
+        extra += '&match=' + match;
     }
 
     // Grab aggregation settings
@@ -389,10 +584,74 @@ function generate_url(skip_settings=false) {
         extra += '&aggregate=' + aggregate;
     }
 
+    // Grab delta setting
+    if ($('input.delta').is(':checked')) {
+        extra += '&delta=true';
+    }
+
     // Grab users
     var units = $('.units').val();
     if (units != '') {
         extra += '&units=' + units;
+    }
+
+    // Grab sleep timer
+    var sleep = $('.sleep').val();
+    if (sleep != '') {
+        extra += '&sleep=' + sleep;
+    }
+
+    // Grab name if logs
+    if (module == 'logs') {
+        $('.name').each(function(i, obj) {
+            var name = $(obj).val();
+            if (name != '') {
+                extra += '&name=' + name;
+            }
+        });
+
+        // Add log timeframe to query
+        var timeframe = $('.time-frame').val();
+        var timeframe_suffix = $('.time-frame-suffix').val();
+        if (timeframe > 0 && timeframe != '') {
+            extra += '&logged_after=' + timeframe + timeframe_suffix;
+        }
+
+        // Add severity
+        var severity = $('.severity').val();
+        if (severity != '') {
+            extra += '&severity=' + severity;
+        }
+
+        // Add event id
+        var event_id = $('.event-id').val();
+        if (event_id != '') {
+            extra += '&event_id=' + event_id;
+        }
+
+        // Add source name
+        var application = $('.application').val();
+        if (application != '') {
+            extra += '&application=' + application;
+        }
+
+        // Add computer name
+        var computer_name = $('.computer-name').val();
+        if (computer_name != '') {
+            extra += '&computer_name=' + computer_name;
+        }
+
+        // Add category
+        var category = $('.category').val();
+        if (category != '') {
+            extra += '&category=' + category;
+        }
+
+        // Add message regex/search string
+        var message = $('.message').val();
+        if (message != '') {
+            extra += '&message=' + message;
+        }
     }
 
     // Grab check settings
@@ -439,10 +698,12 @@ function clear_settings() {
     $('.settings input').val('');
     $('.data-settings select.aggregate').val('');
     $('.data-settings select.units').val('');
+    toggle_check_ncpa_btn();
 }
 
 function resize_api_window() {
     var h = $(window).height() - $('nav').outerHeight();
+    var w = $(window).width() - 300;
     $('#api-input-control').css('height', h);
     $('#api-input-control .max').css('max-height', h-40);
     if (h-92 < $('#api-input-control .selection-box').outerHeight()) {
@@ -456,13 +717,106 @@ function resize_api_window() {
                             .css('bottom', 20);
     }
     $('#api-frame').css('height', h - $('#api-input').outerHeight());
+    $('#api-table').css('max-width', w);
+}
+
+function set_log_timeframe_size() {
+    if ($('.input-group.timeframe').is(':visible')) {
+        var width = $('.input-group.timeframe').width();
+        width = width - 100 - $('.input-group.timeframe .input-group-addon').outerWidth();
+        $('.input-group.timeframe input').css('width', width);
+    }
+}
+
+function generate_active_check() {
+    var module = $('#module').val();
+    $('.active-check-out').html('...');
+    var active = "./check_ncpa.py -H &lt;ncpa server&gt; -t '&lt;your token&gt;'";
+
+    // Run the active checck and get the result
+    var url = generate_url();
+    $.get(url, { }, function(data) {
+        if (data) {
+            $('.active-check-out').html(data.stdout);
+        }
+    }, 'json');
+
+    // Grab the current endpoint and set it as -M
+    var api = get_api_endpoints();
+    api = api.slice(1, api.length);
+    active += " -M '" + api + "'";
+
+    var warn = $('.warn').val();
+    var crit = $('.crit').val();
+    if (warn) { active += ' -w ' + warn; }
+    if (crit) { active += ' -c ' + crit; }
+
+    var aggregate = $('.aggregate').val();
+    var units = $('.units').val();
+    var unit = $('.unit').val();
+    var delta = $('.delta').is(':checked');
+    if (aggregate) { active += " -q 'aggregate=" + aggregate + "'"; }
+    if (units) { active += ' --units ' + units; }
+    if (unit) { active += ' --unit ' + unit; }
+    if (delta) { active += ' --delta 1'; }
+
+    switch (module) {
+
+        // Apply special services module sections
+        case 'services':
+            q = [];
+
+            // Add service names
+            $('.service').each(function(i, service) {
+                var val = $(service).val();
+                if (val != '') {
+                    q.push('service=' + val);
+                }
+            });
+
+            // Add match type and status
+            var status = $('.status').val();
+            var match = $('.match').val();
+            if (status) { q.push('status=' + status); }
+            if (match) { q.push('match=' + match); }
+
+            active += " -q '" + q.join(',') + "'";
+            break;
+
+    }
+
+    $('.active-check-val').html(active);
+}
+
+function generate_passive_check() {
+    var passive = '%HOSTNAME%|&lt;service name&gt; = ';
+
+    // Get the values that we need to make the passive check definition
+    var api = get_api_endpoints();
+    passive += api;
+
+    var warn = $('.warn').val();
+    var crit = $('.crit').val();
+    if (warn) { passive += ' --warning ' + warn; }
+    if (crit) { passive += ' --critical ' + crit; }
+
+    var aggregate = $('.aggregate').val();
+    var units = $('.units').val();
+    var unit = $('.unit').val();
+    var delta = $('.delta').is(':checked');
+    if (aggregate) { passive += ' --aggregate ' + aggregate; }
+    if (units) { passive += ' --units ' + units; }
+    if (unit) { passive += ' --unit ' + unit; }
+    if (delta) { passive += ' --delta 1'; }
+
+    $('.passive-check-val').html(passive);
 }
 </script>
 {% endblock %}
 
 {% block content %}
 <div style="display: table; width: 100%;">
-    <div class="well" id="api-input-control" style="width: 300px; vertical-align: top; display: table-cell; position: relative;">
+    <div class="well" id="api-input-control" style="width: 300px; min-width: 300px; vertical-align: top; display: table-cell; position: relative;">
         <div class="max" style="overflow-y: auto;">
             <div class="selection-box">
                 <div class="selector">
@@ -485,22 +839,111 @@ function resize_api_window() {
                 </div>
                 <div class="selector-extra"></div>
                 <div class="selector-disk"></div>
-                <div class="settings service-settings">
-                    <label>Select Service(s)</label>
+                <div class="settings log-name-selector">
+                    <div>
+                        <label class="fl">Log Names <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: help;" title="Log Names" data-content="In order to see any logs in the logs endpoint you need to select the types of logs to get. In Windows, they are sorted by log names. Examples are <i>'Application', 'Security', 'Setup', 'System', 'Forwarded Events'</i>"></i></label>
+                        <div class="fr">Examples: <a class="log-example tt-bind" title="Multiple event log types being used in a single check"><i class="fa fa-file-text-o fa-14"></i></a></div>
+                        <div class="clear"></div>
+                    </div>
                     <div class="list"></div>
                     <div>
-                        <button type="button" class="btn btn-xs btn-default add-service">
-                            <i class="fa fa-plus"></i> Add Service
+                        <button type="button" class="btn btn-xs btn-default add-log-name">
+                            <i class="fa fa-plus"></i> Add Log Name
                         </button>
                     </div>
                 </div>
-                <div class="settings filter-settings">
-                    <label>Filter(s)</label>
+                <div class="settings log-filters">
+                    <div style="margin-bottom: 15px;">
+                        <label>Log Timeframe</label>
+                        <div class="input-group timeframe" style="margin-bottom: 5px;">
+                            <div class="input-group-addon tt-bind" title="The amount of time to check for logs. All logs that came in after x amount of time will be shown.">Logged After</div>
+                            <input type="text" class="form-control time-frame" placeholder="24" style="width: 30px;">
+                            <select class="form-control time-frame-suffix" style="width: 100px; border-left: 0;">
+                                <option value="s">Seconds</option>
+                                <option value="m">Minutes</option>
+                                <option value="h" selected>Hours</option>
+                                <option value="d">Days</option>
+                                <option value="w">Weeks</option>
+                                <option value="M">Months</option>
+                            </select>
+                        </div>
+                    </div>
+                    <label>Log Filter Settings</label>
+                    <div class="input-group" style="margin-bottom: 5px;">
+                        <div class="input-group-addon tt-bind" title="severity">EventType</div>
+                        <select class="form-control severity">
+                            <option></option>
+                            <option value="ERROR">Error</option>
+                            <option value="WARNING">Warning</option>
+                            <option value="INFORMATION">Information</option>
+                            <option value="AUDIT_FAILURE">Audit Failure</option>
+                            <option value="AUDIT_SUCCESS">Audit Success</option>
+                            <option value="UNKNOWN">Unknown</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 5px;">
+                        <div class="input-group-addon tt-bind" title="event_id">EventID</div>
+                        <input type="text" class="form-control event-id" placeholder="# match">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 5px;">
+                        <div class="input-group-addon tt-bind" title="application">SourceName</div>
+                        <input type="text" class="form-control application" placeholder="match">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 5px;">
+                        <div class="input-group-addon tt-bind" title="computer_name">ComputerName</div>
+                        <input type="text" class="form-control computer-name" placeholder="match">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 5px;">
+                        <div class="input-group-addon tt-bind" title="category">EventCategory</div>
+                        <input type="text" class="form-control category" placeholder="match">
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-addon tt-bind" title="message">Message</div>
+                        <input type="text" class="form-control message" placeholder="search / regex">
+                    </div>
+                </div>
+                <div class="settings selector-counters">
+                    <div>
+                        <label class="fl">Windows Counter <i class="fa fa-question-circle pop-bind fa-r fa-14" title="Windows Counter" data-content="<p>Since there are tons of windows counters, we cannot list them all. If you'd like a list of available counters, run the following command in the command prompt:</p> <pre>TypePerf.exe –q</pre> <p>The command should give you a list of available counters on any version of Windows over Windows 2000.</p> <p><em>Note: Not all counters have data that can be used by NCPA (must be numeric). Per second counters <b>must</b> be given a sleep amount or they will not return data.</em></p>"></i></label>
+                        <div class="fr">Examples: <a class="example tt-bind" data-counter="/TCPv4/Connections Active" data-sleep="0" title="Counter example"><i class="fa fa-asterisk fa-14"></i></a> <a class="example tt-bind" data-counter="/TCPv4/Segments Received/sec" data-sleep="5" title="Per second counter example"><i class="fa fa-bar-chart fa-14"></i></a></div>
+                        <div class="clear"></div>
+                    </div>
+                    <input type="text" class="form-control windows-counter" placeholder="ex: /TCPv4/Connections Active">
+                </div>
+                <div class="settings service-settings">
+                    <label>Service Filter(s)</label>
+                    <div class="list"></div>
+                    <div>
+                        <button type="button" class="btn btn-xs btn-default add-service">
+                            <i class="fa fa-plus"></i> Add Filter
+                        </button>
+                    </div>
+                </div>
+                <div class="settings proc-filters">
+                    <label>Process Filter(s) <i class="fa fa-question-circle pop-bind fa-r fa-14" title="Process Filtering Options" data-content="<p>You can add multiple filters of the same type and they will be combined using the <b>combiner</b> variable that you can set in <i>Filter Settings</i> below.</p><p><b>name</b> and <b>exe</b> - Value will be matched using the <i>search type</i> setting in <i>Filter Settings</i>. Defaults to exact match.</p><p><b>cpu_percent</b>, <b>mem_percent</b>, <b>mem_rss</b>, <b>mem_vms</b> - These filters can be floats, and will match anything less than or equal to (&lt;=) the value.</p>"></i></label>
                     <div class="list"></div>
                     <div>
                         <button type="button" class="btn btn-xs btn-default add-filter">
                             <i class="fa fa-plus"></i> Add Filter
                         </button>
+                    </div>
+                </div>
+                <div class="settings filter-settings">
+                    <label>Filter Settings</label>
+                    <div class="input-group combiner" style="margin-bottom: 5px;">
+                        <div class="input-group-addon">Combine using <i class="fa fa-question-circle pop-bind fa-r fa-14" title="Combine Using And or Or" data-content="<p>This can either be set to <b>and</b> which is the default or to <b>or</b>. This setting determines how to add the filters to the query. When <b>and</b>, each process returned would need to match <i>all</i> supplied filters. If using <b>or</b>, then the matches must match <i>any</i> of the filters.</p>"></i></div>
+                        <select class="form-control combiner">
+                            <option value="">and</option>
+                            <option value="or">or</option>
+                        </select>
+                    </div>
+                    <div class="input-group match">
+                        <div class="input-group-addon">Filter match type</div>
+                        <select class="form-control match">
+                            <option value="">exact match</option>
+                            <option value="search">search match</option>
+                            <option value="regex">regex match</option>
+                        </select>
                     </div>
                 </div>
                 <div class="settings data-settings">
@@ -529,6 +972,23 @@ function resize_api_window() {
                             <option value="Ti">Ti</option>
                         </select>
                     </div>
+                    <div class="delta-box hide">
+                        <div class="input-group delta" style="margin-top: 5px;">
+                            <label class="input-group-addon">Delta <i class="fa fa-question-circle pop-bind" title="Delta Values (Change in Value Over Time)" data-content="Delta will take the last check call for this endpoint (that delta was applied to) and subtract it from the current data. It will then divide that by the amount of time since the last call giving a per second average value since the last call.<br><br><em>Only certain endpoints work with delta.</em>"></i></label>
+                            <div class="white-box">
+                                <input type="checkbox" class="delta" value="1" style="vertical-align: middle; margin: 0;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings arguments">
+                    <label>Plugin Arguments <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: pointer;" title="Plugin Arguments" data-content="<p>Each plugin argument will be added to the output with a space. An example is below:</p><p><pre>-a 100</pre><pre>-v 'testing'</pre></p><p>The above values in argument fields would create a command for the selected plugin like this:</p><p><pre>./test.sh -a 100 -v 'testing'</pre></p><p><b>Note</b>: You'll notice that each argument is passed into the URL with a <code>/</code> such as <code>/test.sh/-a 100/-v 'testing'</code>.</p>"></i></label>
+                    <div class="list"></div>
+                    <div>
+                        <button type="button" class="btn btn-xs btn-default add-argument">
+                            <i class="fa fa-plus"></i> Add Argument
+                        </button>
+                    </div>
                 </div>
                 <div class="settings check-settings">
                     <label>Check Settings</label>
@@ -556,8 +1016,13 @@ function resize_api_window() {
                         </div>
                     </div>
                 </div>
-                <div class="settings">
-                    Advanced Settings
+                <div class="settings advanced-settings">
+                    <label>Advanced Settings</label>
+                    <div class="input-group">
+                        <div class="input-group-addon">Sleep for <i class="fa fa-question-circle pop-bind" title="Sleep (Generate Data Per Second)" data-content="<p>When checking for data such as per second counters or delta values, the sleep value is used to generate the data/sec value.</p><p>NCPA will wait the amount of sleep time specified, collecting the data that comes in between the start and end time of the sleep time.</p><p>The calculation when using a sleep value:<br><b>sum(data) / sleep = data/sec</b></p><p>Sleep value is in seconds.</p>"></i></div>
+                        <input type="text" class="form-control sleep" placeholder="# of">
+                        <div class="input-group-addon">seconds</div>
+                    </div>
                 </div>
                 <div style="margin-top: 20px;">
                     <button class="btn btn-sm btn-primary" id="reload"><i class="fa fa-refresh fa-l"></i> Reload</button>
@@ -566,13 +1031,13 @@ function resize_api_window() {
             <div class="btn-check-ncpa btn-group dropup">
                 <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-external-link-square fa-l"></i> View in alternate format <i class="fa fa-chevron-up fa-r"></i></button>
                 <ul class="dropdown-menu">
-                    <li><a>As active check using <em>check_ncpa.py</em></a></li>
-                    <li><a>As passive check config definition</a></li>
+                    <li><a class="show-check" data-type="active">As active check using <em>check_ncpa.py</em></a></li>
+                    <li><a class="show-check" data-type="passive">As passive check config definition</a></li>
                 </ul>
             </div>
         </div>
     </div>
-    <div style="display: table-cell;">
+    <div id="api-table" style="display: table-cell;">
         <div class="whiteout">
             <div class="spinner">
                 <div class="bounce1"></div>
@@ -581,7 +1046,51 @@ function resize_api_window() {
             </div>
         </div>
         <input class="form-control" id="api-input" style="vertical-align: top;" readonly type="text">
-        <iframe src="/api" name="api-frame" style="vertical-align: top;" id="api-frame"></iframe>
+        <div style="vertical-align: top; overflow-y: scroll;" id="api-frame">
+            <div></div>
+        </div>
     </div>
 </div>
+
+<div class="modal active-check-modal" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Active Check Example</h4>
+            </div>
+            <div class="modal-body">
+                <p>Running the following active check from the command line:</p>
+                <pre class="active-check-val"></pre>
+                <p>Would result in the following output:</p>
+                <pre class="active-check-out">...</pre>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal passive-check-modal" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Passive Check Example</h4>
+            </div>
+            <div class="modal-body">
+                <p>You can create a passive check using the following example. We recommend putting your passive checks in a file called something like <code>passive.cfg</code> in the <code>&lt;ncpa path&gt;/etc/ncpa.cfg.d</code> folder. You must add in the <code>[passive directives]</code> header before adding the definitions. Default installs of NCPA come with an <code>example.cfg</code> that shows what a basic passive check setup looks like.</p>
+                <pre class="passive-check-val"></pre> 
+                <p><i>Make sure that you restart the passive service once you've updated the configuration.</i></p>
+                <p><b>Note:</b> Passive checks also allow you to define individual check intervals. Add <code>|&lt;check duration&gt;</code> to the end of the service name in order to use the specified vlaue in seconds. If no check interval is defined, the default interval in the ncpa.cfg will be used.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

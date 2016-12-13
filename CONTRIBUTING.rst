@@ -21,11 +21,54 @@ Build Your Development Environment
 In order to get your NCPA development environment up and running you need to make sure all the pre-reqs have 
 been installed and working.
 
-**Set Up Linux Environment**::
+**Set Up Windows Environment**
+
+You will need to install git for windows. Then, download and install:
+
+* `Python 2.7.12 on Windows <https://www.python.org/downloads/release/python-2712/>`_
+* OpenSSL for Windows (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_0c.exe>`_)
+
+To set up the python requirements, in `cmd.exe` clone the NCPA repo and run::
+
+	python -m pip install -r reources/requires.txt
+
+
+**Set Up Linux / Mac OS X Environment**
+
+You will need `git` installed in order to clone the repo to do the following.
+
+Once cloned, to install the prereqs::
 
     cd ncpa
     ./build/scripts/linux_build_prereqs.sh
     ./build/scripts/linux_build_setup.sh
+
+Running NCPA in Development
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The below examples assume you are inside the NCPA git working directory.
+
+*Note: You can run both the listener and passive service at the same time.*
+
+**On Windows**
+
+NCPA Listener::
+
+	python agent/windows_debug.py listener
+
+NCPA Passive::
+
+	python agent/windows_debug.py passive
+
+**On Linux / Mac OS X**
+
+NCPA Listener::
+
+	python2.7 agent/ncpa_listener.py -n
+
+NCPA Passive::
+
+	python2.7 agent/ncpa_passive.py -n
 
 Code Readability
 ~~~~~~~~~~~~~~~~
