@@ -80,6 +80,7 @@ rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
 rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
 
 if [ `command -v systemctl` ]; then
+    systemctl daemon-reload
     systemctl start ncpa_listener
     systemctl start ncpa_passive
 else
