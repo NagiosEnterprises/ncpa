@@ -588,7 +588,7 @@ def admin_plugin_config():
 @requires_admin_auth
 def admin_checks_config():
     tmp_args = { 'no_nav': True,
-                 'checks': get_config_items('passive checks') }
+                 'checks': [x for x in get_config_items('passive checks') if x[0] not in listener.config['iconfig'].defaults()] }
     return render_template('admin/checks.html', **tmp_args)
 
 
