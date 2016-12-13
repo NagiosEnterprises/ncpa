@@ -580,7 +580,7 @@ def admin_plugin_config():
     tmp_args = { 'no_nav': True,
                  'plugin_path': get_config_value('plugin directives', 'plugin_path', 'plugins/'),
                  'plugin_timeout': get_config_value('plugin directives', 'plugin_timeout', '60'),
-                 'directives': get_config_items('plugin directives') }
+                 'directives': [x for x in get_config_items('plugin directives') if x[0] not in listener.config['iconfig'].defaults()] }
     return render_template('admin/plugins.html', **tmp_args)
 
 
