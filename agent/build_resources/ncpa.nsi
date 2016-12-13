@@ -171,9 +171,9 @@ Function ConfigPassive
     ; Grab passive options
     !insertmacro INSTALLOPTIONS_READ $nrdp "nsis_passive_options.ini" "Field 14" "State"
     !insertmacro INSTALLOPTIONS_READ $nrdp_url "nsis_passive_options.ini" "Field 3" "State"
-    !insertmacro INSTALLOPTIONS_READ $nrdp_token "nsis_passive_options.ini" "Field 5" "State"
-    !insertmacro INSTALLOPTIONS_READ $nrdp_hostname "nsis_passive_options.ini" "Field 6" "State"
-    !insertmacro INSTALLOPTIONS_READ $check_interval "nsis_passive_options.ini" "Field 4" "State"
+    !insertmacro INSTALLOPTIONS_READ $nrdp_token "nsis_passive_options.ini" "Field 4" "State"
+    !insertmacro INSTALLOPTIONS_READ $nrdp_hostname "nsis_passive_options.ini" "Field 5" "State"
+    !insertmacro INSTALLOPTIONS_READ $check_interval "nsis_passive_options.ini" "Field 6" "State"
     !insertmacro INSTALLOPTIONS_READ $log_level_passive "nsis_passive_options.ini" "Field 12" "State"
 
 FunctionEnd
