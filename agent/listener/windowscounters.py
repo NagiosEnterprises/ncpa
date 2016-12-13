@@ -3,9 +3,10 @@
 import nodes
 import win32pdh
 import time
-import os
 import logging
 import copy
+import re
+from urllib import unquote
 
 
 class WindowsCountersNode(nodes.LazyNode):
@@ -22,7 +23,7 @@ class WindowsCountersNode(nodes.LazyNode):
             return {self.name: []}
 
         path = self.path
-        counter_path = os.path.join('\\', *path)
+        counter_path = WindowsCountersNode.get_counter_path(path)
 
         def counter_method(*args, **kwargs):
             try:
@@ -35,7 +36,7 @@ class WindowsCountersNode(nodes.LazyNode):
 
     def run_check(self, *args, **kwargs):
         path = self.path
-        self.name = os.path.join('\\', *path)
+        self.name = WindowsCountersNode.get_counter_path(path)
 
         def counter_method(*args, **kwargs):
             try:
@@ -45,7 +46,7 @@ class WindowsCountersNode(nodes.LazyNode):
                 return [0, 'c']
 
         self.method = counter_method
-        return super(WindowsCountersNode, self).run_check(*args, **kwargs)
+        return super(WindowsCountersNode, self).run_check(capitalize=False, *args, **kwargs)
 
     @staticmethod
     def get_counter_val(counter_path, *args, **kwargs):
@@ -65,10 +66,20 @@ class WindowsCountersNode(nodes.LazyNode):
 
         unit = info[-1]
 
-        if not isinstance(value, (list, tuple)):
-            value = [value]
+        if not isinstance(value, (int, long)):
+            value = round(value, 2)
 
         return [value, unit]
+
+    @staticmethod
+    def get_counter_path(path):
+        counter_path = '\\'
+        if re.match(r'\b[sS]ec\b', path[-1]):
+            counter_path += '\\'.join(path[:-1])
+            counter_path += '/' + path[-1]
+        else:
+            counter_path += '\\'.join(path)
+        return counter_path
 
 def get_node():
     return WindowsCountersNode('windowscounters', None)

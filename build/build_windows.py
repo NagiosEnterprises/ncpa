@@ -3,6 +3,11 @@ import shutil
 import subprocess
 import sys
 
+# Grab command line arguements
+buildtype = 'release'
+if len(sys.argv) > 1:
+    buildtype = sys.argv[1]
+
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 nsi_store = os.path.join(basedir, 'agent', 'build_resources', 'ncpa.nsi')
 nsi = os.path.join(basedir, 'agent', 'build', 'ncpa.nsi')
@@ -18,15 +23,15 @@ try:
 except:
     pass
 
-# We should not be doing this in the build_windows.py script but rather in another script that should call this script
-#subprocess.Popen(['git', 'pull']).wait()
-#subprocess.Popen(['pip', 'install', '-r', os.path.join(basedir, 'require.txt')]).wait()
+# Building nightly versions requires a git pull and pip upgrade
+if buildtype == 'nightly':
+	subprocess.Popen(['git', 'pull']).wait()
+	subprocess.Popen(['pip', 'install', '--upgrade', '-r', os.path.join(basedir, 'build', 'resources', 'require.txt')]).wait()
+
+# Remove old build
 subprocess.Popen(['rmdir', os.path.join(basedir, 'agent', 'build'), '/s', '/q'], shell=True).wait()
 
-os.chdir('docs')
-subprocess.Popen(['make.bat', 'html']).wait()
-
-os.chdir('../agent')
+os.chdir('agent')
 
 if not os.path.exists('var'):
     os.mkdir('var')
@@ -39,9 +44,6 @@ if not os.path.exists('plugins'):
 
 sys.path.append(os.getcwd())
 subprocess.Popen(['python', 'setup_windows.py', 'build_exe']).wait()
-
-shutil.copytree(os.path.join(basedir, 'docs', '_build', 'html'), 
-                os.path.join(basedir, 'agent', 'build', 'NCPA', 'listener', 'static', 'help'))
 
 environ = os.environ.copy()
 environ['NCPA_BUILD_VER'] = version

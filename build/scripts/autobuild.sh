@@ -21,11 +21,13 @@ fi
 (
     if [ $PACKAGE == 'dmg' ]; then
         cd /Users/techteam/Development/ncpa/build
+        sudo make update_git update_version
         sudo make build_${PACKAGE}
         sudo /bin/cp *.${PACKAGE} "/Volumes/teamshare/ncpastaging/posix/${PACKAGE}/${ARCH}/"
         sudo make clean
     else
         cd /root/Development/ncpa/build
+        make update_git update_version
         make build_${PACKAGE}
         /bin/cp *.${PACKAGE} "/mnt/smbshare/ncpastaging/posix/${PACKAGE}/${ARCH}/"
         make clean

@@ -39,6 +39,7 @@ def make_disk_nodes(disk_name):
 
 def make_mountpoint_nodes(partition_name):
     mountpoint = partition_name.mountpoint
+
     total_size = RunnableNode('total_size', method=lambda: (ps.disk_usage(mountpoint).total, 'B'))
     used = RunnableNode('used', method=lambda: (ps.disk_usage(mountpoint).used, 'B'))
     free = RunnableNode('free', method=lambda: (ps.disk_usage(mountpoint).free, 'B'))
@@ -47,8 +48,23 @@ def make_mountpoint_nodes(partition_name):
     fstype = RunnableNode('fstype', method=lambda: (partition_name.fstype, ''))
     opts = RunnableNode('opts', method=lambda: (partition_name.opts, ''))
     safe_mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
+
+    node_children = [total_size, used, free, used_percent, device_name, fstype, opts]
+
+    # Unix specific inode counter ~ sorry Windows! :'(
+    if environment.SYSTEM != 'Windows':
+        st = os.statvfs(mountpoint)
+        iu = st.f_files - st.f_ffree
+        inodes = RunnableNode('inodes', method=lambda: (st.f_files, 'inodes'))
+        inodes_used = RunnableNode('inodes_used', method=lambda: (iu, 'inodes'))
+        inodes_free = RunnableNode('inodes_free', method=lambda: (st.f_ffree, 'inodes'))
+        node_children.append(inodes)
+        node_children.append(inodes_used)
+        node_children.append(inodes_free)
+
+    # Make and return the full parent node
     return RunnableParentNode(safe_mountpoint,
-                              children=[total_size, used, free, used_percent, device_name, fstype, opts],
+                              children=node_children,
                               primary='used_percent',
                               custom_output='Used disk space was',
                               include=('total_size', 'used', 'free', 'used_percent'))

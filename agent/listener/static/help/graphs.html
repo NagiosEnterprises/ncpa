@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta charset='utf-8'>
+        <title>Graphing &middot; Documentation &mdash; NCPA</title>
+        <link rel="shortcut icon" type="image/png" href="../img/ncpa.png" />
+        <link rel="icon" type="image/png" href="../img/ncpa.png" />
+        <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
+        <link rel="stylesheet" href="../css/ncpa.css" type="text/css" />
+        <script src='../js/jquery.2.2.4.min.js'></script>
+        <script src='../js/bootstrap.min.js'></script>
+        <script src='../js/help.js'></script>
+    </head>
+    <body class="help">
+        
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-lg-10">
+
+                <h1>Real-time Graphing</h1>
+                <p>One of the newest features of NCPA is real-time graphing. Real-time graphs are available for certain generic system metrics. These graphs show live data on a per second basis using D3.js and websockets. This means that in order to use them, you will need a browser that supports websockets. Most modern browsers, besides Safari, support websockets in their latest versions.</p>
+                <p>You can currently use the graphing module with the following API nodes: <code>cpu</code>, <code>interface</code>, <code>memory</code>, and <code>disk</code>. In future versions, we will likely add more API endpoints as we create ways to manage how the graphing module tells the backend to graph.</p>
+                <p>The easiest way to start using the graphing module is to click the <a href="../../gui/graphs" target="_new">Graphs</a> <i class="fa fa-external-link"></i> tab in the GUI and select an API endpoint to graph. You should see a real-time graph appear and then follow the directions below.</p>
+
+                <div class="section">
+                    <h2>Embedding Graphs</h2>
+                    <p>In NCPA 2 you can embed graphs in your own pages. In order to do so, you'll need to add a few libraries to your page, create a graph URL, and embed it in your HTML.</p>
+                    <h6>Adding the JS and CSS Includes</h6>
+                    <p>You need any version of <b>jQuery</b> and you also need both <code>smoothie.js</code> and <code>d3.v4.min.js</code> to your page. Typically you add these to the head section of your HTML. Be sure to change <em>localhost:5693</em> to your defined NCPA hostname and port. Using the ones provided will ensure up-to-date versions when upgrading.</p>
+                    <pre>&lt;script type=&quot;text/javascript&quot; src=&quot;https://localhost:5693/static/js/jquery.2.2.4.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="https://localhost:5693/static/js/smoothie.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="https://localhost:5693/static/js/d3.v4.min.js"&gt;&lt;/script&gt;</pre>
+                    <p>If you are planning on using the basic styling that we use inside NCPA's GUI, you can also add the CSS included.</p>
+                    <pre>&lt;link type="text/css" href="https://localhost:5693/static/css/ncpa-graph.css" rel="stylesheet"&gt;</pre>
+                    <h6>Creating the Graph Module URL</h6>
+                    <p>You can do this from the <a href="../../gui/graphs" target="_new">Graphs</a> <i class="fa fa-external-link"></i> tab in the GUI or you can make the URL manually. Create the URL like the example below. Make sure to add your token in to the call or your call will be denied.</p>
+                    <pre>https://localhost:5693/graph/&lt;api endpoint&gt;?token=mytoken</pre>
+                    <h6>Example</h6>
+                    <p>An example of the HTML of a simple page using the embedded graphing. Again, replace <em>localhost:5693</em> with your NCPA hostname and port.</p>
+                    <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;title&gt;Embedded Graph&lt;/title&gt;
+    &lt;link type=&quot;text/css&quot; href=&quot;https://localhost:5693/static/css/ncpa-graph.css&quot; rel=&quot;stylesheet&quot;&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;https://localhost:5693/static/js/jquery.2.2.4.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;https://localhost:5693/static/js/smoothie.js&quot;&gt;&lt;/script&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;https://localhost:5693/static/js/d3.v4.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+    $(document).ready(function() { $(&apos;.graph&apos;).load(&apos;https://localhost:5693/graph/cpu/percent?token=mytoken&apos;); });
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;graph&quot; style=&quot;width: 600px; margin: 10% auto;&quot;&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    </body>
+</html>

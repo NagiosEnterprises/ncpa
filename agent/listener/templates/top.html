@@ -1,6 +1,5 @@
 {% block headerjs %}
-<script src='/static/js/smoothie.js'></script>
-<script>
+<script type="text/javascript">
     $(document).ready(function() {
         var display = {{ display }};
         var critical = {{ critical }};
@@ -8,7 +7,7 @@
         var highlight = '{{ highlight }}';
         var plbody = $('table.processes tbody');
         var plhead = $('table.processes thead tr#titles')
-        var order = ['pid', 'name', 'username', 'cpu_percent', 'memory_percent'];
+        var order = ['pid', 'name', 'username', 'cpu_percent', 'mem_percent'];
         var current_pl = [];
 
         $('#highlight-input').on('keyup', function(e) {
@@ -58,10 +57,6 @@
             }
         });
 
-        $('.sortby').click(function(e) {
-            console.log($(e.target).val());
-        });
-
         var get_ws_address = function() {
             var loc = window.location;
             if(loc.protocol === 'https:') {
@@ -69,7 +64,7 @@
             } else {
                 var ws_proto = 'ws';
             }
-            var ws_loc = ws_proto + '://' + loc.hostname + ':' + loc.port + '/top-websocket/';
+            var ws_loc = ws_proto + '://' + loc.hostname + ':' + loc.port + '/ws/top';
             return ws_loc;
         }
         
@@ -77,11 +72,12 @@
             plhead.empty();
             
             $.each(order, function(i) {
-                var th = $('<th>', {id: order[i], text: order[i]});
-                var s = $('<span>', {class: 'signia', html: '&#x21a7;'});
+                var th = $('<th>', { id: order[i], text: order[i].replace(/_/g, ' ') });
+                var s = $('<span>', { class: 'signia', html: ' <i class="fa fa-caret-down fa-l"></i>'});
                 
-                if (order[i] == 'cpu_percent') {                    
+                if (order[i] == 'cpu_percent') {
                     th.append(s);
+                    th.css('width', '12%');
                     th.click(function() {
                         $('.signia').hide();
                         s.show();
@@ -90,8 +86,9 @@
                         create_plbody(current_pl);
                     });
                 }
-                if (order[i] == 'memory_percent') {                    
+                if (order[i] == 'mem_percent') {                    
                     th.append(s);
+                    th.css('width', '12%');
                     th.click(function() {
                         $('.signia').hide();
                         s.show();
@@ -101,26 +98,29 @@
                     });
                     s.hide();
                 }
+                if (order[i] == 'pid') {
+                    th.css('width', '8%');
+                }
                 
                 plhead.append(th);
             });
         }
         
         var cpu_compare = function(a, b) {
-            if (a.cpu_percent < b.cpu_percent) {
+            if (a.cpu_percent[0] < b.cpu_percent[0]) {
                 return 1
             }
-            if (a.cpu_percent > b.cpu_percent) {
+            if (a.cpu_percent[0] > b.cpu_percent[0]) {
                 return -1
             }
             return 0;
         }
         
         var mem_compare = function(a, b) {
-            if (a.memory_percent < b.memory_percent) {
+            if (a.mem_percent[0] < b.mem_percent[0]) {
                 return 1
             }
-            if (a.memory_percent > b.memory_percent) {
+            if (a.mem_percent[0] > b.mem_percent[0]) {
                 return -1
             }
             return 0;
@@ -147,14 +147,18 @@
                 var p = pl[i];
                 var tr = $('<tr>', {id: p.pid});
                 $.each(order, function(j) {
-                    var td = $('<td>', {text: p[order[j]]});
+                    var data = p[order[j]];
+                    if (data.constructor === Array) {
+                        data = data[0];
+                    }
+                    var td = $('<td>', { text: data });
                     if (highlight != null && order[j] == 'name' && p[order[j]].indexOf(highlight) > -1) {
                         tr.addClass('highlight');
                     }
-                    if ((order[j] == 'cpu_percent' || order[j] == 'memory_percent') && critical > 0 && p[order[j]] > critical) {
+                    if ((order[j] == 'cpu_percent' || order[j] == 'mem_percent') && critical > 0 && p[order[j]] > critical) {
                         td.addClass('critical');
                     }
-                    else if ((order[j] == 'cpu_percent' || order[j] == 'memory_percent') && warning > 0 && p[order[j]] > warning) {
+                    else if ((order[j] == 'cpu_percent' || order[j] == 'mem_percent') && warning > 0 && p[order[j]] > warning) {
                         td.addClass('warning');
                     }
                     tr.append(td);    
@@ -190,14 +194,24 @@
 <div id='top-container'>
     <div class="well">
         <form class="form-inline" id="top-form">
-            <div style="float: left;">
-                <input class="form-control" style="width: 260px;" type="text" id="highlight-input" placeholder="Highlight Name">
+            <h1 class="fl">Top Processes</h1>
+            <div class="fl">
+                <div class="input-group" style="width: 320px;">
+                    <div class="input-group-addon">Highlight Name</div>
+                    <input class="form-control" type="text" id="highlight-input" placeholder="ncpa_listener.exe">
+                </div>
             </div>
-            <div style="float: right;">
-                <input class="form-control" type="text" id="warning-input" placeholder="Warning Threshold">
-                <input class="form-control" type="text" id="critical-input" placeholder="Critical Threshold">
+            <div class="fr">
+                <div class="input-group" style="width: 120px;">
+                    <div class="input-group-addon"><img src="../../static/img/warning.png" class="tt-bind" data-placement="bottom" title="Warning threshold"></div>
+                    <input type="text" class="form-control" id="warning-input" placeholder="Warning">
+                </div>
+                <div class="input-group" style="width: 120px;">
+                    <div class="input-group-addon"><img src="../../static/img/critical.png" class="tt-bind" data-placement="bottom" title="Critical threshold"></div>
+                    <input type="text" class="form-control" id="critical-input" placeholder="Critical">
+                </div>
             </div>
-            <div style="clear: both;"></div>
+            <div class="clear"></div>
         </form>
     </div>
 </div>
@@ -208,9 +222,9 @@
             <div style="padding-bottom: 20px;">
                 <table class="table table-top table-bordered table-condensed">
                     <tr>
-                        <td id='load' style="width: 33.3%;"><b>CPU Percent</b> <span class='current'></span></td>
-                        <td id='virtual' style="width: 33.3%;"><b>RAM Usage</b> <span class='current'></span></td>
-                        <td id='swap' style="width: 33.3%;"><b>Swap Usage</b> <span class='current'></span></td>
+                        <td id='load' style="width: 33.33%;"><b>CPU Percent</b> <span class='current'></span></td>
+                        <td id='virtual' style="width: 33.33%;"><b>RAM Usage</b> <span class='current'></span></td>
+                        <td id='swap' style="width: 33.33%;"><b>Swap Usage</b> <span class='current'></span></td>
                     </tr>
                 </table>
             </div>

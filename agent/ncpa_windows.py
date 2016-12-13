@@ -5,7 +5,6 @@ See below for more information on what methods must be implemented and how they
 are called.
 """
 
-import cx_Logging
 import cx_Threads
 import threading
 import ConfigParser
@@ -14,6 +13,7 @@ import logging
 import logging.handlers
 import os
 import time
+import datetime
 import sys
 from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
@@ -26,12 +26,13 @@ import listener.psapi
 import listener.windowscounters
 import listener.windowslogs
 import listener.certificate
+import listener.database
 import jinja2.ext
-import webhandler
 import filename
 import ssl
 import gevent.builtins
 from gevent import monkey
+from geventwebsocket.handler import WebSocketHandler
 
 monkey.patch_all(subprocess=True, thread=False)
 
@@ -42,6 +43,10 @@ class Base(object):
         logging.getLogger().handlers = []
         self.stopEvent = cx_Threads.Event()
         self.debug = debug
+
+        # Set up database
+        self.db = listener.database.DB()
+        self.db.setup()
 
     def determine_relative_filename(self, file_name, *args, **kwargs):
         """Gets the relative pathname of the executable being run.
@@ -126,8 +131,10 @@ class Listener(Base):
         except Exception:
             pass
 
-        try:
+        # Run DB maintenance on start
+        self.db.run_db_maintenance(self.config)
 
+        try:
             address = self.config.get('listener', 'ip')
             port = self.config.getint('listener', 'port')
             listener.server.listener.config_files = self.config_filenames
@@ -160,11 +167,11 @@ class Listener(Base):
             listener.server.listener.secret_key = os.urandom(24)
             http_server = WSGIServer(listener=(address, port),
                                      application=listener.server.listener,
-                                     handler_class=webhandler.PatchedWSGIHandler,
+                                     handler_class=WebSocketHandler,
                                      spawn=Pool(200),
                                      **ssl_context)
             http_server.serve_forever()
-        except Exception, e:
+        except Exception as e:
             logging.exception(e)
 
     # called when the service is starting
@@ -179,7 +186,6 @@ class Listener(Base):
         logging.info("Parsed config from: %s" % str(self.config_filenames))
         logging.info("Looking for plugins at: %s" % self.abs_plugin_path)
 
-
 class Passive(Base):
 
     def run_all_handlers(self, *args, **kwargs):
@@ -191,6 +197,7 @@ class Passive(Base):
         - Terminate in a timely fashion
         """
         handlers = self.config.get('passive', 'handlers').split(',')
+        run_time = time.time()
 
         # Empty passive handlers will skip trying to run any handlers
         if handlers[0] == 'None' or handlers[0] == '':
@@ -199,18 +206,19 @@ class Passive(Base):
         # Runs either nrds or nrdp (or both)
         for handler in handlers:
             try:
+                handler = handler.strip()
                 module_name = 'passive.%s' % handler
                 __import__(module_name)
                 tmp_handler = sys.modules[module_name]
-            except ImportError, e:
+            except ImportError as e:
                 logging.error('Could not import module passive.%s, skipping. %s' % (handler, str(e)))
                 logging.exception(e)
             else:
                 try:
                     ins_handler = tmp_handler.Handler(self.config)
-                    ins_handler.run()
+                    ins_handler.run(run_time)
                     logging.debug('Successfully ran handler %s' % handler)
-                except Exception, e:
+                except Exception as e:
                     logging.exception(e)
 
     # Actual method that loops doing passive checks forever, using the sleep
@@ -235,12 +243,21 @@ class Passive(Base):
         except Exception:
             pass
 
+        # Set next DB maintenance period to +1 day
+        self.db.run_db_maintenance(self.config)
+        next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
+
         try:
             while True:
                 self.run_all_handlers()
-                wait_time = self.config.getint('passive', 'sleep')
-                time.sleep(wait_time)
-        except Exception, e:
+
+                # Do DB maintenance if the time is greater than next DB maintenance run
+                if datetime.datetime.now() > next_db_maintenance:
+                    self.db.run_db_maintenance(self.config)
+                    next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
+
+                time.sleep(1)
+        except Exception as e:
             logging.exception(e)
 
     # Called when the service is starting to initiate variables required by the main

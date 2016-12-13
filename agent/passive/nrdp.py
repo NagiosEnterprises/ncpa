@@ -81,7 +81,7 @@ class Handler(nagioshandler.NagiosHandler):
         return check_result
 
     @staticmethod
-    def get_xml_of_checkresults(doc, checks):
+    def get_xml_of_checkresults(doc, checks, run_time):
         """
         Gets XML of all check results in NRDP config section as
         an XML document.
@@ -93,12 +93,14 @@ class Handler(nagioshandler.NagiosHandler):
         doc.appendChild(check_results)
 
         for check in checks:
-            element = Handler.make_xml(check)
-            check_results.appendChild(element)
+            if check.needs_to_run():
+                element = Handler.make_xml(check)
+                check.set_next_run(run_time)
+                check_results.appendChild(element)
 
         return doc
 
-    def run(self):
+    def run(self, run_time):
         """
         Sends all the commands to the agent and then submits them
         via NRDP to Nagios.
@@ -106,15 +108,16 @@ class Handler(nagioshandler.NagiosHandler):
         :return: 0 on success, 1 on error
         :rtype : int
         """
+        logging.debug("Establishing passive handler: NRDP")
         super(Handler, self).run()
 
         doc = xml.dom.minidom.Document()
-        doc = Handler.get_xml_of_checkresults(doc, self.checks)
+        doc = Handler.get_xml_of_checkresults(doc, self.checks, run_time)
 
         # Verify there are any checks to send
         checks = doc.getElementsByTagName('checkresult')
         if len(checks) is 0:
-            logging.info("No NRDP checks. Skipping NRDP send.")
+            logging.debug("No NRDP checks. Skipping NRDP send.")
             return
 
         checkresults = doc.toxml()

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Passive Checks{% endblock %}
+
+{% block headerjs %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $(document).keydown(function(e) {
+        if (e.keyCode == 82 && e.ctrlKey || e.keyCode == 116) {
+            if (window.self !== window.top) {
+                location.reload(true);
+            } else {
+                document.getElementById('help-iframe').contentWindow.location.reload(true);
+            }
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="alert alert-info">
+    This section is currently in <b>read only</b> mode and any setting changes will not be saved. This will be updated in future versions.
+</div>
+
+<div style="padding: 3rem;">
+
+    <h3>Passive Checks</h3>
+    <p>View of all the current passive checks defined in your ncpa configuration files.</p>
+
+    <div class="container-fluid" style="margin-top: 3rem; padding: 0;">
+        <div class="row">
+
+            <div class="col-sm-12 col-lg-10 col-xl-8">
+                <div class="form-horizontal">
+
+                    {% if checks|length > 1 %}
+                        {% for check in checks %}
+                        <pre>{{ check[0] }} = {{ check[1] }}</pre>
+                        {% endfor %}
+                    {% else %}
+                        <p>There are no passive checks defined right now.</p>
+                    {% endif %}
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

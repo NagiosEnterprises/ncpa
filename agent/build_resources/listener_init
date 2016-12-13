@@ -6,43 +6,48 @@
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Description:       Enables the NCPA listener service.
+# Short-Description: This manages the NCPA Listener service
+# Description:       NCPA is a cross platform monitoring agent for Nagios that requires no dependencies.
 ### END INIT INFO
+
+# init.d / servicectl compatibility (openSUSE)
+if [ -f /etc/rc.status ]; then
+    . /etc/rc.status
+    rc_reset
+fi
+
+# Source function library
+if [ -f /etc/rc.d/init.d/functions ]; then
+    . /etc/rc.d/init.d/functions
+fi
 
 _BASEDIR_
 
-# Grab the PID file location
-# Someday the py file should get status so this doesn't need to happen
-PIDFILE=$(grep pidfile -r $BASEDIR/etc/*.cfg | grep listener | sed '/^#/ d' | cut -d '=' -f 2 | awk '{$1=$1};1' | head -1)
-PIDFILE=$BASEDIR/$PIDFILE
-
-# Start listener service
+# Start NCPA Listener service
 start() {
-    (
-        cd $BASEDIR
-        ./ncpa_posix_listener --start
-    )
-    echo "Started listener."
-}
-
-# Restart listener service
-stop() {
-    (
-        cd $BASEDIR
-        ./ncpa_posix_listener --stop
-        echo "Stopped listener."
-    )
-}
-
-# Get the status
-status() {
-    if [ -f "$PIDFILE" ];
-    then
-        pid=`cat $PIDFILE`
-        echo "Process running with PID $pid"
+    if [ -n "$(type -t action)" ] && [ "$(type -t action)" = function ]; then
+        action "Starting NCPA Listener:" $BASEDIR/ncpa_listener --start
     else
-        echo "Process is not running."
+        echo -e "Started NCPA Listener"
+        $BASEDIR/ncpa_listener --start
     fi
+}
+
+# Stop NCPA Listener service
+stop() {
+    if [ -n "$(type -t action)" ] && [ "$(type -t action)" = function ]; then
+        action "Stopping NCPA Listener:" $BASEDIR/ncpa_listener --stop
+    else
+        echo -e "Stopped NCPA Listener"
+        $BASEDIR/ncpa_listener --stop
+    fi
+}
+
+# Get the status of the NCPA Listener service
+ncpa_l_status() {
+    output=`$BASEDIR/ncpa_listener --status`
+    echo -e "NCPA Listener "
+    echo $output
 }
 
 # Main init script logic
@@ -54,7 +59,7 @@ case "$1" in
         stop
         ;;
     status)
-        status
+        ncpa_l_status
         ;;
     restart|reload|condrestart)
         stop

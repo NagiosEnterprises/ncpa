@@ -26,7 +26,7 @@ if ERRORLEVEL 1 (
 
 for /f "delims=" %%F in ('where python') do set pydir=%%~dpF
 if not exist %PYDIR%\Lib\site-packages\cx_Freeze (
-  echo cx_Freeze isn't in your python install, install cx_Freeze 4.3.2
+  echo cx_Freeze isn't in your python install, install cx_Freeze 4.3.4
   exit /B 1
 )
 
@@ -36,10 +36,10 @@ if ERRORLEVEL 1 (
   exit /B 1
 )
 
-pip install pywin32
+pip install pypiwin32
 pip install cx_Logging --allow-external cx-Logging --allow-unverified cx-Logging
 pip install cx_PyGenLib --allow-external cx-PyGenLib --allow-unverified cx-PyGenLib
-pip install nose
+pip install psutil requests Jinja2 flask werkzeug docutils pyOpenSSL gevent cffi appdirs packaging
 
 echo to build ncpa:
 echo python build\build_windows.py

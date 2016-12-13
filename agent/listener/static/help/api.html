@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta charset='utf-8'>
+        <title>API Reference &middot; Documentation &middot; NCPA</title>
+        <link rel="shortcut icon" type="image/png" href="../img/ncpa.png" />
+        <link rel="icon" type="image/png" href="../img/ncpa.png" />
+        <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
+        <link rel="stylesheet" href="../css/ncpa.css" type="text/css" />
+        <script src='../js/jquery.2.2.4.min.js'></script>
+        <script src='../js/bootstrap.min.js'></script>
+        <script src='../js/help.js'></script>
+        <script type="text/javascript">
+        $(document).ready(function() {
+            $('.api-output').css('height', $('.api-output').parents('.row').height());
+
+            $('.tt-bind').tooltip();
+
+            // Get the API data
+            var json_url = 'https://' + location.hostname+(location.port ? ':' + location.port : '') + '/api';
+            $.get(json_url, { }, function(json) {
+                $('.api-output').html(JSON.stringify(json, null, 4));
+            }, 'json');
+        });
+        </script>
+    </head>
+    <body class="help">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-lg-10">
+
+                <h1>API Reference</h1>
+                
+                <p>The core of NCPA is the API, which works the same accross all platforms. It was designed to make it easy for administrators to set-up checks, troubleshoot problems, test checks, while still being flexible. This section covers how the API works with individual references for each module. Some of the extended nodes are specific to an operating system, but the standard nodes are available on any platform.</p>
+
+                <a name="api-overview"></a>
+                <div class="section">
+
+                    <h2>Overview of the API</h2>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+                                <p>The API is constructed in a way that allows users to easily follow the hirearchy down, creating a URL that will access specific requested data.</p>
+                                <p>In the example of this systems API return we see what we call <em>nodes</em>. Each node is a specific part of the API that gets specific data and functions a certain way. These are also sometimes referred to as <em>API endpoints</em> when farther down the list, when we have reached the end of a node.</p>
+                                <p>Open up your web browser, and navigate to the URL below, replacing <em>localhost:5693</em> with your NCPA server hostname/IP and port or if you're reading this inside NCPA, you can look at the box.</p>
+                                <pre>https://localhost:5693/api?token=mytoken</pre>
+                                <p>The API is fromatted as JSON. If you're used to interacting with APIs, this shouldn't be too much of a surprise. However, something unique to NCPA is the way the API is accessed.</p>
+                                <p>NCPA is structured with a set of base modules and each module has nodes. The nodes end up forming a URL, which is used to get data about that specific item or to run a check on that specific item's data.</p>
+                                <p>Take a look at how an API call is formatted by hovering over each section:</p>
+                                <pre style="cursor: default;"><span class="tt-bind" title="API URL">https://localhost:5693/api</span>  /  <span class="tt-bind" title="Module"><b>memory</b></span>  /  <span class="tt-bind" title="Nodes"><b>virtual/total</b></span>  ?  <span class="tt-bind" title="Extra URL GET parameters"><b>token=mytoken</b></span></pre>
+                                <p>Nodes are direct key names shown in the JSON, so essentially you are creating a way to access the endpoint by selecting which nodes to follow. The module and nodes together form the endpoint requested. In this case, the endpoint would be <code>memory/virtual/total</code>. The additional URL parameters after the <code>?</code> are used to filter datasets, convert values or units, and authenticate using the token.</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <pre class="api-output"></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <a name="standard-parameters"></a>
+                <div class="section">
+                
+                    <h2>Standard Parameters</h2>
+                    <p>Accessing the API is just the starting point, there are set parameters that can be used on all modules and nodes. There are also some parameters, such as <code>delta</code> that are only available on certain nodes. The API reference at the end of this document explains the parameters that are abailable for use.</p>
+
+                    <p>The most common parameters (via GET or POST) that are always available:</p>
+                    <p>
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%; min-width: 100px;">Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><b>token</b></td>
+                                    <td>The token used to authenticate. You must pass this with every API call. Corresponds to the <code>community_string</code> value in the config.</td>
+                                </tr>
+                                <tr>
+                                    <td><b>units</b></td>
+                                    <td>
+                                        This is a special <em>prefix parameter</em> that will only work on endpoints that return <b>B</b> and <b>b</b>. It will convert the values into the type passed. An example is <code>units=Ki</code> would give you KiB. It converts the value (<code>KiB = B / 1024</code>) and returns the new value with the update unit. <em>Available options are <b>k</b>, <b>Ki</b>, <b>M</b>, <b>Mi</b>, <b>G</b>, <b>Gi</b>, <b>T</b>, <b>Ti</b>.</em>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>unit</b></td>
+                                    <td>Unlike the units parameter, this value overwrites the unit name. If an endpoint returns no unit but you want it to return 'ms' then you can set this value.</td>
+                                </tr>
+                                <tr>
+                                    <td><b>delta</b></td>
+                                    <td>This is used on certain endpoints to create <em>per second</em> values. Particularly on interfaces, but can also be used in other places too. Setting <code>delta=1</code> will have NCPA calculate the change in the the value divided by the amount of time passed (in seconds) since the last check creating unit/sec values.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </p>
+
+                    <h6>The Different Unit(s) Parameters</h6>
+                    <p>The distinction between <code>units</code> and <code>unit</code> can be a bit confusing. Check out the examples below to see what these parameters do.</p>
+
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12 col-lg-4">
+
+                                <h6 style="margin-top: 1rem;">Example: Without Any Parameter</h6>
+                                <p>This example shows what the standard value and unit would be without passing any special parameters.</p>
+                                <pre>https://localhost:5693/api/disk/logical/C:|/used?token=mytoken</pre>
+                                <p>This would output:</p>
+                                <pre>{
+    "total_size": [
+        379222138880,
+        "B"
+    ]
+}</pre>
+
+                            </div>
+                            <div class="col-sm-12 col-lg-4">
+                                
+                                <h6 style="margin-top: 1rem;">Example: Using <code>units</code> Parameter</h6>
+                                <p>This example shows how the value and unit change when passing the <code>units</code> parameter to an endpoint that returns <b>B</b>.</p>
+                                <pre>https://localhost:5693/api/disk/logical/C:|/used?token=mytoken&units=Gi</pre>
+                                <p>This would return the value and units:</p>
+                                <pre>{
+    "total_size": [
+        353.09,
+        "GiB"
+    ]
+}</pre>
+
+                            </div>
+                            <div class="col-sm-12 col-lg-4">
+
+                                <h6 style="margin-top: 1rem;">Example: Using <code>unit</code> Parameter</h6>
+                                <p>This example shows how the value <em>does not change</em> but the unit, <em>no matter what the default unit is</em>, changes to <code>unit</code>.</p>
+                                <pre>https://localhost:5693/api/disk/logical/C:|/used?token=mytoken&unit=Units</pre>
+                                <p>This would return the value and units:</p>
+                                <pre>{
+    "total_size": [
+        379222138880,
+        "Units"
+    ]
+}</pre>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <a name="check-results"></a>
+                <div class="section">
+
+                    <h2>Returning Nagios Check Results</h2>
+                    <p>Most of the endpoints in NCPA can be ran as a check, and return Nagios plugin-style check results. This is helpful for testing, and production. This style of API call is what the <code>check_ncpa.py</code> plugin uses to get the check results for things like the CPU, interface, memory, and disk.</p>
+                    <p>The parameters (via GET or POST) available for running an API endpoint as a check:</p>
+                    <p>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%; min-width: 100px;">Parameter</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>check</b></td>
+                                <td>In order to run the API endpoint as a check, you must pass <code>check=1</code> with the URL.</td>
+                            </tr>
+                            <tr>
+                                <td><b>warning</b></td>
+                                <td>Specifies the warning threshold for the check. <em>Conforms to the <a target="_new" href="https://nagios-plugins.org/doc/guidelines.html#THRESHOLDFORMAT">Nagios Plugins format guidelines</a> <i class="fa fa-external-link"></i>.</em></td>
+                            </tr>
+                            <tr>
+                                <td><b>critical</b></td>
+                                <td>Specifies the critical threshold for the check. <em>Conforms to the <a target="_new" href="https://nagios-plugins.org/doc/guidelines.html#THRESHOLDFORMAT">Nagios Plugins format guidelines</a> <i class="fa fa-external-link"></i>.</em></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </p>
+
+                    <h6>Example of an API Check</h6>
+                    <p>You can get check results on most API endpoints. Below is an example of running a check on the API endpoint <code>memory/virtual/percent</code> which will return the used percent:</p>
+                    <pre>https://localhost:5693/api/memory/virtual/percent?token=mytoken&warning=50&critical=60&check=1</pre>
+                    <p>This would return the following result:</p>
+                    <pre>{
+    "returncode": 2, 
+    "stdout": "CRITICAL: Percent was 76.80 % | 'percent'=76.80%;50;60;"
+}</pre>
+                    <p>If you are familiar with how a Nagios check works, this data should look familiar. The API will return the returncode and stdout for the check just like it would if it was running it from the command line. The <code>check_ncpa.py</code> plugin passes this data to Nagios by being a sort of proxy, printing the stdout and exiting with the return code given.</p>
+
+                    <h6>Combined Check Results</h6>
+                    <p>
+                        <div class="alert alert-success">
+                            <i class="fa fa-lightbulb-o fa-14 fa-l"></i> <b>Tip:</b> You can get combined checks using select node endpoints. Combined results are available from <code>disk/logical/&lt;partition&gt;</code>, <code>memory/swap</code>, <code>memory/virtual</code>, and <code>processes</code>.
+                        </div>
+                    </p>
+                    <p>Certain node endpoints have the ability to combine all the nodes inside of them into a single check. This is really handy when you want to see all the data that the node has in a single line output. The warning and critical values will be applied to the main value given - but you will still see all the details so that in your Nagios display you can see what value of disk or memory is actually being used when it says a percent.</p>
+                    <pre>https://localhost:5693/api/memory/virtual?token=mytoken&units=G&check=1</pre>
+                    <p>Since we are using <code>memory/virtual</code> instead of <code>memory/virtual/&lt;option&gt;</code> we will get:</p>
+                    <pre>{
+    "returncode": 0, 
+    "stdout": "OK: Used memory was 76.80 % (Available: 3.98 GB, Total: 17.13 GB, Free: 3.98 GB, Used: 13.15 GB) | 'percent'=76.80%;;;"
+}</pre>
+                    <p>You can see that it returns the value as a percentage, but also gives you values for available, total, free, and used.</p>
+
+                </div>
+
+                <a name="running-plugins"></a>
+                <div class="section">
+
+                    <h2>Running Nagios Plugins</h2>
+                    <p>The NCPA API is flexible enough to let you run your own Nagios plugins. In order to do so, you'll need to place them in your plugins directory defined in the <a href="configuration.html#plugin-directives">[plugin directives]</a> section of the config.</p>
+                    <p>
+                        <div class="alert alert-info">
+                            <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> Make sure that your plugins have the proper permissions on Linux and Mac OS X systems. They need to be able to be executed by the user and group you have specified the NCPA services to run as. <em>The default user and group is <b>nagios:nagios</b>. No permissions settings need to be edited for Windows.</em>
+                        </div>
+                    </p>
+                    <p>You can see a list of all available plugins by going to the <code>plugins</code> API node:</p>
+                    <pre>https://localhost:5693/api/plugins?token=mytoken</pre>
+                    <pre>{
+    "plugins": [
+        "check_test.ps1",
+        "check_mssql.vbs"
+    ]
+}</pre>
+                    <p>The list above shows you the plugins that are available to run.</p>
+
+                    <h6>Sending Arguments to Plugins</h6>
+                    <p>You can pass arguments to the plugins that you call by appending each argument after the plugin name. Separate each argument by a <code>/</code>.</p>
+                    <p>
+                        <div class="alert alert-info">
+                            <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> You cannot use the built-in <code>warning</code> and <code>critical</code> URL parameters for custom plugins, you must specify them however the plugin requires and pass them as arguments.
+                        </div>
+                    </p>
+                    <p>An example of running a plugin with arguments:</p>
+                    <pre>https://localhost:5693/api/plugins/test.ps1/-u local/-p one,two/?token=mytoken</pre>
+                    <pre>{
+    "returncode": 0,
+    "stdout": "Arg1: -u local - Arg2: -p one,two"
+}</pre>
+
+                </div>
+
+                <a name="api-modules"></a>
+                <div class="section">
+
+                    <h2>API Module Reference</h2>
+                    <p style="margin-bottom: 0;">This section is a reference for the paramaters available for each of the API's modules. Since some of the modules have special properties, they are explained in detail here. There are two types of modules: <em>standard modules</em> and <em>extended modules</em>. The <em>standard modules</em> are built directly into NCPA and run the same accross all operating systems. <em>Extended modules</em> are separate Python modules that are included into NCPA. The current <em>extended modules</em> do not work on all operating systems, but we are working on extending NCPA for future releases.</p>
+
+                </div>
+
+                <a name="api-modules-standard"></a>
+                <div class="section">
+
+                    <h3>Standard Modules</h3>
+                    <p>These modules are <em>available and work the same</em> on all supported operating systems.</p>
+
+                    <a name="api-modules-cpu"></a>
+                    <h4>cpu</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>The CPU module let's you get information on the currently used system-wide percentage. You can also view the CPU's idle, user, and system time. Since most modern day systems have multiple CPU cores, there is a <code>cpu/count</code> endpoint that gives the amount of cores. This may be helpful when interpretting the other endpoints, since each core is reported separately.</p>
+                                <p>If you'd like to see an aggregated view of the endpoints, the CPU module has a special parameter called <code>aggregate</code> that will aggregate all values by a specific aggregation type.</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+
+                                <h6 style="margin-top: 1rem;">Example of CPU Usage Per Core</h6>
+                                <pre>https://localhost:5693/api/cpu/percent?token=mytoken</pre>
+                                <pre>{
+    "percent": [
+        [
+            18.8, 
+            0.0, 
+            1.5, 
+            0.0, 
+            13.8, 
+            0.0, 
+            3.2, 
+            0.0
+        ], 
+        "%"
+    ]
+}</pre>
+
+                                <h6>Example of Aggregation</h6>
+                                <pre>https://localhost:5693/api/cpu/percent?token=mytoken&aggregate=avg</pre>
+                                <pre>{
+    "percent": [
+        [
+            3.81
+        ],
+        "%"
+    ]
+}</pre>
+                                
+
+                            </div>
+                            <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Basic Parameters</h6>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>aggregate</b></td>
+                                            <td>
+                                                Aggregate the values in the endpoint. This can be helpful for systems with a lot of cores or when making a CPU usage check.
+                                                <div><em>Options are <b>avg</b>, <b>min</b>, <b>max</b>, <b>sum</b></em></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>You can make checks out of the services module calls.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to all cores or total aggregated value.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to all cores or total aggregated value.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>delta</b></td>
+                                            <td>Delta allows you to get the change in value (in seconds) over time since the last check result. It will return a different unit, value/sec.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>unit</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a name="api-modules-disk"></a>
+                    <h4>disk</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>The disk module is fairly large and one of the few modules to have combined check results for multiple nodes inside the disk/logical node. The disk module shows mount information, logical partition usage, and physical disk statistics through three main nodes shown below:</p>
+                                <p>
+                                    <ul>
+                                        <li style="padding-bottom: 0.5rem;"><code>disk/mount</code> - Will return information on all mounted devices.</li>
+                                        <li style="padding-bottom: 0.5rem;"><code>disk/logical</code> - Information on each partition or drive. <em>Remember all \ and / must be represented as |.</em></li>
+                                        <li><code>disk/physical</code> - Hardware related drive information.</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+
+                                <h6 style="margin-top: 1rem;">Example of Disk Data</h6>
+                                <pre>https://localhost:5693/api/disk/logical/C:|?token=mytoken&units=Gi</pre>
+                                <pre>{
+    "C:|": {
+        "used_percent": [
+            76.8,
+            "%"
+        ],
+        "used": [
+            356.94,
+            "GiB"
+        ],
+        "opts": "rw,fixed",
+        "total_size": [
+            464.87,
+            "GiB"
+        ],
+        "fstype": "NTFS",
+        "free": [
+            107.93,
+            "GiB"
+        ],
+        "device_name": [
+            "C:\\"
+        ]
+    }
+}</pre>
+                            </div>
+                            <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Basic Parameters</h6>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>units</b></td>
+                                            <td>
+                                                Converts the value into the type passed for <b>b</b> and <b>B</b> values and prefixes the unit returned with the value given.
+                                                <div><em>Options are <b>k</b>, <b>Ki</b>, <b>M</b>, <b>Mi</b>, <b>G</b>, <b>Gi</b>, <b>T</b>, <b>Ti</b>.</em>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>delta</b></td>
+                                            <td>Delta allows you to get the change in value (in seconds) over time since the last check result. It will return a different unit, value/sec.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>unit</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <a name="api-modules-interface"></a>
+                    <h4>interface</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>The interface module is a group of <em>counters</em> for each of the available network interfaces that exist. You can see by the example below that there is quite a lot of information. The most important part for most people is going to be the <code>bytes_recv</code> and <code>bytes_sent</code> values.</p>
+                                <p>This particular node can use <code>delta=1</code> to get the change in bytes send or recieved since the last check, making it able to produce bandwidth usage data.</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+
+                                <h6 style="margin-top: 1rem;">Example of Interface Data</h6>
+                                <pre>https://localhost:5693/api/interface/Local Area Connection?token=mytoken&units=Gi</pre>
+                                <pre>{
+    "Local Area Connection": {
+        "packets_sent": [
+            24194869,
+            "packets"
+        ],
+        "bytes_recv": [
+            20.95,
+            "GiB"
+        ],
+        "packets_recv": [
+            25115980,
+            "packets"
+        ],
+        "bytes_sent": [
+            9.87,
+            "GiB"
+        ],
+        ...
+    }
+}</pre>
+                            
+                                <h6>Example of Bytes Recieved/Second</h6>
+                                <p>This example shows the average of bytes recieved per second <em>since the last check</em>.</p>
+                                <pre>https://localhost:5693/api/interface/Local%20Area%20Connection/bytes_recv?token=mytoken&delta=1&units=k</pre>
+                                <pre>{
+    "bytes_recv": [
+        3.56, 
+        "kB/s"
+    ]
+}</pre>
+
+                            </div>
+                            <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Basic Parameters</h6>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>units</b></td>
+                                            <td>
+                                                Converts the value into the type passed for <b>b</b> and <b>B</b> values and prefixes the unit returned with the value given.
+                                                <div><em>Options are <b>k</b>, <b>Ki</b>, <b>M</b>, <b>Mi</b>, <b>G</b>, <b>Gi</b>, <b>T</b>, <b>Ti</b>.</em>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>delta</b></td>
+                                            <td>Delta allows you to get the change in value (in seconds) over time since the last check result. It will return a different unit, value/sec.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>unit</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a name="api-modules-memory"></a>
+                    <h4>memory</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>The memory module shows the <em>virtual</em> and <em>swap</em> memory information. This module supports combined check results on both nodes. The percent used is probably the most commonly used value here and it is the primary value that is displayed in combined checks, along with the other node values.</p>
+                                <p><em>Percent is actually <b>percent used</b> based on available memory (which includes free) and calculated like so:</em> <code>percent = total - available / 100</code></p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+
+                                <h6 style="margin-top: 1rem;">Example of Memory Data</h6>
+                                <pre>https://localhost:5693/api/memory/virtual?token=mytoken&units=Gi</pre>
+                                <pre>{
+    "virtual": {
+        "available": [
+            19.83,
+            "GiB"
+        ],
+        "total": [
+            31.89,
+            "GiB"
+        ],
+        "percent": [
+            37.8,
+            "%"
+        ],
+        "free": [
+            19.83,
+            "GiB"
+        ],
+        "used": [
+            12.07,
+            "GiB"
+        ]
+    }
+}</pre>
+
+                            </div>
+                            <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Basic Parameters</h6>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>units</b></td>
+                                            <td>
+                                                Converts the value into the type passed for <b>b</b> and <b>B</b> values and prefixes the unit returned with the value given.
+                                                <div><em>Options are <b>k</b>, <b>Ki</b>, <b>M</b>, <b>Mi</b>, <b>G</b>, <b>Gi</b>, <b>T</b>, <b>Ti</b>.</em>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>delta</b></td>
+                                            <td>Delta allows you to get the change in value (in seconds) over time since the last check result. It will return a different unit, value/sec.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>unit</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <a name="api-modules-processes"></a>
+                    <h4>processes</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>Processes shows the list of currently running processes. It also includes data about the process such as the PID, memory, CPU usage, user, and binary name. You can filter the processes list to get specific processes. You can also get a combined check on <code>processes</code> giving the total process count. This combined check is special since you can filter the total processes that the check is looking for.</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+                                
+                                <h6 style="margin-top: 1rem;">Example of Total Process Count Check</h6>
+                                <pre>https://localhost:5693/api/processes?token=mytoken&check=1</pre>
+                                <pre>{
+    "returncode": 0, 
+    "stdout": "OK: Process count was 119 | 'process_count'=119;;;"
+}</pre>
+
+                                <h6>Example Search for Processes Check</h6>
+                                <p>This example is searching for the word "steam" in all processes and reporting the amount it finds in the form of check results. This can be helpful if you need to make sure only so many processes are running.</p>
+                                <pre>https://localhost:5693/api/processes?token=mytoken&name=Steam&match=search&check=true</pre>
+                                <pre>{
+    "returncode": 0,
+    "stdout": "OK: Process count for processes named steam was 5 | 'process_count'=5;;;"
+}</pre>
+    
+                                <h6>Example Search for Processes Check with Multiple Names</h6>
+                                <p>An example that displays searching with multiple process names and how it adds them with <b>or</b>.</p>
+                                <pre>https://localhost:5693/api/processes?token=mytoken&name=steam&name=chrome&combiner=or&match=search&check=true</pre>
+                                <pre>{
+    "returncode": 0,
+    "stdout": "OK: Process count for processes named steam,chrome was 15 | 'process_count'=15;;;"
+}</pre>
+
+                                <p><em>These are pretty basic examples of how to use the processes module. You can view, in real time, the available output of processes by using the API section of the GUI.</em></p>
+
+                            </div>
+                            <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Filter Parameters</h6>
+                                <p>These are special parameters that are applied to the processes module and filter out processes. You can apply as many filters as you want and multiple of each if necessary. These are combined using the <code>combiner</code> parameter which is <b>and</b> by default and not specified.</p>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>name</b></td>
+                                            <td>The name of the binary that is running for this process.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>exe</b></td>
+                                            <td>The path to the binary file that is being used.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>mem_percent</b></td>
+                                            <td>Filters by <code>mem_percent >= value</code>.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>mem_vms</b></td>
+                                            <td>Filters by <code>mem_vms >= value</code>.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>mem_rss</b></td>
+                                            <td>Filters by <code>mem_rss >= value</code>.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>cpu_percent</b></td>
+                                            <td>Filters by <code>cpu_percent >= value</code>.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                                <h6>Basic Parameters</h6>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>combiner</b></td>
+                                            <td>
+                                                When combining the filter values to form a query, combine using this method. By default, filters are combined with an and.
+                                                <div><em>Options are <b>and</b>, <b>or</b></em></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>match</b></td>
+                                            <td>
+                                                The name and exe parameters are an exact match by default. If you set this parameter you can make the <code>name</code> and <code>exe</code> values searches instead.
+                                                <div><em>Options are <b>search</b>, <b>regex</b></em></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>units</b></td>
+                                            <td>
+                                                Converts the value into the type passed for <b>b</b> and <b>B</b> values and prefixes the unit returned with the value given.
+                                                <div><em>Options are <b>k</b>, <b>Ki</b>, <b>M</b>, <b>Mi</b>, <b>G</b>, <b>Gi</b>, <b>T</b>, <b>Ti</b>.</em>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a name="api-modules-services"></a>
+                    <h4>services</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>
+                                    <div class="alert alert-warning">
+                                        <i class="fa fa-exclamation-triangle fa-14 fa-l"></i> <b>Warning!</b> In NCPA 2 the API endpoint for checking services was <em><b>deprecated</b></em> and will be removed in NCPA 2.1 and above. Example deprecated version: <b>service/&lt;servicename&gt;/&lt;status&gt;</b> 
+                                    </div>
+                                </p>
+                                <p>This node is different than most of the standard nodes. When using just the <code>services</code> endpoint you will see a list of all services NCPA can find and their current state. You can select a single service by adding the <code>service=&lt;servicename&gt;</code> parameter. You can also turn the <code>service</code> parameter into a search by adding the <code>match=search</code> parameter to the query.</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Example of Service Filtering</h6>
+                                <pre>https://localhost:5693/api/services?service=sshd&service=httpd</pre>
+                                <pre>{
+    "services": {
+        "sshd": "running",
+        "httpd": "stopped"
+    }
+}</pre>
+
+                                <h6>Example of Service Check</h6>
+                                <pre>https://localhost:5693/api/services?service=sshd&status=running&check=1</pre>
+                                <pre>{
+    "returncode": 0, 
+    "stdout": "OK: Service sshd is running"
+}</pre>
+
+                            </div>
+                            <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Filter Parameters</h6>
+                                <p>You can filter down the list of services during a query and during a check by defining the service names. You can also use the service parameter as a search if you set the <code>match</code> parameter to <em>search</em> or <em>regex</em>.</p>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>service</b></td>
+                                            <td>You can select service(s) by service name using this parameter. Multiples of this parameter are acceptable. Example: <code>service=sshd&service=crond</code></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                                <h6>Basic Parameters</h6>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>match</b></td>
+                                            <td>
+                                                When not set, the service parameter an exact match. If you set this parameter you can make the <code>service</code> values searches instead.
+                                                <div><em>Options are <b>search</b>, <b>regex</b></em></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>You can make checks out of the services module calls.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>status</b></td>
+                                            <td>
+                                                When <code>check=1</code> you can set the status that the services <em>should be in</em>. If the service is not in the status value defined then the check it will return CRITICAL, otherwise it will return OK.
+                                                <div><em>Options are <b>running</b>, <b>stopped</b></em></div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a name="api-modules-system"></a>
+                    <h4>system</h4>
+                    <p>This module is used for getting information about the system that NCPA is running on and the agent version. It doesn't currently have the ability to perform many checks. However, we do use the output of the <code>system/agent_version</code> check to give the default <code>__HOST__</code> service an output in passive checks and for the host in active checks created by running the Nagios XI NCPA config wizard.</p>
+                    <p><em>You cannot use any special parameters on this module. This module is just for getting system information.</em></p>
+
+                    <a name="api-modules-plugins"></a>
+                    <h4>plugins</h4>
+                    <p>
+                        <div class="alert alert-warning">
+                            <i class="fa fa-exclamation-triangle fa-14 fa-l"></i> <b>Warning!</b> In NCPA 2 the API endpoint for <b>agent/plugin</b> was <em><b>deprecated</b></em> in favor of <b>plugins</b> and will be removed in NCPA 2.1 and above. Example deprecated version: <b>agent/plugin/&lt;plugin name&gt;</b> 
+                        </div>
+                    </p>
+                    <p>This module will show you a list of all available plugins (that are in the directory defined <code>plugin_path</code>) and let's you run them.</p>
+                    <p>You can run a custom plugin by following this format in the URL:</p>
+                    <pre>https://localhost:5693/api/plugins/&lt;plugin name&gt;/&lt;arg1&gt;/&lt;arg2&gt;/?token=mytoken</pre>
+                    <p>Some examples of the kinds of arguments you would be passing this way are <code>"/usr/local/program/test.log"</code>, <code>-c 'test.sh'</code>, and <code>--critical=20</code>. Each argument is specified by another <code>/</code> after the plugin name. The built-in parameters for <code>warning</code> and <code>critical</code> do not work with custom plugins and must be passed as arguments. <em>Read more about <a href="#running-plugins">how to run plugins from the API</a>.</em></p> 
+                    <p>Custom plugins should conform to the <a target="_new" href="https://nagios-plugins.org/doc/guidelines.html">Nagios plugin guidelines</a> <i class="fa fa-external-link"></i> for exit code and text output or NCPA may not accurately return the proper exit code and output.</p>
+
+                </div>
+
+                <a name="api-modules-extended"></a>
+                <div class="section">
+
+                    <h3>Extended Modules</h3>
+                    <p>These modules are extensions of NCPA's core and are <em>only available on Windows</em> right now.</p>
+
+                    <a name="api-modules-logs"></a>
+                    <h4>logs</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>This extended module currently only works for Windows event logs. This module will not show any data by default since it does not know the name of logs to look for. Instead, you will see a short explanation on how to get data. You can start seeing logs by setting the <code>name</code> parameter. The name should correspond to a name of event log. Typically Windows systems have <em>System</em> and <em>Application</em> so our examples will use those.</p>
+                                <p>Like other filter parameters, <code>name</code> can have multiple values. So <code>name=Application&name=System</code> would give <em>Application</em> and <em>System</em> logs.</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+
+                                <h6 style="margin-top: 1rem;">Example of Application Logs</h6>
+                                <p>This will list all Application logs within the last 24 hours (the default lookback period) in a list. The list has been truncated due to the amount of logs.</p>
+                                <pre>https://localhost:5693/api/logs?token=mytoken&name=Application</pre>
+                                <pre>{
+    "logs": [
+        {
+            "Application": [
+                {
+                    "category": "0",
+                    "severity": "INFORMATION",
+                    "event_id": "0",
+                    "application": "Service1",
+                    "computer_name": "Win10-PC",
+                    "message": "PowerEvent handled successfully by the service.\r\n",
+                    "time_generated": "12/04/16 01:15:37"
+                },
+                ...
+            ]
+        },
+        "logs"
+    ]
+}</pre>
+
+                                <h6>Example Check with Multiple Types</h6>
+                                <p>Check results for multiple log types over the last 1 week period.</p>
+                                <pre>https://localhost:5693/api/logs?token=mytoken&name=System&name=Application&logged_after=1w&check=true</pre>
+                                <pre>{
+    "returncode": 0,
+    "stdout": "OK: Application has 362 logs, System has 205 logs, Total Count has 567 logs (Time range - last 1 week) | 'Application'=362;;; 'System'=205;;; 'Total Count'=567;;;"
+}</pre>
+
+                            </div>
+                            <div class="col-sm-6">
+
+                                <h6 style="margin-top: 1rem;">Filter Parameters</h6>
+                                <p>These parameters are what filter the logs that are returned. Each event log type (defined by <code>name</code>) is listed separately by the name with it's own list of logs.</p>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>name</b></td>
+                                            <td>The name of the Windows event logs that will be retrieved. Multiple event log names can be specified here.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>logged_after</b></td>
+                                            <td>
+                                                The lookback period for the check. This defaults to 24 hours.
+                                                <div>Examples: 30m, 24h, 3d, 1w, 2M (M = months)</div>
+                                                <div><em>Options are <b>s</b>, <b>m</b>, <b>h</b>, <b>d</b>, <b>w</b>, <b>M</b></em></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>severity</b></td>
+                                            <td>Exact match for event log's <em>EventType</em>.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>event_id</b></td>
+                                            <td>Exact match for event log's <em>EventID</em> field.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>application</b></td>
+                                            <td>Exact match for event log's <em>SourceName</em> field.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>computer_name</b></td>
+                                            <td>Exact match for event log's <em>ComputerName</em> field.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>category</b></td>
+                                            <td>Exact match for event log's <em>EventCategory</em> field.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>message</b></td>
+                                            <td>Search (or Python regex) match to the event log's <em>Message</em> field.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <h6>Basic Parameters</h6>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>Turn the call into check results output.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to total log count too.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to total log count too.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>type</b></td>
+                                            <td>
+                                                This is an optional value for the log node that allows you to select if you'd like the <code>warning</code> and <code>critical</code> values to be applied to the total or to each individual log type. Defaults to all, which means it will use the total log count for checks.
+                                                <div><em>Options are <b>all</b>, <b>individual</b></em></div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a name="api-modules-windowscounters"></a>
+                    <h4>windowscounters</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>This extended module gives access to Windows counters. There are multiple types of counters that are available should work. Per second counters, or counters that show data over time, must be passed a <code>sleep</code> value given or they will always return a 0 result.</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+
+                                <h6 style="margin-top: 1rem;">Example of a Windows Counter</h6>
+                                <pre>https://localhost:5693/api/windowscounters/TCPv4/Connections Active?token=mytoken</pre>
+                                <pre>{
+    "windowscounters": [
+        1421,
+        "Connections Active"
+    ]
+}</pre>
+
+                                <h6>Examples of Counters Over Time</h6>
+                                <p>Any counter that requires data over time can be shown by adding <code>sleep</code>.</p>
+                                <pre>https://localhost:5693/api/windowscounters/Processor(_Total)/% User Time?token=mytoken&sleep=5</pre>
+                                <pre>{
+    "windowscounters": [
+        6.43,
+        "% User Time"
+    ]
+}</pre>
+                                <p>Per second counters also use the <code>sleep</code> parameter.</p>
+                                <pre>https://localhost:5693/api/windowscounters/TCPv4/Segments Received/sec?token=mytoken&sleep=5</pre>
+                                <pre>{
+    "windowscounters": [
+        1069.79,
+        "Segments Received/sec"
+    ]
+}</pre>
+
+                                <h6>Example of Per Second Counters Using Delta</h6>
+                                <p>Counters that are not typically per second can use the <code>delta</code> parameter to show the average change over time (in seconds) since the last query.</p>
+                                <pre>https://localhost:5693/api/windowscounters/TCPv4/Connections Active?token=mytoken&delta=1</pre>
+                                <pre>{
+    "windowscounters": [
+        3.61,
+        "Connections Active/s"
+    ]
+}</pre>
+
+                            </div>
+                            <div class="col-sm-6">
+                            <h6 style="margin-top: 1rem;">Basic Parameters</h6>
+                                <p>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>sleep</b></td>
+                                            <td>The sleep value is a value that represents a time frame to generate data for. Some counters (% values, /sec values) sometimes require a sleep value to get data over a certain amount of time or a result of 0 will be returned.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>delta</b></td>
+                                            <td>Delta allows you to get the change in value (in seconds) over time since the last check result. It will return a different unit, value/sec.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>Turn the call into check results output.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to total log count too.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to total log count too.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    </body>
+</html>

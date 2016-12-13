@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block title %}Listener Settings{% endblock %}
+
+{% block headerjs %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $(document).keydown(function(e) {
+        if (e.keyCode == 82 && e.ctrlKey || e.keyCode == 116) {
+            if (window.self !== window.top) {
+                location.reload(true);
+            } else {
+                document.getElementById('help-iframe').contentWindow.location.reload(true);
+            }
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="alert alert-info">
+    This section is currently in <b>read only</b> mode and any setting changes will not be saved. This will be updated in future versions.
+</div>
+
+<div style="padding: 3rem;">
+
+    <h3>Listener Settings</h3>
+    <p>View the general settings for the Listener service and a few settings for the GUI auth and admin section.</p>
+
+    <div class="container-fluid" style="margin-top: 3rem; padding: 0;">
+        <div class="row">
+
+            <div class="col-lg-12">
+                <div class="form-horizontal">
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">IP Address</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                            <input type="text" class="form-control" name="ip" value="{{ ip }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Port</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <input type="text" class="form-control" name="port" value="{{ port }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">User</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <input type="text" class="form-control" name="uid" value="{{ uid }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Group</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <input type="text" class="form-control" name="gid" value="{{ gid }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">SSL Version</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <select class="form-control" name="ssl_version">
+                                <option value="TLSv1"{% if ssl_version == 'TLSv1' %} selected{% endif %}>TLSv1.0</option>
+                                <option value="TLSv1_1"{% if ssl_version == 'TLSv1_1' %} selected{% endif %}>TLSv1.1</option>
+                                <option value="TLSv1_2"{% if ssl_version == 'TLSv1_2' %} selected{% endif %}>TLSv1.2</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Certificate</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <select class="form-control" name="certificate">
+                                <option value="adhoc"{% if certificate == 'adhoc' %} selected{% endif %}>Adhoc</option>
+                                <!--<option value="custom"{% if certificate != 'adhoc' %} selected{% endif %}>Custom</option>-->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">PID File</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                            <input type="text" class="form-control" name="pidfile" value="{{ pidfile }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Level</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <select class="form-control" name="loglevel">
+                                <option value="error"{% if loglevel == 'error' %} selected{% endif %}>Error</option>
+                                <option value="warning"{% if loglevel == 'warning' %} selected{% endif %}>Warning</option>
+                                <option value="info"{% if loglevel == 'info' %} selected{% endif %}>Info</option>
+                                <option value="debug"{% if loglevel == 'debug' %} selected{% endif %}>Debug</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log File</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                            <input type="text" class="form-control" name="logfile" value="{{ logfile }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Max MB</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="logmaxmb" value="{{ logmaxmb }}" readonly>
+                                <div class="input-group-addon">MB</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Backups</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="logbackups" value="{{ logbackups }}" readonly>
+                                <div class="input-group-addon">Days</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Admin GUI Access</label>
+                        <div class="col-sm-6">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-sm btn-default{% if admin_gui_access %} active{% endif %}">
+                                    <input type="radio" name="admin_gui_access" value="1" autocomplete="off"{% if admin_gui_access %} checked{% endif %}> Enabled
+                                </label>
+                                <label class="btn btn-sm btn-default{% if not admin_gui_access %} active{% endif %}">
+                                    <input type="radio" name="admin_gui_access" value="0" autocomplete="off"{% if not admin_gui_access %} checked{% endif %}> Disabled
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Admin Auth Only</label>
+                        <div class="col-sm-6">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-sm btn-default{% if admin_auth_only %} active{% endif %}">
+                                    <input type="radio" name="admin_auth_only" value="1" autocomplete="off"{% if admin_auth_only %} checked{% endif %}> Enabled
+                                </label>
+                                <label class="btn btn-sm btn-default{% if not admin_auth_only %} active{% endif %}">
+                                    <input type="radio" name="admin_auth_only" value="0" autocomplete="off"{% if not admin_auth_only %} checked{% endif %}> Disabled
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Delayed Start</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="delay_start" value="{{ delay_start }}" readonly>
+                                <div class="input-group-addon">Secs</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

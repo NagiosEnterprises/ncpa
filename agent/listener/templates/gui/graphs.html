@@ -3,46 +3,16 @@
 {% block title %}Graphs{% endblock %}
 
 {% block headerjs %}
+<script type="text/javascript" src="/static/js/smoothie.js"></script>
 <script type="text/javascript">
+
+var TEMP = { };
 var GRAPHABLES = [
     'disk',
     'interface',
     'memory',
     'cpu'
 ];
-
-function get_next_select(api_address, selection) {
-    var select = $('<select>', {'data-children': api_address, 'class': 'form-control'});
-
-    $.getJSON(api_address, function(d) {
-        var element = d[selection];
-        var bind_graph = false;
-        $.each(element, function(k, v) {
-
-            select.append($('<option>', {value: k, text: k, 'data-children': k}));
-
-            if (element[k] instanceof Array) {
-                select.attr('id', 'graph-bringer');
-                bind_graph = true;
-            }
-        });
-
-        if (bind_graph) {
-            select.change(function(e) {
-                render_graph($(e.target));
-            });
-        } else {
-            select.change(function(e) {
-                $('.gsel').remove();
-                populate_next_select(e);
-            });
-        }
-
-        select.trigger('change');
-    });
-
-    return select;
-}
 
 function get_graph_url() {
     var graph_url = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/graph';
@@ -51,16 +21,14 @@ function get_graph_url() {
     $('.api-select select').each(function(i, v) {
         var endpoint = $(v).val();
         if (endpoint != '') {
-            graph_url += '/' + endpoint;
+            graph_url += '/' + encodeURIComponent(endpoint);
         }
     });
 
     var delta = $('#delta:checked').val();
-    var unit_prefix = $('#unit-prefix').val();
+    var unit_prefix = $('#unit_prefix').val();
     var unit = $('input[name=unit]').val();
     var agg = $('input[name=agg]').val();
-
-    console.log(delta);
 
     var query_args = {};
 
@@ -89,45 +57,89 @@ function render_graph(target) {
     var graph_url = get_graph_url();
 
     $('#not-renderable').hide();
-    $('#graph-address-url').val(graph_url);
+    $('#graph-address-url').val(decodeURI(graph_url));
     $('.ncpa-graph').trigger('doUnload');
 
     graph_content.empty();
     graph_content.load(graph_url);
 }
 
-function populate_next_select(e) {
-    var current = $(e.target);
-    var current_value = current.val();
-    var next_url = current.attr('data-children') + '/' + current_value;
-
-    var next_select = get_next_select(next_url, current_value);
-
-    var graph_selector_div = $('#graph-selector-div');
-    graph_selector_div.append(next_select);
-}
-
 function generate_select(obj) {
-    var select = $('<select>', { 'class': 'form-control' });
+    var select = $('<select>', { 'class': 'form-control nodes' });
     $.each(obj, function(k, value) {
+        if (k == 'opts' || k == 'fstype' || k == 'device_name') { return; }
         select.append($('<option>', { value: k, text: k }));
     });
     $('#graph-selector-div').append(select);
+    if (is_object(obj[Object.keys(obj)[0]])) {
+        generate_select(obj[Object.keys(obj)[0]]);
+    }
 }
 
 function get_module_selects(api_address) {
     $('#graph-selector-div').html('');
     var select = $('<select>', { 'class': 'form-control' });
+
     $.getJSON(api_address, function(d) {
-        generate_select(d[$('#modules').val()]);
+        var module = $('#modules').val();
+        TEMP = d[module];
+
+        // Remove 'mount' if we are doing disk
+        if (module == 'disk') {
+            delete TEMP.mount;
+        }
+
+        $.each(TEMP, function(k, value) {
+            if (k == 'mount') { return; }
+            select.append($('<option>', { value: k, text: k }));
+        });
+
+        // Append the change event
+        select.change(function() {
+            $('.nodes').remove();
+            if (is_object(TEMP[$(this).val()])) {
+                generate_select(TEMP[$(this).val()]);
+            }
+        });
+
+        $('#graph-selector-div').append(select);
+
+        // Generate dynamic selects based on first one if it's an actual object
+        var obj = TEMP[Object.keys(TEMP)[0]];
+        if (is_object(obj)) {
+            generate_select(obj);
+        }
     });
 }
 
+function is_object(val) {
+    if (val instanceof Array) {
+        return false;
+    } else if (val instanceof Object) {
+        return true;
+    }
+    return false;
+}
+
 $(document).ready(function() {
-    $('#graph-picker-nav').addClass('active');
+    $('#graphs-nav').addClass('active');
     get_module_selects('/api/' + $('#modules').val());
 
     $('#modules').change(function() {
+        var module = $(this).val();
+
+        switch (module) {
+
+            case 'cpu':
+                $('#unit-prefix-box').hide();
+                break;
+
+            default:
+                $('#unit-prefix-box').css('display', 'table');
+                break;
+
+        }
+
         get_module_selects('/api/' + $(this).val());
     });
 
@@ -162,14 +174,14 @@ $(document).ready(function() {
         </div>
 
         <div class="input-group fl" style="width: 100px; margin-left: 20px;">
-            <label class="input-group-addon">Delta <i class="fa fa-question-circle"></i></label>
-            <span style="display: inline-block; background-color: #FFF; border: 1px solid #CCC; width: 30px; height: 30px; line-height: 28px; text-align: center;">
+            <label class="input-group-addon">Delta <i class="fa fa-question-circle pop-bind" title="Delta Values" data-content="When using the delta setting, the value given will be calculated 'per second' and will update the units to show this change. Only certain endpoints allow for delta values."></i></label>
+            <span class="white-box">
                 <input type="checkbox" id="delta" style="vertical-align: middle; margin: 0;" value="1">
             </span>
         </div>
 
-        <div class="input-group fl" style="width: 140px; margin-left: 20px;">
-            <label class="input-group-addon">Unit Prefix</label>
+        <div class="input-group hide fl" id="unit-prefix-box" style="width: 140px; margin-left: 20px;">
+            <label class="input-group-addon">Unit prefix</label>
             <select id="unit_prefix" class="form-control">
                 <option></option>
                 <option>k</option>

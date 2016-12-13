@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+1.0.1
+-----
+- Fixed units to be named "unitprefix" for less confusion
+
 1.0.0
 -----
 - Added backwards compatability for 1.7.x and 1.8.x

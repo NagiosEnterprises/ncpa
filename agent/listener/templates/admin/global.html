@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Global{% endblock %}
+
+{% block headerjs %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $(document).keydown(function(e) {
+        if (e.keyCode == 82 && e.ctrlKey || e.keyCode == 116) {
+            if (window.self !== window.top) {
+                location.reload(true);
+            } else {
+                document.getElementById('help-iframe').contentWindow.location.reload(true);
+            }
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="alert alert-info">
+    This section is currently in <b>read only</b> mode and any setting changes will not be saved. This will be updated in future versions.
+</div>
+
+{% if flash_msg %}
+<div class="alert alert-{{ flash_msg_type }}">
+    {{ flash_msg_text }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+
+<div style="padding: 3rem;">
+
+    <h3>Global Settings</h3>
+    <p>These are generic settings that apply to all of NCPA's services and utilities. These values are stored under the [general] section in the config.</p>
+
+    <div class="container-fluid" style="margin-top: 3rem; padding: 0;">
+        <div class="row">
+
+            <div class="col-lg-12">
+                <div class="form-horizontal">
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Logging</label>
+                        <div class="col-sm-6">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-sm btn-default{% if check_logging %} active{% endif %}">
+                                    <input type="radio" name="check_logging" value="1" autocomplete="off"{% if check_logging %} checked{% endif %}> Enabled
+                                </label>
+                                <label class="btn btn-sm btn-default{% if not check_logging %} active{% endif %}">
+                                    <input type="radio" name="check_logging" value="0" autocomplete="off"{% if not check_logging %} checked{% endif %}> Disabled
+                                </label>
+                            </div>
+                            <span style="margin-left: 1.5rem;">
+                                <i class="fa fa-trash-o fa-14"></i> <a href="clear-check-log">Clear Check Log</a>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Log Retention</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="log_checks" value="{{ check_logging_time }}" readonly>
+                                <div class="input-group-addon">Days</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
