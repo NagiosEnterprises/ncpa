@@ -13,7 +13,7 @@ $(document).ready(function() {
 
     $(document).keydown(function(e) {
         if (e.keyCode == 82 && e.ctrlKey || e.keyCode == 116) {
-            document.getElementById('help-iframe').contentWindow.location.reload(true);
+            document.getElementById('admin-iframe').contentWindow.location.reload(true);
             return false;
         }
     });
@@ -44,15 +44,10 @@ function resize_help_window() {
                 </ul>
             </div>
             <div class="section">
-                <div>Listener Service</div>
+                <div>Services</div>
                 <ul>
-                    <li><i class="fa fa-fw fa-cog fa-14"></i> <a href="listener" target="admin-frame">Settings</a></li>
-                </ul>
-            </div>
-            <div class="section">
-                <div>Passive Service</div>
-                <ul>
-                    <li><i class="fa fa-fw fa-cog fa-14"></i> <a href="passive" target="admin-frame">Settings</a></li>
+                    <li><i class="fa fa-fw fa-cog fa-14"></i> <a href="listener" target="admin-frame">Listener Settings</a></li>
+                    <li><i class="fa fa-fw fa-cog fa-14"></i> <a href="passive" target="admin-frame">Passive Settings</a></li>
                     <li><i class="fa fa-fw fa-send fa-14"></i> <a href="nrdp" target="admin-frame">NRDP</a></li>
                     <li><i class="fa fa-fw fa-file-code-o fa-14"></i> <a href="plugin-directives" target="admin-frame">Plugin Directives</a></li>
                     <li><i class="fa fa-fw fa-check fa-14"></i> <a href="passive-checks" target="admin-frame">Passive Checks</a></li>

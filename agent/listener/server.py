@@ -63,6 +63,11 @@ def get_config_value(section, option, default=None):
     return value
 
 
+# Get a set of items from a configuration section
+def get_config_items(section):
+    return listener.config['iconfig'].items(section)
+
+
 # Misc function for making information for main page
 def make_info_dict():
     now = datetime.datetime.now()
@@ -511,9 +516,80 @@ def admin_global():
 @listener.route('/gui/admin/listener', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_listener_config():
-    tmp_args = { 'no_nav': True }
-    tmp_args['config'] = listener.config['iconfig']
+    tmp_args = { 'no_nav': True,
+                 'ip': get_config_value('listener', 'ip', '0.0.0.0'),
+                 'port': get_config_value('listener', 'port', '5693'),
+                 'uid': get_config_value('listener', 'uid', 'nagios'),
+                 'gid': get_config_value('listener', 'gid', 'nagios'),
+                 'ssl_version': get_config_value('listener', 'ssl_version', 'TLSv1_2'),
+                 'certificate': get_config_value('listener', 'certificate', 'adhoc'),
+                 'pidfile': get_config_value('listener', 'pidfile', 'var/run/ncpa_listener.pid'),
+                 'loglevel': get_config_value('listener', 'loglevel', 'info'),
+                 'logfile': get_config_value('listener', 'logfile', 'var/log/ncpa_listener.log'),
+                 'logmaxmb': get_config_value('listener', 'logmaxmb', '5'),
+                 'logbackups': get_config_value('listener', 'logbackups', '5'),
+                 'admin_gui_access': int(get_config_value('listener', 'admin_gui_access', 1)),
+                 'admin_auth_only': int(get_config_value('listener', 'admin_auth_only', 0)),
+                 'delay_start': get_config_value('listener', 'delay_start', '0') }
+
+    # Todo: add form actions when submitted
+
     return render_template('admin/listener.html', **tmp_args)
+
+
+@listener.route('/gui/admin/passive', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_passive_config():
+    handlers = get_config_value('passive', 'handlers', None)
+    if handlers is None:
+        handlers = []
+    tmp_args = { 'no_nav': True,
+                 'handlers': handlers,
+                 'uid': get_config_value('passive', 'uid', 'nagios'),
+                 'gid': get_config_value('passive', 'gid', 'nagios'),
+                 'sleep': get_config_value('passive', 'sleep', '300'),
+                 'pidfile': get_config_value('passive', 'pidfile', 'var/run/ncpa_listener.pid'),
+                 'loglevel': get_config_value('passive', 'loglevel', 'info'),
+                 'logfile': get_config_value('passive', 'logfile', 'var/log/ncpa_listener.log'),
+                 'logmaxmb': get_config_value('passive', 'logmaxmb', '5'),
+                 'logbackups': get_config_value('passive', 'logbackups', '5'),
+                 'delay_start': get_config_value('passive', 'delay_start', '0') }
+
+    # Todo: add form actions when submitted
+
+    return render_template('admin/passive.html', **tmp_args)
+
+
+@listener.route('/gui/admin/nrdp', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_nrdp_config():
+    handlers = get_config_value('passive', 'handlers', None)
+    if handlers is None:
+        handlers = []
+    tmp_args = { 'no_nav': True,
+                 'handlers': handlers,
+                 'nrdp_url': get_config_value('nrdp', 'parent', ''),
+                 'nrdp_token': get_config_value('nrdp', 'token', ''),
+                 'hostname': get_config_value('nrdp', 'hostname', 'NCPA') }
+    return render_template('admin/nrdp.html', **tmp_args)
+
+
+@listener.route('/gui/admin/plugin-directives', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_plugin_config():
+    tmp_args = { 'no_nav': True,
+                 'plugin_path': get_config_value('plugin directives', 'plugin_path', 'plugins/'),
+                 'plugin_timeout': get_config_value('plugin directives', 'plugin_timeout', '60'),
+                 'directives': get_config_items('plugin directives') }
+    return render_template('admin/plugins.html', **tmp_args)
+
+
+@listener.route('/gui/admin/passive-checks', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_checks_config():
+    tmp_args = { 'no_nav': True,
+                 'checks': get_config_items('passive checks') }
+    return render_template('admin/checks.html', **tmp_args)
 
 
 # Page that removes all checks from the DB

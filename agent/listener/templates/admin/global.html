@@ -2,6 +2,23 @@
 
 {% block title %}Global{% endblock %}
 
+{% block headerjs %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $(document).keydown(function(e) {
+        if (e.keyCode == 82 && e.ctrlKey || e.keyCode == 116) {
+            if (window.self !== window.top) {
+                location.reload(true);
+            } else {
+                document.getElementById('help-iframe').contentWindow.location.reload(true);
+            }
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}
+
 {% block content %}
 
 <div class="alert alert-info">
@@ -20,9 +37,9 @@
 <div style="padding: 3rem;">
 
     <h3>Global Settings</h3>
-    <p>These are generic settings that apply to all of NCPA's services and utilities.</p>
+    <p>These are generic settings that apply to all of NCPA's services and utilities. These values are stored under the [general] section in the config.</p>
 
-    <div class="container-fluid" style="margin-top: 3rem;">
+    <div class="container-fluid" style="margin-top: 3rem; padding: 0;">
         <div class="row">
 
             <div class="col-lg-12">
@@ -52,13 +69,6 @@
                                 <input type="text" class="form-control" name="log_checks" value="{{ check_logging_time }}" readonly>
                                 <div class="input-group-addon">Days</div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2"></label>
-                        <div class="col-sm-6">
-                            
                         </div>
                     </div>
 
