@@ -62,14 +62,12 @@ else
 fi
 
 %post
-if [ ! -f "/etc/init.d/ncpa_listener" ]; then
-    if which chkconfig > /dev/null; then
-        chkconfig --level 3,5 --add ncpa_listener
-        chkconfig --level 3,5 --add ncpa_passive
-    elif which update-rc.d > /dev/null; then
-        update-rc.d ncpa_listener defaults
-        update-rc.d ncpa_passive defaults
-    fi
+if which chkconfig > /dev/null; then
+    chkconfig --level 3,5 --add ncpa_listener
+    chkconfig --level 3,5 --add ncpa_passive
+elif which update-rc.d > /dev/null; then
+    update-rc.d ncpa_listener defaults
+    update-rc.d ncpa_passive defaults
 fi
 
 # Set the directory inside the init scripts
