@@ -70,6 +70,10 @@ elif which update-rc.d > /dev/null; then
     update-rc.d ncpa_passive defaults
 fi
 
+if [ -z $RPM_INSTALL_PREFIX ]; then
+    RPM_INSTALL_PREFIX="/usr/local"
+fi
+
 # Set the directory inside the init scripts
 dir=$RPM_INSTALL_PREFIX/ncpa
 sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_listener
