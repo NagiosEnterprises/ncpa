@@ -209,11 +209,15 @@ class ServiceNode(nodes.LazyNode):
     def get_services_via_initd(self, *args, **kwargs):
         # Only look at executable files in init.d (there is no README service)
         possible_services = filter(lambda x: os.stat('/etc/init.d/'+x)[ST_MODE] & (S_IXUSR|S_IXGRP|S_IXOTH), os.listdir('/etc/init.d'))
-        services = { x: 'stopped' for x in possible_services }
+        services = {}
         devnull = open(os.devnull, 'w')
 
         for service in possible_services:
-            status = services[service]
+            status = 'stopped'
+
+            # Skip broken 'services' that actually run when called with 'status'
+            if 'rcS' in service:
+                continue
 
             # Check if service is running via 'ps' since its faster that calling 'service'
             grep_search = '[%s]%s' % (service[0], service[1:])
