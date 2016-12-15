@@ -27,7 +27,7 @@ class Listener(ncpadaemon.Daemon):
     def run(self):
 
         # Set absolute plugin path
-        plugins_abs = os.path.abspath(self.config_parser.get(u'plugin directives', u'plugin_path'))
+        plugins_abs = os.path.abspath(os.path.join(filename.get_dirname_file(), self.config_parser.get(u'plugin directives', u'plugin_path')))
         self.config_parser.set(u'plugin directives', u'plugin_path', plugins_abs)
 
         # Check if there is a start delay

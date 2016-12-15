@@ -63,11 +63,11 @@ fi
 
 %post
 if which chkconfig > /dev/null; then
-    chkconfig --level 3,5 --add ncpa_listener
-    chkconfig --level 3,5 --add ncpa_passive
+    chkconfig --level 3,5 --add ncpa_listener &> /dev/null
+    chkconfig --level 3,5 --add ncpa_passive &> /dev/null
 elif which update-rc.d > /dev/null; then
-    update-rc.d ncpa_listener defaults
-    update-rc.d ncpa_passive defaults
+    update-rc.d ncpa_listener defaults &> /dev/null
+    update-rc.d ncpa_passive defaults &> /dev/null
 fi
 
 if [ -z $RPM_INSTALL_PREFIX ]; then
