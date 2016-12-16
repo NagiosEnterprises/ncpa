@@ -20,12 +20,15 @@ class Handler(NagiosHandler):
 
     def run(self, *args, **kwargs):
         logging.debug('Establishing passive handler: NRDS')
+
+        # The NRDS section does not exist right now..
+        return
         
         try:
-            nrds_url = self.config.get('nrds', 'URL', None)
-            nrds_config = self.config.get('nrds', 'CONFIG_NAME', None)
-            nrds_config_version = self.config.get('nrds', 'CONFIG_VERSION', None)
-            nrds_token = self.config.get('nrds', 'TOKEN', None)
+            nrds_url = self.config.get('nrds', 'url')
+            nrds_config = self.config.get('nrds', 'config_name')
+            nrds_config_version = self.config.get('nrds', 'config_version')
+            nrds_token = self.config.get('nrds', 'token')
         except (ConfigParser.NoOptionError, ConfigParser.NoSectionError) as exc:
             logging.error("Encountered error while getting NRDS config values: %r", exc)
 
