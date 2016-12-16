@@ -137,7 +137,7 @@ class WindowsLogsNode(nodes.LazyNode):
         # Get the check logging value
         try:
             check_logging = int(kwargs['config'].get('general', 'check_logging'))
-        except ConfigParser.NoOptionError:
+        except Exception as e:
             check_logging = 1
 
         # Put check results in the check database

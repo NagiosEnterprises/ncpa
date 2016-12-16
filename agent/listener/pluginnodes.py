@@ -72,13 +72,13 @@ class PluginNode(nodes.RunnableNode):
         # Get plugin command timeout value, if it exists
         try:
             timeout = int(config.get('plugin directives', 'plugin_timeout'))
-        except ConfigParser.NoOptionError:
+        except Exception as e:
             timeout = 60
 
         # Get the check logging value
         try:
             check_logging = int(config.get('general', 'check_logging'))
-        except ConfigParser.NoOptionError:
+        except Exception as e:
             check_logging = 1
 
         # Make our command line

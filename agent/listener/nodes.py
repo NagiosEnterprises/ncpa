@@ -109,7 +109,7 @@ class RunnableParentNode(ParentNode):
         # Get the check logging value
         try:
             check_logging = int(kwargs['config'].get('general', 'check_logging'))
-        except ConfigParser.NoOptionError:
+        except Exception as e:
             check_logging = 1
 
         # Send check results to database
@@ -282,7 +282,7 @@ class RunnableNode(ParentNode):
         # Get the check logging value
         try:
             check_logging = int(kwargs['config'].get('general', 'check_logging'))
-        except ConfigParser.NoOptionError:
+        except Exception as e:
             check_logging = 1
 
         # Send check results to database
