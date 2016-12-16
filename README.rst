@@ -16,7 +16,7 @@ Current versions:
 
 We currently build for the following operating systems:
 
-- Windows (XP+)
+- Windows (Vista+)
 - Mac OS X (10.7+)
 - CentOS / RHEL (5+)
 - Debian (7+)
