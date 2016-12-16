@@ -22,6 +22,7 @@ We currently build for the following operating systems:
 - Debian (7+)
 - Ubuntu (12+)
 - OpenSUSE (11+)
+- Oracle (6+)
 
 Other systems we will build for soon:
 - SLES (11+)
