@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+1.0.2
+-----
+- Fixed issue where arguments check was checking for "agent/plugin" only
+
 1.0.1
 -----
 - Fixed units to be named "unitprefix" for less confusion

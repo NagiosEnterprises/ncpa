@@ -109,9 +109,9 @@ def parse_args():
         print(version)
         sys.exit(0)
 
-    if options.arguments and options.metric and not 'agent/plugin' in options.metric:
+    if options.arguments and options.metric and not 'plugin' in options.metric:
         parser.print_help()
-        parser.error('You cannot specify arguments and try to run a plugin.')
+        parser.error('You cannot specify arguments without running a custom plugin.')
 
     if not options.hostname:
         parser.print_help()
@@ -128,13 +128,12 @@ def parse_args():
 
 
 # ~ The following are all helper functions. I would normally split these out into
-#~ a new module but this needs to be portable.
+# ~ a new module but this needs to be portable.
 
 
 def get_url_from_options(options):
     host_part = get_host_part_from_options(options)
     arguments = get_arguments_from_options(options)
-
     return '%s?%s' % (host_part, arguments)
 
 
