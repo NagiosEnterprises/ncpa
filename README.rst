@@ -34,7 +34,7 @@ If your operating system of choice is not on the list and none of the builds wor
 Documentation
 -------------
 
-You can view the most current `HTML documentation <https://assets.nagios.com/downloads/ncpa/docs/html/>`_ online or view your current NCPA version's documentation using the NCPA web GUI from an installed agent. This is recommended if you are using an older version, since some features may not be available but may be used in newer documents.
+You can view the most current `HTML documentation <https://nagios.org/ncpa/help.php>`_ online or view your current NCPA version's documentation using the NCPA web GUI from an installed agent. This is recommended if you are using an older version, since some features may not be available but may be used in newer documents.
 
 
 Advanced
