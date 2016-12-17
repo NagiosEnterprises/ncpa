@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response
 import logging
 import urllib

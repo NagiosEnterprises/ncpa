@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 import time
 import logging
@@ -88,12 +90,13 @@ class PluginNode(nodes.RunnableNode):
         # Demote the child process to the username/group specified in config
         # Note: We are no longer demoting here - instead we are setting the actual perms
         #       when we daemonize the process making this pointless.
-        demote = None
+        # We used to add "preexec_fn=demote"
+        #demote = None
         #if environment.SYSTEM != "Windows":
         #    demote = PluginNode.demote(user_uid, user_gid)
 
         run_time_start = time.time()
-        running_check = subprocess.Popen(cmd, bufsize=-1, preexec_fn=demote, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        running_check = subprocess.Popen(cmd, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         queue = Queue.Queue(maxsize=2)
         timer = Timer(timeout, self.kill_proc, [running_check, timeout, queue])
 
@@ -111,13 +114,13 @@ class PluginNode(nodes.RunnableNode):
             if queue.qsize() > 0:
                 stdout = queue.get()
 
-        cleaned_stdout = ''.join(stdout).replace('\r\n', '\n').replace('\r', '\n').strip()
+        cleaned_stdout = unicode(''.join(stdout.decode("utf-8", "ignore")).replace('\r\n', '\n').replace('\r', '\n').strip())
 
         if not server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
             dbc = db.get_cursor()
             data = (kwargs['accessor'].rstrip('/'), run_time_start, run_time_end, returncode,
-                    stdout, kwargs['remote_addr'], 'Active')
+                    cleaned_stdout, kwargs['remote_addr'], 'Active')
             dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
             db.commit()
 

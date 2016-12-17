@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import psutil as ps
 import os
 import logging
@@ -92,7 +94,8 @@ def make_if_nodes(if_name):
 
 
 def get_timezone():
-    return time.tzname, ''
+    zones = time.tzname
+    return zones, ''
 
 
 def get_system_node():

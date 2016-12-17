@@ -6,6 +6,7 @@
 - Updated the popover info boxes to auto-hide when no longer in focus (once you click anywhere but the ?)
 - Fixed issue with passive service when nrds was set (typically on upgrades) sending lots of errors to the log
 - Fixed issue on Top Processes page where warning and critical thresholds didn't highlighting values
+- Fixed issue with string encoding errors on certain systems in some API nodes
 
 2.0.0 - 12/15/2016
 ==================
