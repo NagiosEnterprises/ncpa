@@ -12,6 +12,7 @@ import sys
 import time
 import filename
 import listener.database
+import tempfile
 from itertools import imap
 from io import open
 
@@ -40,6 +41,15 @@ class Daemon(object):
         terminal has not been detached and the pid of the long-running
         process is not yet known.
         """
+
+        # We need to chown any temp files we wrote out as root (or any other user)
+        # to the currently set user and group so checks don't error out
+        tmpdir = os.path.join(tempfile.gettempdir())
+        for file in os.listdir(tmpdir):
+            if os.path.isfile(file):
+                if 'ncpa-' in file:
+                    self.chown(os.path.join(tmpdir, file))
+
 
     def setup_user(self):
         u"""Override to perform setup tasks with user privileges.

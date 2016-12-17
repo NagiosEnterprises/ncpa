@@ -7,6 +7,7 @@
 - Fixed issue with passive service when nrds was set (typically on upgrades) sending lots of errors to the log
 - Fixed issue on Top Processes page where warning and critical thresholds didn't highlighting values
 - Fixed issue with string encoding errors on certain systems in some API nodes
+- Fixed issue with upgrades on unix systems ncpa- tmp files caused checks to give 500 errors from permission denied
 
 2.0.0 - 12/15/2016
 ==================
