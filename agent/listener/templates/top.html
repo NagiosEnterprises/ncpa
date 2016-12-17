@@ -145,6 +145,9 @@
                     return false;
                 }
                 var p = pl[i];
+
+                console.log(p);
+
                 var tr = $('<tr>', {id: p.pid});
                 $.each(order, function(j) {
                     var data = p[order[j]];
@@ -155,10 +158,10 @@
                     if (highlight != null && order[j] == 'name' && p[order[j]].indexOf(highlight) > -1) {
                         tr.addClass('highlight');
                     }
-                    if ((order[j] == 'cpu_percent' || order[j] == 'mem_percent') && critical > 0 && p[order[j]] > critical) {
+                    if ((order[j] == 'cpu_percent' || order[j] == 'mem_percent') && critical > 0 && p[order[j]][0] > critical) {
                         td.addClass('critical');
                     }
-                    else if ((order[j] == 'cpu_percent' || order[j] == 'mem_percent') && warning > 0 && p[order[j]] > warning) {
+                    else if ((order[j] == 'cpu_percent' || order[j] == 'mem_percent') && warning > 0 && p[order[j]][0] > warning) {
                         td.addClass('warning');
                     }
                     tr.append(td);    
@@ -202,7 +205,8 @@
                 </div>
             </div>
             <div class="fr">
-                <div class="input-group" style="width: 120px;">
+                <i class="fa fa-question-circle pop-bind fa-14" role="button" tabindex="0" style="vertical-align: middle;" title="Warning and Critical Thresholds" data-placement="left" data-content="<p>Setting these values will highlight the CPU percent and Memory percent values that are over the threshold provided. Standard Nagios colors apply.</p>"></i>
+                <div class="input-group" style="width: 120px; margin-left: 1rem;">
                     <div class="input-group-addon"><img src="../../static/img/warning.png" class="tt-bind" data-placement="bottom" title="Warning threshold"></div>
                     <input type="text" class="form-control" id="warning-input" placeholder="Warning">
                 </div>

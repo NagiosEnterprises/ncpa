@@ -841,7 +841,7 @@ function generate_passive_check() {
                 <div class="selector-disk"></div>
                 <div class="settings log-name-selector">
                     <div>
-                        <label class="fl">Log Names <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: help;" title="Log Names" data-content="In order to see any logs in the logs endpoint you need to select the types of logs to get. In Windows, they are sorted by log names. Examples are <i>'Application', 'Security', 'Setup', 'System', 'Forwarded Events'</i>"></i></label>
+                        <label class="fl">Log Names <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" style="cursor: help;" title="Log Names" data-content="In order to see any logs in the logs endpoint you need to select the types of logs to get. In Windows, they are sorted by log names. Examples are <i>'Application', 'Security', 'Setup', 'System', 'Forwarded Events'</i>"></i></label>
                         <div class="fr">Examples: <a class="log-example tt-bind" title="Multiple event log types being used in a single check"><i class="fa fa-file-text-o fa-14"></i></a></div>
                         <div class="clear"></div>
                     </div>
@@ -904,7 +904,7 @@ function generate_passive_check() {
                 </div>
                 <div class="settings selector-counters">
                     <div>
-                        <label class="fl">Windows Counter <i class="fa fa-question-circle pop-bind fa-r fa-14" title="Windows Counter" data-content="<p>Since there are tons of windows counters, we cannot list them all. If you'd like a list of available counters, run the following command in the command prompt:</p> <pre>TypePerf.exe –q</pre> <p>The command should give you a list of available counters on any version of Windows over Windows 2000.</p> <p><em>Note: Not all counters have data that can be used by NCPA (must be numeric). Per second counters <b>must</b> be given a sleep amount or they will not return data.</em></p>"></i></label>
+                        <label class="fl">Windows Counter <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" title="Windows Counter" data-content="<p>Since there are tons of windows counters, we cannot list them all. If you'd like a list of available counters, run the following command in the command prompt:</p> <pre>TypePerf.exe –q</pre> <p>The command should give you a list of available counters on any version of Windows over Windows 2000.</p> <p><em>Note: Not all counters have data that can be used by NCPA (must be numeric). Per second counters <b>must</b> be given a sleep amount or they will not return data.</em></p>"></i></label>
                         <div class="fr">Examples: <a class="example tt-bind" data-counter="/TCPv4/Connections Active" data-sleep="0" title="Counter example"><i class="fa fa-asterisk fa-14"></i></a> <a class="example tt-bind" data-counter="/TCPv4/Segments Received/sec" data-sleep="5" title="Per second counter example"><i class="fa fa-bar-chart fa-14"></i></a></div>
                         <div class="clear"></div>
                     </div>
@@ -920,7 +920,7 @@ function generate_passive_check() {
                     </div>
                 </div>
                 <div class="settings proc-filters">
-                    <label>Process Filter(s) <i class="fa fa-question-circle pop-bind fa-r fa-14" title="Process Filtering Options" data-content="<p>You can add multiple filters of the same type and they will be combined using the <b>combiner</b> variable that you can set in <i>Filter Settings</i> below.</p><p><b>name</b> and <b>exe</b> - Value will be matched using the <i>search type</i> setting in <i>Filter Settings</i>. Defaults to exact match.</p><p><b>cpu_percent</b>, <b>mem_percent</b>, <b>mem_rss</b>, <b>mem_vms</b> - These filters can be floats, and will match anything less than or equal to (&lt;=) the value.</p>"></i></label>
+                    <label>Process Filter(s) <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" title="Process Filtering Options" data-content="<p>You can add multiple filters of the same type and they will be combined using the <b>combiner</b> variable that you can set in <i>Filter Settings</i> below.</p><p><b>name</b> and <b>exe</b> - Value will be matched using the <i>search type</i> setting in <i>Filter Settings</i>. Defaults to exact match.</p><p><b>cpu_percent</b>, <b>mem_percent</b>, <b>mem_rss</b>, <b>mem_vms</b> - These filters can be floats, and will match anything less than or equal to (&lt;=) the value.</p>"></i></label>
                     <div class="list"></div>
                     <div>
                         <button type="button" class="btn btn-xs btn-default add-filter">
@@ -931,7 +931,7 @@ function generate_passive_check() {
                 <div class="settings filter-settings">
                     <label>Filter Settings</label>
                     <div class="input-group combiner" style="margin-bottom: 5px;">
-                        <div class="input-group-addon">Combine using <i class="fa fa-question-circle pop-bind fa-r fa-14" title="Combine Using And or Or" data-content="<p>This can either be set to <b>and</b> which is the default or to <b>or</b>. This setting determines how to add the filters to the query. When <b>and</b>, each process returned would need to match <i>all</i> supplied filters. If using <b>or</b>, then the matches must match <i>any</i> of the filters.</p>"></i></div>
+                        <div class="input-group-addon">Combine using <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" title="Combine Using And or Or" data-content="<p>This can either be set to <b>and</b> which is the default or to <b>or</b>. This setting determines how to add the filters to the query. When <b>and</b>, each process returned would need to match <i>all</i> supplied filters. If using <b>or</b>, then the matches must match <i>any</i> of the filters.</p>"></i></div>
                         <select class="form-control combiner">
                             <option value="">and</option>
                             <option value="or">or</option>
@@ -974,7 +974,7 @@ function generate_passive_check() {
                     </div>
                     <div class="delta-box hide">
                         <div class="input-group delta" style="margin-top: 5px;">
-                            <label class="input-group-addon">Delta <i class="fa fa-question-circle pop-bind" title="Delta Values (Change in Value Over Time)" data-content="Delta will take the last check call for this endpoint (that delta was applied to) and subtract it from the current data. It will then divide that by the amount of time since the last call giving a per second average value since the last call.<br><br><em>Only certain endpoints work with delta.</em>"></i></label>
+                            <label class="input-group-addon">Delta <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Delta Values (Change in Value Over Time)" data-content="Delta will take the last check call for this endpoint (that delta was applied to) and subtract it from the current data. It will then divide that by the amount of time since the last call giving a per second average value since the last call.<br><br><em>Only certain endpoints work with delta.</em>"></i></label>
                             <div class="white-box">
                                 <input type="checkbox" class="delta" value="1" style="vertical-align: middle; margin: 0;">
                             </div>
@@ -982,7 +982,7 @@ function generate_passive_check() {
                     </div>
                 </div>
                 <div class="settings arguments">
-                    <label>Plugin Arguments <i class="fa fa-question-circle pop-bind fa-r fa-14" style="cursor: pointer;" title="Plugin Arguments" data-content="<p>Each plugin argument will be added to the output with a space. An example is below:</p><p><pre>-a 100</pre><pre>-v 'testing'</pre></p><p>The above values in argument fields would create a command for the selected plugin like this:</p><p><pre>./test.sh -a 100 -v 'testing'</pre></p><p><b>Note</b>: You'll notice that each argument is passed into the URL with a <code>/</code> such as <code>/test.sh/-a 100/-v 'testing'</code>.</p>"></i></label>
+                    <label>Plugin Arguments <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" style="cursor: pointer;" title="Plugin Arguments" data-content="<p>Each plugin argument will be added to the output with a space. An example is below:</p><p><pre>-a 100</pre><pre>-v 'testing'</pre></p><p>The above values in argument fields would create a command for the selected plugin like this:</p><p><pre>./test.sh -a 100 -v 'testing'</pre></p><p><b>Note</b>: You'll notice that each argument is passed into the URL with a <code>/</code> such as <code>/test.sh/-a 100/-v 'testing'</code>.</p>"></i></label>
                     <div class="list"></div>
                     <div>
                         <button type="button" class="btn btn-xs btn-default add-argument">
@@ -997,7 +997,7 @@ function generate_passive_check() {
                     </div>
                     <div class="status-check hide-by-default">
                         <div class="input-group">
-                            <div class="input-group-addon">Status <i class="fa fa-question-circle pop-bind" title="Service Status" data-content="<b>Default is running</b>.<br>The status option is what the service's status should be. If it does not match the set status, it will return a critical result."></i></div>
+                            <div class="input-group-addon">Status <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Service Status" data-content="<b>Default is running</b>.<br>The status option is what the service's status should be. If it does not match the set status, it will return a critical result."></i></div>
                             <select class="status form-control">
                                 <option></option>
                                 <option value="running">running</option>
@@ -1019,7 +1019,7 @@ function generate_passive_check() {
                 <div class="settings advanced-settings">
                     <label>Advanced Settings</label>
                     <div class="input-group">
-                        <div class="input-group-addon">Sleep for <i class="fa fa-question-circle pop-bind" title="Sleep (Generate Data Per Second)" data-content="<p>When checking for data such as per second counters or delta values, the sleep value is used to generate the data/sec value.</p><p>NCPA will wait the amount of sleep time specified, collecting the data that comes in between the start and end time of the sleep time.</p><p>The calculation when using a sleep value:<br><b>sum(data) / sleep = data/sec</b></p><p>Sleep value is in seconds.</p>"></i></div>
+                        <div class="input-group-addon">Sleep for <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Sleep (Generate Data Per Second)" data-content="<p>When checking for data such as per second counters or delta values, the sleep value is used to generate the data/sec value.</p><p>NCPA will wait the amount of sleep time specified, collecting the data that comes in between the start and end time of the sleep time.</p><p>The calculation when using a sleep value:<br><b>sum(data) / sleep = data/sec</b></p><p>Sleep value is in seconds.</p>"></i></div>
                         <input type="text" class="form-control sleep" placeholder="# of">
                         <div class="input-group-addon">seconds</div>
                     </div>
