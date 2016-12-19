@@ -104,26 +104,6 @@ class ServiceNode(nodes.LazyNode):
                 services[name] = 'stopped'
         return services
 
-#    @filter_services
-#    def get_services_via_sc(self, *args, **kwargs):
-#        services = {}
-#        status = tempfile.TemporaryFile()
-#        service = subprocess.Popen(['sc', 'query', 'type=', 'service', 'state=', 'all'], stdout=status)
-#        service.wait()
-#        status.seek(0)
-#
-#        for line in status.readlines():
-#            l = line.strip()
-#            if l.startswith('SERVICE_NAME'):
-#                service_name = l.split(' ', 1)[1]
-#            if l.startswith('STATE'):
-#                if 'RUNNING' in l:
-#                    status = 'running'
-#                else:
-#                    status = 'stopped'
-#                services[service_name] = status
-#        return services
-
     @filter_services
     def get_services_via_launchctl(self, *args, **kwargs):
         services = {}
