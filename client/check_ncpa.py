@@ -43,7 +43,7 @@ import shlex
 import re
 import signal
 
-__VERSION__ = '1.0.1'
+__VERSION__ = '1.0.2'
 
 def pretty(d, indent=0, indenter=' ' * 4):
     info_str = ''
