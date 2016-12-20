@@ -3,7 +3,9 @@
 
 2.0.1 - 12/??/2016
 ==================
-- Updated the popover info boxes to auto-hide when no longer in focus (once you click anywhere but the ?)
+- Updated popover info boxes so they auto-hide when no longer in focus (once you click anywhere but the ?)
+- Updated Windows service log file locations to var/log/win32service_ncpa<type>.log (logs for the services not NCPA)
+- Updated Mac OS X install to give information about whether the install/upgrade finished or not
 - Fixed issue with passive service when nrds was set (typically on upgrades) sending lots of errors to the log
 - Fixed issue on Top Processes page where warning and critical thresholds didn't highlighting values
 - Fixed issue with string encoding errors on certain systems in some API nodes

@@ -7,7 +7,7 @@ pushd /Volumes/NCPA-*
 # These values are set in the ncpa.cfg for the user to drop permissions to
 username="nagios"
 groupname="nagios"
-homedir="/usr/local/ncpa" # This value is in the plist
+homedir="/usr/local/ncpa"
 upgrade="0"
 added="0"
 

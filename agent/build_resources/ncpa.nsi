@@ -69,15 +69,15 @@ VIProductVersion ${NCPA_VERSION_CLEAN}.0
 VIAddVersionKey "ProductName" "${NAME}"
 VIAddVersionKey "CompanyName" "${COMPANY}"
 VIAddVersionKey "FileVersion" ${NCPA_VERSION}
-VIAddVersionKey "LegalCopyright" "Copyright 2016, ${COMPANY}"
-VIAddVersionKey "FileDescription" "The Nagios Cross-Platform Agent is a monitoring agent used to monitor system information and return results to Nagios products."
+VIAddVersionKey "LegalCopyright" "2014-2016 ${COMPANY}"
+VIAddVersionKey "FileDescription" "NCPA Setup"
 
 ; Language values for pages
 LangString PAGE_TITLE ${LANG_ENGLISH} "Nagios Cross-Platform Agent (${NAME})"
 LangString PAGE_SUBTITLE ${LANG_ENGLISH} "Windows Version - ${NCPA_VERSION}"
 LangString LICENSE_TOP ${LANG_ENGLISH} "License Agreement"
 LangString LICENSE_BOTTOM ${LANG_ENGLISH} "Nagios Software License 1.3"
-LangString FINISH_LINK ${LANG_ENGLISH} "View online NCPA documentation"
+LangString FINISH_LINK ${LANG_ENGLISH} "View NCPA website and documentation"
 
 ;--------------------------------
 ; Pages (actual pages in order)
@@ -88,7 +88,7 @@ LangString FINISH_LINK ${LANG_ENGLISH} "View online NCPA documentation"
 !define MUI_LICENSEPAGE_TEXT_TOP $(LICENSE_TOP)
 !define MUI_LICENSEPAGE_TEXT_BOTTOM $(LICENSE_BOTTOM)
 !define MUI_FINISHPAGE_LINK $(FINISH_LINK)
-!define MUI_FINISHPAGE_LINK_LOCATION "https://assets.nagios.com/downloads/ncpa/docs/html/"
+!define MUI_FINISHPAGE_LINK_LOCATION "https://nagios.org/ncpa/"
 !define MUI_FINISHPAGE_LINK_COLOR 4d89f9
 
 ; Installer
@@ -221,6 +221,10 @@ Section # "Create Config.ini"
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --uninstall ncpapassive'
 
     SetOutPath $INSTDIR
+
+    ; --------------
+    ; ncpa.cfg Setup
+    ; --------------
     
     IfFileExists $INSTDIR\etc\ncpa.cfg SkipUpdateConfig UpdateConfig
     
@@ -274,13 +278,45 @@ Section # "Create Config.ini"
     SetOverwrite off
     File /oname=$INSTDIR\etc\ncpa.cfg .\NCPA\etc\ncpa.cfg
     SetOverwrite on
+
+    ; ---------
+    ; Directory
+    ; ---------
     
     ; Copy over everything we need for NCPA
     File /r .\NCPA\listener
-    File /r .\NCPA\passive
+    ;File /r .\NCPA\passive
     File /r .\NCPA\var
     File .\NCPA\*.*
     CreateDirectory $INSTDIR\plugins
+
+    ; --------------
+    ; INI File Setup
+    ; --------------
+
+    IfFileExists $INSTDIR\ncpa_listener.ini SkipListenerIniFile CreateListenerIniFile
+
+    ; Set up the listener service ini file for log name setup
+    CreateListenerIniFile:
+
+    FileOpen $8 $INSTDIR\ncpa_listener.ini w
+    FileWrite $8 "[Logging]$\r$\n"
+    FileWrite $8 "FileName=$INSTDIR\var\log\win32service_ncpalistener.log"
+    FileClose $8
+
+    SkipListenerIniFile:
+
+    IfFileExists $INSTDIR\ncpa_passive.ini SkipPassiveIniFile CreatePassiveIniFile
+
+    ; Set up the passive service ini file for log name setup
+    CreatePassiveIniFile:
+
+    FileOpen $8 $INSTDIR\ncpa_passive.ini w
+    FileWrite $8 "[Logging]$\r$\n"
+    FileWrite $8 "FileName=$INSTDIR\var\log\win32service_ncpapassive.log"
+    FileClose $8
+
+    SkipPassiveIniFile:
 
 SectionEnd
 

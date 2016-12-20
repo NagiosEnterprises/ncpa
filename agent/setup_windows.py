@@ -28,11 +28,10 @@ includefiles = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
                 ('listener/templates', 'listener/templates'),
                 ('listener/static', 'listener/static'),
                 'etc',
-                'plugins',
-                'passive']
+                'plugins']
 
 packages = []
-includes = ['ncpa_windows', 'cx_Logging']
+includes = ['ncpa_windows', 'passive', 'cx_Logging']
 
 includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                  ('build_resources/nsis_listener_options.ini', 'build_resources/nsis_listener_options.ini'),
