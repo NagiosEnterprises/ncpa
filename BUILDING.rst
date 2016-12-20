@@ -14,7 +14,7 @@ Prerequisites
 -------------
 
 * `Git for Windows <https://git-scm.com/download/win>`_
-* Python 2.7.12 (32-Bit) (`Download <https://www.python.org/downloads/release/python-2712/>`_)
+* Python 2.7.13 (32-Bit) (`Download <https://www.python.org/downloads/release/python-2713/>`_)
 * OpenSSL for Windows (32-bit) (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_0c.exe>`_) *Requires admin rights*
 * `Microsoft Visual C++ Compiler for Python 2.7 <http://aka.ms/vcpython27>`_
 * `Microsoft Visual C++ 2010 runtime (32-bit) <http://www.microsoft.com/en-us/download/details.aspx?id=8328>`_ *Requires admin rights*
@@ -39,7 +39,7 @@ Install Prerequisites
 
 * Python
 
-  1. Download and install Python 2.7.12. (`see prerequisites <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#prerequisites>`_)
+  1. Download and install Python 2.7.13. (`see prerequisites <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#prerequisites>`_)
   2. Execute the installer as usual. It's important that the
      installation path is not changed from the default of
      C:\\python27 as cx_Freeze can have difficulty finding
@@ -69,7 +69,7 @@ Install Prerequisites
 
 * pip
   
-  * Pip is installed by default in Python 2.7.12 but should be updated before continuing::
+  * Pip is installed by default in Python 2.7.13 but should be updated before continuing::
 
       "%pydir%" -m pip install --upgrade pip
 
@@ -106,14 +106,16 @@ Install the Last Modules
 * cx_Freeze (patched)
 
   * Install cx_Freeze via the included patched version::
-    ncpa\build\resources\cx_Freeze-4.3.4-patched.tar.gz
-    "%pydir%\python" cx_Freeze-4.3.4\setup.py install
+  
+      ncpa\build\resources\cx_Freeze-4.3.4-patched.tar.gz
+      "%pydir%\python" cx_Freeze-4.3.4\setup.py install
 
 * gevent-websocket (patched)
 
   * Install gevent-websocket via the included patched version::
-    ncpa\build\resources\gevent-websocket-0.9.5-patched.tar.gz
-    "%pydir%\python" gevent-websocket-0.9.5\setup.py install
+  
+      ncpa\build\resources\gevent-websocket-0.9.5-patched.tar.gz
+      "%pydir%\python" gevent-websocket-0.9.5\setup.py install
 
 Build NCPA
 ~~~~~~~~~~
