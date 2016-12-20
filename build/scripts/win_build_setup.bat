@@ -13,7 +13,7 @@ set PATH=%openssldir%\bin;%PATH%
 
 if not exist "%PROGRAMFILES%\NSIS" (
     if not exist "%PROGRAMFILES(x86)%\NSIS" (
-        echo Install NSIS 2.46 from http://sourceforge.net/projects/nsis/files/NSIS%202/2.46/
+        echo Install NSIS 3.01 from http://nsis.sourceforge.net/Download
    exit /B 1
     )
 )
