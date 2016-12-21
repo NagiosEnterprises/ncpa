@@ -36,9 +36,6 @@ os.chdir('agent')
 if not os.path.exists('var'):
     os.mkdir('var')
 
-open(os.path.join('var', 'log', 'ncpa_listener.log'), 'w')
-open(os.path.join('var', 'log', 'ncpa_passive.log'), 'w')
-
 if not os.path.exists('plugins'):
     os.mkdir('plugins')
 

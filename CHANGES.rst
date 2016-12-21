@@ -7,6 +7,7 @@
 - Updated Windows service log file locations to var/log/win32service_ncpa<type>.log (logs for the services not NCPA)
 - Updated Mac OS X install to give information about whether the install/upgrade finished or not
 - Updated etc section to come with an ncpa.cfg.example version that shows new config values
+- Updated Windows install to no longer reset the service settings by uninstalling/reinstalling the services
 - Fixed issue with passive service when nrds was set (typically on upgrades) sending lots of errors to the log
 - Fixed issue on Top Processes page where warning and critical thresholds didn't highlighting values
 - Fixed issue with string encoding errors on certain systems in some API nodes

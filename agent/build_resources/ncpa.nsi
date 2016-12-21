@@ -42,6 +42,7 @@ Var nrdp_hostname
 Var check_interval
 Var log_level_passive
 Var passive_checks
+Var installed
 
 ; The file to write
 OutFile "ncpa-${NCPA_VERSION}.exe"
@@ -139,6 +140,17 @@ Function .onInit
 
 FunctionEnd
 
+Function CheckInstall
+
+    ; Set installed to 0
+    StrCpy $installed "0"
+
+    ; Check if previously installed (non-silent installs)
+    IfFileExists "$INSTDIR\uninstall.exe" +1 +2
+    StrCpy $installed "1"
+
+FunctionEnd
+
 Function ConfigListener
 
     !insertmacro MUI_HEADER_TEXT $(PAGE_TITLE) $(PAGE_SUBTITLE)
@@ -212,13 +224,17 @@ FunctionEnd
 
 Section # "Create Config.ini"
 
-    ;ReadRegStr $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{FF66E9F6-83E7-3A3E-AF14-8DE9A809A6A4}" "DisplayName"
-    ;MessageBox MB_OK $R0
+    Call CheckInstall
 
     ; Disable currently running ncpa listener/passive services
     ReadEnvStr $9 COMSPEC
-    nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --uninstall ncpalistener'
-    nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --uninstall ncpapassive'
+    nsExec::Exec '$9 /c sc stop ncpalistener'
+    nsExec::Exec '$9 /c sc stop ncpapassive'
+
+    ; Remove old log files for services and old passive section
+    Delete "$INSTDIR\ncpa_listener.log"
+    Delete "$INSTDIR\ncpa_passive.log"
+    RMDir /r "$INSTDIR\passive"
 
     SetOutPath $INSTDIR
 
@@ -226,13 +242,13 @@ Section # "Create Config.ini"
     ; ncpa.cfg Setup
     ; --------------
     
+    CreateDirectory $INSTDIR\etc
+    CreateDirectory $INSTDIR\etc\ncpa.cfg.d
+
     IfFileExists $INSTDIR\etc\ncpa.cfg SkipUpdateConfig UpdateConfig
     
     ; If it's a fresh install, set the config options
     UpdateConfig:
-    CreateDirectory $INSTDIR\etc
-    CreateDirectory $INSTDIR\etc\ncpa.cfg.d
-
     File /oname=$INSTDIR\etc\ncpa.cfg .\NCPA\etc\ncpa.cfg
     
     WriteINIStr $INSTDIR\etc\ncpa.cfg api "community_string" "$token"
@@ -342,12 +358,19 @@ Section ""
  
     WriteUninstaller $INSTDIR\uninstall.exe
   
+    ; Install the service on new install
+    ${If} $installed == "0"
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c diskperf -Y'
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --install ncpalistener'
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --install ncpapassive'
     nsExec::Exec '$9 /c sc config ncpalistener start= delayed-auto'
     nsExec::Exec '$9 /c sc config ncpapassive start= delayed-auto'
+    ${EndIf}
+
+    ; Start the listener and passive services
+    nsExec::Exec '$9 /c sc start ncpalistener'
+    nsExec::Exec '$9 /c sc start ncpapassive'
 
 SectionEnd
 
