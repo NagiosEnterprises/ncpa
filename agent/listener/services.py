@@ -283,7 +283,7 @@ class ServiceNode(nodes.LazyNode):
             stdout = self.make_stdout(returncode, stdout_builder)
         else:
             returncode = 3
-            stdout = "No services selected with 'service' value given"
+            stdout = "UNKNOWN: No services selected with 'service' value given"
 
         return { 'stdout': stdout, 'returncode': returncode }
 
