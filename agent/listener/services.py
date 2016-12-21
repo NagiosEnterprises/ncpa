@@ -49,6 +49,7 @@ def filter_services(m):
                 for service in services:
                     if services[service] in filter_statuses:
                         accepted[service] = services[service]
+
             return accepted
         return services
     return wrapper
@@ -227,13 +228,6 @@ class ServiceNode(nodes.LazyNode):
             return {self.name: []}
 
     @staticmethod
-    def get_service_name(request_args):
-        service_name = request_args.get('service', [])
-        if not isinstance(service_name, list):
-            service_name = [service_name]
-        return service_name
-
-    @staticmethod
     def get_target_status(request_args):
         target_status = request_args.get('status', [])
         if not isinstance(target_status, list):
@@ -254,7 +248,6 @@ class ServiceNode(nodes.LazyNode):
         return stdout
 
     def run_check(self, *args, **kwargs):
-        service_names = self.get_service_name(kwargs)
         target_status = self.get_target_status(kwargs)
         method = self.get_service_method(*args, **kwargs)
 
@@ -262,26 +255,21 @@ class ServiceNode(nodes.LazyNode):
         if not target_status:
             target_status = 'running'
 
-        # Return that no services have been selected if none are sent
-        if not service_names:
-            return { 'stdout': 'OK: No services requested.', 'returncode': 0 }
+        # Remove status from kwargs since we use it for checking service status
+        kwargs['status'] = ''
 
         services = method(*args, **kwargs)
         returncode = 0
         status = 'not a problem'
         stdout_builder = []
 
-        for service in service_names:
+        for service in services:
             priority = 0
-            if service in services:
-                status = services[service]
-                builder = 'Service %s is %s' % (service, status)
-                if not status in target_status:
-                    priority = 1
-                    builder = '%s (should be %s)' % (builder, ''.join(target_status))
-            else:
-                priority = 2
-                builder = 'Service %s was not found' % service
+            status = services[service]
+            builder = '%s is %s' % (service, status)
+            if not status in target_status:
+                priority = 1
+                builder = '%s (should be %s)' % (builder, ''.join(target_status))
 
             if priority > returncode:
                 returncode = priority

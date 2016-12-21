@@ -13,6 +13,7 @@
 - Fixed issue with string encoding errors on certain systems in some API nodes
 - Fixed issue with upgrades on unix systems ncpa- tmp files caused checks to give 500 errors from permission denied
 - Fixed a 500 error in the admin section when no passive checks are defined
+- Fixed services check with different match options (regex, search) to work as a check
 
 2.0.0 - 12/15/2016
 ==================
