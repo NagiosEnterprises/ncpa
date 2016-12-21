@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import nodes
 import platform
 import re
@@ -5,6 +7,9 @@ import subprocess
 import tempfile
 import os
 import psutil
+import server
+import database
+import time
 from stat import ST_MODE,S_IXUSR,S_IXGRP,S_IXOTH
 
 def filter_services(m):
@@ -284,6 +289,22 @@ class ServiceNode(nodes.LazyNode):
         else:
             returncode = 3
             stdout = "UNKNOWN: No services selected with 'service' value given"
+
+        # Get the check logging value
+        try:
+            check_logging = int(kwargs['config'].get('general', 'check_logging'))
+        except Exception as e:
+            check_logging = 1
+
+        # Put check results in the check database
+        if not server.__INTERNAL__ and check_logging == 1:
+            db = database.DB()
+            dbc = db.get_cursor()
+            current_time = time.time()
+            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
+                    stdout, kwargs['remote_addr'], 'Active')
+            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+            db.commit()
 
         return { 'stdout': stdout, 'returncode': returncode }
 
