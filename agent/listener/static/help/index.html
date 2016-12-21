@@ -72,8 +72,10 @@
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane active" id="windows">
                             <p>You can also view the services in the windows services administration panel, but you can also do it easily from the command line.</p>
-<pre>net restart ncpalistener</pre>
-<pre>net restart ncpapassive</pre>
+<pre>net stop ncpalistener
+net start ncpalistener</pre>
+<pre>net stop ncpapassive
+net stop ncpapassive</pre>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="linux">
                             <p>This is an example for <em>CentOS 6</em>. However, the services are named the same in all Linux distros we build for.</p>
