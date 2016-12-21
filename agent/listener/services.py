@@ -263,22 +263,28 @@ class ServiceNode(nodes.LazyNode):
         status = 'not a problem'
         stdout_builder = []
 
-        for service in services:
-            priority = 0
-            status = services[service]
-            builder = '%s is %s' % (service, status)
-            if not status in target_status:
-                priority = 1
-                builder = '%s (should be %s)' % (builder, ''.join(target_status))
+        if services:
+            for service in services:
+                priority = 0
+                status = services[service]
+                builder = '%s is %s' % (service, status)
+                if not status in target_status:
+                    priority = 1
+                    builder = '%s (should be %s)' % (builder, ''.join(target_status))
 
-            if priority > returncode:
-                returncode = priority
+                if priority > returncode:
+                    returncode = priority
 
-            stdout_builder.append({ 'info': builder, 'priority': priority })
+                stdout_builder.append({ 'info': builder, 'priority': priority })
 
-        if returncode > 0:
-            returncode = 2
-        stdout = self.make_stdout(returncode, stdout_builder)
+            if returncode > 0:
+                returncode = 2
+
+            stdout = self.make_stdout(returncode, stdout_builder)
+        else:
+            returncode = 3
+            stdout = "No services selected with 'service' value given"
+
         return { 'stdout': stdout, 'returncode': returncode }
 
 def get_node():
