@@ -285,10 +285,14 @@ Section # "Create Config.ini"
     
     ; Copy over everything we need for NCPA
     File /r .\NCPA\listener
-    ;File /r .\NCPA\passive
     File /r .\NCPA\var
     File .\NCPA\*.*
     CreateDirectory $INSTDIR\plugins
+
+    ; Copy over example configs
+    File /oname=$INSTDIR\etc\ncpa.cfg.sample .\NCPA\etc\ncpa.cfg.sample
+    File /oname=$INSTDIR\etc\ncpa.cfg.d\example.cfg .\NCPA\etc\ncpa.cfg.d\example.cfg
+    File /oname=$INSTDIR\etc\ncpa.cfg.d\README.txt .\NCPA\etc\ncpa.cfg.d\README.txt
 
     ; --------------
     ; INI File Setup

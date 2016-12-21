@@ -579,18 +579,26 @@ def admin_nrdp_config():
 @listener.route('/gui/admin/plugin-directives', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_plugin_config():
+    try:
+        directives = [x for x in get_config_items('plugin directives') if x[0] not in listener.config['iconfig'].defaults()]
+    except Exception as e:
+        directives = []
     tmp_args = { 'no_nav': True,
                  'plugin_path': get_config_value('plugin directives', 'plugin_path', 'plugins/'),
                  'plugin_timeout': get_config_value('plugin directives', 'plugin_timeout', '60'),
-                 'directives': [x for x in get_config_items('plugin directives') if x[0] not in listener.config['iconfig'].defaults()] }
+                 'directives': directives }
     return render_template('admin/plugins.html', **tmp_args)
 
 
 @listener.route('/gui/admin/passive-checks', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_checks_config():
+    try:
+        checks = [x for x in get_config_items('passive checks') if x[0] not in listener.config['iconfig'].defaults()]
+    except Exception as e:
+        checks = []
     tmp_args = { 'no_nav': True,
-                 'checks': [x for x in get_config_items('passive checks') if x[0] not in listener.config['iconfig'].defaults()] }
+                 'checks': checks }
     return render_template('admin/checks.html', **tmp_args)
 
 

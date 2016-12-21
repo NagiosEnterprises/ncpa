@@ -23,14 +23,8 @@ includefiles = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
                 ('listener/static', 'listener/static')]
 
 # It does not appear the cx_Freeze honors the package directive
-includes = ['xml.dom.minidom',
-            'jinja2.ext',
-            'passive.nrdp',
-            'passive.nrds']
-
-excludes = ['Tkinter',
-            'tkinter']
-
+includes = ['xml.dom.minidom','jinja2.ext','passive',]
+excludes = ['Tkinter','tkinter']
 packages = []
 
 includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),

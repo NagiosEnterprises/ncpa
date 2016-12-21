@@ -6,10 +6,12 @@
 - Updated popover info boxes so they auto-hide when no longer in focus (once you click anywhere but the ?)
 - Updated Windows service log file locations to var/log/win32service_ncpa<type>.log (logs for the services not NCPA)
 - Updated Mac OS X install to give information about whether the install/upgrade finished or not
+- Updated etc section to come with an ncpa.cfg.example version that shows new config values
 - Fixed issue with passive service when nrds was set (typically on upgrades) sending lots of errors to the log
 - Fixed issue on Top Processes page where warning and critical thresholds didn't highlighting values
 - Fixed issue with string encoding errors on certain systems in some API nodes
 - Fixed issue with upgrades on unix systems ncpa- tmp files caused checks to give 500 errors from permission denied
+- Fixed a 500 error in the admin section when no passive checks are defined
 
 2.0.0 - 12/15/2016
 ==================
