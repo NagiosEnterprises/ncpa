@@ -30,12 +30,12 @@ packages = []
 # Shared library include overrides
 bin_includes = ['libffi']
 
-includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
-                 ('build_resources/ncpa_listener.plist', 'build_resources/ncpa_listener.plist'),
-                 ('build_resources/ncpa_passive.plist', 'build_resources/ncpa_passive.plist'),
-                 ('build_resources/macosinstall.sh', 'build_resources/macosinstall.sh'),
-                 ('build_resources/listener_init', 'build_resources/listener_init'),
-                 ('build_resources/passive_init', 'build_resources/passive_init')]
+include_files += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
+                  ('build_resources/ncpa_listener.plist', 'build_resources/ncpa_listener.plist'),
+                  ('build_resources/ncpa_passive.plist', 'build_resources/ncpa_passive.plist'),
+                  ('build_resources/macosinstall.sh', 'build_resources/macosinstall.sh'),
+                  ('build_resources/listener_init', 'build_resources/listener_init'),
+                  ('build_resources/passive_init', 'build_resources/passive_init')]
 
 buildoptions = dict(includes=includes,
                     include_files=include_files,
