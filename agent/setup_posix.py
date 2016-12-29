@@ -28,7 +28,7 @@ excludes = ['Tkinter','tkinter']
 packages = []
 
 # Shared library include overrides
-bin_includes = ['libffi']
+bin_includes = ['libffi.so']
 
 include_files += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                   ('build_resources/ncpa_listener.plist', 'build_resources/ncpa_listener.plist'),
