@@ -9,4 +9,3 @@ def get_dirname_file():
         return os.path.dirname(sys.executable)
     else:
         return os.path.dirname(__file__)
-    

@@ -15,17 +15,20 @@ version = open(version_file, 'r').readline().strip()
 
 shutil.rmtree('build', ignore_errors=True)
 
-includefiles = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
-                ('var/log/ncpa_passive.log', 'var/log/ncpa_passive.log'),
-                'etc',
-                'plugins',
-                ('listener/templates', 'listener/templates'),
-                ('listener/static', 'listener/static')]
+include_files = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
+                 ('var/log/ncpa_passive.log', 'var/log/ncpa_passive.log'),
+                 'etc',
+                 'plugins',
+                 ('listener/templates', 'listener/templates'),
+                 ('listener/static', 'listener/static')]
 
 # It does not appear the cx_Freeze honors the package directive
 includes = ['xml.dom.minidom','jinja2.ext','passive',]
 excludes = ['Tkinter','tkinter']
 packages = []
+
+# Shared library include overrides
+bin_includes = ['libffi']
 
 includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                  ('build_resources/ncpa_listener.plist', 'build_resources/ncpa_listener.plist'),
@@ -34,16 +37,17 @@ includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/Licen
                  ('build_resources/listener_init', 'build_resources/listener_init'),
                  ('build_resources/passive_init', 'build_resources/passive_init')]
 
-buildOptions = dict(includes=includes,
-                    include_files=includefiles,
+buildoptions = dict(includes=includes,
+                    include_files=include_files,
                     excludes=excludes,
-                    packages=packages)
+                    packages=packages,
+                    bin_includes=bin_includes)
 
 base = None
 
 setup(name = "NCPA",
       version = version,
       description = "NCPA",
-      options = dict(build_exe=buildOptions),
+      options = dict(build_exe=buildoptions),
       executables = [Executable("ncpa_listener.py", base=base),
                      Executable("ncpa_passive.py", base=base)])

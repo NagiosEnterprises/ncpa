@@ -9,15 +9,18 @@ import packaging.specifiers
 import packaging.requirements
 
 def create_self_signed_cert(cert_dir, cert_file, key_file):
+    
+    # Create cert files
     target_cert = os.path.join(cert_dir, cert_file)
     target_key = os.path.join(cert_dir, key_file)
 
     if not os.path.exists(target_cert) or not os.path.exists(target_key):
-        # create a key pair
+
+        # Create a key pair
         k = crypto.PKey()
         k.generate_key(crypto.TYPE_RSA, 2048)
 
-        # create a self-signed cert
+        # Create a self-signed cert
         cert = crypto.X509()
         cert.get_subject().C = "US"
         cert.get_subject().ST = "Minnesota"

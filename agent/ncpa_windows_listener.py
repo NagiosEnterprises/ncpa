@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #------------------------------------------------------------------------------
 # Config.py
 #   This file defines information about the service. The first four

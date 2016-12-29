@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #
 # A simple setup script for creating a Windows service.
 #
@@ -31,7 +33,7 @@ includefiles = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
                 'plugins']
 
 packages = []
-includes = ['ncpa_windows', 'passive', 'cx_Logging']
+includes = ['ncpa_windows', 'passive', 'listener', 'cx_Logging']
 excludes = ['Tkinter','tkinter']
 
 includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
@@ -43,6 +45,7 @@ includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/Licen
                  ('build_resources/nagios_installer_logo.bmp', 'build_resources/nagios_installer_logo.bmp')]
 
 buildOptions = dict(includes=includes,
+                    excludes=excludes,
                     include_files=includefiles,
                     packages=packages)
 

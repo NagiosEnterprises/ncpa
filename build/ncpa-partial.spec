@@ -7,7 +7,7 @@ BuildRoot:      __BUILDROOT__/BUILDROOT/
 Prefix:         /usr/local
 Group:          Network/Monitoring
 License:        Nagios Open Software License Version 1.3
-URL:            http://assets.nagios.com/downloads/ncpa/docs/html/index.html
+URL:            https://www.nagios.org/ncpa/help.php
 Source:         ncpa-%{version}.tar.gz
 AutoReqProv:    no
 

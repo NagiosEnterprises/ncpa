@@ -1,11 +1,6 @@
-"""
-Implements a simple service using cx_Freeze.
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-See below for more information on what methods must be implemented and how they
-are called.
-"""
-
-import cx_Threads
 import threading
 import ConfigParser
 import glob
@@ -17,8 +12,6 @@ import datetime
 import sys
 from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
-# DO NOT REMOVE THIS, THIS FORCES cx_Freeze to include the library
-# DO NOT REMOVE ANYTHING BELOW THIS LINE
 import passive.nrds
 import passive.nrdp
 import listener.server
@@ -37,11 +30,12 @@ from geventwebsocket.handler import WebSocketHandler
 monkey.patch_all(subprocess=True, thread=False)
 
 class Base(object):
+
     # no parameters are permitted; all configuration should be placed in the
     # configuration file and handled in the Initialize() method
     def __init__(self, debug=False):
         logging.getLogger().handlers = []
-        self.stopEvent = cx_Threads.Event()
+        self.stopEvent = threading.Event()
         self.debug = debug
 
         # Set up database
@@ -141,9 +135,8 @@ class Listener(Base):
             listener.server.listener.tail_method = listener.windowslogs.tail_method
             listener.server.listener.config['iconfig'] = self.config
 
-            ssl_str_version = self.config.get('listener', 'ssl_version', 'TLSv1')
-
             try:
+                ssl_str_version = self.config.get('listener', 'ssl_version')
                 ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
             except:
                 ssl_version = getattr(ssl, 'PROTOCOL_TLSv1')
@@ -158,6 +151,7 @@ class Listener(Base):
                 cert, key = listener.certificate.create_self_signed_cert(basepath, 'ncpa.crt', 'ncpa.key')
             else:
                 cert, key = user_cert.split(',')
+
             ssl_context = {
                 'certfile': cert,
                 'keyfile': key,
@@ -185,6 +179,7 @@ class Listener(Base):
         self.setup_plugins()
         logging.info("Parsed config from: %s" % str(self.config_filenames))
         logging.info("Looking for plugins at: %s" % self.abs_plugin_path)
+
 
 class Passive(Base):
 
