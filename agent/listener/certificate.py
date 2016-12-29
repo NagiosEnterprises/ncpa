@@ -1,3 +1,4 @@
+import cffi
 from OpenSSL import crypto
 import socket
 import os
