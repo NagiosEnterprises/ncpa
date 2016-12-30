@@ -1,15 +1,15 @@
 PYTHONVER = python2.7
 PYTHONBIN = $(shell which python2.7)
-SPHINXBIN = $(shell which sphinx-build)
 NCPAVER = $(shell cat ../VERSION)
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = /usr/src/redhat
 
-#BASEDIR = ~/Development/ncpa
 # Full path of the last Makefile make read. We haven't included other files, so that's us.
 makefile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+
 # Makefile's parent directory with no trailing slash (something like: .../ncpa/build).
 makefile_dir := $(patsubst %/,%,$(dir $(makefile_path)))
+
 # The NCPA directory is the Makefiile's grandparent.
 BASEDIR = $(patsubst %/,%,$(dir $(makefile_dir)))
 
@@ -28,7 +28,7 @@ build_exe: clean
 	mv $(BASEDIR)/agent/build/exe.* $(BASEDIR)/agent/build/NCPA
 
 update_packages:
-	$(PYTHONBIN) -m pip install -r $(BASEDIR)/build/resources/require.txt --upgrade
+	$(BASEDIR)/build/scripts/update_python_packages.sh
 
 update_git:
 	git reset --hard

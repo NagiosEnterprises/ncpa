@@ -1,0 +1,12 @@
+psutil
+requests
+Jinja2
+flask==0.10.1
+werkzeug
+docutils
+pyOpenSSL==16.0.0
+gevent
+cryptography==1.2.3
+cffi==1.5.2
+appdirs
+packaging
