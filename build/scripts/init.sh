@@ -8,7 +8,7 @@
 unixtype=`uname -s`
 
 # Make sure we're on a Linux distro
-if [ unixtype != "Linux" ] && [ unixtype != "Darwin" ]; then
+if [ $unixtype != "Linux" ] && [ $unixtype != "Darwin" ]; then
     echo "ERROR: Unsupported OS detected. This script only detects Linux / Mac OS X distributions." >&2
     exit 2
 fi
@@ -17,7 +17,7 @@ fi
 architecture=`uname -m`
 
 # Get OS & version
-if [ unixtype == "Linux" ]; then
+if [ $unixtype == "Linux" ]; then
     if which lsb_release &>/dev/null; then
         distro=`lsb_release -si`
         version=`lsb_release -sr`
@@ -47,7 +47,7 @@ if [ unixtype == "Linux" ]; then
             fi
         fi
     fi
-elif [ unixtype == "Darwin" ]; then
+elif [ $unixtype == "Darwin" ]; then
     distro="MacOSX"
     version=`sw_vers -productVersion`
 fi
