@@ -1,18 +1,19 @@
 #!/bin/bash -e
 
+BASEDIR="$(dirname "$BASH_SOURCE")"
 PYTHONVER=python2.7
 PYTHONBIN=`which python2.7`
 
 # Get OS info
-./init.sh
+$BASEDIR/init.sh
 
 if [ $ver == "el5" ]; then
-	reqlist="require.el5"
+    reqlist="require.el5"
 else
-	reqlist="require"
+    reqlist="require"
 fi
 
 # Update with requirements
-$PYTHONBIN -m pip install -r ../resources/$reqlist.txt --upgrade
+$PYTHONBIN -m pip install -r $BASEDIR/../resources/$reqlist.txt --upgrade
 
 echo "Python pip requirements updated."
