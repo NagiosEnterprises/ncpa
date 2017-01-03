@@ -9,9 +9,7 @@ Downloads
 Current versions:
 
 +---------+-------------+----------------------------------------------------------------------+
-| Current | **2.0.0**   | `Downloads <https://assets.nagios.com/downloads/ncpa/download.php>`_ |
-+---------+-------------+----------------------------------------------------------------------+
-| Dev     | **2.0.1**   | `Downloads <https://assets.nagios.com/downloads/ncpa/dev/>`_         |
+| Current | **2.0.1**   | `Downloads <https://assets.nagios.com/downloads/ncpa/download.php>`_ |
 +---------+-------------+----------------------------------------------------------------------+
 
 `Older Versions <https://assets.nagios.com/downloads/ncpa/archived/>`_
