@@ -11,6 +11,8 @@ Current versions:
 +---------+-------------+----------------------------------------------------------------------+
 | Current | **2.0.0**   | `Downloads <https://assets.nagios.com/downloads/ncpa/download.php>`_ |
 +---------+-------------+----------------------------------------------------------------------+
+| Dev     | **2.0.1**   | `Downloads <https://assets.nagios.com/downloads/ncpa/dev/`_          |
++---------+-------------+----------------------------------------------------------------------+
 
 `Older Versions <https://assets.nagios.com/downloads/ncpa/archived/>`_
 
@@ -35,7 +37,6 @@ Documentation
 -------------
 
 You can view the most current `HTML documentation <https://nagios.org/ncpa/help.php>`_ online or view your current NCPA version's documentation using the NCPA web GUI from an installed agent. This is recommended if you are using an older version, since some features may not be available but may be used in newer documents.
-
 
 Advanced
 --------

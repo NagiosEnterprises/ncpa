@@ -43,9 +43,9 @@ build_spec: build_tarball
 	cat ncpa-partial.spec | sed s/__VERSION__/$(NCPAVER)/g | sed s@__BUILDROOT__@$(BUILDROOT)@g > ncpa.spec
 
 clean:
-	rm -rf ncpa-$(NCPAVER)
+	rm -rf ncpa-*
 	rm -rf $(BASEDIR)/agent/build
-	rm -rf NCPA-INSTALL-$(NCPAVER)
+	rm -rf NCPA-INSTALL-*
 	rm -f *.rpm
 	rm -f *.dmg
 	rm -f *.deb

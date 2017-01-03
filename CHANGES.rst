@@ -1,7 +1,7 @@
 ﻿Changelog
 +++++++++
 
-2.0.1 - 12/??/2016
+2.0.1 - 01/03/2017
 ==================
 - Updated popover info boxes so they auto-hide when no longer in focus (once you click anywhere but the ?)
 - Updated Windows service log file locations to var/log/win32service_ncpa<type>.log (logs for the services not NCPA)
