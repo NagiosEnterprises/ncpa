@@ -12,7 +12,6 @@ CXFREEZEVER="cx_Freeze-4.3.4"
 GWEBSOCKETTAR="gevent-websocket-0.9.5-patched"
 GWEBSOCKETVER="gevent-websocket-0.9.5"
 CXLOGGINGVER="cx_Logging-2.1"
-CXPYGENLIBVER="cx_PyGenLib-3.0"
 PYTHONBIN="/usr/local/bin/python2.7"
 
 # --------------------------
@@ -44,18 +43,11 @@ tar xf $CXLOGGINGVER.tar.gz
 cd $CXLOGGINGVER
 $PYTHONBIN setup.py install
 
-# Install cx_PyGenLib
-cd ..
-tar xf $CXPYGENLIBVER.tar.gz
-cd $CXPYGENLIBVER
-$PYTHONBIN setup.py install
-
 # Clean up resource directory
 cd ..
 rm -rf $PYTHONTAR
 rm -rf $CXFREEZEVER
 rm -rf $CXLOGGINGVER
-rm -rf $CXPYGENLIBVER
 
 # --------------------------
 #  INSTALL PIP
