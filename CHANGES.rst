@@ -1,6 +1,10 @@
 ﻿Changelog
 +++++++++
 
+2.0.2 - ??/??/2017
+==================
+- Fixed Windows threading issues with the win32service base
+
 2.0.1 - 01/03/2017
 ==================
 - Updated popover info boxes so they auto-hide when no longer in focus (once you click anywhere but the ?)
