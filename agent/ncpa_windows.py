@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import cx_Threads
 import threading
 import ConfigParser
 import glob
@@ -35,7 +36,7 @@ class Base(object):
     # configuration file and handled in the Initialize() method
     def __init__(self, debug=False):
         logging.getLogger().handlers = []
-        self.stopEvent = threading.Event()
+        self.stopEvent = cx_Threads.Event()
         self.debug = debug
 
         # Set up database
@@ -108,7 +109,6 @@ class Base(object):
 
     # called when the service is being stopped by the service manager GUI
     def Stop(self):
-        pass
         self.stopEvent.Set()
 
 
