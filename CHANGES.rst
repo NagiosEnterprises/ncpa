@@ -1,10 +1,6 @@
 ﻿Changelog
 +++++++++
 
-2.0.2 - ??/??/2017
-==================
-- Fixed Windows threading issues with the win32service base
-
 2.0.1 - 01/03/2017
 ==================
 - Updated popover info boxes so they auto-hide when no longer in focus (once you click anywhere but the ?)
@@ -20,6 +16,7 @@
 - Fixed services check with different match options (regex, search) to work as a check
 - Fixed issue with services node not saving active check results
 - Fixed issue with libffi not being included due to it being a shared library on most systems
+- Fixed Windows threading issues with the win32service base
 
 2.0.0 - 12/15/2016
 ==================
