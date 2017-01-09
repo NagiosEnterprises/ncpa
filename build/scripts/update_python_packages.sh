@@ -1,8 +1,8 @@
 #!/bin/bash -e
 
 BASEDIR="$(dirname "$BASH_SOURCE")"
-PYTHONVER=python2.7
-PYTHONBIN=`which python2.7`
+PYTHONVER=python3.5
+PYTHONBIN=`which python3.5`
 
 # Get OS info
 . $BASEDIR/init.sh

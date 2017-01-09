@@ -1,5 +1,5 @@
-PYTHONVER = python2.7
-PYTHONBIN = $(shell which python2.7)
+PYTHONVER = python3.5
+PYTHONBIN = $(shell which python3.5)
 NCPAVER = $(shell cat ../VERSION)
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = /usr/src/redhat
