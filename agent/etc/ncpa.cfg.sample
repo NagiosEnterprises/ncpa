@@ -12,6 +12,26 @@
 [general]
 
 #
+# Listener logging file level, location, and the PID location
+# Default: loglevel = info (debug, info, warning, error)
+# Default: logfile = var/log/ncpa_listener.log
+# Default: pidfile = var/run/ncpa_listener.pid (leave listener in pid file name)
+#
+loglevel = info
+logfile = var/log/ncpa.log
+pidfile = var/ncpa.pid
+
+#
+# User and group to run the daemon as on Linux / Mac OS X
+# Default: uid = nagios
+# Default: gid = nagios
+#
+# This is for Unix only (Linux, Mac OS X, etc)
+#
+uid = nagios
+gid = nagios
+
+#
 # Check logging is on by default, you can disable it if you do not want to record
 # the check requests that are coming in or checks being sent over NRDP.
 # Default: check_logging = 1
@@ -25,26 +45,18 @@ check_logging = 1
 check_logging_time = 30
 
 #
+# Delay the service / daemon startup
+# Default: 0
+#
+# delay_start = 30
+
+#
 # -------------------------------
 # Listener Configuration (daemon)
 # -------------------------------
 #
 
 [listener]
-
-#
-# User and group to run plugins as (recommended to use nagios:nagios)
-# Default: uid = nagios
-# Default: gid = nagios
-#
-# ** Note - The daemon runs as root, but forks a child process when running a plugin
-#    that is defined by the user, for security reasons. However, without the main daemon
-#    running as root, much of the system information would be missing. This is typical behavior. **
-#
-# This is for Unix only (Linux, Mac OS X, etc)
-#
-uid = nagios
-gid = nagios
 
 #
 # IP address and port number for the Listener to use for the web GUI and API
@@ -61,22 +73,6 @@ port = 5693
 #
 ssl_version = TLSv1_2
 certificate = adhoc
-
-#
-# Listener logging file level, location, and the PID location
-# Default: loglevel = info (debug, info, warning, error)
-# Default: logfile = var/log/ncpa_listener.log
-# Default: pidfile = var/run/ncpa_listener.pid (leave listener in pid file name)
-#
-loglevel = info
-logfile = var/log/ncpa_listener.log
-pidfile = var/run/ncpa_listener.pid
-
-#
-# Delay the listener (API & web GUI) from starting in seconds
-# Default: 0
-#
-# delay_start = 30
 
 #
 # Allow admin functionality in the web GUI. When this is set to 0, the admin section will not
@@ -131,17 +127,9 @@ community_string = mytoken
 #   nrds, nrdp
 #
 # Example:
-# handlers = nrds,ndrp
+# handlers = nrds,nrdp
 #
 handlers = None
-
-#
-# User and group to run passive checks as (Recommended to use nagios:nagios)
-# Default: uid = nagios
-# Default: gid = nagios
-#
-uid = nagios
-gid = nagios
 
 #
 # Passive check interval - the amount in seconds to wait between each passive check by default,
@@ -149,22 +137,6 @@ gid = nagios
 # Default: 300 (5 minutes)
 #
 sleep = 300
-
-#
-# Passive logging file level, location, and the PID location
-# Default: loglevel = info (debug, info, warning, error)
-# Default: logfile = var/log/ncpa_passive.log
-# Default: pidfile = var/run/ncpa_passive.pid (leave passive in pid file name)
-#
-loglevel = info
-logfile = var/log/ncpa_passive.log
-pidfile = var/run/ncpa_passive.pid
-
-#
-# Delay passive checks from starting in seconds
-# Default: 0
-#
-# delay_start = 30
 
 #
 # -------------------------------

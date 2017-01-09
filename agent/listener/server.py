@@ -1,14 +1,10 @@
-# -*- coding: utf-8 -*-
-
 from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response
 import logging
-import urllib
-import urlparse
+import urllib.parse
 import os
 import sys
 import platform
 import requests
-import psapi
 import functools
 import jinja2
 import datetime
@@ -17,30 +13,30 @@ import re
 import psutil
 import gevent
 import geventwebsocket
-import processes
-import database
+import listener.psapi as psapi
+import listener.processes as processes
+import listener.database as database
 import math
 
 
-__VERSION__ = '2.0.1'
+__VERSION__ = '3.0.0'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
-base_dir = os.path.dirname(sys.path[0])
 
 # The following if statement is a workaround that is allowing us to run this
 # in debug mode, rather than a hard coded location.
 
-tmpl_dir = os.path.join(base_dir, 'listener', 'templates')
-if not os.path.isdir(tmpl_dir):
-    tmpl_dir = os.path.join(base_dir, 'agent', 'listener', 'templates')
+if getattr(sys, 'frozen', False):
+    appdir = os.path.dirname(sys.executable)
+else:
+    appdir = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
 
-stat_dir = os.path.join(base_dir, 'listener', 'static')
-if not os.path.isdir(stat_dir):
-    stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
+tmpl_dir = os.path.join(appdir, 'listener', 'templates')
+stat_dir = os.path.join(appdir, 'listener', 'static')
 
 if os.name == 'nt':
-    logging.info(u"Looking for templates at: %s", tmpl_dir)
+    logging.info("Looking for templates at: %s", tmpl_dir)
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
     listener.jinja_loader = jinja2.FileSystemLoader(tmpl_dir)
 else:
@@ -73,7 +69,7 @@ def get_config_items(section):
 # Misc function for making information for main page
 def make_info_dict():
     now = datetime.datetime.now()
-    uptime = unicode(now - __STARTED__)
+    uptime = str(now - __STARTED__)
     uptime = uptime.split('.', 1)[0]
 
     # Get check status
@@ -346,7 +342,7 @@ def gui_index():
     info = make_info_dict()
     try:
         return render_template('gui/dashboard.html', **info)
-    except Exception, e:
+    except Exception as e:
         logging.exception(e)
 
 
@@ -749,7 +745,7 @@ def tail(accessor=None):
     info = { }
 
     query_string = request.query_string
-    info['query_string'] = urllib.quote(query_string)
+    info['query_string'] = urllib.parse.quote(query_string)
 
     return render_template('tail.html', **info)
 
@@ -780,9 +776,9 @@ def graph(accessor=None):
 
     info['graph_prop'] = prop
     query_string = request.query_string
-    info['query_string'] = urllib.quote(query_string)
+    info['query_string'] = urllib.parse.quote(query_string)
 
-    url = urlparse.urlparse(request.url)
+    url = urllib.parse.urlparse(request.url)
     info['load_from'] = url.scheme + '://' + url.netloc
     info['load_websocket'] = url.netloc
 
@@ -843,7 +839,7 @@ def nrdp():
         return resp
     except Exception as exc:
         logging.exception(exc)
-        return error(msg=unicode(exc))
+        return error(msg=exc)
 
 
 # ------------------------------
@@ -860,7 +856,6 @@ def api(accessor=''):
     retrieve the metric and do the necessary walking of the tree.
 
     :param accessor: The path/to/the/desired/metric
-    :type accessor: unicode
     :rtype: flask.Response
     """
 
@@ -939,6 +934,8 @@ def api(accessor=''):
         value = node.walk(**sane_args)
 
     # Generate page and add cross-domain loading
-    response = Response(json.dumps(dict(value), indent=None if request.is_xhr else 4), mimetype='application/json')
+    response = Response(json.dumps(dict(value), indent=None if request.is_xhr else 4,
+                                   ensure_ascii=False).encode('utf-8', 'ignore'),
+                                   mimetype='application/json')
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response

@@ -1,31 +1,25 @@
-# -*- coding: utf-8 -*-
-
 import os
 import time
 import logging
-import nodes
-import ConfigParser
 import subprocess
 import shlex
 import re
 import copy
-import Queue
-import environment
-import database
-import server
+import queue
+import listener.nodes as nodes
+import listener.database as database
+import listener.server
 from threading import Timer
+
 
 # Windows does not have the pwd and grp module and does not need it since only Unix
 # uses these modules to change permissions.
 try:
     import pwd
-except ImportError:
-    pass
-
-try:
     import grp
 except ImportError:
     pass
+
 
 class PluginNode(nodes.RunnableNode):
 
@@ -52,7 +46,7 @@ class PluginNode(nodes.RunnableNode):
         _, extension = os.path.splitext(self.name)
         try:
             return config.get('plugin directives', extension)
-        except ConfigParser.NoOptionError:
+        except Exception:
             return '$plugin_name $plugin_args'
 
     def kill_proc(self, p, t, q):
@@ -87,36 +81,28 @@ class PluginNode(nodes.RunnableNode):
         cmd = self.get_cmdline(instructions)
         logging.debug('Running process with command line: `%s`', ' '.join(cmd))
 
-        # Demote the child process to the username/group specified in config
-        # Note: We are no longer demoting here - instead we are setting the actual perms
-        #       when we daemonize the process making this pointless.
-        # We used to add "preexec_fn=demote"
-        #demote = None
-        #if environment.SYSTEM != "Windows":
-        #    demote = PluginNode.demote(user_uid, user_gid)
-
+        # Run a command and wait for return
         run_time_start = time.time()
-        running_check = subprocess.Popen(cmd, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        queue = Queue.Queue(maxsize=2)
-        timer = Timer(timeout, self.kill_proc, [running_check, timeout, queue])
+        running_check = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                         universal_newlines=True)
 
         try:
-            timer.start()
+            stdout, stderr = running_check.communicate(timeout=timeout)
+        except TimeoutExpired:
+            running_check.kill()
             stdout, stderr = running_check.communicate()
-        finally:
-            timer.cancel()
 
         run_time_end = time.time()
         returncode = running_check.returncode
 
         # Pull from the queue if we have a error and the stdout is empty
         if returncode == 1 and not stdout:
-            if queue.qsize() > 0:
-                stdout = queue.get()
+            if q.qsize() > 0:
+                stdout = q.get()
 
-        cleaned_stdout = unicode(''.join(stdout.decode("utf-8", "ignore")).replace('\r\n', '\n').replace('\r', '\n').strip())
+        cleaned_stdout = ''.join(stdout).strip()
 
-        if not server.__INTERNAL__ and check_logging == 1:
+        if not listener.server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
             dbc = db.get_cursor()
             data = (kwargs['accessor'].rstrip('/'), run_time_start, run_time_end, returncode,
@@ -208,4 +194,4 @@ class PluginAgentNode(nodes.ParentNode):
 
     def walk(self, *args, **kwargs):
         self.setup_plugin_children(kwargs['config'])
-        return { self.name: self.children.keys() }
+        return { self.name: list(self.children.keys()) }

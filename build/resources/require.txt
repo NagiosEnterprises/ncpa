@@ -1,11 +1,13 @@
+cx_Freeze
 psutil
 requests
 Jinja2
-flask==0.10.1
+flask
 werkzeug
 docutils
 pyOpenSSL
 gevent
-cffi==1.5.2
+karellen-geventws
+cffi
 appdirs
 packaging

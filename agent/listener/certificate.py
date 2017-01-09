@@ -39,7 +39,7 @@ def create_self_signed_cert(cert_dir, cert_file, key_file):
         cert.set_pubkey(k)
         cert.sign(k, 'sha256')
 
-        open(target_cert, "w").write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert))
-        open(target_key, "w").write(crypto.dump_privatekey(crypto.FILETYPE_PEM, k))
+        open(target_cert, "wb").write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert))
+        open(target_key, "wb").write(crypto.dump_privatekey(crypto.FILETYPE_PEM, k))
 
     return target_cert, target_key

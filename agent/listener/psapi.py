@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import psutil as ps
 import os
 import logging
@@ -7,12 +5,12 @@ import datetime
 import time
 import re
 import platform
-import server
-from nodes import ParentNode, RunnableNode, RunnableParentNode, LazyNode
-from pluginnodes import PluginAgentNode
-import services
-import processes
-import environment
+from listener.nodes import ParentNode, RunnableNode, RunnableParentNode, LazyNode
+from listener.pluginnodes import PluginAgentNode
+import listener.server
+import listener.services as services
+import listener.processes as processes
+import listener.environment as environment
 
 importables = (
     'windowscounters',
@@ -106,7 +104,7 @@ def get_system_node():
     sys_machine = RunnableNode('machine', method=lambda: (platform.uname()[4], ''))
     sys_processor = RunnableNode('processor', method=lambda: (platform.uname()[5], ''))
     sys_uptime = RunnableNode('uptime', method=get_uptime)
-    sys_agent = RunnableNode('agent_version', method=lambda: (server.__VERSION__, ''))
+    sys_agent = RunnableNode('agent_version', method=lambda: (listener.server.__VERSION__, ''))
     sys_time = RunnableNode('time', method=lambda: (time.time(), ''))
     sys_timezone = RunnableNode('timezone', method=get_timezone)
     return ParentNode('system', children=[sys_system, sys_node, sys_release, sys_version,

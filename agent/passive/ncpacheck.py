@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
-
 import logging
 import json
 import urllib
-import urlparse
 import time
 import hashlib
 import listener.server
-import listener.database
+import listener.database as database
+
 
 # Constants to keep track of the passive check runs 
 NEXT_RUN = { }
+
 
 class NCPACheck(object):
     """
@@ -85,7 +84,7 @@ class NCPACheck(object):
                              "meaningfully.")
 
         # Save returned check results to the DB if we don't error out
-        db = listener.database.DB()
+        db = database.DB()
         dbc = db.get_cursor()
 
         # Get some info about the check
@@ -167,7 +166,7 @@ class NCPACheck(object):
         try:
             response_dict = json.loads(response)
             stdout = response_dict['stdout']
-            returncode = unicode(response_dict['returncode'])
+            returncode = response_dict['returncode']
         except ValueError as exc:
             logging.error("Error with JSON: %s. JSON was: %s", str(exc), response)
         except TypeError as exc:
@@ -260,9 +259,9 @@ class NCPACheck(object):
 
     @staticmethod
     def parse_api_url_style_instruction(instruction):
-        parse = urlparse.urlparse(instruction)
+        parse = urllib.parse.urlparse(instruction)
 
         api_url = parse.path
-        api_args = {x: v[0] for x, v in urlparse.parse_qs(parse.query).items()}
+        api_args = {x: v[0] for x, v in urllib.parse.parse_qs(parse.query).items()}
 
         return api_url, api_args

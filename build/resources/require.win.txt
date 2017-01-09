@@ -1,0 +1,14 @@
+cx_Freeze
+psutil
+requests
+Jinja2
+flask
+werkzeug
+docutils
+pyOpenSSL
+gevent
+karellen-geventws
+cffi
+appdirs
+packaging
+pypiwin32

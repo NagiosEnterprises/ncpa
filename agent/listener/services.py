@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
-
-import nodes
+import listener.nodes
 import platform
 import re
 import subprocess
 import tempfile
 import os
 import psutil
-import server
-import database
+import listener.server
+import listener.database as database
 import time
 from stat import ST_MODE,S_IXUSR,S_IXGRP,S_IXOTH
+
 
 def filter_services(m):
     def wrapper(*args, **kwargs):
@@ -60,7 +59,7 @@ def filter_services(m):
     return wrapper
 
 
-class ServiceNode(nodes.LazyNode):
+class ServiceNode(listener.nodes.LazyNode):
 
     def get_service_method(self, *args, **kwargs):
         uname = platform.uname()[0]
@@ -297,7 +296,7 @@ class ServiceNode(nodes.LazyNode):
             check_logging = 1
 
         # Put check results in the check database
-        if not server.__INTERNAL__ and check_logging == 1:
+        if not listener.server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
             dbc = db.get_cursor()
             current_time = time.time()

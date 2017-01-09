@@ -1,6 +1,6 @@
 import logging
 import platform
-import ncpacheck
+import passive.ncpacheck
 
 
 class NagiosHandler(object):
@@ -53,7 +53,7 @@ class NagiosHandler(object):
             except ValueError:
                 logging.error("Cannot parse passive directive for %s, name malformed, skipping.", name_blob)
                 continue
-            ncpa_commands.append(ncpacheck.NCPACheck(self.config, instruction, hostname, servicename, duration))
+            ncpa_commands.append(passive.ncpacheck.NCPACheck(self.config, instruction, hostname, servicename, duration))
 
         return ncpa_commands
 

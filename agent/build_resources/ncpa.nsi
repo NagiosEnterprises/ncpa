@@ -286,8 +286,7 @@ Section # "Create Config.ini"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "hostname" "$nrdp_hostname"
 
     ; Set log locations for Windows
-    WriteINIStr $INSTDIR\etc\ncpa.cfg listener "logfile" " var/log/ncpa_listener.log"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg passive "logfile" " var/log/ncpa_passive.log"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg general "logfile" " var/log/ncpa.log"
     
     SkipUpdateConfig:
     ; Don't overwrite the old config file...
@@ -314,36 +313,24 @@ Section # "Create Config.ini"
     ; INI File Setup
     ; --------------
 
-    IfFileExists $INSTDIR\ncpa_listener.ini SkipListenerIniFile CreateListenerIniFile
+    IfFileExists $INSTDIR\ncpa.ini SkipListenerIniFile CreateListenerIniFile
 
     ; Set up the listener service ini file for log name setup
     CreateListenerIniFile:
 
-    FileOpen $8 $INSTDIR\ncpa_listener.ini w
+    FileOpen $8 $INSTDIR\ncpa.ini w
     FileWrite $8 "[Logging]$\r$\n"
-    FileWrite $8 "FileName=$INSTDIR\var\log\win32service_ncpalistener.log"
+    FileWrite $8 "FileName=$INSTDIR\var\log\win32service.log"
     FileClose $8
 
     SkipListenerIniFile:
-
-    IfFileExists $INSTDIR\ncpa_passive.ini SkipPassiveIniFile CreatePassiveIniFile
-
-    ; Set up the passive service ini file for log name setup
-    CreatePassiveIniFile:
-
-    FileOpen $8 $INSTDIR\ncpa_passive.ini w
-    FileWrite $8 "[Logging]$\r$\n"
-    FileWrite $8 "FileName=$INSTDIR\var\log\win32service_ncpapassive.log"
-    FileClose $8
-
-    SkipPassiveIniFile:
 
 SectionEnd
 
 Section ""
 
     WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "${NAME}"
-    WriteRegStr SHCTX "${UNINST_KEY}" "DisplayIcon" "$INSTDIR\ncpa_listener.exe"
+    WriteRegStr SHCTX "${UNINST_KEY}" "DisplayIcon" "$INSTDIR\ncpa.exe"
     WriteRegStr SHCTX "${UNINST_KEY}" "DisplayVersion" "${NCPA_VERSION}"
     WriteRegStr SHCTX "${UNINST_KEY}" "Publisher" "${COMPANY}"
 
@@ -362,15 +349,12 @@ Section ""
     ${If} $installed == "0"
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c diskperf -Y'
-    nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --install ncpalistener'
-    nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --install ncpapassive'
-    nsExec::Exec '$9 /c sc config ncpalistener start= delayed-auto'
-    nsExec::Exec '$9 /c sc config ncpapassive start= delayed-auto'
+    nsExec::Exec '$9 /c "$INSTDIR\ncpa.exe" --install NCPA'
+    nsExec::Exec '$9 /c sc config NCPA start= delayed-auto'
     ${EndIf}
 
     ; Start the listener and passive services
-    nsExec::Exec '$9 /c sc start ncpalistener'
-    nsExec::Exec '$9 /c sc start ncpapassive'
+    nsExec::Exec '$9 /c sc start NCPA'
 
 SectionEnd
 
@@ -379,8 +363,7 @@ Section "Uninstall"
     Delete "$INSTDIR\uninstall.exe"
     
     ReadEnvStr $9 COMSPEC
-    nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --uninstall ncpalistener'
-    nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --uninstall ncpapassive'
+    nsExec::Exec '$9 /c "$INSTDIR\ncpa.exe" --uninstall NCPA'
     
     DeleteRegKey SHCTX "${UNINST_KEY}"
     DeleteRegKey HKLM "${UNINST_KEY}"

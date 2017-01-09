@@ -47,20 +47,19 @@ adaptation of the input Logged After specification.
 """
 
 import logging
-import nodes
 import datetime
+import time
 import win32evtlog
 import re
 import win32evtlogutil
 import win32con
 import pywintypes
-import database
-import time
-import server
-import ConfigParser
+import listener.nodes as nodes
+import listener.database as database
+import listener.server
 
 
-class WindowsLogsNode(nodes.LazyNode):
+class WindowsLogsNode(listener.nodes.LazyNode):
 
     def walk(self, *args, **kwargs):
         logtypes = get_logtypes(kwargs)
@@ -141,7 +140,7 @@ class WindowsLogsNode(nodes.LazyNode):
             check_logging = 1
 
         # Put check results in the check database
-        if not server.__INTERNAL__ and check_logging == 1:
+        if not listener.server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
             dbc = db.get_cursor()
             current_time = time.time()

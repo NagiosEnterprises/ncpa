@@ -1,9 +1,22 @@
 ﻿Changelog
 +++++++++
 
-2.0.2 - ??/??/2017
+3.0.0 - ??/??/2017
 ==================
-- Fixed Windows threading issues with the win32service base
+
+**Additions**
+
+- The base ncpa binary can be used to run python scripts using the embedded version of python
+- Configs can be written from inside the ncpa web GUI
+
+**Updates**
+
+- Updated the version of Python to 3.5
+- The listener and passive services/daemons are now combined into one service/daemon called ncpa
+
+**Bug Fixes**
+
+- Fixed errors from different language encodings due to python not being able to encode/decode strings
 
 2.0.1 - 01/03/2017
 ==================
@@ -20,6 +33,7 @@
 - Fixed services check with different match options (regex, search) to work as a check
 - Fixed issue with services node not saving active check results
 - Fixed issue with libffi not being included due to it being a shared library on most systems
+- Fixed Windows threading issues with the win32service base
 
 2.0.0 - 12/15/2016
 ==================

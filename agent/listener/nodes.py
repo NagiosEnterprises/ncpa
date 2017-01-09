@@ -6,9 +6,8 @@ import logging
 import pickle
 import copy
 import re
-import database
-import server
-import ConfigParser
+import listener.server
+import listener.database as database
 
 
 # Valid nodes is updated as it gets set when calling a node via accessor
@@ -57,7 +56,7 @@ class ParentNode(object):
 
     def walk(self, *args, **kwargs):
         stat = {}
-        for name, child in self.children.iteritems():
+        for name, child in self.children.items():
             try:
                 if kwargs.get('first', None) is None:
                     kwargs['first'] = False
@@ -87,7 +86,7 @@ class RunnableParentNode(ParentNode):
     def run_check(self, *args, **kwargs):
         primary_info = {}
         secondary_results = []
-        for name, child in self.children.iteritems():
+        for name, child in self.children.items():
             if name in self.include:
                 if name == self.primary:
                     primary_info  = child.run_check(use_prefix=True,
@@ -113,7 +112,7 @@ class RunnableParentNode(ParentNode):
             check_logging = 1
 
         # Send check results to database
-        if not server.__INTERNAL__ and check_logging == 1:
+        if not listener.server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
             dbc = db.get_cursor()
             current_time = time.time()
@@ -286,7 +285,7 @@ class RunnableNode(ParentNode):
             check_logging = 1
 
         # Send check results to database
-        if not child_check and not server.__INTERNAL__ and check_logging == 1:
+        if not child_check and not listener.server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
             dbc = db.get_cursor()
             current_time = time.time()
@@ -351,7 +350,7 @@ class RunnableNode(ParentNode):
         v = len(values)
         for i, x in enumerate(values):
 
-            if isinstance(x, (int, long)):
+            if isinstance(x, int):
                 perf = "=%d%s;%s;%s;" % (x, perf_unit, self.warning, self.critical)
             else: 
                 perf = "=%0.2f%s;%s;%s;" % (x, perf_unit, self.warning, self.critical)
@@ -396,7 +395,7 @@ class RunnableNode(ParentNode):
 
         try:
             # If the file exists, we extract the data from it and save it to our loaded_values variable.
-            with open(tmpfile, 'r') as values_file:
+            with open(tmpfile, 'rb') as values_file:
                 loaded_values = pickle.load(values_file)
                 last_modified = os.path.getmtime(tmpfile)
         except (IOError, EOFError):
@@ -411,7 +410,7 @@ class RunnableNode(ParentNode):
 
         # Update the pickled data
         logging.debug('Updating pickle for hash_val "%s". Filename is %s.', hash_val, tmpfile)
-        with open(tmpfile, 'w') as values_file:
+        with open(tmpfile, 'wb') as values_file:
             pickle.dump(values, values_file)
 
         # If last modified is 0, then return false
@@ -420,7 +419,7 @@ class RunnableNode(ParentNode):
 
         # Calculate the return value and return it
         delta = time.time() - last_modified
-        dvalues = [round(abs((x - y) / delta), 2) for x, y in itertools.izip(loaded_values, values)]
+        dvalues = [round(abs((x - y) / delta), 2) for x, y in zip(loaded_values, values)]
 
         if len(dvalues) == 1:
             dvalues = dvalues[0]

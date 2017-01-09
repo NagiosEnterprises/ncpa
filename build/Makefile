@@ -22,9 +22,8 @@ build_exe: clean
 	mkdir -p $(BASEDIR)/agent/plugins
 	mkdir -p $(BASEDIR)/agent/var
 	mkdir -p $(BASEDIR)/agent/build
-	echo -n '' > $(BASEDIR)/agent/var/log/ncpa_passive.log
-	echo -n '' > $(BASEDIR)/agent/var/log/ncpa_listener.log
-	cd $(BASEDIR)/agent && $(PYTHONVER) setup_posix.py build_exe
+	echo -n '' > $(BASEDIR)/agent/var/log/ncpa.log
+	cd $(BASEDIR)/agent && $(PYTHONVER) setup.py build_exe
 	mv $(BASEDIR)/agent/build/exe.* $(BASEDIR)/agent/build/NCPA
 
 update_packages:
@@ -77,7 +76,6 @@ build_dmg: build_tarball
 	mkdir NCPA-INSTALL-$(NCPAVER)
 	mv ncpa-$(NCPAVER) NCPA-INSTALL-$(NCPAVER)/ncpa
 	mv NCPA-INSTALL-$(NCPAVER)/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$(NCPAVER)/install.sh
-	install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$(NCPAVER)/ncpa/ncpa_listener
-	install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$(NCPAVER)/ncpa/ncpa_passive
+	install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$(NCPAVER)/ncpa/ncpa
 	hdiutil create -volname NCPA-$(NCPAVER) -srcfolder NCPA-INSTALL-$(NCPAVER) -ov -format UDZO ncpa-$(NCPAVER).dmg
 

@@ -1,5 +1,5 @@
 import psutil
-import nodes
+import listener.nodes as nodes
 import logging
 import re
 import platform
@@ -176,7 +176,7 @@ class ProcessNode(nodes.LazyNode):
                 proc = ps_procs.get(pid)
                 cpu_percent = proc[0]
             else:
-                cpu_percent = round(process.cpu_percent(sleep) / psutil.cpu_count(), 2)
+                cpu_percent = round((process.cpu_percent(sleep) / psutil.cpu_count()) / 100, 2)
         except BaseException:
             cpu_percent = 0
 

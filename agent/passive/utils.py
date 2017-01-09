@@ -11,5 +11,5 @@ def send_request(url, **kwargs):
     :rtype: requests.models.Response
     """
     r = requests.post(url, data=kwargs, verify=False, allow_redirects=True)
-    logging.debug('Content response from URL: %s' % unicode(r.content))
+    logging.debug('Content response from URL: %s' % r.content)
     return r.content
