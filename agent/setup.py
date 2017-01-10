@@ -39,7 +39,8 @@ include_files = [('var/log/ncpa.log', 'var/log/ncpa.log'),
                  ('listener/static', 'listener/static'),
                  ('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                  'etc',
-                 'plugins']
+                 'plugins',
+                 (os.path.join(sys.executable), 'python.exe')]
 
 
 # Specific build options for Windows
@@ -95,13 +96,14 @@ setup(name = "NCPA",
 
 
 # Grab the proper files if we are on Windows 32bit or 64bit - Linux doesn't care
-if __ARCH__ == '32bit':
-    os.rename(os.path.join('build', 'exe.win32-3.5'), os.path.join('build', 'NCPA'))
-elif __ARCH__ == '64bit':
-    os.rename(os.path.join('build', 'exe.win-amd64-3.5'), os.path.join('build', 'NCPA'))
-else:
-    print("unhandled architecture")
-    sys.exit(1)
+if __SYSTEM__ == 'nt':
+    if __ARCH__ == '32bit':
+        os.rename(os.path.join('build', 'exe.win32-3.5'), os.path.join('build', 'NCPA'))
+    elif __ARCH__ == '64bit':
+        os.rename(os.path.join('build', 'exe.win-amd64-3.5'), os.path.join('build', 'NCPA'))
+    else:
+        print("unhandled architecture")
+        sys.exit(1)
 
 
 # Copy over the nsis file for building the installer if we are on Windows
