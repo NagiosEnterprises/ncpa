@@ -39,8 +39,7 @@ include_files = [('var/log/ncpa.log', 'var/log/ncpa.log'),
                  ('listener/static', 'listener/static'),
                  ('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                  'etc',
-                 'plugins',
-                 (os.path.join(sys.executable), 'python.exe')]
+                 'plugins']
 
 
 # Specific build options for Windows
@@ -51,7 +50,8 @@ if __SYSTEM__ == 'nt':
                      ('build_resources/nsis_passive_checks.ini', 'build_resources/nsis_passive_checks.ini'),
                      ('build_resources/ncpa.ico', 'build_resources/ncpa.ico'),
                      ('build_resources/nagios_installer.bmp', 'build_resources/nagios_installer.bmp'),
-                     ('build_resources/nagios_installer_logo.bmp', 'build_resources/nagios_installer_logo.bmp')]
+                     ('build_resources/nagios_installer_logo.bmp', 'build_resources/nagios_installer_logo.bmp'),
+                     (os.path.join(sys.executable), 'python.exe')]
 
     includes += ['cx_Logging', 'jinja2.ext']
     packages += ['idna']
@@ -69,7 +69,8 @@ elif __SYSTEM__ == 'posix':
 
     include_files += [('build_resources/ncpa.plist', 'build_resources/ncpa.plist'),
                       ('build_resources/macosinstall.sh', 'build_resources/macosinstall.sh'),
-                      ('build_resources/ncpa_init', 'build_resources/ncpa_init')]
+                      ('build_resources/ncpa_init', 'build_resources/ncpa_init'),
+                      (os.path.join(sys.executable), 'python')]
 
     bin_includes += ['libffi.so']
 
