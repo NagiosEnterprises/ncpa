@@ -15,8 +15,6 @@ import passive.nrdp
 import listener
 import listener.server
 import listener.psapi
-import listener.windowscounters
-import listener.windowslogs
 import listener.certificate as certificate
 import listener.database as database 
 import gevent.builtins
@@ -80,7 +78,10 @@ class Listener(Base):
         try:
             address = self.config.get('listener', 'ip')
             port = self.config.getint('listener', 'port')
-            listener.server.listener.tail_method = listener.windowslogs.tail_method
+
+            if __SYSTEM__ == 'nt':
+                listener.server.listener.tail_method = listener.windowslogs.tail_method
+
             listener.server.listener.config['iconfig'] = self.config
 
             try:
@@ -196,6 +197,10 @@ class Daemon():
 
         # Default settings (can be overwritten)
         self.pidfile = get_filename('var/ncpa.pid')
+        self.logfile = get_filename(self.config.get('general', 'logfile'))
+        self.loglevel = self.config.get('general', 'loglevel')
+        self.logmaxmb = 5
+        self.logbackups = 5
 
     def main(self):
         action = self.options['action']
@@ -278,7 +283,7 @@ class Daemon():
             self.setup_user()
 
             # Daemonize
-            if self.options.daemonize:
+            if not self.options['non_daemon']:
                 self.daemonize()
 
         except:
@@ -292,7 +297,7 @@ class Daemon():
         try:
             logging.info("started")
             try:
-                start_modules()
+                start_modules(self.options, self.config)
             except (KeyboardInterrupt, SystemExit):
                 pass
             except:
@@ -308,7 +313,7 @@ class Daemon():
             pid = int(open(self.pidfile).read())
             os.kill(pid, signal.SIGTERM)
             # wait for a moment to see if the process dies
-            for n in xrange(10):
+            for n in range(10):
                 time.sleep(0.25)
                 try:
                     # poll the process state
@@ -414,7 +419,7 @@ class Daemon():
         # based on twisted/scripts/twistd.py
         if os.path.exists(self.pidfile):
             try:
-                pid = int(open(self.pidfile, 'rb').read().strip())
+                pid = int(open(self.pidfile, 'r').read().strip())
             except ValueError:
                 msg = 'pidfile %s contains a non-integer value' % self.pidfile
                 sys.exit(msg)
@@ -452,14 +457,14 @@ class Daemon():
     def write_pid(self):
         u"""Write to the pid file"""
         if self.pidfile:
-            open(self.pidfile, 'wb').write(os.getpid())
+            open(self.pidfile, 'w').write(str(os.getpid()))
 
     def remove_pid(self):
         u"""Delete the pid file"""
         if self.pidfile and os.path.exists(self.pidfile):
             os.remove(self.pidfile)
 
-    def get_uid_gid(cp, section):
+    def get_uid_gid(self, cp, section):
         user_uid = cp.get(section, 'uid')
         user_gid = cp.get(section, 'gid')
 
@@ -481,7 +486,7 @@ class Daemon():
 
         return uid, gid
 
-    def daemonize():
+    def daemonize(self):
         """Detach from the terminal and continue as a daemon"""
         # swiped from twisted/scripts/twistd.py
         # See http://www.erlenstar.demon.co.uk/unix/faq_toc.html#TOC16
@@ -492,7 +497,7 @@ class Daemon():
             os._exit(0)  # kill off parent again.
         os.umask(63)  # 077 in octal
         null = os.open('/dev/null', os.O_RDWR)
-        for i in xrange(3):
+        for i in range(3):
             try:
                 os.dup2(null, i)
             except OSError as e:
@@ -663,6 +668,11 @@ def main():
     # If we are running on Linux or Mac OS X we will be using the
     # Daemon class to control the agent
     if __SYSTEM__ == 'posix':
+
+        # If we are in debug mode, do not daemonize
+        if options['debug_mode']:
+            options['non_daemon'] = True
+
         d = Daemon(options, config)
         d.main()
 

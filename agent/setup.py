@@ -30,8 +30,8 @@ if not version[-1].isdigit():
 
 
 # Files to be included in the package
-packages = []
-includes = ['passive', 'listener', 'ncpa']
+packages = ['idna']
+includes = ['passive', 'listener', 'ncpa', 'jinja2.ext']
 excludes = ['Tkinter', 'tkinter', 'unittest']
 bin_includes = []
 include_files = [('var/log/ncpa.log', 'var/log/ncpa.log'),
@@ -53,8 +53,7 @@ if __SYSTEM__ == 'nt':
                      ('build_resources/nagios_installer_logo.bmp', 'build_resources/nagios_installer_logo.bmp'),
                      (os.path.join(sys.executable), 'python.exe')]
 
-    includes += ['cx_Logging', 'jinja2.ext']
-    packages += ['idna']
+    includes += ['cx_Logging']
 
     # Since in Python 3.5 cx_Freeze does not include sqlite3 by default we need to add this
     include_files += [os.path.join(sys.base_prefix, 'DLLs', 'sqlite3.dll')]
