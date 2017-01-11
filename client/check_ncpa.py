@@ -103,6 +103,8 @@ def parse_args():
                       help='Extra query arguments to pass in the NCPA URL.')
     parser.add_option("-s", "--secure", action='store_true', default=False,
                       help='Require successful certificate verification. Does not work on Python < 2.7.9.')
+    parser.add_option("-p", "--performance", action='store_true',
+                      help='Print performance data even when there is none. Will print data matching the return code of this script')
     options, _ = parser.parse_args()
 
     if options.version:
@@ -272,7 +274,12 @@ def main():
         if options.list:
             return show_list(info_json)
         else:
-            return run_check(info_json)
+            stdout, returncode = run_check(info_json)
+            if options.performance and stdout.find("|") == -1:
+                performance = " | 'status'={};1;2;".format(returncode)
+                return "{}{}".format(stdout, performance), returncode
+            else:
+                return stdout, returncode
     except Exception, e:
         if options.debug:
             return 'The stack trace:' + traceback.format_exc(), 3
