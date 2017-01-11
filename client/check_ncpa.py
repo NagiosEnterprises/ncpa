@@ -43,7 +43,7 @@ import shlex
 import re
 import signal
 
-__VERSION__ = '1.0.2'
+__VERSION__ = '1.1.0'
 
 def pretty(d, indent=0, indenter=' ' * 4):
     info_str = ''
@@ -103,7 +103,7 @@ def parse_args():
                       help='Extra query arguments to pass in the NCPA URL.')
     parser.add_option("-s", "--secure", action='store_true', default=False,
                       help='Require successful certificate verification. Does not work on Python < 2.7.9.')
-    parser.add_option("-p", "--performance", action='store_true',
+    parser.add_option("-p", "--performance", action='store_true', default=False,
                       help='Print performance data even when there is none. Will print data matching the return code of this script')
     options, _ = parser.parse_args()
 

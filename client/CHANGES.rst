@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+1.1.0
+-----
+- Added performance data option (-p) for checks that do not return performance data (gregwalters)
+
 1.0.2
 -----
 - Fixed issue where arguments check was checking for "agent/plugin" only
