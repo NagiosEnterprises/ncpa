@@ -216,4 +216,6 @@ class PluginAgentNode(nodes.ParentNode):
 
     def walk(self, *args, **kwargs):
         self.setup_plugin_children(kwargs['config'])
-        return { self.name: self.children.keys() }
+        plugins = list(self.children.keys())
+        plugins.sort()
+        return { self.name: plugins }
