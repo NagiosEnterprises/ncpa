@@ -930,8 +930,10 @@ def api(accessor=''):
     sane_args['accessor'] = accessor
     sane_args['config'] = config
 
+    sane_args['debug'] = request.args.get('debug', False)
+
     if not 'check' in sane_args:
-        sane_args['check'] = request.args.get('check', False);
+        sane_args['check'] = request.args.get('check', False)
 
     if sane_args['check']:
         value = node.run_check(**sane_args)

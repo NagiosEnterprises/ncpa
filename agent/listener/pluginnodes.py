@@ -124,7 +124,13 @@ class PluginNode(nodes.RunnableNode):
             dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
             db.commit()
 
-        return {'returncode': returncode, 'stdout': cleaned_stdout}
+        output = { 'returncode': returncode, 'stdout': cleaned_stdout }
+
+        # If debug=1 or true then show the command we ran
+        if kwargs['debug']:
+            output['cmd'] = ' '.join(cmd)
+
+        return output
 
     @staticmethod
     def demote(user_uid, user_gid):
@@ -174,8 +180,10 @@ class PluginNode(nodes.RunnableNode):
                 command.append(replaced)
             elif '$plugin_args' == x:
                 if self.arguments:
-                    for y in self.arguments:
-                        command.append(y)
+                    args = shlex.shlex(' '.join(self.arguments))
+                    args.whitespace_split = True
+                    for a in args:
+                        command.append(a)
             else:
                 command.append(x)
         return command

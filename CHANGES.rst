@@ -3,6 +3,8 @@
 
 2.0.2 - ??/??/2017
 ==================
+- Updated plugins endpoint to use the debug URL parameter to have check also return the cmd line string
+- Fixed issue with the parsing of command-line arguments sent to plugins quoting spaces unnecessarily
 - Fixed default IP and Port definitions if either are not specified in ncpa.cfg
 
 2.0.1 - 01/03/2017

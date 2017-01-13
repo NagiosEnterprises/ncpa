@@ -129,15 +129,15 @@ class Listener(Base):
 
         try:
             try:
-                address = self.config_parser.get('listener', 'ip')
+                address = self.config.get('listener', 'ip')
             except Exception:
-                self.config_parser.set('listener', 'ip', '0.0.0.0')
+                self.config.set('listener', 'ip', '0.0.0.0')
                 address = '0.0.0.0'
 
             try:
-                port = self.config_parser.getint('listener', 'port')
+                port = self.config.getint('listener', 'port')
             except Exception:
-                self.config_parser.set('listener', 'port', 5693)
+                self.config.set('listener', 'port', 5693)
                 port = 5693
 
             listener.server.listener.config_files = self.config_filenames
