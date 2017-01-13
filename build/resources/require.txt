@@ -8,6 +8,6 @@ docutils
 pyOpenSSL
 gevent
 karellen-geventws
-cffi
+cffi==1.5.2
 appdirs
 packaging

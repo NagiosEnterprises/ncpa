@@ -73,7 +73,7 @@ elif __SYSTEM__ == 'posix':
 
     bin_includes += ['libffi.so']
 
-    binary = Executable("ncpa.py", base=None)
+    binary = Executable('ncpa.py', base=None)
 
 
 # Apply build options
@@ -82,7 +82,8 @@ buildOptions = dict(includes=includes,
                     include_files=include_files,
                     packages=packages,
                     bin_includes=bin_includes,
-                    zip_include_packages=["*"],
+                    replace_paths=[('*', '')],
+                    zip_include_packages=['*'],
                     zip_exclude_packages=[])
 
 
