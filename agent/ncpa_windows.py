@@ -128,8 +128,18 @@ class Listener(Base):
         self.db.run_db_maintenance(self.config)
 
         try:
-            address = self.config.get('listener', 'ip')
-            port = self.config.getint('listener', 'port')
+            try:
+                address = self.config_parser.get('listener', 'ip')
+            except Exception:
+                self.config_parser.set('listener', 'ip', '0.0.0.0')
+                address = '0.0.0.0'
+
+            try:
+                port = self.config_parser.getint('listener', 'port')
+            except Exception:
+                self.config_parser.set('listener', 'port', 5693)
+                port = 5693
+
             listener.server.listener.config_files = self.config_filenames
             listener.server.listener.tail_method = listener.windowslogs.tail_method
             listener.server.listener.config['iconfig'] = self.config

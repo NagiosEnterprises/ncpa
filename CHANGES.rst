@@ -1,6 +1,10 @@
 ﻿Changelog
 +++++++++
 
+2.0.2 - ??/??/2017
+==================
+- Fixed default IP and Port definitions if either are not specified in ncpa.cfg
+
 2.0.1 - 01/03/2017
 ==================
 - Updated popover info boxes so they auto-hide when no longer in focus (once you click anywhere but the ?)
