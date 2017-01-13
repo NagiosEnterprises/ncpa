@@ -6,7 +6,7 @@
 
 **Additions**
 
-- The base ncpa binary can be used to run python scripts using the embedded version of python
+- The python interpreter has been included as a binary file to run scripts through (some restrictions apply)
 - Configs can be written from inside the ncpa web GUI
 
 **Updates**

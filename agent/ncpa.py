@@ -22,7 +22,6 @@ from gevent import monkey
 from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
 from geventwebsocket.handler import WebSocketHandler
-from multiprocessing import Process, freeze_support
 from logging.handlers import RotatingFileHandler
 from argparse import ArgumentParser
 from io import open
@@ -56,7 +55,7 @@ class Base():
         self.options = options
         self.config = config
         if autostart:
-            self.start()
+            self.run()
 
 
 # The listener, which serves the web GUI and API - starting in NCPA 3
@@ -64,7 +63,7 @@ class Base():
 # to run the listener so all of NCPA is bundled in a single service
 class Listener(Base):
 
-    def start(self):
+    def run(self):
 
         # Check if there is a start delay
         try:
@@ -121,9 +120,6 @@ class Listener(Base):
 # separate thread since it is what the main process is used for
 class Passive(Base):
 
-    def start(self):
-        pass
-
     def run_all_handlers(self, *args, **kwargs):
         """
         Will run all handlers that exist.
@@ -169,6 +165,7 @@ class Passive(Base):
             pass
 
         # Set next DB maintenance period to +1 day
+        self.db = database.DB()
         self.db.run_db_maintenance(self.config)
         next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
 
@@ -601,21 +598,25 @@ def get_configuration(config='ncpa.cfg', configdir=None):
 # Actually starts the processes and threading for the
 # components that will be used
 def start_modules(options, config):
-    freeze_support()
+    try:
 
-    # Create the database structure for checks
-    db = database.DB()
-    db.setup()
+        # Create the database structure for checks
+        db = database.DB()
+        db.setup()
 
-    # Create the passive thread
-    p = threading.Thread(target=Passive, args=(options, config, True))
-    p.daemon = True
-    p.start()
+        # Create the passive thread
+        p = threading.Thread(target=Passive, args=(options, config, True))
+        p.daemon = True
+        p.start()
 
-    # Create the listener process
-    l = threading.Thread(target=Listener, args=(options, config, True))
-    l.daemon = True
-    l.start()
+        # Create the listener process
+        l = threading.Thread(target=Listener, args=(options, config, True))
+        l.daemon = True
+        l.start()
+
+    except Exception as exc:
+        logging.exception(exc)
+        sys.exit(1)
 
 
 # This handles calls to the main NCPA binary
@@ -692,7 +693,5 @@ def main():
         sys.exit(0)
 
 
-# Add freeze support for multi-processing then start main section
 if __name__ == '__main__':
-    freeze_support()
     main()

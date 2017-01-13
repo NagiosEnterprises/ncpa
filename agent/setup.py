@@ -30,8 +30,8 @@ if not version[-1].isdigit():
 
 
 # Files to be included in the package
-packages = ['idna']
-includes = ['passive', 'listener', 'ncpa', 'jinja2.ext']
+packages = ['idna', 'passive', 'listener']
+includes = ['ncpa', 'jinja2.ext']
 excludes = ['Tkinter', 'tkinter', 'unittest']
 bin_includes = []
 include_files = [('var/log/ncpa.log', 'var/log/ncpa.log'),
