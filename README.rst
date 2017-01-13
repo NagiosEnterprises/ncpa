@@ -8,11 +8,11 @@ Downloads
 
 Current versions:
 
-+---------+-------------+----------------------------------------------------------------------+
-| Current | **2.0.1**   | `Downloads <https://assets.nagios.com/downloads/ncpa/download.php>`_ |
-+---------+-------------+----------------------------------------------------------------------+
++---------+-------------+-------------------------------------------------------+
+| Current | **2.0.1**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
++---------+-------------+-------------------------------------------------------+
 
-`Older Versions <https://assets.nagios.com/downloads/ncpa/archived/>`_
+`Older Versions <https://www.nagios.org/ncpa/archive.php>`_
 
 We currently build for the following operating systems:
 
