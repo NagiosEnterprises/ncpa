@@ -8,6 +8,7 @@
 - Fixed issue with the parsing of command-line arguments sent to plugins quoting spaces unnecessarily
 - Fixed default IP and Port definitions if either are not specified in ncpa.cfg
 - Fixed issue with / in arguments passed to plugins (via check_ncpa.py and the API)
+- Fixed output of check_ncpa.py in the "view alternative format" popup to use proper units argument
 
 2.0.1 - 01/03/2017
 ==================

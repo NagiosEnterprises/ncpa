@@ -74,10 +74,12 @@ def parse_args():
                       help="Warning value to be passed for the check.")
     parser.add_option("-c", "--critical", default=None, type="str",
                       help="Critical value to be passed for the check.")
-    parser.add_option("-u", "--unitprefix", default=None,
-                      help="The unit prefix (k, Ki, M, Mi, G, Gi, T, Ti) for b and B unit types.")
+    parser.add_option("-u", "--units", default=None,
+                      help="The unit prefix (k, Ki, M, Mi, G, Gi, T, Ti) for b and B unit "
+                           "types which calculates the value returned.")
     parser.add_option("-n", "--unit", default=None,
-                      help="Overrides the unit with whatever unit you define.")
+                      help="Overrides the unit with whatever unit you define. "
+                           "Does not perform calculations. This changes the unit of measurement only.")
     parser.add_option("-a", "--arguments", default=None,
                       help="Arguments for the plugin to be run. Not necessary "
                            "unless you're running a custom plugin. Given in the same "
@@ -104,7 +106,8 @@ def parse_args():
     parser.add_option("-s", "--secure", action='store_true', default=False,
                       help='Require successful certificate verification. Does not work on Python < 2.7.9.')
     parser.add_option("-p", "--performance", action='store_true', default=False,
-                      help='Print performance data even when there is none. Will print data matching the return code of this script')
+                      help='Print performance data even when there is none. '
+                           'Will print data matching the return code of this script')
     options, _ = parser.parse_args()
 
     if options.version:
@@ -183,10 +186,10 @@ def get_arguments_from_options(options, **kwargs):
 
     """
 
-    # Note: Changed to unitprefix due to it being a prefix which then makes it
-    # easier to understand from the API side of things...
+    # Note: Changed back to units due to the units being what is passed via the
+    # API call which can confuse people if they don't match
     arguments = { 'token': options.token,
-                  'units': options.unitprefix }
+                  'units': options.units }
     
     if not options.list:
         arguments['warning'] = options.warning

@@ -5,6 +5,7 @@ Changelog
 -----
 - Added performance data option (-p) for checks that do not return performance data (gregwalters)
 - Fixed issue where arguments were being passed without breaking on whitespace
+- Reverted change for "unitprefix" back to just "units" to match the API calls (-u is still the same, units)
 
 1.0.2
 -----
