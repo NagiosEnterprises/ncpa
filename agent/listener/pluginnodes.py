@@ -170,17 +170,23 @@ class PluginNode(nodes.RunnableNode):
 
         """
         command = []
+
+        # Set shlex to use posix mode on posix machines (so that we can pass something like
+        # --metric='disk/logical/|' and have it properly format quotes)
+        mode = False
+        if os.name == 'posix':
+            mode = True
         
-        lexer = shlex.shlex(instruction)
+        lexer = shlex.shlex(instruction, posix=mode)
         lexer.whitespace_split = True
-        
+
         for x in lexer:
             if '$plugin_name' in x:
                 replaced = x.replace('$plugin_name', self.plugin_abs_path)
                 command.append(replaced)
             elif '$plugin_args' == x:
                 if self.arguments:
-                    args = shlex.shlex(' '.join(self.arguments))
+                    args = shlex.shlex(' '.join(self.arguments), posix=mode)
                     args.whitespace_split = True
                     for a in args:
                         command.append(a)

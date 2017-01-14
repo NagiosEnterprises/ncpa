@@ -41,7 +41,7 @@ class Listener(ncpadaemon.Daemon):
 
         # Handle DB maintenance
         self.db.run_db_maintenance(self.config_parser)
-        
+
         try:
             try:
                 address = self.config_parser.get('listener', 'ip')

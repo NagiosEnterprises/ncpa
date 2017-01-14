@@ -171,7 +171,9 @@ def get_check_arguments_from_options(options):
     if arguments is None:
         return ''
     else:
-        arguments = '/'.join([urlquote(x, safe='') for x in shlex.split(arguments)])
+        lex = shlex.shlex(arguments)
+        lex.whitespace_split = True
+        arguments = '/'.join([urlquote(x, safe='') for x in lex])
         return arguments
 
 

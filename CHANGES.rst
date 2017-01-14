@@ -7,6 +7,7 @@
 - Updated plugins endpoint to use the debug URL parameter to have check also return the cmd line string
 - Fixed issue with the parsing of command-line arguments sent to plugins quoting spaces unnecessarily
 - Fixed default IP and Port definitions if either are not specified in ncpa.cfg
+- Fixed issue with / in arguments passed to plugins (via check_ncpa.py and the API)
 
 2.0.1 - 01/03/2017
 ==================

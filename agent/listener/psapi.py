@@ -8,6 +8,7 @@ import time
 import re
 import platform
 import server
+import urllib
 from nodes import ParentNode, RunnableNode, RunnableParentNode, LazyNode
 from pluginnodes import PluginAgentNode
 import services
@@ -224,9 +225,10 @@ def getter(accessor, config, full_path, cache=False):
     # Sanity check. If accessor is None, we can do nothing meaningfully, and we need to stop.
     if accessor is None:
         return
-    path = [re.sub('%2f', '/', x, flags=re.I) for x in accessor.split('/') if x]
-    if len(path) > 0 and path[0] == 'api':
-        path = path[1:]
+
+    # Split the accessor path on / (but not if they are inside " or ')
+    pattern = re.compile(r'''((?:[^/"']|"[^"]*"|'[^']*')+)''')
+    path = pattern.split(accessor)[1::2]
 
     # Check if this should be a cached query or if we should reset the root
     # node. This normally only happens on new API calls. When we are using

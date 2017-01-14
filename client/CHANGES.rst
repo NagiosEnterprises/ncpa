@@ -4,6 +4,7 @@ Changelog
 1.1.0
 -----
 - Added performance data option (-p) for checks that do not return performance data (gregwalters)
+- Fixed issue where arguments were being passed without breaking on whitespace
 
 1.0.2
 -----
