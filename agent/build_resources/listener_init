@@ -43,13 +43,6 @@ stop() {
     fi
 }
 
-# Get the status of the NCPA Listener service
-ncpa_l_status() {
-    output=`$BASEDIR/ncpa_listener --status`
-    echo -e "NCPA Listener "
-    echo $output
-}
-
 # Main init script logic
 case "$1" in
     start)
@@ -59,7 +52,7 @@ case "$1" in
         stop
         ;;
     status)
-        ncpa_l_status
+        $BASEDIR/ncpa_listener --status
         ;;
     restart|reload|condrestart)
         stop

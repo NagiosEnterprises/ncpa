@@ -208,19 +208,14 @@ class Daemon(object):
         u"""Stop the running process"""
         if self.pidfile and os.path.exists(self.pidfile):
             pid = int(open(self.pidfile).read())
-            os.kill(pid, signal.SIGTERM)
-            # wait for a moment to see if the process dies
-            for n in xrange(10):
-                time.sleep(0.25)
-                try:
-                    # poll the process state
+            try:
+                os.kill(pid, signal.SIGTERM)
+                # wait for a moment to see if the process dies
+                for n in xrange(10):
+                    time.sleep(0.25)
                     os.kill(pid, 0)
-                except OSError as err:
-                    if err.errno == errno.ESRCH:
-                        # process has died
-                        break
-                    else:
-                        raise
+            except OSError as err:
+                pass
             else:
                 sys.exit(u"pid %d did not die" % pid)
         else:
@@ -234,12 +229,12 @@ class Daemon(object):
             if pid > 0:
                 try:
                     os.kill(pid, 0)
-                    sys.exit(u"service is running (pid %d)" % pid)
+                    sys.exit(u"NCPA %s: Service is running. (pid %d)" % (self.section.title(), pid))
                 except OSError as err:
-                    if err.errno != errno.ESRCH:
-                        sys.exit(u"service is not running but pid file exists")
+                    if err.errno == errno.ESRCH:
+                        sys.exit(u"NCPA %s: Service is not running but pid file exists." % self.section.title())
         else:
-            sys.exit(u"service is not running")
+            sys.exit(u"NCPA %s: Service is not running." % self.section.title())
 
     def prepare_dirs(self):
         u"""Ensure the log and pid file directories exist and are writable"""
@@ -256,12 +251,12 @@ class Daemon(object):
         if self.gid:
             try:
                 os.setgid(self.gid)
-            except OSError, err:
+            except OSError as err:
                 logging.exception(err)
         if self.uid:
             try:
                 os.setuid(self.uid)
-            except OSError, err:
+            except OSError as err:
                 logging.exception(err)
 
     def chown(self, fn):
@@ -275,7 +270,7 @@ class Daemon(object):
                 gid = os.stat(fn).st_gid
             try:
                 os.chown(fn, uid, gid)
-            except OSError, err:
+            except OSError as err:
                 sys.exit(u"can't chown(%s, %d, %d): %s, %s" %
                 (repr(fn), uid, gid, err.errno, err.strerror))
 
@@ -323,7 +318,7 @@ class Daemon(object):
                 sys.exit(msg)
             try:
                 os.kill(pid, 0)
-            except OSError, err:
+            except OSError as err:
                 if err.errno == errno.ESRCH:
                     # The pid doesn't exist, so remove the stale pidfile.
                     os.remove(self.pidfile)

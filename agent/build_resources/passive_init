@@ -43,13 +43,6 @@ stop() {
     fi
 }
 
-# Get the status of the NCPA Passive service
-ncpa_p_status() {
-    output=`$BASEDIR/ncpa_passive --status`
-    echo -e "NCPA Passive "
-    echo $output
-}
-
 # Main init script logic
 case "$1" in
     start)
@@ -59,7 +52,7 @@ case "$1" in
         stop
         ;;
     status)
-        ncpa_p_status
+        $BASEDIR/ncpa_passive --status
         ;;
     restart|reload|condrestart)
         stop

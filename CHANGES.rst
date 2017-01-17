@@ -9,6 +9,7 @@
 - Fixed default IP and Port definitions if either are not specified in ncpa.cfg
 - Fixed issue with / in arguments passed to plugins (via check_ncpa.py and the API)
 - Fixed output of check_ncpa.py in the "view alternative format" popup to use proper units argument
+- Fixed service status output to display proper messages when pid file exists but daemon is not running
 
 2.0.1 - 01/03/2017
 ==================
