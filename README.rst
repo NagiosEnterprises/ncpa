@@ -9,7 +9,7 @@ Downloads
 Current versions:
 
 +---------+-------------+-------------------------------------------------------+
-| Current | **2.0.1**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
+| Current | **2.0.2**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
 `Older Versions <https://www.nagios.org/ncpa/archive.php>`_
@@ -22,11 +22,11 @@ We currently build for the following operating systems:
 - Debian (7+)
 - Ubuntu (12+)
 - OpenSUSE (11+)
-- Oracle (6+)
+- SLES (11+)
+- Oracle (5+)
 
 Other systems we will build for soon:
 
-- SLES (11+)
 - Fedora
 
 If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here by creating a new GitHub issue.

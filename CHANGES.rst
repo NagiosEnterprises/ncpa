@@ -1,7 +1,7 @@
 ﻿Changelog
 +++++++++
 
-2.0.2 - ??/??/2017
+2.0.2 - 01/19/2017
 ==================
 - Updated plugins list to be sorted alphabetically when returning plugin list
 - Updated plugins endpoint to use the debug URL parameter to have check also return the cmd line string
