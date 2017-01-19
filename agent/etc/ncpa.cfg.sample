@@ -103,6 +103,13 @@ admin_password = None
 admin_auth_only = 0
 
 #
+# Comma separated list of allowed hosts that can access the API (and GUI)
+# Exmaple: 192.168.23.15
+# Example subnet: 192.168.0.0/28
+#
+# allowed_hosts = 
+
+#
 # -------------------------------
 # Listener Configuration (API)
 # -------------------------------
@@ -230,6 +237,15 @@ plugin_path = plugins/
 # Default: 60
 #
 # plugin_timeout = 60
+
+#
+# Comma separated list of plugins to run through sudo. Note: You will need to update your sudoers
+# configuration for these plugins to work when called with sudo.
+#
+# Example: check_special,check_root_files
+# (Command line: sudo check_special <arguments>)
+#
+# run_with_sudo =
 
 #
 # Extensions for plugins
