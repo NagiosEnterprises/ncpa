@@ -1,6 +1,11 @@
 ﻿Changelog
 +++++++++
 
+2.1.0 - ??/??/2017
+==================
+- Added a new config option (allowed_hosts) to the listener section to block access except from specified addresses
+- Added
+
 2.0.2 - 01/19/2017
 ==================
 - Updated plugins list to be sorted alphabetically when returning plugin list

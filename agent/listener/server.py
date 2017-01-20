@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response
+from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response, abort
 import logging
 import urllib
 import urlparse
@@ -20,6 +20,7 @@ import geventwebsocket
 import processes
 import database
 import math
+import ipaddress
 
 
 __VERSION__ = '2.0.2'
@@ -100,6 +101,19 @@ def make_info_dict():
 # ------------------------------
 # Authentication Wrappers
 # ------------------------------
+
+
+@listener.before_request
+def before_request():
+    allowed_hosts = get_config_value('listener', 'allowed_hosts')
+    if allowed_hosts:
+        if request.remote_addr:
+            ipaddr = ipaddress.ip_address(unicode(request.remote_addr))
+            allowed = ipaddress.ip_network(unicode(allowed_hosts))
+            if ipaddr not in allowed:
+                abort(403)
+        else:
+            abort(403)
 
 
 # Variable injection for all pages that flask creates
@@ -311,14 +325,6 @@ def error_page_not_found(e):
     if not session.get('logged', False):
         template_args = { 'hide_page_links': True }
     return render_template('errors/404.html', **template_args), 404
-
-
-@listener.errorhandler(403)
-def error_page_not_found(e):
-    template_args = {}
-    if not session.get('logged', False):
-        template_args = { 'hide_page_links': True }
-    return render_template('errors/403.html', **template_args), 403
 
 
 @listener.errorhandler(500)

@@ -37,10 +37,6 @@ check_logging_time = 30
 # Default: uid = nagios
 # Default: gid = nagios
 #
-# ** Note - The daemon runs as root, but forks a child process when running a plugin
-#    that is defined by the user, for security reasons. However, without the main daemon
-#    running as root, much of the system information would be missing. This is typical behavior. **
-#
 # This is for Unix only (Linux, Mac OS X, etc)
 #
 uid = nagios
@@ -107,7 +103,7 @@ admin_auth_only = 0
 # Exmaple: 192.168.23.15
 # Example subnet: 192.168.0.0/28
 #
-# allowed_hosts = 
+# allowed_hosts =
 
 #
 # -------------------------------
@@ -143,9 +139,11 @@ community_string = mytoken
 handlers = None
 
 #
-# User and group to run passive checks as (Recommended to use nagios:nagios)
+# User and group to run passive checks as (recommended to use nagios:nagios)
 # Default: uid = nagios
 # Default: gid = nagios
+#
+# This is for Unix only (Linux, Mac OS X, etc)
 #
 uid = nagios
 gid = nagios
