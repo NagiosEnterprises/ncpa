@@ -3,8 +3,8 @@
 
 2.1.0 - ??/??/2017
 ==================
-- Added a new config option (allowed_hosts) to the listener section to block access except from specified addresses
-- Added
+- Added a new config option (allowed_hosts) to the [listener] section to block access except from specified addresses
+- Added a new config option (run_with_sudo) to the [plugin directives] section to prepend the sudo command to the plugin call
 
 2.0.2 - 01/19/2017
 ==================
