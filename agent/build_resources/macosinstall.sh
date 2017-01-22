@@ -96,6 +96,7 @@ fi
 cp -Rf ncpa/* ${homedir}
 chmod -R 775 ${homedir}
 chown -R ${username}:${groupname} ${homedir}
+chmod +x "${homedir}/uninstall.sh"
 
 # Replace files
 if [ ${upgrade} -eq "1" ]; then
