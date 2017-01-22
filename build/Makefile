@@ -77,6 +77,7 @@ build_dmg: build_tarball
 	mkdir NCPA-INSTALL-$(NCPAVER)
 	mv ncpa-$(NCPAVER) NCPA-INSTALL-$(NCPAVER)/ncpa
 	mv NCPA-INSTALL-$(NCPAVER)/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$(NCPAVER)/install.sh
+	mv NCPA-INSTALL-$(NCPAVER)/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$(NCPAVER)/ncpa/uninstall.sh
 	install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$(NCPAVER)/ncpa/ncpa_listener
 	install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$(NCPAVER)/ncpa/ncpa_passive
 	hdiutil create -volname NCPA-$(NCPAVER) -srcfolder NCPA-INSTALL-$(NCPAVER) -ov -format UDZO ncpa-$(NCPAVER).dmg
