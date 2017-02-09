@@ -249,7 +249,7 @@ def show_list(info_json):
 def timeout_handler(threshold):
     def wrapped(signum, frames):
         stdout = "UNKNOWN: Execution exceeded timeout threshold of %ds" % threshold
-        print stdout
+        print(stdout)
         sys.exit(3)
     return wrapped
 
@@ -273,7 +273,7 @@ def main():
             return show_list(info_json)
         else:
             return run_check(info_json)
-    except Exception, e:
+    except Exception as e:
         if options.debug:
             return 'The stack trace:' + traceback.format_exc(), 3
         elif options.verbose:

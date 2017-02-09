@@ -54,6 +54,7 @@ class Base():
     def __init__(self, options, config, autostart=False):
         self.options = options
         self.config = config
+
         if autostart:
             self.run()
 
@@ -149,7 +150,7 @@ class Passive(Base):
                 try:
                     ins_handler = tmp_handler.Handler(self.config)
                     ins_handler.run(run_time)
-                    logging.debug(u'Successfully ran handler %s' % handler)
+                    logging.debug('Successfully ran handler %s' % handler)
                 except Exception as e:
                     logging.exception(e)
 
