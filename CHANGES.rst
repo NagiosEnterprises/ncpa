@@ -5,6 +5,7 @@
 ==================
 - Fixed some typos in the ncpa.cfg and sample config
 - Fixed issue with Windows silent install setting ip address to blank instead of 0.0.0.0
+- Fixed check for service scripts in init.d folder to ignore OSError exceptions
 
 2.0.2 - 01/19/2017
 ==================
