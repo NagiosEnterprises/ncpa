@@ -44,10 +44,6 @@ Var log_level_passive
 Var passive_checks
 Var installed
 
-; Define bind IP and port
-StrCpy $bind_ip "0.0.0.0"
-StrCpy $bind_port "5693"
-
 ; The file to write
 OutFile "ncpa-${NCPA_VERSION}.exe"
 
@@ -141,6 +137,10 @@ Function .onInit
     ${If} $nrdp_url != ''
     StrCpy $nrdp 1
     ${EndIf}
+
+    ; Define bind IP and port
+    StrCpy $bind_ip "0.0.0.0"
+    StrCpy $bind_port "5693"
 
 FunctionEnd
 
