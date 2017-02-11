@@ -196,7 +196,8 @@ class ServiceNode(nodes.LazyNode):
         # Only look at executable files in init.d (there is no README service)
         try:
             possible_services = filter(lambda x: os.stat('/etc/init.d/'+x)[ST_MODE] & (S_IXUSR|S_IXGRP|S_IXOTH), os.listdir('/etc/init.d'))
-        except OSError as ex:
+        except OSError as e:
+            logging.exception(e);
             pass
 
         services = {}
