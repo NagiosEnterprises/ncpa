@@ -122,17 +122,16 @@ Function .onInit
     !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\nsis_listener_options.ini" "nsis_listener_options.ini"
     !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\nsis_passive_options.ini" "nsis_passive_options.ini"
     !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\nsis_passive_checks.ini" "nsis_passive_checks.ini"
-    
+
     ${GetParameters} $R0
-    ${GetParameters} $R1
-    ${GetParameters} $R2
-    ${GetParameters} $R3
-    
+
     ClearErrors
-    ${GetOptions} $R0 /TOKEN= $token
-    ${GetOptions} $R1 /NRDPURL= $nrdp_url
-    ${GetOptions} $R2 /NRDPTOKEN= $nrdp_token
-    ${GetOptions} $R3 /NRDPHOSTNAME= $nrdp_hostname
+    ${GetOptions} $R0 "/TOKEN=" $token
+    ${GetOptions} $R0 "/NRDPURL=" $nrdp_url
+    ${GetOptions} $R0 "/NRDPTOKEN=" $nrdp_token
+    ${GetOptions} $R0 "/NRDPHOSTNAME=" $nrdp_hostname
+    ${GetOptions} $R0 "/IP=" $bind_ip
+    ${GetOptions} $R0 "/PORT=" $bind_port
 
     ${If} $nrdp_url != ''
     StrCpy $nrdp 1

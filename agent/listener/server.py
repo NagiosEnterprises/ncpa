@@ -893,6 +893,7 @@ def api(accessor=''):
     #   api/process/<processname> -> api/processes?name=<processname>
     #   api/agent/plugin/<plugin> -> api/plugins/<plugin>
     #
+    """
     path = [re.sub('%2f', '/', x, flags=re.I) for x in accessor.split('/') if x]
     if len(path) > 0 and path[0] == 'api':
         path = path[1:]
@@ -917,6 +918,7 @@ def api(accessor=''):
             accessor = "plugins"
             if 'plugin' in rest_path[0] and len(rest_path) > 1:
                 accessor = "plugins/" + rest_path[1]
+    """
 
     # Set the full requested path
     full_path = request.path

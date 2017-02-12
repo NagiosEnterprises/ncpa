@@ -3,9 +3,11 @@
 
 2.1.0 - ??/??/2017
 ==================
+- Removed deprecated aliases (service, process, and agent) as stated in 2.0.0 changelog section
 - Added a new config option (allowed_hosts) to the [listener] section to block access except from specified addresses
 - Added a new config option (run_with_sudo) to the [plugin directives] section to prepend the sudo command
 - Added shell script to uninstall NCPA on Mac OS X by running "sudo /usr/local/ncpa/uninstall.sh"
+- Added /IP and /PORT to silent install options for the Windows installer
 
 2.0.2 - 01/19/2017
 ==================
