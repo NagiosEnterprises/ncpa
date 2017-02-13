@@ -131,7 +131,7 @@ community_string = mytoken
 #   nrds, nrdp
 #
 # Example:
-# handlers = nrds,ndrp
+# handlers = nrds,nrdp
 #
 handlers = None
 
