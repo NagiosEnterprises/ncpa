@@ -33,6 +33,8 @@ if [ "$BUILDFROM" != "travis" ]; then
 	echo '/usr/local/lib' >> /etc/ld.so.conf 
 	/sbin/ldconfig
 	cd ..
+else
+	PYTHONVER="python"
 fi
 
 # Install the patched version of cx_Freeze
@@ -56,7 +58,11 @@ rm -rf $CXLOGGINGVER
 #  INSTALL PIP
 # --------------------------
 
-cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
+if [ "$BUILDFROM" != "travis" ]; then
+	cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
+else
+	pip install mock
+fi
 
 # --------------------------
 #  INSTALL PIP COMPONENTS
@@ -85,5 +91,10 @@ rm -rf $GWEBSOCKETVER
 # --------------------------
 
 # Add users if they don't exist
-useradd nagios
-groupadd nagios
+if [ "$BUILDFROM" != "travis" ]; then
+	useradd nagios
+	groupadd nagios
+else
+	sudo useradd nagios
+	sudo groupadd nagios
+fi
