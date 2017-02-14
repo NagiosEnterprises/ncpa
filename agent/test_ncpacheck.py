@@ -97,6 +97,7 @@ class TestNCPACheck(unittest.TestCase):
         self.config = configparser.ConfigParser()
         self.config.add_section('api')
         self.config.set('api', 'community_string', 'mytoken')
+        listener.server.__INTERNAL__ = True
         listener.server.listener.config['iconfig'] = {}
 
     def test_get_api_url_from_instruction(self):
