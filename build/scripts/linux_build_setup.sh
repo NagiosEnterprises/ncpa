@@ -18,7 +18,9 @@ BUILDFROM=$1
 # --------------------------
 #  INSTALL PRE-REQS
 # --------------------------
-./linux_build_prereqs.sh
+if [ "$BUILDFROM" != "travis" ]; then
+	./linux_build_prereqs.sh
+fi
 
 # --------------------------
 #  INSTALL RESOURCES
@@ -35,6 +37,7 @@ if [ "$BUILDFROM" != "travis" ]; then
 	cd ..
 else
 	PYTHONVER="python"
+	PYTHONBIN="python"
 fi
 
 # Install the patched version of cx_Freeze
@@ -60,8 +63,6 @@ rm -rf $CXLOGGINGVER
 
 if [ "$BUILDFROM" != "travis" ]; then
 	cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
-else
-	pip install mock
 fi
 
 # --------------------------
@@ -96,5 +97,4 @@ if [ "$BUILDFROM" != "travis" ]; then
 	groupadd nagios
 else
 	sudo useradd nagios
-	sudo groupadd nagios
 fi
