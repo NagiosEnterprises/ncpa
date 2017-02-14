@@ -877,7 +877,7 @@ def api(accessor=''):
     # of this should be around here. Changing the incoming request is the only
     # way to make something happen without updating the way the API looks/returns.
     # You can think of these as aliases. Below explains the aliases and when they
-    # will be removed. As of 2.0.0 they are deprecated. Will be removed in 2.1.0.
+    # will be removed. As of 2.0.0 they are deprecated. Will be removed in 3.
     #
     # Deprecated Aliases:
     #

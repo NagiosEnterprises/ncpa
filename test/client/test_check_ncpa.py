@@ -5,11 +5,12 @@ import mock
 import re
 import imp
 
+
 # The module to be tested
 check_ncpa = imp.load_source('check_ncpa', '../../client/check_ncpa.py')
 
 
-#~ Django URL validator
+# Django URL validator
 def is_valid_url(url):
     regex = re.compile(
         r'^https?://'
@@ -27,7 +28,7 @@ class Test(unittest.TestCase):
         self.c_options = mock.MagicMock()
         self.c_options.token = 'mytoken'
         self.c_options.hostname = 'bingo.bongo.com'
-        self.c_options.unit = None
+        self.c_options.units = None
         self.c_options.arguments = '-t this -b foo/bar'
         self.c_options.warning = '10'
         self.c_options.critical = '20'
@@ -61,7 +62,7 @@ class Test(unittest.TestCase):
         arguments = check_ncpa.get_arguments_from_options(self.c_options)
         self.assertEquals(str, type(arguments))
         self.assertTrue(arguments)
-        self.assertTrue('unit' not in arguments)
+        self.assertTrue('units' not in arguments)
         
         self.c_options.list = True
         arguments = check_ncpa.get_arguments_from_options(self.c_options)
@@ -80,5 +81,7 @@ class Test(unittest.TestCase):
         self.assertEquals(str, type(url))
         self.assertTrue(is_valid_url(url))
 
+
 if __name__ == '__main__':
     unittest.main()
+
