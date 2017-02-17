@@ -4,7 +4,7 @@
 2.0.3 - ??/??/2017
 ==================
 - Fixed some typos in the ncpa.cfg and sample config
-- Fixed issue with Windows silent install setting ip address to blank instead of 0.0.0.0
+- Fixed issue with Windows silent install setting various values to blank instead of defaults
 - Fixed check for service scripts in init.d folder to ignore OSError exceptions
 - Fixed typo in ncpa.cfg file that meant to say nrdp
 

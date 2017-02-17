@@ -138,9 +138,13 @@ Function .onInit
     StrCpy $nrdp 1
     ${EndIf}
 
-    ; Define bind IP and port
+    ; Define defaults for silent installs
     StrCpy $bind_ip "0.0.0.0"
     StrCpy $bind_port "5693"
+    StrCpy $ssl_version "TLSv1_2"
+    StrCpy $check_interval "300"
+    StrCpy $log_level_active "warning"
+    StrCpy $log_level_passive "warning"
 
 FunctionEnd
 
