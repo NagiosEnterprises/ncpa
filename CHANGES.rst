@@ -1,7 +1,7 @@
 ﻿Changelog
 +++++++++
 
-2.0.3 - ??/??/2017
+2.0.3 - 03/17/2017
 ==================
 - Fixed some typos in the ncpa.cfg and sample config
 - Fixed issue with Windows silent install setting various values to blank instead of defaults
