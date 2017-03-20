@@ -1,6 +1,10 @@
 ﻿Changelog
 +++++++++
 
+2.0.4 - ??/??/2017
+==================
+- Fixed admin login page redirecting to "admin/config" which does not exists
+
 2.0.3 - 03/17/2017
 ==================
 - Fixed some typos in the ncpa.cfg and sample config

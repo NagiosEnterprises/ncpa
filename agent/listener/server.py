@@ -272,7 +272,7 @@ def admin_login():
 
     # Verify authentication and redirect if we are authenticated
     if session.get('admin_logged', False):
-        return redirect(url_for('admin_config'))
+        return redirect(url_for('admin'))
 
     # Admin password
     admin_password = get_config_value('listener', 'admin_password', None)
@@ -286,7 +286,7 @@ def admin_login():
 
     if password == admin_password and admin_password is not None:
         session['admin_logged'] = True
-        return redirect(url_for('admin_config'))
+        return redirect(url_for('admin'))
     elif password is not None:
         template_args['error'] = 'Password was invalid.'
 
@@ -486,14 +486,6 @@ def admin():
     tmp_args = {}
     tmp_args['config'] = listener.config['iconfig']
     return render_template('admin/index.html', **tmp_args)
-
-
-@listener.route('/gui/admin/config', methods=['GET', 'POST'])
-@requires_admin_auth
-def admin_config():
-    tmp_args = {}
-    tmp_args['config'] = listener.config['iconfig']
-    return render_template('admin/config.html', **tmp_args)
 
 
 @listener.route('/gui/admin/global', methods=['GET', 'POST'])
