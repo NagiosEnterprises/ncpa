@@ -238,7 +238,7 @@ def login():
 
     session['message'] = None
 
-    # Do actual athentication check
+    # Do actual authentication check
     if token == ncpa_token and not admin_auth_only:
         session['logged'] = True
     elif token == admin_password and admin_password is not None:
