@@ -5,7 +5,7 @@ import sys
 import server
 
 # A module to wrap sqllite3 for use with a small database to store things
-# like checks accross both passive and active sections
+# like checks across both passive and active sections
 
 class DB(object):
 
