@@ -68,7 +68,7 @@
                     <p>The bold portion represents the amount of seconds between checks.</p>
 
                     <h6>Sending Multiple Hosts</h6>
-                    <p>While <code>%HOSTNAME%</code> gets replaced by the <code>hostname</code> option in the [nrdp] section of the configuration, you can also define your own hostnames. The reason for allowing this is so that if you have plugins that are actually checking another host, you have the flexability of sending the passive check to Nagios with a different hostname. Here is an example set of passive checks that demonstrate this:</p>
+                    <p>While <code>%HOSTNAME%</code> gets replaced by the <code>hostname</code> option in the [nrdp] section of the configuration, you can also define your own hostnames. The reason for allowing this is so that if you have plugins that are actually checking another host, you have the flexibility of sending the passive check to Nagios with a different hostname. Here is an example set of passive checks that demonstrate this:</p>
                     <pre>server1.local|CPU Usage = plugins/check_cpu/-H server1.local/-w 60/-c 80
 server2.local|CPU Usage = plugins/check_cpu/-H server2.local/-w 60/-c 80
 %HOSTNAME%|CPU Usage = cpu/percent --warning 60 --critical 80 --aggregate avg</pre>
