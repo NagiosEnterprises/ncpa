@@ -49,7 +49,7 @@
 %HOSTNAME%|Memory Usage = memory/virtual --warning 80 --critical 90 --units Gi
 %HOSTNAME%|Process Count = processes --warning 300 --critical 400</pre>
 
-                    <p>When the <em>NCPA Passive</em> service starts, it parses any definitions that it finds defined. For each entry, NCPA takes the string of text before the equals, and splits it on <code>|</code>. The result is the hostname, servicename, and sometimes a check interaval in seconds.</p>
+                    <p>When the <em>NCPA Passive</em> service starts, it parses any definitions that it finds defined. For each entry, NCPA takes the string of text before the equals, and splits it on <code>|</code>. The result is the hostname, servicename, and sometimes a check interval in seconds.</p>
                     <p>The <code>%HOSTNAME%</code> macro is populated when running the check with the hostname defined in the config file. The <code>__HOST__</code> is a special service name, which represents the host check in Nagios.</p>
                     <p>
                         <div class="alert alert-info">

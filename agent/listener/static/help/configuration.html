@@ -428,7 +428,7 @@
                     <p>This section, in NCPA 2, is typically in a separate file located in the <code>etc/ncpa.cfg.d</code> directory. You can view the <code>example.cfg</code> configuration to see how you can create these files. For information on the specifics of setting up passive checks, see the section on creating <a href="passive.html">Passive Checks</a>.</p>
                     <h6>Check Definitions</h6>
                     <p>Shown below is the basis for how to define a check. Typically hostname is set to %HOSTNAME%. Check interval is optional, and you can define a check without the last |. The servicename of __HOST__ is special, and refers to the host check - so the results of that check will appear as the specified host's check results.</p>
-                    <pre>&lt;hostname&gt;|&lt;servicename&gt;|&lt;check interaval in sec&gt; = &lt;api endpoint&gt; --warning &lt;value&gt; --critical &lt;value&gt; &lt;other options&gt;</pre>
+                    <pre>&lt;hostname&gt;|&lt;servicename&gt;|&lt;check interval in sec&gt; = &lt;api endpoint&gt; --warning &lt;value&gt; --critical &lt;value&gt; &lt;other options&gt;</pre>
                     <h6>Examples</h6>
                     <table class="table table-striped console">
                         <tbody>
