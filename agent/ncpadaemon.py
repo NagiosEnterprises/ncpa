@@ -137,7 +137,7 @@ class Daemon(object):
         self.loglevel = cp.get(self.section, u'loglevel')
 
     def on_sigterm(self, signalnum, frame):
-        u"""Handle segterm by treating as a keyboard interrupt"""
+        u"""Handle sigterm by treating as a keyboard interrupt"""
         raise KeyboardInterrupt(u'SIGTERM')
 
     def add_signal_handlers(self):
