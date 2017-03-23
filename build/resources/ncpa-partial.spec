@@ -29,8 +29,6 @@ mkdir -p %{buildroot}/usr/local/ncpa/var/run
 touch %{buildroot}/usr/local/ncpa/var/ncpa.crt
 touch %{buildroot}/usr/local/ncpa/var/ncpa.key
 touch %{buildroot}/usr/local/ncpa/var/ncpa.db
-touch %{buildroot}/usr/local/ncpa/var/run/ncpa_listener.pid
-touch %{buildroot}/usr/local/ncpa/var/run/ncpa_passive.pid
 cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 
@@ -68,7 +66,6 @@ if [ "$1" == "1" ]; then
     mkitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
     mkitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
     rm -rf $RPM_INSTALL_PREFIX/ncpa/var/ncpa.*
-    rm -rf $RPM_INSTALL_PREFIX/ncpa/var/run/*
 elif [ "$1" == "2" ]; then
     chitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
     chitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
@@ -78,8 +75,22 @@ startsrc -s ncpa_listener >/dev/null 2>&1
 startsrc -s ncpa_passive >/dev/null 2>&1
 
 %preun
-stopsrc -s ncpa_listener -f >/dev/null 2>&1
-stopsrc -s ncpa_passive -f >/dev/null 2>&1
+stopsrc -s ncpa_listener >/dev/null 2>&1
+stopsrc -s ncpa_passive >/dev/null 2>&1
+
+# Make sure listener is stopped
+stopped=`lssrc -s ncpa_listener | sed -n '$p' | awk '{print $NF}'`
+while [[ "$stopped" != "inoperative" ]]; do
+    sleep 3
+    stopped=`lssrc -s ncpa_listener | sed -n '$p' | awk '{print $NF}'`
+done
+
+# Make sure passive is stopped
+stopped=`lssrc -s ncpa_passive | sed -n '$p' | awk '{print $NF}'`
+while [[ "$stopped" != "inoperative" ]]; do
+    sleep 3
+    stopped=`lssrc -s ncpa_passive | sed -n '$p' | awk '{print $NF}'`
+done
 
 rmitab "ncpa_listener"
 rmitab "ncpa_passive"
