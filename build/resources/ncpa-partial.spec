@@ -26,7 +26,6 @@ bundled version of Python.
 rm -rf %{buildroot} 
 mkdir -p %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
-mkdir -p %{buildroot}/usr/local/ncpa/etc/ncpa.cfg.d
 cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 
@@ -56,8 +55,8 @@ if [ -z $RPM_INSTALL_PREFIX ]; then
     RPM_INSTALL_PREFIX="/usr/local"
 fi
 
-mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 -f 9 -a '-n'
-mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 -a '-n'
+mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
+mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
 
 # Add entries into inittab
 if [ "$1" == "1" ]; then
@@ -84,12 +83,14 @@ rmssys -s ncpa_passive
 
 %files
 
+%defattr(0755,nagios,nagios,-)
+/usr/local/ncpa/ncpa_listener
+/usr/local/ncpa/ncpa_passive
+
 %defattr(0644,nagios,nagios,-)
 /usr/local/ncpa/*.so
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip
-/usr/local/ncpa/ncpa_listener
-/usr/local/ncpa/ncpa_passive
 
 %defattr(0755,nagios,nagios,-)
 /usr/local/ncpa/build_resources
