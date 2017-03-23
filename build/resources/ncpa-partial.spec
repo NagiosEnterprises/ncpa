@@ -26,7 +26,7 @@ bundled version of Python.
 rm -rf %{buildroot} 
 mkdir -p %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
-mkdir -p %{buildroot}/usr/local/ncpa/etc
+mkdir -p %{buildroot}/usr/local/ncpa/etc/ncpa.cfg.d
 cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 
