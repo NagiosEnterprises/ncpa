@@ -58,9 +58,6 @@ if [ -z $RPM_INSTALL_PREFIX ]; then
     RPM_INSTALL_PREFIX="/usr/local"
 fi
 
-# Fix permissions on etc directory
-chown -R nagios:nagios $RPM_INSTALL_PREFIX/ncpa/etc
-
 # Install in SRC
 mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
 mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
@@ -106,6 +103,10 @@ rmssys -s ncpa_listener >/dev/null 2>&1
 rmssys -s ncpa_passive >/dev/null 2>&1
 
 %files
+%defattr(0644,nagios,nagios,-)
+%dir /usr/local/ncpa
+%dir /usr/local/ncpa/etc
+%dir /usr/local/ncpa/etc/ncpa.cfg.d
 
 %defattr(0755,nagios,nagios,-)
 /usr/local/ncpa/ncpa_listener
