@@ -58,6 +58,10 @@ if [ -z $RPM_INSTALL_PREFIX ]; then
     RPM_INSTALL_PREFIX="/usr/local"
 fi
 
+# Fix permissions on etc directory
+chown -R nagios:nagios $RPM_INSTALL_PREFIX/ncpa/etc
+
+# Install in SRC
 mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
 mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
 
@@ -71,6 +75,7 @@ elif [ "$1" == "2" ]; then
     chitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
 fi
 
+# Start the daemons using SRC
 startsrc -s ncpa_listener >/dev/null 2>&1
 startsrc -s ncpa_passive >/dev/null 2>&1
 
@@ -92,9 +97,11 @@ while [[ "$stopped" != "inoperative" ]]; do
     stopped=`lssrc -s ncpa_passive | sed -n '$p' | awk '{print $NF}'`
 done
 
+# Remove from inittab
 rmitab "ncpa_listener"
 rmitab "ncpa_passive"
 
+# Remove from SRC
 rmssys -s ncpa_listener >/dev/null 2>&1
 rmssys -s ncpa_passive >/dev/null 2>&1
 
