@@ -19,7 +19,7 @@ FLAGS = ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
 .PHONY: build_exe build_rpm build_spec
 
 build_exe: clean
-	find $(BASEDIR) -name *.pyc -delete
+	find $(BASEDIR) -name *.pyc -exec rm -rf {} \;
 	mkdir -p $(BASEDIR)/agent/plugins
 	mkdir -p $(BASEDIR)/agent/var
 	mkdir -p $(BASEDIR)/agent/build
