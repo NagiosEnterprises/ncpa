@@ -4,7 +4,7 @@ import sqlite3
 import sys
 import server
 
-# A module to wrap sqllite3 for use with a small database to store things
+# A module to wrap sqlite3 for use with a small database to store things
 # like checks across both passive and active sections
 
 class DB(object):
