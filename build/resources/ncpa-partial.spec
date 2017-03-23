@@ -26,6 +26,9 @@ bundled version of Python.
 rm -rf %{buildroot} 
 mkdir -p %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
+touch %{buildroot}/usr/local/ncpa/var/ncpa.crt
+touch %{buildroot}/usr/local/ncpa/var/ncpa.key
+touch %{buildroot}/usr/local/ncpa/var/ncpa.db
 cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 
@@ -58,10 +61,11 @@ fi
 mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
 mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
 
-# Add entries into inittab
+# Add entries into inittab and remove blank files on install
 if [ "$1" == "1" ]; then
     mkitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
     mkitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
+    rm -rf $RPM_INSTALL_PREFIX/ncpa/var/ncpa.*
 elif [ "$1" == "2" ]; then
     chitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
     chitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
