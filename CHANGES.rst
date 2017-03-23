@@ -72,7 +72,7 @@
 - Updated web UI with modern theme with better graph styling
 - Updated self-signed SSL certs to use 2048bit RSA and sha256 signature
 - Updated unit names that were set to c that weren't actually generic counters for better graphing
-- Updated top proceses to not show Idle process on Windows and added % / rounding
+- Updated top processes to not show Idle process on Windows and added % / rounding
 - Updated default locations on fresh install for log files on windows and linux
 - Updated openssl and PyOpenSSL libraries which no longer accept SSLv2 & SSLv3
 - Updated API to round most values that had been calculated to 2 decimals including check results and perfdata
