@@ -71,9 +71,9 @@ startsrc -s ncpa_listener >/dev/null 2>&1
 startsrc -s ncpa_passive >/dev/null 2>&1
 
 %preun
-stopsrc -s ncpa_listener -f >/dev/null 2>&1
-stopsrc -s ncpa_passive -f >/dev/null 2>&1
-sleep 2
+stopsrc -s ncpa_listener >/dev/null 2>&1
+stopsrc -s ncpa_passive >/dev/null 2>&1
+sleep 5
 
 rmitab "ncpa_listener"
 rmitab "ncpa_passive"
