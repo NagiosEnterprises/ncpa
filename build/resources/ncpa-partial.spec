@@ -68,6 +68,7 @@ if [ "$1" == "1" ]; then
     mkitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
     mkitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
     rm -rf $RPM_INSTALL_PREFIX/ncpa/var/ncpa.*
+    rm -rf $RPM_INSTALL_PREFIX/ncpa/var/run/*
 elif [ "$1" == "2" ]; then
     chitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
     chitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
