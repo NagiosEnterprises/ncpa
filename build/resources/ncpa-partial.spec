@@ -79,6 +79,9 @@ sleep 2
 rmitab "ncpa_listener"
 rmitab "ncpa_passive"
 
+rmssys -s ncpa_listener
+rmssys -s ncpa_passive
+
 %files
 
 %defattr(0644,nagios,nagios,-)
