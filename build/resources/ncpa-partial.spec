@@ -38,16 +38,21 @@ installbsd -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{
 rm -rf %{buildroot}
 
 %pre
-stopsrc -s ncpa_listener
-stopsrc -s ncpa_passive
-
-if ! lsgroup nagios > /dev/null;
-then
-    mkgroup nagios
-fi
-if ! lsuser nagios > /dev/null;
-then
-    mkuser groups=nagios nagios
+if [ "$1" == "1" ]; then
+    # Install the nagios user and group on fresh install
+    if ! lsgroup nagios > /dev/null;
+    then
+        mkgroup nagios
+    fi
+    if ! lsuser nagios > /dev/null;
+    then
+        mkuser groups=nagios nagios
+    fi
+elif [ "$1" = "2" ]; then
+    # Upgrades require the daemons to be stopped
+    stopsrc -s ncpa_listener -f
+    stopsrc -s ncpa_passive -f
+    sleep 3
 fi
 
 %post
@@ -66,12 +71,12 @@ chitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
 rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
 rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
 
-startsrc -s ncpa_listener
-startsrc -s ncpa_passive
+startsrc -s ncpa_listener >/dev/null 2>&1
+startsrc -s ncpa_passive >/dev/null 2>&1
 
 %preun
-stopsrc -s ncpa_listener
-stopsrc -s ncpa_passive
+stopsrc -s ncpa_listener -f
+stopsrc -s ncpa_passive -f
 
 %files
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
