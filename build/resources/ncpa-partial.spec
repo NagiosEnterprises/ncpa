@@ -81,12 +81,14 @@ stopsrc -s ncpa_listener -f
 stopsrc -s ncpa_passive -f
 
 %files
-%config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
-%config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
-
 %defattr(0755,root,root,-)
 /etc/init.d/ncpa_listener
 /etc/init.d/ncpa_passive
 
 %defattr(0775,nagios,nagios,-)
 /usr/local/ncpa
+%exclude /usr/local/ncpa/etc/ncpa.cfg
+%exclude /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
+
+%config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
+%config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
