@@ -26,8 +26,7 @@ bundled version of Python.
 rm -rf %{buildroot} 
 mkdir -p %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
-touch %{buildroot}/usr/local/ncpa/ncpa.crt
-touch %{buildroot}/usr/local/ncpa/ncpa.key
+mkdir -p %{buildroot}/usr/local/ncpa/etc
 cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 
@@ -77,21 +76,22 @@ stopsrc -s ncpa_listener -f
 stopsrc -s ncpa_passive -f
 
 %files
-%defattr(0775,nagios,nagios,-)
 
+%defattr(0644,nagios,nagios,-)
 /usr/local/ncpa/*.so
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip
-
 /usr/local/ncpa/ncpa_listener
 /usr/local/ncpa/ncpa_passive
 
+%defattr(0755,nagios,nagios,-)
 /usr/local/ncpa/build_resources
 /usr/local/ncpa/listener
 /usr/local/ncpa/plugins
 /usr/local/ncpa/var
 
-/usr/local/ncpa/etc/ncpa.cfg.sample
-/usr/local/ncpa/etc/ncpa.cfg.d/README.txt
+%defattr(0644,nagios,nagios,-)
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
+/usr/local/ncpa/etc/ncpa.cfg.sample
+/usr/local/ncpa/etc/ncpa.cfg.d/README.txt

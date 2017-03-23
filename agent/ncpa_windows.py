@@ -157,7 +157,8 @@ class Listener(Base):
 
             if user_cert == 'adhoc':
                 basepath = self.determine_relative_filename('')
-                cert, key = listener.certificate.create_self_signed_cert(basepath, 'ncpa.crt', 'ncpa.key')
+                certpath = os.path.abspath(os.path.join(basepath, 'var'))
+                cert, key = listener.certificate.create_self_signed_cert(certpath, 'ncpa.crt', 'ncpa.key')
             else:
                 cert, key = user_cert.split(',')
 

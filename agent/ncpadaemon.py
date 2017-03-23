@@ -138,7 +138,7 @@ class Daemon(object):
 
     def on_sigterm(self, signalnum, frame):
         u"""Handle segterm by treating as a keyboard interrupt"""
-        raise KeyboardInterrupt(u'SIGTERM')
+        sys.exit(0)
 
     def add_signal_handlers(self):
         u"""Register the sigterm handler"""
