@@ -105,7 +105,7 @@ class Handler(nagioshandler.NagiosHandler):
                 if not test_config.sections():
                     raise Exception('Config contained no NCPA directives, not writing.')
         except Exception as exc:
-            logging.error("NRDS config recieved from the server contained errors: %r", exc)
+            logging.error("NRDS config received from the server contained errors: %r", exc)
             return False
 
         if nrds_response:

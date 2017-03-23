@@ -30,7 +30,7 @@ You will need to install git for windows. Then, download and install:
 
 To set up the python requirements, in `cmd.exe` clone the NCPA repo and run::
 
-	python -m pip install -r reources/requires.txt
+	python -m pip install -r resources/requires.txt
 
 
 **Set Up Linux / Mac OS X Environment**
