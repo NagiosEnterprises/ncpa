@@ -26,13 +26,10 @@ bundled version of Python.
 rm -rf %{buildroot} 
 mkdir -p %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
-mkdir -p %{buildroot}/etc/init.d/
 touch %{buildroot}/usr/local/ncpa/ncpa.crt
 touch %{buildroot}/usr/local/ncpa/ncpa.key
 cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa
-installbsd -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/listener_init %{buildroot}/etc/init.d/ncpa_listener
-installbsd -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{buildroot}/etc/init.d/ncpa_passive
 
 %clean
 rm -rf %{buildroot}
@@ -81,14 +78,21 @@ stopsrc -s ncpa_listener -f
 stopsrc -s ncpa_passive -f
 
 %files
-%defattr(0755,root,root,-)
-/etc/init.d/ncpa_listener
-/etc/init.d/ncpa_passive
-
 %defattr(0775,nagios,nagios,-)
-/usr/local/ncpa
-%exclude /usr/local/ncpa/etc/ncpa.cfg
-%exclude /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 
+/usr/local/ncpa/*.so
+/usr/local/ncpa/*.py
+/usr/local/ncpa/*.zip
+
+/usr/local/ncpa/ncpa_listener
+/usr/local/ncpa/ncpa_passive
+
+/usr/local/ncpa/build_resources
+/usr/local/ncpa/listener
+/usr/local/ncpa/plugins
+/usr/local/ncpa/var
+
+/usr/local/ncpa/etc/ncpa.cfg.sample
+/usr/local/ncpa/etc/ncpa.cfg.d/README.txt
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
