@@ -71,7 +71,7 @@ class DB(object):
         data = ()
         cmd = "SELECT COUNT(*) FROM checks"
 
-        # If we are doing a serach... append to the query
+        # If we are doing a search... append to the query
         if search != '':
             data += ("%" + search + "%",)
             cmd += " WHERE output LIKE ?"
@@ -121,7 +121,7 @@ class DB(object):
         data = ()
         cmd = "SELECT * FROM checks"
 
-        # If we are doing a serach... append to the query
+        # If we are doing a search... append to the query
         if search != '':
             data += ("%" + search + "%",)
             cmd += " WHERE output LIKE ?"
