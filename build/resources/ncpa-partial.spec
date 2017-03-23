@@ -52,7 +52,7 @@ elif [ "$1" = "2" ]; then
     # Upgrades require the daemons to be stopped
     stopsrc -s ncpa_listener -f
     stopsrc -s ncpa_passive -f
-    sleep 3
+    sleep 2
 fi
 
 %post
@@ -68,8 +68,10 @@ chitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
 chitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
 
 # Remove empty cert and key files
-rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
-rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
+if [ "$1" == "1" ]; then
+    rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
+    rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
+fi
 
 startsrc -s ncpa_listener >/dev/null 2>&1
 startsrc -s ncpa_passive >/dev/null 2>&1
