@@ -61,13 +61,12 @@ mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 
 mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 -a '-n'
 
 # Add entries into inittab
-chitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
-chitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
-
-# Remove empty cert and key files
 if [ "$1" == "1" ]; then
-    rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
-    rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
+    mkitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
+    mkitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
+elif [ "$1" == "2" ]; then
+    chitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
+    chitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
 fi
 
 startsrc -s ncpa_listener >/dev/null 2>&1
