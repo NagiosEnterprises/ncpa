@@ -80,13 +80,11 @@ startsrc -s ncpa_passive >/dev/null 2>&1
 stopsrc -s ncpa_listener -f >/dev/null 2>&1
 stopsrc -s ncpa_passive -f >/dev/null 2>&1
 
-if [ $1 -eq 0 ]; then
-    rmitab "ncpa_listener"
-    rmitab "ncpa_passive"
+rmitab "ncpa_listener"
+rmitab "ncpa_passive"
 
-    rmssys -s ncpa_listener >/dev/null 2>&1
-    rmssys -s ncpa_passive >/dev/null 2>&1
-fi
+rmssys -s ncpa_listener >/dev/null 2>&1
+rmssys -s ncpa_passive >/dev/null 2>&1
 
 %files
 
