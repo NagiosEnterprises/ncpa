@@ -103,12 +103,10 @@ rmssys -s ncpa_listener >/dev/null 2>&1
 rmssys -s ncpa_passive >/dev/null 2>&1
 
 %files
-%defattr(0644,nagios,nagios,-)
+%defattr(0755,nagios,nagios,-)
 %dir /usr/local/ncpa
 %dir /usr/local/ncpa/etc
 %dir /usr/local/ncpa/etc/ncpa.cfg.d
-
-%defattr(0755,nagios,nagios,-)
 /usr/local/ncpa/ncpa_listener
 /usr/local/ncpa/ncpa_passive
 
