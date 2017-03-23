@@ -29,6 +29,8 @@ mkdir -p %{buildroot}/usr/local/ncpa/var/run
 touch %{buildroot}/usr/local/ncpa/var/ncpa.crt
 touch %{buildroot}/usr/local/ncpa/var/ncpa.key
 touch %{buildroot}/usr/local/ncpa/var/ncpa.db
+touch %{buildroot}/usr/local/ncpa/var/run/ncpa_listener.pid
+touch %{buildroot}/usr/local/ncpa/var/run/ncpa_passive.pid
 cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 
@@ -75,15 +77,16 @@ startsrc -s ncpa_listener >/dev/null 2>&1
 startsrc -s ncpa_passive >/dev/null 2>&1
 
 %preun
-stopsrc -s ncpa_listener >/dev/null 2>&1
-stopsrc -s ncpa_passive >/dev/null 2>&1
-sleep 5
+stopsrc -s ncpa_listener -f >/dev/null 2>&1
+stopsrc -s ncpa_passive -f >/dev/null 2>&1
 
-rmitab "ncpa_listener"
-rmitab "ncpa_passive"
+if [ $1 -eq 0 ]; then
+    rmitab "ncpa_listener"
+    rmitab "ncpa_passive"
 
-rmssys -s ncpa_listener >/dev/null 2>&1
-rmssys -s ncpa_passive >/dev/null 2>&1
+    rmssys -s ncpa_listener >/dev/null 2>&1
+    rmssys -s ncpa_passive >/dev/null 2>&1
+fi
 
 %files
 
