@@ -64,17 +64,17 @@ mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa_passive -u 0 -S -n 15 -f 9 -a
 
 # Add entries into inittab and remove blank files on install
 if [ "$1" == "1" ]; then
-    mkitab "ncpa_listener:2:once:/usr/bin/startsrc -e \"LIBPATH=$RPM_INSTALL_PREFIX/ncpa\" -s ncpa_listener >/dev/null 2>&1"
-    mkitab "ncpa_passive:2:once:/usr/bin/startsrc -e \"LIBPATH=$RPM_INSTALL_PREFIX/ncpa\" -s ncpa_passive >/dev/null 2>&1"
+    mkitab "ncpa_listener:2:once:/usr/bin/startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_listener >/dev/null 2>&1"
+    mkitab "ncpa_passive:2:once:/usr/bin/startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_passive >/dev/null 2>&1"
     rm -rf $RPM_INSTALL_PREFIX/ncpa/var/ncpa.*
 elif [ "$1" == "2" ]; then
-    chitab "ncpa_listener:2:once:/usr/bin/startsrc -e \"LIBPATH=$RPM_INSTALL_PREFIX/ncpa\" -s ncpa_listener >/dev/null 2>&1"
-    chitab "ncpa_passive:2:once:/usr/bin/startsrc -e \"LIBPATH=$RPM_INSTALL_PREFIX/ncpa\" -s ncpa_passive >/dev/null 2>&1"
+    chitab "ncpa_listener:2:once:/usr/bin/startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_listener >/dev/null 2>&1"
+    chitab "ncpa_passive:2:once:/usr/bin/startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_passive >/dev/null 2>&1"
 fi
 
 # Start the daemons using SRC
-startsrc -e "LIBPATH=$RPM_INSTALL_PREFIX/ncpa" -s ncpa_listener >/dev/null 2>&1
-startsrc -e "LIBPATH=$RPM_INSTALL_PREFIX/ncpa" -s ncpa_passive >/dev/null 2>&1
+startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_listener >/dev/null 2>&1
+startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_passive >/dev/null 2>&1
 
 %preun
 stopsrc -s ncpa_listener >/dev/null 2>&1
