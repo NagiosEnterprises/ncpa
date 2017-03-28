@@ -58,9 +58,12 @@ if [ -z $RPM_INSTALL_PREFIX ]; then
     RPM_INSTALL_PREFIX="/usr/local"
 fi
 
+# Replace libpath to be the ncpa basedir
+sed -i s/__PREFIX__/$RPM_INSTALL_PREFIX/g $RPM_INSTALL_PREFIX/ncpa/manager
+
 # Install in SRC
-mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
-mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
+mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/manager -u 0 -S -n 15 -f 9 -a 'listener' >/dev/null 2>&1
+mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/manager -u 0 -S -n 15 -f 9 -a 'passive' >/dev/null 2>&1
 
 # Add entries into inittab and remove blank files on install
 if [ "$1" == "1" ]; then
@@ -109,6 +112,7 @@ rmssys -s ncpa_passive >/dev/null 2>&1
 %dir /usr/local/ncpa/etc/ncpa.cfg.d
 /usr/local/ncpa/ncpa_listener
 /usr/local/ncpa/ncpa_passive
+/usr/local/ncpa/manager
 
 %defattr(0644,nagios,nagios,-)
 /usr/local/ncpa/*.so

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+BASEDIR=__PREFIX__/ncpa
+LIBPATH=$BASEDIR
+
+srv=$1
+
+# Start the ncpa agent process
+
+if [ "$srv" == "listener" ]; then
+	$BASEDIR/ncpa_listener -n
+elif [ "$srv" == "passive" ]; then
+	$BASEDIR/ncpa_passive -n
+else
+	echo "Must be listener or passive service"
+	exit 1;
+fi
