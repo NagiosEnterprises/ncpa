@@ -32,9 +32,9 @@ bin_includes = ['libffi.so']
 
 # Special includes for AIX systems
 if 'aix' in sys.platform:
-    bin_includes += ['libsqlite3.a']
     include_files += [('manager', 'manager'),
-                      ('/opt/freeware/lib/python2.7/config/libpython2.7.so', 'libpython2.7.so')]
+                      ('/opt/freeware/lib/python2.7/config/libpython2.7.so', 'libpython2.7.so'),
+                      ('/opt/freeware/lib/libsqlite3.a', 'libsqlite3.a')]
 
 include_files += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                   ('build_resources/ncpa_listener.plist', 'build_resources/ncpa_listener.plist'),
