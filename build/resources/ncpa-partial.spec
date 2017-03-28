@@ -59,7 +59,7 @@ if [ -z $RPM_INSTALL_PREFIX ]; then
 fi
 
 # Replace libpath to be the ncpa basedir
-sed -i s/__PREFIX__/$RPM_INSTALL_PREFIX/g $RPM_INSTALL_PREFIX/ncpa/manager
+sed "s/__PREFIX__/$RPM_INSTALL_PREFIX/g" $RPM_INSTALL_PREFIX/ncpa/manager >$RPM_INSTALL_PREFIX/ncpa/manager
 
 # Install in SRC
 mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/manager -u 0 -S -n 15 -f 9 -a 'listener' >/dev/null 2>&1
