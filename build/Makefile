@@ -3,7 +3,7 @@ PYTHONBIN = /usr/bin/python2.7
 NCPAVER = 2.0.3
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = /tmp/test/usr/src/redhat
-BASEDIR = /tmp/test//ncpa
+BASEDIR = /tmp/test/ncpa
 
 FLAGS = ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
 
