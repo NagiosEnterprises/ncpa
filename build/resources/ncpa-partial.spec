@@ -58,12 +58,11 @@ if [ -z $RPM_INSTALL_PREFIX ]; then
     RPM_INSTALL_PREFIX="/usr/local"
 fi
 
-# Install in SRC
-mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
-mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
-
-# Add entries into inittab and remove blank files on install
+# Install/update SRC and add entries into inittab and remove blank files on install
 if [ "$1" == "1" ]; then
+    mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
+    mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
+
     mkitab "ncpa_listener:2:once:/usr/bin/startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_listener >/dev/null 2>&1"
     mkitab "ncpa_passive:2:once:/usr/bin/startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_passive >/dev/null 2>&1"
     rm -rf $RPM_INSTALL_PREFIX/ncpa/var/ncpa.*
