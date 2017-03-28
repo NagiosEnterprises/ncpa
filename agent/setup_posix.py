@@ -32,7 +32,7 @@ bin_includes = ['libffi.so']
 
 # Special includes for AIX systems
 if 'aix' in sys.platform:
-    bin_includes += ['libsqlite3.so']
+    bin_includes += ['libsqlite3.a']
     include_files += [('manager', 'manager'),
                       ('/opt/freeware/lib/python2.7/config/libpython2.7.so', 'libpython2.7.so')]
 
