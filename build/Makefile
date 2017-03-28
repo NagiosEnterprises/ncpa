@@ -2,17 +2,8 @@ PYTHONVER = python2.7
 PYTHONBIN = /usr/bin/python2.7
 NCPAVER = 2.0.3
 INSTALLTARGET = /usr/local/ncpa/
-BUILDROOT = /usr/src/redhat
-
-# Full path of the last Makefile make read. We haven't included other files, so that's us.
-makefile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-
-# Makefile's parent directory with no trailing slash (something like: .../ncpa/build).
-makefile_dir := $(patsubst %/,%,$(dir $(makefile_path)))
-
-# The NCPA directory is the Makefiile's grandparent.
-#BASEDIR = $(patsubst %/,%,$(dir $(makefile_dir)))
-BASEDIR = /home/nagios/ncpa
+BUILDROOT = /tmp/test/usr/src/redhat
+BASEDIR = /tmp/test//ncpa
 
 FLAGS = ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
 
@@ -59,5 +50,5 @@ build_rpm: build_spec
 	/bin/cp ncpa-$(NCPAVER).tar.gz $(BUILDROOT)/SOURCES/
 	rm -f $(BUILDROOT)/SPECS/ncpa.spec
 	/bin/cp -f ncpa.spec $(BUILDROOT)/SPECS/
-	rpm -bb --define '_topdir /usr/src/redhat' $(BUILDROOT)/SPECS/ncpa.spec
+	rpm -bb --define '_topdir $(BUILDROOT)' $(BUILDROOT)/SPECS/ncpa.spec
 	find $(BUILDROOT)/RPMS -name 'ncpa-$(NCPAVER)*' -exec cp {} . \;
