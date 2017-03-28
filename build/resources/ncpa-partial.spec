@@ -59,8 +59,8 @@ if [ -z $RPM_INSTALL_PREFIX ]; then
 fi
 
 # Install in SRC
-mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa_listener -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
-mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa_passive -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
+mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
+mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
 
 # Add entries into inittab and remove blank files on install
 if [ "$1" == "1" ]; then
