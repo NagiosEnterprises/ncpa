@@ -59,7 +59,9 @@ if [ -z $RPM_INSTALL_PREFIX ]; then
 fi
 
 # Replace libpath to be the ncpa basedir
-sed "s#__PREFIX__#$RPM_INSTALL_PREFIX#g" $RPM_INSTALL_PREFIX/ncpa/manager >$RPM_INSTALL_PREFIX/ncpa/manager
+sed "s#__PREFIX__#$RPM_INSTALL_PREFIX#g" $RPM_INSTALL_PREFIX/ncpa/manager > $RPM_INSTALL_PREFIX/ncpa/tmp
+mv $RPM_INSTALL_PREFIX/ncpa/tmp $RPM_INSTALL_PREFIX/ncpa/manager
+chmod 755 $RPM_INSTALL_PREFIX/ncpa/manager
 
 # Install in SRC
 mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/manager -u 0 -S -n 15 -f 9 -a 'listener' >/dev/null 2>&1
@@ -115,6 +117,7 @@ rmssys -s ncpa_passive >/dev/null 2>&1
 /usr/local/ncpa/manager
 
 %defattr(0644,nagios,nagios,-)
+/usr/local/ncpa/*.a
 /usr/local/ncpa/*.so
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip
