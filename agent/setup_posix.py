@@ -28,15 +28,12 @@ excludes = ['Tkinter','tkinter']
 packages = []
 
 # Shared library include overrides
-bin_includes = ['libffi.so']
+bin_includes = ['libffi.so', 'libcrypto.so', 'libssl.so']
 
 # Special includes for AIX systems
 if 'aix' in sys.platform:
     include_files += [('/opt/freeware/lib/python2.7/config/libpython2.7.so', 'libpython2.7.so'),
-                      ('/opt/freeware/lib/libsqlite3.a', 'libsqlite3.a'),
-                      ('/opt/freeware/lib/libssl.so', 'libssl.so'),
-                      ('/opt/freeware/lib/libcrypto.so', 'libcrypto.so'),
-                      ('/opt/freeware/lib/libcrypto.a', 'libcrypto.a')]
+                      ('/opt/freeware/lib/libsqlite3.a', 'libsqlite3.a')]
 
 include_files += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                   ('build_resources/ncpa_listener.plist', 'build_resources/ncpa_listener.plist'),
