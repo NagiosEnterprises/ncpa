@@ -36,6 +36,7 @@ if 'aix' in sys.platform:
                       ('/opt/freeware/lib/libsqlite3.a', 'libsqlite3.a'),
                       ('/opt/freeware/lib/libssl.so', 'libssl.so'),
                       ('/opt/freeware/lib/libcrypto.so', 'libcrypto.so'),
+                      ('/opt/freeware/lib/libcrypto.a', 'libcrypto.a'),
                       ('/opt/freeware/lib/libffi.so.6', 'libffi.so')]
 
 include_files += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
