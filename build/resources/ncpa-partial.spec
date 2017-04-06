@@ -76,22 +76,25 @@ startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_listener >/dev/null 2>&1
 startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_passive >/dev/null 2>&1
 
 %preun
-stopsrc -s ncpa_listener >/dev/null 2>&1
-stopsrc -s ncpa_passive >/dev/null 2>&1
+# Only stop on actual uninstall not upgrades
+if [ "$1" != "1" ]; then
+    stopsrc -s ncpa_listener >/dev/null 2>&1
+    stopsrc -s ncpa_passive >/dev/null 2>&1
 
-# Make sure listener is stopped
-stopped=`lssrc -s ncpa_listener | sed -n '$p' | awk '{print $NF}'`
-while [[ "$stopped" != "inoperative" ]]; do
-    sleep 3
+    # Make sure listener is stopped
     stopped=`lssrc -s ncpa_listener | sed -n '$p' | awk '{print $NF}'`
-done
+    while [[ "$stopped" != "inoperative" ]]; do
+        sleep 3
+        stopped=`lssrc -s ncpa_listener | sed -n '$p' | awk '{print $NF}'`
+    done
 
-# Make sure passive is stopped
-stopped=`lssrc -s ncpa_passive | sed -n '$p' | awk '{print $NF}'`
-while [[ "$stopped" != "inoperative" ]]; do
-    sleep 3
+    # Make sure passive is stopped
     stopped=`lssrc -s ncpa_passive | sed -n '$p' | awk '{print $NF}'`
-done
+    while [[ "$stopped" != "inoperative" ]]; do
+        sleep 3
+        stopped=`lssrc -s ncpa_passive | sed -n '$p' | awk '{print $NF}'`
+    done
+fi
 
 # Remove from inittab
 rmitab "ncpa_listener"
