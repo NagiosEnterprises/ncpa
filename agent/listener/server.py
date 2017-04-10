@@ -933,6 +933,7 @@ def api(accessor=''):
         value = node.walk(**sane_args)
 
     # Generate page and add cross-domain loading
-    response = Response(json.dumps(dict(value), indent=None if request.is_xhr else 4), mimetype='application/json')
+    response = Response(json.dumps(dict(value), ensure_ascii=False,
+                        indent=None if request.is_xhr else 4), mimetype='application/json')
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response

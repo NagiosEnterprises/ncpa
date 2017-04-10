@@ -4,6 +4,7 @@
 2.0.4 - ??/??/2017
 ==================
 - Fixed admin login page redirecting to "admin/config" which does not exists
+- Fixed some JSON encoding errors from happening when utf-8 cannot decode properly
 
 2.0.3 - 03/17/2017
 ==================
