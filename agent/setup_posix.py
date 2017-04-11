@@ -37,7 +37,8 @@ if 'aix' in sys.platform:
                       ('/opt/freeware/lib/libssl.so', 'libssl.so'),
                       ('/opt/freeware/lib/libcrypto.so', 'libcrypto.so'),
                       ('/opt/freeware/lib/libcrypto.a', 'libcrypto.a'),
-                      ('/opt/freeware/lib/libffi.a', 'libffi.a')]
+                      ('/opt/freeware/lib/libffi.a', 'libffi.a'),
+                      ('/opt/freeware/lib/libgcc_s.a', 'libgcc_s.a')]
 
 include_files += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                   ('build_resources/ncpa_listener.plist', 'build_resources/ncpa_listener.plist'),
