@@ -247,7 +247,9 @@ class ServiceNode(nodes.LazyNode):
 
         for line in status.readlines():
             line.rstrip()
-            sub, group, pid, status = re.split('\s+', line, 4)
+            ls = re.split('\s+', line, 4)
+            sub = ls[0]
+            status = ls[-1]
             if status == 'active':
                 services[sub] = 'running'
             elif status == 'inoperative':
