@@ -246,8 +246,7 @@ class ServiceNode(nodes.LazyNode):
         status.readline()
 
         for line in status.readlines():
-            line.rstrip()
-            ls = re.split('\s+', line, 4)
+            ls = line.split()
             sub = ls[0]
             status = ls[-1]
             if status == 'active':
