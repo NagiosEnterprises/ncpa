@@ -10,6 +10,7 @@ import psutil
 import server
 import database
 import time
+import logging
 from stat import ST_MODE,S_IXUSR,S_IXGRP,S_IXOTH
 
 def filter_services(m):
@@ -69,6 +70,8 @@ class ServiceNode(nodes.LazyNode):
             return self.get_services_via_psutil
         elif uname == 'Darwin':
             return self.get_services_via_launchctl
+        elif uname == 'AIX':
+            return self.get_services_via_lssrc
         else:
 
             # look for systemd
@@ -228,6 +231,30 @@ class ServiceNode(nodes.LazyNode):
             services[service] = status
 
         devnull.close()
+        return services
+
+    # AIX-specific list services section
+    @filter_services
+    def get_services_via_lssrc(self, *args, **kwargs):
+        services = {}
+        status = tempfile.TemporaryFile()
+        service = subprocess.Popen(['lssrc', '-a'], stdout=status)
+        service.wait()
+        status.seek(0)
+
+        # The first line is the header
+        status.readline()
+
+        for line in status.readlines():
+            line.rstrip()
+            sub, group, pid, status = re.split('\s+', line, 4)
+            if status == 'active':
+                services[sub] = 'running'
+            elif status == 'inoperative':
+                services[sub] = 'stopped'
+            else:
+                services[sub] = 'unknown'
+
         return services
 
     def walk(self, *args, **kwargs):
