@@ -8,6 +8,7 @@
 - Added a new config option (run_with_sudo) to the [plugin directives] section to prepend the sudo command
 - Added shell script to uninstall NCPA on Mac OS X by running "sudo /usr/local/ncpa/uninstall.sh"
 - Added /IP and /PORT to silent install options for the Windows installer
+- Added LD_LIBRARY_PATH to ncpa init scripts and include libssl and libcrypto so we have the latest OpenSSL libraries
 
 2.0.2 - 01/19/2017
 ==================
