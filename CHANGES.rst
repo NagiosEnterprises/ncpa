@@ -6,6 +6,7 @@
 - Fixed admin login page redirecting to "admin/config" which does not exists
 - Fixed some JSON encoding errors from happening when utf-8 cannot decode properly
 - Fixed issue with missing logging import in services.py
+- Fixed upgrade issue where NCPA services would be stopped after upgrade (will start working after 2.0.4)
 
 2.0.3 - 03/17/2017
 ==================
