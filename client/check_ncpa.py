@@ -43,7 +43,7 @@ import shlex
 import re
 import signal
 
-__VERSION__ = '1.1.0'
+__VERSION__ = '1.1.1'
 
 def pretty(d, indent=0, indenter=' ' * 4):
     info_str = ''
@@ -198,13 +198,17 @@ def get_arguments_from_options(options, **kwargs):
         arguments['check'] = 1
         arguments['unit'] = options.unit
 
+    args = list((k, v) for k, v in list(arguments.items()) if v is not None)
+
+    # Get the options (comma separated)
     if options.queryargs:
         for argument in options.queryargs.split(','):
             key, value = argument.split('=')
-            arguments[key] = value
+            if value is not None:
+                args.append((key, value))
 
     #~ Encode the items in the dictionary that are not None
-    return urlencode(dict((k, v) for k, v in list(arguments.items()) if v is not None))
+    return urlencode(args)
 
 
 def get_json(options):
