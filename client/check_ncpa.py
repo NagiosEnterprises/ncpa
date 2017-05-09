@@ -43,18 +43,8 @@ import shlex
 import re
 import signal
 
-__VERSION__ = '1.1.1'
 
-def pretty(d, indent=0, indenter=' ' * 4):
-    info_str = ''
-    for key, value in list(d.items()):
-        info_str += indenter * indent + str(key)
-        if isinstance(value, dict):
-            info_str += '/\n'
-            info_str += pretty(value, indent + 1, indenter)
-        else:
-            info_str += ': ' + str(value) + '\n'
-    return info_str
+__VERSION__ = '1.1.1'
 
 
 def parse_args():
@@ -254,7 +244,7 @@ def show_list(info_json):
     """Show the list of available options.
 
     """
-    return pretty(info_json), 0
+    return json.dumps(info_json, indent=4), 0
 
 
 def timeout_handler(threshold):
