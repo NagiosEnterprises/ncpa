@@ -113,7 +113,7 @@ class ProcessNode(nodes.LazyNode):
                     else:
                         comp.append(False)
                 else:
-                    if process['exe'].lower() in exe.lower():
+                    if process['exe'].lower() == exe.lower():
                         comp.append(True)
                     else:
                         comp.append(False)
@@ -130,7 +130,7 @@ class ProcessNode(nodes.LazyNode):
                     else:
                         comp.append(False)
                 else:
-                    if process['name'].lower() in name.lower():
+                    if process['name'].lower() == name.lower():
                         comp.append(True)
                     else:
                         comp.append(False)
