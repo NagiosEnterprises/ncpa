@@ -18,7 +18,7 @@ class DB(object):
 
     # Connect to the NCPA database
     def connect(self):
-        self.conn = sqlite3.connect(self.dbfile)
+        self.conn = sqlite3.connect(self.dbfile, timeout=30)
         self.cursor = self.conn.cursor()
 
     def get_cursor(self):
