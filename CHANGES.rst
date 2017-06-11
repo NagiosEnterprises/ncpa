@@ -9,6 +9,7 @@
 - Fixed upgrade issue where NCPA services would be stopped after upgrade (will start working after 2.0.4)
 - Fixed issue in windows logging module where an infinite loop could be triggered based on logged_after time frame
 - Fixed sqlite db timeout only being 5 seconds
+- Fixed issue where initctl would override sysv initd script statuses for services
 
 2.0.3 - 03/17/2017
 ==================
