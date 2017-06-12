@@ -374,6 +374,7 @@ Section ""
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --install ncpapassive'
     nsExec::Exec '$9 /c sc config ncpalistener start= delayed-auto'
     nsExec::Exec '$9 /c sc config ncpapassive start= delayed-auto'
+    nsExec::Exec '$9 /c netsh advfirewall firewall add rule name="NCPA" dir=in|out action=allow protocol=TCP localport=${bind_port}'
     ${EndIf}
 
     ; Start the listener and passive services
