@@ -670,9 +670,11 @@ function generate_url(skip_settings=false) {
         }
 
         // Check for status if services
-        var status = $('.status').val();
-        if (status) {
-            extra += '&status=' + status;
+        if (module == 'services') {
+            var status = $('.status').val();
+            if (status) {
+                extra += '&status=' + status;
+            }
         }
     }
 
@@ -731,7 +733,17 @@ function set_log_timeframe_size() {
 function generate_active_check() {
     var module = $('#module').val();
     $('.active-check-out').html('...');
-    var active = "./check_ncpa.py -H &lt;ncpa server&gt; -t '&lt;your token&gt;'";
+
+    // Grab the hostname
+    var host = $(location).attr('hostname');
+    var port = $(location).attr('port');
+
+    // Create the check base
+    var active = "./check_ncpa.py -H " + host;
+    if (port != 5693) {
+        active += ' -P ' + port;
+    }
+    active += " -t '&lt;your token&gt;'";
 
     // Run the active checck and get the result
     var url = generate_url();
@@ -775,9 +787,30 @@ function generate_active_check() {
             });
 
             // Add match type and status
-            var status = $('.status').val();
-            var match = $('.match').val();
+            var status = $('select.status').val();
+            var match = $('select.match').val();
             if (status) { q.push('status=' + status); }
+            if (match) { q.push('match=' + match); }
+
+            active += " -q '" + q.join(',') + "'";
+            break;
+
+        case 'processes':
+            q = [];
+
+            // Add filters
+            $('.proc-filters .filter-group').each(function() {
+                var name = $(this).find('.filter-name').val();
+                var value = $(this).find('.filter-text').val();
+                if (value) {
+                    q.push(name + '=' + value);
+                }
+            });
+
+            // Add match type
+            var combiner = $('select.combiner').val();
+            var match = $('select.match').val();
+            if (combiner) { q.push('combiner=' + combiner); }
             if (match) { q.push('match=' + match); }
 
             active += " -q '" + q.join(',') + "'";

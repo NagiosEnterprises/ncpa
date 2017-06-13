@@ -3,6 +3,7 @@
 
 2.0.4 - 06/??/2017
 ==================
+- Updated the API browser to grab your current hostname and port from the URL to show better active check output
 - Updated processes API endpoint to properly also show full command with arguments
 - Fixed admin login page redirecting to "admin/config" which does not exists
 - Fixed some JSON encoding errors from happening when utf-8 cannot decode properly
