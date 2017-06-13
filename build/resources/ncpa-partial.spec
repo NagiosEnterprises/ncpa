@@ -26,6 +26,7 @@ bundled version of Python.
 rm -rf %{buildroot} 
 mkdir -p %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
+mkdir -p %{buildroot}/etc/init.d
 touch %{buildroot}/usr/local/ncpa/var/ncpa.crt
 touch %{buildroot}/usr/local/ncpa/var/ncpa.key
 touch %{buildroot}/usr/local/ncpa/var/ncpa.db
@@ -80,8 +81,12 @@ sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_listener
 sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_passive
 
 # Remove empty cert and key files
-rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
-rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
+if [ -f $RPM_INSTALL_PREFIX/ncpa/ncpa.crt ]; then
+    rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
+fi
+if [ -f $RPM_INSTALL_PREFIX/ncpa/ncpa.key ]; then
+    rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
+fi
 
 if [ `command -v systemctl` ]; then
     systemctl daemon-reload
@@ -105,25 +110,25 @@ if [ "$1" != "1" ]; then
 fi
 
 %files
-%defattr(0755,nagios,nagios,-)
+%defattr(0755,nagios,nagios,0755)
 %dir /usr/local/ncpa
 %dir /usr/local/ncpa/etc
 %dir /usr/local/ncpa/etc/ncpa.cfg.d
 /usr/local/ncpa/ncpa_listener
 /usr/local/ncpa/ncpa_passive
+/etc/init.d/ncpa_listener
+/etc/init.d/ncpa_passive
 
-%defattr(0644,nagios,nagios,-)
-/usr/local/ncpa/*.so
+%defattr(0644,nagios,nagios,0755)
+/usr/local/ncpa/*.so*
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip
-
-%defattr(0755,nagios,nagios,-)
 /usr/local/ncpa/build_resources
 /usr/local/ncpa/listener
 /usr/local/ncpa/plugins
 /usr/local/ncpa/var
 
-%defattr(0644,nagios,nagios,-)
+%defattr(0644,nagios,nagios,0755)
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
