@@ -1,8 +1,9 @@
 ﻿Changelog
 +++++++++
 
-2.0.4 - ??/??/2017
+2.0.4 - 06/??/2017
 ==================
+- Updated processes API endpoint to properly also show full command with arguments
 - Fixed admin login page redirecting to "admin/config" which does not exists
 - Fixed some JSON encoding errors from happening when utf-8 cannot decode properly
 - Fixed issue with missing logging import in services.py
@@ -10,6 +11,8 @@
 - Fixed issue in windows logging module where an infinite loop could be triggered based on logged_after time frame
 - Fixed sqlite db timeout only being 5 seconds
 - Fixed issue where initctl would override sysv initd script statuses for services
+- Fixed file permissions on Linux with an updated .spec file
+- Fixed match argument to be set when showing examples of active or passive check definitions from the GUI
 
 2.0.3 - 03/17/2017
 ==================
