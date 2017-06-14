@@ -473,7 +473,7 @@ function add_argument() {
     $('.arguments .list').append(arg);
 }
 
-function get_api_endpoints() {
+function get_api_endpoints(no_forward_slash=false) {
     var api = '';
 
     // Add module to api call
@@ -481,7 +481,12 @@ function get_api_endpoints() {
     if (module == '') {
         return api;
     }
-    api += '/' + module;
+
+    if (!no_forward_slash) {
+        api += '/';
+    }
+
+    api += module;
 
     // Add in any submodules there are
     var submodule = '';
@@ -527,15 +532,22 @@ function get_api_endpoints() {
     return api;
 }
 
-function generate_url(skip_settings=false) {
+function generate_url(skip_settings=false, use_for_pcheck=false) {
     var module = $('#module').val();
+
     var api = window.location.protocol + '//' + window.location.hostname;
     if (window.location.port) {
         api += ':' + window.location.port;
     }
-    api += '/api';
 
+    api += '/api';
     api += get_api_endpoints(); 
+
+    // Clear the api url if we are going to use this for the
+    // passive check section below
+    if (use_for_pcheck) {
+        api = get_api_endpoints(true);
+    }
 
     if (skip_settings) {
         return api;
@@ -656,8 +668,11 @@ function generate_url(skip_settings=false) {
 
     // Grab check settings
     if ($('.check').is(':checked')) {
-        if (extra) { extra += '&'; }
-        extra += 'check=true';
+
+        if (!use_for_pcheck) {
+            if (extra) { extra += '&'; }
+            extra += 'check=true';
+        }
 
         // Do warning / critical checks
         var warn = $('.warn').val();
@@ -822,25 +837,35 @@ function generate_active_check() {
 }
 
 function generate_passive_check() {
+    var module = $('#module').val();
     var passive = '%HOSTNAME%|&lt;service name&gt; = ';
 
-    // Get the values that we need to make the passive check definition
-    var api = get_api_endpoints();
-    passive += api;
+    // Use the URL passive check type for services, processes, and plugins
+    if (module == "services" || module == "processes" || module == "plugins") {
 
-    var warn = $('.warn').val();
-    var crit = $('.crit').val();
-    if (warn) { passive += ' --warning ' + warn; }
-    if (crit) { passive += ' --critical ' + crit; }
+        passive += generate_url(false, true);
 
-    var aggregate = $('.aggregate').val();
-    var units = $('.units').val();
-    var unit = $('.unit').val();
-    var delta = $('.delta').is(':checked');
-    if (aggregate) { passive += ' --aggregate ' + aggregate; }
-    if (units) { passive += ' --units ' + units; }
-    if (unit) { passive += ' --unit ' + unit; }
-    if (delta) { passive += ' --delta 1'; }
+    } else {
+
+        // Get the values that we need to make the passive check definition
+        var api = get_api_endpoints();
+        passive += api;
+
+        var warn = $('.warn').val();
+        var crit = $('.crit').val();
+        if (warn) { passive += ' --warning ' + warn; }
+        if (crit) { passive += ' --critical ' + crit; }
+
+        var aggregate = $('.aggregate').val();
+        var units = $('.units').val();
+        var unit = $('.unit').val();
+        var delta = $('.delta').is(':checked');
+        if (aggregate) { passive += ' --aggregate ' + aggregate; }
+        if (units) { passive += ' --units ' + units; }
+        if (unit) { passive += ' --unit ' + unit; }
+        if (delta) { passive += ' --delta 1'; }
+
+    }
 
     $('.passive-check-val').html(passive);
 }

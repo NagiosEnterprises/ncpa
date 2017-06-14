@@ -14,6 +14,7 @@
 - Fixed issue where initctl would override sysv initd script statuses for services
 - Fixed file permissions on Linux with an updated .spec file
 - Fixed match argument to be set when showing examples of active or passive check definitions from the GUI
+- Fixed passive check definition for processes, services, and plugins endpoints
 
 2.0.3 - 03/17/2017
 ==================
