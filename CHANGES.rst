@@ -5,6 +5,7 @@
 ==================
 - Updated the API browser to grab your current hostname and port from the URL to show better active check output
 - Updated processes API endpoint to properly also show full command with arguments
+- Updated Windows installer to open incoming port in firewall for the port specified during install
 - Fixed admin login page redirecting to "admin/config" which does not exists
 - Fixed some JSON encoding errors from happening when utf-8 cannot decode properly
 - Fixed issue with missing logging import in services.py

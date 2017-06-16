@@ -366,7 +366,7 @@ Section ""
  
     WriteUninstaller $INSTDIR\uninstall.exe
 	
-	!define PORT $bind_port
+    !define PORT $bind_port
   
     ; Install the service on new install
     ${If} $installed == "0"
@@ -377,7 +377,6 @@ Section ""
     nsExec::Exec '$9 /c sc config ncpalistener start= delayed-auto'
     nsExec::Exec '$9 /c sc config ncpapassive start= delayed-auto'
     nsExec::Exec '$9 /c netsh advfirewall firewall add rule name="NCPA" dir=in action=allow protocol=TCP localport=${PORT}'
-	nsExec::Exec '$9 /c netsh advfirewall firewall add rule name="NCPA" dir=out action=allow protocol=TCP localport=${PORT}'
     ${EndIf}
 
     ; Start the listener and passive services
