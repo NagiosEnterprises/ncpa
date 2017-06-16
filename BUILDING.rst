@@ -21,6 +21,7 @@ Prerequisites
 * `NSIS 3 <http://nsis.sourceforge.net/Download>`_ *Requires admin rights*
 
 **Python Packages**
+
 * pip (installed by default in Python 2.7 for Windows)
 * gevent-websocket (patched)
 * cx_Freeze (patched)
@@ -91,22 +92,16 @@ Set these variables by running::
   set pydir=C:\Python27
   set openssldir=C:\OpenSSL-Win32
 
-Run the Pre-Build Script
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-Run win_build_setup.bat located in build/scripts. You should see some packages
-installed by pip then a message saying "to build ncpa: python build\build_windows.py".
-
 Install the Last Modules
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Install the full list of python modules
 	
-	"%pydir%" -m pip install pypiwin32 psutil requests Jinja2 flask werkzeug docutils pyOpenSSL gevent cffi appdirs packaging
+  "%pydir%" -m pip install pypiwin32 psutil requests Jinja2 flask werkzeug docutils pyOpenSSL gevent cffi appdirs packaging
 
 * cx_Logging (http://cx-logging.sourceforge.net/)
 
-	* Install the python 2.7 version of cx_Logging for Windows via the .msi
+  * Install the python 2.7 version of cx_Logging for Windows via the .msi
 
 * cx_Freeze (patched)
 
@@ -121,13 +116,14 @@ Install the Last Modules
   
       ncpa\build\resources\gevent-websocket-0.9.5-patched.tar.gz
       "%pydir%\python" gevent-websocket-0.9.5\setup.py install
-	  
+
 Build NCPA
 ~~~~~~~~~~
 
 Run the build script::
 
   "%pydir%\python" build\build_windows.py
+
 
 Building on Linux
 =================
