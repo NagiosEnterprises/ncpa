@@ -355,9 +355,9 @@
                                 <p>The disk module is fairly large and one of the few modules to have combined check results for multiple nodes inside the disk/logical node. The disk module shows mount information, logical partition usage, and physical disk statistics through three main nodes shown below:</p>
                                 <p>
                                     <ul>
-                                        <li style="padding-bottom: 0.5rem;"><code>disk/mount</code> - Will return information on all mounted devices.</li>
-                                        <li style="padding-bottom: 0.5rem;"><code>disk/logical</code> - Information on each partition or drive. <em>Remember all \ and / must be represented as |.</em></li>
-                                        <li><code>disk/physical</code> - Hardware related drive information.</li>
+                                        <li style="padding-bottom: 0.5rem;"><code>disk/mount</code> - Information on mounted devices that are not disks.</li>
+                                        <li style="padding-bottom: 0.5rem;"><code>disk/logical</code> - Information on each mounted disk partition. <em>Remember all \ and / must be represented as |.</em></li>
+                                        <li><code>disk/physical</code> - Each physical drive's hardware stats and information.</li>
                                     </ul>
                                 </p>
                             </div>
