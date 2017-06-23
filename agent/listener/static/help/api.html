@@ -34,7 +34,7 @@
 
                 <h1>API Reference</h1>
                 
-                <p>The core of NCPA is the API, which works the same accross all platforms. It was designed to make it easy for administrators to set-up checks, troubleshoot problems, test checks, while still being flexible. This section covers how the API works with individual references for each module. Some of the extended nodes are specific to an operating system, but the standard nodes are available on any platform.</p>
+                <p>The core of NCPA is the API, which works the same across all platforms. It was designed to make it easy for administrators to set-up checks, troubleshoot problems, test checks, while still being flexible. This section covers how the API works with individual references for each module. Some of the extended nodes are specific to an operating system, but the standard nodes are available on any platform.</p>
 
                 <a name="api-overview"></a>
                 <div class="section">
@@ -43,11 +43,11 @@
                     <div class="container-fluid">
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-6">
-                                <p>The API is constructed in a way that allows users to easily follow the hirearchy down, creating a URL that will access specific requested data.</p>
+                                <p>The API is constructed in a way that allows users to easily follow the hierarchy down, creating a URL that will access specific requested data.</p>
                                 <p>In the example of this systems API return we see what we call <em>nodes</em>. Each node is a specific part of the API that gets specific data and functions a certain way. These are also sometimes referred to as <em>API endpoints</em> when farther down the list, when we have reached the end of a node.</p>
                                 <p>Open up your web browser, and navigate to the URL below, replacing <em>localhost:5693</em> with your NCPA server hostname/IP and port or if you're reading this inside NCPA, you can look at the box.</p>
                                 <pre>https://localhost:5693/api?token=mytoken</pre>
-                                <p>The API is fromatted as JSON. If you're used to interacting with APIs, this shouldn't be too much of a surprise. However, something unique to NCPA is the way the API is accessed.</p>
+                                <p>The API is formatted as JSON. If you're used to interacting with APIs, this shouldn't be too much of a surprise. However, something unique to NCPA is the way the API is accessed.</p>
                                 <p>NCPA is structured with a set of base modules and each module has nodes. The nodes end up forming a URL, which is used to get data about that specific item or to run a check on that specific item's data.</p>
                                 <p>Take a look at how an API call is formatted by hovering over each section:</p>
                                 <pre style="cursor: default;"><span class="tt-bind" title="API URL">https://localhost:5693/api</span>  /  <span class="tt-bind" title="Module"><b>memory</b></span>  /  <span class="tt-bind" title="Nodes"><b>virtual/total</b></span>  ?  <span class="tt-bind" title="Extra URL GET parameters"><b>token=mytoken</b></span></pre>
@@ -65,7 +65,7 @@
                 <div class="section">
                 
                     <h2>Standard Parameters</h2>
-                    <p>Accessing the API is just the starting point, there are set parameters that can be used on all modules and nodes. There are also some parameters, such as <code>delta</code> that are only available on certain nodes. The API reference at the end of this document explains the parameters that are abailable for use.</p>
+                    <p>Accessing the API is just the starting point, there are set parameters that can be used on all modules and nodes. There are also some parameters, such as <code>delta</code> that are only available on certain nodes. The API reference at the end of this document explains the parameters that are available for use.</p>
 
                     <p>The most common parameters (via GET or POST) that are always available:</p>
                     <p>
@@ -249,7 +249,7 @@
                 <div class="section">
 
                     <h2>API Module Reference</h2>
-                    <p style="margin-bottom: 0;">This section is a reference for the paramaters available for each of the API's modules. Since some of the modules have special properties, they are explained in detail here. There are two types of modules: <em>standard modules</em> and <em>extended modules</em>. The <em>standard modules</em> are built directly into NCPA and run the same accross all operating systems. <em>Extended modules</em> are separate Python modules that are included into NCPA. The current <em>extended modules</em> do not work on all operating systems, but we are working on extending NCPA for future releases.</p>
+                    <p style="margin-bottom: 0;">This section is a reference for the parameters available for each of the API's modules. Since some of the modules have special properties, they are explained in detail here. There are two types of modules: <em>standard modules</em> and <em>extended modules</em>. The <em>standard modules</em> are built directly into NCPA and run the same across all operating systems. <em>Extended modules</em> are separate Python modules that are included into NCPA. The current <em>extended modules</em> do not work on all operating systems, but we are working on extending NCPA for future releases.</p>
 
                 </div>
 
@@ -264,7 +264,7 @@
                     <div class="container-fluid">
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-12">
-                                <p>The CPU module let's you get information on the currently used system-wide percentage. You can also view the CPU's idle, user, and system time. Since most modern day systems have multiple CPU cores, there is a <code>cpu/count</code> endpoint that gives the amount of cores. This may be helpful when interpretting the other endpoints, since each core is reported separately.</p>
+                                <p>The CPU module let's you get information on the currently used system-wide percentage. You can also view the CPU's idle, user, and system time. Since most modern day systems have multiple CPU cores, there is a <code>cpu/count</code> endpoint that gives the amount of cores. This may be helpful when interpreting the other endpoints, since each core is reported separately.</p>
                                 <p>If you'd like to see an aggregated view of the endpoints, the CPU module has a special parameter called <code>aggregate</code> that will aggregate all values by a specific aggregation type.</p>
                             </div>
                         </div>
@@ -355,9 +355,9 @@
                                 <p>The disk module is fairly large and one of the few modules to have combined check results for multiple nodes inside the disk/logical node. The disk module shows mount information, logical partition usage, and physical disk statistics through three main nodes shown below:</p>
                                 <p>
                                     <ul>
-                                        <li style="padding-bottom: 0.5rem;"><code>disk/mount</code> - Will return information on all mounted devices.</li>
-                                        <li style="padding-bottom: 0.5rem;"><code>disk/logical</code> - Information on each partition or drive. <em>Remember all \ and / must be represented as |.</em></li>
-                                        <li><code>disk/physical</code> - Hardware related drive information.</li>
+                                        <li style="padding-bottom: 0.5rem;"><code>disk/mount</code> - Information on mounted devices that are not disks.</li>
+                                        <li style="padding-bottom: 0.5rem;"><code>disk/logical</code> - Information on each mounted disk partition. <em>Remember all \ and / must be represented as |.</em></li>
+                                        <li><code>disk/physical</code> - Each physical drive's hardware stats and information.</li>
                                     </ul>
                                 </p>
                             </div>
@@ -445,7 +445,7 @@
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-12">
                                 <p>The interface module is a group of <em>counters</em> for each of the available network interfaces that exist. You can see by the example below that there is quite a lot of information. The most important part for most people is going to be the <code>bytes_recv</code> and <code>bytes_sent</code> values.</p>
-                                <p>This particular node can use <code>delta=1</code> to get the change in bytes send or recieved since the last check, making it able to produce bandwidth usage data.</p>
+                                <p>This particular node can use <code>delta=1</code> to get the change in bytes send or received since the last check, making it able to produce bandwidth usage data.</p>
                             </div>
                         </div>
                         <div class="row" style="margin: 0 -30px;">
@@ -475,8 +475,8 @@
     }
 }</pre>
                             
-                                <h6>Example of Bytes Recieved/Second</h6>
-                                <p>This example shows the average of bytes recieved per second <em>since the last check</em>.</p>
+                                <h6>Example of Bytes Received/Second</h6>
+                                <p>This example shows the average of bytes received per second <em>since the last check</em>.</p>
                                 <pre>https://localhost:5693/api/interface/Local%20Area%20Connection/bytes_recv?token=mytoken&delta=1&units=k</pre>
                                 <pre>{
     "bytes_recv": [

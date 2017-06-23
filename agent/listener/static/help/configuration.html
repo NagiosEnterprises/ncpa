@@ -48,7 +48,7 @@
                 <a name="config-option-reference"></a>
                 <div class="section">
                     <h2>Config Option Reference</h2>
-                    <p>Below is a list of all available options for the configuration file. The configuration is a standard INI-style config using the <code>name = value</code> notation. However, note that the config file is sectioned off by the square brackets. These different sections affect different portions of NCPA's operation. Each section is seperately listed below.</p>
+                    <p>Below is a list of all available options for the configuration file. The configuration is a standard INI-style config using the <code>name = value</code> notation. However, note that the config file is sectioned off by the square brackets. These different sections affect different portions of NCPA's operation. Each section is separately listed below.</p>
                     <p>
                         <div class="alert alert-info">
                             <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note</b>: You might notice that there appears to be duplicate entries. For instance, both <a href="#listener">[listener]</a> and <a href="#passive">[passive]</a> sections have a specification for <code>logfile</code>. Since these are two separate services, they maintain separate log files and each sections log related options only apply to that service's log files. Many other options follow similar logic.
@@ -183,7 +183,7 @@
                                 <td></td>
                                 <th>admin_password</th>
                                 <td>None</td>
-                                <td>If the admin panel is available by having <code>admin_gui_access = 1</code>, this option is used for adding extra authentication. Leaving this as <em>None</em> will cause it to automatically allow access to the admin seciton once authenticated into the GUI. If it's set to any other value, it will require that password when trying to access the Admin section. This password is also used as a way to authenticate GUI access if <code>admin_auth_only = 1</code>.</td>
+                                <td>If the admin panel is available by having <code>admin_gui_access = 1</code>, this option is used for adding extra authentication. Leaving this as <em>None</em> will cause it to automatically allow access to the admin section once authenticated into the GUI. If it's set to any other value, it will require that password when trying to access the Admin section. This password is also used as a way to authenticate GUI access if <code>admin_auth_only = 1</code>.</td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -307,7 +307,7 @@
 
                 <div class="section" id="nrdp">
                     <h3>[nrdp]</h3>
-                    <p>The value <em>nrdp</em> must be present in the <a href="#passive">[passive]</a> <code>handlers</code> option for the <em>NCPA Passive</em> service to run the checks and send the results to the specified NRDP server. While this section is optional, you must set all configuratoion options in order for the service to send the passive checks to NRDP.</p>
+                    <p>The value <em>nrdp</em> must be present in the <a href="#passive">[passive]</a> <code>handlers</code> option for the <em>NCPA Passive</em> service to run the checks and send the results to the specified NRDP server. While this section is optional, you must set all configuration options in order for the service to send the passive checks to NRDP.</p>
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -428,7 +428,7 @@
                     <p>This section, in NCPA 2, is typically in a separate file located in the <code>etc/ncpa.cfg.d</code> directory. You can view the <code>example.cfg</code> configuration to see how you can create these files. For information on the specifics of setting up passive checks, see the section on creating <a href="passive.html">Passive Checks</a>.</p>
                     <h6>Check Definitions</h6>
                     <p>Shown below is the basis for how to define a check. Typically hostname is set to %HOSTNAME%. Check interval is optional, and you can define a check without the last |. The servicename of __HOST__ is special, and refers to the host check - so the results of that check will appear as the specified host's check results.</p>
-                    <pre>&lt;hostname&gt;|&lt;servicename&gt;|&lt;check interaval in sec&gt; = &lt;api endpoint&gt; --warning &lt;value&gt; --critical &lt;value&gt; &lt;other options&gt;</pre>
+                    <pre>&lt;hostname&gt;|&lt;servicename&gt;|&lt;check interval in sec&gt; = &lt;api endpoint&gt; --warning &lt;value&gt; --critical &lt;value&gt; &lt;other options&gt;</pre>
                     <h6>Examples</h6>
                     <table class="table table-striped console">
                         <tbody>

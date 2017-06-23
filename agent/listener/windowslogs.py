@@ -355,6 +355,8 @@ def get_event_logs(server, name, filters):
                     elif is_interesting_event(event, name, filters):
                         safe_log = normalize_event(event, name)
                         logs.append(safe_log)
+            else:
+                raise StopIteration
     except StopIteration:
         pass
     finally:

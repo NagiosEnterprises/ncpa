@@ -164,13 +164,16 @@ class ServiceNode(nodes.LazyNode):
         service.wait()
         status.seek(0)
 
+        # Check to see if there are any services we need to add that
+        # weren't already caught by the initd script check
         for line in status.readlines():
             m = re.match("(.*) (?:\w*)/(\w*)(?:, .*)?", line)
             try:
-                if m.group(2) == 'running':
-                    services[m.group(1)] = 'running'
-                else:
-                    services[m.group(1)] = 'stopped'
+                if m.group(1) not in services:
+                    if m.group(2) == 'running':
+                        services[m.group(1)] = 'running'
+                    else:
+                        services[m.group(1)] = 'stopped'
             except:
                 pass
         return services

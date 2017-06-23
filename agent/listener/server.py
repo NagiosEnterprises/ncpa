@@ -22,7 +22,7 @@ import database
 import math
 
 
-__VERSION__ = '2.0.3'
+__VERSION__ = '2.0.4'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
@@ -238,7 +238,7 @@ def login():
 
     session['message'] = None
 
-    # Do actual athentication check
+    # Do actual authentication check
     if token == ncpa_token and not admin_auth_only:
         session['logged'] = True
     elif token == admin_password and admin_password is not None:
@@ -933,6 +933,7 @@ def api(accessor=''):
         value = node.walk(**sane_args)
 
     # Generate page and add cross-domain loading
-    response = Response(json.dumps(dict(value), indent=None if request.is_xhr else 4), mimetype='application/json')
+    response = Response(json.dumps(dict(value), ensure_ascii=False,
+                        indent=None if request.is_xhr else 4), mimetype='application/json')
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response

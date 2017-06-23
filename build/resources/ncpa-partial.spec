@@ -1,6 +1,6 @@
 Name:           ncpa
 Version:        __VERSION__
-Release:        2
+Release:        1
 Vendor:         Nagios Enterprises, LLC
 Summary:        A cross-platform active and passive monitoring agent
 BuildRoot:      __BUILDROOT__/BUILDROOT/
@@ -105,26 +105,23 @@ rmssys -s ncpa_listener >/dev/null 2>&1
 rmssys -s ncpa_passive >/dev/null 2>&1
 
 %files
-%defattr(0755,nagios,nagios,-)
+%defattr(0755,nagios,nagios,0755)
 %dir /usr/local/ncpa
 %dir /usr/local/ncpa/etc
 %dir /usr/local/ncpa/etc/ncpa.cfg.d
 /usr/local/ncpa/ncpa_listener
 /usr/local/ncpa/ncpa_passive
 
-%defattr(0644,nagios,nagios,-)
-/usr/local/ncpa/*.a
-/usr/local/ncpa/*.so
+%defattr(0644,nagios,nagios,0755)
+/usr/local/ncpa/*.so*
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip
-
-%defattr(0755,nagios,nagios,-)
 /usr/local/ncpa/build_resources
 /usr/local/ncpa/listener
 /usr/local/ncpa/plugins
 /usr/local/ncpa/var
 
-%defattr(0644,nagios,nagios,-)
+%defattr(0644,nagios,nagios,0755)
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample

@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+1.1.1
+-----
+- Fixed sending multiple query arguments not being sent to the API
+
 1.1.0
 -----
 - Added performance data option (-p) for checks that do not return performance data (gregwalters)
