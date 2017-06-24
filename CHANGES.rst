@@ -1,7 +1,7 @@
 ﻿Changelog
 +++++++++
 
-2.0.4 - 06/??/2017
+2.0.4 - 06/24/2017
 ==================
 - Updated the API browser to grab your current hostname and port from the URL to show better active check output
 - Updated processes API endpoint to properly also show full command with arguments

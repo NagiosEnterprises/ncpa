@@ -12,7 +12,7 @@ Downloads
 Current versions:
 
 +---------+-------------+-------------------------------------------------------+
-| Current | **2.0.3**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
+| Current | **2.0.4**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
 `Older Versions <https://www.nagios.org/ncpa/archive.php>`_
@@ -28,9 +28,11 @@ We currently build for the following operating systems:
 - SLES (11+)
 - Oracle (5+)
 
-Other systems we will build for soon:
+Other systems we are working on builds for:
 
+- AIX (`experimental 7.1 build <https://assets.nagios.com/downloads/dev>`_)
 - Fedora
+- Solaris
 
 If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here by creating a new GitHub issue.
 
