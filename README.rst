@@ -30,7 +30,7 @@ We currently build for the following operating systems:
 
 Other systems we are working on builds for:
 
-- AIX (`experimental 7.1 build <https://assets.nagios.com/downloads/dev>`_)
+- AIX (`experimental 7.1 build <https://assets.nagios.com/downloads/ncpa/dev/>`_)
 - Fedora
 - Solaris
 
