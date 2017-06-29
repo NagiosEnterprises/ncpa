@@ -27,7 +27,7 @@ We currently build for the following operating systems:
 - OpenSUSE (11+)
 - SLES (11+)
 - Oracle (5+)
-- AXI (6.1+) *still experimental*
+- AIX (6.1+) (*still a little experimental*)
 
 Other systems we are working on builds for:
 
