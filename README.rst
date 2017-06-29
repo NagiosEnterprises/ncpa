@@ -27,10 +27,10 @@ We currently build for the following operating systems:
 - OpenSUSE (11+)
 - SLES (11+)
 - Oracle (5+)
+- AXI (6.1+) *still experimental*
 
 Other systems we are working on builds for:
 
-- AIX (`experimental 7.1 build <https://assets.nagios.com/downloads/ncpa/dev/>`_)
 - Fedora
 - Solaris
 
