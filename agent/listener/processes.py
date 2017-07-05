@@ -181,7 +181,11 @@ class ProcessNode(nodes.LazyNode):
         pid = str(process.pid)
 
         try:
-            cmd = ' '.join(process.cmdline())
+            if pid in ps_procs:
+                proc = ps_procs.get(pid)
+                cmd = proc[2]
+            else:
+                cmd = ' '.join(process.cmdline())
         except BaseException:
             cmd = 'Unknown'
 
@@ -260,9 +264,7 @@ class ProcessNode(nodes.LazyNode):
             procs = subprocess.Popen(['ps', 'aux'], stdout=ps_out)
             procs.wait()
             ps_out.seek(0)
-            
-            # The first line is the header
-            ps_out.readline()
+            ps_out.readline() # Read first line (header)
 
             # Loop through each line and get data on procs then find the matching
             # proc in the psutils data and give the cpu/memory usage to it
@@ -270,7 +272,18 @@ class ProcessNode(nodes.LazyNode):
                 cols = line.split()
                 ps_procs[cols[1]] = [cols[2], cols[3]]
 
-        #print ps_procs
+        elif uname == "AIX":
+            ps_out = tempfile.TemporaryFile()
+            procs = subprocess.Popen(['ps', 'auxwww'], stdout=ps_out)
+            procs.wait()
+            ps_out.seek(0)
+            ps_out.readline() # Read first line (header)
+
+            # Loop through each line and grab the proc information from ps auxwww
+            # so that we get the proper command line arguments on AIX (psutil problem)
+            for line in ps_out.readlines():
+                    cols = line.split()
+                    ps_procs[cols[1]] = [cols[2], cols[3], ' '.join(cols[10:])]
 
         for process in psutil.process_iter():
             try:
