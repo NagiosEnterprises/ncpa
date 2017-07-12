@@ -1,6 +1,10 @@
 ﻿Changelog
 +++++++++
 
+2.0.5 - ??/??/2017
+==================
+- Fixed the windows event log setting event_id to give the proper ID for some events that has bogus IDs
+
 2.0.4 - 06/24/2017
 ==================
 - Updated the API browser to grab your current hostname and port from the URL to show better active check output
