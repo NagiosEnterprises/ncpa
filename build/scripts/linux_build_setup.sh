@@ -82,5 +82,12 @@ rm -rf $GWEBSOCKETVER
 # --------------------------
 
 # Add users if they don't exist
-useradd nagios
-groupadd nagios
+if [ "$BUILDFROM" != "travis" ]; then
+	useradd nagios
+	groupadd nagios
+	usermod -g nagios nagios
+else
+	sudo useradd nagios
+	sudo groupadd nagios
+	sudo usermod -g nagios nagios
+fi

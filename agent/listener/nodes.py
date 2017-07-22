@@ -73,6 +73,22 @@ class ParentNode(object):
                  'returncode': 3 }
 
 
+class CollectedParentNode(ParentNode):
+
+    def __init__(self, name, children, *args, **kwargs):
+        super(CollectedParentNode, self).__init__(name, children)
+
+    def run_check(self, *args, **kwargs):
+        results = []
+        for name, child in self.children.iteritems():
+            print name
+            print child
+            res = child.run_check(*args, **kwargs)
+            print res
+
+        return ''
+
+
 class RunnableParentNode(ParentNode):
 
     def __init__(self, name, children, primary, custom_output=None, include=None, *args, **kwargs):

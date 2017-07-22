@@ -943,6 +943,12 @@ def api(accessor=''):
     if not 'check' in sane_args:
         sane_args['check'] = request.args.get('check', False)
 
+    # Check for default unit in the config values
+    default_units = get_config_value('general', 'default_units')
+    if default_units:
+        if not 'units' in sane_args:
+            sane_args['units'] = default_units
+
     if sane_args['check']:
         value = node.run_check(**sane_args)
     else:

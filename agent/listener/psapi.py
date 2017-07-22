@@ -143,18 +143,32 @@ def get_memory_node():
     return ParentNode('memory', children=[mem_virt, mem_swap])
 
 
-def get_disk_node():
+def get_disk_node(config):
     disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
+    exclude_fs_types = []
+
+    # Get exclude values from the config if it exists
+    # otherwise use the defaults
+    if config:
+        try:
+            exclude_fs_types = config.get('general', 'exclude_fs_types')
+        except Exception as e:
+            exclude_fs_types = "aufs,autofs,binfmt_misc,cifs,cgroup,debugfs,devpts,devtmpfs,"\
+                               "encryptfs,efivarfs,fuse,hugelbtfs,mqueue,nfs,overlayfs,proc,"\
+                               "pstore,rpc_pipefs,securityfs,smb,sysfs,tmpfs,tracefs"
+        exclude_fs_types = exclude_fs_types.split(',')
 
     disk_mountpoints = []
     disk_parts = []
     for x in ps.disk_partitions(all=True):
-        if os.path.isdir(x.mountpoint):
-            tmp = make_mountpoint_nodes(x)
-            disk_mountpoints.append(tmp)
-        else:
-            tmp = make_mount_other_nodes(x)
-            disk_parts.append(tmp)
+        fstype = x.fstype.split('.')[0] # to check against fuse.<type> etc
+        if fstype not in exclude_fs_types:
+            if os.path.isdir(x.mountpoint):
+                tmp = make_mountpoint_nodes(x)
+                disk_mountpoints.append(tmp)
+            else:
+                tmp = make_mount_other_nodes(x)
+                disk_parts.append(tmp)
 
     disk_logical = ParentNode('logical', children=disk_mountpoints)
     disk_physical = ParentNode('physical', children=disk_counters)
@@ -178,10 +192,10 @@ def get_user_node():
     return ParentNode('user', children=[user_count, user_list])
 
 
-def get_root_node():
+def get_root_node(config=False):
     cpu = get_cpu_node()
     memory = get_memory_node()
-    disk = get_disk_node()
+    disk = get_disk_node(config)
     interface = get_interface_node()
     plugins = get_plugins_node()
     user = get_user_node()
@@ -234,7 +248,7 @@ def getter(accessor, config, full_path, cache=False):
     # node. This normally only happens on new API calls. When we are using
     # websockets we use the cached version while it makes requests.
     if not cache:
-        root = get_root_node()
+        root = get_root_node(config)
 
     root.reset_valid_nodes()
     return root.accessor(path, config, full_path)
