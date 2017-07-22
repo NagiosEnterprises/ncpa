@@ -143,7 +143,7 @@ def get_memory_node():
     return ParentNode('memory', children=[mem_virt, mem_swap])
 
 
-def get_disk_node(config):
+def get_disk_node(config=False):
     disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
     exclude_fs_types = []
 
