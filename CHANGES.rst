@@ -12,6 +12,7 @@
 - Added default_units configuration value to allow setting a default unit such as G or Gi for checks
 - Added exclude_fs_types configuration value to remove certain file system types from the disk check
 - Fixed the windows event log setting event_id to give the proper ID for some events that has bogus IDs
+- Fixed searching for cmd causing any process with no cmd given to show up with any search
 
 2.0.4 - 06/24/2017
 ==================

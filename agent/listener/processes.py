@@ -144,21 +144,25 @@ class ProcessNode(nodes.LazyNode):
                         comp.append(False)
 
             for cmd in cmds:
-                if match == 'search':
-                    if cmd.lower() in process['cmd'].lower():
-                        comp.append(True)
-                    else:
-                        comp.append(False)
-                elif match == 'regex':
-                    if re.search(cmd, process['cmd']):
-                        comp.append(True)
-                    else:
-                        comp.append(False)
+                process_cmd = process['cmd'].lower()
+                if not process_cmd:
+                    comp.append(False)
                 else:
-                    if process['cmd'].lower() in cmd.lower():
-                        comp.append(True)
+                    if match == 'search':
+                        if cmd.lower() in process['cmd'].lower():
+                            comp.append(True)
+                        else:
+                            comp.append(False)
+                    elif match == 'regex':
+                        if re.search(cmd, process['cmd']):
+                            comp.append(True)
+                        else:
+                            comp.append(False)
                     else:
-                        comp.append(False)
+                        if process['cmd'].lower() in cmd.lower():
+                            comp.append(True)
+                        else:
+                            comp.append(False)
 
             if not cpu_percent is None:
                 comp.append(cpu_percent <= process['cpu_percent'][0])
