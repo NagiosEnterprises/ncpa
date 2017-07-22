@@ -156,7 +156,7 @@ def get_disk_node(config):
             exclude_fs_types = "aufs,autofs,binfmt_misc,cifs,cgroup,debugfs,devpts,devtmpfs,"\
                                "encryptfs,efivarfs,fuse,hugelbtfs,mqueue,nfs,overlayfs,proc,"\
                                "pstore,rpc_pipefs,securityfs,smb,sysfs,tmpfs,tracefs"
-        exclude_fs_types = exclude_fs_types.split(',')
+        exclude_fs_types = [x.strip() for x in exclude_fs_types.split(',')]
 
     disk_mountpoints = []
     disk_parts = []
