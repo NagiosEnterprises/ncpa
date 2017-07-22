@@ -1,12 +1,16 @@
 from unittest import TestCase
 from unittest import skip
-from nrds import Handler as n
 import ConfigParser
 import os
-import utils
+import sys
 import tempfile
-import listener.server
 import shutil
+
+sys.path.append(os.path.dirname(__file__))
+
+import listener
+import passive
+import passive.nrds
 
 
 class NRDSHandler(TestCase):
@@ -20,7 +24,7 @@ class NRDSHandler(TestCase):
         self.config.add_section('plugin directives')
         self.config.set('plugin directives', 'plugin_path', self.testing_plugin_dir)
         self.config.add_section('passive checks')
-        self.n = n(self.config)
+        self.n = passive.nrds.Handler(self.config)
 
         try:
             os.mkdir(self.testing_plugin_dir)
@@ -35,7 +39,7 @@ class NRDSHandler(TestCase):
         def get_request(*args, **kwargs):
             return 'SECRET PAYLOAD'
 
-        utils.send_request = get_request
+        passive.utils.send_request = get_request
         plugin_path = self.n.config.get('plugin directives', 'plugin_path')
 
         testing_dict = {
@@ -60,21 +64,21 @@ class NRDSHandler(TestCase):
         def mock_request(*args, **kwargs):
             return "<result><status>0</status><message>OK</message></result>"
 
-        utils.send_request = mock_request
+        passive.utils.send_request = mock_request
         update = self.n.config_update_is_required('mocked', 'mocked', 'TESTING', '.1')
         self.assertFalse(update)
 
         def mock_request(*args, **kwargs):
             return "<result><status>1</status><message>Config version is available</message></result>"
 
-        utils.send_request = mock_request
+        passive.utils.send_request = mock_request
         update = self.n.config_update_is_required('mocked', 'mocked', 'TESTING', '.2')
         self.assertTrue(update)
 
         def mock_request(*args, **kwargs):
             return "<result><status>2</status><message>Config version is available</message></result>"
 
-        utils.send_request = mock_request
+        passive.utils.send_request = mock_request
         update = self.n.config_update_is_required('mocked', 'mocked', 'TESTING', '.3')
         self.assertFalse(update)
 
@@ -82,14 +86,14 @@ class NRDSHandler(TestCase):
         def mock_request(*args, **kwargs):
             return ""
 
-        utils.send_request = mock_request
+        passive.utils.send_request = mock_request
         success = self.n.update_config('', '', '')
         self.assertFalse(success)
 
         def mock_request(*args, **kwargs):
             return "[test]\nvalue = foobar"
 
-        utils.send_request = mock_request
+        passive.utils.send_request = mock_request
         success = self.n.update_config('', '', '')
         self.assertTrue(success)
 

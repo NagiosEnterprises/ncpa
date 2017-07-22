@@ -60,7 +60,7 @@ gid = nagios
 #
 # IP address and port number for the Listener to use for the web GUI and API
 # Default: ip = 0.0.0.0
-# Default: port = 5963
+# Default: port = 5693
 #
 ip = 0.0.0.0
 port = 5693
@@ -149,7 +149,7 @@ community_string = mytoken
 #   nrds, nrdp
 #
 # Example:
-# handlers = nrds,ndrp
+# handlers = nrds,nrdp
 #
 handlers = None
 
@@ -196,8 +196,8 @@ pidfile = var/run/ncpa_passive.pid
 
 #
 # Connection settings to the NRDP server
-# token = NRDP server token used to send NRDP results
 # parent = NRDP server location (ex: http://<address>/nrdp)
+# token = NRDP server token used to send NRDP results
 #
 parent =
 token =
@@ -266,17 +266,26 @@ plugin_path = plugins/
 # The extension for the plugin denotes how NCPA will try to run the plugin. Use this
 # for setting how you want to run the plugin in the command line.
 #
+# NOTE: Plugins without an extension will be ran in the cmdline as follows:
+#       $plugin_name $plugin_args
+#
 # Defaults:
 # .sh = /bin/sh $plugin_name $plugin_args
+# .py = python $plugin_name $plugin_args
 # .ps1 = powershell -ExecutionPolicy Bypass -File $plugin_name $plugin_args
 # .vbs = cscript $plugin_name $plugin_args //NoLogo
-# .py = python $plugin_name $plugin_args
+# .bat = cmd /c $plugin_name $plugin_args
 #
 # Since windows NCPA is 32-bit, if you need to use 64-bit powershell, try the following for
 # the powershell plugin definition:
 # .ps1 = c:\windows\sysnative\windowspowershell\v1.0\powershell.exe -ExecutionPolicy Unrestricted -File $plugin_name $plugin_args
 #
+
+# Linux / Mac OS X
 .sh = /bin/sh $plugin_name $plugin_args
+.py = python $plugin_name $plugin_args
+
+# Windows
 .ps1 = powershell -ExecutionPolicy Bypass -File $plugin_name $plugin_args
 .vbs = cscript $plugin_name $plugin_args //NoLogo
-.py = python $plugin_name $plugin_args
+.bat = cmd /c $plugin_name $plugin_args

@@ -1,6 +1,9 @@
 NCPA
 ====
 
+.. image:: https://travis-ci.org/NagiosEnterprises/ncpa.svg?branch=master
+    :target: https://travis-ci.org/NagiosEnterprises/ncpa
+
 The *Nagios Cross-Platform Agent*; a single monitoring agent that installs on all major operating systems. NCPA allows both active checks via check_ncpa.py and passive checks via NRDP. NCPA comes with a built-in web GUI, documentation, websocket graphing, and is secured with SSL by default.
 
 Downloads
@@ -9,7 +12,7 @@ Downloads
 Current versions:
 
 +---------+-------------+-------------------------------------------------------+
-| Current | **2.0.2**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
+| Current | **2.0.4**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
 `Older Versions <https://www.nagios.org/ncpa/archive.php>`_
@@ -24,10 +27,12 @@ We currently build for the following operating systems:
 - OpenSUSE (11+)
 - SLES (11+)
 - Oracle (5+)
+- AIX (6.1+) (*still a little experimental*)
 
-Other systems we will build for soon:
+Other systems we are working on builds for:
 
 - Fedora
+- Solaris
 
 If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here by creating a new GitHub issue.
 

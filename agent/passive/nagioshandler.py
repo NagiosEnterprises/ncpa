@@ -1,6 +1,7 @@
 import logging
 import platform
 import ncpacheck
+import ConfigParser
 
 
 class NagiosHandler(object):
@@ -45,7 +46,7 @@ class NagiosHandler(object):
                 else:
                     try:
                         duration = int(self.config.get('passive', 'sleep'))
-                    except NoOptionError:
+                    except Exception:
                         duration = 300
 
                 if hostname.upper() == '%HOSTNAME%':

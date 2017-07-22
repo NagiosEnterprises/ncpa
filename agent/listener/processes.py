@@ -24,6 +24,13 @@ class ProcessNode(nodes.LazyNode):
         return name
 
     @staticmethod
+    def get_cmd(request_args):
+        cmd = request_args.get('cmd', [])
+        if not isinstance(cmd, list):
+            cmd = [cmd]
+        return cmd
+
+    @staticmethod
     def get_count(request_args):
         count = request_args.get('count', 0)
         if isinstance(count, list):
@@ -91,6 +98,7 @@ class ProcessNode(nodes.LazyNode):
     def make_filter(self, *args, **kwargs):
         exes = self.get_exe(kwargs)
         names = self.get_name(kwargs)
+        cmds = self.get_cmd(kwargs)
         cpu_percent = self.get_cpu_percent(kwargs)
         mem_percent = self.get_mem_percent(kwargs)
         comparison = self.get_combiner(kwargs)
@@ -135,6 +143,23 @@ class ProcessNode(nodes.LazyNode):
                     else:
                         comp.append(False)
 
+            for cmd in cmds:
+                if match == 'search':
+                    if cmd.lower() in process['cmd'].lower():
+                        comp.append(True)
+                    else:
+                        comp.append(False)
+                elif match == 'regex':
+                    if re.search(cmd, process['cmd']):
+                        comp.append(True)
+                    else:
+                        comp.append(False)
+                else:
+                    if process['cmd'].lower() in cmd.lower():
+                        comp.append(True)
+                    else:
+                        comp.append(False)
+
             if not cpu_percent is None:
                 comp.append(cpu_percent <= process['cpu_percent'][0])
 
@@ -154,6 +179,11 @@ class ProcessNode(nodes.LazyNode):
     @staticmethod
     def standard_form(self, process, ps_procs, units='', sleep=None):
         pid = str(process.pid)
+
+        try:
+            cmd = ' '.join(process.cmdline())
+        except BaseException:
+            cmd = 'Unknown'
 
         try:
             name = process.name()
@@ -209,6 +239,7 @@ class ProcessNode(nodes.LazyNode):
         return {'pid': int(pid),
                 'name': name,
                 'exe': exe,
+                'cmd': cmd,
                 'username': username,
                 'cpu_percent': (cpu_percent, '%'),
                 'mem_percent': (mem_percent, '%'),

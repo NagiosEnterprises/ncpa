@@ -92,11 +92,12 @@ class NCPACheck(object):
         current_time = time.time()
         accessor = api_url.replace('/api/', '').rstrip('/')
 
-        # Send to databsae
-        data = (accessor, current_time, current_time, int(returncode),
-                stdout, 'Internal', 'Passive')
-        dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-        db.commit()
+        # Send to database
+        if not listener.server.__INTERNAL__:
+            data = (accessor, current_time, current_time, int(returncode),
+                    stdout, 'Internal', 'Passive')
+            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+            db.commit()
 
         return stdout, returncode
 

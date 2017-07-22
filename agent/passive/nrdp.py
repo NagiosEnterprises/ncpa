@@ -1,10 +1,10 @@
 import xml.dom.minidom
 import logging
+import listener.server
 import nagioshandler
 import utils
 from itertools import izip
 import ConfigParser
-import listener.server
 
 
 class Handler(nagioshandler.NagiosHandler):

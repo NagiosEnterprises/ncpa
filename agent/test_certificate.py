@@ -1,5 +1,5 @@
 import os
-import certificate
+import listener.certificate
 import unittest
 import tempfile
 import time
@@ -20,7 +20,7 @@ class TestCertificate(unittest.TestCase):
 
         kc, cc = os.path.getmtime(key), os.path.getmtime(crt)
 
-        certificate.create_self_signed_cert(self.testing_dir, self.testing_crt, self.testing_key)
+        listener.certificate.create_self_signed_cert(self.testing_dir, self.testing_crt, self.testing_key)
 
         kcm, ccm = os.path.getmtime(key), os.path.getmtime(crt)
 
@@ -34,7 +34,7 @@ class TestCertificate(unittest.TestCase):
         key = "%s/%s" % (self.testing_dir, self.testing_key)
         crt = "%s/%s" % (self.testing_dir, self.testing_crt)
 
-        certificate.create_self_signed_cert(self.testing_dir, self.testing_crt, self.testing_key)
+        listener.certificate.create_self_signed_cert(self.testing_dir, self.testing_crt, self.testing_key)
 
         self.assertTrue(os.path.isfile(key), "Key was not created.")
         self.assertTrue(os.path.isfile(crt), "Certificate was not created.")

@@ -152,7 +152,8 @@ class RunnableNode(ParentNode):
 
     def accessor(self, path, config, full_path):
         if path:
-            return DoesNotExistNode(', '.join(path), full_path)
+            full_path = ', '.join(path)
+            return DoesNotExistNode('', self.name, full_path)
         else:
             return copy.deepcopy(self)
 

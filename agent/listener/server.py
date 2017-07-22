@@ -23,7 +23,7 @@ import math
 import ipaddress
 
 
-__VERSION__ = '2.0.2'
+__VERSION__ = '2.0.4'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
@@ -252,7 +252,7 @@ def login():
 
     session['message'] = None
 
-    # Do actual athentication check
+    # Do actual authentication check
     if token == ncpa_token and not admin_auth_only:
         session['logged'] = True
     elif token == admin_password and admin_password is not None:
@@ -286,7 +286,7 @@ def admin_login():
 
     # Verify authentication and redirect if we are authenticated
     if session.get('admin_logged', False):
-        return redirect(url_for('admin_config'))
+        return redirect(url_for('admin'))
 
     # Admin password
     admin_password = get_config_value('listener', 'admin_password', None)
@@ -300,7 +300,7 @@ def admin_login():
 
     if password == admin_password and admin_password is not None:
         session['admin_logged'] = True
-        return redirect(url_for('admin_config'))
+        return redirect(url_for('admin'))
     elif password is not None:
         template_args['error'] = 'Password was invalid.'
 
@@ -492,14 +492,6 @@ def admin():
     tmp_args = {}
     tmp_args['config'] = listener.config['iconfig']
     return render_template('admin/index.html', **tmp_args)
-
-
-@listener.route('/gui/admin/config', methods=['GET', 'POST'])
-@requires_admin_auth
-def admin_config():
-    tmp_args = {}
-    tmp_args['config'] = listener.config['iconfig']
-    return render_template('admin/config.html', **tmp_args)
 
 
 @listener.route('/gui/admin/global', methods=['GET', 'POST'])
@@ -883,7 +875,7 @@ def api(accessor=''):
     # of this should be around here. Changing the incoming request is the only
     # way to make something happen without updating the way the API looks/returns.
     # You can think of these as aliases. Below explains the aliases and when they
-    # will be removed. As of 2.0.0 they are deprecated. Will be removed in 2.1.0.
+    # will be removed. As of 2.0.0 they are deprecated. Will be removed in 3.
     #
     # Deprecated Aliases:
     #
@@ -955,6 +947,7 @@ def api(accessor=''):
         value = node.walk(**sane_args)
 
     # Generate page and add cross-domain loading
-    response = Response(json.dumps(dict(value), indent=None if request.is_xhr else 4), mimetype='application/json')
+    response = Response(json.dumps(dict(value), ensure_ascii=False,
+                        indent=None if request.is_xhr else 4), mimetype='application/json')
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response

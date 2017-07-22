@@ -3,7 +3,7 @@ import sys
 
 __test__ = False
 
-# Grab command line arguements
+# Grab command line arguments
 opt = sys.argv[1]
 
 if opt == 'listener' or opt == None:

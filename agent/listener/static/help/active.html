@@ -89,7 +89,7 @@
 
                 <h6>Running Plugins with Arguments</h6>
                 <p>If you are using the <code>plugins</code> module to execute your own custom scripts, you will likely want to be able to pass arguments to the executed script. To do this, <code>check_ncpa.py</code> has <code>-a</code>, which allows you to send a set of arguments to your script. <em>Pay close attention to how the arguments are quoted in these examples; single quotes and double quotes matter here.</em></p>
-                <p>If we had a script called <code>test.sh</code>, running it from the crommand line may look something like this:</p>
+                <p>If we had a script called <code>test.sh</code>, running it from the command line may look something like this:</p>
                 <pre>./test.sh -u 'one argument' -p 'another argument'</pre>
                 <p>To run the above script using NCPA and the <code>check_ncpa.py</code> plugin:</p>
                 <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -a "-u 'one argument' -p 'another argument'"</pre>

@@ -10,6 +10,7 @@ import psutil
 import server
 import database
 import time
+import logging
 from stat import ST_MODE,S_IXUSR,S_IXGRP,S_IXOTH
 
 def filter_services(m):
@@ -161,13 +162,16 @@ class ServiceNode(nodes.LazyNode):
         service.wait()
         status.seek(0)
 
+        # Check to see if there are any services we need to add that
+        # weren't already caught by the initd script check
         for line in status.readlines():
             m = re.match("(.*) (?:\w*)/(\w*)(?:, .*)?", line)
             try:
-                if m.group(2) == 'running':
-                    services[m.group(1)] = 'running'
-                else:
-                    services[m.group(1)] = 'stopped'
+                if m.group(1) not in services:
+                    if m.group(2) == 'running':
+                        services[m.group(1)] = 'running'
+                    else:
+                        services[m.group(1)] = 'stopped'
             except:
                 pass
         return services
@@ -194,7 +198,12 @@ class ServiceNode(nodes.LazyNode):
     @filter_services
     def get_services_via_initd(self, *args, **kwargs):
         # Only look at executable files in init.d (there is no README service)
-        possible_services = filter(lambda x: os.stat('/etc/init.d/'+x)[ST_MODE] & (S_IXUSR|S_IXGRP|S_IXOTH), os.listdir('/etc/init.d'))
+        try:
+            possible_services = filter(lambda x: os.stat('/etc/init.d/'+x)[ST_MODE] & (S_IXUSR|S_IXGRP|S_IXOTH), os.listdir('/etc/init.d'))
+        except OSError as e:
+            logging.exception(e);
+            pass
+
         services = {}
         devnull = open(os.devnull, 'w')
 

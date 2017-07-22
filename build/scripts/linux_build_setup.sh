@@ -13,11 +13,14 @@ GWEBSOCKETTAR="gevent-websocket-0.9.5-patched"
 GWEBSOCKETVER="gevent-websocket-0.9.5"
 CXLOGGINGVER="cx_Logging-2.1"
 PYTHONBIN="/usr/local/bin/python2.7"
+BUILDFROM=$1
 
 # --------------------------
 #  INSTALL PRE-REQS
 # --------------------------
-./linux_build_prereqs.sh
+if [ "$BUILDFROM" != "travis" ]; then
+	./linux_build_prereqs.sh
+fi
 
 # --------------------------
 #  INSTALL RESOURCES
@@ -25,26 +28,31 @@ PYTHONBIN="/usr/local/bin/python2.7"
 
 cd $DIR/../resources
 
-# Install Python
-tar xf $PYTHONTAR.tgz
-cd $PYTHONTAR && ./configure --with-zlib=/usr/include --enable-shared && make && make altinstall
-echo '/usr/local/lib' >> /etc/ld.so.conf 
-/sbin/ldconfig
+# Install bundled Python version from source if needed
+if [ "$BUILDFROM" != "travis" ]; then
+	tar xf $PYTHONTAR.tgz
+	cd $PYTHONTAR && ./configure --with-zlib=/usr/include --enable-shared && make && make altinstall
+	echo '/usr/local/lib' >> /etc/ld.so.conf 
+	/sbin/ldconfig
+	cd ..
+else
+	PYTHONVER="python"
+	PYTHONBIN="python"
+fi
 
 # Install the patched version of cx_Freeze
-cd ..
 tar xf $CXFREEZETAR.tar.gz
 cd $CXFREEZEVER
 $PYTHONBIN setup.py install
+cd ..
 
 # Install cx_Logging
-cd ..
 tar xf $CXLOGGINGVER.tar.gz
 cd $CXLOGGINGVER
 $PYTHONBIN setup.py install
+cd ..
 
 # Clean up resource directory
-cd ..
 rm -rf $PYTHONTAR
 rm -rf $CXFREEZEVER
 rm -rf $CXLOGGINGVER
@@ -53,7 +61,9 @@ rm -rf $CXLOGGINGVER
 #  INSTALL PIP
 # --------------------------
 
-cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
+if [ "$BUILDFROM" != "travis" ]; then
+	cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
+fi
 
 # --------------------------
 #  INSTALL PIP COMPONENTS

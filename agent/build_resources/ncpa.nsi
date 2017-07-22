@@ -137,6 +137,14 @@ Function .onInit
     StrCpy $nrdp 1
     ${EndIf}
 
+    ; Define defaults for silent installs
+    StrCpy $bind_ip "0.0.0.0"
+    StrCpy $bind_port "5693"
+    StrCpy $ssl_version "TLSv1_2"
+    StrCpy $check_interval "300"
+    StrCpy $log_level_active "warning"
+    StrCpy $log_level_passive "warning"
+
 FunctionEnd
 
 Function CheckInstall
@@ -356,6 +364,8 @@ Section ""
     WriteRegStr HKLM "${UNINST_KEY}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
  
     WriteUninstaller $INSTDIR\uninstall.exe
+	
+    !define PORT $bind_port
   
     ; Install the service on new install
     ${If} $installed == "0"
@@ -365,6 +375,7 @@ Section ""
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --install ncpapassive'
     nsExec::Exec '$9 /c sc config ncpalistener start= delayed-auto'
     nsExec::Exec '$9 /c sc config ncpapassive start= delayed-auto'
+    nsExec::Exec '$9 /c netsh advfirewall firewall add rule name="NCPA" dir=in action=allow protocol=TCP localport=${PORT}'
     ${EndIf}
 
     ; Start the listener and passive services

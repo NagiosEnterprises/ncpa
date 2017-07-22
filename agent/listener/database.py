@@ -4,8 +4,8 @@ import sqlite3
 import sys
 import server
 
-# A module to wrap sqllite3 for use with a small database to store things
-# like checks accross both passive and active sections
+# A module to wrap sqlite3 for use with a small database to store things
+# like checks across both passive and active sections
 
 class DB(object):
 
@@ -18,7 +18,7 @@ class DB(object):
 
     # Connect to the NCPA database
     def connect(self):
-        self.conn = sqlite3.connect(self.dbfile)
+        self.conn = sqlite3.connect(self.dbfile, timeout=30)
         self.cursor = self.conn.cursor()
 
     def get_cursor(self):
@@ -71,7 +71,7 @@ class DB(object):
         data = ()
         cmd = "SELECT COUNT(*) FROM checks"
 
-        # If we are doing a serach... append to the query
+        # If we are doing a search... append to the query
         if search != '':
             data += ("%" + search + "%",)
             cmd += " WHERE output LIKE ?"
@@ -121,7 +121,7 @@ class DB(object):
         data = ()
         cmd = "SELECT * FROM checks"
 
-        # If we are doing a serach... append to the query
+        # If we are doing a search... append to the query
         if search != '':
             data += ("%" + search + "%",)
             cmd += " WHERE output LIKE ?"

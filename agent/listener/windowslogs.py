@@ -324,7 +324,7 @@ def is_interesting_event(event, name, filters):
 def normalize_event(event, name):
     safe_log = {}
     safe_log['message'] = win32evtlogutil.SafeFormatMessage(event, name)
-    safe_log['event_id'] = str(event.EventID)
+    safe_log['event_id'] = str(event.EventID & 0x1FFFFFFF)
     safe_log['computer_name'] = str(event.ComputerName)
     safe_log['category'] = str(event.EventCategory)
     safe_log['severity'] = EVENT_TYPE.get(event.EventType, 'UNKNOWN')
@@ -355,6 +355,8 @@ def get_event_logs(server, name, filters):
                     elif is_interesting_event(event, name, filters):
                         safe_log = normalize_event(event, name)
                         logs.append(safe_log)
+            else:
+                raise StopIteration
     except StopIteration:
         pass
     finally:

@@ -11,6 +11,30 @@
 - Added LD_LIBRARY_PATH to ncpa init scripts and include libssl and libcrypto so we have the latest OpenSSL libraries
 - Added default_units configuration value to allow setting a default unit such as G or Gi for checks
 - Added exclude_fs_types configuration value to remove certain file system types from the disk check
+- Fixed the windows event log setting event_id to give the proper ID for some events that has bogus IDs
+
+2.0.4 - 06/24/2017
+==================
+- Updated the API browser to grab your current hostname and port from the URL to show better active check output
+- Updated processes API endpoint to properly also show full command with arguments
+- Updated Windows installer to open incoming port in firewall for the port specified during install
+- Fixed admin login page redirecting to "admin/config" which does not exists
+- Fixed some JSON encoding errors from happening when utf-8 cannot decode properly
+- Fixed issue with missing logging import in services.py
+- Fixed upgrade issue where NCPA services would be stopped after upgrade (will start working after 2.0.4)
+- Fixed issue in windows logging module where an infinite loop could be triggered based on logged_after time frame
+- Fixed sqlite db timeout only being 5 seconds
+- Fixed issue where initctl would override sysv initd script statuses for services
+- Fixed file permissions on Linux with an updated .spec file
+- Fixed match argument to be set when showing examples of active or passive check definitions from the GUI
+- Fixed passive check definition for processes, services, and plugins endpoints
+
+2.0.3 - 03/17/2017
+==================
+- Fixed some typos in the ncpa.cfg and sample config
+- Fixed issue with Windows silent install setting various values to blank instead of defaults
+- Fixed check for service scripts in init.d folder to ignore OSError exceptions
+- Fixed typo in ncpa.cfg file that meant to say nrdp
 
 2.0.2 - 01/19/2017
 ==================
@@ -57,7 +81,7 @@
 - Added disk/mount for giving information on partitions that aren't currently accessible, such as cdroms
 - Added redirection when logging in if the user was trying to access a protected page
 - Added better output messages for multi-checks (ex: memory/virtual?check=true, disk/C:|?check=true)
-- Added API browser which allows going thorugh the API and creating checks, understanding units, etc
+- Added API browser which allows going through the API and creating checks, understanding units, etc
 - Added admin web GUI section for in-browser viewing of passive checks, process control, etc
 - Added admin_x config values into default ncpa.cfg for Web GUI admin section
 - Added information into api/logs node to explain how to get logs to be populated
@@ -72,7 +96,7 @@
 - Updated web UI with modern theme with better graph styling
 - Updated self-signed SSL certs to use 2048bit RSA and sha256 signature
 - Updated unit names that were set to c that weren't actually generic counters for better graphing
-- Updated top proceses to not show Idle process on Windows and added % / rounding
+- Updated top processes to not show Idle process on Windows and added % / rounding
 - Updated default locations on fresh install for log files on windows and linux
 - Updated openssl and PyOpenSSL libraries which no longer accept SSLv2 & SSLv3
 - Updated API to round most values that had been calculated to 2 decimals including check results and perfdata
@@ -131,8 +155,8 @@
 
 **Deprecated**
 
-- Both API endoints api/service/<servicename> and api/process/<processname> will be removed in version 2.1.0 and should be replaced by api/services?service=<servicename> and api/processes?name=<processname> instead
-- The API endpoint api/agent/plugin/<pluginname> will be removed in version 2.1.0 in favor of api/plugins/<pluginame> which better matches the current API node naming conventions and is a less confusing name
+- Both API endoints api/service/<servicename> and api/process/<processname> will be removed in version 3 and should be replaced by api/services?service=<servicename> and api/processes?name=<processname> instead
+- The API endpoint api/agent/plugin/<pluginname> will be removed in version 3 in favor of api/plugins/<pluginname> which better matches the current API node naming conventions and is a less confusing name
 
 1.8.1 - 04/09/2015
 ==================
