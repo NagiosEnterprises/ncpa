@@ -9,6 +9,8 @@
 - Added shell script to uninstall NCPA on Mac OS X by running "sudo /usr/local/ncpa/uninstall.sh"
 - Added /IP and /PORT to silent install options for the Windows installer
 - Added LD_LIBRARY_PATH to ncpa init scripts and include libssl and libcrypto so we have the latest OpenSSL libraries
+- Added default_units configuration value to allow setting a default unit such as G or Gi for checks
+- Added exclude_fs_types configuration value to remove certain file system types from the disk check
 
 2.0.2 - 01/19/2017
 ==================
