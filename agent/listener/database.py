@@ -3,6 +3,7 @@ import time
 import sqlite3
 import sys
 import server
+import logging
 
 # A module to wrap sqlite3 for use with a small database to store things
 # like checks across both passive and active sections
@@ -54,8 +55,11 @@ class DB(object):
         except Exception as e:
             days = 30;
         timestamp = time.time() - (days * 86400)
-        self.cursor.execute('DELETE FROM checks WHERE run_time_start < %d' % timestamp)
-        self.conn.commit()
+        try:
+            self.cursor.execute('DELETE FROM checks WHERE run_time_start < %d' % timestamp)
+            self.conn.commit()
+        except Exception as e:
+            logging.exception(e)
 
     # Function that will run migrations in future versions if there needs to be some
     # changes to the database layout

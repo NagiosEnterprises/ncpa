@@ -314,8 +314,10 @@ class Daemon(object):
             try:
                 pid = int(open(self.pidfile, u'rb').read().decode(u'utf-8').strip())
             except ValueError:
-                msg = u'pidfile %s contains a non-integer value' % self.pidfile
-                sys.exit(msg)
+                # PID does not exist
+                # This is likely caused by system issues and does not mean NCPA is not running
+                os.remove(self.pidfile)
+                return
             try:
                 os.kill(pid, 0)
             except OSError as err:
