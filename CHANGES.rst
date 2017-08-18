@@ -4,6 +4,8 @@
 2.0.5 - ??/??/2017
 ==================
 - Fixed the windows event log setting event_id to give the proper ID for some events that has bogus IDs
+- Fixed issue with DB maintenance where DB is not accessible (both processes use it)
+- Fixed non-integer PID file value causing startup issues
 
 2.0.4 - 06/24/2017
 ==================
