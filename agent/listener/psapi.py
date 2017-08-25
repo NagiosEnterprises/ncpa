@@ -150,8 +150,11 @@ def get_disk_node():
     disk_parts = []
     for x in ps.disk_partitions(all=True):
         if os.path.isdir(x.mountpoint):
-            tmp = make_mountpoint_nodes(x)
-            disk_mountpoints.append(tmp)
+            try:
+                tmp = make_mountpoint_nodes(x)
+                disk_mountpoints.append(tmp)
+            except OSError as ex:
+                logging.exception(ex)
         else:
             tmp = make_mount_other_nodes(x)
             disk_parts.append(tmp)
