@@ -19,7 +19,7 @@ class DB(object):
 
     # Connect to the NCPA database
     def connect(self):
-        self.conn = sqlite3.connect(self.dbfile, timeout=30)
+        self.conn = sqlite3.connect(self.dbfile, isolation_level=None, timeout=30)
         self.cursor = self.conn.cursor()
 
     def get_cursor(self):
@@ -37,14 +37,9 @@ class DB(object):
     # This is called on both passive and listener startup
     def setup(self):
         
-        # Create main check results database
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS checks
-                               (accessor, run_time_start, run_time_end, result, output, sender, type)''')
-        self.conn.commit()
-        
-        # Create migration database
+        # Create main check results database and migration database
+        self.cursor.execute('CREATE TABLE IF NOT EXISTS checks (accessor, run_time_start, run_time_end, result, output, sender, type)')
         self.cursor.execute('CREATE TABLE IF NOT EXISTS migrations (id, version)')
-        self.conn.commit()
 
         # Run migrations
         self.run_migrations()
@@ -57,7 +52,6 @@ class DB(object):
         timestamp = time.time() - (days * 86400)
         try:
             self.cursor.execute('DELETE FROM checks WHERE run_time_start < %d' % timestamp)
-            self.conn.commit()
         except Exception as e:
             logging.exception(e)
 
@@ -65,9 +59,6 @@ class DB(object):
     # changes to the database layout
     def run_migrations(self):
         pass
-
-    def commit(self):
-        self.conn.commit()
 
     # Returns the total amount of checks in the DB
     def get_checks_count(self, search='', status='', senders=[]):

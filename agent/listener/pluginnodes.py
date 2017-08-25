@@ -122,7 +122,6 @@ class PluginNode(nodes.RunnableNode):
             data = (kwargs['accessor'].rstrip('/'), run_time_start, run_time_end, returncode,
                     cleaned_stdout, kwargs['remote_addr'], 'Active')
             dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-            db.commit()
 
         output = { 'returncode': returncode, 'stdout': cleaned_stdout }
 

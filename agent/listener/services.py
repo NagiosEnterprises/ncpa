@@ -313,7 +313,6 @@ class ServiceNode(nodes.LazyNode):
             data = (kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
                     stdout, kwargs['remote_addr'], 'Active')
             dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-            db.commit()
 
         return { 'stdout': stdout, 'returncode': returncode }
 

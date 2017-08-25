@@ -97,7 +97,6 @@ class NCPACheck(object):
             data = (accessor, current_time, current_time, int(returncode),
                     stdout, 'Internal', 'Passive')
             dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-            db.commit()
 
         return stdout, returncode
 

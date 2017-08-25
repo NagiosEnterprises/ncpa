@@ -120,7 +120,6 @@ class RunnableParentNode(ParentNode):
             data = (kwargs['accessor'].rstrip('/'), current_time, current_time, primary_info['returncode'],
                     primary_info['stdout'], kwargs['remote_addr'], 'Active')
             dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-            db.commit()
 
         return primary_info
 
@@ -294,7 +293,6 @@ class RunnableNode(ParentNode):
             data = (kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
                     stdout, kwargs['remote_addr'], 'Active')
             dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-            db.commit()
 
         return { 'returncode': returncode, 'stdout': stdout }
 
