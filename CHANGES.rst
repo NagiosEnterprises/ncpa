@@ -1,7 +1,14 @@
 ﻿Changelog
 +++++++++
 
-2.0.4 - 06/??/2017
+2.0.5 - 08/26/2017
+==================
+- Fixed the windows event log setting event_id to give the proper ID for some events that has bogus IDs
+- Fixed issue with DB maintenance where DB is not accessible (both processes use it)
+- Fixed non-integer PID file value causing startup issues
+- Fixed issues with NFS errors causing failed starts (such as permission denied)
+
+2.0.4 - 06/24/2017
 ==================
 - Updated the API browser to grab your current hostname and port from the URL to show better active check output
 - Updated processes API endpoint to properly also show full command with arguments

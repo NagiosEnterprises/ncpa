@@ -143,12 +143,9 @@ class WindowsLogsNode(nodes.LazyNode):
         # Put check results in the check database
         if not server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
-            dbc = db.get_cursor()
             current_time = time.time()
-            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
-                    stdout, kwargs['remote_addr'], 'Active')
-            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-            db.commit()
+            db.add_check(kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
+                         stdout, kwargs['remote_addr'], 'Active')
 
         return { 'stdout': stdout, 'returncode': returncode }
 
@@ -324,7 +321,7 @@ def is_interesting_event(event, name, filters):
 def normalize_event(event, name):
     safe_log = {}
     safe_log['message'] = win32evtlogutil.SafeFormatMessage(event, name)
-    safe_log['event_id'] = str(event.EventID)
+    safe_log['event_id'] = str(event.EventID & 0x1FFFFFFF)
     safe_log['computer_name'] = str(event.ComputerName)
     safe_log['category'] = str(event.EventCategory)
     safe_log['severity'] = EVENT_TYPE.get(event.EventType, 'UNKNOWN')

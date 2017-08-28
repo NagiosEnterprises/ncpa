@@ -3,6 +3,7 @@ import time
 import sqlite3
 import sys
 import server
+import logging
 
 # A module to wrap sqlite3 for use with a small database to store things
 # like checks across both passive and active sections
@@ -18,7 +19,7 @@ class DB(object):
 
     # Connect to the NCPA database
     def connect(self):
-        self.conn = sqlite3.connect(self.dbfile, timeout=30)
+        self.conn = sqlite3.connect(self.dbfile, isolation_level=None, timeout=30)
         self.cursor = self.conn.cursor()
 
     def get_cursor(self):
@@ -36,14 +37,9 @@ class DB(object):
     # This is called on both passive and listener startup
     def setup(self):
         
-        # Create main check results database
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS checks
-                               (accessor, run_time_start, run_time_end, result, output, sender, type)''')
-        self.conn.commit()
-        
-        # Create migration database
+        # Create main check results database and migration database
+        self.cursor.execute('CREATE TABLE IF NOT EXISTS checks (accessor, run_time_start, run_time_end, result, output, sender, type)')
         self.cursor.execute('CREATE TABLE IF NOT EXISTS migrations (id, version)')
-        self.conn.commit()
 
         # Run migrations
         self.run_migrations()
@@ -54,16 +50,23 @@ class DB(object):
         except Exception as e:
             days = 30;
         timestamp = time.time() - (days * 86400)
-        self.cursor.execute('DELETE FROM checks WHERE run_time_start < %d' % timestamp)
-        self.conn.commit()
+        try:
+            self.cursor.execute('DELETE FROM checks WHERE run_time_start < %d' % timestamp)
+        except Exception as e:
+            logging.exception(e)
 
     # Function that will run migrations in future versions if there needs to be some
     # changes to the database layout
     def run_migrations(self):
         pass
 
-    def commit(self):
-        self.conn.commit()
+    # Add a check to the check database
+    def add_check(self, accessor, run_time_start, run_time_end, result, output, sender, checktype):
+        data = (accessor, run_time_start, run_time_end, result, output, sender, checktype)
+        try:
+            self.cursor.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+        except Exception as ex:
+            logging.exception(ex)
 
     # Returns the total amount of checks in the DB
     def get_checks_count(self, search='', status='', senders=[]):

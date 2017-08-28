@@ -58,8 +58,16 @@
                     </p>
 
                     <h6>Check Definition Format</h6>
-                    <p>Tthe general passive check definition format is below. <em>Options in <b>bold</b> are optional</em></p>
+
+                    <p>There are two different formats that can be used when defining checks.</p>
+
+                    <p><b>Command Line Formatting</b></p>
+                    <p>The general passive check definition format is below. <em>Options in <b>bold</b> are optional</em></p>
                     <pre>&lt;hostname&gt;|&lt;servicename&gt;<b>|&lt;checkinterval&gt;</b> = &lt;api endpoint&gt; <b>--warning x --critical y &lt;other arguments&gt;</b></pre>
+
+                    <p><b>URL Formatting</b></p>
+                    <p>You can pass URL-based check definitions by passing the api endpoint and the parameters in URL format. You do need to urlencode the URL that is given.</p>
+                    <pre>&lt;hostname&gt;|&lt;servicename&gt;<b>|&lt;checkinterval&gt;</b> = &lt;api endpoint&gt;?parameter=value&amp;parameter2=value</pre>
 
                     <h6>Check Intervals</h6>
                     <p>In NCPA 2, there is now the option to set per-check intervals. The check interval is determined by the value given after the second <code>|</code> character. If no check interval is defined, then the <code>sleep</code> value from the <a href="configuration.html#passive">[passive]</a> configuration section is used as the default. This value is set to 300 seconds (5 minutes) in a default installation.</p>

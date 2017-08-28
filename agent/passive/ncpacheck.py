@@ -84,20 +84,15 @@ class NCPACheck(object):
             raise ValueError("Stdout or returncode was None, cannot return "
                              "meaningfully.")
 
-        # Save returned check results to the DB if we don't error out
-        db = listener.database.DB()
-        dbc = db.get_cursor()
-
         # Get some info about the check
         current_time = time.time()
         accessor = api_url.replace('/api/', '').rstrip('/')
 
-        # Send to database
+        # Save returned check results to the DB if we don't error out
         if not listener.server.__INTERNAL__:
-            data = (accessor, current_time, current_time, int(returncode),
-                    stdout, 'Internal', 'Passive')
-            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-            db.commit()
+            db = listener.database.DB()
+            db.add_check(accessor, current_time, current_time, int(returncode),
+                         stdout, 'Internal', 'Passive')
 
         return stdout, returncode
 
