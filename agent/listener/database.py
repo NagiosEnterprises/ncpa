@@ -60,6 +60,14 @@ class DB(object):
     def run_migrations(self):
         pass
 
+    # Add a check to the check database
+    def add_check(self, accessor, run_time_start, run_time_end, result, output, sender, checktype):
+        data = (accessor, run_time_start, run_time_end, result, output, sender, checktype)
+        try:
+            self.cursor.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+        except Exception as ex:
+            logging.exception(ex)
+
     # Returns the total amount of checks in the DB
     def get_checks_count(self, search='', status='', senders=[]):
         where = False

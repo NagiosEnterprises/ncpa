@@ -308,11 +308,9 @@ class ServiceNode(nodes.LazyNode):
         # Put check results in the check database
         if not server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
-            dbc = db.get_cursor()
             current_time = time.time()
-            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
-                    stdout, kwargs['remote_addr'], 'Active')
-            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+            db.add_check(kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
+                         stdout, kwargs['remote_addr'], 'Active')
 
         return { 'stdout': stdout, 'returncode': returncode }
 

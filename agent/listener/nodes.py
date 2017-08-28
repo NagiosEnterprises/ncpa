@@ -115,11 +115,9 @@ class RunnableParentNode(ParentNode):
         # Send check results to database
         if not server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
-            dbc = db.get_cursor()
             current_time = time.time()
-            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, primary_info['returncode'],
-                    primary_info['stdout'], kwargs['remote_addr'], 'Active')
-            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+            db.add_check(kwargs['accessor'].rstrip('/'), current_time, current_time, primary_info['returncode'],
+                         primary_info['stdout'], kwargs['remote_addr'], 'Active')
 
         return primary_info
 
@@ -288,11 +286,9 @@ class RunnableNode(ParentNode):
         # Send check results to database
         if not child_check and not server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
-            dbc = db.get_cursor()
             current_time = time.time()
-            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
-                    stdout, kwargs['remote_addr'], 'Active')
-            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
+            db.add_check(kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
+                         stdout, kwargs['remote_addr'], 'Active')
 
         return { 'returncode': returncode, 'stdout': stdout }
 
