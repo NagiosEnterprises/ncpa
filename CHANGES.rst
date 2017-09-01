@@ -1,7 +1,7 @@
 ﻿Changelog
 +++++++++
 
-2.0.5 - 08/26/2017
+2.0.5 - 09/01/2017
 ==================
 - Fixed the windows event log setting event_id to give the proper ID for some events that has bogus IDs
 - Fixed issue with DB maintenance where DB is not accessible (both processes use it)
