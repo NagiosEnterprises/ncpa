@@ -164,8 +164,11 @@ def get_disk_node(config=False):
         fstype = x.fstype.split('.')[0] # to check against fuse.<type> etc
         if fstype not in exclude_fs_types:
             if os.path.isdir(x.mountpoint):
-                tmp = make_mountpoint_nodes(x)
-                disk_mountpoints.append(tmp)
+                try:
+                    tmp = make_mountpoint_nodes(x)
+                    disk_mountpoints.append(tmp)
+                except OSError as ex:
+                    logging.exception(ex)
             else:
                 tmp = make_mount_other_nodes(x)
                 disk_parts.append(tmp)

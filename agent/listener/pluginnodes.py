@@ -128,11 +128,8 @@ class PluginNode(nodes.RunnableNode):
 
         if not server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
-            dbc = db.get_cursor()
-            data = (kwargs['accessor'].rstrip('/'), run_time_start, run_time_end, returncode,
-                    cleaned_stdout, kwargs['remote_addr'], 'Active')
-            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-            db.commit()
+            db.add_check(kwargs['accessor'].rstrip('/'), run_time_start, run_time_end, returncode,
+                         cleaned_stdout, kwargs['remote_addr'], 'Active')
 
         output = { 'returncode': returncode, 'stdout': cleaned_stdout }
 
