@@ -86,6 +86,9 @@ if [ "$1" != "1" ]; then
     while [[ "$stopped" != "inoperative" ]]; do
         sleep 3
         stopped=`lssrc -s ncpa_listener | sed -n '$p' | awk '{print $NF}'`
+        if [ "$stopped" == "file." ]; then
+            break
+        fi
     done
 
     # Make sure passive is stopped
@@ -93,6 +96,9 @@ if [ "$1" != "1" ]; then
     while [[ "$stopped" != "inoperative" ]]; do
         sleep 3
         stopped=`lssrc -s ncpa_passive | sed -n '$p' | awk '{print $NF}'`
+        if [ "$stopped" == "file." ]; then
+            break
+        fi
     done
     
     # Remove from inittab
