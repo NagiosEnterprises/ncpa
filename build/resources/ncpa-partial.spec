@@ -94,15 +94,15 @@ if [ "$1" != "1" ]; then
         sleep 3
         stopped=`lssrc -s ncpa_passive | sed -n '$p' | awk '{print $NF}'`
     done
+    
+    # Remove from inittab
+    rmitab "ncpa_listener"
+    rmitab "ncpa_passive"
+
+    # Remove from SRC
+    rmssys -s ncpa_listener >/dev/null 2>&1
+    rmssys -s ncpa_passive >/dev/null 2>&1
 fi
-
-# Remove from inittab
-rmitab "ncpa_listener"
-rmitab "ncpa_passive"
-
-# Remove from SRC
-rmssys -s ncpa_listener >/dev/null 2>&1
-rmssys -s ncpa_passive >/dev/null 2>&1
 
 %files
 %defattr(0755,nagios,nagios,0755)
