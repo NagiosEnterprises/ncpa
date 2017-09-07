@@ -43,7 +43,7 @@ def make_disk_nodes(disk_name):
 def make_mountpoint_nodes(partition_name):
     mountpoint = partition_name.mountpoint
 
-    total_size = RunnableNode('total_size', method=lambda: (ps.disk_usage(mountpoint).total, 'B'))
+    total = RunnableNode('total', method=lambda: (ps.disk_usage(mountpoint).total, 'B'))
     used = RunnableNode('used', method=lambda: (ps.disk_usage(mountpoint).used, 'B'))
     free = RunnableNode('free', method=lambda: (ps.disk_usage(mountpoint).free, 'B'))
     used_percent = RunnableNode('used_percent', method=lambda: (ps.disk_usage(mountpoint).percent, '%'))
@@ -52,7 +52,7 @@ def make_mountpoint_nodes(partition_name):
     opts = RunnableNode('opts', method=lambda: (partition_name.opts, ''))
     safe_mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
 
-    node_children = [total_size, used, free, used_percent, device_name, fstype, opts]
+    node_children = [total, used, free, used_percent, device_name, fstype, opts]
 
     # Unix specific inode counter ~ sorry Windows! :'(
     if environment.SYSTEM != 'Windows':
@@ -70,7 +70,7 @@ def make_mountpoint_nodes(partition_name):
                               children=node_children,
                               primary='used_percent',
                               custom_output='Used disk space was',
-                              include=('total_size', 'used', 'free', 'used_percent'))
+                              include=('total', 'used', 'free', 'used_percent'))
 
 def make_mount_other_nodes(partition):
     dvn = RunnableNode('device_name', method=lambda: ([partition.device], ''))
@@ -90,7 +90,7 @@ def make_if_nodes(if_name):
     errout = RunnableNode('errout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errout, 'errors'))
     dropin = RunnableNode('dropin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropin, 'packets'))
     dropout = RunnableNode('dropout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropout, 'packets'))
-    return ParentNode(if_name, children=[bytes_sent, bytes_recv, packets_sent,
+    return RunnableParentNode(if_name, primary='bytes_sent', children=[bytes_sent, bytes_recv, packets_sent,
                       packets_recv, errin, errout, dropin, dropout])
 
 
