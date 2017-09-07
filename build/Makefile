@@ -10,7 +10,7 @@ makefile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 # Makefile's parent directory with no trailing slash (something like: .../ncpa/build).
 makefile_dir := $(patsubst %/,%,$(dir $(makefile_path)))
 
-# The NCPA directory is the Makefiile's grandparent.
+# The NCPA directory is the Makefile's grandparent.
 BASEDIR = $(patsubst %/,%,$(dir $(makefile_dir)))
 
 FLAGS = ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
