@@ -316,6 +316,16 @@ $(document).ready(function() {
                 }
                 return;
 
+            case 'user':
+                if (selected == 'count') {
+                    $('.check-settings').show();
+                    $('.wc-thresholds').show();
+                } else {
+                    $('.check-settings').hide();
+                    $('.wc-thresholds').hide();
+                }
+                return;
+
             case 'disk':
                 $('.selector-disk').html('').show();
                 if (selected != '') {
@@ -889,6 +899,7 @@ function generate_passive_check() {
                         <option>processes</option>
                         <option>services</option>
                         <option>system</option>
+                        <option>user</option>
                         {% if system == "Windows" %}
                         <option>logs</option>
                         <option>windowscounters</option>
