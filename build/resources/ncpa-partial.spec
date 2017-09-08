@@ -26,9 +26,6 @@ bundled version of Python.
 rm -rf %{buildroot} 
 mkdir -p %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
-#touch %{buildroot}/usr/local/ncpa/var/ncpa.crt
-#touch %{buildroot}/usr/local/ncpa/var/ncpa.key
-touch %{buildroot}/usr/local/ncpa/var/ncpa.db
 cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 
@@ -76,6 +73,10 @@ startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_listener >/dev/null 2>&1
 startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_passive >/dev/null 2>&1
 
 %preun
+if [ -z $RPM_INSTALL_PREFIX ]; then
+    RPM_INSTALL_PREFIX="/usr/local"
+fi
+
 # Only stop on actual uninstall not upgrades
 if [ "$1" != "1" ]; then
     stopsrc -s ncpa_listener >/dev/null 2>&1
@@ -108,6 +109,11 @@ if [ "$1" != "1" ]; then
     # Remove from SRC
     rmssys -s ncpa_listener >/dev/null 2>&1
     rmssys -s ncpa_passive >/dev/null 2>&1
+    
+    # Remove key, certs, and db
+    rm -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.key
+    rm -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.cert
+    rm -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.db
 fi
 
 %files
