@@ -112,7 +112,7 @@ if [ "$1" != "1" ]; then
     
     # Remove key, certs, and db
     rm -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.key
-    rm -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.cert
+    rm -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.crt
     rm -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.db
 fi
 
