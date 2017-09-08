@@ -1,6 +1,6 @@
 PYTHONVER = python2.7
 PYTHONBIN = /usr/bin/python2.7
-NCPAVER = 2.0.3
+NCPAVER = 2.0.5
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = /tmp/test/usr/src/redhat
 BASEDIR = /tmp/test/ncpa
@@ -50,5 +50,5 @@ build_rpm: build_spec
 	/bin/cp ncpa-$(NCPAVER).tar.gz $(BUILDROOT)/SOURCES/
 	rm -f $(BUILDROOT)/SPECS/ncpa.spec
 	/bin/cp -f ncpa.spec $(BUILDROOT)/SPECS/
-	rpm -bb --define '_topdir $(BUILDROOT)' $(BUILDROOT)/SPECS/ncpa.spec
+	rpmbuild -bb --define '_topdir $(BUILDROOT)' $(BUILDROOT)/SPECS/ncpa.spec
 	find $(BUILDROOT)/RPMS -name 'ncpa-$(NCPAVER)*' -exec cp {} . \;
