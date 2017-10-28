@@ -4,6 +4,7 @@
 2.0.6 - ??/??/2017
 ==================
 - Fixed passive checks not writing to the check history database
+- Fixed API section for Internet Explorer
 
 2.0.5 - 09/01/2017
 ==================
