@@ -3,6 +3,7 @@
 
 2.0.6 - ??/??/2017
 ==================
+- Updated Python version to 2.7.14
 - Fixed passive checks not writing to the check history database
 - Fixed API section for Internet Explorer
 
