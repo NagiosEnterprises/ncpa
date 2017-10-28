@@ -1,6 +1,10 @@
 ﻿Changelog
 +++++++++
 
+2.0.6 - ??/??/2017
+==================
+- Fixed passive checks not writing to the check history database
+
 2.0.5 - 09/01/2017
 ==================
 - Fixed the windows event log setting event_id to give the proper ID for some events that has bogus IDs
