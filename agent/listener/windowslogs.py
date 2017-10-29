@@ -308,10 +308,19 @@ def is_interesting_event(event, name, filters):
         restrictions = filters[log_property]
         for restriction in restrictions:
             value = getattr(event, log_property, None)
-            if value is None and log_property == 'Message':
+
+            # Special for Event ID
+            if log_property.lower() == "event_id":
+                if str(restriction) != str(value & 0x1FFFFFFF):
+                    return False
+
+            # Look in message
+            if value is None and log_property.lower() == 'message':
                 safe = win32evtlogutil.SafeFormatMessage(event, name)
                 if not re.search(restriction, safe):
                     return False
+
+            # Do normal ==
             if not value is None:
                 if str(restriction) != str(value):
                     return False

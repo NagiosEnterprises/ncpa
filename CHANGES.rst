@@ -6,6 +6,7 @@
 - Updated Python version to 2.7.14
 - Fixed passive checks not writing to the check history database
 - Fixed API section for Internet Explorer
+- Fixed issue when using the event_id filter on Windows event logs
 
 2.0.5 - 09/01/2017
 ==================
