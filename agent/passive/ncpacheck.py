@@ -51,10 +51,10 @@ class NCPACheck(object):
         """
         logging.debug('Getting API url for instruction %s', instruction)
 
-        if ' ' in instruction:
-            api_url, api_args = NCPACheck.parse_cmdline_style_instruction(instruction)
-        else:
+        if '?' in instruction or '&' in instruction:
             api_url, api_args = NCPACheck.parse_api_url_style_instruction(instruction)
+        else:
+            api_url, api_args = NCPACheck.parse_cmdline_style_instruction(instruction)
 
         # Ensure we are running a check
         api_args['check'] = '1'
