@@ -7,6 +7,7 @@
 - Fixed passive checks not writing to the check history database
 - Fixed API section for Internet Explorer
 - Fixed issue when using the event_id filter on Windows event logs
+- Fixed issue with spaces in URL-based passive checks
 
 2.0.5 - 09/01/2017
 ==================
