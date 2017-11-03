@@ -112,7 +112,7 @@ if [ "$1" != "1" ]; then
     
     # Remove key, certs, and db
     rm -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.key
-    rm -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.cert
+    rm -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.crt
     rm -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.db
 fi
 
@@ -126,6 +126,7 @@ fi
 
 %defattr(0644,nagios,nagios,0755)
 /usr/local/ncpa/*.so*
+/usr/local/ncpa/*.a
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip
 /usr/local/ncpa/build_resources
