@@ -51,10 +51,10 @@ class NCPACheck(object):
         """
         logging.debug('Getting API url for instruction %s', instruction)
 
-        if ' ' in instruction:
-            api_url, api_args = NCPACheck.parse_cmdline_style_instruction(instruction)
-        else:
+        if '?' in instruction or '&' in instruction:
             api_url, api_args = NCPACheck.parse_api_url_style_instruction(instruction)
+        else:
+            api_url, api_args = NCPACheck.parse_cmdline_style_instruction(instruction)
 
         # Ensure we are running a check
         api_args['check'] = '1'
@@ -89,7 +89,7 @@ class NCPACheck(object):
         accessor = api_url.replace('/api/', '').rstrip('/')
 
         # Save returned check results to the DB if we don't error out
-        if not listener.server.__INTERNAL__:
+        if listener.server.__INTERNAL__:
             db = listener.database.DB()
             db.add_check(accessor, current_time, current_time, int(returncode),
                          stdout, 'Internal', 'Passive')

@@ -22,7 +22,7 @@ import database
 import math
 
 
-__VERSION__ = '2.0.5'
+__VERSION__ = '2.0.6'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 

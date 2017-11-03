@@ -5,7 +5,7 @@
 #
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PYTHONTAR="Python-2.7.13"
+PYTHONTAR="Python-2.7.14"
 PYTHONVER="python2.7"
 CXFREEZETAR="cx_Freeze-4.3.4-patched"
 CXFREEZEVER="cx_Freeze-4.3.4"

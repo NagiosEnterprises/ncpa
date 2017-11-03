@@ -1,6 +1,14 @@
 ﻿Changelog
 +++++++++
 
+2.0.6 - ??/??/2017
+==================
+- Updated Python version to 2.7.14
+- Fixed passive checks not writing to the check history database
+- Fixed API section for Internet Explorer
+- Fixed issue when using the event_id filter on Windows event logs
+- Fixed issue with spaces in URL-based passive checks
+
 2.0.5 - 09/01/2017
 ==================
 - Fixed the windows event log setting event_id to give the proper ID for some events that has bogus IDs
