@@ -126,6 +126,7 @@ fi
 
 %defattr(0644,nagios,nagios,0755)
 /usr/local/ncpa/*.so*
+/usr/local/ncpa/*.a
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip
 /usr/local/ncpa/build_resources
