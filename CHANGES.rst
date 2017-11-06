@@ -1,13 +1,14 @@
 ﻿Changelog
 +++++++++
 
-2.0.6 - ??/??/2017
+2.0.6 - 11/07/2017
 ==================
 - Updated Python version to 2.7.14
 - Fixed passive checks not writing to the check history database
 - Fixed API section for Internet Explorer
 - Fixed issue when using the event_id filter on Windows event logs
 - Fixed issue with spaces in URL-based passive checks
+- Fixed catching of IOError with systems (typically virtual) that do not have any accessible partitions
 
 2.0.5 - 09/01/2017
 ==================
