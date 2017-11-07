@@ -103,6 +103,9 @@ class Base(object):
     # for the stop event or the service GUI will not respond to requests to
     # stop the service
     def Run(self):
+        # Fix for cx_Freeze < 5 - PLEASE REMOVE IN 5+
+        if not hasattr(sys, 'argv'):
+            sys.argv  = ['']
         self.start()
         self.stopEvent.wait()
 
