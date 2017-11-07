@@ -79,7 +79,6 @@ def make_mount_other_nodes(partition):
     return ParentNode(safe_mountpoint, children=[dvn, fstype, opts])
 
 def make_if_nodes(if_name):
-
     x = ps.net_io_counters(pernic=True)
 
     bytes_sent = RunnableNode('bytes_sent', method=lambda: (x[if_name].bytes_sent, 'B'))
@@ -92,6 +91,7 @@ def make_if_nodes(if_name):
     dropout = RunnableNode('dropout', method=lambda: (x[if_name].dropout, 'packets'))
 
     # Temporary fix for Windows (latin-1 should catch most things)
+    name = if_name
     if environment.SYSTEM == "Windows":
         name = unicode(if_name, "latin-1", errors="replace")
 
