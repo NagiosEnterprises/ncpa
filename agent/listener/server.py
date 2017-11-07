@@ -632,7 +632,6 @@ def api_websocket(accessor=None):
         while True:
             try:
                 message = ws.receive()
-                message = message.decode('utf-8')
                 node = psapi.getter(message, config, request.path)
                 prop = node.name
                 val = node.walk(first=True, **sane_args)

@@ -4,6 +4,7 @@
 2.0.6 - 11/07/2017
 ==================
 - Updated Python version to 2.7.14
+- Updated gevent-websocket to version 0.10.1 so we do not need to use patched version
 - Fixed passive checks not writing to the check history database
 - Fixed API section for Internet Explorer
 - Fixed issue when using the event_id filter on Windows event logs
