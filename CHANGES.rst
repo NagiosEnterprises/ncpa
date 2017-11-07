@@ -9,6 +9,9 @@
 - Fixed issue when using the event_id filter on Windows event logs
 - Fixed issue with spaces in URL-based passive checks
 - Fixed catching of IOError with systems (typically virtual) that do not have any accessible partitions
+- Fixed encoding problems in Timezones and Interfaces on Windows with non-English characters
+- Fixed delta time values not working properly due to caching data on websockets
+- Fixed large values showing up on initial check when viewing deltas
 
 2.0.5 - 09/01/2017
 ==================
