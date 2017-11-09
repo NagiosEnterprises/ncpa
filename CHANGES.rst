@@ -3,6 +3,7 @@
 
 2.0.6 - 11/07/2017
 ==================
+- Added a Kafka-Producer for passive checks
 - Updated Python version to 2.7.14
 - Updated gevent-websocket to version 0.10.1 so we do not need to use patched version
 - Fixed passive checks not writing to the check history database
