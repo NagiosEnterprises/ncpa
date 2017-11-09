@@ -1,7 +1,7 @@
 ﻿Changelog
 +++++++++
 
-2.0.6 - 11/07/2017
+2.0.6 - 11/09/2017
 ==================
 - Updated Python version to 2.7.14
 - Updated gevent-websocket to version 0.10.1 so we do not need to use patched version
