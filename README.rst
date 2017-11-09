@@ -24,7 +24,7 @@ We currently build for the following operating systems:
 - CentOS / RHEL 5, 6, 7¹
 - Debian 7, 8, 9¹
 - Ubuntu² 12, 14, 16
-- OpenSUSE 11, 13/42/Tumbleweed¹
+- OpenSUSE 11, 12¹, 13¹, 42¹, Tumbleweed¹
 - SLES 11, 12¹
 - Oracle 5, 6, 7
 - AIX 6, 7
