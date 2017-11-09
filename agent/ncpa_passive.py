@@ -7,6 +7,7 @@ import os
 import filename
 import passive.nrds
 import passive.nrdp
+import passive.kafkaproducer
 
 
 class Passive(ncpadaemon.Daemon):
