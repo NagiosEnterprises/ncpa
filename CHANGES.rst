@@ -1,4 +1,4 @@
-﻿Changelog
+Changelog
 +++++++++
 
 2.1.0 - ??/??/2017
@@ -11,6 +11,7 @@
 - Added LD_LIBRARY_PATH to ncpa init scripts and include libssl and libcrypto so we have the latest OpenSSL libraries
 - Added default_units configuration value to allow setting a default unit such as G or Gi for checks
 - Added exclude_fs_types configuration value to remove certain file system types from the disk check
+- Added a Kafka-Producer for passive checks
 - Fixed searching for cmd causing any process with no cmd given to show up with any search
 
 2.0.6 - 11/09/2017
