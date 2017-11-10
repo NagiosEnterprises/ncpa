@@ -10,3 +10,4 @@ cryptography==1.2.3
 cffi==1.5.2
 appdirs
 packaging
+kafka

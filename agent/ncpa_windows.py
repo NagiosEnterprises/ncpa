@@ -14,6 +14,7 @@ from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
 import passive.nrds
 import passive.nrdp
+import passive.kafkaproducer
 import listener.server
 import listener.psapi
 import listener.windowscounters
@@ -207,7 +208,7 @@ class Passive(Base):
         if handlers[0] == 'None' or handlers[0] == '':
             return
 
-        # Runs either nrds or nrdp (or both)
+        # Runs either nrds, nrdp or kafka
         for handler in handlers:
             try:
                 handler = handler.strip()
