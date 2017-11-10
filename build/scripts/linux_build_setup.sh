@@ -5,12 +5,10 @@
 #
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PYTHONTAR="Python-2.7.13"
+PYTHONTAR="Python-2.7.14"
 PYTHONVER="python2.7"
 CXFREEZETAR="cx_Freeze-4.3.4-patched"
 CXFREEZEVER="cx_Freeze-4.3.4"
-GWEBSOCKETTAR="gevent-websocket-0.9.5-patched"
-GWEBSOCKETVER="gevent-websocket-0.9.5"
 CXLOGGINGVER="cx_Logging-2.1"
 PYTHONBIN="/usr/local/bin/python2.7"
 BUILDFROM=$1
@@ -71,21 +69,6 @@ fi
 
 cd $DIR
 $PYTHONBIN -m pip install -r ../resources/require.txt --upgrade
-
-# --------------------------
-#  INSTALL RESOURCES
-# --------------------------
-
-# Install patched version of gevent-websocket
-cd $DIR/../resources
-
-tar xf $GWEBSOCKETTAR.tar.gz
-cd $GWEBSOCKETVER
-$PYTHONBIN setup.py install
-
-# Clean up resources directory again
-cd ..
-rm -rf $GWEBSOCKETVER
 
 # --------------------------
 #  MISC SETUP

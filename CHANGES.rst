@@ -1,4 +1,4 @@
-﻿﻿Changelog
+﻿Changelog
 +++++++++
 
 2.1.0 - ??/??/2017
@@ -12,6 +12,19 @@
 - Added default_units configuration value to allow setting a default unit such as G or Gi for checks
 - Added exclude_fs_types configuration value to remove certain file system types from the disk check
 - Fixed searching for cmd causing any process with no cmd given to show up with any search
+
+2.0.6 - 11/09/2017
+==================
+- Updated Python version to 2.7.14
+- Updated gevent-websocket to version 0.10.1 so we do not need to use patched version
+- Fixed passive checks not writing to the check history database
+- Fixed API section for Internet Explorer
+- Fixed issue when using the event_id filter on Windows event logs
+- Fixed issue with spaces in URL-based passive checks
+- Fixed catching of IOError with systems (typically virtual) that do not have any accessible partitions
+- Fixed encoding problems in Timezones and Interfaces on Windows with non-English characters
+- Fixed delta time values not working properly due to caching data on websockets
+- Fixed large values showing up on initial check when viewing deltas
 
 2.0.5 - 09/01/2017
 ==================

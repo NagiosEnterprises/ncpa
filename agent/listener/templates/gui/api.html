@@ -470,10 +470,10 @@ function add_filter_selector() {
     $('.proc-filters .list').append(filter);
 }
 
-function add_log_name_selector(value='') {
+function add_log_name_selector(value) {
     var name = '<div class="input-group"><div class="input-group-addon">Name</div><input type="text" class="form-control name"></div>';
     $('.log-name-selector .list').append(name);
-    if (value != '') {
+    if (value) {
         $('.log-name-selector .list input').last().val(value);
     }
 }
@@ -483,7 +483,7 @@ function add_argument() {
     $('.arguments .list').append(arg);
 }
 
-function get_api_endpoints(no_forward_slash=false) {
+function get_api_endpoints(no_forward_slash) {
     var api = '';
 
     // Add module to api call
@@ -542,7 +542,7 @@ function get_api_endpoints(no_forward_slash=false) {
     return api;
 }
 
-function generate_url(skip_settings=false, use_for_pcheck=false) {
+function generate_url(skip_settings, use_for_pcheck) {
     var module = $('#module').val();
 
     var api = window.location.protocol + '//' + window.location.hostname;

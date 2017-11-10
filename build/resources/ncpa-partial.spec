@@ -27,8 +27,6 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
 mkdir -p %{buildroot}/etc/init.d
-touch %{buildroot}/usr/local/ncpa/var/ncpa.crt
-touch %{buildroot}/usr/local/ncpa/var/ncpa.key
 touch %{buildroot}/usr/local/ncpa/var/ncpa.db
 cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa

@@ -638,10 +638,10 @@ def api_websocket(accessor=None):
         while True:
             try:
                 message = ws.receive()
-                node = psapi.getter(message, config, request.path, cache=True)
+                node = psapi.getter(message, config, request.path)
                 prop = node.name
                 val = node.walk(first=True, **sane_args)
-                jval = json.dumps(val[prop])
+                jval = json.dumps(val[prop], ensure_ascii=False)
                 ws.send(jval)
             except Exception as e:
                 # Socket was probably closed by the browser changing pages
@@ -670,7 +670,7 @@ def top_websocket():
                     continue
                 process_list.append(process)
 
-            json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
+            json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list}, ensure_ascii=False)
             try:
                 ws.send(json_val)
                 gevent.sleep(1)
@@ -693,7 +693,7 @@ def tail_websocket():
                 last_ts, logs = listener.tail_method(last_ts=last_ts, **request.args)
 
                 if logs:
-                    json_log = json.dumps(logs)
+                    json_log = json.dumps(logs, ensure_ascii=False)
                     ws.send(json_log)
 
                 gevent.sleep(5)
@@ -947,7 +947,7 @@ def api(accessor=''):
         value = node.walk(**sane_args)
 
     # Generate page and add cross-domain loading
-    response = Response(json.dumps(dict(value), ensure_ascii=False,
-                        indent=None if request.is_xhr else 4), mimetype='application/json')
+    json_data = json.dumps(dict(value), ensure_ascii=False, indent=None if request.is_xhr else 4)
+    response = Response(json_data, mimetype='application/json')
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response

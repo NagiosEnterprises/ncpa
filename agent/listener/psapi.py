@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import psutil as ps
 import os
 import logging
@@ -80,22 +79,30 @@ def make_mount_other_nodes(partition):
     return ParentNode(safe_mountpoint, children=[dvn, fstype, opts])
 
 def make_if_nodes(if_name):
-    bytes_sent = RunnableNode('bytes_sent', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_sent, 'B'))
-    bytes_recv = RunnableNode('bytes_recv', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_recv, 'B'))
-    packets_sent = RunnableNode('packets_sent',
-                                method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_sent, 'packets'))
-    packets_recv = RunnableNode('packets_recv',
-                                method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_recv, 'packets'))
-    errin = RunnableNode('errin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errin, 'errors'))
-    errout = RunnableNode('errout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errout, 'errors'))
-    dropin = RunnableNode('dropin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropin, 'packets'))
-    dropout = RunnableNode('dropout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropout, 'packets'))
-    return RunnableParentNode(if_name, primary='bytes_sent', children=[bytes_sent, bytes_recv, packets_sent,
+    x = ps.net_io_counters(pernic=True)
+
+    bytes_sent = RunnableNode('bytes_sent', method=lambda: (x[if_name].bytes_sent, 'B'))
+    bytes_recv = RunnableNode('bytes_recv', method=lambda: (x[if_name].bytes_recv, 'B'))
+    packets_sent = RunnableNode('packets_sent', method=lambda: (x[if_name].packets_sent, 'packets'))
+    packets_recv = RunnableNode('packets_recv', method=lambda: (x[if_name].packets_recv, 'packets'))
+    errin = RunnableNode('errin', method=lambda: (x[if_name].errin, 'errors'))
+    errout = RunnableNode('errout', method=lambda: (x[if_name].errout, 'errors'))
+    dropin = RunnableNode('dropin', method=lambda: (x[if_name].dropin, 'packets'))
+    dropout = RunnableNode('dropout', method=lambda: (x[if_name].dropout, 'packets'))
+
+    # Temporary fix for Windows (latin-1 should catch most things)
+    name = if_name
+    if environment.SYSTEM == "Windows":
+        name = unicode(if_name, "latin-1", errors="replace")
+
+    return ParentNode(name, children=[bytes_sent, bytes_recv, packets_sent,
                       packets_recv, errin, errout, dropin, dropout])
 
 
 def get_timezone():
     zones = time.tzname
+    if environment.SYSTEM == "Windows":
+        zones = [unicode(x, "latin-1", errors="replace") for x in zones]
     return zones, ''
 
 
@@ -144,8 +151,13 @@ def get_memory_node():
 
 
 def get_disk_node(config=False):
-    disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
     exclude_fs_types = []
+
+    try:
+        disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
+    except IOError as ex:
+        logging.exception(ex)
+        disk_counters = []
 
     # Get exclude values from the config if it exists
     # otherwise use the defaults
@@ -172,6 +184,8 @@ def get_disk_node(config=False):
             else:
                 tmp = make_mount_other_nodes(x)
                 disk_parts.append(tmp)
+    except IOError as ex:
+        logging.exception(ex)
 
     disk_logical = ParentNode('logical', children=disk_mountpoints)
     disk_physical = ParentNode('physical', children=disk_counters)

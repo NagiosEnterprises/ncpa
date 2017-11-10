@@ -448,7 +448,7 @@ class RunnableNode(ParentNode):
 
         # If last modified is 0, then return false
         if last_modified == 0:
-            return False
+            return 0
 
         # Calculate the return value and return it
         delta = time.time() - last_modified
