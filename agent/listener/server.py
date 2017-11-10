@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response
+from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response, abort
 import logging
 import urllib
 import urlparse
@@ -20,9 +20,10 @@ import geventwebsocket
 import processes
 import database
 import math
+import ipaddress
 
 
-__VERSION__ = '2.0.6'
+__VERSION__ = '2.1.0'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
@@ -100,6 +101,19 @@ def make_info_dict():
 # ------------------------------
 # Authentication Wrappers
 # ------------------------------
+
+
+@listener.before_request
+def before_request():
+    allowed_hosts = get_config_value('listener', 'allowed_hosts')
+    if allowed_hosts:
+        if request.remote_addr:
+            ipaddr = ipaddress.ip_address(unicode(request.remote_addr))
+            allowed = ipaddress.ip_network(unicode(allowed_hosts))
+            if ipaddr not in allowed:
+                abort(403)
+        else:
+            abort(403)
 
 
 # Variable injection for all pages that flask creates
@@ -311,14 +325,6 @@ def error_page_not_found(e):
     if not session.get('logged', False):
         template_args = { 'hide_page_links': True }
     return render_template('errors/404.html', **template_args), 404
-
-
-@listener.errorhandler(403)
-def error_page_not_found(e):
-    template_args = {}
-    if not session.get('logged', False):
-        template_args = { 'hide_page_links': True }
-    return render_template('errors/403.html', **template_args), 403
 
 
 @listener.errorhandler(500)
@@ -879,6 +885,7 @@ def api(accessor=''):
     #   api/process/<processname> -> api/processes?name=<processname>
     #   api/agent/plugin/<plugin> -> api/plugins/<plugin>
     #
+    """
     path = [re.sub('%2f', '/', x, flags=re.I) for x in accessor.split('/') if x]
     if len(path) > 0 and path[0] == 'api':
         path = path[1:]
@@ -903,6 +910,7 @@ def api(accessor=''):
             accessor = "plugins"
             if 'plugin' in rest_path[0] and len(rest_path) > 1:
                 accessor = "plugins/" + rest_path[1]
+    """
 
     # Set the full requested path
     full_path = request.path
@@ -926,6 +934,12 @@ def api(accessor=''):
 
     if not 'check' in sane_args:
         sane_args['check'] = request.args.get('check', False)
+
+    # Check for default unit in the config values
+    default_units = get_config_value('general', 'default_units')
+    if default_units:
+        if not 'units' in sane_args:
+            sane_args['units'] = default_units
 
     if sane_args['check']:
         value = node.run_check(**sane_args)

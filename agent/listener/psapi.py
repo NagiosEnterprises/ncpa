@@ -42,7 +42,7 @@ def make_disk_nodes(disk_name):
 def make_mountpoint_nodes(partition_name):
     mountpoint = partition_name.mountpoint
 
-    total_size = RunnableNode('total_size', method=lambda: (ps.disk_usage(mountpoint).total, 'B'))
+    total = RunnableNode('total', method=lambda: (ps.disk_usage(mountpoint).total, 'B'))
     used = RunnableNode('used', method=lambda: (ps.disk_usage(mountpoint).used, 'B'))
     free = RunnableNode('free', method=lambda: (ps.disk_usage(mountpoint).free, 'B'))
     used_percent = RunnableNode('used_percent', method=lambda: (ps.disk_usage(mountpoint).percent, '%'))
@@ -51,7 +51,7 @@ def make_mountpoint_nodes(partition_name):
     opts = RunnableNode('opts', method=lambda: (partition_name.opts, ''))
     safe_mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
 
-    node_children = [total_size, used, free, used_percent, device_name, fstype, opts]
+    node_children = [total, used, free, used_percent, device_name, fstype, opts]
 
     # Unix specific inode counter ~ sorry Windows! :'(
     if environment.SYSTEM != 'Windows':
@@ -69,7 +69,7 @@ def make_mountpoint_nodes(partition_name):
                               children=node_children,
                               primary='used_percent',
                               custom_output='Used disk space was',
-                              include=('total_size', 'used', 'free', 'used_percent'))
+                              include=('total', 'used', 'free', 'used_percent'))
 
 def make_mount_other_nodes(partition):
     dvn = RunnableNode('device_name', method=lambda: ([partition.device], ''))
@@ -150,17 +150,31 @@ def get_memory_node():
     return ParentNode('memory', children=[mem_virt, mem_swap])
 
 
-def get_disk_node():
+def get_disk_node(config=False):
+    exclude_fs_types = []
+
     try:
         disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
     except IOError as ex:
         logging.exception(ex)
         disk_counters = []
 
+    # Get exclude values from the config if it exists
+    # otherwise use the defaults
+    if config:
+        try:
+            exclude_fs_types = config.get('general', 'exclude_fs_types')
+        except Exception as e:
+            exclude_fs_types = "aufs,autofs,binfmt_misc,cifs,cgroup,debugfs,devpts,devtmpfs,"\
+                               "encryptfs,efivarfs,fuse,hugelbtfs,mqueue,nfs,overlayfs,proc,"\
+                               "pstore,rpc_pipefs,securityfs,smb,sysfs,tmpfs,tracefs"
+        exclude_fs_types = [x.strip() for x in exclude_fs_types.split(',')]
+
     disk_mountpoints = []
     disk_parts = []
-    try:
-        for x in ps.disk_partitions(all=True):
+    for x in ps.disk_partitions(all=True):
+        fstype = x.fstype.split('.')[0] # to check against fuse.<type> etc
+        if fstype not in exclude_fs_types:
             if os.path.isdir(x.mountpoint):
                 try:
                     tmp = make_mountpoint_nodes(x)
@@ -195,10 +209,10 @@ def get_user_node():
     return ParentNode('user', children=[user_count, user_list])
 
 
-def get_root_node():
+def get_root_node(config=False):
     cpu = get_cpu_node()
     memory = get_memory_node()
-    disk = get_disk_node()
+    disk = get_disk_node(config)
     interface = get_interface_node()
     plugins = get_plugins_node()
     user = get_user_node()
@@ -251,7 +265,7 @@ def getter(accessor, config, full_path, cache=False):
     # node. This normally only happens on new API calls. When we are using
     # websockets we use the cached version while it makes requests.
     if not cache:
-        root = get_root_node()
+        root = get_root_node(config)
 
     root.reset_valid_nodes()
     return root.accessor(path, config, full_path)

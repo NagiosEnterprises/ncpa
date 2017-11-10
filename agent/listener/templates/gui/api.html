@@ -316,6 +316,16 @@ $(document).ready(function() {
                 }
                 return;
 
+            case 'user':
+                if (selected == 'count') {
+                    $('.check-settings').show();
+                    $('.wc-thresholds').show();
+                } else {
+                    $('.check-settings').hide();
+                    $('.wc-thresholds').hide();
+                }
+                return;
+
             case 'disk':
                 $('.selector-disk').html('').show();
                 if (selected != '') {
@@ -412,7 +422,7 @@ $(document).ready(function() {
     // Filter list filter selection
     $('.list').on('change', '.filter-name', function() {
         var input = $(this).parents('.filter-group').find('input');
-        if ($(this).val() != 'name' && $(this).val() != 'exe') {
+        if ($(this).val() != 'name' && $(this).val() != 'exe' && $(this).val() != 'cmd') {
             input.attr('placeholder', '>=');
         } else {
             input.attr('placeholder', '');
@@ -456,7 +466,7 @@ function add_service_selector() {
 }
 
 function add_filter_selector() {
-    var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 45%; border-right: 0;"><option value="name">name</option><option value="exe">exe</option><option value="mem_percent">mem_percent</option><option value="cpu_percent">cpu_percent</option><option value="mem_vms">mem_vms</option><option value="mem_rss">mem_rss</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 55%;"></div>';
+    var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 45%; border-right: 0;"><option value="name">name</option><option value="exe">exe</option><option value="cmd">cmd</option><option value="mem_percent">mem_percent</option><option value="cpu_percent">cpu_percent</option><option value="mem_vms">mem_vms</option><option value="mem_rss">mem_rss</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 55%;"></div>';
     $('.proc-filters .list').append(filter);
 }
 
@@ -889,6 +899,7 @@ function generate_passive_check() {
                         <option>processes</option>
                         <option>services</option>
                         <option>system</option>
+                        <option>user</option>
                         {% if system == "Windows" %}
                         <option>logs</option>
                         <option>windowscounters</option>

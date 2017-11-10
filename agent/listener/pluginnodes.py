@@ -83,8 +83,18 @@ class PluginNode(nodes.RunnableNode):
         except Exception as e:
             check_logging = 1
 
+        # Create a list of plugin names that should be ran as sudo
+        sudo_plugins = []
+        try:
+            run_with_sudo = config.get('plugin directives', 'run_with_sudo')
+            sudo_plugins = [x.strip() for x in run_with_sudo.split(',')]
+        except Exception as e:
+            pass
+
+        print sudo_plugins
+
         # Make our command line
-        cmd = self.get_cmdline(instructions)
+        cmd = self.get_cmdline(instructions, sudo_plugins)
         logging.debug('Running process with command line: `%s`', ' '.join(cmd))
 
         # Demote the child process to the username/group specified in config
@@ -156,7 +166,7 @@ class PluginNode(nodes.RunnableNode):
             os.setuid(uid)
         return result
 
-    def get_cmdline(self, instruction):
+    def get_cmdline(self, instruction, sudo_plugins):
         """Execute with special instructions.
 
         EXAMPLE instruction (Powershell):
@@ -167,6 +177,11 @@ class PluginNode(nodes.RunnableNode):
 
         """
         command = []
+
+        # Add sudo for commands that need to run as sudo
+        if os.name == 'posix':
+            if self.name in sudo_plugins:
+                command.append('sudo')
 
         # Set shlex to use posix mode on posix machines (so that we can pass something like
         # --metric='disk/logical/|' and have it properly format quotes)

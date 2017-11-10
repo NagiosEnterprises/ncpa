@@ -1,9 +1,21 @@
-﻿Changelog
+Changelog
 +++++++++
 
-2.0.6 - 11/07/2017
+2.1.0 - ??/??/2017
 ==================
+- Removed deprecated aliases (service, process, and agent) as stated in 2.0.0 changelog section
+- Added a new config option (allowed_hosts) to the [listener] section to block access except from specified addresses
+- Added a new config option (run_with_sudo) to the [plugin directives] section to prepend the sudo command
+- Added shell script to uninstall NCPA on Mac OS X by running "sudo /usr/local/ncpa/uninstall.sh"
+- Added /IP and /PORT to silent install options for the Windows installer
+- Added LD_LIBRARY_PATH to ncpa init scripts and include libssl and libcrypto so we have the latest OpenSSL libraries
+- Added default_units configuration value to allow setting a default unit such as G or Gi for checks
+- Added exclude_fs_types configuration value to remove certain file system types from the disk check
 - Added a Kafka-Producer for passive checks
+- Fixed searching for cmd causing any process with no cmd given to show up with any search
+
+2.0.6 - 11/09/2017
+==================
 - Updated Python version to 2.7.14
 - Updated gevent-websocket to version 0.10.1 so we do not need to use patched version
 - Fixed passive checks not writing to the check history database
