@@ -95,8 +95,8 @@ def make_if_nodes(if_name):
     if environment.SYSTEM == "Windows":
         name = unicode(if_name, "latin-1", errors="replace")
 
-    return ParentNode(name, children=[bytes_sent, bytes_recv, packets_sent,
-                      packets_recv, errin, errout, dropin, dropout])
+    return RunnableParentNode(name, primary='bytes_sent', children=[bytes_sent, bytes_recv, packets_sent,
+                              packets_recv, errin, errout, dropin, dropout])
 
 
 def get_timezone():
