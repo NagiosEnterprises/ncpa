@@ -134,6 +134,15 @@ class WindowsLogsNode(nodes.LazyNode):
 
         stdout = '%s | %s' % (info_line, perfdata)
 
+        # Long output including actual log messages
+        for n in log_names:
+            if n == 'Total Count':
+                continue
+            stdout += '\n%s Logs\nTime: Computer: Severity: Event ID: Source: Message\n-----------------------------------\n' % n
+            for log in logs[n]:
+                stdout += '%s: %s: %s: %s: %s: %s\n' % (log['time_generated'], log['computer_name'], log['severity'],
+                    log['event_id'], log['application'], log['message'].replace('\r\n', ''))
+
         # Get the check logging value
         try:
             check_logging = int(kwargs['config'].get('general', 'check_logging'))
