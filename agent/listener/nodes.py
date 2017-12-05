@@ -200,6 +200,9 @@ class RunnableNode(ParentNode):
         else:
             accessor = hasher
 
+        # Make accessor even more unique (for parent node deltas)
+        accessor += '.' + self.name
+
         if delta:
             self.delta = True
             self.unit = self.unit + '/s'

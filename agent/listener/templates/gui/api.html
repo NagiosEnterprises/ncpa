@@ -198,7 +198,7 @@ $(document).ready(function() {
     $('.selector').on('change', '.submod', function() {
         var module = $('#module').val();
         var selected = $(this).val();
-        
+
         switch (module)
         {
             case 'cpu':
@@ -262,6 +262,7 @@ $(document).ready(function() {
                 if (selected != '') {
                     $('.check-settings').show();
                     $('.data-settings').show();
+                    $('.data-settings .delta-box').show();
                     $('.data-settings .unit-prefix').show();
                     $('.data-settings .agg').hide();
                     $('.wc-thresholds').show();
@@ -277,13 +278,6 @@ $(document).ready(function() {
 
                         // Add change selector to show data settings or not
                         endselect.change(function() {
-                            if ($(this).val() == '') {
-                                $('.data-settings .delta-box').hide();
-                                $('.data-settings').hide();
-                            } else {
-                                $('.data-settings .delta-box').show();
-                                $('.data-settings').show();
-                            }
                             var show_data = ['', 'bytes_recv', 'bytes_sent'];
                             if (show_data.indexOf($(this).val()) == -1) {
                                 $('.data-settings .units').val('');
@@ -302,6 +296,7 @@ $(document).ready(function() {
                 } else {
                     clear_settings();
                     $('.check-settings').hide();
+                    $('.data-settings').hide();
                     $('.selector .interface-end-node').remove();
                 }
                 break;
