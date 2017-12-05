@@ -12,6 +12,7 @@ Changelog
 - Added default_units configuration value to allow setting a default unit such as G or Gi for checks
 - Added exclude_fs_types configuration value to remove certain file system types from the disk check
 - Added a Kafka-Producer for passive checks
+- Added log message (and other log data) in to check as long output for Windows logs
 - Fixed searching for cmd causing any process with no cmd given to show up with any search
 
 2.0.6 - 11/09/2017

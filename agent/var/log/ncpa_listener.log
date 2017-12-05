@@ -1,0 +1,483 @@
+2017-12-05 06:14:27,753:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 06:14:27,753:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 06:14:27,753:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 06:14:34,765:INFO:handler:192.168.3.112 - - [2017-12-05 06:14:34] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.002000
+2017-12-05 06:14:34,766:INFO:handler:192.168.3.112 - - [2017-12-05 06:14:34] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:14:34,767:INFO:handler:192.168.3.112 - - [2017-12-05 06:14:34] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:14:34,769:INFO:handler:192.168.3.112 - - [2017-12-05 06:14:34] "GET /api/memory/swap/?token=&critical=80&units=-w&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:14:38,180:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:38] "GET / HTTP/1.1" 302 505 0.002000
+2017-12-05 06:14:38,198:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:38] "GET /login HTTP/1.1" 200 3028 0.017000
+2017-12-05 06:14:38,384:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:38] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 125557 0.172000
+2017-12-05 06:14:38,388:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:38] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 31308 0.002000
+2017-12-05 06:14:38,390:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:38] "GET /static/css/ncpa.css HTTP/1.1" 200 9631 0.002000
+2017-12-05 06:14:38,392:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:38] "GET /static/js/jquery.2.2.4.min.js HTTP/1.1" 200 85885 0.003000
+2017-12-05 06:14:38,394:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:38] "GET /static/js/bootstrap.min.js HTTP/1.1" 200 37176 0.002000
+2017-12-05 06:14:38,398:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:38] "GET /static/js/d3.v4.min.js HTTP/1.1" 200 211431 0.004000
+2017-12-05 06:14:38,401:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:38] "GET /static/js/main.js HTTP/1.1" 200 549 0.002000
+2017-12-05 06:14:38,476:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:38] "GET /static/img/footer_lodyas.png HTTP/1.1" 200 33992 0.003000
+2017-12-05 06:14:38,513:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:38] "GET /static/img/ncpa.png HTTP/1.1" 200 18906 0.002000
+2017-12-05 06:14:38,561:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:38] "GET /static/img/ncpa.png HTTP/1.1" 200 18906 0.028000
+2017-12-05 06:14:40,798:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:40] "POST /login HTTP/1.1" 302 545 0.002000
+2017-12-05 06:14:40,802:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:40] "GET / HTTP/1.1" 302 376 0.001000
+2017-12-05 06:14:40,812:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:40] "GET /gui/ HTTP/1.1" 200 6754 0.008000
+2017-12-05 06:14:40,828:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:40] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 125557 0.003000
+2017-12-05 06:14:40,832:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:40] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 31308 0.003000
+2017-12-05 06:14:40,835:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:40] "GET /static/css/ncpa.css HTTP/1.1" 200 9631 0.002000
+2017-12-05 06:14:40,984:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:40] "GET /static/fonts/fontawesome-webfont.woff2?v=4.7.0 HTTP/1.1" 200 77465 0.004000
+2017-12-05 06:14:42,138:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:42] "GET /gui/api HTTP/1.1" 200 53943 0.036000
+2017-12-05 06:14:42,153:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:42] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 125557 0.004000
+2017-12-05 06:14:42,154:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:42] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 31308 0.002000
+2017-12-05 06:14:42,157:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:42] "GET /static/css/ncpa.css HTTP/1.1" 200 9631 0.002000
+2017-12-05 06:14:42,161:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:42] "GET /static/css/ea.min.css HTTP/1.1" 200 9634 0.002000
+2017-12-05 06:14:42,164:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:42] "GET /static/js/jquery.ea.1.3.5.min.js HTTP/1.1" 200 16136 0.002000
+2017-12-05 06:14:42,170:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:42] "GET /static/img/warning.png HTTP/1.1" 200 952 0.001000
+2017-12-05 06:14:42,174:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:42] "GET /static/img/critical.png HTTP/1.1" 200 987 0.002000
+2017-12-05 06:14:42,272:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:42] "GET /api HTTP/1.1" 301 432 0.004000
+2017-12-05 06:14:42,377:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:42] "GET /api/ HTTP/1.1" 200 6475 0.094000
+2017-12-05 06:14:45,092:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:45] "GET /api/logs HTTP/1.1" 200 292 0.047000
+2017-12-05 06:14:46,759:INFO:handler:127.0.0.1 - - [2017-12-05 06:14:46] "GET /api/logs?name=System&name=Application&check=true&warning=100&critical=400 HTTP/1.1" 500 4145 0.107000
+2017-12-05 06:16:08,263:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 06:16:08,263:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 06:16:08,265:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 06:16:22,421:INFO:handler:127.0.0.1 - - [2017-12-05 06:16:22] "GET /api/logs?name=System&name=Application&check=true&warning=100&critical=400&token=mytoken HTTP/1.1" 500 2362 3.060000
+2017-12-05 06:16:22,647:INFO:handler:127.0.0.1 - - [2017-12-05 06:16:22] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 125557 0.214000
+2017-12-05 06:16:22,650:INFO:handler:127.0.0.1 - - [2017-12-05 06:16:22] "GET /static/css/ncpa.css HTTP/1.1" 200 9631 0.001000
+2017-12-05 06:16:22,653:INFO:handler:127.0.0.1 - - [2017-12-05 06:16:22] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 31308 0.003000
+2017-12-05 06:16:54,776:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 06:16:54,778:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 06:16:54,778:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 06:16:58,115:INFO:handler:127.0.0.1 - - [2017-12-05 06:16:58] "GET /api/logs?name=System&name=Application&check=true&warning=100&critical=400&token=mytoken HTTP/1.1" 500 2362 0.113000
+2017-12-05 06:16:58,312:INFO:handler:127.0.0.1 - - [2017-12-05 06:16:58] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 125557 0.188000
+2017-12-05 06:16:58,313:INFO:handler:127.0.0.1 - - [2017-12-05 06:16:58] "GET /static/css/ncpa.css HTTP/1.1" 200 9631 0.001000
+2017-12-05 06:16:58,315:INFO:handler:127.0.0.1 - - [2017-12-05 06:16:58] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 31308 0.001000
+2017-12-05 06:16:58,405:INFO:handler:127.0.0.1 - - [2017-12-05 06:16:58] "GET /static/img/ncpa.png HTTP/1.1" 200 18906 0.003000
+2017-12-05 06:16:58,411:INFO:handler:127.0.0.1 - - [2017-12-05 06:16:58] "GET /static/img/ncpa.png HTTP/1.1" 200 18906 0.002000
+2017-12-05 06:17:28,529:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 06:17:28,529:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 06:17:28,529:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 06:17:30,650:INFO:handler:127.0.0.1 - - [2017-12-05 06:17:30] "GET /api/logs?name=System&name=Application&check=true&warning=100&critical=400&token=mytoken HTTP/1.1" 500 2362 0.123000
+2017-12-05 06:17:30,927:INFO:handler:127.0.0.1 - - [2017-12-05 06:17:30] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 125557 0.224000
+2017-12-05 06:17:30,928:INFO:handler:127.0.0.1 - - [2017-12-05 06:17:30] "GET /static/css/ncpa.css HTTP/1.1" 200 9631 0.002000
+2017-12-05 06:17:30,931:INFO:handler:127.0.0.1 - - [2017-12-05 06:17:30] "GET /static/css/font-awesome.min.css HTTP/1.1" 200 31308 0.001000
+2017-12-05 06:17:30,999:INFO:handler:127.0.0.1 - - [2017-12-05 06:17:30] "GET /static/img/ncpa.png HTTP/1.1" 200 18906 0.003000
+2017-12-05 06:17:31,009:INFO:handler:127.0.0.1 - - [2017-12-05 06:17:31] "GET /static/img/ncpa.png HTTP/1.1" 200 18906 0.003000
+2017-12-05 06:17:46,733:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 06:17:46,733:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 06:17:46,733:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 06:17:48,255:INFO:handler:192.168.3.112 - - [2017-12-05 06:17:48] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:17:48,661:INFO:handler:127.0.0.1 - - [2017-12-05 06:17:48] "GET /api/logs?name=System&name=Application&check=true&warning=100&critical=400&token=mytoken HTTP/1.1" 200 26032 0.099000
+2017-12-05 06:17:48,885:INFO:handler:127.0.0.1 - - [2017-12-05 06:17:48] "GET /favicon.ico HTTP/1.1" 404 2317 0.013000
+2017-12-05 06:18:35,509:INFO:handler:192.168.3.112 - - [2017-12-05 06:18:35] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:18:45,888:INFO:handler:192.168.3.112 - - [2017-12-05 06:18:45] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:18:45,898:INFO:handler:192.168.3.112 - - [2017-12-05 06:18:45] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:19:14,377:INFO:handler:192.168.3.112 - - [2017-12-05 06:19:14] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:19:14,986:INFO:handler:192.168.3.112 - - [2017-12-05 06:19:14] "GET /api/memory/swap/?token=&critical=80&units=-w&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 06:19:15,595:INFO:handler:192.168.3.112 - - [2017-12-05 06:19:15] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:19:16,201:INFO:handler:192.168.3.112 - - [2017-12-05 06:19:16] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 06:19:21,767:INFO:handler:192.168.3.112 - - [2017-12-05 06:19:21] "GET /testconnect?token=mytoken HTTP/1.0" 301 529 0.002000
+2017-12-05 06:19:21,986:INFO:handler:192.168.3.112 - - [2017-12-05 06:19:21] "GET /testconnect/?token=mytoken HTTP/1.0" 200 153 0.001000
+2017-12-05 06:19:22,263:INFO:handler:192.168.3.112 - - [2017-12-05 06:19:22] "GET /api/interface?token=mytoken HTTP/1.0" 200 8573 0.048000
+2017-12-05 06:19:22,559:INFO:handler:192.168.3.112 - - [2017-12-05 06:19:22] "GET /api/disk?token=mytoken HTTP/1.0" 200 7273 0.073000
+2017-12-05 06:19:22,851:INFO:handler:192.168.3.112 - - [2017-12-05 06:19:22] "GET /api/services?token=mytoken HTTP/1.0" 200 7095 0.058000
+2017-12-05 06:21:41,509:INFO:handler:192.168.3.112 - - [2017-12-05 06:21:41] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.079000
+2017-12-05 06:21:41,562:INFO:handler:192.168.3.112 - - [2017-12-05 06:21:41] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 232 0.041000
+2017-12-05 06:21:41,562:INFO:handler:192.168.3.112 - - [2017-12-05 06:21:41] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:21:45,451:INFO:handler:192.168.3.112 - - [2017-12-05 06:21:45] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 231 1.051000
+2017-12-05 06:22:01,898:INFO:handler:192.168.3.112 - - [2017-12-05 06:22:01] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 386 0.063000
+2017-12-05 06:22:35,023:INFO:handler:192.168.3.112 - - [2017-12-05 06:22:35] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.049000
+2017-12-05 06:22:53,450:INFO:handler:192.168.3.112 - - [2017-12-05 06:22:53] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:23:25,884:INFO:handler:192.168.3.112 - - [2017-12-05 06:23:25] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.061000
+2017-12-05 06:26:41,641:INFO:handler:192.168.3.112 - - [2017-12-05 06:26:41] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 06:26:41,687:INFO:handler:192.168.3.112 - - [2017-12-05 06:26:41] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.036000
+2017-12-05 06:26:41,733:INFO:handler:192.168.3.112 - - [2017-12-05 06:26:41] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.045000
+2017-12-05 06:26:42,645:INFO:handler:192.168.3.112 - - [2017-12-05 06:26:42] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 236 1.048000
+2017-12-05 06:27:22,076:INFO:handler:192.168.3.112 - - [2017-12-05 06:27:22] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.064000
+2017-12-05 06:27:22,309:INFO:handler:192.168.3.112 - - [2017-12-05 06:27:22] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.058000
+2017-12-05 06:31:51,168:INFO:handler:192.168.3.112 - - [2017-12-05 06:31:51] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.049000
+2017-12-05 06:31:51,420:INFO:handler:192.168.3.112 - - [2017-12-05 06:31:51] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 229 1.048000
+2017-12-05 06:32:34,480:INFO:handler:192.168.3.112 - - [2017-12-05 06:32:34] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.053000
+2017-12-05 06:32:45,167:INFO:handler:192.168.3.112 - - [2017-12-05 06:32:45] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:32:46,568:INFO:handler:192.168.3.112 - - [2017-12-05 06:32:46] "GET /api/disk/logical/K%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.055000
+2017-12-05 06:32:47,194:INFO:handler:192.168.3.112 - - [2017-12-05 06:32:47] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:32:55,921:INFO:handler:192.168.3.112 - - [2017-12-05 06:32:55] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:33:34,522:INFO:handler:192.168.3.112 - - [2017-12-05 06:33:34] "GET /api/disk/logical/C%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 242 0.048000
+2017-12-05 06:33:35,210:INFO:handler:192.168.3.112 - - [2017-12-05 06:33:35] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.044000
+2017-12-05 06:33:36,555:INFO:handler:192.168.3.112 - - [2017-12-05 06:33:36] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:33:37,986:INFO:handler:192.168.3.112 - - [2017-12-05 06:33:37] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.050000
+2017-12-05 06:33:38,630:INFO:handler:192.168.3.112 - - [2017-12-05 06:33:38] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:36:47,736:INFO:handler:192.168.3.112 - - [2017-12-05 06:36:47] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 229 1.049000
+2017-12-05 06:36:48,466:INFO:handler:192.168.3.112 - - [2017-12-05 06:36:48] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.050000
+2017-12-05 06:36:51,825:INFO:handler:192.168.3.112 - - [2017-12-05 06:36:51] "GET /testconnect?token=mytoken HTTP/1.0" 301 529 0.002000
+2017-12-05 06:36:51,924:INFO:handler:192.168.3.112 - - [2017-12-05 06:36:51] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.045000
+2017-12-05 06:36:52,048:INFO:handler:192.168.3.112 - - [2017-12-05 06:36:52] "GET /testconnect/?token=mytoken HTTP/1.0" 200 153 0.001000
+2017-12-05 06:36:52,318:INFO:handler:192.168.3.112 - - [2017-12-05 06:36:52] "GET /api/interface?token=mytoken HTTP/1.0" 200 8574 0.041000
+2017-12-05 06:36:52,627:INFO:handler:192.168.3.112 - - [2017-12-05 06:36:52] "GET /api/disk?token=mytoken HTTP/1.0" 200 7273 0.076000
+2017-12-05 06:36:52,913:INFO:handler:192.168.3.112 - - [2017-12-05 06:36:52] "GET /api/services?token=mytoken HTTP/1.0" 200 7095 0.062000
+2017-12-05 06:37:33,040:INFO:handler:192.168.3.112 - - [2017-12-05 06:37:33] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.058000
+2017-12-05 06:37:43,857:INFO:handler:192.168.3.112 - - [2017-12-05 06:37:43] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:37:44,460:INFO:handler:192.168.3.112 - - [2017-12-05 06:37:44] "GET /api/disk/logical/T%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.057000
+2017-12-05 06:37:44,989:INFO:handler:192.168.3.112 - - [2017-12-05 06:37:44] "GET /api/disk/logical/K%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.047000
+2017-12-05 06:37:46,569:INFO:handler:192.168.3.112 - - [2017-12-05 06:37:46] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:37:53,048:INFO:handler:192.168.3.112 - - [2017-12-05 06:37:53] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.045000
+2017-12-05 06:37:58,864:INFO:handler:192.168.3.112 - - [2017-12-05 06:37:58] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:38:33,608:INFO:handler:192.168.3.112 - - [2017-12-05 06:38:33] "GET /api/disk/logical/C%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 242 0.051000
+2017-12-05 06:38:34,766:INFO:handler:192.168.3.112 - - [2017-12-05 06:38:34] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.044000
+2017-12-05 06:38:35,355:INFO:handler:192.168.3.112 - - [2017-12-05 06:38:35] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.050000
+2017-12-05 06:38:35,891:INFO:handler:192.168.3.112 - - [2017-12-05 06:38:35] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:38:38,279:INFO:handler:192.168.3.112 - - [2017-12-05 06:38:38] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.046000
+2017-12-05 06:38:38,819:INFO:handler:192.168.3.112 - - [2017-12-05 06:38:38] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:38:55,424:INFO:handler:192.168.3.112 - - [2017-12-05 06:38:55] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.050000
+2017-12-05 06:39:19,411:INFO:handler:192.168.3.112 - - [2017-12-05 06:39:19] "GET /api/memory/swap/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 333 0.046000
+2017-12-05 06:39:29,158:INFO:handler:192.168.3.112 - - [2017-12-05 06:39:29] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 232 0.044000
+2017-12-05 06:39:51,395:INFO:handler:192.168.3.112 - - [2017-12-05 06:39:51] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 26426 0.101000
+2017-12-05 06:39:53,533:INFO:handler:192.168.3.112 - - [2017-12-05 06:39:53] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.042000
+2017-12-05 06:39:54,996:INFO:handler:192.168.3.112 - - [2017-12-05 06:39:54] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:40:20,586:INFO:handler:192.168.3.112 - - [2017-12-05 06:40:20] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.061000
+2017-12-05 06:40:25,674:INFO:handler:192.168.3.112 - - [2017-12-05 06:40:25] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:40:47,243:INFO:handler:192.168.3.112 - - [2017-12-05 06:40:47] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.048000
+2017-12-05 06:41:43,486:INFO:handler:192.168.3.112 - - [2017-12-05 06:41:43] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 229 1.053000
+2017-12-05 06:41:44,349:INFO:handler:192.168.3.112 - - [2017-12-05 06:41:44] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.048000
+2017-12-05 06:46:25,622:INFO:handler:127.0.0.1 - - [2017-12-05 06:46:25] "GET /api/logs?name=System&name=Application&check=true&warning=100&critical=400&token=mytoken HTTP/1.1" 200 26516 0.095000
+2017-12-05 06:52:08,311:INFO:handler:192.168.3.112 - - [2017-12-05 06:52:08] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 232 0.051000
+2017-12-05 06:52:08,997:INFO:handler:192.168.3.112 - - [2017-12-05 06:52:08] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.039000
+2017-12-05 06:52:11,107:INFO:handler:192.168.3.112 - - [2017-12-05 06:52:11] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.040000
+2017-12-05 06:52:20,226:INFO:handler:192.168.3.112 - - [2017-12-05 06:52:20] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:52:20,573:INFO:handler:192.168.3.112 - - [2017-12-05 06:52:20] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 231 1.056000
+2017-12-05 06:52:24,157:INFO:handler:192.168.3.112 - - [2017-12-05 06:52:24] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.058000
+2017-12-05 06:53:01,608:INFO:handler:192.168.3.112 - - [2017-12-05 06:53:01] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 232 0.054000
+2017-12-05 06:53:03,766:INFO:handler:192.168.3.112 - - [2017-12-05 06:53:03] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.054000
+2017-12-05 06:53:20,477:INFO:handler:192.168.3.112 - - [2017-12-05 06:53:20] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.058000
+2017-12-05 06:53:37,648:INFO:handler:192.168.3.112 - - [2017-12-05 06:53:37] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 26385 0.096000
+2017-12-05 06:53:52,088:INFO:handler:192.168.3.112 - - [2017-12-05 06:53:52] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.002000
+2017-12-05 06:53:53,494:INFO:handler:192.168.3.112 - - [2017-12-05 06:53:53] "GET /api/disk/logical/K%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.051000
+2017-12-05 06:53:54,151:INFO:handler:192.168.3.112 - - [2017-12-05 06:53:54] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.002000
+2017-12-05 06:53:57,573:INFO:handler:192.168.3.112 - - [2017-12-05 06:53:57] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.047000
+2017-12-05 06:54:36,714:INFO:handler:192.168.3.112 - - [2017-12-05 06:54:36] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 26385 0.097000
+2017-12-05 06:54:46,617:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 06:54:46,617:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 06:54:46,618:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 06:54:47,986:INFO:handler:192.168.3.112 - - [2017-12-05 06:54:47] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:54:48,038:INFO:handler:192.168.3.112 - - [2017-12-05 06:54:48] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.051000
+2017-12-05 06:54:48,075:INFO:handler:192.168.3.112 - - [2017-12-05 06:54:48] "GET /api/disk/logical/C%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 242 0.036000
+2017-12-05 06:54:48,625:INFO:handler:192.168.3.112 - - [2017-12-05 06:54:48] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:54:55,970:INFO:handler:192.168.3.112 - - [2017-12-05 06:54:55] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 26469 0.091000
+2017-12-05 06:55:08,951:INFO:handler:192.168.3.112 - - [2017-12-05 06:55:08] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:55:36,872:INFO:handler:192.168.3.112 - - [2017-12-05 06:55:36] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:55:37,802:INFO:handler:192.168.3.112 - - [2017-12-05 06:55:37] "GET /api/disk/logical/T%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.057000
+2017-12-05 06:55:39,516:INFO:handler:192.168.3.112 - - [2017-12-05 06:55:39] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.044000
+2017-12-05 06:55:40,375:INFO:handler:192.168.3.112 - - [2017-12-05 06:55:40] "GET /api/memory/swap/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 333 0.041000
+2017-12-05 06:55:42,276:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 06:55:42,276:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 06:55:42,276:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 06:55:51,101:INFO:handler:192.168.3.112 - - [2017-12-05 06:55:51] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 25981 0.092000
+2017-12-05 06:56:25,750:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 06:56:25,750:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 06:56:25,750:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 06:56:34,426:INFO:handler:192.168.3.112 - - [2017-12-05 06:56:34] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 25367 0.095000
+2017-12-05 06:57:04,285:INFO:handler:192.168.3.112 - - [2017-12-05 06:57:04] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.051000
+2017-12-05 06:57:04,996:INFO:handler:192.168.3.112 - - [2017-12-05 06:57:04] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.041000
+2017-12-05 06:57:07,132:INFO:handler:192.168.3.112 - - [2017-12-05 06:57:07] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.041000
+2017-12-05 06:57:17,105:INFO:handler:192.168.3.112 - - [2017-12-05 06:57:17] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 06:57:17,417:INFO:handler:192.168.3.112 - - [2017-12-05 06:57:17] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 229 1.044000
+2017-12-05 06:57:22,134:INFO:handler:192.168.3.112 - - [2017-12-05 06:57:22] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.048000
+2017-12-05 06:57:43,543:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 06:57:43,543:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 06:57:43,543:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 06:57:50,555:INFO:handler:192.168.3.112 - - [2017-12-05 06:57:50] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 30098 0.094000
+2017-12-05 06:58:01,829:INFO:handler:192.168.3.112 - - [2017-12-05 06:58:01] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.061000
+2017-12-05 06:58:03,216:INFO:handler:192.168.3.112 - - [2017-12-05 06:58:03] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.054000
+2017-12-05 06:58:19,815:INFO:handler:192.168.3.112 - - [2017-12-05 06:58:19] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.050000
+2017-12-05 06:58:29,207:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 06:58:29,207:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 06:58:29,207:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 06:58:42,934:INFO:handler:192.168.3.112 - - [2017-12-05 06:58:42] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 31581 0.101000
+2017-12-05 06:58:50,276:INFO:handler:192.168.3.112 - - [2017-12-05 06:58:50] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:58:51,660:INFO:handler:192.168.3.112 - - [2017-12-05 06:58:51] "GET /api/disk/logical/K%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.045000
+2017-12-05 06:58:52,078:INFO:handler:192.168.3.112 - - [2017-12-05 06:58:52] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:58:54,900:INFO:handler:192.168.3.112 - - [2017-12-05 06:58:54] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.046000
+2017-12-05 06:59:41,311:INFO:handler:192.168.3.112 - - [2017-12-05 06:59:41] "GET /api/disk/logical/C%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 242 0.059000
+2017-12-05 06:59:42,622:INFO:handler:192.168.3.112 - - [2017-12-05 06:59:42] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.048000
+2017-12-05 06:59:43,242:INFO:handler:192.168.3.112 - - [2017-12-05 06:59:43] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:59:43,911:INFO:handler:192.168.3.112 - - [2017-12-05 06:59:43] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 06:59:49,572:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 06:59:49,572:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 06:59:49,573:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 06:59:54,187:INFO:handler:192.168.3.112 - - [2017-12-05 06:59:54] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 34852 0.099000
+2017-12-05 07:00:09,526:INFO:handler:192.168.3.112 - - [2017-12-05 07:00:09] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:00:39,815:INFO:handler:192.168.3.112 - - [2017-12-05 07:00:39] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:00:40,746:INFO:handler:192.168.3.112 - - [2017-12-05 07:00:40] "GET /api/disk/logical/T%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.047000
+2017-12-05 07:00:43,394:INFO:handler:192.168.3.112 - - [2017-12-05 07:00:43] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.044000
+2017-12-05 07:00:44,276:INFO:handler:192.168.3.112 - - [2017-12-05 07:00:44] "GET /api/memory/swap/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 333 0.045000
+2017-12-05 07:00:49,897:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 07:00:49,897:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 07:00:49,897:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 07:00:55,612:INFO:handler:192.168.3.112 - - [2017-12-05 07:00:55] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 40894 0.105000
+2017-12-05 07:01:32,822:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 07:01:32,822:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 07:01:32,822:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 07:01:37,976:INFO:handler:192.168.3.112 - - [2017-12-05 07:01:37] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 43173 0.096000
+2017-12-05 07:02:01,167:INFO:handler:192.168.3.112 - - [2017-12-05 07:02:01] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.050000
+2017-12-05 07:02:01,895:INFO:handler:192.168.3.112 - - [2017-12-05 07:02:01] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.041000
+2017-12-05 07:02:04,144:INFO:handler:192.168.3.112 - - [2017-12-05 07:02:04] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.043000
+2017-12-05 07:02:11,101:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 07:02:11,101:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 07:02:11,102:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 07:02:14,660:INFO:handler:192.168.3.112 - - [2017-12-05 07:02:14] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:02:15,385:INFO:handler:192.168.3.112 - - [2017-12-05 07:02:15] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 43173 0.093000
+2017-12-05 07:02:15,661:INFO:handler:192.168.3.112 - - [2017-12-05 07:02:15] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 231 1.047000
+2017-12-05 07:02:19,163:INFO:handler:192.168.3.112 - - [2017-12-05 07:02:19] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.051000
+2017-12-05 07:03:00,371:INFO:handler:192.168.3.112 - - [2017-12-05 07:03:00] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.066000
+2017-12-05 07:03:02,349:INFO:handler:192.168.3.112 - - [2017-12-05 07:03:02] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.055000
+2017-12-05 07:03:18,711:INFO:handler:192.168.3.112 - - [2017-12-05 07:03:18] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.055000
+2017-12-05 07:03:49,835:INFO:handler:192.168.3.112 - - [2017-12-05 07:03:49] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:03:51,650:INFO:handler:192.168.3.112 - - [2017-12-05 07:03:51] "GET /api/disk/logical/K%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.046000
+2017-12-05 07:03:52,065:INFO:handler:192.168.3.112 - - [2017-12-05 07:03:52] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:03:54,838:INFO:handler:192.168.3.112 - - [2017-12-05 07:03:54] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.043000
+2017-12-05 07:04:40,121:INFO:handler:192.168.3.112 - - [2017-12-05 07:04:40] "GET /api/disk/logical/C%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 242 0.051000
+2017-12-05 07:04:40,809:INFO:handler:192.168.3.112 - - [2017-12-05 07:04:40] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.045000
+2017-12-05 07:04:41,460:INFO:handler:192.168.3.112 - - [2017-12-05 07:04:41] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:04:42,844:INFO:handler:192.168.3.112 - - [2017-12-05 07:04:42] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:05:10,852:INFO:handler:192.168.3.112 - - [2017-12-05 07:05:10] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:05:41,244:INFO:handler:192.168.3.112 - - [2017-12-05 07:05:41] "GET /api/disk/logical/T%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.049000
+2017-12-05 07:05:42,062:INFO:handler:192.168.3.112 - - [2017-12-05 07:05:42] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:05:43,838:INFO:handler:192.168.3.112 - - [2017-12-05 07:05:43] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.045000
+2017-12-05 07:05:44,700:INFO:handler:192.168.3.112 - - [2017-12-05 07:05:44] "GET /api/memory/swap/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 333 0.043000
+2017-12-05 07:06:58,904:INFO:handler:192.168.3.112 - - [2017-12-05 07:06:58] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.047000
+2017-12-05 07:07:00,398:INFO:handler:192.168.3.112 - - [2017-12-05 07:07:00] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.047000
+2017-12-05 07:07:01,897:INFO:handler:192.168.3.112 - - [2017-12-05 07:07:01] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.043000
+2017-12-05 07:07:11,605:INFO:handler:192.168.3.112 - - [2017-12-05 07:07:11] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:07:13,194:INFO:handler:192.168.3.112 - - [2017-12-05 07:07:13] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 43173 0.090000
+2017-12-05 07:07:13,395:INFO:handler:192.168.3.112 - - [2017-12-05 07:07:13] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 229 1.049000
+2017-12-05 07:07:17,648:INFO:handler:192.168.3.112 - - [2017-12-05 07:07:17] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.046000
+2017-12-05 07:07:59,280:INFO:handler:192.168.3.112 - - [2017-12-05 07:07:59] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.050000
+2017-12-05 07:08:01,417:INFO:handler:192.168.3.112 - - [2017-12-05 07:08:01] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.053000
+2017-12-05 07:08:16,410:INFO:handler:192.168.3.112 - - [2017-12-05 07:08:16] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.046000
+2017-12-05 07:08:48,793:INFO:handler:192.168.3.112 - - [2017-12-05 07:08:48] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:08:49,549:INFO:handler:192.168.3.112 - - [2017-12-05 07:08:49] "GET /api/disk/logical/K%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.052000
+2017-12-05 07:08:50,904:INFO:handler:192.168.3.112 - - [2017-12-05 07:08:50] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:08:53,497:INFO:handler:192.168.3.112 - - [2017-12-05 07:08:53] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.043000
+2017-12-05 07:09:39,709:INFO:handler:192.168.3.112 - - [2017-12-05 07:09:39] "GET /api/disk/logical/C%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 242 0.047000
+2017-12-05 07:09:40,397:INFO:handler:192.168.3.112 - - [2017-12-05 07:09:40] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.045000
+2017-12-05 07:09:41,062:INFO:handler:192.168.3.112 - - [2017-12-05 07:09:41] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:09:41,760:INFO:handler:192.168.3.112 - - [2017-12-05 07:09:41] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:10:11,512:INFO:handler:192.168.3.112 - - [2017-12-05 07:10:11] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:10:42,115:INFO:handler:192.168.3.112 - - [2017-12-05 07:10:42] "GET /api/disk/logical/T%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.053000
+2017-12-05 07:10:42,927:INFO:handler:192.168.3.112 - - [2017-12-05 07:10:42] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:10:43,838:INFO:handler:192.168.3.112 - - [2017-12-05 07:10:43] "GET /api/memory/swap/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 333 0.044000
+2017-12-05 07:10:44,694:INFO:handler:192.168.3.112 - - [2017-12-05 07:10:44] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.040000
+2017-12-05 07:11:58,171:INFO:handler:192.168.3.112 - - [2017-12-05 07:11:58] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.073000
+2017-12-05 07:11:59,637:INFO:handler:192.168.3.112 - - [2017-12-05 07:11:59] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.041000
+2017-12-05 07:12:01,134:INFO:handler:192.168.3.112 - - [2017-12-05 07:12:01] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.038000
+2017-12-05 07:12:10,095:INFO:handler:192.168.3.112 - - [2017-12-05 07:12:10] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:12:11,683:INFO:handler:192.168.3.112 - - [2017-12-05 07:12:11] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 43173 0.089000
+2017-12-05 07:12:11,890:INFO:handler:192.168.3.112 - - [2017-12-05 07:12:11] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 229 1.044000
+2017-12-05 07:12:16,890:INFO:handler:192.168.3.112 - - [2017-12-05 07:12:16] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.046000
+2017-12-05 07:12:58,359:INFO:handler:192.168.3.112 - - [2017-12-05 07:12:58] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.041000
+2017-12-05 07:12:59,793:INFO:handler:192.168.3.112 - - [2017-12-05 07:12:59] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.101000
+2017-12-05 07:13:14,959:INFO:handler:192.168.3.112 - - [2017-12-05 07:13:14] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.042000
+2017-12-05 07:13:47,684:INFO:handler:192.168.3.112 - - [2017-12-05 07:13:47] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:13:48,418:INFO:handler:192.168.3.112 - - [2017-12-05 07:13:48] "GET /api/disk/logical/K%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.046000
+2017-12-05 07:13:49,065:INFO:handler:192.168.3.112 - - [2017-12-05 07:13:49] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:13:51,763:INFO:handler:192.168.3.112 - - [2017-12-05 07:13:51] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.038000
+2017-12-05 07:14:11,776:INFO:handler:127.0.0.1 - - [2017-12-05 07:14:11] "GET /api/logs?name=System&name=Application&check=true&warning=100&critical=400&token=mytoken HTTP/1.1" 200 43178 0.165000
+2017-12-05 07:14:19,230:INFO:handler:127.0.0.1 - - [2017-12-05 07:14:19] "GET /api/logs?name=System&check=true&warning=100&critical=400&token=mytoken HTTP/1.1" 200 28575 0.079000
+2017-12-05 07:14:37,844:INFO:handler:192.168.3.112 - - [2017-12-05 07:14:37] "GET /api/disk/logical/C%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 242 0.044000
+2017-12-05 07:14:39,976:INFO:handler:192.168.3.112 - - [2017-12-05 07:14:39] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.045000
+2017-12-05 07:14:40,648:INFO:handler:192.168.3.112 - - [2017-12-05 07:14:40] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:14:41,362:INFO:handler:192.168.3.112 - - [2017-12-05 07:14:41] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:15:03,894:INFO:handler:192.168.3.112 - - [2017-12-05 07:15:03] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 43151 0.088000
+2017-12-05 07:15:11,857:INFO:handler:192.168.3.112 - - [2017-12-05 07:15:11] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:15:16,921:INFO:handler:192.168.3.112 - - [2017-12-05 07:15:16] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 43151 0.095000
+2017-12-05 07:15:22,938:INFO:handler:192.168.3.112 - - [2017-12-05 07:15:22] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 43151 0.093000
+2017-12-05 07:15:41,355:INFO:handler:192.168.3.112 - - [2017-12-05 07:15:41] "GET /api/disk/logical/T%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.053000
+2017-12-05 07:15:42,137:INFO:handler:192.168.3.112 - - [2017-12-05 07:15:42] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:15:43,009:INFO:handler:192.168.3.112 - - [2017-12-05 07:15:43] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.040000
+2017-12-05 07:15:43,874:INFO:handler:192.168.3.112 - - [2017-12-05 07:15:43] "GET /api/memory/swap/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 333 0.063000
+2017-12-05 07:15:43,993:INFO:handler:192.168.3.112 - - [2017-12-05 07:15:43] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 43151 0.091000
+2017-12-05 07:15:53,052:INFO:handler:192.168.3.112 - - [2017-12-05 07:15:53] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System&name=Application HTTP/1.1" 200 43151 0.098000
+2017-12-05 07:18:40,529:INFO:handler:192.168.3.112 - - [2017-12-05 07:18:40] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.044000
+2017-12-05 07:18:47,493:INFO:handler:192.168.3.112 - - [2017-12-05 07:18:47] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:18:48,535:INFO:handler:192.168.3.112 - - [2017-12-05 07:18:48] "GET /api/disk/logical/K%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.044000
+2017-12-05 07:18:49,487:INFO:handler:192.168.3.112 - - [2017-12-05 07:18:49] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:18:52,538:INFO:handler:192.168.3.112 - - [2017-12-05 07:18:52] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.049000
+2017-12-05 07:19:37,424:INFO:handler:192.168.3.112 - - [2017-12-05 07:19:37] "GET /api/disk/logical/C%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 242 0.048000
+2017-12-05 07:19:37,973:INFO:handler:192.168.3.112 - - [2017-12-05 07:19:37] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.039000
+2017-12-05 07:19:39,673:INFO:handler:192.168.3.112 - - [2017-12-05 07:19:39] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.048000
+2017-12-05 07:19:40,184:INFO:handler:192.168.3.112 - - [2017-12-05 07:19:40] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:19:40,790:INFO:handler:192.168.3.112 - - [2017-12-05 07:19:40] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.042000
+2017-12-05 07:19:41,874:INFO:handler:192.168.3.112 - - [2017-12-05 07:19:41] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:20:11,920:INFO:handler:192.168.3.112 - - [2017-12-05 07:20:11] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:20:32,091:INFO:handler:192.168.3.112 - - [2017-12-05 07:20:32] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.051000
+2017-12-05 07:20:32,611:INFO:handler:192.168.3.112 - - [2017-12-05 07:20:32] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.040000
+2017-12-05 07:20:36,278:INFO:handler:192.168.3.112 - - [2017-12-05 07:20:36] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:20:44,306:INFO:handler:192.168.3.112 - - [2017-12-05 07:20:44] "GET /api/disk/logical/T%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.050000
+2017-12-05 07:20:44,835:INFO:handler:192.168.3.112 - - [2017-12-05 07:20:44] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:20:45,431:INFO:handler:192.168.3.112 - - [2017-12-05 07:20:45] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.042000
+2017-12-05 07:20:45,999:INFO:handler:192.168.3.112 - - [2017-12-05 07:20:45] "GET /api/memory/swap/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 333 0.038000
+2017-12-05 07:20:52,312:INFO:handler:192.168.3.112 - - [2017-12-05 07:20:52] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 28681 0.083000
+2017-12-05 07:21:31,661:INFO:handler:192.168.3.112 - - [2017-12-05 07:21:31] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.062000
+2017-12-05 07:21:51,519:INFO:handler:192.168.3.112 - - [2017-12-05 07:21:51] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 28681 0.091000
+2017-12-05 07:22:15,822:INFO:handler:192.168.3.112 - - [2017-12-05 07:22:15] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.057000
+2017-12-05 07:22:48,591:INFO:handler:192.168.3.112 - - [2017-12-05 07:22:48] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 28681 0.087000
+2017-12-05 07:23:06,273:INFO:handler:192.168.3.112 - - [2017-12-05 07:23:06] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 229 1.057000
+2017-12-05 07:23:30,262:INFO:handler:192.168.3.112 - - [2017-12-05 07:23:30] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.048000
+2017-12-05 07:23:41,006:INFO:handler:192.168.3.112 - - [2017-12-05 07:23:41] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:23:41,691:INFO:handler:192.168.3.112 - - [2017-12-05 07:23:41] "GET /api/disk/logical/K%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.054000
+2017-12-05 07:23:42,358:INFO:handler:192.168.3.112 - - [2017-12-05 07:23:42] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 28681 0.079000
+2017-12-05 07:23:42,901:INFO:handler:192.168.3.112 - - [2017-12-05 07:23:42] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:23:46,118:INFO:handler:192.168.3.112 - - [2017-12-05 07:23:46] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.046000
+2017-12-05 07:24:36,651:INFO:handler:192.168.3.112 - - [2017-12-05 07:24:36] "GET /api/disk/logical/C%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 242 0.053000
+2017-12-05 07:24:37,154:INFO:handler:192.168.3.112 - - [2017-12-05 07:24:37] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.040000
+2017-12-05 07:24:37,690:INFO:handler:192.168.3.112 - - [2017-12-05 07:24:37] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.052000
+2017-12-05 07:24:38,691:INFO:handler:192.168.3.112 - - [2017-12-05 07:24:38] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:24:39,246:INFO:handler:192.168.3.112 - - [2017-12-05 07:24:39] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.042000
+2017-12-05 07:24:40,253:INFO:handler:192.168.3.112 - - [2017-12-05 07:24:40] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:24:40,858:INFO:handler:192.168.3.112 - - [2017-12-05 07:24:40] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 28681 0.081000
+2017-12-05 07:25:08,325:INFO:handler:192.168.3.112 - - [2017-12-05 07:25:08] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:25:31,140:INFO:handler:192.168.3.112 - - [2017-12-05 07:25:31] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.049000
+2017-12-05 07:25:31,674:INFO:handler:192.168.3.112 - - [2017-12-05 07:25:31] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.040000
+2017-12-05 07:25:36,563:INFO:handler:192.168.3.112 - - [2017-12-05 07:25:36] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:25:44,858:INFO:handler:192.168.3.112 - - [2017-12-05 07:25:44] "GET /api/disk/logical/T%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.049000
+2017-12-05 07:25:45,437:INFO:handler:192.168.3.112 - - [2017-12-05 07:25:45] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:25:46,109:INFO:handler:192.168.3.112 - - [2017-12-05 07:25:46] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.039000
+2017-12-05 07:25:46,746:INFO:handler:192.168.3.112 - - [2017-12-05 07:25:46] "GET /api/memory/swap/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 333 0.042000
+2017-12-05 07:26:35,374:INFO:handler:192.168.3.112 - - [2017-12-05 07:26:35] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.058000
+2017-12-05 07:27:19,012:INFO:handler:192.168.3.112 - - [2017-12-05 07:27:19] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.061000
+2017-12-05 07:28:06,111:INFO:handler:192.168.3.112 - - [2017-12-05 07:28:06] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 229 1.053000
+2017-12-05 07:28:24,910:INFO:handler:192.168.3.112 - - [2017-12-05 07:28:24] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.044000
+2017-12-05 07:28:36,749:INFO:handler:192.168.3.112 - - [2017-12-05 07:28:36] "GET /api/disk/logical/K%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.058000
+2017-12-05 07:28:37,355:INFO:handler:192.168.3.112 - - [2017-12-05 07:28:37] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:28:38,677:INFO:handler:192.168.3.112 - - [2017-12-05 07:28:38] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:28:42,690:INFO:handler:192.168.3.112 - - [2017-12-05 07:28:42] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.046000
+2017-12-05 07:29:34,038:INFO:handler:192.168.3.112 - - [2017-12-05 07:29:34] "GET /api/disk/logical/C%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 242 0.049000
+2017-12-05 07:29:34,582:INFO:handler:192.168.3.112 - - [2017-12-05 07:29:34] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.047000
+2017-12-05 07:29:35,125:INFO:handler:192.168.3.112 - - [2017-12-05 07:29:35] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.042000
+2017-12-05 07:29:35,634:INFO:handler:192.168.3.112 - - [2017-12-05 07:29:35] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:29:36,776:INFO:handler:192.168.3.112 - - [2017-12-05 07:29:36] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.046000
+2017-12-05 07:29:37,280:INFO:handler:192.168.3.112 - - [2017-12-05 07:29:37] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:29:37,973:INFO:handler:192.168.3.112 - - [2017-12-05 07:29:37] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 28681 0.087000
+2017-12-05 07:30:07,368:INFO:handler:192.168.3.112 - - [2017-12-05 07:30:07] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:30:30,477:INFO:handler:192.168.3.112 - - [2017-12-05 07:30:30] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.047000
+2017-12-05 07:30:31,035:INFO:handler:192.168.3.112 - - [2017-12-05 07:30:31] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.043000
+2017-12-05 07:30:36,737:INFO:handler:192.168.3.112 - - [2017-12-05 07:30:36] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.002000
+2017-12-05 07:30:45,520:INFO:handler:192.168.3.112 - - [2017-12-05 07:30:45] "GET /api/disk/logical/T%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.047000
+2017-12-05 07:30:46,809:INFO:handler:192.168.3.112 - - [2017-12-05 07:30:46] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:30:47,526:INFO:handler:192.168.3.112 - - [2017-12-05 07:30:47] "GET /api/memory/swap/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 333 0.042000
+2017-12-05 07:30:48,191:INFO:handler:192.168.3.112 - - [2017-12-05 07:30:48] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.044000
+2017-12-05 07:31:36,450:INFO:handler:192.168.3.112 - - [2017-12-05 07:31:36] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.057000
+2017-12-05 07:32:20,648:INFO:handler:192.168.3.112 - - [2017-12-05 07:32:20] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.060000
+2017-12-05 07:33:00,073:INFO:handler:192.168.3.112 - - [2017-12-05 07:33:00] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 236 1.050000
+2017-12-05 07:33:19,763:INFO:handler:192.168.3.112 - - [2017-12-05 07:33:19] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.045000
+2017-12-05 07:33:22,621:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 07:33:22,621:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 07:33:22,621:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 07:33:25,891:INFO:handler:192.168.3.112 - - [2017-12-05 07:33:25] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 500 2362 0.088000
+2017-12-05 07:33:31,019:INFO:handler:192.168.3.112 - - [2017-12-05 07:33:31] "GET /api/disk/logical/K%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.053000
+2017-12-05 07:33:32,729:INFO:handler:192.168.3.112 - - [2017-12-05 07:33:32] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:33:34,052:INFO:handler:192.168.3.112 - - [2017-12-05 07:33:34] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:33:37,203:INFO:handler:192.168.3.112 - - [2017-12-05 07:33:37] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 500 2362 0.080000
+2017-12-05 07:33:38,252:INFO:handler:192.168.3.112 - - [2017-12-05 07:33:38] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.044000
+2017-12-05 07:33:49,236:INFO:handler:192.168.3.112 - - [2017-12-05 07:33:49] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 500 2362 0.081000
+2017-12-05 07:33:54,480:INFO:handler:192.168.3.112 - - [2017-12-05 07:33:54] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 229 1.042000
+2017-12-05 07:34:05,187:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 07:34:05,188:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 07:34:05,188:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 07:34:09,368:INFO:handler:192.168.3.112 - - [2017-12-05 07:34:09] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 29126 0.090000
+2017-12-05 07:34:33,109:INFO:handler:192.168.3.112 - - [2017-12-05 07:34:33] "GET /api/disk/logical/C%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 242 0.049000
+2017-12-05 07:34:33,663:INFO:handler:192.168.3.112 - - [2017-12-05 07:34:33] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.043000
+2017-12-05 07:34:34,042:INFO:handler:192.168.3.112 - - [2017-12-05 07:34:34] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.041000
+2017-12-05 07:34:34,578:INFO:handler:192.168.3.112 - - [2017-12-05 07:34:34] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:34:35,176:INFO:handler:192.168.3.112 - - [2017-12-05 07:34:35] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.045000
+2017-12-05 07:34:35,608:INFO:handler:192.168.3.112 - - [2017-12-05 07:34:35] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 29126 0.074000
+2017-12-05 07:34:36,269:INFO:handler:192.168.3.112 - - [2017-12-05 07:34:36] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:34:44,645:INFO:handler:192.168.3.112 - - [2017-12-05 07:34:44] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 29126 0.090000
+2017-12-05 07:35:06,926:INFO:handler:192.168.3.112 - - [2017-12-05 07:35:06] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:35:30,346:INFO:handler:192.168.3.112 - - [2017-12-05 07:35:30] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.044000
+2017-12-05 07:35:30,923:INFO:handler:192.168.3.112 - - [2017-12-05 07:35:30] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.044000
+2017-12-05 07:35:37,572:INFO:handler:192.168.3.112 - - [2017-12-05 07:35:37] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:35:47,473:INFO:handler:192.168.3.112 - - [2017-12-05 07:35:47] "GET /api/disk/logical/T%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.055000
+2017-12-05 07:35:48,823:INFO:handler:192.168.3.112 - - [2017-12-05 07:35:48] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:35:49,569:INFO:handler:192.168.3.112 - - [2017-12-05 07:35:49] "GET /api/memory/swap/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 333 0.046000
+2017-12-05 07:35:50,269:INFO:handler:192.168.3.112 - - [2017-12-05 07:35:50] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.041000
+2017-12-05 07:36:39,665:INFO:handler:192.168.3.112 - - [2017-12-05 07:36:39] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.066000
+2017-12-05 07:37:21,397:INFO:handler:192.168.3.112 - - [2017-12-05 07:37:21] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.056000
+2017-12-05 07:38:16,068:INFO:handler:192.168.3.112 - - [2017-12-05 07:38:16] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.047000
+2017-12-05 07:38:26,256:INFO:handler:192.168.3.112 - - [2017-12-05 07:38:26] "GET /api/disk/logical/K%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.052000
+2017-12-05 07:38:27,905:INFO:handler:192.168.3.112 - - [2017-12-05 07:38:27] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:38:30,459:INFO:handler:192.168.3.112 - - [2017-12-05 07:38:30] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:38:35,740:INFO:ncpa_windows:Parsed config from: ['C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg', 'C:\\Users\\jomann\\Documents\\ncpa\\agent\\etc\\ncpa.cfg.d\\example.cfg']
+2017-12-05 07:38:35,740:INFO:ncpa_windows:Looking for plugins at: C:\Users\jomann\Documents\ncpa\agent\plugins
+2017-12-05 07:38:35,740:INFO:ncpa_windows:Using SSL version TLSv1_2
+2017-12-05 07:38:37,181:INFO:handler:192.168.3.112 - - [2017-12-05 07:38:37] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.049000
+2017-12-05 07:38:51,206:INFO:handler:192.168.3.112 - - [2017-12-05 07:38:51] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 229 1.047000
+2017-12-05 07:39:30,348:INFO:handler:192.168.3.112 - - [2017-12-05 07:39:30] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.052000
+2017-12-05 07:39:30,917:INFO:handler:192.168.3.112 - - [2017-12-05 07:39:30] "GET /api/disk/logical/C%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 242 0.037000
+2017-12-05 07:39:32,683:INFO:handler:192.168.3.112 - - [2017-12-05 07:39:32] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.048000
+2017-12-05 07:39:33,219:INFO:handler:192.168.3.112 - - [2017-12-05 07:39:33] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:39:34,035:INFO:handler:192.168.3.112 - - [2017-12-05 07:39:34] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.046000
+2017-12-05 07:39:34,559:INFO:handler:192.168.3.112 - - [2017-12-05 07:39:34] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:39:42,059:INFO:handler:192.168.3.112 - - [2017-12-05 07:39:42] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 28681 0.087000
+2017-12-05 07:40:06,483:INFO:handler:192.168.3.112 - - [2017-12-05 07:40:06] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:40:13,572:INFO:handler:192.168.3.112 - - [2017-12-05 07:40:13] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 28681 0.089000
+2017-12-05 07:40:20,584:INFO:handler:192.168.3.112 - - [2017-12-05 07:40:20] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 28681 0.079000
+2017-12-05 07:40:29,608:INFO:handler:192.168.3.112 - - [2017-12-05 07:40:29] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 28681 0.085000
+2017-12-05 07:40:31,174:INFO:handler:192.168.3.112 - - [2017-12-05 07:40:31] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.040000
+2017-12-05 07:40:31,795:INFO:handler:192.168.3.112 - - [2017-12-05 07:40:31] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.046000
+2017-12-05 07:40:37,575:INFO:handler:192.168.3.112 - - [2017-12-05 07:40:37] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:40:48,881:INFO:handler:192.168.3.112 - - [2017-12-05 07:40:48] "GET /api/disk/logical/T%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.060000
+2017-12-05 07:40:49,535:INFO:handler:192.168.3.112 - - [2017-12-05 07:40:49] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:40:50,273:INFO:handler:192.168.3.112 - - [2017-12-05 07:40:50] "GET /api/memory/swap/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 333 0.046000
+2017-12-05 07:40:50,973:INFO:handler:192.168.3.112 - - [2017-12-05 07:40:50] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.041000
+2017-12-05 07:41:03,997:INFO:handler:192.168.3.112 - - [2017-12-05 07:41:03] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 28681 0.095000
+2017-12-05 07:41:42,464:INFO:handler:192.168.3.112 - - [2017-12-05 07:41:42] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.062000
+2017-12-05 07:42:21,431:INFO:handler:192.168.3.112 - - [2017-12-05 07:42:21] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.055000
+2017-12-05 07:43:12,194:INFO:handler:192.168.3.112 - - [2017-12-05 07:43:12] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.046000
+2017-12-05 07:43:21,839:INFO:handler:192.168.3.112 - - [2017-12-05 07:43:21] "GET /api/disk/logical/K%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.050000
+2017-12-05 07:43:23,401:INFO:handler:192.168.3.112 - - [2017-12-05 07:43:23] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:43:25,811:INFO:handler:192.168.3.112 - - [2017-12-05 07:43:25] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:43:32,286:INFO:handler:192.168.3.112 - - [2017-12-05 07:43:32] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.049000
+2017-12-05 07:43:48,749:INFO:handler:192.168.3.112 - - [2017-12-05 07:43:48] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 231 1.056000
+2017-12-05 07:44:03,973:INFO:handler:127.0.0.1 - - [2017-12-05 07:44:03] "GET /api/logs?name=System&check=true&warning=100&critical=400&token=mytoken HTTP/1.1" 200 28684 0.122000
+2017-12-05 07:44:28,651:INFO:handler:192.168.3.112 - - [2017-12-05 07:44:28] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.052000
+2017-12-05 07:44:29,237:INFO:handler:192.168.3.112 - - [2017-12-05 07:44:29] "GET /api/disk/logical/C%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 242 0.040000
+2017-12-05 07:44:30,448:INFO:handler:192.168.3.112 - - [2017-12-05 07:44:30] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.048000
+2017-12-05 07:44:31,599:INFO:handler:192.168.3.112 - - [2017-12-05 07:44:31] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:44:32,242:INFO:handler:192.168.3.112 - - [2017-12-05 07:44:32] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.045000
+2017-12-05 07:44:32,799:INFO:handler:192.168.3.112 - - [2017-12-05 07:44:32] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:45:05,953:INFO:handler:192.168.3.112 - - [2017-12-05 07:45:05] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:45:32,357:INFO:handler:192.168.3.112 - - [2017-12-05 07:45:32] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.052000
+2017-12-05 07:45:32,997:INFO:handler:192.168.3.112 - - [2017-12-05 07:45:32] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.040000
+2017-12-05 07:45:38,414:INFO:handler:192.168.3.112 - - [2017-12-05 07:45:38] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:45:49,361:INFO:handler:192.168.3.112 - - [2017-12-05 07:45:49] "GET /api/disk/logical/T%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.054000
+2017-12-05 07:45:50,032:INFO:handler:192.168.3.112 - - [2017-12-05 07:45:50] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:45:50,796:INFO:handler:192.168.3.112 - - [2017-12-05 07:45:50] "GET /api/memory/swap/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 333 0.039000
+2017-12-05 07:45:51,519:INFO:handler:192.168.3.112 - - [2017-12-05 07:45:51] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.040000
+2017-12-05 07:46:05,838:INFO:handler:192.168.3.112 - - [2017-12-05 07:46:05] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 28681 0.088000
+2017-12-05 07:46:44,029:INFO:handler:192.168.3.112 - - [2017-12-05 07:46:44] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.060000
+2017-12-05 07:47:20,861:INFO:handler:192.168.3.112 - - [2017-12-05 07:47:20] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.056000
+2017-12-05 07:48:09,061:INFO:handler:192.168.3.112 - - [2017-12-05 07:48:09] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.046000
+2017-12-05 07:48:18,878:INFO:handler:192.168.3.112 - - [2017-12-05 07:48:18] "GET /api/disk/logical/K%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.041000
+2017-12-05 07:48:20,479:INFO:handler:192.168.3.112 - - [2017-12-05 07:48:20] "GET /api/disk/logical/C%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:48:22,108:INFO:handler:192.168.3.112 - - [2017-12-05 07:48:22] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:48:28,709:INFO:handler:192.168.3.112 - - [2017-12-05 07:48:28] "GET /api/disk/logical/D%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 247 0.057000
+2017-12-05 07:48:45,484:INFO:handler:192.168.3.112 - - [2017-12-05 07:48:45] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 236 1.056000
+2017-12-05 07:49:26,872:INFO:handler:192.168.3.112 - - [2017-12-05 07:49:26] "GET /api/disk/logical/S%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.057000
+2017-12-05 07:49:27,469:INFO:handler:192.168.3.112 - - [2017-12-05 07:49:27] "GET /api/disk/logical/C%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 242 0.038000
+2017-12-05 07:49:28,091:INFO:handler:192.168.3.112 - - [2017-12-05 07:49:28] "GET /api/interface/Connexion%20au%20r%C3%A9seau%20local/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.044000
+2017-12-05 07:49:28,664:INFO:handler:192.168.3.112 - - [2017-12-05 07:49:28] "GET /api/interface/Local%20Area%20Connection/bytes_sent/?token=&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:49:29,943:INFO:handler:192.168.3.112 - - [2017-12-05 07:49:29] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_sent/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.047000
+2017-12-05 07:49:30,513:INFO:handler:192.168.3.112 - - [2017-12-05 07:49:30] "GET /api/service/AGSService/running/?token=&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:49:31,546:INFO:handler:127.0.0.1 - - [2017-12-05 07:49:31] "GET /api/logs?name=System&check=true&warning=100&critical=400&token=mytoken HTTP/1.1" 200 28706 0.085000
+2017-12-05 07:49:42,947:INFO:handler:192.168.3.112 - - [2017-12-05 07:49:42] "GET /api/cpu/percent/?token=mytoken&warning=20&critical=40&check=1&aggregate=avg HTTP/1.1" 200 229 1.053000
+2017-12-05 07:50:01,862:INFO:handler:192.168.3.112 - - [2017-12-05 07:50:01] "GET /api/logs/?token=mytoken&warning=200&check=1&name=Application HTTP/1.1" 200 14973 0.060000
+2017-12-05 07:50:05,986:INFO:handler:192.168.3.112 - - [2017-12-05 07:50:05] "GET /api/interface/Local%20Area%20Connection/bytes_recv/?token=test123&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:50:32,796:INFO:handler:192.168.3.112 - - [2017-12-05 07:50:32] "GET /api/memory/virtual/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 390 0.049000
+2017-12-05 07:50:33,421:INFO:handler:192.168.3.112 - - [2017-12-05 07:50:33] "GET /api/disk/logical/E%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.043000
+2017-12-05 07:50:40,180:INFO:handler:192.168.3.112 - - [2017-12-05 07:50:40] "GET /api/cpu/percent/?token=test123&warning=20&critical=40&check=1 HTTP/1.1" 200 154 0.000000
+2017-12-05 07:50:50,923:INFO:handler:192.168.3.112 - - [2017-12-05 07:50:50] "GET /api/disk/logical/T%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.057000
+2017-12-05 07:50:51,631:INFO:handler:192.168.3.112 - - [2017-12-05 07:50:51] "GET /api/disk/logical/D%3A%7C/used_percent/?token=&warning=70&critical=90&check=1 HTTP/1.1" 200 154 0.001000
+2017-12-05 07:50:52,463:INFO:handler:192.168.3.112 - - [2017-12-05 07:50:52] "GET /api/memory/swap/?token=mytoken&warning=50&critical=80&units=Gi&check=1 HTTP/1.1" 200 333 0.065000
+2017-12-05 07:50:53,191:INFO:handler:192.168.3.112 - - [2017-12-05 07:50:53] "GET /api/interface/Local%20Area%20Connection%2A%2011/bytes_recv/?token=mytoken&warning=10&critical=100&delta=True&units=M&check=1 HTTP/1.1" 200 238 0.041000
+2017-12-05 07:51:08,292:INFO:handler:192.168.3.112 - - [2017-12-05 07:51:08] "GET /api/logs/?token=mytoken&warning=20&critical=40&check=1&name=System HTTP/1.1" 200 28572 0.092000
+2017-12-05 07:51:46,674:INFO:handler:192.168.3.112 - - [2017-12-05 07:51:46] "GET /api/disk/logical/I%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.054000
+2017-12-05 07:52:21,255:INFO:handler:192.168.3.112 - - [2017-12-05 07:52:21] "GET /api/disk/logical/Z%3A%7C/used_percent/?token=mytoken&warning=70&critical=90&check=1 HTTP/1.1" 200 239 0.056000
