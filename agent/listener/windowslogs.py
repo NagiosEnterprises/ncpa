@@ -108,7 +108,7 @@ class WindowsLogsNode(nodes.LazyNode):
         self.set_warning(kwargs)
         self.set_critical(kwargs)
         self.set_log_check(kwargs)
-        self.get_delta_values(log_counts, kwargs, log_names, *args, **kwargs)
+        self.get_delta_values(log_counts, kwargs, *args, **kwargs)
 
         returncode = 0
         prefix = 'OK'
