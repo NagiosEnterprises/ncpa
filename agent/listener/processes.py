@@ -375,7 +375,7 @@ class ProcessNode(nodes.LazyNode):
 
             # Add totals to perfdata
             extra_perfdata = " 'cpu'=%s%s;;; 'memory'=%s%s;;; 'memory_vms'=%s%s;;; 'memory_rss'=%s%s;;;" % (tcpu, '%',
-                tmem, mem_unit, tmem_vms, mem_unit, tmem_rss, mem_unit)
+                tmem, '%', tmem_vms, mem_unit, tmem_rss, mem_unit)
 
             check_return['stdout'] += extra_perfdata + extra
 
