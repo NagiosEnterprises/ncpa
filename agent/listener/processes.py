@@ -329,10 +329,10 @@ class ProcessNode(nodes.LazyNode):
         return [title]
 
     def run_check(self, *args, **kwargs):
+        procs = self.walk(first=True, *args, **kwargs)
 
-        def process_check_method(*args, **kwargs):
-            processes_count = self.walk(first=True, *args, **kwargs)
-            count = len(processes_count['processes'])
+        def process_check_method():
+            count = len(procs['processes'])
             return [count, '']
 
         self.method = process_check_method
@@ -343,7 +343,43 @@ class ProcessNode(nodes.LazyNode):
         if kwargs.get('title', None) is None:
             kwargs['title'] = self.get_process_label(kwargs)
 
-        return super(ProcessNode, self).run_check(*args, **kwargs)
+        check_return = super(ProcessNode, self).run_check(*args, **kwargs)
+
+        # Add the process information, one process per line, to long output
+        proc_count = len(procs['processes'])
+        if proc_count > 0:
+            tmem = 0
+            tcpu = 0
+            tmem_vms = 0
+            tmem_rss = 0
+            mem_unit = ''
+
+            # Generate long output for service
+            extra = '\nProcesses Matched\nPID: Name: Username: Exe: Memory: CPU\n-----------------------------------\n'
+            for proc in procs['processes']:
+                tmem += proc['mem_percent'][0]
+                tcpu += proc['cpu_percent'][0]
+                tmem_vms += proc['mem_vms'][0]
+                tmem_rss += proc['mem_rss'][0]
+                mem_unit = proc['mem_vms'][1]
+                memory = '%s %s (VMS %.2f %s, RSS %.2f %s)' % (proc['mem_percent'][0], '%', proc['mem_vms'][0],
+                    proc['mem_vms'][1], proc['mem_rss'][0], proc['mem_rss'][1])
+                extra += '%s: %s: %s: %s: %.2f %s\n' % (proc['pid'], proc['name'], proc['username'],
+                    memory, proc['cpu_percent'][0], '%')
+            
+            # Add totals to the output
+            tmem = tmem / proc_count
+            tcpu = tcpu / proc_count
+            extra += '\nTotal Memory: %.2f %s (VMS %.2f %s, RSS %.2f %s)\n' % (tmem, '%', tmem_vms, mem_unit, tmem_rss, mem_unit)
+            extra += 'Total CPU: %.2f %s\n' % (tcpu, '%')
+
+            # Add totals to perfdata
+            extra_perfdata = " 'cpu'=%s%s;;; 'memory'=%s%s;;; 'memory_vms'=%s%s;;; 'memory_rss'=%s%s;;;" % (tcpu, '%',
+                tmem, mem_unit, tmem_vms, mem_unit, tmem_rss, mem_unit)
+
+            check_return['stdout'] += extra_perfdata + extra
+
+        return check_return
 
 
 def get_node():
