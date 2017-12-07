@@ -196,17 +196,18 @@ class ServiceNode(nodes.LazyNode):
         finally:
             timer.cancel()
 
-        if service_status.returncode == 1:
-            return 'stopped' # Service not found
+        out = stdout.lower()
+        if 'not running' in out or 'stopped' in out:
+            return 'stopped'
+
+        # Return stopped if return code is 1-3
+        if service_status.returncode in range(1, 3):
+            return 'stopped'
         elif service_status.returncode == 0:
-            out = stdout.lower()
-            if not out:
-                return 'running' # Service is likely running (no output but return 0)
-            elif out in 'not running' or out in 'stopped': # Service returned 0 but had 'stopped' or 'not running' message
-                return 'stopped'
-            else:
-                return 'running' # Service is assumed running due to (return 0)
-        return 'stopped' # Service is likely not running (return > 0)
+            return 'running'
+
+        # Service is likely not running (return > 0)
+        return 'unknown'
 
     @filter_services
     def get_services_via_initd(self, *args, **kwargs):
@@ -218,10 +219,12 @@ class ServiceNode(nodes.LazyNode):
             pass
 
         services = {}
-        processes = psutil.process_iter(attrs=['name'])
+        processes = []
+        for p in psutil.process_iter(attrs=['name']):
+            processes.append(p.info['name'])
 
         for service in possible_services:
-            status = 'stopped'
+            status = 'unknown'
 
             # Skip broken 'services' that actually run when called with 'status'
             if 'rcS' in service:
@@ -229,11 +232,11 @@ class ServiceNode(nodes.LazyNode):
 
             # Do a quick check if there is a process for this service running
             for p in processes:
-                if p.info['name'] == service:
+                if service in p:
                     status = 'running'
 
             # Verify with 'service' if status is still stopped
-            if status == 'stopped': 
+            if status == 'unknown': 
                 status = self.get_initd_service_status(service)
 
             services[service] = status
