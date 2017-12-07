@@ -16,6 +16,7 @@ Changelog
 - Added processes into long output for processes endpoint and performance data output for all processes matched
 - Added ability run "interface/<interface name>" as a check to return all interface data
 - Fixed searching for cmd causing any process with no cmd given to show up with any search
+- Fixed services on el6 to no longer use a grep for the a process and rely on psutil and service instead
 
 2.0.6 - 11/09/2017
 ==================
