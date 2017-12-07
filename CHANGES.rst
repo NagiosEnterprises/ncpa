@@ -15,6 +15,7 @@ Changelog
 - Added log message (and other log data) in to check as long output for Windows logs
 - Added processes into long output for processes endpoint and performance data output for all processes matched
 - Added ability run "interface/<interface name>" as a check to return all interface data
+- Added unknown service state when permissions of the nagios user stop service from checking running state
 - Fixed searching for cmd causing any process with no cmd given to show up with any search
 - Fixed services on el6 to no longer use a grep for the a process and rely on psutil and service instead
 
