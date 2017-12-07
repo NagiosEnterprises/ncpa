@@ -196,7 +196,7 @@ class RunnableNode(ParentNode):
         # then this is clearly not what we want and we simply hash against the API
         # accessor.
         if not hasher:
-            accessor = request_args.get('accessor', None)
+            accessor = request_args.get('accessor', '')
         else:
             accessor = hasher
 

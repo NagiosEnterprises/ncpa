@@ -14,6 +14,7 @@ import passive.nrds
 
 
 class NRDSHandler(TestCase):
+
     def setUp(self):
         listener.server.listener.config['iconfig'] = {}
         self.testing_plugin_dir = os.path.join(tempfile.gettempdir(), 'testing-plugins')
@@ -30,10 +31,6 @@ class NRDSHandler(TestCase):
             os.mkdir(self.testing_plugin_dir)
         except OSError:
             pass
-
-    @skip("Not testing the run method, just a convenience method.")
-    def test_run(self):
-        pass
 
     def test_get_plugin(self):
         def get_request(*args, **kwargs):
