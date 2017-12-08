@@ -616,7 +616,7 @@ def admin_clear_check_log():
 # ------------------------------
 
 
-@listener.route('/ws/api/<path:accessor>', methods=['GET', 'POST'])
+@listener.route('/ws/api/<path:accessor>')
 @requires_token_or_auth
 def api_websocket(accessor=None):
     """Meant for use with the websocket and API.
@@ -641,7 +641,7 @@ def api_websocket(accessor=None):
                 node = psapi.getter(message, config, request.path)
                 prop = node.name
                 val = node.walk(first=True, **sane_args)
-                jval = json.dumps(val[prop], ensure_ascii=False)
+                jval = json.dumps(val[prop], encoding=sys.stdin.encoding)
                 ws.send(jval)
             except Exception as e:
                 # Socket was probably closed by the browser changing pages
@@ -670,7 +670,9 @@ def top_websocket():
                     continue
                 process_list.append(process)
 
-            json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list}, ensure_ascii=False)
+            json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list},
+                                  encoding=sys.stdin.encoding)
+
             try:
                 ws.send(json_val)
                 gevent.sleep(1)
@@ -693,7 +695,7 @@ def tail_websocket():
                 last_ts, logs = listener.tail_method(last_ts=last_ts, **request.args)
 
                 if logs:
-                    json_log = json.dumps(logs, ensure_ascii=False)
+                    json_log = json.dumps(logs, encoding=sys.stdin.encoding)
                     ws.send(json_log)
 
                 gevent.sleep(5)
@@ -709,7 +711,7 @@ def tail_websocket():
 # ------------------------------
 
 
-@listener.route('/top', methods=['GET', 'POST'])
+@listener.route('/top')
 @requires_auth
 def top():
     display = request.values.get('display', 0)
@@ -741,7 +743,7 @@ def top():
     return render_template('top.html', **info)
 
 
-@listener.route('/tail', methods=['GET', 'POST'])
+@listener.route('/tail')
 @requires_token_or_auth
 def tail(accessor=None):
     info = { }
@@ -868,49 +870,6 @@ def api(accessor=''):
     sane_args = {}
     for value in request.values:
         sane_args[value] = request.args.getlist(value)
-
-    #
-    # As of version 2.0.0 there are now 3 different paths that are backwards
-    # compatible using this section. After looking into it further the location
-    # of this should be around here. Changing the incoming request is the only
-    # way to make something happen without updating the way the API looks/returns.
-    # You can think of these as aliases. Below explains the aliases and when they
-    # will be removed. As of 2.0.0 they are deprecated. Will be removed in 3.
-    #
-    # Deprecated Aliases:
-    #
-    #   Aliases (up to 1.8.1)     || Location (2.0.0)
-    #   ---------------------------------------------------------------------
-    #   api/service/<servicename> -> api/services?service=<servicename>
-    #   api/process/<processname> -> api/processes?name=<processname>
-    #   api/agent/plugin/<plugin> -> api/plugins/<plugin>
-    #
-    """
-    path = [re.sub('%2f', '/', x, flags=re.I) for x in accessor.split('/') if x]
-    if len(path) > 0 and path[0] == 'api':
-        path = path[1:]
-    if len(path) > 0:
-        node_name, rest_path = path[0], path[1:]
-
-        if node_name == "service":
-            accessor = "services"
-            if len(rest_path) > 0:
-                sane_args['service'] = [rest_path[0]]
-                if len(rest_path) == 2:
-                    sane_args['status'] = [rest_path[1]]
-                    sane_args['check'] = True;
-        elif node_name == "process":
-            accessor = "processes"
-            if len(rest_path) > 0:
-                sane_args['name'] = [rest_path[0]]
-                if len(rest_path) == 2:
-                    if rest_path[1] == "count":
-                        sane_args['check'] = True
-        elif node_name == "agent":
-            accessor = "plugins"
-            if 'plugin' in rest_path[0] and len(rest_path) > 1:
-                accessor = "plugins/" + rest_path[1]
-    """
 
     # Set the full requested path
     full_path = request.path

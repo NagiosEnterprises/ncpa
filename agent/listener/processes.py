@@ -274,8 +274,6 @@ class ProcessNode(nodes.LazyNode):
                 cols = line.split()
                 ps_procs[cols[1]] = [cols[2], cols[3]]
 
-        #print ps_procs
-
         for process in psutil.process_iter():
             try:
                 proc_obj = self.standard_form(self, process, ps_procs, units[0], sleep)
