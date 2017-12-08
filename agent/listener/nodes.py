@@ -541,6 +541,7 @@ class RunnableNode(ParentNode):
         #then run the function. The function is a comparison involving value.
         actions = [(r'^%s$' % first_float, lambda y: (value > float(y.group('first'))) or (value < 0)),
                    (r'^%s:$' % first_float, lambda y: value < float(y.group('first'))),
+                   (r'^:%s$' % first_float, lambda y: (value > float(y.group('first'))) or (value < 0)),
                    (r'^~:%s$' % first_float, lambda y: value > float(y.group('first'))),
                    (r'^%s:%s$' % (first_float, second_float), lambda y: (value < float(y.group('first'))) or (value > float(y.group('second')))),
                    (r'^@%s:%s$' % (first_float, second_float), lambda y: not((value < float(y.group('first'))) or (value > float(y.group('second')))))]
