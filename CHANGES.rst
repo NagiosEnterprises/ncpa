@@ -18,6 +18,7 @@ Changelog
 - Added unknown service state when permissions of the nagios user stop service from checking running state
 - Fixed searching for cmd causing any process with no cmd given to show up with any search
 - Fixed services on el6 to no longer use a grep for the a process and rely on psutil and service instead
+- Fixed issue with Firefox running in Windows causing websocket encoding errors
 
 2.0.6 - 11/09/2017
 ==================
