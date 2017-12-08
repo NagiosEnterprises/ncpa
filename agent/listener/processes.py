@@ -17,6 +17,13 @@ class ProcessNode(nodes.LazyNode):
         return exe
 
     @staticmethod
+    def get_username(request_args):
+        username = request_args.get('username', [])
+        if not isinstance(username, list):
+            username = [username]
+        return username
+
+    @staticmethod
     def get_name(request_args):
         name = request_args.get('name', [])
         if not isinstance(name, list):
@@ -97,6 +104,7 @@ class ProcessNode(nodes.LazyNode):
 
     def make_filter(self, *args, **kwargs):
         exes = self.get_exe(kwargs)
+        usernames = self.get_username(kwargs)
         names = self.get_name(kwargs)
         cmds = self.get_cmd(kwargs)
         cpu_percent = self.get_cpu_percent(kwargs)
@@ -122,6 +130,23 @@ class ProcessNode(nodes.LazyNode):
                         comp.append(False)
                 else:
                     if process['exe'].lower() in exe.lower():
+                        comp.append(True)
+                    else:
+                        comp.append(False)
+
+            for username in usernames:
+                if match == 'search':
+                    if username.lower() in process['username'].lower():
+                        comp.append(True)
+                    else:
+                        comp.append(False)
+                elif match == 'regex':
+                    if re.search(username, process['username']):
+                        comp.append(True)
+                    else:
+                        comp.append(False)
+                else:
+                    if process['username'].lower() in username.lower():
                         comp.append(True)
                     else:
                         comp.append(False)
