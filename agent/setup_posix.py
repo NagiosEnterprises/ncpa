@@ -23,12 +23,22 @@ include_files = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
                  ('listener/static', 'listener/static')]
 
 # It does not appear the cx_Freeze honors the package directive
-includes = ['xml.dom.minidom','jinja2.ext','passive',]
+includes = ['xml.dom.minidom','jinja2.ext','passive']
 excludes = ['Tkinter','tkinter']
 packages = []
 
 # Shared library include overrides
 bin_includes = ['libffi.so', 'libssl.so', 'libcrypto.so']
+
+# Special includes for AIX systems
+if 'aix' in sys.platform:
+    include_files += [('/opt/freeware/lib/python2.7/config/libpython2.7.so', 'libpython2.7.so'),
+                      ('/opt/freeware/lib/libsqlite3.a', 'libsqlite3.a'),
+                      ('/opt/freeware/lib/libssl.so', 'libssl.so'),
+                      ('/opt/freeware/lib/libcrypto.so', 'libcrypto.so'),
+                      ('/opt/freeware/lib/libcrypto.a', 'libcrypto.a'),
+                      ('/opt/freeware/lib/libffi.a', 'libffi.a'),
+                      ('/opt/freeware/lib/libgcc_s.a', 'libgcc_s.a')]
 
 include_files += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                   ('build_resources/ncpa_listener.plist', 'build_resources/ncpa_listener.plist'),

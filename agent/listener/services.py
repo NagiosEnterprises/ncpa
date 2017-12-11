@@ -72,6 +72,8 @@ class ServiceNode(nodes.LazyNode):
             return self.get_services_via_psutil
         elif uname == 'Darwin':
             return self.get_services_via_launchctl
+        elif uname == 'AIX':
+            return self.get_services_via_lssrc
         else:
 
             # look for systemd
@@ -240,6 +242,31 @@ class ServiceNode(nodes.LazyNode):
                 status = self.get_initd_service_status(service)
 
             services[service] = status
+
+        return services
+
+    # AIX-specific list services section
+    @filter_services
+    def get_services_via_lssrc(self, *args, **kwargs):
+        services = {}
+        status = tempfile.TemporaryFile()
+        service = subprocess.Popen(['lssrc', '-a'], stdout=status)
+        service.wait()
+        status.seek(0)
+
+        # The first line is the header
+        status.readline()
+
+        for line in status.readlines():
+            ls = line.split()
+            sub = ls[0]
+            status = ls[-1]
+            if status == 'active':
+                services[sub] = 'running'
+            elif status == 'inoperative':
+                services[sub] = 'stopped'
+            else:
+                services[sub] = 'unknown'
 
         return services
 
