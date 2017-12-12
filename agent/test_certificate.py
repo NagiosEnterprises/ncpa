@@ -29,9 +29,6 @@ class TestCertificate(unittest.TestCase):
         self.assertEquals(kc, kcm, "Key file edited. File modified times do not match.")
         self.assertEquals(cc, ccm, "Cert file edited. File modified times do not match.")
 
-        key_file.close()
-        crt_file.close()
-
     # Tests whether or not the empty .crt and .key file will be removed
     # and properly replaced with new cert files
     def test_create_self_signed_certificate_empty_file(self):
