@@ -9,6 +9,13 @@ import packaging.version
 import packaging.specifiers
 import packaging.requirements
 
+def remove_empty_file(file):
+    if os.path.exists(file):
+        if os.stat(file).st_size == 0:
+            os.remove(file)
+            return True
+    return False
+
 def create_self_signed_cert(cert_dir, cert_file, key_file):
     
     # Cert files
@@ -16,9 +23,8 @@ def create_self_signed_cert(cert_dir, cert_file, key_file):
     target_key = os.path.join(cert_dir, key_file)
 
     # Verify cert files are not "empty"
-    if os.stat(target_cert).st_size == 0 or  os.stat(target_key).st_size == 0:
-        os.remove(target_cert)
-        os.remove(target_key)
+    remove_empty_file(target_cert)
+    remove_empty_file(target_key)
 
     # Create cert if it does not exist
     if not os.path.exists(target_cert) or not os.path.exists(target_key):
