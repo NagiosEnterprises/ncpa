@@ -18,6 +18,7 @@ Changelog
 - Added unknown service state when permissions of the nagios user stop service from checking running state
 - Added processes filter for username and updated GUI API browser
 - Added AIX support to the main branch (merged aix branch in)
+- Added long output toggle button in checks page to show all long output for process/log checks
 - Fixed searching for cmd causing any process with no cmd given to show up with any search
 - Fixed services on el6 to no longer use a grep for the a process and rely on psutil and service instead
 - Fixed issue with Firefox running in Windows causing websocket encoding errors
