@@ -51,6 +51,14 @@ $(document).ready(function() {
                         <option value="3"{% if status == 3 %} selected{% endif %}>UNKNOWN</option>
                     </select>
                 </div>
+                <div class="input-group" style="width: 170px; display: inline-table; vertical-align: top;">
+                    <label class="input-group-addon">Type</label>
+                    <select name="ctype" class="form-control">
+                        <option value="">Both</option>
+                        <option value="Active"{% if ctype == 'Active' %} selected{% endif %}>Active</option>
+                        <option value="Passive"{% if ctype == 'Passive' %} selected{% endif %}>Passive</option>
+                    </select>
+                </div>
                 <div class="input-group" style="width: 280px;">
                     <label class="input-group-addon" style="width: 100px;">Executed By</label>
                     <select name="check_senders" class="check_senders" multiple>

@@ -263,7 +263,6 @@ class NCPACheck(object):
 
         # Parse arguments for URL
         args = urlparse.parse_qs(parse.query).items()
-        print args
         for x, v in args:
             if len(v) == 1:
                 api_args.append((x, v[0]))

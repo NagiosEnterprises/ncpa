@@ -91,8 +91,6 @@ class PluginNode(nodes.RunnableNode):
         except Exception as e:
             pass
 
-        print sudo_plugins
-
         # Make our command line
         cmd = self.get_cmdline(instructions, sudo_plugins)
         logging.debug('Running process with command line: `%s`', ' '.join(cmd))

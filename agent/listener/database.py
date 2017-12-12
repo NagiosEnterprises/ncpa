@@ -119,7 +119,7 @@ class DB(object):
         return senders
 
     # Special functions for getting check results
-    def get_checks(self, search='', size=20, page=1, status='', senders=[]):
+    def get_checks(self, search='', size=20, page=1, status='', ctype='', senders=[]):
         where = False
         data = ()
         cmd = "SELECT * FROM checks"
@@ -139,6 +139,16 @@ class DB(object):
                 cmd += " WHERE"
                 where = True
             cmd += " result = ?"
+
+        # Add type
+        if ctype != '':
+            data += (ctype,)
+            if where:
+                cmd += " AND"
+            else:
+                cmd += " WHERE"
+                where = True
+            cmd += " type = ?"
 
         # Add senders
         if len(senders) > 0:

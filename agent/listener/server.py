@@ -367,6 +367,7 @@ def checks():
     search = request.values.get('search', '')
     size = int(request.values.get('size', 20))
     page = int(request.values.get('page', 1))
+    ctype = request.values.get('ctype', '')
     page_raw = page
 
     status = request.values.get('status', '')
@@ -378,11 +379,12 @@ def checks():
     # Add data values for page
     data['check_senders'] = check_senders
     data['search'] = search
-    data['checks'] = db.get_checks(search, size, page, status=status, senders=check_senders)
+    data['checks'] = db.get_checks(search, size, page, status=status, ctype=ctype, senders=check_senders)
     data['size'] = size
     data['page'] = format(page, ",d")
     data['page_raw'] = page_raw
     data['status'] = status
+    data['ctype'] = ctype
 
     # Do some page math magic
     total = db.get_checks_count(search, status=status, senders=check_senders)
@@ -401,6 +403,8 @@ def checks():
         link_vals += '&size=' + str(size)
     if status != '':
         link_vals += '&status=' + str(status)
+    if ctype != '':
+        link_vals += '&ctype=' + str(status)
     if search != '':
         link_vals += '&search=' + str(search)
     if len(check_senders) > 0:
