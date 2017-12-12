@@ -22,6 +22,7 @@ Changelog
 - Fixed services on el6 to no longer use a grep for the a process and rely on psutil and service instead
 - Fixed issue with Firefox running in Windows causing websocket encoding errors
 - Fixed thresholds with colon (:) in front to be treated like a regular number instead of erroring
+- Fixed problem with multiple arguments passed via query string for passive URL-based checks
 
 2.0.6 - 11/09/2017
 ==================
