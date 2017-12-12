@@ -11,10 +11,16 @@ import packaging.requirements
 
 def create_self_signed_cert(cert_dir, cert_file, key_file):
     
-    # Create cert files
+    # Cert files
     target_cert = os.path.join(cert_dir, cert_file)
     target_key = os.path.join(cert_dir, key_file)
 
+    # Verify cert files are not "empty"
+    if os.stat(target_cert).st_size == 0 or  os.stat(target_key).st_size == 0:
+        os.remove(target_cert)
+        os.remove(target_key)
+
+    # Create cert if it does not exist
     if not os.path.exists(target_cert) or not os.path.exists(target_key):
 
         # Create a key pair
