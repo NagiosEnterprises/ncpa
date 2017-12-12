@@ -21,8 +21,10 @@ Changelog
 - Fixed searching for cmd causing any process with no cmd given to show up with any search
 - Fixed services on el6 to no longer use a grep for the a process and rely on psutil and service instead
 - Fixed issue with Firefox running in Windows causing websocket encoding errors
-- Fixed thresholds with colon (:) in front to be treated like a regular number instead of erroring
+- Fixed thresholds with colon (:) in front to be treated like a regular number instead of giving an error
 - Fixed problem with multiple arguments passed via query string for passive URL-based checks
+- Fixed upgrades on Windows to only start the ncpa services that were running before upgrade
+- Fixed check settings not showing up on system/uptime and added human readable output to check return output
 
 2.0.6 - 11/09/2017
 ==================

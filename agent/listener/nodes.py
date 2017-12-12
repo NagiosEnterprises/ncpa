@@ -9,6 +9,7 @@ import re
 import database
 import server
 import ConfigParser
+from datetime import datetime, timedelta
 
 
 # Valid nodes is updated as it gets set when calling a node via accessor
@@ -400,6 +401,12 @@ class RunnableNode(ParentNode):
         
         perfdata = ' '.join(perfdata)
 
+        # Hack in the uptime change because we can't do much else...
+        # this will be removed in NCPA 3
+        if self.name == 'uptime':
+            custom_output = proper_name + ' was ' + self.elapsed_time(values[0])
+            values_for_info_line = ''
+
         if secondary_data is True:
             stdout = '%s: %s' % (proper_name, values_for_info_line)
         else:
@@ -556,6 +563,20 @@ class RunnableNode(ParentNode):
 
         #If none of the items matches, the warning/critical format was bogus! Sound the alarms!
         raise Exception('Improper warning/critical format.')
+
+    @staticmethod
+    def elapsed_time(seconds):
+        intervals = (('days', 86400), ('hours', 3600), ('minutes', 60), ('seconds', 1))
+        result = []
+
+        for name, count in intervals:
+            value = seconds // count
+            if value:
+                seconds -= value * count
+                if value == 1:
+                    name = name.rstrip('s')
+                result.append("{} {}".format(int(value), name))
+        return ' '.join(result)
 
 
 class LazyNode(RunnableNode):

@@ -201,6 +201,18 @@ $(document).ready(function() {
 
         switch (module)
         {
+            case 'system':
+                if (selected != '') {
+                    if (selected == 'uptime') {
+                        $('.check-settings').show();
+                        $('.wc-thresholds').show();
+                        break;
+                    }
+                }
+                clear_settings();
+                $('.settings').hide();
+                break;
+
             case 'cpu':
                 if (selected != '') {
                     if (selected != 'count') {
