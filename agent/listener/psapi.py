@@ -123,7 +123,7 @@ def get_system_node():
 
 def get_cpu_node():
     cpu_count = RunnableNode('count', method=lambda: ([len(ps.cpu_percent(percpu=True))], 'cores'))
-    cpu_percent = LazyNode('percent', method=lambda: (ps.cpu_percent(interval=1, percpu=True), '%'))
+    cpu_percent = LazyNode('percent', method=lambda: (ps.cpu_percent(interval=0.5, percpu=True), '%'))
     cpu_user = RunnableNode('user', method=lambda: ([x.user for x in ps.cpu_times(percpu=True)], 'ms'))
     cpu_system = RunnableNode('system', method=lambda: ([x.system for x in ps.cpu_times(percpu=True)], 'ms'))
     cpu_idle = RunnableNode('idle', method=lambda: ([x.idle for x in ps.cpu_times(percpu=True)], 'ms'))
