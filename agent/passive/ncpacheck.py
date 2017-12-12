@@ -53,10 +53,10 @@ class NCPACheck(object):
 
         if '?' in instruction or '&' in instruction:
             api_url, api_args = NCPACheck.parse_api_url_style_instruction(instruction)
-            api_args.append(('check', 1))
+            api_args.append(('check', '1'))
         else:
             api_url, api_args = NCPACheck.parse_cmdline_style_instruction(instruction)
-            api_args['check'] = 1
+            api_args['check'] = '1'
 
         api_url = NCPACheck.normalize_api_url(api_url)
 

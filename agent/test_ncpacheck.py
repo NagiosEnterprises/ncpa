@@ -103,7 +103,7 @@ class TestNCPACheck(unittest.TestCase):
     def test_api_url_style_instruction(self):
         url_instruction = '/api/bingo/?warning=1&critical=10'
         expected_api_url = '/api/bingo/'
-        expected_api_args = {'warning': '1', 'critical': '10'}
+        expected_api_args = [('warning', '1'), ('critical', '10')]
 
         url, args = passive.ncpacheck.NCPACheck.parse_api_url_style_instruction(url_instruction)
 
