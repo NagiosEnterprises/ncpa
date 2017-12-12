@@ -44,6 +44,12 @@ Var log_level_passive
 Var passive_checks
 Var installed
 
+; Define status variables
+; 0 - stopped
+; 1 - running
+Var status_listener
+Var status_passive
+
 ; The file to write
 OutFile "ncpa-${NCPA_VERSION}.exe"
 
@@ -134,7 +140,7 @@ Function .onInit
     ${GetOptions} $R0 "/PORT=" $bind_port
 
     ${If} $nrdp_url != ''
-    StrCpy $nrdp 1
+        StrCpy $nrdp 1
     ${EndIf}
 
     ; Define defaults for silent installs
@@ -149,12 +155,42 @@ FunctionEnd
 
 Function CheckInstall
 
+    ; Status doesn't matter, since we are installing
+    StrCpy $status_listener "0"
+    StrCpy $status_passive "0"
+
     ; Set installed to 0
     StrCpy $installed "0"
 
     ; Check if previously installed (non-silent installs)
-    IfFileExists "$INSTDIR\uninstall.exe" +1 +2
+    IfFileExists "$INSTDIR\uninstall.exe" 0 +2
     StrCpy $installed "1"
+
+    ${If} $installed == "1"
+
+        ExpandEnvStrings $0 COMSPEC
+
+        ; Get status of the listener service
+        nsExec::ExecToStack '"$SYSDIR\cmd.exe" /c "sc QUERY ncpalistener | FIND /C "RUNNING""'
+        Pop $0  # contains return code
+        Pop $1  # contains output
+        StrCpy $1 $1 1
+        ${If} $1 == "1"
+            ; Not running, so give status 1
+            StrCpy $status_listener "1"
+        ${EndIf}
+
+        ; Get status of the passive service
+        nsExec::ExecToStack '"$SYSDIR\cmd.exe" /c "sc QUERY ncpapassive | FIND /C "RUNNING""'
+        Pop $0  # contains return code
+        Pop $1  # contains output
+        StrCpy $1 $1 1
+        ${If} $1 == "1"
+            ; Not running, so give status 1
+            StrCpy $status_passive "1"
+        ${EndIf}
+
+    ${EndIf}
 
 FunctionEnd
 
@@ -206,7 +242,7 @@ Function ConfigPassiveChecks
     
     ; Skip this step unless 'send passive checks over NRDP' is checked
     ${If} $nrdp == 0
-    Abort
+        Abort
     ${EndIf} 
 
     ; Display the passive setup options
@@ -268,19 +304,19 @@ Section # "Create Config.ini"
 
     ; If send via NRDP was selected, set nrdp handler
     ${If} $nrdp == 1
-    WriteINIStr $INSTDIR\etc\ncpa.cfg passive "handlers" "nrdp"
+        WriteINIStr $INSTDIR\etc\ncpa.cfg passive "handlers" "nrdp"
 
-    ; Set the passive checks into a new config file
-    ${StrRep} $7 "$passive_checks" "\n\n" "$\r$\n"
-    FileOpen $8 $INSTDIR\etc\ncpa.cfg.d\nrdp.cfg w
-    FileWrite $8 "#$\r$\n"
-    FileWrite $8 "# AUTO GENERATED NRDP CONFIG FROM WINDOWS INSTALLER$\r$\n"
-    FileWrite $8 "#$\r$\n$\r$\n"
-    FileWrite $8 "[passive checks]$\r$\n$\r$\n"
-    FileWrite $8 "$7"
-    FileClose $8
+        ; Set the passive checks into a new config file
+        ${StrRep} $7 "$passive_checks" "\n\n" "$\r$\n"
+        FileOpen $8 $INSTDIR\etc\ncpa.cfg.d\nrdp.cfg w
+        FileWrite $8 "#$\r$\n"
+        FileWrite $8 "# AUTO GENERATED NRDP CONFIG FROM WINDOWS INSTALLER$\r$\n"
+        FileWrite $8 "#$\r$\n$\r$\n"
+        FileWrite $8 "[passive checks]$\r$\n$\r$\n"
+        FileWrite $8 "$7"
+        FileClose $8
     ${Else}
-    WriteINIStr $INSTDIR\etc\ncpa.cfg passive "handlers" "None"
+        WriteINIStr $INSTDIR\etc\ncpa.cfg passive "handlers" "None"
     ${EndIf}
 
     ; Passive settings
@@ -368,19 +404,28 @@ Section ""
     !define PORT $bind_port
   
     ; Install the service on new install
-    ${If} $installed == "0"
     ReadEnvStr $9 COMSPEC
-    nsExec::Exec '$9 /c diskperf -Y'
-    nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --install ncpalistener'
-    nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --install ncpapassive'
-    nsExec::Exec '$9 /c sc config ncpalistener start= delayed-auto'
-    nsExec::Exec '$9 /c sc config ncpapassive start= delayed-auto'
-    nsExec::Exec '$9 /c netsh advfirewall firewall add rule name="NCPA" dir=in action=allow protocol=TCP localport=${PORT}'
+    ${If} $installed == "0"
+        nsExec::Exec '$9 /c diskperf -Y'
+        nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --install ncpalistener'
+        nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --install ncpapassive'
+        nsExec::Exec '$9 /c sc config ncpalistener start= delayed-auto'
+        nsExec::Exec '$9 /c sc config ncpapassive start= delayed-auto'
+        nsExec::Exec '$9 /c netsh advfirewall firewall add rule name="NCPA" dir=in action=allow protocol=TCP localport=${PORT}'
+        nsExec::Exec '$9 /c sc start ncpalistener'
+        nsExec::Exec '$9 /c sc start ncpapassive'
     ${EndIf}
 
     ; Start the listener and passive services
-    nsExec::Exec '$9 /c sc start ncpalistener'
-    nsExec::Exec '$9 /c sc start ncpapassive'
+    ; if they were running before upgrade (or if this is a new install)
+
+    ${If} $status_listener == "1"
+        nsExec::Exec '$9 /c sc start ncpalistener'
+    ${EndIf}
+
+    ${If} $status_passive == "1"
+        nsExec::Exec '$9 /c sc start ncpapassive'
+    ${EndIf}
 
 SectionEnd
 
