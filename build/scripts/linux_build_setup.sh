@@ -78,6 +78,9 @@ $PYTHONBIN -m pip install -r ../resources/require.txt --upgrade
 if [ "$BUILDFROM" != "travis" ]; then
 	useradd nagios
 	groupadd nagios
+	usermod -g nagios nagios
 else
 	sudo useradd nagios
+	sudo groupadd nagios
+	sudo usermod -g nagios nagios
 fi

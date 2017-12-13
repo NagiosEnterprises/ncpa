@@ -108,7 +108,7 @@ class WindowsLogsNode(nodes.LazyNode):
         self.set_warning(kwargs)
         self.set_critical(kwargs)
         self.set_log_check(kwargs)
-        self.get_delta_values(log_counts, kwargs, log_names, *args, **kwargs)
+        self.get_delta_values(log_counts, kwargs, *args, **kwargs)
 
         returncode = 0
         prefix = 'OK'
@@ -133,6 +133,15 @@ class WindowsLogsNode(nodes.LazyNode):
         info_line = '%s: %s (Time range - %s)' % (prefix, info, nice_timedelta)
 
         stdout = '%s | %s' % (info_line, perfdata)
+
+        # Long output including actual log messages
+        for n in log_names:
+            if n == 'Total Count':
+                continue
+            stdout += '\n%s Logs\nTime: Computer: Severity: Event ID: Source: Message\n-----------------------------------\n' % n
+            for log in logs[n]:
+                stdout += '%s: %s: %s: %s: %s: %s\n' % (log['time_generated'], log['computer_name'], log['severity'],
+                    log['event_id'], log['application'], log['message'].replace('\r\n', ''))
 
         # Get the check logging value
         try:

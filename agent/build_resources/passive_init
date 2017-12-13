@@ -22,6 +22,7 @@ if [ -f /etc/rc.d/init.d/functions ]; then
 fi
 
 _BASEDIR_
+export LD_LIBRARY_PATH=$BASEDIR:$PATH
 
 # Start NCPA Passive service
 start() {

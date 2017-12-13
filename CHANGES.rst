@@ -1,5 +1,32 @@
-﻿Changelog
+Changelog
 +++++++++
+
+2.1.0 - ??/??/2017
+==================
+- Removed deprecated aliases (service, process, and agent) as stated in 2.0.0 changelog section
+- Added a new config option (allowed_hosts) to the [listener] section to block access except from specified addresses
+- Added a new config option (run_with_sudo) to the [plugin directives] section to prepend the sudo command
+- Added shell script to uninstall NCPA on Mac OS X by running "sudo /usr/local/ncpa/uninstall.sh"
+- Added /IP and /PORT to silent install options for the Windows installer
+- Added LD_LIBRARY_PATH to ncpa init scripts and include libssl and libcrypto so we have the latest OpenSSL libraries
+- Added default_units configuration value to allow setting a default unit such as G or Gi for checks
+- Added exclude_fs_types configuration value to remove certain file system types from the disk check
+- Added a Kafka-Producer for passive checks
+- Added log message (and other log data) in to check as long output for Windows logs
+- Added processes into long output for processes endpoint and performance data output for all processes matched
+- Added ability run "interface/<interface name>" as a check to return all interface data
+- Added unknown service state when permissions of the nagios user stop service from checking running state
+- Added processes filter for username and updated GUI API browser
+- Added AIX support to the main branch (merged aix branch in)
+- Added long output toggle button in checks page to show all long output for process/log checks
+- Added ability to pass plugin arguments through the args POST/GET parameter instead of only through path
+- Fixed searching for cmd causing any process with no cmd given to show up with any search
+- Fixed services on el6 to no longer use a grep for the a process and rely on psutil and service instead
+- Fixed issue with Firefox running in Windows causing websocket encoding errors
+- Fixed thresholds with colon (:) in front to be treated like a regular number instead of giving an error
+- Fixed problem with multiple arguments passed via query string for passive URL-based checks
+- Fixed upgrades on Windows to only start the ncpa services that were running before upgrade
+- Fixed check settings not showing up on system/uptime and added human readable output to check return output
 
 2.0.6 - 11/09/2017
 ==================

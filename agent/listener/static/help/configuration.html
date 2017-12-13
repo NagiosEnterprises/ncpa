@@ -83,6 +83,18 @@
                                 <td>30</td>
                                 <td>The amount of time to retain log data for, if you have logging enabled. THe value is in days. The default is 30 days.</td>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <th>exclude_fs_types</th>
+                                <td>aufs, autofs, binfmt_misc, cifs, cgroup, debugfs, devpts, devtmpfs, encryptfs, efivarfs, fuse, hugelbtfs, mqueue, nfs, overlayfs, proc, pstore, rpc_pipefs, securityfs, smb, sysfs, tmpfs, tracefs</td>
+                                <td>A comma separated list of file system types to remove from the <code>disk</code> endpoint.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>default_units</th>
+                                <td></td>
+                                <td>Sets the default value of the units parameter that can be sent to convert bytes (B) into more readable versions such as GB or GiB. If this value is set and no <code>units</code> is given in the check or call, it will set <code>units</code> to this value.</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

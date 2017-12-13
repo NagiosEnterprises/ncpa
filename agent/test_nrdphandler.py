@@ -46,11 +46,3 @@ class TestNRDPHandler(TestCase):
         self.config.set('nrdp', 'hostname', 'silver')
         hostname = self.n.guess_hostname()
         self.assertEquals(hostname, 'silver')
-
-    @skip("test_NRDPHandler.test_log_result: This is simply logging, no need for testing.")
-    def test_log_result(self):
-        """
-        I'm really not sure how to test this, it is simply logging.
-        """
-        self.fail()
-

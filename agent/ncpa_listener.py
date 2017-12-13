@@ -69,7 +69,8 @@ class Listener(ncpadaemon.Daemon):
 
             if user_cert == 'adhoc':
                 basepath = filename.get_dirname_file()
-                cert, key = listener.certificate.create_self_signed_cert(basepath, 'ncpa.crt', 'ncpa.key')
+                certpath = os.path.abspath(os.path.join(basepath, 'var'))
+                cert, key = listener.certificate.create_self_signed_cert(certpath, 'ncpa.crt', 'ncpa.key')
             else:
                 cert, key = user_cert.split(',')
 

@@ -7,6 +7,7 @@ import os
 import filename
 import passive.nrds
 import passive.nrdp
+import passive.kafkaproducer
 
 
 class Passive(ncpadaemon.Daemon):
@@ -53,7 +54,7 @@ class Passive(ncpadaemon.Daemon):
         self.read_basic_config()
         plugins_abs = os.path.abspath(os.path.join(filename.get_dirname_file(), self.config_parser.get(u'plugin directives', u'plugin_path')))
         self.config_parser.set(u'plugin directives', u'plugin_path', plugins_abs)
-        self.config_parser.file_path = os.path.abspath(u'etc/ncpa.cfg')
+        self.config_parser.file_path = self.default_conf
 
         # Check if there is a start delay
         try:

@@ -119,7 +119,7 @@ class DB(object):
         return senders
 
     # Special functions for getting check results
-    def get_checks(self, search='', size=20, page=1, status='', senders=[]):
+    def get_checks(self, search='', size=20, page=1, status='', ctype='', senders=[]):
         where = False
         data = ()
         cmd = "SELECT * FROM checks"
@@ -139,6 +139,16 @@ class DB(object):
                 cmd += " WHERE"
                 where = True
             cmd += " result = ?"
+
+        # Add type
+        if ctype != '':
+            data += (ctype,)
+            if where:
+                cmd += " AND"
+            else:
+                cmd += " WHERE"
+                where = True
+            cmd += " type = ?"
 
         # Add senders
         if len(senders) > 0:
@@ -175,6 +185,16 @@ class DB(object):
             for col in columns:
                 check[col[0]] = obj[i]
                 i += 1
+
+            # Process output types
+            output = check['output'].split("\n")
+            check['output'] = output[0]
+
+            # Give long output if it exists
+            check['longoutput'] = ''
+            if len(output) > 1:
+                check['longoutput'] = "<br>".join(output[1:])
+
             checks.append(check)
 
         return checks
