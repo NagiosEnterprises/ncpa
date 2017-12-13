@@ -35,7 +35,7 @@ class ParentNode(object):
     def add_child(self, new_node):
         self.children[new_node.name] = new_node
 
-    def accessor(self, path, config, full_path):
+    def accessor(self, path, config, full_path, args):
         if path:
             next_child_name, rest_path = path[0], path[1:]
             try:
@@ -52,7 +52,7 @@ class ParentNode(object):
                 return DoesNotExistNode(next_child_name, 'node', full_path)
 
             # Continue down the node path
-            return child.accessor(rest_path, config, full_path)
+            return child.accessor(rest_path, config, full_path, args)
         else:
             return copy.deepcopy(self)
 
@@ -146,7 +146,7 @@ class RunnableNode(ParentNode):
         self.unit = ''
         self.delta = False
 
-    def accessor(self, path, config, full_path):
+    def accessor(self, path, config, full_path, args):
         if path:
             full_path = ', '.join(path)
             return DoesNotExistNode('', self.name, full_path)

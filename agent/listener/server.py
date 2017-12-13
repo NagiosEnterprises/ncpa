@@ -642,7 +642,7 @@ def api_websocket(accessor=None):
         while True:
             try:
                 message = ws.receive()
-                node = psapi.getter(message, config, request.path)
+                node = psapi.getter(message, config, request.path, request.args)
                 prop = node.name
                 val = node.walk(first=True, **sane_args)
                 jval = json.dumps(val[prop], encoding=sys.stdin.encoding)
@@ -774,7 +774,7 @@ def graph(accessor=None):
     # Refresh the root node before creating the websocket
     psapi.refresh()
 
-    node = psapi.getter(accessor, listener.config['iconfig'], request.path, cache=True)
+    node = psapi.getter(accessor, listener.config['iconfig'], request.path, request.args, cache=True)
     prop = node.name
 
     if request.values.get('delta'):
@@ -878,25 +878,28 @@ def api(accessor=''):
     # Set the full requested path
     full_path = request.path
 
+    # Set the accessor and variables
+    sane_args['debug'] = request.args.get('debug', False)
+    sane_args['remote_addr'] = request.remote_addr
+    sane_args['accessor'] = accessor
+
+    # Add config to sane_args
+    config = listener.config['iconfig']
+    sane_args['config'] = config
+
+    # Check if we are running a check or not
+    if not 'check' in sane_args:
+        sane_args['check'] = request.args.get('check', False)
+
+    # Try to get the node that was specified
     try:
-        config = listener.config['iconfig']
-        node = psapi.getter(accessor, config, full_path)
+        node = psapi.getter(accessor, config, full_path, request.args)
     except ValueError as exc:
         logging.exception(exc)
         return error(msg='Referencing node that does not exist: %s' % accessor)
     except IndexError as exc:
         # Hide the actual exception and just show nice output to users about changes in the API functionality
         return error(msg='Could not access location specified. Changes to API calls were made in NCPA v1.7, check documentation on making API calls.')
-
-    # Set the accessor and variables
-    sane_args['remote_addr'] = request.remote_addr
-    sane_args['accessor'] = accessor
-    sane_args['config'] = config
-
-    sane_args['debug'] = request.args.get('debug', False)
-
-    if not 'check' in sane_args:
-        sane_args['check'] = request.args.get('check', False)
 
     # Check for default unit in the config values
     default_units = get_config_value('general', 'default_units')
