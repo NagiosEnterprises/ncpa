@@ -318,6 +318,7 @@ $(document).ready(function() {
                     $('.btn-check-ncpa').show();
                     $('.arguments').show();
                 } else {
+                    clear_settings();
                     $('.btn-check-ncpa').hide();
                     $('.arguments').hide();
                 }
@@ -535,17 +536,6 @@ function get_api_endpoints(no_forward_slash) {
         $('.windows-counter').val('/' + counter);
     }
 
-    // Apply arguments for plugins
-    if (module == 'plugins') {
-        if (submodule != '') {
-            $('input.argument').each(function(i, arg) {
-                if ($(arg).val() != '') {
-                    api += '/' + $(arg).val();
-                }
-            });
-        }
-    }
-
     return api;
 }
 
@@ -710,6 +700,17 @@ function generate_url(skip_settings, use_for_pcheck) {
         }
     }
 
+    // Add plugin arguments
+    if (module == 'plugins') {
+        if ($('.submod').val() != '') {
+            $('input.argument').each(function(i, arg) {
+                if ($(arg).val() != '') {
+                    extra += '&args=' + $(arg).val();
+                }
+            });
+        }
+    }
+
     // Add extra to url
     if (extra) {
         extra = extra.replace(/^&/, '');
@@ -844,6 +845,18 @@ function generate_active_check() {
             var match = $('select.match').val();
             if (combiner) { q.push('combiner=' + combiner); }
             if (match) { q.push('match=' + match); }
+
+            active += " -q '" + q.join(',') + "'";
+            break;
+
+        case 'plugins':
+            q = [];
+
+            $('input.argument').each(function(i, arg) {
+                if ($(arg).val() != '') {
+                    q.push('args=' + $(arg).val());
+                }
+            });
 
             active += " -q '" + q.join(',') + "'";
             break;
