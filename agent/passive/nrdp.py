@@ -166,14 +166,35 @@ class Handler(nagioshandler.NagiosHandler):
         :type checkresults: xml.dom.minidom.Document
         :rtype: None
         """
-        server = self.config.get('nrdp', 'parent')
-        token = self.config.get('nrdp', 'token')
 
-        # The POST requests don't follow redirects, so we have to make sure
-        # the address is completely accurate.
-        if not server.endswith('/'):
-            server += '/'
+        try:
+            server = self.config.get('nrdp', 'parent')
+            token = self.config.get('nrdp', 'token')
+        except Exception as ex:
+            logging.exception(ex)
 
-        logging.debug('XML to be submitted: %s', checkresults)
-        ret_xml = utils.send_request(url=server, token=token, XMLDATA=checkresults, cmd='submitcheck')
-        Handler.log_result(ret_xml)
+        # Get the list of servers (and tokens, if available)
+        servers = server.split(',')
+        tokens = token.split(',')
+
+        for i, server in enumerate(servers):
+
+            # Grab a token, or the last token
+            try:
+                tmp_token = tokens[i]
+                token = tmp_token
+            except IndexError:
+                pass
+
+            # The POST requests don't follow redirects, so we have to make sure
+            # the address is completely accurate.
+            if not server.endswith('/'):
+                server += '/'
+
+            logging.debug('XML to be submitted: %s', checkresults)
+            ret_xml = utils.send_request(url=server, token=token, XMLDATA=checkresults, cmd='submitcheck')
+
+            try:
+                Handler.log_result(ret_xml)
+            except Exception as ex:
+                logging.exception(ex)

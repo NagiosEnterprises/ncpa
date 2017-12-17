@@ -20,6 +20,7 @@ Changelog
 - Added AIX support to the main branch (merged aix branch in)
 - Added long output toggle button in checks page to show all long output for process/log checks
 - Added ability to pass plugin arguments through the args POST/GET parameter instead of only through path
+- Added ability to have comma separated nrdp servers set for parent (and comma separated tokens)
 - Fixed searching for cmd causing any process with no cmd given to show up with any search
 - Fixed services on el6 to no longer use a grep for the a process and rely on psutil and service instead
 - Fixed issue with Firefox running in Windows causing websocket encoding errors
