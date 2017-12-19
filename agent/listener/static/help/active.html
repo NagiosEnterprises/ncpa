@@ -88,12 +88,12 @@
                 <p>This check represents an 8 core processor with 16 threads. You can see how it might be helpful to send these extra variables in your checks. If we were to define a warning and critical value above, it would apply to each of the threads instead of the check as a whole.</p>
 
                 <h6>Running Plugins with Arguments</h6>
-                <p>If you are using the <code>plugins</code> module to execute your own custom scripts, you will likely want to be able to pass arguments to the executed script. To do this, <code>check_ncpa.py</code> has <code>-a</code>, which allows you to send a set of arguments to your script. <em>Pay close attention to how the arguments are quoted in these examples; single quotes and double quotes matter here.</em></p>
+                <p>If you are using the <code>plugins</code> module to execute your own custom scripts, you will likely want to be able to pass arguments to the executed script. To do this, pass the <code>args</code> parameter. <code>check_ncpa.py</code> has <code>-q</code>, which allows you to pass parameters with the request. <em>Make sure you quote the arguments right when you send them; single quotes and double quotes matter here.</em></p>
                 <p>If we had a script called <code>test.sh</code>, running it from the command line may look something like this:</p>
                 <pre>./test.sh -u 'one argument' -p 'another argument'</pre>
                 <p>To run the above script using NCPA and the <code>check_ncpa.py</code> plugin:</p>
-                <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -a "-u 'one argument' -p 'another argument'"</pre>
-                <p>The quotes around the <code>-a</code> value are double. Inside the option, there are single quotes wrapping arguments that are to be passed <em>with spaces in them</em>. Without single quotes, the <code>-a</code> value will be broken on spaces and each value that is separated by space (and not quoted) will be passed as an argument. To see this clearly, check out these examples of how the plugin would create the API call for each quoting example:</p>
+                <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -q "args=-u 'one argument',args=-p 'another argument'"</pre>
+                <p>The quotes matter for how the plugin is going to be interpreted by NCPA when it is ran. To see this clearly, check out these examples of how the plugin would create the API call for each quoting example:</p>
 
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#with-quotes" role="tab" data-toggle="tab">With Quotes</a></li>
@@ -101,14 +101,14 @@
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="with-quotes">
-                        <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -a "-u 'one argument' -p 'another argument'"</pre>
+                        <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -q "args=-u 'one argument',args=-p 'another argument'"</pre>
                         <p>The above would give you the following URL:</p>
-                        <pre>https://&lt;ncpaserver&gt;/api/plugins/test.sh/-u/one argument/-p/another argument</pre>
+                        <pre>https://&lt;ncpaserver&gt;/api/plugins/test.sh?args=-u 'one argument'&amp;args=-p 'another argument'</pre>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="without-quotes">
-                        <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -a "-u one argument -p another argument"</pre>
+                        <pre>./check_ncpa.py -H &lt;ncpaserver&gt; -t mytoken -M 'plugins/test.sh' -q "args=-u one argument,args=-p another argument"</pre>
                         <p>The above would give you the following URL:</p>
-                        <pre>https://&lt;ncpaserver&gt;/api/plugins/test.sh/-u/one/argument/-p/another/argument</pre>
+                        <pre>https://&lt;ncpaserver&gt;/api/plugins/test.sh?args=-u one argument&amp;args=-p another argument</pre>
                     </div>
                 </div>
 

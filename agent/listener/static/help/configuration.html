@@ -92,7 +92,7 @@
                             <tr>
                                 <td></td>
                                 <th>default_units</th>
-                                <td></td>
+                                <td>Gi</td>
                                 <td>Sets the default value of the units parameter that can be sent to convert bytes (B) into more readable versions such as GB or GiB. If this value is set and no <code>units</code> is given in the check or call, it will set <code>units</code> to this value.</td>
                             </tr>
                         </tbody>
@@ -334,19 +334,60 @@
                                 <td></td>
                                 <th>parent</th>
                                 <td></td>
-                                <td>The Nagios server's NRDP URL to which the passive check results should be sent. The reason for the option name of <code>parent</code> is because you can use NCPA as an <a href="other.html#nrdp-forwarder">NRDP forwarder</a> for those who have restrictive firewall configurations.</td>
+                                <td>The Nagios server's NRDP URL to which the passive check results should be sent. The reason for the option name of <code>parent</code> is because you can use NCPA as an <a href="other.html#nrdp-forwarder">NRDP forwarder</a> for those who have restrictive firewall configurations. Can also be a comma separated list.</td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <th>token</th>
                                 <td></td>
-                                <td>The token to use to send check results to the NRDP server URL specified in <code>parent</code>. This token is created on the NRDP server side.</td>
+                                <td>The token to use to send check results to the NRDP server URL specified in <code>parent</code>. This token is created on the NRDP server side. Can also be a comma separated list.</td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <th>hostname</th>
                                 <td>NCPA</td>
                                 <td>This is the value that will be used for the <code>%HOSTNAME%</code> macro in the <a href="#passive-checks">[passive checks]</a> configuration section.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section" id="kafka">
+                    <h3>[kafkaproducer]</h3>
+                    <p>The value <em>kafkaproducer</em> must be present in the <a href="#passive">[passive]</a> <code>handlers</code> option for the <em>NCPA Passive</em> service to run the checks and send the results to the specified Kafka receiver.</p>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 28px;"></th>
+                                <th style="width: 12%;">Option</th>
+                                <th style="width: 15%;">Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <th>hostname</th>
+                                <td>None</td>
+                                <td>The hostname, which may not need to be specified.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>servers</th>
+                                <td>localhost:9092</td>
+                                <td>A comma separated list of Kafka server(s) that will receive messages.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>clientname</th>
+                                <td>NCPA-Kafka</td>
+                                <td>This represents what is giving the message to Kafka, this is just a standard client name.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>topic</th>
+                                <td>ncpa</td>
+                                <td>The topic slug to send in with the check data.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -422,13 +463,19 @@
                                 <td>.sh = /bin/sh $plugin_name $plugin_args</td>
                             </tr>
                             <tr>
+                                <td>.py = python $plugin_name $plugin_args</td>
+                            </tr>
+                            <tr>
                                 <td>.ps1 = powershell -ExecutionPolicy Bypass -File $plugin_name $plugin_args</td>
                             </tr>
                             <tr>
                                 <td>.vbs = cscript $plugin_name $plugin_args //NoLogo</td>
                             </tr>
                             <tr>
-                                <td>.py = python $plugin_name $plugin_args</td>
+                                <td>.wsf = cscript $plugin_name $plugin_args //NoLogo</td>
+                            </tr>
+                            <tr>
+                                <td>.bat = cmd /c $plugin_name $plugin_args</td>
                             </tr>
                         </tbody>
                     </table>

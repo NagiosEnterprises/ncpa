@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-2.1.0 - ??/??/2017
+2.1.0 - 12/19/2017
 ==================
 - Removed deprecated aliases (service, process, and agent) as stated in 2.0.0 changelog section
 - Added a new config option (allowed_hosts) to the [listener] section to block access except from specified addresses
