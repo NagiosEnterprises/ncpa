@@ -1,6 +1,6 @@
 PYTHONVER = python2.7
-PYTHONBIN = $(shell which python2.7)
-NCPAVER = $(shell cat ../VERSION)
+PYTHONBIN = /usr/bin/python2.7
+NCPAVER = 2.1.0
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = /tmp/test/usr/src/redhat
 BASEDIR = /tmp/test/ncpa
@@ -26,7 +26,7 @@ build_tarball: build_exe
 	gzip ncpa-$(NCPAVER).tar
 
 build_spec: build_tarball
-	cat ncpa-aix-partial.spec | sed s/__VERSION__/$(NCPAVER)/g | sed s@__BUILDROOT__@$(BUILDROOT)@g > ncpa.spec
+	cat "ncpa-aix-partial.spec" | sed s/__VERSION__/$(NCPAVER)/g | sed s@__BUILDROOT__@$(BUILDROOT)@g > ncpa.spec
 
 clean:
 	rm -rf ncpa-*
