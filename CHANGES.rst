@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+2.1.1 - 12/??/2017
+==================
+- Fixed the return values for checks that do not return int/float values
+
 2.1.0 - 12/19/2017
 ==================
 - Removed deprecated aliases (service, process, and agent) as stated in 2.0.0 changelog section
