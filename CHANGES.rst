@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-2.1.1 - 12/??/2017
+2.1.1 - 12/21/2017
 ==================
 - Fixed the return values for checks that do not return int/float values
 
