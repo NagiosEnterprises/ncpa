@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+2.1.2 - 12/29/2017
+==================
+- Fixed issue where user's groups were not being set when dropping from root privileges
+
 2.1.1 - 12/21/2017
 ==================
 - Fixed the return values for checks that do not return int/float values
