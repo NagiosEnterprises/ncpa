@@ -368,20 +368,21 @@ def get_uid_gid(cp, section):
     user_uid = cp.get(section, 'uid')
     user_gid = cp.get(section, 'gid')
 
-    uid = int(user_uid)
     if not isinstance(user_uid, int):
         if not user_uid.isdigit():
             username = user_uid
             u = pwd.getpwnam(user_uid)
             uid = u.pw_uid
         else:
+            uid = int(user_uid)
             username = pwd.getpwuid(user_uid).pw_name
 
-    gid = int(user_gid)
     if not isinstance(user_gid, int):
         if not user_gid.isdigit():
             g = grp.getgrnam(user_gid)
             gid = g.gr_gid
+        else:
+            gid = int(user_gid)
 
     return uid, gid, username
 
