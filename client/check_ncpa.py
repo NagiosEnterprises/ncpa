@@ -193,7 +193,7 @@ def get_arguments_from_options(options, **kwargs):
     # Get the options (comma separated)
     if options.queryargs:
         for argument in options.queryargs.split(','):
-            key, value = argument.split('=')
+            key, value = argument.split('=', 1)
             if value is not None:
                 args.append((key, value))
 
