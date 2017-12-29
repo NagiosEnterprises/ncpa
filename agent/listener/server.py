@@ -633,6 +633,10 @@ def api_websocket(accessor=None):
     sane_args = dict(request.args)
     sane_args['accessor'] = accessor
 
+    encoding = sys.stdin.encoding
+    if encoding is None:
+        encoding = sys.getdefaultencoding()
+
     # Refresh the root node before creating the websocket
     psapi.refresh()
 
@@ -645,7 +649,7 @@ def api_websocket(accessor=None):
                 node = psapi.getter(message, config, request.path, request.args)
                 prop = node.name
                 val = node.walk(first=True, **sane_args)
-                jval = json.dumps(val[prop], encoding=sys.stdin.encoding)
+                jval = json.dumps(val[prop], encoding=encoding)
                 ws.send(jval)
             except Exception as e:
                 # Socket was probably closed by the browser changing pages
@@ -658,6 +662,11 @@ def api_websocket(accessor=None):
 @listener.route('/ws/top')
 @requires_token_or_auth
 def top_websocket():
+
+    encoding = sys.stdin.encoding
+    if encoding is None:
+        encoding = sys.getdefaultencoding()
+
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
         while True:
@@ -674,8 +683,9 @@ def top_websocket():
                     continue
                 process_list.append(process)
 
+            
             json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list},
-                                  encoding=sys.stdin.encoding)
+                                  encoding=encoding)
 
             try:
                 ws.send(json_val)
@@ -691,6 +701,11 @@ def top_websocket():
 @listener.route('/ws/tail')
 @requires_token_or_auth
 def tail_websocket():
+
+    encoding = sys.stdin.encoding
+    if encoding is None:
+        encoding = sys.getdefaultencoding()
+
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
         last_ts = datetime.datetime.now()
@@ -699,7 +714,7 @@ def tail_websocket():
                 last_ts, logs = listener.tail_method(last_ts=last_ts, **request.args)
 
                 if logs:
-                    json_log = json.dumps(logs, encoding=sys.stdin.encoding)
+                    json_log = json.dumps(logs, encoding=encoding)
                     ws.send(json_log)
 
                 gevent.sleep(5)

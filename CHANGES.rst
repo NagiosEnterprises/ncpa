@@ -3,6 +3,7 @@ Changelog
 
 2.1.2 - 12/29/2017
 ==================
+- Fixed websockets (live graphs, top, and tail) not displaying data due to encoding changes
 - Fixed issue where user's groups were not being set when dropping from root privileges
 
 2.1.1 - 12/21/2017
