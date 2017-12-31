@@ -1,8 +1,9 @@
 Changelog
 +++++++++
 
-2.1.2 - 12/29/2017
+2.1.2 - 01/??/2018
 ==================
+- Added more pseudo devices into default list of devices to skip
 - Fixed websockets (live graphs, top, and tail) not displaying data due to encoding changes
 - Fixed issue where user's groups were not being set when dropping from root privileges
 
