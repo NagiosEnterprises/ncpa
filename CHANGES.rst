@@ -6,6 +6,8 @@ Changelog
 - Added more pseudo devices into default list of devices to skip
 - Fixed websockets (live graphs, top, and tail) not displaying data due to encoding changes
 - Fixed issue where user's groups were not being set when dropping from root privileges
+- Fixed Mac OS X uninstall.sh script being installed properly
+- Fixed issue with nagios user and group on Mac OS X not being created
 
 2.1.1 - 12/21/2017
 ==================

@@ -30,6 +30,23 @@ if [ ${upgrade} -eq "1" ]; then
 	echo "done"
 fi
 
+# Create the group account
+if ! dscl . -read /Groups/${groupname} > /dev/null 2>&1;
+then
+	# Select GID the same way
+	PrimaryGroupID=`dscl . -list /Groups PrimaryGroupID | awk '{print $2}' | sort -ug | tail -1`
+	let PrimaryGroupID=PrimaryGroupID+1
+
+	# Create the group if we need to
+    dscl . -create /Groups/${groupname}
+    dscl . -create /Groups/${groupname} RecordName "_${groupname} ${username}"
+    dscl . -create /Groups/${groupname} PrimaryGroupID ${PrimaryGroupID}
+    dscl . -create /Groups/${groupname} RealName "${groupname}"
+    dscl . -create /Groups/${groupname} Password "*"
+
+	added="1"
+fi
+
 # Create the user account
 if ! dscl . -read /Users/${username} > /dev/null 2>&1;
 then
@@ -45,23 +62,6 @@ then
     dscl . -create /Users/${username} PrimaryGroupID ${PrimaryGroupID}
     dscl . -create /Users/${username} Password "*"
     dscl . -create /Users/${username} NFSHomeDirectory ${homedir}
-
-	added="1"
-fi
-
-# Create the group account
-if ! dscl . -read /Groups/${groupname} > /dev/null 2>&1;
-then
-	# Select GID the same way
-	PrimaryGroupID=`dscl . -list /Groups PrimaryGroupID | awk '{print $2}' | sort -ug | tail -1`
-	let PrimaryGroupID=PrimaryGroupID+1
-
-	# Create the group if we need to
-    dscl . -create /Groups/${groupname}
-    dscl . -create /Groups/${groupname} RecordName "_${groupname} ${username}"
-    dscl . -create /Groups/${groupname} PrimaryGroupID ${PrimaryGroupID}
-    dscl . -create /Groups/${groupname} RealName "${groupname}"
-    dscl . -create /Groups/${groupname} Password "*"
 
 	added="1"
 fi

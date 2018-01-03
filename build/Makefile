@@ -76,7 +76,7 @@ build_deb: build_rpm
 build_dmg: build_tarball
 	mkdir NCPA-INSTALL-$(NCPAVER)
 	mv ncpa-$(NCPAVER) NCPA-INSTALL-$(NCPAVER)/ncpa
-	cp NCPA-INSTALL-$(NCPAVER)/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$(NCPAVER)/ncpa/uninstall.sh
+	cp NCPA-INSTALL-$(NCPAVER)/ncpa/build_resources/macosuninstall.sh NCPA-INSTALL-$(NCPAVER)/ncpa/uninstall.sh
 	mv NCPA-INSTALL-$(NCPAVER)/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$(NCPAVER)/install.sh
 	install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$(NCPAVER)/ncpa/ncpa_listener
 	install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$(NCPAVER)/ncpa/ncpa_passive
