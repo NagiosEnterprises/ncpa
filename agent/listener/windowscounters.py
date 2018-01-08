@@ -11,7 +11,7 @@ from urllib import unquote
 
 class WindowsCountersNode(nodes.LazyNode):
 
-    def accessor(self, path, config, full_path):
+    def accessor(self, path, config, full_path, args):
         new_node = copy.deepcopy(self)
         new_node.path = path
         new_node.config = config

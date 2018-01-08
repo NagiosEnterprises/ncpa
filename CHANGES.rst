@@ -8,6 +8,7 @@ Changelog
 - Fixed issue where user's groups were not being set when dropping from root privileges
 - Fixed Mac OS X uninstall.sh script being installed properly
 - Fixed issue with nagios user and group on Mac OS X not being created
+- Fixed issue in windowscounters node creating a 500 error
 
 2.1.1 - 12/21/2017
 ==================
