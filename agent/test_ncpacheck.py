@@ -1,88 +1,3 @@
-"""
-    def setup_plugin(self, path, name, content):
-        try:
-            os.mkdir(path)
-        except:
-            # Expected
-            pass
-        plugin_path = os.path.join(path, name)
-        with open(plugin_path, 'w') as plugin:
-            plugin.write(content)
-
-    @unittest.skipIf(platform.system() != 'Windows', 'Not running, not Windows')
-    def test_run_powershell_plugin(self):
-        self.config.add_section('plugin directives')
-        abs_plugin_path = os.path.abspath('plugins/')
-        self.config.set('plugin directives', 'plugin_path', abs_plugin_path)
-        self.config.set('plugin directives', '.ps1', 'powershell -ExecutionPolicy Unrestricted -File $plugin_name $plugin_args')
-
-        self.setup_plugin(abs_plugin_path, 'test.ps1', plugin)
-        ncpa_check = passive.ncpacheck.NCPACheck(self.config, None, None, None)
-
-        api_url = '/api/agent/plugin/test.ps1'
-        result = ncpa_check.run_check(api_url, {})
-        result_json = json.loads(result)
-
-        self.assertIsInstance(result_json, dict)
-        self.assertIn('value', result_json)
-        self.assertEqual(result_json['value']['stdout'], '')
-        self.assertEqual(result_json['value']['returncode'], 0)
-
-        api_url = '/api/agent/plugin/test.ps1/Bingo'
-        result = ncpa_check.run_check(api_url, {})
-        result_json = json.loads(result)
-
-        self.assertIsInstance(result_json, dict)
-        self.assertIn('value', result_json)
-        self.assertEqual(result_json['value']['stdout'], 'Bingo')
-        self.assertEqual(result_json['value']['returncode'], 0)
-
-        api_url = '/api/agent/plugin/test.ps1/Bingo/42'
-        result = ncpa_check.run_check(api_url, {})
-        result_json = json.loads(result)
-
-        self.assertIsInstance(result_json, dict)
-        self.assertIn('value', result_json)
-        self.assertEqual(result_json['value']['stdout'], 'Bingo')
-        self.assertEqual(result_json['value']['returncode'], 42)
-
-    @unittest.skipIf(platform.system() == 'Windows', 'Not running, not POSIX')
-    def test_run_shell_plugin(self):
-        self.config.add_section('plugin directives')
-        abs_plugin_path = os.path.abspath('plugins/')
-        self.config.set('plugin directives', 'plugin_path', abs_plugin_path)
-        self.config.set('plugin directives', '.sh', 'sh $plugin_name $plugin_args')
-
-        plugin = "echo $1; exit $2"
-
-        self.setup_plugin(abs_plugin_path, 'test.sh', plugin)
-        ncpa_check = passive.ncpacheck.NCPACheck(self.config, '', '', '', 0)
-
-        api_url = '/api/agent/plugin/test.sh'
-        result = ncpa_check.run_check(api_url, {})
-        result_json = json.loads(result)
-
-        self.assertIsInstance(result_json, dict)
-        self.assertEqual(result_json['stdout'], '')
-        self.assertEqual(result_json['returncode'], 0)
-
-        api_url = '/api/agent/plugin/test.sh/Hi There'
-        result = ncpa_check.run_check(api_url, {})
-        result_json = json.loads(result)
-
-        self.assertIsInstance(result_json, dict)
-        self.assertEqual(result_json['stdout'], 'Hi There')
-        self.assertEqual(result_json['returncode'], 0)
-
-        api_url = '/api/agent/plugin/test.sh/Hi There/42'
-        result = ncpa_check.run_check(api_url, {})
-        result_json = json.loads(result)
-
-        self.assertIsInstance(result_json, dict)
-        self.assertEqual(result_json['stdout'], 'Hi There')
-        self.assertEqual(result_json['returncode'], 42)
-"""
-
 import unittest
 import platform
 import ConfigParser as configparser
@@ -126,7 +41,7 @@ class TestNCPACheck(unittest.TestCase):
         api_url = '/api/cpu/percent/'
         api_args = {'check': '1'}
 
-        ncpa_check = passive.ncpacheck.NCPACheck({}, '', '', '', 0)
+        ncpa_check = passive.ncpacheck.NCPACheck(self.config, '', '', '', 0)
         result = ncpa_check.run_check(api_url, api_args)
         result_json = json.loads(result)
 
@@ -188,7 +103,7 @@ class TestNCPACheck(unittest.TestCase):
     def test_api_url_style_instruction(self):
         url_instruction = '/api/bingo/?warning=1&critical=10'
         expected_api_url = '/api/bingo/'
-        expected_api_args = {'warning': '1', 'critical': '10'}
+        expected_api_args = [('warning', '1'), ('critical', '10')]
 
         url, args = passive.ncpacheck.NCPACheck.parse_api_url_style_instruction(url_instruction)
 

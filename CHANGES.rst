@@ -1,5 +1,66 @@
-﻿Changelog
+Changelog
 +++++++++
+
+2.1.2 - 01/??/2018
+==================
+- Added more pseudo devices into default list of devices to skip
+- Fixed websockets (live graphs, top, and tail) not displaying data due to encoding changes
+- Fixed issue where user's groups were not being set when dropping from root privileges
+- Fixed Mac OS X uninstall.sh script being installed properly
+- Fixed issue with nagios user and group on Mac OS X not being created
+- Fixed issue in windowscounters node creating a 500 error
+
+2.1.1 - 12/21/2017
+==================
+- Fixed the return values for checks that do not return int/float values
+
+2.1.0 - 12/19/2017
+==================
+- Removed deprecated aliases (service, process, and agent) as stated in 2.0.0 changelog section
+- Added a new config option (allowed_hosts) to the [listener] section to block access except from specified addresses
+- Added a new config option (run_with_sudo) to the [plugin directives] section to prepend the sudo command
+- Added shell script to uninstall NCPA on Mac OS X by running "sudo /usr/local/ncpa/uninstall.sh"
+- Added /IP and /PORT to silent install options for the Windows installer
+- Added LD_LIBRARY_PATH to ncpa init scripts and include libssl and libcrypto so we have the latest OpenSSL libraries
+- Added default_units configuration value to allow setting a default unit such as G or Gi for checks
+- Added exclude_fs_types configuration value to remove certain file system types from the disk check
+- Added a Kafka-Producer for passive checks
+- Added log message (and other log data) in to check as long output for Windows logs
+- Added processes into long output for processes endpoint and performance data output for all processes matched
+- Added ability run "interface/<interface name>" as a check to return all interface data
+- Added unknown service state when permissions of the nagios user stop service from checking running state
+- Added processes filter for username and updated GUI API browser
+- Added AIX support to the main branch (merged aix branch in)
+- Added long output toggle button in checks page to show all long output for process/log checks
+- Added ability to pass plugin arguments through the args POST/GET parameter instead of only through path
+- Added ability to have comma separated nrdp servers set for parent (and comma separated tokens)
+- Fixed searching for cmd causing any process with no cmd given to show up with any search
+- Fixed services on el6 to no longer use a grep for the a process and rely on psutil and service instead
+- Fixed issue with Firefox running in Windows causing websocket encoding errors
+- Fixed thresholds with colon (:) in front to be treated like a regular number instead of giving an error
+- Fixed problem with multiple arguments passed via query string for passive URL-based checks
+- Fixed upgrades on Windows to only start the ncpa services that were running before upgrade
+- Fixed check settings not showing up on system/uptime and added human readable output to check return output
+
+2.0.6 - 11/09/2017
+==================
+- Updated Python version to 2.7.14
+- Updated gevent-websocket to version 0.10.1 so we do not need to use patched version
+- Fixed passive checks not writing to the check history database
+- Fixed API section for Internet Explorer
+- Fixed issue when using the event_id filter on Windows event logs
+- Fixed issue with spaces in URL-based passive checks
+- Fixed catching of IOError with systems (typically virtual) that do not have any accessible partitions
+- Fixed encoding problems in Timezones and Interfaces on Windows with non-English characters
+- Fixed delta time values not working properly due to caching data on websockets
+- Fixed large values showing up on initial check when viewing deltas
+
+2.0.5 - 09/01/2017
+==================
+- Fixed the windows event log setting event_id to give the proper ID for some events that has bogus IDs
+- Fixed issue with DB maintenance where DB is not accessible (both processes use it)
+- Fixed non-integer PID file value causing startup issues
+- Fixed issues with NFS errors causing failed starts (such as permission denied)
 
 2.0.4 - 06/24/2017
 ==================

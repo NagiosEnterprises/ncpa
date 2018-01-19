@@ -9,6 +9,7 @@ import re
 import database
 import server
 import ConfigParser
+from datetime import datetime, timedelta
 
 
 # Valid nodes is updated as it gets set when calling a node via accessor
@@ -34,7 +35,7 @@ class ParentNode(object):
     def add_child(self, new_node):
         self.children[new_node.name] = new_node
 
-    def accessor(self, path, config, full_path):
+    def accessor(self, path, config, full_path, args):
         if path:
             next_child_name, rest_path = path[0], path[1:]
             try:
@@ -51,7 +52,7 @@ class ParentNode(object):
                 return DoesNotExistNode(next_child_name, 'node', full_path)
 
             # Continue down the node path
-            return child.accessor(rest_path, config, full_path)
+            return child.accessor(rest_path, config, full_path, args)
         else:
             return copy.deepcopy(self)
 
@@ -87,11 +88,13 @@ class RunnableParentNode(ParentNode):
     def run_check(self, *args, **kwargs):
         primary_info = {}
         secondary_results = []
+        secondary_perfdata = []
+
         for name, child in self.children.iteritems():
             if name in self.include:
                 if name == self.primary:
                     primary_info  = child.run_check(use_prefix=True,
-                                                    use_perfdata=True,
+                                                    use_perfdata=False,
                                                     primary=True,
                                                     secondary_data=False,
                                                     custom_output=self.custom_output,
@@ -102,9 +105,21 @@ class RunnableParentNode(ParentNode):
                                              primary=False, secondary_data=True,
                                              child_check=True, *args, **kwargs)
                     stdout = result.get('stdout', None)
-                    secondary_results.append(stdout)
+                    if stdout is not None:
+                        secondary_results.append(stdout)
+
+                    # Add perfdata if it exists
+                    perfdata = result.get('perfdata', None)
+                    if perfdata is not None:
+                        secondary_perfdata.append(perfdata)
+
         secondary_stdout = '(' + ', '.join(x for x in secondary_results if x) + ')'
         primary_info['stdout'] = primary_info['stdout'].format(extra_data=secondary_stdout)
+
+        # Add extra perfdata on (if it exists)
+        if secondary_perfdata:
+            extra_perfdata = ' '.join(secondary_perfdata)
+            primary_info['stdout'] = primary_info['stdout'] + ' | ' + extra_perfdata
 
         # Get the check logging value
         try:
@@ -115,12 +130,9 @@ class RunnableParentNode(ParentNode):
         # Send check results to database
         if not server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
-            dbc = db.get_cursor()
             current_time = time.time()
-            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, primary_info['returncode'],
-                    primary_info['stdout'], kwargs['remote_addr'], 'Active')
-            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-            db.commit()
+            db.add_check(kwargs['accessor'].rstrip('/'), current_time, current_time, primary_info['returncode'],
+                         primary_info['stdout'], kwargs['remote_addr'], 'Active')
 
         return primary_info
 
@@ -134,7 +146,7 @@ class RunnableNode(ParentNode):
         self.unit = ''
         self.delta = False
 
-    def accessor(self, path, config, full_path):
+    def accessor(self, path, config, full_path, args):
         if path:
             full_path = ', '.join(path)
             return DoesNotExistNode('', self.name, full_path)
@@ -169,9 +181,12 @@ class RunnableNode(ParentNode):
         # then this is clearly not what we want and we simply hash against the API
         # accessor.
         if not hasher:
-            accessor = request_args.get('accessor', None)
+            accessor = request_args.get('accessor', '')
         else:
             accessor = hasher
+
+        # Make accessor even more unique (for parent node deltas)
+        accessor += '.' + self.name
 
         if delta:
             self.delta = True
@@ -196,7 +211,7 @@ class RunnableNode(ParentNode):
     def get_adjusted_scale(self, values, request_args):
         units = request_args.get('units', None)
         if units is not None and self.unit in ['b', 'B']:
-            values, units = self.adjust_scale(self, values, units[0])
+            values, units = self.adjust_scale(self, values, units)
         return values
 
     def set_warning(self, request_args):
@@ -272,9 +287,9 @@ class RunnableNode(ParentNode):
                 is_warning = any([self.is_within_range(self.warning, x) for x in values])
             if self.critical:
                 is_critical = any([self.is_within_range(self.critical, x) for x in values])
-            returncode, stdout = self.get_nagios_return(values, is_warning, is_critical, use_perfdata,
-                                                        use_prefix, primary, secondary_data,
-                                                        custom_output, capitalize)
+            returncode, stdout, perfdata = self.get_nagios_return(values, is_warning, is_critical, use_perfdata,
+                                                use_prefix, primary, secondary_data,
+                                                custom_output, capitalize)
         except Exception as exc:
             returncode = 3
             stdout = str(exc)
@@ -289,14 +304,17 @@ class RunnableNode(ParentNode):
         # Send check results to database
         if not child_check and not server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
-            dbc = db.get_cursor()
             current_time = time.time()
-            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
-                    stdout, kwargs['remote_addr'], 'Active')
-            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-            db.commit()
+            db.add_check(kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
+                         stdout, kwargs['remote_addr'], 'Active')
 
-        return { 'returncode': returncode, 'stdout': stdout }
+        data = { 'returncode': returncode, 'stdout': stdout }
+
+        # Add perfdata if this is secondary data
+        if secondary_data is True:
+            data['perfdata'] = perfdata
+
+        return data
 
     def get_nagios_return(self, values, is_warning, is_critical, use_perfdata=True,
                           use_prefix=True, primary=False, secondary_data=False,
@@ -319,7 +337,7 @@ class RunnableNode(ParentNode):
                     nice_values.append('%0.2f %s' % (x, self.unit))
             except TypeError:
                 logging.info('Did not receive normal values. Unable to find meaningful check.')
-                return 0, 'OK: %s was %s' % (proper_name, str(values))
+                return 0, 'OK: %s was %s' % (proper_name, str(values)), ''
         values_for_info_line = ', '.join(nice_values)
 
         returncode = 0
@@ -366,6 +384,12 @@ class RunnableNode(ParentNode):
         
         perfdata = ' '.join(perfdata)
 
+        # Hack in the uptime change because we can't do much else...
+        # this will be removed in NCPA 3
+        if self.name == 'uptime':
+            custom_output = proper_name + ' was ' + self.elapsed_time(values[0])
+            values_for_info_line = ''
+
         if secondary_data is True:
             stdout = '%s: %s' % (proper_name, values_for_info_line)
         else:
@@ -384,7 +408,7 @@ class RunnableNode(ParentNode):
         if use_perfdata is True:
             stdout = '%s | %s' % (stdout, perfdata)
 
-        return returncode, stdout
+        return returncode, stdout, perfdata
 
     def deltaize_values(self, values, hash_val, remote_addr=None):
         if remote_addr:
@@ -417,7 +441,7 @@ class RunnableNode(ParentNode):
 
         # If last modified is 0, then return false
         if last_modified == 0:
-            return False
+            return 0
 
         # Calculate the return value and return it
         delta = time.time() - last_modified
@@ -434,6 +458,10 @@ class RunnableNode(ParentNode):
         # Turn into a list for conversion
         if not isinstance(values, (list, tuple)):
             values = [values]
+
+        # Make sure the unit value is a string not a list or tuple
+        if isinstance(units, (list, tuple)):
+            units = units[0]
 
         units = units.upper()
         factor = 1.0
@@ -503,6 +531,7 @@ class RunnableNode(ParentNode):
         #then run the function. The function is a comparison involving value.
         actions = [(r'^%s$' % first_float, lambda y: (value > float(y.group('first'))) or (value < 0)),
                    (r'^%s:$' % first_float, lambda y: value < float(y.group('first'))),
+                   (r'^:%s$' % first_float, lambda y: (value > float(y.group('first'))) or (value < 0)),
                    (r'^~:%s$' % first_float, lambda y: value > float(y.group('first'))),
                    (r'^%s:%s$' % (first_float, second_float), lambda y: (value < float(y.group('first'))) or (value > float(y.group('second')))),
                    (r'^@%s:%s$' % (first_float, second_float), lambda y: not((value < float(y.group('first'))) or (value > float(y.group('second')))))]
@@ -517,6 +546,20 @@ class RunnableNode(ParentNode):
 
         #If none of the items matches, the warning/critical format was bogus! Sound the alarms!
         raise Exception('Improper warning/critical format.')
+
+    @staticmethod
+    def elapsed_time(seconds):
+        intervals = (('days', 86400), ('hours', 3600), ('minutes', 60), ('seconds', 1))
+        result = []
+
+        for name, count in intervals:
+            value = seconds // count
+            if value:
+                seconds -= value * count
+                if value == 1:
+                    name = name.rstrip('s')
+                result.append("{} {}".format(int(value), name))
+        return ' '.join(result)
 
 
 class LazyNode(RunnableNode):

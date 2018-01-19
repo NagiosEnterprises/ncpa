@@ -36,14 +36,14 @@ class TestParentNode(unittest.TestCase):
         test_node = listener.nodes.ParentNode('testing')
         self.n.add_child(test_node)
 
-        self.assertIsInstance(self.n.accessor(['testing'], None, None), listener.nodes.ParentNode)
-        self.assertIsInstance(self.n.accessor(['nonexistent'], None, None), listener.nodes.DoesNotExistNode)
+        self.assertIsInstance(self.n.accessor(['testing'], None, None, None), listener.nodes.ParentNode)
+        self.assertIsInstance(self.n.accessor(['nonexistent'], None, None, None), listener.nodes.DoesNotExistNode)
 
     def test_accessor_returns_a_copy(self):
         test_node = listener.nodes.ParentNode('testing')
         self.n.add_child(test_node)
 
-        self.assertIsNot(test_node, self.n.accessor(['testing'], None, None))
+        self.assertIsNot(test_node, self.n.accessor(['testing'], None, None, None))
 
     def test_walk_returns_dict(self):
         self.assertIsInstance(self.n.walk(), dict)
@@ -65,7 +65,7 @@ class TestRunnableNode(unittest.TestCase):
         self.n = listener.nodes.RunnableNode(self.node_name, lambda: ('Ok', 1))
 
     def test_accessor_returns_copy(self):
-        self.assertIsNot(self.n, self.n.accessor([], None, None))
+        self.assertIsNot(self.n, self.n.accessor([], None, None, None))
 
     def test_walk_returns_dict(self):
         self.assertIsInstance(self.n.walk(), dict)

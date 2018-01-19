@@ -6,6 +6,8 @@ werkzeug
 docutils
 pyOpenSSL
 gevent
+gevent-websocket
 cffi==1.5.2
 appdirs
 packaging
+kafka

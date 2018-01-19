@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+1.1.2
+-----
+- Fixed issue with long output being passed as args through query parameters
+
 1.1.1
 -----
 - Fixed sending multiple query arguments not being sent to the API

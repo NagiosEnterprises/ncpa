@@ -14,6 +14,7 @@ from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
 import passive.nrds
 import passive.nrdp
+import passive.kafkaproducer
 import listener.server
 import listener.psapi
 import listener.windowscounters
@@ -157,7 +158,8 @@ class Listener(Base):
 
             if user_cert == 'adhoc':
                 basepath = self.determine_relative_filename('')
-                cert, key = listener.certificate.create_self_signed_cert(basepath, 'ncpa.crt', 'ncpa.key')
+                certpath = os.path.abspath(os.path.join(basepath, 'var'))
+                cert, key = listener.certificate.create_self_signed_cert(certpath, 'ncpa.crt', 'ncpa.key')
             else:
                 cert, key = user_cert.split(',')
 
@@ -207,7 +209,7 @@ class Passive(Base):
         if handlers[0] == 'None' or handlers[0] == '':
             return
 
-        # Runs either nrds or nrdp (or both)
+        # Runs either nrds, nrdp or kafka
         for handler in handlers:
             try:
                 handler = handler.strip()

@@ -108,7 +108,7 @@ class WindowsLogsNode(nodes.LazyNode):
         self.set_warning(kwargs)
         self.set_critical(kwargs)
         self.set_log_check(kwargs)
-        self.get_delta_values(log_counts, kwargs, log_names, *args, **kwargs)
+        self.get_delta_values(log_counts, kwargs, *args, **kwargs)
 
         returncode = 0
         prefix = 'OK'
@@ -134,6 +134,15 @@ class WindowsLogsNode(nodes.LazyNode):
 
         stdout = '%s | %s' % (info_line, perfdata)
 
+        # Long output including actual log messages
+        for n in log_names:
+            if n == 'Total Count':
+                continue
+            stdout += '\n%s Logs\nTime: Computer: Severity: Event ID: Source: Message\n-----------------------------------\n' % n
+            for log in logs[n]:
+                stdout += '%s: %s: %s: %s: %s: %s\n' % (log['time_generated'], log['computer_name'], log['severity'],
+                    log['event_id'], log['application'], log['message'].replace('\r\n', ''))
+
         # Get the check logging value
         try:
             check_logging = int(kwargs['config'].get('general', 'check_logging'))
@@ -143,12 +152,9 @@ class WindowsLogsNode(nodes.LazyNode):
         # Put check results in the check database
         if not server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
-            dbc = db.get_cursor()
             current_time = time.time()
-            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
-                    stdout, kwargs['remote_addr'], 'Active')
-            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-            db.commit()
+            db.add_check(kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
+                         stdout, kwargs['remote_addr'], 'Active')
 
         return { 'stdout': stdout, 'returncode': returncode }
 
@@ -311,10 +317,20 @@ def is_interesting_event(event, name, filters):
         restrictions = filters[log_property]
         for restriction in restrictions:
             value = getattr(event, log_property, None)
+
+            # Special for Event ID
+            if log_property == "EventID":
+                value = str(value & 0x1FFFFFFF)
+                if str(restriction) != value:
+                    return False
+
+            # Look in message
             if value is None and log_property == 'Message':
                 safe = win32evtlogutil.SafeFormatMessage(event, name)
                 if not re.search(restriction, safe):
                     return False
+
+            # Do normal ==
             if not value is None:
                 if str(restriction) != str(value):
                     return False
@@ -324,7 +340,7 @@ def is_interesting_event(event, name, filters):
 def normalize_event(event, name):
     safe_log = {}
     safe_log['message'] = win32evtlogutil.SafeFormatMessage(event, name)
-    safe_log['event_id'] = str(event.EventID)
+    safe_log['event_id'] = str(event.EventID & 0x1FFFFFFF)
     safe_log['computer_name'] = str(event.ComputerName)
     safe_log['category'] = str(event.EventCategory)
     safe_log['severity'] = EVENT_TYPE.get(event.EventType, 'UNKNOWN')

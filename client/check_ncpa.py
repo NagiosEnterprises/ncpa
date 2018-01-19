@@ -44,7 +44,7 @@ import re
 import signal
 
 
-__VERSION__ = '1.1.1'
+__VERSION__ = '1.1.2'
 
 
 def parse_args():
@@ -195,7 +195,7 @@ def get_arguments_from_options(options, **kwargs):
         # for each comma, perform lookahead, split iff we aren't inside quotes.
         arguments_list = re.split(''',(?=(?:[^'"]|'[^']*'|"[^"]*")*$)''', options.queryargs)
         for argument in arguments_list:
-            key, value = argument.split('=')
+            key, value = argument.split('=', 1)
             if value is not None:
                 args.append((key, value))
 

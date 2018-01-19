@@ -198,9 +198,21 @@ $(document).ready(function() {
     $('.selector').on('change', '.submod', function() {
         var module = $('#module').val();
         var selected = $(this).val();
-        
+
         switch (module)
         {
+            case 'system':
+                if (selected != '') {
+                    if (selected == 'uptime') {
+                        $('.check-settings').show();
+                        $('.wc-thresholds').show();
+                        break;
+                    }
+                }
+                clear_settings();
+                $('.settings').hide();
+                break;
+
             case 'cpu':
                 if (selected != '') {
                     if (selected != 'count') {
@@ -262,6 +274,7 @@ $(document).ready(function() {
                 if (selected != '') {
                     $('.check-settings').show();
                     $('.data-settings').show();
+                    $('.data-settings .delta-box').show();
                     $('.data-settings .unit-prefix').show();
                     $('.data-settings .agg').hide();
                     $('.wc-thresholds').show();
@@ -277,13 +290,6 @@ $(document).ready(function() {
 
                         // Add change selector to show data settings or not
                         endselect.change(function() {
-                            if ($(this).val() == '') {
-                                $('.data-settings .delta-box').hide();
-                                $('.data-settings').hide();
-                            } else {
-                                $('.data-settings .delta-box').show();
-                                $('.data-settings').show();
-                            }
                             var show_data = ['', 'bytes_recv', 'bytes_sent'];
                             if (show_data.indexOf($(this).val()) == -1) {
                                 $('.data-settings .units').val('');
@@ -302,6 +308,7 @@ $(document).ready(function() {
                 } else {
                     clear_settings();
                     $('.check-settings').hide();
+                    $('.data-settings').hide();
                     $('.selector .interface-end-node').remove();
                 }
                 break;
@@ -311,8 +318,19 @@ $(document).ready(function() {
                     $('.btn-check-ncpa').show();
                     $('.arguments').show();
                 } else {
+                    clear_settings();
                     $('.btn-check-ncpa').hide();
                     $('.arguments').hide();
+                }
+                return;
+
+            case 'user':
+                if (selected == 'count') {
+                    $('.check-settings').show();
+                    $('.wc-thresholds').show();
+                } else {
+                    $('.check-settings').hide();
+                    $('.wc-thresholds').hide();
                 }
                 return;
 
@@ -412,7 +430,7 @@ $(document).ready(function() {
     // Filter list filter selection
     $('.list').on('change', '.filter-name', function() {
         var input = $(this).parents('.filter-group').find('input');
-        if ($(this).val() != 'name' && $(this).val() != 'exe') {
+        if ($(this).val() != 'name' && $(this).val() != 'exe' && $(this).val() != 'cmd') {
             input.attr('placeholder', '>=');
         } else {
             input.attr('placeholder', '');
@@ -456,14 +474,14 @@ function add_service_selector() {
 }
 
 function add_filter_selector() {
-    var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 45%; border-right: 0;"><option value="name">name</option><option value="exe">exe</option><option value="mem_percent">mem_percent</option><option value="cpu_percent">cpu_percent</option><option value="mem_vms">mem_vms</option><option value="mem_rss">mem_rss</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 55%;"></div>';
+    var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 45%; border-right: 0;"><option value="username">username</option><option value="name">name</option><option value="exe">exe</option><option value="cmd">cmd</option><option value="mem_percent">mem_percent</option><option value="cpu_percent">cpu_percent</option><option value="mem_vms">mem_vms</option><option value="mem_rss">mem_rss</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 55%;"></div>';
     $('.proc-filters .list').append(filter);
 }
 
-function add_log_name_selector(value='') {
+function add_log_name_selector(value) {
     var name = '<div class="input-group"><div class="input-group-addon">Name</div><input type="text" class="form-control name"></div>';
     $('.log-name-selector .list').append(name);
-    if (value != '') {
+    if (value) {
         $('.log-name-selector .list input').last().val(value);
     }
 }
@@ -473,7 +491,7 @@ function add_argument() {
     $('.arguments .list').append(arg);
 }
 
-function get_api_endpoints(no_forward_slash=false) {
+function get_api_endpoints(no_forward_slash) {
     var api = '';
 
     // Add module to api call
@@ -518,21 +536,10 @@ function get_api_endpoints(no_forward_slash=false) {
         $('.windows-counter').val('/' + counter);
     }
 
-    // Apply arguments for plugins
-    if (module == 'plugins') {
-        if (submodule != '') {
-            $('input.argument').each(function(i, arg) {
-                if ($(arg).val() != '') {
-                    api += '/' + $(arg).val();
-                }
-            });
-        }
-    }
-
     return api;
 }
 
-function generate_url(skip_settings=false, use_for_pcheck=false) {
+function generate_url(skip_settings, use_for_pcheck) {
     var module = $('#module').val();
 
     var api = window.location.protocol + '//' + window.location.hostname;
@@ -553,7 +560,6 @@ function generate_url(skip_settings=false, use_for_pcheck=false) {
         return api;
     }
 
-    //console.log(api);
     var extra = '';
     var url = api;
 
@@ -690,6 +696,17 @@ function generate_url(skip_settings=false, use_for_pcheck=false) {
             if (status) {
                 extra += '&status=' + status;
             }
+        }
+    }
+
+    // Add plugin arguments
+    if (module == 'plugins') {
+        if ($('.submod').val() != '') {
+            $('input.argument').each(function(i, arg) {
+                if ($(arg).val() != '') {
+                    extra += '&args=' + $(arg).val();
+                }
+            });
         }
     }
 
@@ -831,6 +848,18 @@ function generate_active_check() {
             active += " -q '" + q.join(',') + "'";
             break;
 
+        case 'plugins':
+            q = [];
+
+            $('input.argument').each(function(i, arg) {
+                if ($(arg).val() != '') {
+                    q.push('args=' + $(arg).val());
+                }
+            });
+
+            active += " -q '" + q.join(',') + "'";
+            break;
+
     }
 
     $('.active-check-val').html(active);
@@ -889,6 +918,7 @@ function generate_passive_check() {
                         <option>processes</option>
                         <option>services</option>
                         <option>system</option>
+                        <option>user</option>
                         {% if system == "Windows" %}
                         <option>logs</option>
                         <option>windowscounters</option>

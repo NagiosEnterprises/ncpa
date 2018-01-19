@@ -230,14 +230,14 @@
                     <p>The list above shows you the plugins that are available to run.</p>
 
                     <h6>Sending Arguments to Plugins</h6>
-                    <p>You can pass arguments to the plugins that you call by appending each argument after the plugin name. Separate each argument by a <code>/</code>.</p>
+                    <p>As of 2.1 you should now send arguments as URL parameters instead of in your path. You can pass arguments to the plugin specified by passing <code>args</code> parameters.</p>
                     <p>
                         <div class="alert alert-info">
                             <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> You cannot use the built-in <code>warning</code> and <code>critical</code> URL parameters for custom plugins, you must specify them however the plugin requires and pass them as arguments.
                         </div>
                     </p>
                     <p>An example of running a plugin with arguments:</p>
-                    <pre>https://localhost:5693/api/plugins/test.ps1/-u local/-p one,two/?token=mytoken</pre>
+                    <pre>https://localhost:5693/api/plugins/test.ps1?args=-u local&amp;args=-p one,two&amp;token=mytoken</pre>
                     <pre>{
     "returncode": 0,
     "stdout": "Arg1: -u local - Arg2: -p one,two"
@@ -763,7 +763,7 @@
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-6">
                                 <h6 style="margin-top: 1rem;">Example of Service Filtering</h6>
-                                <pre>https://localhost:5693/api/services?service=sshd&service=httpd</pre>
+                                <pre>https://localhost:5693/api/services?token=mytoken&service=sshd&service=httpd</pre>
                                 <pre>{
     "services": {
         "sshd": "running",
@@ -772,7 +772,7 @@
 }</pre>
 
                                 <h6>Example of Service Check</h6>
-                                <pre>https://localhost:5693/api/services?service=sshd&status=running&check=1</pre>
+                                <pre>https://localhost:5693/api/services?token=mytoken&service=sshd&status=running&check=1</pre>
                                 <pre>{
     "returncode": 0, 
     "stdout": "OK: Service sshd is running"
@@ -850,6 +850,62 @@
                     <pre>https://localhost:5693/api/plugins/&lt;plugin name&gt;/&lt;arg1&gt;/&lt;arg2&gt;/?token=mytoken</pre>
                     <p>Some examples of the kinds of arguments you would be passing this way are <code>"/usr/local/program/test.log"</code>, <code>-c 'test.sh'</code>, and <code>--critical=20</code>. Each argument is specified by another <code>/</code> after the plugin name. The built-in parameters for <code>warning</code> and <code>critical</code> do not work with custom plugins and must be passed as arguments. <em>Read more about <a href="#running-plugins">how to run plugins from the API</a>.</em></p> 
                     <p>Custom plugins should conform to the <a target="_new" href="https://nagios-plugins.org/doc/guidelines.html">Nagios plugin guidelines</a> <i class="fa fa-external-link"></i> for exit code and text output or NCPA may not accurately return the proper exit code and output.</p>
+
+                    <a name="api-modules-user"></a>
+                    <h4>user</h4>
+                    <div class="container-fluid">
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-12">
+                                <p>This node allows you to see how many users are logged in using list. It also lets you use the count to create a check for how many users are currently logged in.</p>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0 -30px;">
+                            <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Example of User Endpoint</h6>
+                                <pre>https://localhost:5693/api/user?token=mytoken</pre>
+                                <pre>{
+    "user": {
+        "count": [
+            2,
+            "users"
+        ],
+        "list": [
+            [
+                "root",
+                "root"
+            ],
+            "users"
+        ]
+    }
+}</pre>
+                            </div>
+                            <div class="col-sm-6">
+                                <h6 style="margin-top: 1rem;">Basic Parameters</h6>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%; min-width: 100px;">Parameter</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>check</b></td>
+                                            <td>Overrides the unit given but does not change the value.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>warning</b></td>
+                                            <td>Warning threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>critical</b></td>
+                                            <td>Critical threshold for check. Applies to primary check if combined.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
 

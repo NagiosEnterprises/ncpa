@@ -25,6 +25,21 @@ check_logging = 1
 check_logging_time = 30
 
 #
+# Excluded file system types removes these fs types from the disk metrics
+# (This is mostly only noteable on UNIX systems but also works on Windows if you need it)
+# Default: aufs,autofs,binfmt_misc,cifs,cgroup,debugfs,devpts,devtmpfs,encryptfs,
+#          efivarfs,fuse,hugelbtfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,
+#          securityfs,smb,sysfs,tmpfs,tracefs
+#
+exclude_fs_types = aufs,autofs,binfmt_misc,cifs,cgroup,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,hugelbtfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,smb,sysfs,tmpfs,tracefs
+
+#
+# The default unit to convert bytes (B) into if no unit is specified
+# (Gi = 1024 MiB, G = 1000 MB)
+#
+#default_units = Gi
+
+#
 # -------------------------------
 # Listener Configuration (daemon)
 # -------------------------------
@@ -36,10 +51,6 @@ check_logging_time = 30
 # User and group to run plugins as (recommended to use nagios:nagios)
 # Default: uid = nagios
 # Default: gid = nagios
-#
-# ** Note - The daemon runs as root, but forks a child process when running a plugin
-#    that is defined by the user, for security reasons. However, without the main daemon
-#    running as root, much of the system information would be missing. This is typical behavior. **
 #
 # This is for Unix only (Linux, Mac OS X, etc)
 #
@@ -103,6 +114,13 @@ admin_password = None
 admin_auth_only = 0
 
 #
+# Comma separated list of allowed hosts that can access the API (and GUI)
+# Exmaple: 192.168.23.15
+# Example subnet: 192.168.0.0/28
+#
+# allowed_hosts =
+
+#
 # -------------------------------
 # Listener Configuration (API)
 # -------------------------------
@@ -136,9 +154,11 @@ community_string = mytoken
 handlers = None
 
 #
-# User and group to run passive checks as (Recommended to use nagios:nagios)
+# User and group to run passive checks as (recommended to use nagios:nagios)
 # Default: uid = nagios
 # Default: gid = nagios
+#
+# This is for Unix only (Linux, Mac OS X, etc)
 #
 uid = nagios
 gid = nagios
@@ -230,6 +250,15 @@ plugin_path = plugins/
 # Default: 60
 #
 # plugin_timeout = 60
+
+#
+# Comma separated list of plugins to run through sudo. Note: You will need to update your sudoers
+# configuration for these plugins to work when called with sudo.
+#
+# Example: check_special,check_root_files
+# (Command line: sudo /<plugin_absolute_path>/check_special <arguments>)
+#
+# run_with_sudo =
 
 #
 # Extensions for plugins

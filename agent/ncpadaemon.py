@@ -124,7 +124,7 @@ class Daemon(object):
         self.config_parser = cp
 
         try:
-            self.uid, self.gid = list(imap(int, get_uid_gid(cp, self.section)))
+            self.uid, self.gid, self.username = get_uid_gid(cp, self.section)
         except ValueError, e:
             sys.exit(unicode(e))
 
@@ -138,7 +138,8 @@ class Daemon(object):
 
     def on_sigterm(self, signalnum, frame):
         u"""Handle sigterm by treating as a keyboard interrupt"""
-        raise KeyboardInterrupt(u'SIGTERM')
+        self.remove_pid()
+        sys.exit(0)
 
     def add_signal_handlers(self):
         u"""Register the sigterm handler"""
@@ -248,16 +249,19 @@ class Daemon(object):
 
     def set_uid_gid(self):
         u"""Drop root privileges"""
-        if self.gid:
-            try:
-                os.setgid(self.gid)
-            except OSError as err:
-                logging.exception(err)
-        if self.uid:
-            try:
-                os.setuid(self.uid)
-            except OSError as err:
-                logging.exception(err)
+
+        # Get set of gids to set for OS groups
+        gids = [ self.gid ]
+        if self.username:
+            gids = [ g.gr_gid for g in grp.getgrall() if self.username in g.gr_mem ]
+
+        # Set the group, alt groups, and user
+        try:
+            os.setgid(self.gid)
+            os.setgroups(gids)
+            os.setuid(self.uid)
+        except Exception as err:
+            logging.exception(err)
 
     def chown(self, fn):
         u"""Change the ownership of a file to match the daemon uid/gid"""
@@ -314,8 +318,10 @@ class Daemon(object):
             try:
                 pid = int(open(self.pidfile, u'rb').read().decode(u'utf-8').strip())
             except ValueError:
-                msg = u'pidfile %s contains a non-integer value' % self.pidfile
-                sys.exit(msg)
+                # PID does not exist
+                # This is likely caused by system issues and does not mean NCPA is not running
+                os.remove(self.pidfile)
+                return
             try:
                 os.kill(pid, 0)
             except OSError as err:
@@ -362,15 +368,15 @@ def get_uid_gid(cp, section):
     user_uid = cp.get(section, 'uid')
     user_gid = cp.get(section, 'gid')
 
-    uid = user_uid
     if not isinstance(user_uid, int):
         if not user_uid.isdigit():
+            username = user_uid
             u = pwd.getpwnam(user_uid)
             uid = u.pw_uid
         else:
             uid = int(user_uid)
+            username = pwd.getpwuid(user_uid).pw_name
 
-    gid = user_gid
     if not isinstance(user_gid, int):
         if not user_gid.isdigit():
             g = grp.getgrnam(user_gid)
@@ -378,7 +384,7 @@ def get_uid_gid(cp, section):
         else:
             gid = int(user_gid)
 
-    return uid, gid
+    return uid, gid, username
 
 
 def daemonize():
