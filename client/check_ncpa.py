@@ -192,7 +192,9 @@ def get_arguments_from_options(options, **kwargs):
 
     # Get the options (comma separated)
     if options.queryargs:
-        for argument in options.queryargs.split(','):
+        # for each comma, perform lookahead, split iff we aren't inside quotes.
+        arguments_list = re.split(''',(?=(?:[^'"]|'[^']*'|"[^"]*")*$)''', options.queryargs)
+        for argument in arguments_list:
             key, value = argument.split('=', 1)
             if value is not None:
                 args.append((key, value))
