@@ -9,6 +9,7 @@ Changelog
 - Fixed Mac OS X uninstall.sh script being installed properly
 - Fixed issue with nagios user and group on Mac OS X not being created
 - Fixed issue in windowscounters node creating a 500 error
+- Fixed service name check on EL6 causing services to show as running when stopped or unknown
 - Fixed python plugins not running properly due to the LD_LIBRARY_PATH environment variable
 
 2.1.1 - 12/21/2017

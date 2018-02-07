@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+1.1.3
+-----
+- Fixed splitting of commas in query params so that if a comma is in quotes it will pass it
+
 1.1.2
 -----
 - Fixed issue with long output being passed as args through query parameters

@@ -197,4 +197,5 @@ class Handler(nagioshandler.NagiosHandler):
             try:
                 Handler.log_result(ret_xml)
             except Exception as ex:
+                logging.debug(ret_xml)
                 logging.exception(ex)

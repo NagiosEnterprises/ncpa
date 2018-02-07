@@ -234,7 +234,7 @@ class ServiceNode(nodes.LazyNode):
 
             # Do a quick check if there is a process for this service running
             for p in processes:
-                if service in p:
+                if service == p:
                     status = 'running'
 
             # Verify with 'service' if status is still stopped
