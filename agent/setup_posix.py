@@ -29,6 +29,7 @@ packages = []
 
 # Shared library include overrides
 bin_includes = ['libffi.so', 'libssl.so', 'libcrypto.so']
+bin_path_includes = ['/usr/local/ncpa']
 
 # Special includes for AIX systems
 if 'aix' in sys.platform:
@@ -52,7 +53,8 @@ buildoptions = dict(includes=includes,
                     include_files=include_files,
                     excludes=excludes,
                     packages=packages,
-                    bin_includes=bin_includes)
+                    bin_includes=bin_includes,
+                    bin_path_includes=bin_path_includes)
 
 base = None
 
