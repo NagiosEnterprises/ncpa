@@ -76,9 +76,11 @@ class ParentNode(object):
 
 class RunnableParentNode(ParentNode):
 
-    def __init__(self, name, children, primary, custom_output=None, include=None, *args, **kwargs):
+    def __init__(self, name, children, primary, primary_unit='',
+                 custom_output=None, include=None, *args, **kwargs):
         super(RunnableParentNode, self).__init__(name, children)
         self.primary = primary
+        self.primary_unit = primary_unit
         self.custom_output = custom_output
         if include is None:
             self.include = [x for x in self.children]
@@ -89,6 +91,10 @@ class RunnableParentNode(ParentNode):
         primary_info = {}
         secondary_results = []
         secondary_perfdata = []
+
+        if self.primary_unit == '%':
+            total, total_unit = self.children['total'].get_values(*args, **kwargs)
+            total = total[0]
 
         for name, child in self.children.iteritems():
             if name in self.include:
@@ -102,7 +108,8 @@ class RunnableParentNode(ParentNode):
                                                     *args, **kwargs)
                 else:
                     result = child.run_check(use_prefix=False, use_perfdata=False,
-                                             primary=False, secondary_data=True,
+                                             primary=False, primary_total=total,
+                                             secondary_data=True,
                                              child_check=True, *args, **kwargs)
                     stdout = result.get('stdout', None)
                     if stdout is not None:
@@ -255,9 +262,7 @@ class RunnableNode(ParentNode):
         else:
             return values
 
-    def run_check(self, use_perfdata=True, use_prefix=True, primary=False,
-                  secondary_data=False, custom_output=None, capitalize=True,
-                  child_check=False, *args, **kwargs):
+    def get_values(self, *args, **kwargs):
         try:
             values, unit = self.method(*args, **kwargs)
         except TypeError:
@@ -278,6 +283,14 @@ class RunnableNode(ParentNode):
         if not isinstance(values, (list, tuple)):
             values = [values]
 
+        return values, unit
+
+    def run_check(self, use_perfdata=True, use_prefix=True, primary=False,
+                  primary_total=0, secondary_data=False, custom_output=None,
+                  capitalize=True, child_check=False, *args, **kwargs):
+        
+        values, unit = self.get_values(*args, **kwargs)
+
         try:
             self.set_warning(kwargs)
             self.set_critical(kwargs)
@@ -288,7 +301,7 @@ class RunnableNode(ParentNode):
             if self.critical:
                 is_critical = any([self.is_within_range(self.critical, x) for x in values])
             returncode, stdout, perfdata = self.get_nagios_return(values, is_warning, is_critical, use_perfdata,
-                                                use_prefix, primary, secondary_data,
+                                                use_prefix, primary, primary_total, secondary_data,
                                                 custom_output, capitalize)
         except Exception as exc:
             returncode = 3
@@ -317,7 +330,7 @@ class RunnableNode(ParentNode):
         return data
 
     def get_nagios_return(self, values, is_warning, is_critical, use_perfdata=True,
-                          use_prefix=True, primary=False, secondary_data=False,
+                          use_prefix=True, primary=False, primary_total=0, secondary_data=False,
                           custom_output=None, capitalize=True):
 
         proper_name = self.title.replace('|', '/')
@@ -365,6 +378,14 @@ class RunnableNode(ParentNode):
 
         if isinstance(self.critical, list):
             self.critical = self.critical[0]
+
+        # For a % based parent check we should get the values in the checks
+        # base type (normally GiB or B)
+        if primary_total:
+            if self.warning:
+                self.warning = int(round(primary_total * (float(self.warning) / 100)))
+            if self.critical:
+                self.critical = int(round(primary_total * (float(self.critical) / 100)))
 
         perfdata = []
         v = len(values)

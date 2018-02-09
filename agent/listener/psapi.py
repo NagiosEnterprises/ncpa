@@ -67,7 +67,7 @@ def make_mountpoint_nodes(partition_name):
     # Make and return the full parent node
     return RunnableParentNode(safe_mountpoint,
                               children=node_children,
-                              primary='used_percent',
+                              primary='used_percent', primary_unit='%',
                               custom_output='Used disk space was',
                               include=('total', 'used', 'free', 'used_percent'))
 
@@ -136,7 +136,7 @@ def get_memory_node():
     mem_virt_percent = RunnableNode('percent', method=lambda: (ps.virtual_memory().percent, '%'))
     mem_virt_used = RunnableNode('used', method=lambda: (ps.virtual_memory().used, 'B'))
     mem_virt_free = RunnableNode('free', method=lambda: (ps.virtual_memory().free, 'B'))
-    mem_virt = RunnableParentNode('virtual', primary='percent',
+    mem_virt = RunnableParentNode('virtual', primary='percent', primary_unit='%',
                     children=(mem_virt_total, mem_virt_available, mem_virt_free,
                               mem_virt_percent, mem_virt_used),
                     custom_output='Used memory was')
@@ -144,7 +144,7 @@ def get_memory_node():
     mem_swap_percent = RunnableNode('percent', method=lambda: (ps.swap_memory().percent, '%'))
     mem_swap_used = RunnableNode('used', method=lambda: (ps.swap_memory().used, 'B'))
     mem_swap_free = RunnableNode('free', method=lambda: (ps.swap_memory().free, 'B'))
-    mem_swap = RunnableParentNode('swap', primary='percent',
+    mem_swap = RunnableParentNode('swap', primary='percent', primary_unit='%',
                     children=[mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used],
                     custom_output='Used swap was')
     return ParentNode('memory', children=[mem_virt, mem_swap])
