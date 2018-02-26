@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-2.1.2 - 01/??/2018
+2.1.2 - 02/26/2018
 ==================
 - Added more pseudo devices into default list of devices to skip
 - Fixed websockets (live graphs, top, and tail) not displaying data due to encoding changes

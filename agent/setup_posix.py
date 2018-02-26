@@ -7,6 +7,7 @@ import shutil
 from cx_Freeze import setup, Executable
 import os
 import tarfile
+import glob
 
 version_file = os.path.join(os.path.dirname(__file__),
                             '..',
@@ -29,7 +30,6 @@ packages = []
 
 # Shared library include overrides
 bin_includes = ['libffi.so', 'libssl.so', 'libcrypto.so']
-bin_path_includes = ['/usr/local/ncpa']
 
 # Special includes for AIX systems
 if 'aix' in sys.platform:
@@ -53,14 +53,32 @@ buildoptions = dict(includes=includes,
                     include_files=include_files,
                     excludes=excludes,
                     packages=packages,
-                    bin_includes=bin_includes,
-                    bin_path_includes=bin_path_includes)
+                    bin_includes=bin_includes)
+
+# Build the actual binaries and bundle files
 
 base = None
-
 setup(name = "NCPA",
       version = version,
       description = "NCPA",
       options = dict(build_exe=buildoptions),
       executables = [Executable("ncpa_listener.py", base=base),
                      Executable("ncpa_passive.py", base=base)])
+
+# Check if we can patch the rpath
+
+def cmd_exists(cmd):
+    return any(
+        os.access(os.path.join(path, cmd), os.X_OK) 
+        for path in os.environ["PATH"].split(os.pathsep)
+    )
+
+# Patching rpath for linux systems (little bit hack-ish but removes
+# the need to use LD_LIBRARY_PATH to get bundled python running)
+
+if 'darwin' not in sys.platform:
+    if cmd_exists('patchelf'):
+        for file in glob.iglob("build/exe.*/*.so*"):
+            os.system("patchelf --set-rpath '${ORIGIN}' " + file)
+    else:
+        raw_input("Could not patch rpath for .so files included with NCPA... continue?")
