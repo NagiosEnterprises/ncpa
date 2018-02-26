@@ -7,7 +7,6 @@ import shutil
 from cx_Freeze import setup, Executable
 import os
 import tarfile
-import glob
 
 version_file = os.path.join(os.path.dirname(__file__),
                             '..',
@@ -64,22 +63,3 @@ setup(name = "NCPA",
       options = dict(build_exe=buildoptions),
       executables = [Executable("ncpa_listener.py", base=base),
                      Executable("ncpa_passive.py", base=base)])
-
-# Check if we can patch the rpath
-
-def cmd_exists(cmd):
-    return any(
-        os.access(os.path.join(path, cmd), os.X_OK) 
-        for path in os.environ["PATH"].split(os.pathsep)
-    )
-
-# Patching rpath for linux systems (little bit hack-ish but removes
-# the need to use LD_LIBRARY_PATH to get bundled python running)
-
-if 'darwin' not in sys.platform:
-    if cmd_exists('patchelf'):
-        for file in glob.iglob("build/exe.*/*.so*"):
-            if 'libpython' not in file:
-                os.system("patchelf --set-rpath '${ORIGIN}' " + file)
-    else:
-        raw_input("Could not patch rpath for .so files included with NCPA... continue?")
