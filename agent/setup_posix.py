@@ -79,6 +79,7 @@ def cmd_exists(cmd):
 if 'darwin' not in sys.platform:
     if cmd_exists('patchelf'):
         for file in glob.iglob("build/exe.*/*.so*"):
-            os.system("patchelf --set-rpath '${ORIGIN}' " + file)
+            if 'libpython' not in file:
+                os.system("patchelf --set-rpath '${ORIGIN}' " + file)
     else:
         raw_input("Could not patch rpath for .so files included with NCPA... continue?")
