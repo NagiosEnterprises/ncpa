@@ -18,20 +18,6 @@ BUILDFROM=$1
 # --------------------------
 if [ "$BUILDFROM" != "travis" ]; then
 	./linux_build_prereqs.sh
-
-	# Install patchelf if we are using a linux style system
-	(
-		wget https://nixos.org/releases/patchelf/patchelf-0.9/patchelf-0.9.tar.gz
-		tar xf patchelf-0.9.tar.gz
-		cd patchelf-0.9
-		./configure
-		make all
-		cp src/patchelf /usr/bin/patchelf
-		cd ..
-		rm -rf patchelf-0.9
-		rm -f patchelf-0.9.tar.gz
-	)
-
 fi
 
 # --------------------------
