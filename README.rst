@@ -12,7 +12,7 @@ Downloads
 Current versions:
 
 +---------+-------------+-------------------------------------------------------+
-| Current | **2.1.1**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
+| Current | **2.1.2**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
 `Older Versions <https://www.nagios.org/ncpa/archive.php>`_
@@ -27,7 +27,7 @@ We currently build for the following operating systems:
 - OpenSUSE 11, 12¹, 13¹, 42¹, Tumbleweed¹
 - SLES 11, 12¹
 - Oracle 6, 7¹
-- AIX 6, 7
+- AIX 6, 7 (2.1.1 is latest)
 
 ¹ Builds for 64-bit versions only (2.0.6+)
 ² LTS are the only "supported" versions, although builds should work for non-LTS
