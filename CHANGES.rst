@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+2.1.3 - 02/28/2018
+==================
+- Fixed issue with plugins not executing the plugin return function properly
+
 2.1.2 - 02/27/2018
 ==================
 - Added more pseudo devices into default list of devices to skip

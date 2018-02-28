@@ -267,8 +267,6 @@ class RunnableNode(ParentNode):
             values, unit = self.method(*args, **kwargs)
         except TypeError:
             values, unit = self.method()
-        except AttributeError:
-            return self.execute_plugin(*args, **kwargs)
 
         self.set_unit(unit, kwargs)
         self.set_title(kwargs)
@@ -289,7 +287,10 @@ class RunnableNode(ParentNode):
                   primary_total=0, secondary_data=False, custom_output=None,
                   capitalize=True, child_check=False, *args, **kwargs):
         
-        values, unit = self.get_values(*args, **kwargs)
+        try:
+            values, unit = self.get_values(*args, **kwargs)
+        except AttributeError:
+            return self.execute_plugin(*args, **kwargs)
 
         try:
             self.set_warning(kwargs)
