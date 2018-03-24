@@ -91,6 +91,7 @@ class RunnableParentNode(ParentNode):
         primary_info = {}
         secondary_results = []
         secondary_perfdata = []
+        total = ''
 
         if self.primary_unit == '%':
             total, total_unit = self.children['total'].get_values(*args, **kwargs)
@@ -125,8 +126,13 @@ class RunnableParentNode(ParentNode):
 
         # Add extra perfdata on (if it exists)
         if secondary_perfdata:
-            extra_perfdata = ' '.join(secondary_perfdata)
+            extra_perfdata = ''
+            if self.primary_unit != '%':
+                extra_perfdata += primary_info['perfdata'] + ' '
+            extra_perfdata += ' '.join(secondary_perfdata)
             primary_info['stdout'] = primary_info['stdout'] + ' | ' + extra_perfdata
+        elif self.primary_unit == '%':
+            del primary_info['perfdata']
 
         # Get the check logging value
         try:
@@ -322,11 +328,7 @@ class RunnableNode(ParentNode):
             db.add_check(kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
                          stdout, kwargs['remote_addr'], 'Active')
 
-        data = { 'returncode': returncode, 'stdout': stdout }
-
-        # Add perfdata if this is secondary data
-        if secondary_data is True:
-            data['perfdata'] = perfdata
+        data = { 'returncode': returncode, 'stdout': stdout, 'perfdata': perfdata }
 
         return data
 

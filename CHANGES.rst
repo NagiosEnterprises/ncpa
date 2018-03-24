@@ -4,6 +4,7 @@ Changelog
 2.1.4 - ??/??/2018
 ==================
 - Fixed issue where total CPU and memory usage in processes were actually averages
+- Fixed error when trying to run check on a full interface node
 
 2.1.3 - 02/28/2018
 ==================
