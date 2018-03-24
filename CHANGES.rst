@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+2.1.4 - ??/??/2018
+==================
+- Fixed issue where total CPU and memory usage in processes were actually averages
+
 2.1.3 - 02/28/2018
 ==================
 - Fixed issue with plugins not executing the plugin return function properly

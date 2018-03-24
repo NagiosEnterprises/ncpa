@@ -410,8 +410,6 @@ class ProcessNode(nodes.LazyNode):
                     memory, proc['cpu_percent'][0], '%')
             
             # Add totals to the output
-            tmem = tmem / proc_count
-            tcpu = tcpu / proc_count
             extra += '\nTotal Memory: %.2f %s (VMS %.2f %s, RSS %.2f %s)\n' % (tmem, '%', tmem_vms, mem_unit, tmem_rss, mem_unit)
             extra += 'Total CPU: %.2f %s\n' % (tcpu, '%')
 
