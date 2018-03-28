@@ -152,6 +152,11 @@ class Listener(Base):
                 ssl_version = getattr(ssl, 'PROTOCOL_TLSv1')
                 ssl_str_version = 'TLSv1'
 
+            try:
+                ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
+            except Exception:
+                ssl_str_ciphers = None
+
             logging.info('Using SSL version %s', ssl_str_version)
 
             user_cert = self.config.get('listener', 'certificate')
@@ -163,11 +168,16 @@ class Listener(Base):
             else:
                 cert, key = user_cert.split(',')
 
+            # Create SSL context that will be passed to the server
             ssl_context = {
                 'certfile': cert,
                 'keyfile': key,
                 'ssl_version': ssl_version
             }
+
+            # Add SSL cipher list if one is given
+            if ssl_str_ciphers:
+                ssl_context['ciphers'] = ssl_str_ciphers
 
             listener.server.listener.secret_key = os.urandom(24)
             http_server = WSGIServer(listener=(address, port),

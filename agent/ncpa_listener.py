@@ -58,8 +58,13 @@ class Listener(ncpadaemon.Daemon):
             listener.server.listener.config['iconfig'] = self.config_parser
 
             user_cert = self.config_parser.get('listener', 'certificate')
-
             ssl_str_version = self.config_parser.get('listener', 'ssl_version')
+
+            try:
+                ssl_str_ciphers = self.config_parser.get('listener', 'ssl_ciphers')
+            except Exception:
+                ssl_str_ciphers = None
+
             try:
                 ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
             except:
@@ -74,11 +79,16 @@ class Listener(ncpadaemon.Daemon):
             else:
                 cert, key = user_cert.split(',')
 
+            # Create SSL context that will be passed to the server
             ssl_context = {
                 'certfile': cert,
                 'keyfile': key,
                 'ssl_version': ssl_version
             }
+
+            # Add SSL cipher list if one is given
+            if ssl_str_ciphers:
+                ssl_context['ciphers'] = ssl_str_ciphers
 
             listener.server.listener.secret_key = os.urandom(24)
             http_server = WSGIServer(listener=(address, port),
