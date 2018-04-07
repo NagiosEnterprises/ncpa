@@ -4,6 +4,7 @@ Changelog
 2.1.4 - ??/??/2018
 ==================
 - Added ssl_ciphers config option to only allow specific SSL ciphers
+- Added more filesystems types to ignore
 - Fixed issue where total CPU and memory usage in processes were actually averages
 - Fixed error when trying to run check on a full interface node
 
