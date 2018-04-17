@@ -7,7 +7,8 @@ Changelog
 - Added more filesystems types to ignore
 - Fixed issue where total CPU and memory usage in processes were actually averages
 - Fixed error when trying to run check on a full interface node
-- Fixed issue with processes not doing proper exact matches for most properties (#451)
+- Fixed issue with processes not doing proper exact matches for most properties
+- Fixed folder mountpoints not showing on Windows up due to psutil version on build
 
 2.1.3 - 02/28/2018
 ==================
