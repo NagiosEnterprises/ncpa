@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-2.1.4 - ??/??/2018
+2.1.4 - 04/17/2018
 ==================
 - Added ssl_ciphers config option to only allow specific SSL ciphers
 - Added more filesystems types to ignore
