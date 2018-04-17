@@ -27,7 +27,6 @@ else
 	echo "rpm-build"
 	echo "wget"
 	echo "git"
-	echo "patchelf"
 	echo ""
 	echo "If you're running a debian distro you must also install debian-builder"
 	echo ""
