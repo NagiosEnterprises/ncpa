@@ -86,7 +86,7 @@
                             <tr>
                                 <td></td>
                                 <th>exclude_fs_types</th>
-                                <td>aufs, autofs, binfmt_misc, cifs, cgroup, debugfs, devpts, devtmpfs, encryptfs, efivarfs, fuse, hugelbtfs, mqueue, nfs, overlayfs, proc, pstore, rpc_pipefs, securityfs, smb, sysfs, tmpfs, tracefs</td>
+                                <td>aufs, autofs, binfmt_misc, cifs, cgroup, configfs, debugfs, devpts, devtmpfs, encryptfs efivarfs, fuse, hugetlbfs, mqueue, nfs, overlayfs, proc, pstore, rpc_pipefs, securityfs, selinuxfs, smb, sysfs, tmpfs, tracefs</td>
                                 <td>A comma separated list of file system types to remove from the <code>disk</code> endpoint.</td>
                             </tr>
                             <tr>
@@ -144,6 +144,14 @@
                                 <td>
                                     Set the SSL protocol version to allow for connecting to the HTTPS server.
                                     <div><b>Options:</b> <em>TLSv1</em>, <em>TLSv1_1</em>, or <em>TLSv1_2</em></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>ssl_ciphers</th>
+                                <td></td>
+                                <td>
+                                    Set the list of accepted SSL ciphers. Comma separated list of ciphers.
                                 </td>
                             </tr>
                             <tr>

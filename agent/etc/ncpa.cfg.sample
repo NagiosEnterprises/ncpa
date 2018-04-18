@@ -27,11 +27,11 @@ check_logging_time = 30
 #
 # Excluded file system types removes these fs types from the disk metrics
 # (This is mostly only noteable on UNIX systems but also works on Windows if you need it)
-# Default: aufs,autofs,binfmt_misc,cifs,cgroup,debugfs,devpts,devtmpfs,encryptfs,
-#          efivarfs,fuse,hugelbtfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,
-#          securityfs,smb,sysfs,tmpfs,tracefs
+# Default: aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,
+# 		   encryptfs, efivarfs,fuse,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,
+# 		   rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs
 #
-exclude_fs_types = aufs,autofs,binfmt_misc,cifs,cgroup,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,hugelbtfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,smb,sysfs,tmpfs,tracefs
+exclude_fs_types = aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs
 
 #
 # The default unit to convert bytes (B) into if no unit is specified
@@ -52,6 +52,10 @@ exclude_fs_types = aufs,autofs,binfmt_misc,cifs,cgroup,debugfs,devpts,devtmpfs,e
 # Default: uid = nagios
 # Default: gid = nagios
 #
+# ** Note - The daemon runs as root, but forks a child process when running a plugin
+#    that is defined by the user, for security reasons. However, without the main daemon
+#    running as root, much of the system information would be missing. This is typical behavior. **
+#
 # This is for Unix only (Linux, Mac OS X, etc)
 #
 uid = nagios
@@ -69,6 +73,8 @@ port = 5693
 # SSL connection and certificate config (if an SSL option is not available on some older
 # operating systems it will default back to TLSv1)
 # ssl_version options: TLSv1, TLSv1_1, TLSv1_2
+#
+# ssl_ciphers = <list of ciphers>
 #
 ssl_version = TLSv1_2
 certificate = adhoc
@@ -146,10 +152,10 @@ community_string = mytoken
 # Handlers are a comma separated list of what you would like the passive agent to run
 # Default: None
 # Options:
-#   nrds, nrdp
+#   nrds, nrdp, kafkaproducer
 #
 # Example:
-# handlers = nrds,nrdp
+# handlers = nrds,nrdp,kafkaproducer
 #
 handlers = None
 
