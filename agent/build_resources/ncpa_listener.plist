@@ -12,6 +12,7 @@
         <string>/usr/local/ncpa/ncpa_listener</string>
         <key>ProgramArguments</key>
         <array>
+				<string>/usr/local/ncpa/ncpa_listener</string>
                 <string>-n</string>
         </array>
     </dict>
