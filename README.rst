@@ -27,10 +27,16 @@ We currently build for the following operating systems:
 - OpenSUSE 11, 12¹, 13¹, 42¹, Tumbleweed¹
 - SLES 11, 12¹
 - Oracle 6, 7¹
-- AIX 6, 7 (2.1.1 is latest)
+- AIX 7
 
 ¹ Builds for 64-bit versions only (2.0.6+)
 ² LTS are the only "supported" versions, although builds should work for non-LTS
+
+Older systems that have past support by NCPA:
+
+- CentOS / RHEL 5 using NCPA 2.0.6
+- Oracle 5 using NCPA 2.0.6
+- AIX 6 with NCPA 2.1.1
 
 Other systems we are working on builds for:
 
