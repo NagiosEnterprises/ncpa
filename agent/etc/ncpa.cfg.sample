@@ -28,16 +28,16 @@ check_logging_time = 30
 # Excluded file system types removes these fs types from the disk metrics
 # (This is mostly only noteable on UNIX systems but also works on Windows if you need it)
 # Default: aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,
-# 		   encryptfs, efivarfs,fuse,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,
-# 		   rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs
+#          encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,
+#          rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs
 #
-exclude_fs_types = aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs
+exclude_fs_types = aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs
 
 #
 # The default unit to convert bytes (B) into if no unit is specified
 # (Gi = 1024 MiB, G = 1000 MB)
 #
-#default_units = Gi
+default_units = Gi
 
 #
 # -------------------------------
