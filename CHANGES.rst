@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+2.1.5 - ??/??/2018
+==================
+- Fixed issue with a few Windows counters that required forward slashes in the path name
+
 2.1.4 - 04/17/2018
 ==================
 - Added ssl_ciphers config option to only allow specific SSL ciphers

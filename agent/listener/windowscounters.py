@@ -74,7 +74,7 @@ class WindowsCountersNode(nodes.LazyNode):
     @staticmethod
     def get_counter_path(path):
         counter_path = '\\'
-        if re.match(r'\b[sS]ec\b', path[-1]):
+        if re.match(r'.* sec', path[-2]) or re.match(r'\b[sS]ec\b', path[-1]):
             counter_path += '\\'.join(path[:-1])
             counter_path += '/' + path[-1]
         else:
