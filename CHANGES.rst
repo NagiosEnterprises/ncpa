@@ -4,6 +4,7 @@ Changelog
 2.1.5 - ??/??/2018
 ==================
 - Fixed issue with a few Windows counters that required forward slashes in the path name
+- Fixed issue where Windows counters were not clearing the counter/query handler
 
 2.1.4 - 04/17/2018
 ==================

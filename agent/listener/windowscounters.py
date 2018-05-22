@@ -56,13 +56,18 @@ class WindowsCountersNode(nodes.LazyNode):
             sleep = 0
 
         query = win32pdh.OpenQuery()
-        counter = win32pdh.AddCounter(query, counter_path)
-        win32pdh.CollectQueryData(query)
-        time.sleep(sleep)
-        win32pdh.CollectQueryData(query)
-        _, _, _, _, _, _, _, info, _ = win32pdh.GetCounterInfo(counter, False)
-        _, value = win32pdh.GetFormattedCounterValue(counter, win32pdh.PDH_FMT_DOUBLE)
-        win32pdh.CloseQuery(query)
+        try:
+            counter = win32pdh.AddCounter(query, counter_path)
+            try:
+                win32pdh.CollectQueryData(query)
+                time.sleep(sleep)
+                win32pdh.CollectQueryData(query)
+                _, _, _, _, _, _, _, info, _ = win32pdh.GetCounterInfo(counter, False)
+                _, value = win32pdh.GetFormattedCounterValue(counter, win32pdh.PDH_FMT_DOUBLE)
+            finally:
+                win32pdh.RemoveCounter(counter)
+        finally:
+            win32pdh.CloseQuery(query)
 
         unit = info[-1]
 
