@@ -60,8 +60,9 @@ class WindowsCountersNode(nodes.LazyNode):
             counter = win32pdh.AddCounter(query, counter_path)
             try:
                 win32pdh.CollectQueryData(query)
-                time.sleep(sleep)
-                win32pdh.CollectQueryData(query)
+                if sleep != 0:
+                    time.sleep(sleep)
+                    win32pdh.CollectQueryData(query)
                 _, _, _, _, _, _, _, info, _ = win32pdh.GetCounterInfo(counter, False)
                 _, value = win32pdh.GetFormattedCounterValue(counter, win32pdh.PDH_FMT_DOUBLE)
             finally:
