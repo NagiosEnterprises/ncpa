@@ -1,4 +1,4 @@
-﻿Changelog
+Changelog
 +++++++++
 
 3.0.0 - ??/??/2017
@@ -17,6 +17,121 @@
 **Bug Fixes**
 
 - Fixed errors from different language encodings due to python not being able to encode/decode strings
+
+2.1.5 - ??/??/2018
+==================
+- Fixed issue with a few Windows counters that required forward slashes in the path name
+- Fixed issue where Windows counters were not clearing the counter/query handler
+
+2.1.4 - 04/17/2018
+==================
+- Added ssl_ciphers config option to only allow specific SSL ciphers
+- Added more filesystems types to ignore
+- Fixed issue where total CPU and memory usage in processes were actually averages
+- Fixed error when trying to run check on a full interface node
+- Fixed issue with processes not doing proper exact matches for most properties
+- Fixed folder mountpoints not showing on Windows up due to psutil version on build
+
+2.1.3 - 02/28/2018
+==================
+- Fixed issue with plugins not executing the plugin return function properly
+
+2.1.2 - 02/27/2018
+==================
+- Added more pseudo devices into default list of devices to skip
+- Fixed websockets (live graphs, top, and tail) not displaying data due to encoding changes
+- Fixed issue where user's groups were not being set when dropping from root privileges
+- Fixed Mac OS X uninstall.sh script being installed properly
+- Fixed issue with nagios user and group on Mac OS X not being created
+- Fixed issue in windowscounters node creating a 500 error
+- Fixed service name check on EL6 causing services to show as running when stopped or unknown
+- Fixed python plugins not running properly due to the LD_LIBRARY_PATH environment variable
+
+2.1.1 - 12/21/2017
+==================
+- Fixed the return values for checks that do not return int/float values
+
+2.1.0 - 12/19/2017
+==================
+- Removed deprecated aliases (service, process, and agent) as stated in 2.0.0 changelog section
+- Added a new config option (allowed_hosts) to the [listener] section to block access except from specified addresses
+- Added a new config option (run_with_sudo) to the [plugin directives] section to prepend the sudo command
+- Added shell script to uninstall NCPA on Mac OS X by running "sudo /usr/local/ncpa/uninstall.sh"
+- Added /IP and /PORT to silent install options for the Windows installer
+- Added LD_LIBRARY_PATH to ncpa init scripts and include libssl and libcrypto so we have the latest OpenSSL libraries
+- Added default_units configuration value to allow setting a default unit such as G or Gi for checks
+- Added exclude_fs_types configuration value to remove certain file system types from the disk check
+- Added a Kafka-Producer for passive checks
+- Added log message (and other log data) in to check as long output for Windows logs
+- Added processes into long output for processes endpoint and performance data output for all processes matched
+- Added ability run "interface/<interface name>" as a check to return all interface data
+- Added unknown service state when permissions of the nagios user stop service from checking running state
+- Added processes filter for username and updated GUI API browser
+- Added AIX support to the main branch (merged aix branch in)
+- Added long output toggle button in checks page to show all long output for process/log checks
+- Added ability to pass plugin arguments through the args POST/GET parameter instead of only through path
+- Added ability to have comma separated nrdp servers set for parent (and comma separated tokens)
+- Fixed searching for cmd causing any process with no cmd given to show up with any search
+- Fixed services on el6 to no longer use a grep for the a process and rely on psutil and service instead
+- Fixed issue with Firefox running in Windows causing websocket encoding errors
+- Fixed thresholds with colon (:) in front to be treated like a regular number instead of giving an error
+- Fixed problem with multiple arguments passed via query string for passive URL-based checks
+- Fixed upgrades on Windows to only start the ncpa services that were running before upgrade
+- Fixed check settings not showing up on system/uptime and added human readable output to check return output
+
+2.0.6 - 11/09/2017
+==================
+- Updated Python version to 2.7.14
+- Updated gevent-websocket to version 0.10.1 so we do not need to use patched version
+- Fixed passive checks not writing to the check history database
+- Fixed API section for Internet Explorer
+- Fixed issue when using the event_id filter on Windows event logs
+- Fixed issue with spaces in URL-based passive checks
+- Fixed catching of IOError with systems (typically virtual) that do not have any accessible partitions
+- Fixed encoding problems in Timezones and Interfaces on Windows with non-English characters
+- Fixed delta time values not working properly due to caching data on websockets
+- Fixed large values showing up on initial check when viewing deltas
+
+2.0.5 - 09/01/2017
+==================
+- Fixed the windows event log setting event_id to give the proper ID for some events that has bogus IDs
+- Fixed issue with DB maintenance where DB is not accessible (both processes use it)
+- Fixed non-integer PID file value causing startup issues
+- Fixed issues with NFS errors causing failed starts (such as permission denied)
+
+2.0.4 - 06/24/2017
+==================
+- Updated the API browser to grab your current hostname and port from the URL to show better active check output
+- Updated processes API endpoint to properly also show full command with arguments
+- Updated Windows installer to open incoming port in firewall for the port specified during install
+- Fixed admin login page redirecting to "admin/config" which does not exists
+- Fixed some JSON encoding errors from happening when utf-8 cannot decode properly
+- Fixed issue with missing logging import in services.py
+- Fixed upgrade issue where NCPA services would be stopped after upgrade (will start working after 2.0.4)
+- Fixed issue in windows logging module where an infinite loop could be triggered based on logged_after time frame
+- Fixed sqlite db timeout only being 5 seconds
+- Fixed issue where initctl would override sysv initd script statuses for services
+- Fixed file permissions on Linux with an updated .spec file
+- Fixed match argument to be set when showing examples of active or passive check definitions from the GUI
+- Fixed passive check definition for processes, services, and plugins endpoints
+
+2.0.3 - 03/17/2017
+==================
+- Fixed some typos in the ncpa.cfg and sample config
+- Fixed issue with Windows silent install setting various values to blank instead of defaults
+- Fixed check for service scripts in init.d folder to ignore OSError exceptions
+- Fixed typo in ncpa.cfg file that meant to say nrdp
+
+2.0.2 - 01/19/2017
+==================
+- Updated plugins list to be sorted alphabetically when returning plugin list
+- Updated plugins endpoint to use the debug URL parameter to have check also return the cmd line string
+- Fixed issue with the parsing of command-line arguments sent to plugins quoting spaces unnecessarily
+- Fixed default IP and Port definitions if either are not specified in ncpa.cfg
+- Fixed issue with / in arguments passed to plugins (via check_ncpa.py and the API)
+- Fixed output of check_ncpa.py in the "view alternative format" popup to use proper units argument
+- Fixed service status output to display proper messages when pid file exists but daemon is not running
+>>>>>>> remotes/origin/master
 
 2.0.1 - 01/03/2017
 ==================
@@ -53,7 +168,7 @@
 - Added disk/mount for giving information on partitions that aren't currently accessible, such as cdroms
 - Added redirection when logging in if the user was trying to access a protected page
 - Added better output messages for multi-checks (ex: memory/virtual?check=true, disk/C:|?check=true)
-- Added API browser which allows going thorugh the API and creating checks, understanding units, etc
+- Added API browser which allows going through the API and creating checks, understanding units, etc
 - Added admin web GUI section for in-browser viewing of passive checks, process control, etc
 - Added admin_x config values into default ncpa.cfg for Web GUI admin section
 - Added information into api/logs node to explain how to get logs to be populated
@@ -68,7 +183,7 @@
 - Updated web UI with modern theme with better graph styling
 - Updated self-signed SSL certs to use 2048bit RSA and sha256 signature
 - Updated unit names that were set to c that weren't actually generic counters for better graphing
-- Updated top proceses to not show Idle process on Windows and added % / rounding
+- Updated top processes to not show Idle process on Windows and added % / rounding
 - Updated default locations on fresh install for log files on windows and linux
 - Updated openssl and PyOpenSSL libraries which no longer accept SSLv2 & SSLv3
 - Updated API to round most values that had been calculated to 2 decimals including check results and perfdata
@@ -127,8 +242,8 @@
 
 **Deprecated**
 
-- Both API endoints api/service/<servicename> and api/process/<processname> will be removed in version 2.1.0 and should be replaced by api/services?service=<servicename> and api/processes?name=<processname> instead
-- The API endpoint api/agent/plugin/<pluginname> will be removed in version 2.1.0 in favor of api/plugins/<pluginame> which better matches the current API node naming conventions and is a less confusing name
+- Both API endoints api/service/<servicename> and api/process/<processname> will be removed in version 3 and should be replaced by api/services?service=<servicename> and api/processes?name=<processname> instead
+- The API endpoint api/agent/plugin/<pluginname> will be removed in version 3 in favor of api/plugins/<pluginname> which better matches the current API node naming conventions and is a less confusing name
 
 1.8.1 - 04/09/2015
 ==================

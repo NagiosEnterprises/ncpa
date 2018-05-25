@@ -20,6 +20,16 @@ $(document).ready(function() {
     $('.btn-search').click(function() {
         $('#top-form').submit();
     });
+
+    // Toggle long output if it exists
+    $('.toggle-longoutput').click(function() {
+        var lo = $(this).parent().find('.longoutput');
+        if (lo.is(':visible')) {
+            lo.hide();
+        } else {
+            lo.show();
+        }
+    });
 });
 </script>
 {% endblock %}
@@ -39,6 +49,14 @@ $(document).ready(function() {
                         <option value="1"{% if status == 1 %} selected{% endif %}>WARNING</option>
                         <option value="2"{% if status == 2 %} selected{% endif %}>CRITICAL</option>
                         <option value="3"{% if status == 3 %} selected{% endif %}>UNKNOWN</option>
+                    </select>
+                </div>
+                <div class="input-group" style="width: 170px; display: inline-table; vertical-align: top;">
+                    <label class="input-group-addon">Type</label>
+                    <select name="ctype" class="form-control">
+                        <option value="">Both</option>
+                        <option value="Active"{% if ctype == 'Active' %} selected{% endif %}>Active</option>
+                        <option value="Passive"{% if ctype == 'Passive' %} selected{% endif %}>Passive</option>
                     </select>
                 </div>
                 <div class="input-group" style="width: 280px;">
@@ -110,7 +128,15 @@ $(document).ready(function() {
                                 <td>{{ check.accessor }}</td>
                                 <td>{{ check.run_time_start|strftime }}</td>
                                 <td class="check-result {{ check.result|human_check_result }}">{{ check.result|human_check_result }}</td>
-                                <td>{{ check.output }}</td>
+                                <td>
+                                    {{ check.output }}
+                                    {% if check.longoutput %}
+                                    <a style="cursor: pointer;" class="toggle-longoutput">Toggle long output</a>
+                                    <div class="longoutput hide">
+                                        {{ check.longoutput|safe }}
+                                    <div>
+                                    {% endif %}
+                                </td>
                                 <td>{{ check.sender }}</td>
                                 <td>{{ check.type }}</td>
                             </tr>

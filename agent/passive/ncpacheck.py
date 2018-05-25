@@ -50,13 +50,13 @@ class NCPACheck(object):
         """
         logging.debug('Getting API url for instruction %s', instruction)
 
-        if ' ' in instruction:
-            api_url, api_args = NCPACheck.parse_cmdline_style_instruction(instruction)
-        else:
+        if '?' in instruction or '&' in instruction:
             api_url, api_args = NCPACheck.parse_api_url_style_instruction(instruction)
+            api_args.append(('check', '1'))
+        else:
+            api_url, api_args = NCPACheck.parse_cmdline_style_instruction(instruction)
+            api_args['check'] = '1'
 
-        # Ensure we are running a check
-        api_args['check'] = '1'
         api_url = NCPACheck.normalize_api_url(api_url)
 
         logging.debug('Determined instruction to be: %s', instruction)
@@ -91,11 +91,11 @@ class NCPACheck(object):
         current_time = time.time()
         accessor = api_url.replace('/api/', '').rstrip('/')
 
-        # Send to databsae
-        data = (accessor, current_time, current_time, int(returncode),
-                stdout, 'Internal', 'Passive')
-        dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-        db.commit()
+        # Save returned check results to the DB if we don't error out
+        if listener.server.__INTERNAL__:
+            db = listener.database.DB()
+            db.add_check(accessor, current_time, current_time, int(returncode),
+                         stdout, 'Internal', 'Passive')
 
         return stdout, returncode
 
@@ -262,6 +262,15 @@ class NCPACheck(object):
         parse = urllib.parse.urlparse(instruction)
 
         api_url = parse.path
-        api_args = {x: v[0] for x, v in urllib.parse.parse_qs(parse.query).items()}
+        api_args = []
+
+        # Parse arguments for URL
+        args = urlparse.parse_qs(parse.query).items()
+        for x, v in args:
+            if len(v) == 1:
+                api_args.append((x, v[0]))
+            else:
+                for val in v:
+                    api_args.append((x, val))
 
         return api_url, api_args

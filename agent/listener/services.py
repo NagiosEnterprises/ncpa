@@ -8,7 +8,10 @@ import psutil
 import listener.server
 import listener.database as database
 import time
+import logging
+import Queue
 from stat import ST_MODE,S_IXUSR,S_IXGRP,S_IXOTH
+from threading import Timer
 
 
 def filter_services(m):
@@ -68,6 +71,8 @@ class ServiceNode(listener.nodes.LazyNode):
             return self.get_services_via_psutil
         elif uname == 'Darwin':
             return self.get_services_via_launchctl
+        elif uname == 'AIX':
+            return self.get_services_via_lssrc
         else:
 
             # look for systemd
@@ -160,13 +165,16 @@ class ServiceNode(listener.nodes.LazyNode):
         service.wait()
         status.seek(0)
 
+        # Check to see if there are any services we need to add that
+        # weren't already caught by the initd script check
         for line in status.readlines():
             m = re.match("(.*) (?:\w*)/(\w*)(?:, .*)?", line)
             try:
-                if m.group(2) == 'running':
-                    services[m.group(1)] = 'running'
-                else:
-                    services[m.group(1)] = 'stopped'
+                if m.group(1) not in services:
+                    if m.group(2) == 'running':
+                        services[m.group(1)] = 'running'
+                    else:
+                        services[m.group(1)] = 'stopped'
             except:
                 pass
         return services
@@ -175,53 +183,90 @@ class ServiceNode(listener.nodes.LazyNode):
     # Special functions to test if a service is running or not
     # ---------------------------------
 
+    def kill_proc(self, p):
+        p.kill()
+
     def get_initd_service_status(self, service):
-        p = subprocess.Popen(['service', service, 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = p.communicate()
-        if p.returncode == 1:
-            return 'stopped' # Service not found
-        elif p.returncode == 0:
-            out = out.lower()
-            if not out:
-                return 'running' # Service is likely running (no output but return 0)
-            elif out in 'not running' or out in 'stopped': # Service returned 0 but had 'stopped' or 'not running' message
-                return 'stopped'
-            else:
-                return 'running' # Service is assumed running due to (return 0)
-        return 'stopped' # Service is likely not running (return > 0)
+        service_status = subprocess.Popen(['service', service, 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        timer = Timer(2, self.kill_proc, [service_status])
+
+        # Stop subprocess if it takes more then 2 seconds to get service status
+        try:
+            timer.start()
+            stdout, stderr = service_status.communicate()
+        finally:
+            timer.cancel()
+
+        out = stdout.lower()
+        if 'not running' in out or 'stopped' in out:
+            return 'stopped'
+
+        # Return stopped if return code is 1-3
+        if service_status.returncode in range(1, 3):
+            return 'stopped'
+        elif service_status.returncode == 0:
+            return 'running'
+
+        # Service is likely not running (return > 0)
+        return 'unknown'
 
     @filter_services
     def get_services_via_initd(self, *args, **kwargs):
         # Only look at executable files in init.d (there is no README service)
-        possible_services = filter(lambda x: os.stat('/etc/init.d/'+x)[ST_MODE] & (S_IXUSR|S_IXGRP|S_IXOTH), os.listdir('/etc/init.d'))
+        try:
+            possible_services = filter(lambda x: os.stat('/etc/init.d/'+x)[ST_MODE] & (S_IXUSR|S_IXGRP|S_IXOTH), os.listdir('/etc/init.d'))
+        except OSError as e:
+            logging.exception(e);
+            pass
+
         services = {}
-        devnull = open(os.devnull, 'w')
+        processes = []
+        for p in psutil.process_iter(attrs=['name']):
+            processes.append(p.info['name'])
 
         for service in possible_services:
-            status = 'stopped'
+            status = 'unknown'
 
             # Skip broken 'services' that actually run when called with 'status'
             if 'rcS' in service:
                 continue
 
-            # Check if service is running via 'ps' since its faster that calling 'service'
-            grep_search = '[%s]%s' % (service[0], service[1:])
-            ps_call = subprocess.Popen(['ps', 'aux'], stdout=subprocess.PIPE)
-            grep_call = subprocess.Popen(['grep', grep_search], stdout=devnull, stdin=ps_call.stdout)
-            ps_call.wait()
-            ps_call.stdout.close()
-            grep_call.wait()
-
-            if grep_call.returncode == 0:
-                status = 'running'
+            # Do a quick check if there is a process for this service running
+            for p in processes:
+                if service == p:
+                    status = 'running'
 
             # Verify with 'service' if status is still stopped
-            if status == 'stopped': 
+            if status == 'unknown': 
                 status = self.get_initd_service_status(service)
 
             services[service] = status
 
-        devnull.close()
+        return services
+
+    # AIX-specific list services section
+    @filter_services
+    def get_services_via_lssrc(self, *args, **kwargs):
+        services = {}
+        status = tempfile.TemporaryFile()
+        service = subprocess.Popen(['lssrc', '-a'], stdout=status)
+        service.wait()
+        status.seek(0)
+
+        # The first line is the header
+        status.readline()
+
+        for line in status.readlines():
+            ls = line.split()
+            sub = ls[0]
+            status = ls[-1]
+            if status == 'active':
+                services[sub] = 'running'
+            elif status == 'inoperative':
+                services[sub] = 'stopped'
+            else:
+                services[sub] = 'unknown'
+
         return services
 
     def walk(self, *args, **kwargs):
@@ -298,12 +343,9 @@ class ServiceNode(listener.nodes.LazyNode):
         # Put check results in the check database
         if not listener.server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
-            dbc = db.get_cursor()
             current_time = time.time()
-            data = (kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
-                    stdout, kwargs['remote_addr'], 'Active')
-            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-            db.commit()
+            db.add_check(kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
+                         stdout, kwargs['remote_addr'], 'Active')
 
         return { 'stdout': stdout, 'returncode': returncode }
 

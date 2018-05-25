@@ -25,12 +25,12 @@ been installed and working.
 
 You will need to install git for windows. Then, download and install:
 
-* `Python 2.7.13 on Windows <https://www.python.org/downloads/release/python-2713/>`_
+* `Python 2.7.14 on Windows <https://www.python.org/downloads/release/python-2714/>`_
 * OpenSSL for Windows (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_0c.exe>`_)
 
 To set up the python requirements, in `cmd.exe` clone the NCPA repo and run::
 
-	python -m pip install -r reources/requires.txt
+	python -m pip install -r resources/requires.txt
 
 
 **Set Up Linux / Mac OS X Environment**

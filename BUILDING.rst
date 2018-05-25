@@ -14,22 +14,20 @@ Prerequisites
 -------------
 
 * `Git for Windows <https://git-scm.com/download/win>`_
-* Python 2.7.13 (32-Bit) (`Download <https://www.python.org/downloads/release/python-2713/>`_)
-* OpenSSL for Windows (32-bit) (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_0c.exe>`_) *Requires admin rights*
+* Python 2.7.14 (32-Bit) (`Download <https://www.python.org/downloads/release/python-2714/>`_)
+* OpenSSL for Windows (32-bit) (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_0f.exe>`_) *Requires admin rights*
 * `Microsoft Visual C++ Compiler for Python 2.7 <http://aka.ms/vcpython27>`_
 * `Microsoft Visual C++ 2010 runtime (32-bit) <http://www.microsoft.com/en-us/download/details.aspx?id=8328>`_ *Requires admin rights*
-* `NSIS <http://nsis.sourceforge.net/Download>`_ *Requires admin rights*
+* `NSIS 3 <http://nsis.sourceforge.net/Download>`_ *Requires admin rights*
 
 **Python Packages**
 
 * pip (installed by default in Python 2.7 for Windows)
-* cx_Freeze (patched)
-* cx_Logging
-* cx_PyGenLib
 * gevent-websocket (patched)
+* cx_Freeze (patched)
+* cx_Logging (http://cx-logging.sourceforge.net/)
 
-There are more Python packages that need to be installed too but they are installed
-later on with a setup script that you can run. A full list of required packages is available in `ncpa/build/resources/requires.txt`.
+There are more Python packages that need to be installed too but they are installed later on with a setup script that you can run. A full list of required packages is available in `ncpa/build/resources/requires.txt`.
 
 Configure the Build Environment
 -------------------------------
@@ -39,7 +37,7 @@ Install Prerequisites
 
 * Python
 
-  1. Download and install Python 2.7.13. (`see prerequisites <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#prerequisites>`_)
+  1. Download and install Python 2.7.14. (`see prerequisites <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#prerequisites>`_)
   2. Execute the installer as usual. It's important that the
      installation path is not changed from the default of
      C:\\python27 as cx_Freeze can have difficulty finding
@@ -69,10 +67,10 @@ Install Prerequisites
 
 * pip
   
-  * Pip is installed by default in Python 2.7.13 but should be updated before continuing::
+  * Pip is installed by default in Python 2.7.14 but should be updated before continuing::
 
       "%pydir%" -m pip install --upgrade pip
-
+	  
 Set Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Two variables must be set for the win_build_setup.bat script to run properly:
@@ -94,14 +92,16 @@ Set these variables by running::
   set pydir=C:\Python27
   set openssldir=C:\OpenSSL-Win32
 
-Run the Pre-Build Script
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-Run win_build_setup.bat located in build/scripts. You should see some packages
-installed by pip then a message saying "to build ncpa: python build\build_windows.py".
-
 Install the Last Modules
 ~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Install the full list of python modules
+	
+  "%pydir%" -m pip install pypiwin32 psutil requests Jinja2 flask werkzeug docutils pyOpenSSL gevent cffi appdirs packaging
+
+* cx_Logging (http://cx-logging.sourceforge.net/)
+
+  * Install the python 2.7 version of cx_Logging for Windows via the .msi
 
 * cx_Freeze (patched)
 
@@ -123,6 +123,7 @@ Build NCPA
 Run the build script::
 
   "%pydir%\python" build\build_windows.py
+
 
 Building on Linux
 =================

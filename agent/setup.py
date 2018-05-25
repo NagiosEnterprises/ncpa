@@ -71,7 +71,18 @@ elif __SYSTEM__ == 'posix':
                       ('build_resources/ncpa_init', 'build_resources/ncpa_init'),
                       (os.path.join(sys.executable), 'python')]
 
-    bin_includes += ['libffi.so']
+    # Shared library include overrides
+    bin_includes += ['libffi.so', 'libssl.so', 'libcrypto.so']
+
+    # Special includes for AIX systems
+	if 'aix' in sys.platform:
+    include_files += [('/opt/freeware/lib/libpython2.7.so', 'libpython2.7.so'),
+                      ('/usr/lib/libsqlite3.a', 'libsqlite3.a'),
+                      ('/usr/lib/libssl.so', 'libssl.so'),
+                      ('/usr/lib/libcrypto.so', 'libcrypto.so'),
+                      ('/usr/lib/libcrypto.a', 'libcrypto.a'),
+                      ('/usr/lib/libffi.a', 'libffi.a'),
+                      ('/opt/freeware/lib/libgcc_s.a', 'libgcc_s.a')]
 
     binary = Executable('ncpa.py', base=None)
 

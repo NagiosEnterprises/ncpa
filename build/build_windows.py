@@ -3,7 +3,7 @@ import shutil
 import subprocess
 import sys
 
-# Grab command line arguements
+# Grab command line arguments
 buildtype = 'release'
 if len(sys.argv) > 1:
     buildtype = sys.argv[1]

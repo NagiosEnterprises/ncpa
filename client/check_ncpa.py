@@ -43,18 +43,8 @@ import shlex
 import re
 import signal
 
-__VERSION__ = '1.0.2'
 
-def pretty(d, indent=0, indenter=' ' * 4):
-    info_str = ''
-    for key, value in list(d.items()):
-        info_str += indenter * indent + str(key)
-        if isinstance(value, dict):
-            info_str += '/\n'
-            info_str += pretty(value, indent + 1, indenter)
-        else:
-            info_str += ': ' + str(value) + '\n'
-    return info_str
+__VERSION__ = '1.1.3'
 
 
 def parse_args():
@@ -74,10 +64,12 @@ def parse_args():
                       help="Warning value to be passed for the check.")
     parser.add_option("-c", "--critical", default=None, type="str",
                       help="Critical value to be passed for the check.")
-    parser.add_option("-u", "--unitprefix", default=None,
-                      help="The unit prefix (k, Ki, M, Mi, G, Gi, T, Ti) for b and B unit types.")
+    parser.add_option("-u", "--units", default=None,
+                      help="The unit prefix (k, Ki, M, Mi, G, Gi, T, Ti) for b and B unit "
+                           "types which calculates the value returned.")
     parser.add_option("-n", "--unit", default=None,
-                      help="Overrides the unit with whatever unit you define.")
+                      help="Overrides the unit with whatever unit you define. "
+                           "Does not perform calculations. This changes the unit of measurement only.")
     parser.add_option("-a", "--arguments", default=None,
                       help="Arguments for the plugin to be run. Not necessary "
                            "unless you're running a custom plugin. Given in the same "
@@ -103,6 +95,9 @@ def parse_args():
                       help='Extra query arguments to pass in the NCPA URL.')
     parser.add_option("-s", "--secure", action='store_true', default=False,
                       help='Require successful certificate verification. Does not work on Python < 2.7.9.')
+    parser.add_option("-p", "--performance", action='store_true', default=False,
+                      help='Print performance data even when there is none. '
+                           'Will print data matching the return code of this script')
     options, _ = parser.parse_args()
 
     if options.version:
@@ -169,7 +164,9 @@ def get_check_arguments_from_options(options):
     if arguments is None:
         return ''
     else:
-        arguments = '/'.join([urlquote(x, safe='') for x in shlex.split(arguments)])
+        lex = shlex.shlex(arguments)
+        lex.whitespace_split = True
+        arguments = '/'.join([urlquote(x, safe='') for x in lex])
         return arguments
 
 
@@ -179,10 +176,10 @@ def get_arguments_from_options(options, **kwargs):
 
     """
 
-    # Note: Changed to unitprefix due to it being a prefix which then makes it
-    # easier to understand from the API side of things...
+    # Note: Changed back to units due to the units being what is passed via the
+    # API call which can confuse people if they don't match
     arguments = { 'token': options.token,
-                  'units': options.unitprefix }
+                  'units': options.units }
     
     if not options.list:
         arguments['warning'] = options.warning
@@ -191,13 +188,19 @@ def get_arguments_from_options(options, **kwargs):
         arguments['check'] = 1
         arguments['unit'] = options.unit
 
+    args = list((k, v) for k, v in list(arguments.items()) if v is not None)
+
+    # Get the options (comma separated)
     if options.queryargs:
-        for argument in options.queryargs.split(','):
-            key, value = argument.split('=')
-            arguments[key] = value
+        # for each comma, perform lookahead, split iff we aren't inside quotes.
+        arguments_list = re.split(''',(?=(?:[^'"]|'[^']*'|"[^"]*")*$)''', options.queryargs)
+        for argument in arguments_list:
+            key, value = argument.split('=', 1)
+            if value is not None:
+                args.append((key, value))
 
     #~ Encode the items in the dictionary that are not None
-    return urlencode(dict((k, v) for k, v in list(arguments.items()) if v is not None))
+    return urlencode(args)
 
 
 def get_json(options):
@@ -243,7 +246,7 @@ def show_list(info_json):
     """Show the list of available options.
 
     """
-    return pretty(info_json), 0
+    return json.dumps(info_json, indent=4), 0
 
 
 def timeout_handler(threshold):
@@ -272,8 +275,13 @@ def main():
         if options.list:
             return show_list(info_json)
         else:
-            return run_check(info_json)
-    except Exception as e:
+            stdout, returncode = run_check(info_json)
+            if options.performance and stdout.find("|") == -1:
+                performance = " | 'status'={};1;2;".format(returncode)
+                return "{}{}".format(stdout, performance), returncode
+            else:
+                return stdout, returncode
+    except Exception, e:
         if options.debug:
             return 'The stack trace:' + traceback.format_exc(), 3
         elif options.verbose:

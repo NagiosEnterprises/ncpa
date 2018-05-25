@@ -40,7 +40,7 @@ def make_disk_nodes(disk_name):
 def make_mountpoint_nodes(partition_name):
     mountpoint = partition_name.mountpoint
 
-    total_size = RunnableNode('total_size', method=lambda: (ps.disk_usage(mountpoint).total, 'B'))
+    total = RunnableNode('total', method=lambda: (ps.disk_usage(mountpoint).total, 'B'))
     used = RunnableNode('used', method=lambda: (ps.disk_usage(mountpoint).used, 'B'))
     free = RunnableNode('free', method=lambda: (ps.disk_usage(mountpoint).free, 'B'))
     used_percent = RunnableNode('used_percent', method=lambda: (ps.disk_usage(mountpoint).percent, '%'))
@@ -49,7 +49,7 @@ def make_mountpoint_nodes(partition_name):
     opts = RunnableNode('opts', method=lambda: (partition_name.opts, ''))
     safe_mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
 
-    node_children = [total_size, used, free, used_percent, device_name, fstype, opts]
+    node_children = [total, used, free, used_percent, device_name, fstype, opts]
 
     # Unix specific inode counter ~ sorry Windows! :'(
     if environment.SYSTEM != 'Windows':
@@ -65,9 +65,9 @@ def make_mountpoint_nodes(partition_name):
     # Make and return the full parent node
     return RunnableParentNode(safe_mountpoint,
                               children=node_children,
-                              primary='used_percent',
+                              primary='used_percent', primary_unit='%',
                               custom_output='Used disk space was',
-                              include=('total_size', 'used', 'free', 'used_percent'))
+                              include=('total', 'used', 'free', 'used_percent'))
 
 def make_mount_other_nodes(partition):
     dvn = RunnableNode('device_name', method=lambda: ([partition.device], ''))
@@ -77,22 +77,30 @@ def make_mount_other_nodes(partition):
     return ParentNode(safe_mountpoint, children=[dvn, fstype, opts])
 
 def make_if_nodes(if_name):
-    bytes_sent = RunnableNode('bytes_sent', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_sent, 'B'))
-    bytes_recv = RunnableNode('bytes_recv', method=lambda: (ps.net_io_counters(pernic=True)[if_name].bytes_recv, 'B'))
-    packets_sent = RunnableNode('packets_sent',
-                                method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_sent, 'packets'))
-    packets_recv = RunnableNode('packets_recv',
-                                method=lambda: (ps.net_io_counters(pernic=True)[if_name].packets_recv, 'packets'))
-    errin = RunnableNode('errin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errin, 'errors'))
-    errout = RunnableNode('errout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].errout, 'errors'))
-    dropin = RunnableNode('dropin', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropin, 'packets'))
-    dropout = RunnableNode('dropout', method=lambda: (ps.net_io_counters(pernic=True)[if_name].dropout, 'packets'))
-    return ParentNode(if_name, children=[bytes_sent, bytes_recv, packets_sent,
-                      packets_recv, errin, errout, dropin, dropout])
+    x = ps.net_io_counters(pernic=True)
+
+    bytes_sent = RunnableNode('bytes_sent', method=lambda: (x[if_name].bytes_sent, 'B'))
+    bytes_recv = RunnableNode('bytes_recv', method=lambda: (x[if_name].bytes_recv, 'B'))
+    packets_sent = RunnableNode('packets_sent', method=lambda: (x[if_name].packets_sent, 'packets'))
+    packets_recv = RunnableNode('packets_recv', method=lambda: (x[if_name].packets_recv, 'packets'))
+    errin = RunnableNode('errin', method=lambda: (x[if_name].errin, 'errors'))
+    errout = RunnableNode('errout', method=lambda: (x[if_name].errout, 'errors'))
+    dropin = RunnableNode('dropin', method=lambda: (x[if_name].dropin, 'packets'))
+    dropout = RunnableNode('dropout', method=lambda: (x[if_name].dropout, 'packets'))
+
+    # Temporary fix for Windows (latin-1 should catch most things)
+    name = if_name
+    if environment.SYSTEM == "Windows":
+        name = unicode(if_name, "latin-1", errors="replace")
+
+    return RunnableParentNode(name, primary='bytes_sent', children=[bytes_sent, bytes_recv, packets_sent,
+                              packets_recv, errin, errout, dropin, dropout])
 
 
 def get_timezone():
     zones = time.tzname
+    if environment.SYSTEM == "Windows":
+        zones = [unicode(x, "latin-1", errors="replace") for x in zones]
     return zones, ''
 
 
@@ -113,7 +121,7 @@ def get_system_node():
 
 def get_cpu_node():
     cpu_count = RunnableNode('count', method=lambda: ([len(ps.cpu_percent(percpu=True))], 'cores'))
-    cpu_percent = LazyNode('percent', method=lambda: (ps.cpu_percent(interval=1, percpu=True), '%'))
+    cpu_percent = LazyNode('percent', method=lambda: (ps.cpu_percent(interval=0.5, percpu=True), '%'))
     cpu_user = RunnableNode('user', method=lambda: ([x.user for x in ps.cpu_times(percpu=True)], 'ms'))
     cpu_system = RunnableNode('system', method=lambda: ([x.system for x in ps.cpu_times(percpu=True)], 'ms'))
     cpu_idle = RunnableNode('idle', method=lambda: ([x.idle for x in ps.cpu_times(percpu=True)], 'ms'))
@@ -126,7 +134,7 @@ def get_memory_node():
     mem_virt_percent = RunnableNode('percent', method=lambda: (ps.virtual_memory().percent, '%'))
     mem_virt_used = RunnableNode('used', method=lambda: (ps.virtual_memory().used, 'B'))
     mem_virt_free = RunnableNode('free', method=lambda: (ps.virtual_memory().free, 'B'))
-    mem_virt = RunnableParentNode('virtual', primary='percent',
+    mem_virt = RunnableParentNode('virtual', primary='percent', primary_unit='%',
                     children=(mem_virt_total, mem_virt_available, mem_virt_free,
                               mem_virt_percent, mem_virt_used),
                     custom_output='Used memory was')
@@ -134,24 +142,49 @@ def get_memory_node():
     mem_swap_percent = RunnableNode('percent', method=lambda: (ps.swap_memory().percent, '%'))
     mem_swap_used = RunnableNode('used', method=lambda: (ps.swap_memory().used, 'B'))
     mem_swap_free = RunnableNode('free', method=lambda: (ps.swap_memory().free, 'B'))
-    mem_swap = RunnableParentNode('swap', primary='percent',
+    mem_swap = RunnableParentNode('swap', primary='percent', primary_unit='%',
                     children=[mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used],
                     custom_output='Used swap was')
     return ParentNode('memory', children=[mem_virt, mem_swap])
 
 
-def get_disk_node():
-    disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
+def get_disk_node(config=False):
+    exclude_fs_types = []
+
+    try:
+        disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
+    except IOError as ex:
+        logging.exception(ex)
+        disk_counters = []
+
+    # Get exclude values from the config if it exists
+    # otherwise use the defaults
+    if config:
+        try:
+            exclude_fs_types = config.get('general', 'exclude_fs_types')
+        except Exception as e:
+            exclude_fs_types = "aufs,autofs,binfmt_misc,cifs,cgroup,debugfs,devpts,devtmpfs,"\
+                               "encryptfs,efivarfs,fuse,hugelbtfs,mqueue,nfs,overlayfs,proc,"\
+                               "pstore,rpc_pipefs,securityfs,smb,sysfs,tmpfs,tracefs,xenfs"
+        exclude_fs_types = [x.strip() for x in exclude_fs_types.split(',')]
 
     disk_mountpoints = []
     disk_parts = []
-    for x in ps.disk_partitions(all=True):
-        if os.path.isdir(x.mountpoint):
-            tmp = make_mountpoint_nodes(x)
-            disk_mountpoints.append(tmp)
-        else:
-            tmp = make_mount_other_nodes(x)
-            disk_parts.append(tmp)
+    try:
+        for x in ps.disk_partitions(all=True):
+            fstype = x.fstype.split('.')[0] # to check against fuse.<type> etc
+            if fstype not in exclude_fs_types:
+                if os.path.isdir(x.mountpoint):
+                    try:
+                        tmp = make_mountpoint_nodes(x)
+                        disk_mountpoints.append(tmp)
+                    except OSError as ex:
+                        logging.exception(ex)
+                else:
+                    tmp = make_mount_other_nodes(x)
+                    disk_parts.append(tmp)
+    except IOError as ex:
+        logging.exception(ex)
 
     disk_logical = ParentNode('logical', children=disk_mountpoints)
     disk_physical = ParentNode('physical', children=disk_counters)
@@ -175,10 +208,10 @@ def get_user_node():
     return ParentNode('user', children=[user_count, user_list])
 
 
-def get_root_node():
+def get_root_node(config=False):
     cpu = get_cpu_node()
     memory = get_memory_node()
-    disk = get_disk_node()
+    disk = get_disk_node(config)
     interface = get_interface_node()
     plugins = get_plugins_node()
     user = get_user_node()
@@ -216,21 +249,22 @@ def refresh():
     return True
 
 
-def getter(accessor, config, full_path, cache=False):
+def getter(accessor, config, full_path, args, cache=False):
     global root
 
     # Sanity check. If accessor is None, we can do nothing meaningfully, and we need to stop.
     if accessor is None:
         return
-    path = [re.sub('%2f', '/', x, flags=re.I) for x in accessor.split('/') if x]
-    if len(path) > 0 and path[0] == 'api':
-        path = path[1:]
+
+    # Split the accessor path on / (but not if they are inside " or ')
+    pattern = re.compile(r'''((?:[^/"']|"[^"]*"|'[^']*')+)''')
+    path = pattern.split(accessor)[1::2]
 
     # Check if this should be a cached query or if we should reset the root
     # node. This normally only happens on new API calls. When we are using
     # websockets we use the cached version while it makes requests.
     if not cache:
-        root = get_root_node()
+        root = get_root_node(config)
 
     root.reset_valid_nodes()
-    return root.accessor(path, config, full_path)
+    return root.accessor(path, config, full_path, args)

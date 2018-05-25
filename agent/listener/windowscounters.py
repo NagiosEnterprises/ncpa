@@ -9,7 +9,7 @@ import re
 
 class WindowsCountersNode(listener.nodes.LazyNode):
 
-    def accessor(self, path, config, full_path):
+    def accessor(self, path, config, full_path, args):
         new_node = copy.deepcopy(self)
         new_node.path = path
         new_node.config = config
@@ -58,8 +58,9 @@ class WindowsCountersNode(listener.nodes.LazyNode):
             counter = win32pdh.AddCounter(query, counter_path)
             try:
                 win32pdh.CollectQueryData(query)
-                time.sleep(sleep)
-                win32pdh.CollectQueryData(query)
+                if sleep != 0:
+                    time.sleep(sleep)
+                    win32pdh.CollectQueryData(query)
                 _, _, _, _, _, _, _, info, _ = win32pdh.GetCounterInfo(counter, False)
                 _, value = win32pdh.GetFormattedCounterValue(counter, win32pdh.PDH_FMT_DOUBLE)
             finally:

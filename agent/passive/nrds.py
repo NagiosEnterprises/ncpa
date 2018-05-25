@@ -1,7 +1,8 @@
 from __future__ import with_statement
 import sys
 import xml.etree.ElementTree as ET
-from passive.nagioshandler import NagiosHandler
+import listener.server
+import nagioshandler
 import passive.utils
 import tempfile
 import re
@@ -10,7 +11,7 @@ import os
 import configparser as cp
 
 
-class Handler(NagiosHandler):
+class Handler(nagioshandler.NagiosHandler):
     """
     Class for handling the passive NRDS component.
     """
@@ -104,7 +105,7 @@ class Handler(NagiosHandler):
                 if not test_config.sections():
                     raise Exception('Config contained no NCPA directives, not writing.')
         except Exception as exc:
-            logging.error("NRDS config recieved from the server contained errors: %r", exc)
+            logging.error("NRDS config received from the server contained errors: %r", exc)
             return False
 
         if nrds_response:
