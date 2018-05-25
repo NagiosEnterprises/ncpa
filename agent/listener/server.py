@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response
+from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response, abort
 import logging
 import urllib.parse
 import os
@@ -17,6 +17,7 @@ import listener.psapi as psapi
 import listener.processes as processes
 import listener.database as database
 import math
+import ipaddress
 
 
 __VERSION__ = '3.0.0'
@@ -96,6 +97,20 @@ def make_info_dict():
 # ------------------------------
 # Authentication Wrappers
 # ------------------------------
+
+
+@listener.before_request
+def before_request():
+    allowed_hosts = get_config_value('listener', 'allowed_hosts')
+    if allowed_hosts:
+        if request.remote_addr:
+            ipaddr = ipaddress.ip_address(unicode(request.remote_addr))
+            allowed_networks = [ipaddress.ip_network(unicode(_network.strip())) for _network in allowed_hosts.split(',')]
+            allowed = [ipaddr in _network for _network in allowed_networks]
+            if True not in allowed:
+                abort(403)
+        else:
+            abort(403)
 
 
 # Variable injection for all pages that flask creates
@@ -234,7 +249,7 @@ def login():
 
     session['message'] = None
 
-    # Do actual athentication check
+    # Do actual authentication check
     if token == ncpa_token and not admin_auth_only:
         session['logged'] = True
     elif token == admin_password and admin_password is not None:
@@ -268,7 +283,7 @@ def admin_login():
 
     # Verify authentication and redirect if we are authenticated
     if session.get('admin_logged', False):
-        return redirect(url_for('admin_config'))
+        return redirect(url_for('admin'))
 
     # Admin password
     admin_password = get_config_value('listener', 'admin_password', None)
@@ -282,7 +297,7 @@ def admin_login():
 
     if password == admin_password and admin_password is not None:
         session['admin_logged'] = True
-        return redirect(url_for('admin_config'))
+        return redirect(url_for('admin'))
     elif password is not None:
         template_args['error'] = 'Password was invalid.'
 
@@ -307,14 +322,6 @@ def error_page_not_found(e):
     if not session.get('logged', False):
         template_args = { 'hide_page_links': True }
     return render_template('errors/404.html', **template_args), 404
-
-
-@listener.errorhandler(403)
-def error_page_not_found(e):
-    template_args = {}
-    if not session.get('logged', False):
-        template_args = { 'hide_page_links': True }
-    return render_template('errors/403.html', **template_args), 403
 
 
 @listener.errorhandler(500)
@@ -357,6 +364,7 @@ def checks():
     search = request.values.get('search', '')
     size = int(request.values.get('size', 20))
     page = int(request.values.get('page', 1))
+    ctype = request.values.get('ctype', '')
     page_raw = page
 
     status = request.values.get('status', '')
@@ -368,11 +376,12 @@ def checks():
     # Add data values for page
     data['check_senders'] = check_senders
     data['search'] = search
-    data['checks'] = db.get_checks(search, size, page, status=status, senders=check_senders)
+    data['checks'] = db.get_checks(search, size, page, status=status, ctype=ctype, senders=check_senders)
     data['size'] = size
     data['page'] = format(page, ",d")
     data['page_raw'] = page_raw
     data['status'] = status
+    data['ctype'] = ctype
 
     # Do some page math magic
     total = db.get_checks_count(search, status=status, senders=check_senders)
@@ -391,6 +400,8 @@ def checks():
         link_vals += '&size=' + str(size)
     if status != '':
         link_vals += '&status=' + str(status)
+    if ctype != '':
+        link_vals += '&ctype=' + str(status)
     if search != '':
         link_vals += '&search=' + str(search)
     if len(check_senders) > 0:
@@ -482,14 +493,6 @@ def admin():
     tmp_args = {}
     tmp_args['config'] = listener.config['iconfig']
     return render_template('admin/index.html', **tmp_args)
-
-
-@listener.route('/gui/admin/config', methods=['GET', 'POST'])
-@requires_admin_auth
-def admin_config():
-    tmp_args = {}
-    tmp_args['config'] = listener.config['iconfig']
-    return render_template('admin/config.html', **tmp_args)
 
 
 @listener.route('/gui/admin/global', methods=['GET', 'POST'])
@@ -614,7 +617,7 @@ def admin_clear_check_log():
 # ------------------------------
 
 
-@listener.route('/ws/api/<path:accessor>', methods=['GET', 'POST'])
+@listener.route('/ws/api/<path:accessor>')
 @requires_token_or_auth
 def api_websocket(accessor=None):
     """Meant for use with the websocket and API.
@@ -627,6 +630,10 @@ def api_websocket(accessor=None):
     sane_args = dict(request.args)
     sane_args['accessor'] = accessor
 
+    encoding = sys.stdin.encoding
+    if encoding is None:
+        encoding = sys.getdefaultencoding()
+
     # Refresh the root node before creating the websocket
     psapi.refresh()
 
@@ -636,10 +643,10 @@ def api_websocket(accessor=None):
         while True:
             try:
                 message = ws.receive()
-                node = psapi.getter(message, config, request.path, cache=True)
+                node = psapi.getter(message, config, request.path, request.args)
                 prop = node.name
                 val = node.walk(first=True, **sane_args)
-                jval = json.dumps(val[prop])
+                jval = json.dumps(val[prop], encoding=encoding)
                 ws.send(jval)
             except Exception as e:
                 # Socket was probably closed by the browser changing pages
@@ -652,6 +659,11 @@ def api_websocket(accessor=None):
 @listener.route('/ws/top')
 @requires_token_or_auth
 def top_websocket():
+
+    encoding = sys.stdin.encoding
+    if encoding is None:
+        encoding = sys.getdefaultencoding()
+
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
         while True:
@@ -668,7 +680,10 @@ def top_websocket():
                     continue
                 process_list.append(process)
 
-            json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
+            
+            json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list},
+                                  encoding=encoding)
+
             try:
                 ws.send(json_val)
                 gevent.sleep(1)
@@ -683,6 +698,11 @@ def top_websocket():
 @listener.route('/ws/tail')
 @requires_token_or_auth
 def tail_websocket():
+
+    encoding = sys.stdin.encoding
+    if encoding is None:
+        encoding = sys.getdefaultencoding()
+
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
         last_ts = datetime.datetime.now()
@@ -691,7 +711,7 @@ def tail_websocket():
                 last_ts, logs = listener.tail_method(last_ts=last_ts, **request.args)
 
                 if logs:
-                    json_log = json.dumps(logs)
+                    json_log = json.dumps(logs, encoding=encoding)
                     ws.send(json_log)
 
                 gevent.sleep(5)
@@ -707,7 +727,7 @@ def tail_websocket():
 # ------------------------------
 
 
-@listener.route('/top', methods=['GET', 'POST'])
+@listener.route('/top')
 @requires_auth
 def top():
     display = request.values.get('display', 0)
@@ -739,7 +759,7 @@ def top():
     return render_template('top.html', **info)
 
 
-@listener.route('/tail', methods=['GET', 'POST'])
+@listener.route('/tail')
 @requires_token_or_auth
 def tail(accessor=None):
     info = { }
@@ -766,7 +786,7 @@ def graph(accessor=None):
     # Refresh the root node before creating the websocket
     psapi.refresh()
 
-    node = psapi.getter(accessor, listener.config['iconfig'], request.path, cache=True)
+    node = psapi.getter(accessor, listener.config['iconfig'], request.path, request.args, cache=True)
     prop = node.name
 
     if request.values.get('delta'):
@@ -866,53 +886,25 @@ def api(accessor=''):
     for value in request.values:
         sane_args[value] = request.args.getlist(value)
 
-    #
-    # As of version 2.0.0 there are now 3 different paths that are backwards
-    # compatible using this section. After looking into it further the location
-    # of this should be around here. Changing the incoming request is the only
-    # way to make something happen without updating the way the API looks/returns.
-    # You can think of these as aliases. Below explains the aliases and when they
-    # will be removed. As of 2.0.0 they are deprecated. Will be removed in 2.1.0.
-    #
-    # Deprecated Aliases:
-    #
-    #   Aliases (up to 1.8.1)     || Location (2.0.0)
-    #   ---------------------------------------------------------------------
-    #   api/service/<servicename> -> api/services?service=<servicename>
-    #   api/process/<processname> -> api/processes?name=<processname>
-    #   api/agent/plugin/<plugin> -> api/plugins/<plugin>
-    #
-    path = [re.sub('%2f', '/', x, flags=re.I) for x in accessor.split('/') if x]
-    if len(path) > 0 and path[0] == 'api':
-        path = path[1:]
-    if len(path) > 0:
-        node_name, rest_path = path[0], path[1:]
-
-        if node_name == "service":
-            accessor = "services"
-            if len(rest_path) > 0:
-                sane_args['service'] = [rest_path[0]]
-                if len(rest_path) == 2:
-                    sane_args['status'] = [rest_path[1]]
-                    sane_args['check'] = True;
-        elif node_name == "process":
-            accessor = "processes"
-            if len(rest_path) > 0:
-                sane_args['name'] = [rest_path[0]]
-                if len(rest_path) == 2:
-                    if rest_path[1] == "count":
-                        sane_args['check'] = True
-        elif node_name == "agent":
-            accessor = "plugins"
-            if 'plugin' in rest_path[0] and len(rest_path) > 1:
-                accessor = "plugins/" + rest_path[1]
-
     # Set the full requested path
     full_path = request.path
 
+    # Set the accessor and variables
+    sane_args['debug'] = request.args.get('debug', False)
+    sane_args['remote_addr'] = request.remote_addr
+    sane_args['accessor'] = accessor
+
+    # Add config to sane_args
+    config = listener.config['iconfig']
+    sane_args['config'] = config
+
+    # Check if we are running a check or not
+    if not 'check' in sane_args:
+        sane_args['check'] = request.args.get('check', False)
+
+    # Try to get the node that was specified
     try:
-        config = listener.config['iconfig']
-        node = psapi.getter(accessor, config, full_path)
+        node = psapi.getter(accessor, config, full_path, request.args)
     except ValueError as exc:
         logging.exception(exc)
         return error(msg='Referencing node that does not exist: %s' % accessor)
@@ -920,13 +912,11 @@ def api(accessor=''):
         # Hide the actual exception and just show nice output to users about changes in the API functionality
         return error(msg='Could not access location specified. Changes to API calls were made in NCPA v1.7, check documentation on making API calls.')
 
-    # Set the accessor and variables
-    sane_args['remote_addr'] = request.remote_addr
-    sane_args['accessor'] = accessor
-    sane_args['config'] = config
-
-    if not 'check' in sane_args:
-        sane_args['check'] = request.args.get('check', False);
+    # Check for default unit in the config values
+    default_units = get_config_value('general', 'default_units')
+    if default_units:
+        if not 'units' in sane_args:
+            sane_args['units'] = default_units
 
     if sane_args['check']:
         value = node.run_check(**sane_args)

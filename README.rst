@@ -1,6 +1,9 @@
 NCPA
 ====
 
+.. image:: https://travis-ci.org/NagiosEnterprises/ncpa.svg?branch=master
+    :target: https://travis-ci.org/NagiosEnterprises/ncpa
+
 The *Nagios Cross-Platform Agent*; a single monitoring agent that installs on all major operating systems. NCPA allows both active checks via check_ncpa.py and passive checks via NRDP. NCPA comes with a built-in web GUI, documentation, websocket graphing, and is secured with SSL by default.
 
 Downloads
@@ -8,26 +11,39 @@ Downloads
 
 Current versions:
 
-+---------+-------------+----------------------------------------------------------------------+
-| Current | **2.0.1**   | `Downloads <https://assets.nagios.com/downloads/ncpa/download.php>`_ |
-+---------+-------------+----------------------------------------------------------------------+
++---------+-------------+-------------------------------------------------------+
+| Current | **2.1.4**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
++---------+-------------+-------------------------------------------------------+
 
-`Older Versions <https://assets.nagios.com/downloads/ncpa/archived/>`_
+`Older Versions <https://www.nagios.org/ncpa/archive.php>`_
 
 We currently build for the following operating systems:
 
 - Windows (Vista+)
 - Mac OS X (10.7+)
-- CentOS / RHEL (5+)
-- Debian (7+)
-- Ubuntu (12+)
-- OpenSUSE (11+)
-- Oracle (6+)
+- CentOS / RHEL 6, 7¹
+- Debian 7, 8, 9¹
+- Ubuntu² 12, 14, 16
+- OpenSUSE 11, 12¹, 13¹, 42¹, Tumbleweed¹
+- SLES 11, 12¹
+- Oracle 6, 7¹
+- AIX 7
 
-Other systems we will build for soon:
+¹ Builds for 64-bit versions only (2.0.6+)
+² LTS are the only "supported" versions, although builds should work for non-LTS
 
-- SLES (11+)
+Older systems that have past support by NCPA:
+
+- CentOS / RHEL 5 using NCPA 2.0.6
+- Oracle 5 using NCPA 2.0.6
+- AIX 6 with NCPA 2.1.1
+
+Other systems we are working on builds for:
+
 - Fedora
+- Solaris
+
+If you're looking for builds for CentOS / RHEL / Oracle 5, you'll need to use NCPA 2.0.6, which you can find `in the archives <https://www.nagios.org/ncpa/archive.php>`_.
 
 If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here by creating a new GitHub issue.
 

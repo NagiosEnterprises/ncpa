@@ -43,7 +43,7 @@ $(document).ready(function() {
         ws_loc = get_ws_total();
         ws = new WebSocket(ws_loc);
 
-        // Set up what to do when websocket recieves data
+        // Set up what to do when websocket receives data
         ws.onmessage = function(d) {
             if ($('.tbl-message').length > 0) {
                 $('.tbl-message').remove();

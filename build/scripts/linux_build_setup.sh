@@ -12,7 +12,9 @@ PYTHONBIN="/usr/local/bin/python3.5"
 # --------------------------
 #  INSTALL PRE-REQS
 # --------------------------
-./linux_build_prereqs.sh
+if [ "$BUILDFROM" != "travis" ]; then
+	./linux_build_prereqs.sh
+fi
 
 # --------------------------
 #  INSTALL RESOURCES
@@ -20,21 +22,28 @@ PYTHONBIN="/usr/local/bin/python3.5"
 
 cd $DIR/../resources
 
-# Install Python
-tar xf $PYTHONTAR.tgz
-cd $PYTHONTAR && ./configure --with-zlib=/usr/include --enable-shared && make && make altinstall
-echo '/usr/local/lib' >> /etc/ld.so.conf 
-/sbin/ldconfig
+# Install bundled Python version from source if needed
+if [ "$BUILDFROM" != "travis" ]; then
+	tar xf $PYTHONTAR.tgz
+	cd $PYTHONTAR && ./configure --with-zlib=/usr/include --enable-shared && make && make altinstall
+	echo '/usr/local/lib' >> /etc/ld.so.conf 
+	/sbin/ldconfig
+	cd ..
+else
+	PYTHONVER="python"
+	PYTHONBIN="python"
+fi
 
 # Clean up resource directory
-cd ..
 rm -rf $PYTHONTAR
 
 # --------------------------
 #  INSTALL PIP
 # --------------------------
 
-cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
+if [ "$BUILDFROM" != "travis" ]; then
+	cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
+fi
 
 # --------------------------
 #  INSTALL PIP COMPONENTS
@@ -47,5 +56,12 @@ $DIR/update_python_packages.sh
 # --------------------------
 
 # Add users if they don't exist
-useradd nagios
-groupadd nagios
+if [ "$BUILDFROM" != "travis" ]; then
+	useradd nagios
+	groupadd nagios
+	usermod -g nagios nagios
+else
+	sudo useradd nagios
+	sudo groupadd nagios
+	sudo usermod -g nagios nagios
+fi

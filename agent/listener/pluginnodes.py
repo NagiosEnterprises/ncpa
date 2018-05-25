@@ -28,8 +28,19 @@ class PluginNode(nodes.RunnableNode):
         self.plugin_abs_path = plugin_abs_path
         self.arguments = []
 
-    def accessor(self, path, config, full_path):
-        self.arguments = path
+    def accessor(self, path, config, full_path, args):
+
+        # Get raw args value(s) and check if we need to add them
+        raw_args = args.getlist('args')
+        if len(raw_args) > 0:
+            self.arguments += raw_args
+
+        # Add arguments that may have been passed with the path
+        # THIS IS TO KEEP OLD VERSION < 2.1 FUNCTIONALITY
+        #  ** this will be deprecated in NCPA 3 ***
+        if len(path) > 0:
+            self.arguments += path
+
         return copy.deepcopy(self)
 
     def walk(self, config, **kwargs):
@@ -61,10 +72,6 @@ class PluginNode(nodes.RunnableNode):
         # Get any special instructions from the config for executing the plugin
         instructions = self.get_plugin_instructions(config)
 
-        # Get user and group from config file
-        #user_uid = config.get('listener', 'uid', 'nagios')
-        #user_gid = config.get('listener', 'gid', 'nagios')
-
         # Get plugin command timeout value, if it exists
         try:
             timeout = int(config.get('plugin directives', 'plugin_timeout'))
@@ -77,8 +84,16 @@ class PluginNode(nodes.RunnableNode):
         except Exception as e:
             check_logging = 1
 
+        # Create a list of plugin names that should be ran as sudo
+        sudo_plugins = []
+        try:
+            run_with_sudo = config.get('plugin directives', 'run_with_sudo')
+            sudo_plugins = [x.strip() for x in run_with_sudo.split(',')]
+        except Exception as e:
+            pass
+
         # Make our command line
-        cmd = self.get_cmdline(instructions)
+        cmd = self.get_cmdline(instructions, sudo_plugins)
         logging.debug('Running process with command line: `%s`', ' '.join(cmd))
 
         # Run a command and wait for return
@@ -104,42 +119,18 @@ class PluginNode(nodes.RunnableNode):
 
         if not listener.server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
-            dbc = db.get_cursor()
-            data = (kwargs['accessor'].rstrip('/'), run_time_start, run_time_end, returncode,
-                    cleaned_stdout, kwargs['remote_addr'], 'Active')
-            dbc.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
-            db.commit()
+            db.add_check(kwargs['accessor'].rstrip('/'), run_time_start, run_time_end, returncode,
+                         cleaned_stdout, kwargs['remote_addr'], 'Active')
 
-        return {'returncode': returncode, 'stdout': cleaned_stdout}
+        output = { 'returncode': returncode, 'stdout': cleaned_stdout }
 
-    @staticmethod
-    def demote(user_uid, user_gid):
-        def result():
+        # If debug=1 or true then show the command we ran
+        if kwargs['debug']:
+            output['cmd'] = ' '.join(cmd)
 
-            # Grab the uid if it's not specifically defined
-            uid = user_uid
-            if not isinstance(user_uid, int):
-                if not user_uid.isdigit():
-                    u = pwd.getpwnam(user_uid)
-                    uid = u.pw_uid
-                else:
-                    uid = int(user_uid)
+        return output
 
-            # Grab the gid if not specifically defined
-            gid = user_gid
-            if not isinstance(user_gid, int):
-                if not user_gid.isdigit():
-                    g = grp.getgrnam(user_gid)
-                    gid = g.gr_gid
-                else:
-                    gid = int(user_gid)
-
-            # Set the actual uid and gid
-            os.setgid(gid)
-            os.setuid(uid)
-        return result
-
-    def get_cmdline(self, instruction):
+    def get_cmdline(self, instruction, sudo_plugins):
         """Execute with special instructions.
 
         EXAMPLE instruction (Powershell):
@@ -150,18 +141,31 @@ class PluginNode(nodes.RunnableNode):
 
         """
         command = []
+
+        # Add sudo for commands that need to run as sudo
+        if os.name == 'posix':
+            if self.name in sudo_plugins:
+                command.append('sudo')
+
+        # Set shlex to use posix mode on posix machines (so that we can pass something like
+        # --metric='disk/logical/|' and have it properly format quotes)
+        mode = False
+        if os.name == 'posix':
+            mode = True
         
-        lexer = shlex.shlex(instruction)
+        lexer = shlex.shlex(instruction, posix=mode)
         lexer.whitespace_split = True
-        
+
         for x in lexer:
             if '$plugin_name' in x:
                 replaced = x.replace('$plugin_name', self.plugin_abs_path)
                 command.append(replaced)
             elif '$plugin_args' == x:
                 if self.arguments:
-                    for y in self.arguments:
-                        command.append(y)
+                    args = shlex.shlex(' '.join(self.arguments), posix=mode)
+                    args.whitespace_split = True
+                    for a in args:
+                        command.append(a)
             else:
                 command.append(x)
         return command
@@ -188,10 +192,12 @@ class PluginAgentNode(nodes.ParentNode):
             logging.warning('Unable to access directory %s', plugin_path)
             logging.warning('Unable to assemble plugins. Does the directory exist? - %r', exc)
 
-    def accessor(self, path, config, full_path):
+    def accessor(self, path, config, full_path, args):
         self.setup_plugin_children(config)
-        return super(PluginAgentNode, self).accessor(path, config, full_path)
+        return super(PluginAgentNode, self).accessor(path, config, full_path, args)
 
     def walk(self, *args, **kwargs):
         self.setup_plugin_children(kwargs['config'])
-        return { self.name: list(self.children.keys()) }
+        plugins = list(self.children.keys())
+        plugins.sort()
+        return { self.name: plugins }

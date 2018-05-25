@@ -76,8 +76,22 @@ class Listener(Base):
             pass
 
         try:
-            address = self.config.get('listener', 'ip')
-            port = self.config.getint('listener', 'port')
+            try:
+                address = self.config.get('listener', 'ip')
+            except Exception:
+                self.config.set('listener', 'ip', '0.0.0.0')
+                address = '0.0.0.0'
+
+            try:
+                port = self.config.getint('listener', 'port')
+            except Exception:
+                self.config.set('listener', 'port', 5693)
+                port = 5693
+
+            try:
+                ssl_str_ciphers = self.config_parser.get('listener', 'ssl_ciphers')
+            except Exception:
+                ssl_str_ciphers = None
 
             if __SYSTEM__ == 'nt':
                 listener.server.listener.tail_method = listener.windowslogs.tail_method
@@ -105,6 +119,10 @@ class Listener(Base):
                 'keyfile': key,
                 'ssl_version': ssl_version
             }
+
+            # Add SSL cipher list if one is given
+            if ssl_str_ciphers:
+                ssl_context['ciphers'] = ssl_str_ciphers
 
             listener.server.listener.secret_key = os.urandom(24)
             http_server = WSGIServer(listener=(address, port),
@@ -462,19 +480,19 @@ class Daemon():
         if self.pidfile and os.path.exists(self.pidfile):
             os.remove(self.pidfile)
 
-    def get_uid_gid(self, cp, section):
+    def get_uid_gid(cp, section):
         user_uid = cp.get(section, 'uid')
         user_gid = cp.get(section, 'gid')
 
-        uid = user_uid
         if not isinstance(user_uid, int):
             if not user_uid.isdigit():
+                username = user_uid
                 u = pwd.getpwnam(user_uid)
                 uid = u.pw_uid
             else:
                 uid = int(user_uid)
+                username = pwd.getpwuid(user_uid).pw_name
 
-        gid = user_gid
         if not isinstance(user_gid, int):
             if not user_gid.isdigit():
                 g = grp.getgrnam(user_gid)
@@ -482,7 +500,7 @@ class Daemon():
             else:
                 gid = int(user_gid)
 
-        return uid, gid
+        return uid, gid, username
 
     def daemonize(self):
         """Detach from the terminal and continue as a daemon"""

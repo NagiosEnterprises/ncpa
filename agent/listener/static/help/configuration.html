@@ -48,7 +48,7 @@
                 <a name="config-option-reference"></a>
                 <div class="section">
                     <h2>Config Option Reference</h2>
-                    <p>Below is a list of all available options for the configuration file. The configuration is a standard INI-style config using the <code>name = value</code> notation. However, note that the config file is sectioned off by the square brackets. These different sections affect different portions of NCPA's operation. Each section is seperately listed below.</p>
+                    <p>Below is a list of all available options for the configuration file. The configuration is a standard INI-style config using the <code>name = value</code> notation. However, note that the config file is sectioned off by the square brackets. These different sections affect different portions of NCPA's operation. Each section is separately listed below.</p>
                     <p>
                         <div class="alert alert-info">
                             <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note</b>: You might notice that there appears to be duplicate entries. For instance, both <a href="#listener">[listener]</a> and <a href="#passive">[passive]</a> sections have a specification for <code>logfile</code>. Since these are two separate services, they maintain separate log files and each sections log related options only apply to that service's log files. Many other options follow similar logic.
@@ -82,6 +82,18 @@
                                 <th>check_logging_time</th>
                                 <td>30</td>
                                 <td>The amount of time to retain log data for, if you have logging enabled. THe value is in days. The default is 30 days.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>exclude_fs_types</th>
+                                <td>aufs, autofs, binfmt_misc, cifs, cgroup, configfs, debugfs, devpts, devtmpfs, encryptfs efivarfs, fuse, fusectl, hugetlbfs, mqueue, nfs, overlayfs, proc, pstore, rpc_pipefs, securityfs, selinuxfs, smb, sysfs, tmpfs, tracefs</td>
+                                <td>A comma separated list of file system types to remove from the <code>disk</code> endpoint.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>default_units</th>
+                                <td>Gi</td>
+                                <td>Sets the default value of the units parameter that can be sent to convert bytes (B) into more readable versions such as GB or GiB. If this value is set and no <code>units</code> is given in the check or call, it will set <code>units</code> to this value.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -135,12 +147,28 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td></td>
+                                <th>ssl_ciphers</th>
+                                <td></td>
+                                <td>
+                                    Set the list of accepted SSL ciphers. List should be separated with colons (<code>:</code>).
+                                    <br>
+                                    Example: <code>AES256-GCM-SHA384:AES256-SHA256:AES256-SHA:CAMELLIA256-SHA</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>ssl_ciphers</th>
+                                <td></td>
+                                <td>A list of SSL ciphers to allow using the format <code>&lt;cipher&gt;:&lt;cipher&gt;:&lt;cipher&gt;</code></td>
+                            </tr>
+                            <tr>
                                 <td><i class="fa fa-asterisk"></i></td>
                                 <th>certificate</th>
                                 <td>adhoc</td>
                                 <td>
                                     Allows you to specify the file name for the SSL certificate you wish to use with the internal HTTPS server. If using <em>adhoc</em> - a new self-signed certificate will be generated and used for the server. The default cert is located in the main install directory at <code>/usr/local/ncpa/ncpa.crt</code> on install.
-                                    <div><b>Options:</b> <em>adhoc</em> or <em>&lt;path to certificate&gt;</em></div>
+                                    <div><b>Options:</b> <em>adhoc</em> or <em>&lt;path to certificate&gt;,&lt;path to key&gt;</em></div>
                                 </td>
                             </tr>
                             <tr>
@@ -183,7 +211,7 @@
                                 <td></td>
                                 <th>admin_password</th>
                                 <td>None</td>
-                                <td>If the admin panel is available by having <code>admin_gui_access = 1</code>, this option is used for adding extra authentication. Leaving this as <em>None</em> will cause it to automatically allow access to the admin seciton once authenticated into the GUI. If it's set to any other value, it will require that password when trying to access the Admin section. This password is also used as a way to authenticate GUI access if <code>admin_auth_only = 1</code>.</td>
+                                <td>If the admin panel is available by having <code>admin_gui_access = 1</code>, this option is used for adding extra authentication. Leaving this as <em>None</em> will cause it to automatically allow access to the admin section once authenticated into the GUI. If it's set to any other value, it will require that password when trying to access the Admin section. This password is also used as a way to authenticate GUI access if <code>admin_auth_only = 1</code>.</td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -307,7 +335,7 @@
 
                 <div class="section" id="nrdp">
                     <h3>[nrdp]</h3>
-                    <p>The value <em>nrdp</em> must be present in the <a href="#passive">[passive]</a> <code>handlers</code> option for the <em>NCPA Passive</em> service to run the checks and send the results to the specified NRDP server. While this section is optional, you must set all configuratoion options in order for the service to send the passive checks to NRDP.</p>
+                    <p>The value <em>nrdp</em> must be present in the <a href="#passive">[passive]</a> <code>handlers</code> option for the <em>NCPA Passive</em> service to run the checks and send the results to the specified NRDP server. While this section is optional, you must set all configuration options in order for the service to send the passive checks to NRDP.</p>
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -322,19 +350,60 @@
                                 <td></td>
                                 <th>parent</th>
                                 <td></td>
-                                <td>The Nagios server's NRDP URL to which the passive check results should be sent. The reason for the option name of <code>parent</code> is because you can use NCPA as an <a href="other.html#nrdp-forwarder">NRDP forwarder</a> for those who have restrictive firewall configurations.</td>
+                                <td>The Nagios server's NRDP URL to which the passive check results should be sent. The reason for the option name of <code>parent</code> is because you can use NCPA as an <a href="other.html#nrdp-forwarder">NRDP forwarder</a> for those who have restrictive firewall configurations. Can also be a comma separated list.</td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <th>token</th>
                                 <td></td>
-                                <td>The token to use to send check results to the NRDP server URL specified in <code>parent</code>. This token is created on the NRDP server side.</td>
+                                <td>The token to use to send check results to the NRDP server URL specified in <code>parent</code>. This token is created on the NRDP server side. Can also be a comma separated list.</td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <th>hostname</th>
                                 <td>NCPA</td>
                                 <td>This is the value that will be used for the <code>%HOSTNAME%</code> macro in the <a href="#passive-checks">[passive checks]</a> configuration section.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section" id="kafka">
+                    <h3>[kafkaproducer]</h3>
+                    <p>The value <em>kafkaproducer</em> must be present in the <a href="#passive">[passive]</a> <code>handlers</code> option for the <em>NCPA Passive</em> service to run the checks and send the results to the specified Kafka receiver.</p>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 28px;"></th>
+                                <th style="width: 12%;">Option</th>
+                                <th style="width: 15%;">Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <th>hostname</th>
+                                <td>None</td>
+                                <td>The hostname, which may not need to be specified.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>servers</th>
+                                <td>localhost:9092</td>
+                                <td>A comma separated list of Kafka server(s) that will receive messages.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>clientname</th>
+                                <td>NCPA-Kafka</td>
+                                <td>This represents what is giving the message to Kafka, this is just a standard client name.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>topic</th>
+                                <td>ncpa</td>
+                                <td>The topic slug to send in with the check data.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -410,13 +479,19 @@
                                 <td>.sh = /bin/sh $plugin_name $plugin_args</td>
                             </tr>
                             <tr>
+                                <td>.py = python $plugin_name $plugin_args</td>
+                            </tr>
+                            <tr>
                                 <td>.ps1 = powershell -ExecutionPolicy Bypass -File $plugin_name $plugin_args</td>
                             </tr>
                             <tr>
                                 <td>.vbs = cscript $plugin_name $plugin_args //NoLogo</td>
                             </tr>
                             <tr>
-                                <td>.py = python $plugin_name $plugin_args</td>
+                                <td>.wsf = cscript $plugin_name $plugin_args //NoLogo</td>
+                            </tr>
+                            <tr>
+                                <td>.bat = cmd /c $plugin_name $plugin_args</td>
                             </tr>
                         </tbody>
                     </table>
@@ -428,7 +503,7 @@
                     <p>This section, in NCPA 2, is typically in a separate file located in the <code>etc/ncpa.cfg.d</code> directory. You can view the <code>example.cfg</code> configuration to see how you can create these files. For information on the specifics of setting up passive checks, see the section on creating <a href="passive.html">Passive Checks</a>.</p>
                     <h6>Check Definitions</h6>
                     <p>Shown below is the basis for how to define a check. Typically hostname is set to %HOSTNAME%. Check interval is optional, and you can define a check without the last |. The servicename of __HOST__ is special, and refers to the host check - so the results of that check will appear as the specified host's check results.</p>
-                    <pre>&lt;hostname&gt;|&lt;servicename&gt;|&lt;check interaval in sec&gt; = &lt;api endpoint&gt; --warning &lt;value&gt; --critical &lt;value&gt; &lt;other options&gt;</pre>
+                    <pre>&lt;hostname&gt;|&lt;servicename&gt;|&lt;check interval in sec&gt; = &lt;api endpoint&gt; --warning &lt;value&gt; --critical &lt;value&gt; &lt;other options&gt;</pre>
                     <h6>Examples</h6>
                     <table class="table table-striped console">
                         <tbody>

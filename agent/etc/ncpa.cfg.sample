@@ -50,6 +50,20 @@ check_logging_time = 30
 #
 # delay_start = 30
 
+# Excluded file system types removes these fs types from the disk metrics
+# (This is mostly only noteable on UNIX systems but also works on Windows if you need it)
+# Default: aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,
+#          encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,
+#          rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs
+#
+exclude_fs_types = aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs
+
+#
+# The default unit to convert bytes (B) into if no unit is specified
+# (Gi = 1024 MiB, G = 1000 MB)
+#
+default_units = Gi
+
 #
 # -------------------------------
 # Listener Configuration (daemon)
@@ -61,7 +75,7 @@ check_logging_time = 30
 #
 # IP address and port number for the Listener to use for the web GUI and API
 # Default: ip = 0.0.0.0
-# Default: port = 5963
+# Default: port = 5693
 #
 ip = 0.0.0.0
 port = 5693
@@ -70,6 +84,8 @@ port = 5693
 # SSL connection and certificate config (if an SSL option is not available on some older
 # operating systems it will default back to TLSv1)
 # ssl_version options: TLSv1, TLSv1_1, TLSv1_2
+#
+# ssl_ciphers = <list of ciphers>
 #
 ssl_version = TLSv1_2
 certificate = adhoc
@@ -99,6 +115,13 @@ admin_password = None
 admin_auth_only = 0
 
 #
+# Comma separated list of allowed hosts that can access the API (and GUI)
+# Exmaple: 192.168.23.15
+# Example subnet: 192.168.0.0/28
+#
+# allowed_hosts =
+
+#
 # -------------------------------
 # Listener Configuration (API)
 # -------------------------------
@@ -124,12 +147,22 @@ community_string = mytoken
 # Handlers are a comma separated list of what you would like the passive agent to run
 # Default: None
 # Options:
-#   nrds, nrdp
+#   nrds, nrdp, kafkaproducer
 #
 # Example:
-# handlers = nrds,nrdp
+# handlers = nrds,nrdp,kafkaproducer
 #
 handlers = None
+
+#
+# User and group to run passive checks as (recommended to use nagios:nagios)
+# Default: uid = nagios
+# Default: gid = nagios
+#
+# This is for Unix only (Linux, Mac OS X, etc)
+#
+uid = nagios
+gid = nagios
 
 #
 # Passive check interval - the amount in seconds to wait between each passive check by default,
@@ -148,8 +181,8 @@ sleep = 300
 
 #
 # Connection settings to the NRDP server
-# token = NRDP server token used to send NRDP results
 # parent = NRDP server location (ex: http://<address>/nrdp)
+# token = NRDP server token used to send NRDP results
 #
 parent =
 token =
@@ -204,22 +237,40 @@ plugin_path = plugins/
 # plugin_timeout = 60
 
 #
+# Comma separated list of plugins to run through sudo. Note: You will need to update your sudoers
+# configuration for these plugins to work when called with sudo.
+#
+# Example: check_special,check_root_files
+# (Command line: sudo /<plugin_absolute_path>/check_special <arguments>)
+#
+# run_with_sudo =
+
+#
 # Extensions for plugins
 # ----------------------
 # The extension for the plugin denotes how NCPA will try to run the plugin. Use this
 # for setting how you want to run the plugin in the command line.
 #
+# NOTE: Plugins without an extension will be ran in the cmdline as follows:
+#       $plugin_name $plugin_args
+#
 # Defaults:
 # .sh = /bin/sh $plugin_name $plugin_args
+# .py = python $plugin_name $plugin_args
 # .ps1 = powershell -ExecutionPolicy Bypass -File $plugin_name $plugin_args
 # .vbs = cscript $plugin_name $plugin_args //NoLogo
-# .py = python $plugin_name $plugin_args
+# .bat = cmd /c $plugin_name $plugin_args
 #
 # Since windows NCPA is 32-bit, if you need to use 64-bit powershell, try the following for
 # the powershell plugin definition:
 # .ps1 = c:\windows\sysnative\windowspowershell\v1.0\powershell.exe -ExecutionPolicy Unrestricted -File $plugin_name $plugin_args
 #
+
+# Linux / Mac OS X
 .sh = /bin/sh $plugin_name $plugin_args
+.py = python $plugin_name $plugin_args
+
+# Windows
 .ps1 = powershell -ExecutionPolicy Bypass -File $plugin_name $plugin_args
 .vbs = cscript $plugin_name $plugin_args //NoLogo
-.py = python $plugin_name $plugin_args
+.bat = cmd /c $plugin_name $plugin_args

@@ -9,7 +9,7 @@ import re
 
 class WindowsCountersNode(listener.nodes.LazyNode):
 
-    def accessor(self, path, config, full_path):
+    def accessor(self, path, config, full_path, args):
         new_node = copy.deepcopy(self)
         new_node.path = path
         new_node.config = config
@@ -54,13 +54,19 @@ class WindowsCountersNode(listener.nodes.LazyNode):
             sleep = 0
 
         query = win32pdh.OpenQuery()
-        counter = win32pdh.AddCounter(query, counter_path)
-        win32pdh.CollectQueryData(query)
-        time.sleep(sleep)
-        win32pdh.CollectQueryData(query)
-        _, _, _, _, _, _, _, info, _ = win32pdh.GetCounterInfo(counter, False)
-        _, value = win32pdh.GetFormattedCounterValue(counter, win32pdh.PDH_FMT_DOUBLE)
-        win32pdh.CloseQuery(query)
+        try:
+            counter = win32pdh.AddCounter(query, counter_path)
+            try:
+                win32pdh.CollectQueryData(query)
+                if sleep != 0:
+                    time.sleep(sleep)
+                    win32pdh.CollectQueryData(query)
+                _, _, _, _, _, _, _, info, _ = win32pdh.GetCounterInfo(counter, False)
+                _, value = win32pdh.GetFormattedCounterValue(counter, win32pdh.PDH_FMT_DOUBLE)
+            finally:
+                win32pdh.RemoveCounter(counter)
+        finally:
+            win32pdh.CloseQuery(query)
 
         unit = info[-1]
 
@@ -72,7 +78,7 @@ class WindowsCountersNode(listener.nodes.LazyNode):
     @staticmethod
     def get_counter_path(path):
         counter_path = '\\'
-        if re.match(r'\b[sS]ec\b', path[-1]):
+        if re.match(r'.* sec', path[-2]) or re.match(r'\b[sS]ec\b', path[-1]):
             counter_path += '\\'.join(path[:-1])
             counter_path += '/' + path[-1]
         else:

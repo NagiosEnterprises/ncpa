@@ -11,7 +11,7 @@
 .SumoSelect.open .search-txt{display: inline-block;position: absolute;top: 0;left: 0;width: 100%;margin: 0;padding: 5px 8px;border: none;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box; }
 .SumoSelect.open>.search>span, .SumoSelect.open>.search>label{visibility:hidden;}
 
-/*this is applied on that hidden select. DO NOT USE display:none; or visiblity:hidden; and Do not override any of these properties. */
+/*this is applied on that hidden select. DO NOT USE display:none; or visibility:hidden; and Do not override any of these properties. */
 .SelectClass,.SumoUnder { position: absolute; top: 0; left: 0; right: 0; height: 100%; width: 100%; border: none; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"; filter: alpha(opacity=0); -moz-opacity: 0; -khtml-opacity: 0; opacity: 0; }
 .SelectClass{z-index: 1;}
 
