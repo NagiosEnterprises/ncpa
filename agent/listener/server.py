@@ -104,8 +104,8 @@ def before_request():
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
     if allowed_hosts:
         if request.remote_addr:
-            ipaddr = ipaddress.ip_address(unicode(request.remote_addr))
-            allowed_networks = [ipaddress.ip_network(unicode(_network.strip())) for _network in allowed_hosts.split(',')]
+            ipaddr = ipaddress.ip_address(request.remote_addr)
+            allowed_networks = [ipaddress.ip_network(_network.strip()) for _network in allowed_hosts.split(',')]
             allowed = [ipaddr in _network for _network in allowed_networks]
             if True not in allowed:
                 abort(403)

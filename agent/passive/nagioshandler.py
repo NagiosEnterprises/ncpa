@@ -1,7 +1,6 @@
 import logging
 import platform
 import passive.ncpacheck
-import ConfigParser
 
 
 class NagiosHandler(object):
@@ -17,7 +16,7 @@ class NagiosHandler(object):
     def __init__(self, config):
         """
         :param config: The config that will reaped for checks.
-        :type config: ConfigParser.ConfigParser
+        :type config: configparser.ConfigParser
         :rtype: None
         """
         self.config = config

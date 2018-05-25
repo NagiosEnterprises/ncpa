@@ -1,8 +1,7 @@
-from __future__ import with_statement
 import sys
 import xml.etree.ElementTree as ET
 import listener.server
-import nagioshandler
+import passive.nagioshandler
 import passive.utils
 import tempfile
 import re
@@ -11,7 +10,7 @@ import os
 import configparser as cp
 
 
-class Handler(nagioshandler.NagiosHandler):
+class Handler(passive.nagioshandler.NagiosHandler):
     """
     Class for handling the passive NRDS component.
     """

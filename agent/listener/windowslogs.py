@@ -242,7 +242,7 @@ def get_filter_dict(request_args):
         elif key == 'severity':
             fdict['EventType'] = [EVENT_TYPE.get(x, 'UNKNOWN') for x in value]
         elif key == 'logged_after':
-            if isinstance(value, (str, unicode)):
+            if isinstance(value, (str)):
                 logged_after = value
             else:
                 logged_after = value[0]

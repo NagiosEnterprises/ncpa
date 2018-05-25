@@ -1,10 +1,7 @@
-
-from __future__ import with_statement
-
 import logging
-import nagioshandler
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
+import passive.nagioshandler
 import listener.server
 import json
 
@@ -19,7 +16,7 @@ class KafkaTopicItem:
         self.output = ""
 
 
-class Handler(nagioshandler.NagiosHandler):
+class Handler(passive.nagioshandler.NagiosHandler):
     """
     Class for handling the passive KAFKA component.
     """
@@ -44,9 +41,9 @@ class Handler(nagioshandler.NagiosHandler):
         else:
             check_type = 'service'
         item = KafkaTopicItem()
-        item.hostname = unicode(check.hostname)
-        item.state = unicode(returncode)
-        item.output = unicode(stdout)
+        item.hostname = check.hostname
+        item.state = returncode
+        item.output = stdout
         item.check_type = check_type
         if not check_type == 'host':
             item.servicename = check.servicename;

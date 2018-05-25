@@ -9,7 +9,6 @@ import listener.server
 import listener.database as database
 import time
 import logging
-import Queue
 from stat import ST_MODE,S_IXUSR,S_IXGRP,S_IXOTH
 from threading import Timer
 

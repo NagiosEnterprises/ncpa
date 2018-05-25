@@ -28,14 +28,14 @@ class TestNCPACheck(unittest.TestCase):
         ncpa_check = passive.ncpacheck.NCPACheck(self.config, '/api/cpu/percent/', 'test_host', 'test_service', 300)
         stdout, returncode = ncpa_check.run()
 
-        self.assertIsInstance(stdout, unicode)
-        self.assertIsInstance(returncode, unicode)
+        self.assertIsInstance(stdout, str)
+        self.assertIsInstance(returncode, str)
 
         new_check = passive.ncpacheck.NCPACheck(self.config, '/invalid/check', 'test_host', 'test_service', 300)
         stdout, returncode = new_check.run()
 
-        self.assertIsInstance(stdout, unicode)
-        self.assertIsInstance(returncode, unicode)
+        self.assertIsInstance(stdout, str)
+        self.assertIsInstance(returncode, str)
 
     def test_run_check(self):
         api_url = '/api/cpu/percent/'

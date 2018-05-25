@@ -88,19 +88,14 @@ def make_if_nodes(if_name):
     dropin = RunnableNode('dropin', method=lambda: (x[if_name].dropin, 'packets'))
     dropout = RunnableNode('dropout', method=lambda: (x[if_name].dropout, 'packets'))
 
-    # Temporary fix for Windows (latin-1 should catch most things)
-    name = if_name
-    if environment.SYSTEM == "Windows":
-        name = unicode(if_name, "latin-1", errors="replace")
-
-    return RunnableParentNode(name, primary='bytes_sent', children=[bytes_sent, bytes_recv, packets_sent,
+    return RunnableParentNode(if_name, primary='bytes_sent', children=[bytes_sent, bytes_recv, packets_sent,
                               packets_recv, errin, errout, dropin, dropout])
 
 
 def get_timezone():
     zones = time.tzname
     if environment.SYSTEM == "Windows":
-        zones = [unicode(x, "latin-1", errors="replace") for x in zones]
+        zones = [x for x in zones]
     return zones, ''
 
 
