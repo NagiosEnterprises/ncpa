@@ -7,7 +7,7 @@ werkzeug
 docutils
 pyOpenSSL
 gevent
-karellen-geventws
+gevent-websocket
 cffi
 appdirs
 packaging

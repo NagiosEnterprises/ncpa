@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import threading
 import logging
@@ -7,18 +7,14 @@ import os
 import sys
 import time
 import datetime
-import ssl
 import tempfile
-import passive
-import passive.nrds
-import passive.nrdp
-import listener
-import listener.server
-import listener.psapi
-import listener.certificate as certificate
-import listener.database as database 
 import gevent.builtins
 from gevent import monkey
+
+# Monkey patch for gevent
+monkey.patch_all(subprocess=True, thread=False)
+
+import ssl
 from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
 from geventwebsocket.handler import WebSocketHandler
@@ -27,6 +23,15 @@ from argparse import ArgumentParser
 from io import open
 from configparser import ConfigParser
 
+# NCPA-specific module imports
+import passive
+import passive.nrds
+import passive.nrdp
+import listener
+import listener.server
+import listener.psapi
+import listener.certificate as certificate
+import listener.database as database 
 
 # Imports for different system types
 if os.name == 'posix':
@@ -34,9 +39,6 @@ if os.name == 'posix':
     import pwd
     import signal
     import errno
-
-
-monkey.patch_all(subprocess=True, thread=False)
 
 
 # Set some global variables for later
@@ -659,7 +661,7 @@ def main():
 
     # Add version argument
     parser.add_argument('-v', '--version', action='version',
-                        version='NCPA ' + __VERSION__)
+                        version=__VERSION__)
 
     # Get all options as a dict
     options = vars(parser.parse_args())
