@@ -345,7 +345,6 @@ Section # "Create Config.ini"
     ; Copy over everything we need for NCPA
     File /r .\NCPA\listener
     File /r .\NCPA\var
-    File /r .\NCPA\lib
     File .\NCPA\*.*
     CreateDirectory $INSTDIR\plugins
 

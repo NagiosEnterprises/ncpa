@@ -3,26 +3,22 @@
 import logging
 import os
 import ncpadaemon
-
-import gevent.builtins
-from gevent import monkey
-
-# Monkey patch for gevent
-monkey.patch_all(subprocess=True)
-
-import ssl
-from gevent.pywsgi import WSGIServer
-from gevent.pool import Pool
-from geventwebsocket.handler import WebSocketHandler
-
 import listener.server
 import filename
 import listener.certificate
+from gevent.pywsgi import WSGIServer
+from gevent.pool import Pool
+from geventwebsocket.handler import WebSocketHandler
 import listener.psapi
+import jinja2.ext  # Here for cx_Freeze import reasons, do not remove it
 import sys
-
+import ssl
 if 'threading' in sys.modules:
     del sys.modules['threading']
+import gevent.builtins
+from gevent import monkey
+monkey.patch_all(subprocess=True)
+
 
 class Listener(ncpadaemon.Daemon):
     default_conf = os.path.abspath(os.path.join(filename.get_dirname_file(), 'etc', 'ncpa.cfg'))

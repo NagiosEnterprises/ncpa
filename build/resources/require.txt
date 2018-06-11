@@ -1,14 +1,13 @@
 psutil
-cx-freeze
 requests
 Jinja2
-flask
+flask==0.10.1
 werkzeug
 docutils
 pyOpenSSL
 gevent
 gevent-websocket
-cffi
+cffi==1.5.2
 appdirs
 packaging
 kafka
