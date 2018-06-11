@@ -42,6 +42,7 @@ if __SYSTEM__ == 'nt':
                       ('build_resources/nsis_passive_options.ini', 'build_resources/nsis_passive_options.ini'),
                       ('build_resources/nsis_passive_checks.ini', 'build_resources/nsis_passive_checks.ini'),
                       ('build_resources/ncpa.ico', 'build_resources/ncpa.ico'),
+                      ('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                       ('build_resources/nagios_installer.bmp', 'build_resources/nagios_installer.bmp'),
                       ('build_resources/nagios_installer_logo.bmp', 'build_resources/nagios_installer_logo.bmp')]
 
@@ -50,17 +51,15 @@ if __SYSTEM__ == 'nt':
     # Since in Python 3.5 cx_Freeze does not include sqlite3 by default we need to add this
     include_files += [os.path.join(sys.base_prefix, 'DLLs', 'sqlite3.dll')]
 
-    binary = Executable("ncpa_windows_listener.py",
+    binary_listener = Executable("ncpa_windows_listener.py",
                         base="Win32Service",
                         targetName="ncpa_listener.exe",
                         icon="build_resources/ncpa.ico")
 
-    binary = Executable("ncpa_windows_passive.py",
+    binary_passive = Executable("ncpa_windows_passive.py",
                         base="Win32Service",
                         targetName="ncpa_passive.exe",
                         icon="build_resources/ncpa.ico")
-
-    executables = []
 
 # Specific build settings for Linux / Max OS X
 elif __SYSTEM__ == 'posix':
@@ -111,9 +110,9 @@ setup(name = "NCPA",
 # Grab the proper files if we are on Windows 32bit or 64bit - Linux doesn't care
 if __SYSTEM__ == 'nt':
     if __ARCH__ == '32bit':
-        os.rename(os.path.join('build', 'exe.win32-3.5'), os.path.join('build', 'NCPA'))
+        os.rename(os.path.join('build', 'exe.win32-2.7'), os.path.join('build', 'NCPA'))
     elif __ARCH__ == '64bit':
-        os.rename(os.path.join('build', 'exe.win-amd64-3.5'), os.path.join('build', 'NCPA'))
+        os.rename(os.path.join('build', 'exe.win-amd64-2.7'), os.path.join('build', 'NCPA'))
     else:
         print("unhandled architecture")
         sys.exit(1)
