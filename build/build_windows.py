@@ -40,7 +40,7 @@ if not os.path.exists('plugins'):
     os.mkdir('plugins')
 
 sys.path.append(os.getcwd())
-subprocess.Popen(['python', 'setup_windows.py', 'build_exe']).wait()
+subprocess.Popen(['python', 'setup.py', 'build_exe']).wait()
 
 environ = os.environ.copy()
 environ['NCPA_BUILD_VER'] = version
