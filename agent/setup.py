@@ -48,9 +48,6 @@ if __SYSTEM__ == 'nt':
 
     includes += ['cx_Logging']
 
-    # Since in Python 3.5 cx_Freeze does not include sqlite3 by default we need to add this
-    include_files += [os.path.join(sys.base_prefix, 'DLLs', 'sqlite3.dll')]
-
     binary_listener = Executable("ncpa_windows_listener.py",
                         base="Win32Service",
                         targetName="ncpa_listener.exe",
