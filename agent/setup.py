@@ -4,9 +4,9 @@
 
 import sys
 import shutil
-from cx_Freeze import setup, Executable
 import os
-import tarfile
+import platform
+from cx_Freeze import setup, Executable
 
 # Defined constants
 __ARCH__ = platform.architecture()[0].lower()
