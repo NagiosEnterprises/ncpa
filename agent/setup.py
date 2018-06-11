@@ -29,7 +29,7 @@ excludes = ['Tkinter', 'tkinter', 'unittest']
 bin_includes = []
 include_files = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
                  ('var/log/ncpa_passive.log', 'var/log/ncpa_passive.log'),
-                 ('build_resources/LicenseAgreement.txt', 'LICENSE.txt')
+                 ('build_resources/LicenseAgreement.txt', 'LICENSE.txt'),
                  'etc',
                  'plugins',
                  ('listener/templates', 'listener/templates'),
