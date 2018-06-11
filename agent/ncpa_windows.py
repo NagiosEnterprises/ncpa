@@ -10,8 +10,17 @@ import os
 import time
 import datetime
 import sys
+import gevent.builtins
+from gevent import monkey
+
+# Monkey patch for gevent
+monkey.patch_all(subprocess=True, thread=False)
+
+import ssl
 from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
+from geventwebsocket.handler import WebSocketHandler
+
 import passive.nrds
 import passive.nrdp
 import passive.kafkaproducer
@@ -21,14 +30,7 @@ import listener.windowscounters
 import listener.windowslogs
 import listener.certificate
 import listener.database
-import jinja2.ext
 import filename
-import ssl
-import gevent.builtins
-from gevent import monkey
-from geventwebsocket.handler import WebSocketHandler
-
-monkey.patch_all(subprocess=True, thread=False)
 
 class Base(object):
 
