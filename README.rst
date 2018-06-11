@@ -12,7 +12,7 @@ Downloads
 Current versions:
 
 +---------+-------------+-------------------------------------------------------+
-| Current | **2.1.4**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
+| Current | **2.1.5**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
 `Older Versions <https://www.nagios.org/ncpa/archive.php>`_
@@ -24,7 +24,7 @@ We currently build for the following operating systems:
 - CentOS / RHEL 6, 7¹
 - Debian 8, 9¹
 - Ubuntu² 12, 14, 16
-- OpenSUSE 15¹, Tumbleweed¹
+- OpenSUSE Leap 15¹, Tumbleweed¹
 - SLES 11, 12¹
 - Oracle 6, 7¹
 - AIX 7

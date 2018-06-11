@@ -7,7 +7,7 @@ PYTHONBIN=`which python2.7`
 # Get OS info
 . $BASEDIR/init.sh
 
-if [ $dist == "el5" ]; then
+if [ "$dist" == "el5" ]; then
     reqlist="require.el5"
 else
     reqlist="require"

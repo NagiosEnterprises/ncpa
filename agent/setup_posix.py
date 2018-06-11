@@ -30,6 +30,11 @@ packages = []
 # Shared library include overrides
 bin_includes = ['libffi.so', 'libssl.so', 'libcrypto.so']
 
+# For new cffi and cryptography
+cffi_backend = os.path.join('/usr/lib64/python2.7/site-packages', '.libs_cffi_backend')
+if os.path.isdir(cffi_backend):
+    include_files += [(cffi_backend, '.libs_cffi_backend')]
+
 # Special includes for AIX systems
 if 'aix' in sys.platform:
     include_files += [('/opt/freeware/lib/libpython2.7.so', 'libpython2.7.so'),
