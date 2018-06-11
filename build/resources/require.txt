@@ -4,7 +4,8 @@ Jinja2
 flask==0.10.1
 werkzeug
 docutils
-pyOpenSSL
+pyOpenSSL==17.0
+cryptography==1.8.2
 gevent
 gevent-websocket
 cffi==1.5.2
