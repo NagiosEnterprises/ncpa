@@ -23,10 +23,11 @@ if not version[-1].isdigit():
     version = x[0]
 
 # Files to be included in the package
-packages = ['idna', 'passive', 'listener']
+packages = ['idna', 'gevent', 'passive', 'listener']
 includes = ['jinja2.ext']
-excludes = ['Tkinter', 'tkinter', 'unittest']
+excludes = ['Tkinter', 'tkinter', 'unittest', 'gevent._socket3']
 bin_includes = []
+zip_exclude_packages = []
 include_files = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
                  ('var/log/ncpa_passive.log', 'var/log/ncpa_passive.log'),
                  ('build_resources/LicenseAgreement.txt', 'LICENSE.txt'),
@@ -46,7 +47,7 @@ if __SYSTEM__ == 'nt':
                       ('build_resources/nagios_installer.bmp', 'build_resources/nagios_installer.bmp'),
                       ('build_resources/nagios_installer_logo.bmp', 'build_resources/nagios_installer_logo.bmp')]
 
-    includes += ['cx_Logging']
+    includes += ['cx_Logging', 'ncpa_windows']
 
     binary_listener = Executable("ncpa_windows_listener.py",
                         base="Win32Service",
@@ -92,7 +93,7 @@ buildOptions = dict(includes=includes,
                     bin_includes=bin_includes,
                     replace_paths=[('*', '')],
                     zip_include_packages=['*'],
-                    zip_exclude_packages=[])
+                    zip_exclude_packages=zip_exclude_packages)
 
 # Build the actual binaries and bundle files
 
