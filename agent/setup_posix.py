@@ -24,7 +24,7 @@ include_files = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
 
 # It does not appear the cx_Freeze honors the package directive
 includes = ['xml.dom.minidom','jinja2.ext','passive']
-excludes = ['Tkinter','tkinter']
+excludes = ['Tkinter','tkinter','collections.sys','collections._weakref']
 packages = []
 
 # Shared library include overrides
