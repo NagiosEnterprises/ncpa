@@ -46,8 +46,8 @@ class Listener(ncpadaemon.Daemon):
             try:
                 address = self.config_parser.get('listener', 'ip')
             except Exception:
-                self.config_parser.set('listener', 'ip', '0.0.0.0')
-                address = '0.0.0.0'
+                self.config_parser.set('listener', 'ip', '::')
+                address = '::'
 
             try:
                 port = self.config_parser.getint('listener', 'port')

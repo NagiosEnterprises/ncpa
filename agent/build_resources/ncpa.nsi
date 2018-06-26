@@ -144,7 +144,7 @@ Function .onInit
     ${EndIf}
 
     ; Define defaults for silent installs
-    StrCpy $bind_ip "0.0.0.0"
+    StrCpy $bind_ip "::"
     StrCpy $bind_port "5693"
     StrCpy $ssl_version "TLSv1_2"
     StrCpy $check_interval "300"
