@@ -522,7 +522,7 @@ def admin_global():
 @requires_admin_auth
 def admin_listener_config():
     tmp_args = { 'no_nav': True,
-                 'ip': get_config_value('listener', 'ip', '0.0.0.0'),
+                 'ip': get_config_value('listener', 'ip', '::'),
                  'port': get_config_value('listener', 'port', '5693'),
                  'uid': get_config_value('listener', 'uid', 'nagios'),
                  'gid': get_config_value('listener', 'gid', 'nagios'),
