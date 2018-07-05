@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+1.1.4
+-----
+- Fixed issue with older NCPA < 2 with reversed stdout and returncode sections
+
 1.1.3
 -----
 - Fixed splitting of commas in query params so that if a comma is in quotes it will pass it

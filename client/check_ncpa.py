@@ -44,7 +44,7 @@ import re
 import signal
 
 
-__VERSION__ = '1.1.3'
+__VERSION__ = '1.1.4'
 
 
 def parse_args():
@@ -229,8 +229,15 @@ def get_json(options):
 
     arr = json.loads(ret)
 
+        # Fix for NCPA < 2
     if 'value' in arr:
-        return arr['value']
+        arr = arr['value']
+
+        # We need to flip the returncode and stdout
+        if isinstance(arr['stdout'], int) and not isinstance(arr['returncode'], int):
+            tmp = arr['returncode']
+            arr['returncode'] = arr['stdout']
+            arr['stdout'] = tmp
 
     return arr
 
