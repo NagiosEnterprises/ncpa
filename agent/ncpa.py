@@ -5,6 +5,7 @@ import logging
 import glob
 import os
 import sys
+import ssl
 import time
 import datetime
 import tempfile
@@ -14,7 +15,6 @@ from gevent import monkey
 # Monkey patch for gevent
 monkey.patch_all(subprocess=True, thread=False)
 
-import ssl
 from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
 from geventwebsocket.handler import WebSocketHandler
@@ -706,6 +706,12 @@ def main():
 
         # Set config value for port to 5700 and start Listener and Passive
         config.set('listener', 'port', '5700')
+
+        # Temporary set up logging
+        log = logging.getLogger()
+        log.addHandler(logging.StreamHandler())
+        log.setLevel('DEBUG')
+
         start_modules(options, config)
         
         # Wait for exit

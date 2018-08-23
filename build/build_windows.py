@@ -9,9 +9,9 @@ if len(sys.argv) > 1:
     buildtype = sys.argv[1]
 
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-nsi_store = os.path.join(basedir, 'agent', 'build_resources', 'ncpa.nsi')
+nsi_store = os.path.join(basedir, 'build', 'resources', 'ncpa.nsi')
 nsi = os.path.join(basedir, 'agent', 'build', 'ncpa.nsi')
-nsis = os.path.join(os.environ['PROGRAMFILES(X86)'] if os.environ.has_key('PROGRAMFILES(X86)') else os.environ['PROGRAMFILES'], 'NSIS', 'makensis.exe')
+nsis = os.path.join(os.environ['PROGRAMFILES(X86)'] if 'PROGRAMFILES(X86)' in os.environ else os.environ['PROGRAMFILES'], 'NSIS', 'makensis.exe')
 
 os.chdir(basedir)
 

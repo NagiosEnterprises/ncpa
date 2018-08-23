@@ -630,10 +630,6 @@ def api_websocket(accessor=None):
     sane_args = dict(request.args)
     sane_args['accessor'] = accessor
 
-    encoding = sys.stdin.encoding
-    if encoding is None:
-        encoding = sys.getdefaultencoding()
-
     # Refresh the root node before creating the websocket
     psapi.refresh()
 
@@ -646,7 +642,7 @@ def api_websocket(accessor=None):
                 node = psapi.getter(message, config, request.path, request.args)
                 prop = node.name
                 val = node.walk(first=True, **sane_args)
-                jval = json.dumps(val[prop], encoding=encoding)
+                jval = json.dumps(val[prop])
                 ws.send(jval)
             except Exception as e:
                 # Socket was probably closed by the browser changing pages
@@ -659,10 +655,6 @@ def api_websocket(accessor=None):
 @listener.route('/ws/top')
 @requires_token_or_auth
 def top_websocket():
-
-    encoding = sys.stdin.encoding
-    if encoding is None:
-        encoding = sys.getdefaultencoding()
 
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
@@ -681,8 +673,7 @@ def top_websocket():
                 process_list.append(process)
 
             
-            json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list},
-                                  encoding=encoding)
+            json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
 
             try:
                 ws.send(json_val)
@@ -699,10 +690,6 @@ def top_websocket():
 @requires_token_or_auth
 def tail_websocket():
 
-    encoding = sys.stdin.encoding
-    if encoding is None:
-        encoding = sys.getdefaultencoding()
-
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
         last_ts = datetime.datetime.now()
@@ -711,7 +698,7 @@ def tail_websocket():
                 last_ts, logs = listener.tail_method(last_ts=last_ts, **request.args)
 
                 if logs:
-                    json_log = json.dumps(logs, encoding=encoding)
+                    json_log = json.dumps(logs)
                     ws.send(json_log)
 
                 gevent.sleep(5)
@@ -925,7 +912,6 @@ def api(accessor=''):
 
     # Generate page and add cross-domain loading
     response = Response(json.dumps(dict(value), indent=None if request.is_xhr else 4,
-                                   ensure_ascii=False).encode('utf-8', 'ignore'),
-                                   mimetype='application/json')
+                                   ensure_ascii=False), mimetype='application/json')
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response

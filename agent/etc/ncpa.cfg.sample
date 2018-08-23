@@ -14,8 +14,8 @@
 #
 # Listener logging file level, location, and the PID location
 # Default: loglevel = info (debug, info, warning, error)
-# Default: logfile = var/log/ncpa_listener.log
-# Default: pidfile = var/run/ncpa_listener.pid (leave listener in pid file name)
+# Default: logfile = var/log/ncpa.log
+# Default: pidfile = var/run/ncpa.pid (leave listener in pid file name)
 #
 loglevel = info
 logfile = var/log/ncpa.log
@@ -50,6 +50,7 @@ check_logging_time = 30
 #
 # delay_start = 30
 
+#
 # Excluded file system types removes these fs types from the disk metrics
 # (This is mostly only noteable on UNIX systems but also works on Windows if you need it)
 # Default: aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,
@@ -217,6 +218,22 @@ update_plugins = 1
 
 #
 # -------------------------------
+# Passive Configuration (Kafka)
+# -------------------------------
+#
+
+[kafkaproducer]
+
+#
+# Kafka connection information and settings
+#
+hostname = None
+servers = localhost:9092
+clientname = NCPA-Kafka
+topic = ncpa
+
+#
+# -------------------------------
 # Plugin Configuration
 # -------------------------------
 #
@@ -273,4 +290,5 @@ plugin_path = plugins/
 # Windows
 .ps1 = powershell -ExecutionPolicy Bypass -File $plugin_name $plugin_args
 .vbs = cscript $plugin_name $plugin_args //NoLogo
+.wsf = cscript $plugin_name $plugin_args //NoLogo
 .bat = cmd /c $plugin_name $plugin_args

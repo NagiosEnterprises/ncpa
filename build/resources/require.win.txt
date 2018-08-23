@@ -1,4 +1,5 @@
 cx_Freeze
+cx_Logging
 psutil
 requests
 Jinja2
