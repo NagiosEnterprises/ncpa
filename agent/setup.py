@@ -19,7 +19,7 @@ __SYSTEM__ = os.name
 
 
 # Get version from the VERSION file and remove anything after the . such as
-# 2.0.0.a or 3.0.0.rc1 to form a generic version number since we can't handle
+# 3.0.0.a or 3.1.0.rc1 to form a generic version number since we can't handle
 # a version number like that on Windows
 version_file = os.path.join(os.path.dirname(__file__), '..', 'VERSION')
 version = open(version_file, 'r').readline().strip()
@@ -53,9 +53,6 @@ if __SYSTEM__ == 'nt':
                      ('../build/resources/nagios_installer_logo.bmp', 'build_resources/nagios_installer_logo.bmp'),
                      (os.path.join(sys.executable), 'python.exe')]
 
-    # Since in Python 3.5 cx_Freeze does not include sqlite3 by default we need to add this
-    include_files += [os.path.join(sys.base_prefix, 'DLLs', 'sqlite3.dll')]
-
     binary = Executable("setup_config.py",
                         base="Win32Service",
                         targetName="ncpa.exe",
@@ -64,9 +61,10 @@ if __SYSTEM__ == 'nt':
 # Specific build settings for Linux / Max OS X
 elif __SYSTEM__ == 'posix':
 
-    include_files += [('../build/resources/ncpa.plist', 'build_resources/ncpa.plist'),
-                      ('../build/resources/macosinstall.sh', 'build_resources/macosinstall.sh'),
-                      ('../build/resources/ncpa_init', 'build_resources/ncpa_init'),
+    include_files += [('../startup/default-plist', 'build_resources/default-plist'),
+                      ('../startup/macosinstall.sh', 'build_resources/macosinstall.sh'),
+                      ('../startup/default-init', 'build_resources/default-init'),
+                      ('../startup/default-service', 'build_resources/default-service'),
                       (os.path.join(sys.executable), 'python')]
 
     # Shared library include overrides

@@ -1,6 +1,11 @@
 Changelog
 +++++++++
 
+2.0.0
+-----
+- Added compatability for NCPA 1.x, 2.x, and 3.x
+- Added --sleep or -S variable for setting the sleep value for counters and certain endpoints 
+
 1.1.3
 -----
 - Fixed splitting of commas in query params so that if a comma is in quotes it will pass it

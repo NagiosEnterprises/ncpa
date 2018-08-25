@@ -1,0 +1,10 @@
+[Unit]
+Description=NCPA
+Documentation=https://www.nagios.org/ncpa
+After=network.target local-fs.target
+
+[Service]
+ExecStart=${DIR}/ncpa
+
+[Install]
+WantedBy=multi-user.target
