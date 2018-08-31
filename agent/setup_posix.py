@@ -39,8 +39,7 @@ if os.path.isdir(cffi_backend):
 if 'aix' in sys.platform:
     include_files += [('/opt/freeware/lib/libpython2.7.a', 'libpython2.7.a'),
                       ('/usr/lib/libsqlite3.so', 'libsqlite3.so'),
-                      ('/usr/lib/libssl.so', 'libssl.so'),
-                      ('/usr/lib/libcrypto.so', 'libcrypto.so'),
+                      ('/usr/lib/libssl.a', 'libssl.a'),
                       ('/usr/lib/libcrypto.a', 'libcrypto.a'),
                       ('/usr/lib/libffi.a', 'libffi.a'),
                       ('/opt/freeware/lib/libgcc_s.a', 'libgcc_s.a')]
