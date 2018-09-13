@@ -174,7 +174,12 @@ def get_disk_node(config=False):
     disk_parts = []
     try:
         for x in ps.disk_partitions(all=True):
-            fstype = x.fstype.split('.')[0] # to check against fuse.<type> etc
+
+            # to check against fuse.<type> etc
+            fstype = x.fstype
+            if x.fstype not None:
+                fstype = x.fstype.split('.')[0]
+
             if fstype not in exclude_fs_types:
                 if os.path.isdir(x.mountpoint):
                     try:

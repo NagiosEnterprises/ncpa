@@ -33,7 +33,8 @@ bin_includes = ['libffi.so', 'libssl.so', 'libcrypto.so']
 # For new cffi and cryptography
 cffi_backend = os.path.join('/usr/lib64/python2.7/site-packages', '.libs_cffi_backend')
 if os.path.isdir(cffi_backend):
-    include_files += [(cffi_backend, '.libs_cffi_backend')]
+    for f in os.listdir(cffi_backend):
+        include_files += [(os.path.join(cffi_backend, f), os.path.join('.libs_cffi_backend', f))]
 
 # Special includes for AIX systems
 if 'aix' in sys.platform:

@@ -24,11 +24,11 @@ bundled version of Python.
 
 %install
 rm -rf %{buildroot} 
-mkdir -p %{buildroot}/usr/local/ncpa
+mkdir -p %{buildroot}/usr/local
+cp -rf $RPM_BUILD_DIR/ncpa-%{version} %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
 mkdir -p %{buildroot}/etc/init.d
 touch %{buildroot}/usr/local/ncpa/var/ncpa.db
-cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/listener_init %{buildroot}/etc/init.d/ncpa_listener
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{buildroot}/etc/init.d/ncpa_passive
@@ -112,6 +112,7 @@ fi
 %dir /usr/local/ncpa
 %dir /usr/local/ncpa/etc
 %dir /usr/local/ncpa/etc/ncpa.cfg.d
+%dir /usr/local/ncpa/.libs_cffi_backend
 /usr/local/ncpa/ncpa_listener
 /usr/local/ncpa/ncpa_passive
 /etc/init.d/ncpa_listener
@@ -119,6 +120,7 @@ fi
 
 %defattr(0644,nagios,nagios,0755)
 /usr/local/ncpa/*.so*
+/usr/local/ncpa/.libs_cffi_backend/*.so*
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip
 /usr/local/ncpa/build_resources

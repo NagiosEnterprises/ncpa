@@ -4,11 +4,11 @@ Jinja2
 flask==0.10.1
 werkzeug
 docutils
-pyOpenSSL==17.0
-cryptography==1.8.2
+pyOpenSSL
+cryptography
 gevent==1.2.2
 gevent-websocket
-cffi==1.5.2
+cffi
 appdirs
 packaging
 kafka
