@@ -121,13 +121,11 @@ fi
 %dir /usr/local/ncpa
 %dir /usr/local/ncpa/etc
 %dir /usr/local/ncpa/etc/ncpa.cfg.d
-%dir /usr/local/ncpa/.libs_cffi_backend
 /usr/local/ncpa/ncpa_listener
 /usr/local/ncpa/ncpa_passive
 
 %defattr(0644,nagios,nagios,0755)
 /usr/local/ncpa/*.so*
-/usr/local/ncpa/.libs_cffi_backend/*.so*
 /usr/local/ncpa/*.a
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip

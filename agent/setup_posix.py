@@ -30,12 +30,6 @@ packages = []
 # Shared library include overrides
 bin_includes = ['libffi.so', 'libssl.so', 'libcrypto.so']
 
-# For new cffi and cryptography
-cffi_backend = os.path.join('/usr/lib64/python2.7/site-packages', '.libs_cffi_backend')
-if os.path.isdir(cffi_backend):
-    for f in os.listdir(cffi_backend):
-        include_files += [(os.path.join(cffi_backend, f), os.path.join('.libs_cffi_backend', f))]
-
 # Special includes for AIX systems
 if 'aix' in sys.platform:
     include_files += [('/opt/freeware/lib/libpython2.7.a', 'libpython2.7.a'),
@@ -45,6 +39,12 @@ if 'aix' in sys.platform:
                       ('/usr/lib/libffi.a', 'libffi.a'),
                       ('/opt/freeware/lib/libgcc_s.a', 'libgcc_s.a')]
 
+# For new cffi and cryptography
+cffi_backend = os.path.join('/usr/lib64/python2.7/site-packages', '.libs_cffi_backend')
+if os.path.isdir(cffi_backend):
+    for f in os.listdir(cffi_backend):
+        include_files += [(os.path.join(cffi_backend, f), os.path.join('.libs_cffi_backend', f))]
+
 include_files += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                   ('build_resources/ncpa_listener.plist', 'build_resources/ncpa_listener.plist'),
                   ('build_resources/ncpa_passive.plist', 'build_resources/ncpa_passive.plist'),
@@ -52,6 +52,8 @@ include_files += [('build_resources/LicenseAgreement.txt', 'build_resources/Lice
                   ('build_resources/macosuninstall.sh', 'build_resources/macosuninstall.sh'),
                   ('build_resources/listener_init', 'build_resources/listener_init'),
                   ('build_resources/passive_init', 'build_resources/passive_init')]
+
+
 
 buildoptions = dict(includes=includes,
                     include_files=include_files,
