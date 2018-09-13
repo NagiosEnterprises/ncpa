@@ -177,7 +177,7 @@ def get_disk_node(config=False):
 
             # to check against fuse.<type> etc
             fstype = x.fstype
-            if x.fstype not None:
+            if x.fstype is not None:
                 fstype = x.fstype.split('.')[0]
 
             if fstype not in exclude_fs_types:
