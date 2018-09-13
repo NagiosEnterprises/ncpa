@@ -1,6 +1,6 @@
 Name:           ncpa
 Version:        __VERSION__
-Release:        1%{?dist}
+Release:        4%{?dist}
 Vendor:         Nagios Enterprises, LLC
 Summary:        A cross-platform active and passive monitoring agent
 BuildRoot:      __BUILDROOT__/BUILDROOT/
@@ -24,9 +24,9 @@ bundled version of Python.
 
 %install
 rm -rf %{buildroot} 
-mkdir -p %{buildroot}/usr/local/ncpa
+mkdir -p %{buildroot}/usr/local
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
-cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
+cp -rf $RPM_BUILD_DIR/ncpa-%{version} %{buildroot}/usr/local/ncpa
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 
 %clean
@@ -121,11 +121,13 @@ fi
 %dir /usr/local/ncpa
 %dir /usr/local/ncpa/etc
 %dir /usr/local/ncpa/etc/ncpa.cfg.d
+%dir /usr/local/ncpa/.libs_cffi_backend
 /usr/local/ncpa/ncpa_listener
 /usr/local/ncpa/ncpa_passive
 
 %defattr(0644,nagios,nagios,0755)
 /usr/local/ncpa/*.so*
+/usr/local/ncpa/.libs_cffi_backend/*.so*
 /usr/local/ncpa/*.a
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip
