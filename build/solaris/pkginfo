@@ -1,0 +1,6 @@
+PKG=ncpa
+NAME=A monitoring agent (Nagios Cross-Platform Agent) for Nagios.
+VERSION=2.1.5
+ARCH=i386
+CATEGORY=system
+BASEDIR=/usr/local

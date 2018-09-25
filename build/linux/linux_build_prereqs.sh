@@ -1,13 +1,6 @@
 if uname -a | grep -i 'Debian';
 then
 	apt-get install debian-builder rpm gcc gcc-c++ git wget openssl libssl-dev libffi-dev sqlite3 libsqlite3-dev zlib1g-dev alien -y
-elif uname -a | grep -i 'Darwin';
-then
-	echo "must be installed manually"
-elif uname -a | grep -i 'el5';
-then
-	yum install epel-release -y
-	yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget buildsys-macros -y
 elif  uname -a | grep -i 'el6';
 then
 	yum install epel-release -y

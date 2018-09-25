@@ -7,7 +7,6 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PYTHONTAR="Python-2.7.14"
 PYTHONVER="python2.7"
-CXFREEZETAR="cx_Freeze-4.3.4-patched"
 CXFREEZEVER="cx_Freeze-4.3.4"
 CXLOGGINGVER="cx_Logging-2.1"
 PYTHONBIN="/usr/local/bin/python2.7"
@@ -39,7 +38,7 @@ else
 fi
 
 # Install the patched version of cx_Freeze
-tar xf $CXFREEZETAR.tar.gz
+tar xf $CXFREEZEVER.tar.gz
 cd $CXFREEZEVER
 $PYTHONBIN setup.py install
 cd ..

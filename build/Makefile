@@ -18,12 +18,12 @@ FLAGS = ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future
 .PHONY: build_exe update_git update_packages build_rpm build_spec
 
 build_exe: clean
-	find $(BASEDIR) -name *.pyc -delete
+	find $(BASEDIR) -name *.pyc -exec rm '{}' \;
 	mkdir -p $(BASEDIR)/agent/plugins
-	mkdir -p $(BASEDIR)/agent/var
 	mkdir -p $(BASEDIR)/agent/build
-	echo -n '' > $(BASEDIR)/agent/var/log/ncpa_passive.log
-	echo -n '' > $(BASEDIR)/agent/var/log/ncpa_listener.log
+	mkdir -p $(BASEDIR)/agent/var/log
+	cat /dev/null > $(BASEDIR)/agent/var/log/ncpa_passive.log
+	cat /dev/null > $(BASEDIR)/agent/var/log/ncpa_listener.log
 	cd $(BASEDIR)/agent && $(PYTHONVER) setup_posix.py build_exe
 	mv $(BASEDIR)/agent/build/exe.* $(BASEDIR)/agent/build/NCPA
 
