@@ -7,10 +7,9 @@ VERSION=$(cat ../../VERSION)
 # Set up package info
 ARCH=$(arch)
 sed "s/ARCH=.*/ARCH=$ARCH/" pkginfo > pkginfo.tmp
-rm -f pkginfo
 mv pkginfo.tmp ../pkginfo
 
-# Set up directory structure
+# Make the package and cleanup
 (
     cd ..
     cp pkginfo ncpa/pkginfo
@@ -22,10 +21,10 @@ mv pkginfo.tmp ../pkginfo
     # Build package and create the .pkg file
     pkgmk -b $(pwd) -o
     pkgtrans -s /var/spool/pkg ncpa-$VERSION.$ARCH.pkg ncpa
-)
 
-# Remove build leftovers
-rm -rf /var/spool/pkg/ncpa
-rm -rf ncpa
-rm -f prototype
-rm -f pkginfo
+    # Remove build leftovers
+    rm -rf /var/spool/pkg/ncpa
+    rm -rf ncpa
+    rm -f prototype
+    rm -f pkginfo
+)
