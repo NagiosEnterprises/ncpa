@@ -1,7 +1,11 @@
 Changelog
 +++++++++
 
-2.1.5 - 6/11/2018
+2.1.6 - ??/??/2018
+==================
+- Fixed issue with temp directory having too many files causing python exception at launch
+
+2.1.5 - 06/11/2018
 ==================
 - Fixed issue with a few Windows counters that required forward slashes in the path name
 - Fixed issue where Windows counters were not clearing the counter/query handler
