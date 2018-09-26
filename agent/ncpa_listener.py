@@ -90,11 +90,17 @@ class Listener(ncpadaemon.Daemon):
             if ssl_str_ciphers:
                 ssl_context['ciphers'] = ssl_str_ciphers
 
+            # Create connection pool
+            try:
+                max_connections = self.config_parser.get('listener', 'max_connections')
+            except Exception:
+                max_connections = 200
+
             listener.server.listener.secret_key = os.urandom(24)
             http_server = WSGIServer(listener=(address, port),
                                      application=listener.server.listener,
                                      handler_class=WebSocketHandler,
-                                     spawn=Pool(200),
+                                     spawn=Pool(max_connections),
                                      **ssl_context)
             http_server.serve_forever()
         except Exception, e:

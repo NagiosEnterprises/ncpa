@@ -3,6 +3,7 @@ Changelog
 
 2.1.6 - ??/??/2018
 ==================
+- Added max_connections listener config value to set the amount of concurrent connections
 - Fixed issue with temp directory having too many files causing python exception at launch
 
 2.1.5 - 06/11/2018
