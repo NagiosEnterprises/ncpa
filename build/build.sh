@@ -4,6 +4,7 @@
 UNAME=$(uname)
 BUILD_DIR=$(dirname "$(readlink -f "$0")")
 AGENT_DIR=$(realpath "$BUILD_DIR/../agent")
+MANUAL=0
 
 # Get the arguments passed to us
 
@@ -23,8 +24,12 @@ else
 fi
 
 # Check that pre-reqs have been installed
-if [ ! -f prereqs.installed ]; then
-    install_prereqs
+if [ ! -f prereqs.installed ] || [ $MANUAL -eq 1 ]; then
+    read -r -p "Automatically install system pre-reqs? [Y/n]" resp
+    resp=${resp,,}
+    if [[ $resp =~ ^(yes|y| ) ]] || [[ -z $resp ]]; then
+        install_prereqs
+    fi
 fi
 
 # Update the required python modules

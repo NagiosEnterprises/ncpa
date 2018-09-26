@@ -13,6 +13,8 @@ sed "s/ARCH=.*/ARCH=$ARCH/" $DIR/pkginfo > $BUILD_DIR/pkginfo
 (
     cd $BUILD_DIR
     cp pkginfo ncpa/pkginfo
+    cp postinstall ncpa/postinstall
+    cp preinstall ncpa/preinstall
 
     # Add prototype file
     echo 'i pkginfo' > prototype
