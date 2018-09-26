@@ -23,6 +23,7 @@ sed "s/ARCH=.*/ARCH=$ARCH/" $DIR/pkginfo > $BUILD_DIR/pkginfo
     # Build package and create the .pkg file
     pkgmk -b $(pwd) -o
     pkgtrans -s /var/spool/pkg ncpa-$VERSION.$ARCH.pkg ncpa
+    rm -rf ncpa-$VERSION.$ARCH.pkg
     mv -f /var/spool/pkg/ncpa-$VERSION.$ARCH.pkg .
 
     # Remove build leftovers
