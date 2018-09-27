@@ -26,8 +26,7 @@ fi
 # Check that pre-reqs have been installed
 if [ ! -f prereqs.installed ] || [ $MANUAL -eq 1 ]; then
     read -r -p "Automatically install system pre-reqs? [Y/n]" resp
-    resp=${resp,,}
-    if [[ $resp =~ ^(yes|y| ) ]] || [[ -z $resp ]]; then
+    if [[ $resp =~ ^(yes|y|Y| ) ]] || [[ -z $resp ]]; then
         install_prereqs
     fi
 fi
@@ -48,6 +47,8 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     cd $AGENT_DIR
     $PYTHONBIN setup_posix.py build_exe
     cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
+    chown root:nagios $BUILD_DIR/ncpa/var
+    chmod 775 $BUILD_DIR/ncpa/var
 )
 
 

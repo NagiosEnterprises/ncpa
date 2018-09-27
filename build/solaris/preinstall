@@ -6,6 +6,3 @@ fi
 if ! getent passwd nagios > /dev/null; then
     useradd -r -g nagios nagios
 fi
-
-# Check if service exists
-

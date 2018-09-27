@@ -3,7 +3,7 @@
 # Get version
 DIR=$(dirname "$(readlink -f "$0")")
 BUILD_DIR=$(realpath "$DIR/..")
-VERSION=$(cat ../../VERSION)
+VERSION=$(cat $BUILD_DIR/../VERSION)
 
 # Set up package info
 ARCH=$(arch)
