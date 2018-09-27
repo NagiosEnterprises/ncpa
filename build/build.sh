@@ -50,6 +50,3 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     chown root:nagios $BUILD_DIR/ncpa/var
     chmod 775 $BUILD_DIR/ncpa/var
 )
-
-
-

@@ -4,10 +4,12 @@
 DIR=$(dirname "$(readlink -f "$0")")
 BUILD_DIR=$(realpath "$DIR/..")
 VERSION=$(cat $BUILD_DIR/../VERSION)
+ARCH=$(arch)
 
 # Set up package info
-ARCH=$(arch)
-sed "s/ARCH=.*/ARCH=$ARCH/" $DIR/pkginfo > $BUILD_DIR/pkginfo
+sed "s/VERSION=.*/ARCH=$VERSION/" $DIR/pkginfo > $DIR/pkginfo.tmp
+sed "s/ARCH=.*/ARCH=$ARCH/" $DIR/pkginfo.tmp > $BUILD_DIR/pkginfo
+rm -rf $DIR/pkginfo.tmp
 
 # Make the package and cleanup
 (
