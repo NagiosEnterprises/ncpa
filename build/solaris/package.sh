@@ -17,6 +17,7 @@ rm -rf $DIR/pkginfo.tmp
     cp pkginfo ncpa/pkginfo
     cp postinstall ncpa/postinstall
     cp preinstall ncpa/preinstall
+    cp preremove ncpa/preremove
 
     # Add prototype file
     echo 'i pkginfo' > prototype
@@ -25,7 +26,7 @@ rm -rf $DIR/pkginfo.tmp
     # Build package and create the .pkg file
     pkgmk -b $(pwd) -o
     pkgtrans -s /var/spool/pkg ncpa-$VERSION.$ARCH.pkg ncpa
-    rm -rf ncpa-$VERSION.$ARCH.pkg
+    rm -f ncpa-$VERSION.$ARCH.pkg
     mv -f /var/spool/pkg/ncpa-$VERSION.$ARCH.pkg .
 
     # Remove build leftovers
