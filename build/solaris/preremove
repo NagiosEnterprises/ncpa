@@ -1,0 +1,11 @@
+
+# Stop and disable the services
+svcadm disable ncpa_listener
+svcadm disable ncpa_passive
+
+# Remove the service xml
+rm -f /lib/svc/manifest/site/ncpa_listener.xml
+rm -f /lib/svc/manifest/site/ncpa_passive.xml
+
+# Reload manifests
+svcadm restart manifest-import

@@ -1,5 +1,5 @@
 
-# Update services
+# Create services
 
 # ncpa_listener
 svcbundle -s service-name=site/ncpa_listener \
