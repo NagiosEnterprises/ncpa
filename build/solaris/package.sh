@@ -15,9 +15,9 @@ rm -rf $DIR/pkginfo.tmp
 (
     cd $BUILD_DIR
     cp pkginfo ncpa/pkginfo
-    cp solaris/postinstall ncpa/postinstall
-    cp solaris/preinstall ncpa/preinstall
-    cp solaris/preremove ncpa/preremove
+    cp solaris/postinstall postinstall
+    cp solaris/preinstall preinstall
+    cp solaris/preremove preremove
 
     # Add prototype file
     echo 'i pkginfo' > prototype
