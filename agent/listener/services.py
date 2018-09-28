@@ -295,7 +295,7 @@ class ServiceNode(nodes.LazyNode):
             status = ls[0]
             if status == 'online':
                 services[sub] = 'running'
-            elif 'offline' in status or status == 'maintenance':
+            elif 'offline' in status or status == 'maintenance' or status == 'disabled':
                 services[sub] = 'stopped'
             else:
                 services[sub] = 'unknown'
