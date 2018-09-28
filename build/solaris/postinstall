@@ -8,8 +8,8 @@ svcbundle -i -s service-name=site/ncpa_listener \
 
 # ncpa_passive
 svcbundle -i -s service-name=site/ncpa_passive \
-      -s start-method="/usr/local/ncpa/ncpa_listener" \
-      -s stop-method="kill -F /usr/local/ncpa/var/run/ncpa_listener.pid"
+      -s start-method="/usr/local/ncpa/ncpa_passive" \
+      -s stop-method="kill -F /usr/local/ncpa/var/run/ncpa_passive.pid"
 
 # Enable services
 svcadm enable site/ncpa_listener
