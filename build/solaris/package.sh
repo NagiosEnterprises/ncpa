@@ -15,12 +15,15 @@ rm -rf $DIR/pkginfo.tmp
 (
     cd $BUILD_DIR
     cp pkginfo ncpa/pkginfo
-    cp postinstall ncpa/postinstall
-    cp preinstall ncpa/preinstall
-    cp preremove ncpa/preremove
+    cp solaris/postinstall ncpa/postinstall
+    cp solaris/preinstall ncpa/preinstall
+    cp solaris/preremove ncpa/preremove
 
     # Add prototype file
     echo 'i pkginfo' > prototype
+    echo 'i postinstall' >> prototype
+    echo 'i preinstall' >> prototype
+    echo 'i preremove' >> prototype
     pkgproto ncpa >> prototype
 
     # Build package and create the .pkg file
