@@ -37,4 +37,7 @@ rm -rf $DIR/pkginfo.tmp
     rm -rf ncpa
     rm -f prototype
     rm -f pkginfo
+    rm -f postinstall
+    rm -f preinstall
+    rm -f preremove
 )
