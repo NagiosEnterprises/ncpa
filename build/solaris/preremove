@@ -9,3 +9,9 @@ rm -f /lib/svc/manifest/site/ncpa_passive.xml
 
 # Reload manifests
 svcadm restart manifest-import
+
+# Remove the files from /var
+rm -rf /usr/local/ncpa/var/run
+rm -f /usr/local/ncpa/var/*.crt
+rm -f /usr/local/ncpa/var/*.db
+rm -f /usr/local/ncpa/var/*.key
