@@ -248,11 +248,15 @@ class Daemon():
 
         # We need to chown any temp files we wrote out as root (or any other user)
         # to the currently set user and group so checks don't error out
-        tmpdir = os.path.join(tempfile.gettempdir())
-        for file in os.listdir(tmpdir):
-            if os.path.isfile(file):
-                if 'ncpa-' in file:
-                    self.chown(os.path.join(tmpdir, file))
+        try:
+            tmpdir = os.path.join(tempfile.gettempdir())
+            for file in os.listdir(tmpdir):
+                if os.path.isfile(file):
+                    if 'ncpa-' in file:
+                        self.chown(os.path.join(tmpdir, file))
+        except OSError as err:
+            logging.exception(err)
+            pass
 
     def setup_user(self):
         pass

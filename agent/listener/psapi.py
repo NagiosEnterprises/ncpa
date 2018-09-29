@@ -10,7 +10,6 @@ from listener.pluginnodes import PluginAgentNode
 import listener.server
 import listener.services as services
 import listener.processes as processes
-import listener.environment as environment
 
 importables = (
     'windowscounters',
@@ -52,7 +51,7 @@ def make_mountpoint_nodes(partition_name):
     node_children = [total, used, free, used_percent, device_name, fstype, opts]
 
     # Unix specific inode counter ~ sorry Windows! :'(
-    if environment.SYSTEM != 'Windows':
+    if platform.uname()[0] != 'Windows':
         st = os.statvfs(mountpoint)
         iu = st.f_files - st.f_ffree
         inodes = RunnableNode('inodes', method=lambda: (st.f_files, 'inodes'))
@@ -94,7 +93,7 @@ def make_if_nodes(if_name):
 
 def get_timezone():
     zones = time.tzname
-    if environment.SYSTEM == "Windows":
+    if platform.uname()[0] == "Windows":
         zones = [x for x in zones]
     return zones, ''
 
@@ -216,7 +215,7 @@ def get_root_node(config=False):
 
     children = [cpu, memory, disk, interface, plugins, user, system, service, process]
 
-    if environment.SYSTEM == "Windows":
+    if platform.uname()[0] == "Windows":
         for importable in importables:
             try:
                 relative_name = 'listener.' + importable
