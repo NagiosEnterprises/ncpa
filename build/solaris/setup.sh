@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Update path to include csw on Solaris
+PATH=$PATH:/opt/csw/bin:/usr/ccs/bin
+
 # Globals
 PYTHONTAR="Python-2.7.14"
 PYTHONVER="python2.7"
@@ -8,13 +11,18 @@ CXFREEZEVER="cx_Freeze-4.3.4"
 
 install_prereqs() {
 
+
     # --------------------------
     #  INSTALL SYSTEM REQS
     # --------------------------
 
 
     # Install pre-reqs for Solaris systems
-    pkg install gcc libffi zlib
+    if cat /etc/release | grep s10x > /dev/null ; then
+        pkgutil -y -i gcc5core libffi6 libffi_dev libz1 libz_dev wget
+    else
+        pkg install gcc libffi zlib
+    fi
 
 
     # --------------------------
@@ -25,11 +33,13 @@ install_prereqs() {
     cd $DIR/../resources
 
     # Install bundled Python version from source if needed
-    tar xf $PYTHONTAR.tgz
+    gunzip $PYTHONTAR.tgz
+    tar xf $PYTHONTAR.tar
     cd $PYTHONTAR && ./configure --with-zlib=/usr/include --enable-shared && make && make altinstall
     cd ..
 
     # Install the patched version of cx_Freeze
+    gunzip $CXFREEZEVER.tgz
     tar xf $CXFREEZEVER.tar.gz
     cd $CXFREEZEVER
     $PYTHONBIN setup.py install
