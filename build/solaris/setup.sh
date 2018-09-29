@@ -17,9 +17,16 @@ install_prereqs() {
     # --------------------------
 
 
-    # Install pre-reqs for Solaris systems
+    # Check version of Solaris
+    SOLARIS=11
     if cat /etc/release | grep s10x > /dev/null ; then
-        pkgutil -y -i gcc5core libffi6 libffi_dev libz1 libz_dev wget
+        SOLARIS=10
+    fi
+
+    # Install pre-reqs for Solaris systems
+    if [ $SOLARIS -eq 10 ]; then
+        pkgutil -y -i python27 python27_dev
+        PYTHONBIN="python2.7"
     else
         pkg install gcc libffi zlib
     fi
@@ -33,10 +40,13 @@ install_prereqs() {
     cd $BUILD_DIR/resources
 
     # Install bundled Python version from source if needed
-    gunzip $PYTHONTAR.tgz
-    tar xf $PYTHONTAR.tar
-    cd $PYTHONTAR && ./configure --with-zlib=/usr/include --enable-shared && make && make altinstall
-    cd ..
+    if [ $SOLARIS -eq 11 ]; then
+        tar xf $PYTHONTAR.tgz
+        cd $PYTHONTAR
+        ./configure --with-zlib=/usr/include --enable-shared && make && make altinstall
+        cd ..
+        rm -rf $PYTHONTAR
+    fi
 
     # Install the patched version of cx_Freeze
     gunzip $CXFREEZEVER.tar.gz
@@ -44,9 +54,6 @@ install_prereqs() {
     cd $CXFREEZEVER
     $PYTHONBIN setup.py install
     cd ..
-
-    # Clean up resource directory
-    rm -rf $PYTHONTAR
     rm -rf $CXFREEZEVER
 
 
