@@ -30,7 +30,7 @@ install_prereqs() {
     # --------------------------
 
 
-    cd $DIR/../resources
+    cd $BUILD_DIR/resources
 
     # Install bundled Python version from source if needed
     gunzip $PYTHONTAR.tgz
@@ -39,8 +39,8 @@ install_prereqs() {
     cd ..
 
     # Install the patched version of cx_Freeze
-    gunzip $CXFREEZEVER.tgz
-    tar xf $CXFREEZEVER.tar.gz
+    gunzip $CXFREEZEVER.tar.gz
+    tar xf $CXFREEZEVER.tar
     cd $CXFREEZEVER
     $PYTHONBIN setup.py install
     cd ..
