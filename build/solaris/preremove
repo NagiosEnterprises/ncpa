@@ -18,6 +18,10 @@ fi
 # Reload manifests
 svcadm restart manifest-import
 
+# Remove the actual service configuration
+svccfg delete ncpa_listener
+svccfg delete ncpa_passive
+
 # Remove the files from /var
 rm -rf /usr/local/ncpa/var/run
 rm -f /usr/local/ncpa/var/*.crt
