@@ -1,11 +1,13 @@
 
 # Create services
 
-# ncpa_listener
-mv /usr/local/ncpa/ncpa_listener.xml /lib/svc/manifest/site/ncpa_listener.xml
-
-# ncpa_passive
-mv /usr/local/ncpa/ncpa_passive.xml /lib/svc/manifest/site/ncpa_passive.xml
+if [ -d /lib/svc/manifest/site ]; then
+	mv /usr/local/ncpa/ncpa_listener.xml /lib/svc/manifest/site/ncpa_listener.xml
+	mv /usr/local/ncpa/ncpa_passive.xml /lib/svc/manifest/site/ncpa_passive.xml
+else
+	mv /usr/local/ncpa/ncpa_listener.xml /var/svc/manifest/site/ncpa_listener.xml
+	mv /usr/local/ncpa/ncpa_passive.xml /var/svc/manifest/site/ncpa_passive.xml
+fi
 
 # Enable services
 svcadm enable site/ncpa_listener

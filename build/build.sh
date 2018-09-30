@@ -59,11 +59,11 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
 echo "Packaging for system type..."
 
 if [ "$UNAME" == "Linux" ]; then
-    . linux/package.sh
+    linux/package.sh
 elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
-    . solaris/package.sh
+    solaris/package.sh
 elif [ "$UNAME" == "Darwin" ]; then
-    . osx/package.sh
+    osx/package.sh
 else
     echo "No packaging method exists. You can locate binaries here:"
     echo "$BUILD_DIR/ncpa"
