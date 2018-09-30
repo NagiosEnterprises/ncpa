@@ -55,7 +55,8 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
 
     # Set permissions
-    chmod -R g+rw $BUILD_DIR/ncpa
+    chmod -R g+r $BUILD_DIR/ncpa
+    chmod -R a+r $BUILD_DIR/ncpa
     chown nagios:nagios $BUILD_DIR/ncpa/var
     chmod 775 $BUILD_DIR/ncpa/var
 )
