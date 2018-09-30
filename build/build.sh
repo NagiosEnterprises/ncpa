@@ -37,7 +37,7 @@ fi
 
 
 # Build the python with cx_Freeze
-echo -n "Building NCPA binaries..."
+echo "Building NCPA binaries..."
 
 find $AGENT_DIR -name *.pyc -exec rm '{}' \;
 mkdir -p $AGENT_DIR/plugins
@@ -49,15 +49,14 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
 (
     cd $AGENT_DIR
     $PYTHONBIN setup_posix.py build_exe > $BUILD_DIR/build.log
+    rm -rf $BUILD_DIR/ncpa
     cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
     chown root:nagios $BUILD_DIR/ncpa/var
     chmod 775 $BUILD_DIR/ncpa/var
 )
 
-echo "done."
-
 # Build package based on system
-echo -n "Packaging for system type..."
+echo "Packaging for system type..."
 
 if [ "$UNAME" == "Linux" ]; then
     . linux/package.sh
@@ -70,4 +69,3 @@ else
     echo "$BUILD_DIR/ncpa"
 fi
 
-echo "done."

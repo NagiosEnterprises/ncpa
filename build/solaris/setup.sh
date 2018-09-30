@@ -51,11 +51,16 @@ install_prereqs() {
     fi
 
     # Install the patched version of cx_Freeze
-    gunzip $CXFREEZEVER.tar.gz
-    tar xf $CXFREEZEVER.tar
+    if [ $SOLARIS -eq 11 ]; then
+        tar xf $CXFREEZEVER.tar.gz
+    else
+        gunzip $CXFREEZEVER.tar.gz
+        tar xf $CXFREEZEVER.tar
+    fi
     cd $CXFREEZEVER
     $PYTHONBIN setup.py install
     cd ..
+    rm -rf *.h
     rm -rf $CXFREEZEVER
 
 

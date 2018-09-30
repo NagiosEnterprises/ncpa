@@ -18,6 +18,8 @@ rm -rf $DIR/pkginfo.tmp
     cp solaris/postinstall postinstall
     cp solaris/preinstall preinstall
     cp solaris/preremove preremove
+    cp solaris/ncpa_listener.xml ncpa/ncpa_listener.xml
+    cp solaris/ncpa_passive.xml ncpa/ncpa_passive.xml
 
     # Add prototype file
     echo 'i pkginfo' > prototype
@@ -34,7 +36,6 @@ rm -rf $DIR/pkginfo.tmp
 
     # Remove build leftovers
     rm -rf /var/spool/pkg/ncpa
-    rm -rf ncpa
     rm -f prototype
     rm -f pkginfo
     rm -f postinstall
