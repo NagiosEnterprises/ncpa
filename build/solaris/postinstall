@@ -9,6 +9,8 @@ else
 	mv /usr/local/ncpa/ncpa_passive.xml /var/svc/manifest/site/ncpa_passive.xml
 fi
 
+svcadm restart manifest-import
+
 # Enable services
 svcadm enable site/ncpa_listener
 svcadm enable site/ncpa_passive
