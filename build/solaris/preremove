@@ -6,12 +6,12 @@ svcadm disable ncpa_passive
 # Remove the service xml
 if [ -f /lib/svc/manifest/site/ncpa_listener.xml ]; then
 	rm -f /lib/svc/manifest/site/ncpa_listener.xml
-elif [ -f /var/svc/manifest/site/ncpa_listener.xm ]; then
+elif [ -f /var/svc/manifest/site/ncpa_listener.xml ]; then
 	rm -f /var/svc/manifest/site/ncpa_listener.xml
 fi
 if [ -f /lib/svc/manifest/site/ncpa_passive.xml ]; then
 	rm -f /lib/svc/manifest/site/ncpa_passive.xml
-elif [ -f /var/svc/manifest/site/ncpa_passive.xm ]; then
+elif [ -f /var/svc/manifest/site/ncpa_passive.xml ]; then
 	rm -f /var/svc/manifest/site/ncpa_passive.xml
 fi
 

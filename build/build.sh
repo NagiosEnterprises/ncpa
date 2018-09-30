@@ -49,9 +49,14 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
 (
     cd $AGENT_DIR
     $PYTHONBIN setup_posix.py build_exe > $BUILD_DIR/build.log
+
+    # Move the ncpa binary data
     rm -rf $BUILD_DIR/ncpa
     cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
-    chown root:nagios $BUILD_DIR/ncpa/var
+
+    # Set permissions
+    chmod -R g+rw $BUILD_DIR/ncpa
+    chown nagios:nagios $BUILD_DIR/ncpa/var
     chmod 775 $BUILD_DIR/ncpa/var
 )
 
