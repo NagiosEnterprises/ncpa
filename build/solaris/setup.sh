@@ -25,10 +25,12 @@ install_prereqs() {
 
     # Install pre-reqs for Solaris systems
     if [ $SOLARIS -eq 10 ]; then
-        pkgutil -y -i python27 python27_dev
+        pkgutil -y -i gcc5core python27 python27_dev py_pip wget libffi_dev
         PYTHONBIN="python2.7"
+        LIBFFI_DEV="/opt/csw/lib/amd64/libffi-3.2.1/include"
     else
         pkg install gcc libffi zlib
+        LIBFFI_DEV="/usr/lib/amd64/libffi-3.2.1/include"
     fi
 
 
@@ -66,7 +68,7 @@ install_prereqs() {
     cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
 
     # Install pip python modules
-    CFLAGS="-I/usr/lib/amd64/libffi-3.2.1/include" $PYTHONBIN -m pip install -r $BASEDIR/../resources/require.txt --upgrade
+    CFLAGS="-I$libffi_dev" $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
 
 
     # --------------------------
