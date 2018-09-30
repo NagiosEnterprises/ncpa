@@ -4,12 +4,13 @@
 if [ -d /lib/svc/manifest/site ]; then
 	mv /usr/local/ncpa/ncpa_listener.xml /lib/svc/manifest/site/ncpa_listener.xml
 	mv /usr/local/ncpa/ncpa_passive.xml /lib/svc/manifest/site/ncpa_passive.xml
+	svcadm restart manifest-import
 else
 	mv /usr/local/ncpa/ncpa_listener.xml /var/svc/manifest/site/ncpa_listener.xml
 	mv /usr/local/ncpa/ncpa_passive.xml /var/svc/manifest/site/ncpa_passive.xml
+	svccfg import /var/svc/manifest/site/ncpa_listener.xml
+	svccfg import /var/svc/manifest/site/ncpa_passive.xml
 fi
-
-svcadm restart manifest-import
 
 # Enable services
 svcadm enable site/ncpa_listener
