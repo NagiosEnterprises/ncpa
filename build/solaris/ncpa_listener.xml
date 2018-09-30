@@ -1,57 +1,28 @@
 <?xml version="1.0" ?>
-<!DOCTYPE service_bundle
-  SYSTEM '/usr/share/lib/xml/dtd/service_bundle.dtd.1'>
-<service_bundle type="manifest" name="site/ncpa_listener">
+<!DOCTYPE service_bundle SYSTEM '/usr/share/lib/xml/dtd/service_bundle.dtd.1'>
+<service_bundle type="manifest" name="ncpa_listener">
     <service version="1" type="service" name="site/ncpa_listener">
-        <!--
-            The following dependency keeps us from starting until the
-            multi-user milestone is reached.
-        -->
         <dependency restart_on="none" type="service"
             name="multi_user_dependency" grouping="require_all">
-            <service_fmri value="svc:/milestone/multi-user"/>
+            <service_fmri value="svc:/milestone/multi-user" />
         </dependency>
         <exec_method timeout_seconds="60" type="method" name="start"
-            exec="/usr/local/ncpa/ncpa_listener"/>
+            exec="/usr/local/ncpa/ncpa_listener" />
         <exec_method timeout_seconds="60" type="method" name="stop"
-            exec="kill $(cat /usr/local/ncpa/var/run/ncpa_listener.pid)"/>
-        <!--
-            The exec attribute below can be changed to a command that SMF
-            should execute when the service is refreshed.  Use svcbundle -s
-            refresh-method to set the attribute.
-        -->
+            exec="kill $(cat /usr/local/ncpa/var/run/ncpa_listener.pid)" />
         <exec_method timeout_seconds="60" type="method" name="refresh"
-            exec=":true"/>
+            exec=":true" />
         <property_group type="framework" name="startd">
-            <propval type="astring" name="duration" value="transient"/>
+            <propval type="astring" name="duration" value="transient" />
         </property_group>
-        <instance enabled="true" name="default"/>
+        <instance enabled="true" name="default" />
         <template>
             <common_name>
-                <!--
-                    Replace loctext content with a short name for the
-                    service.
-                -->
-                <loctext xml:lang="C">
-                        site/ncpa_listener
-                </loctext>
+                <loctext xml:lang="C">ncpa_listener</loctext>
             </common_name>
             <description>
-                <!--
-                    Replace loctext content with a brief description of the
-                    service
-                -->
                 <loctext xml:lang="C">
-                        site/ncpa_listener
-                </loctext>
-            </common_name>
-            <description>
-                <!--
-                    Replace loctext content with a brief description of the
-                    service
-                -->
-                <loctext xml:lang="C">
-                        The site/ncpa_listener service.
+                        The ncpa listener service. Allows connections to ncpa API.
                 </loctext>
             </description>
         </template>
