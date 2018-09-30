@@ -59,6 +59,7 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     chmod -R a+r $BUILD_DIR/ncpa
     chown nagios:nagios $BUILD_DIR/ncpa/var
     chmod 775 $BUILD_DIR/ncpa/var
+    chmod 755 $BUILD_DIR/ncpa
 )
 
 # Build package based on system
