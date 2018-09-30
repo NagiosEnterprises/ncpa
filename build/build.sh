@@ -28,6 +28,7 @@ if [ ! -f prereqs.installed ] || [ $MANUAL -eq 1 ]; then
     read -r -p "Automatically install system pre-reqs? [Y/n]" resp
     if [[ $resp =~ ^(yes|y|Y| ) ]] || [[ -z $resp ]]; then
         install_prereqs
+        touch prereqs.installed
     fi
 fi
 
@@ -36,6 +37,7 @@ fi
 
 
 # Build the python with cx_Freeze
+echo -n "Building NCPA binaries..."
 
 find $AGENT_DIR -name *.pyc -exec rm '{}' \;
 mkdir -p $AGENT_DIR/plugins
@@ -52,6 +54,20 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     chmod 775 $BUILD_DIR/ncpa/var
 )
 
+echo "done."
+
 # Build package based on system
+echo -n "Packaging for system type..."
 
+if [ "$UNAME" == "Linux" ]; then
+    . linux/package.sh
+elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
+    . solaris/package.sh
+elif [ "$UNAME" == "Darwin" ]; then
+    . osx/package.sh
+else
+    echo "No packaging method exists. You can locate binaries here:"
+    echo "$BUILD_DIR/ncpa"
+fi
 
+echo "done."
