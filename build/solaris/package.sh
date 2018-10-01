@@ -11,6 +11,12 @@ sed "s/VERSION=.*/ARCH=$VERSION/" $DIR/pkginfo > $DIR/pkginfo.tmp
 sed "s/ARCH=.*/ARCH=$ARCH/" $DIR/pkginfo.tmp > $BUILD_DIR/pkginfo
 rm -rf $DIR/pkginfo.tmp
 
+# Check version of Solaris
+SOLARIS=11
+if cat /etc/release | grep s10x > /dev/null ; then
+    SOLARIS=10
+fi
+
 # Make the package and cleanup
 (
     cd $BUILD_DIR
@@ -23,8 +29,11 @@ rm -rf $DIR/pkginfo.tmp
     cp solaris/postinstall postinstall
     cp solaris/preinstall preinstall
     cp solaris/preremove preremove
-    cp solaris/ncpa_listener.xml ncpa/ncpa_listener.xml
-    cp solaris/ncpa_passive.xml ncpa/ncpa_passive.xml
+
+    if [ $SOLARIS -eq 10 ]; then
+        cp solaris/ncpa_listener.xml ncpa/ncpa_listener.xml
+        cp solaris/ncpa_passive.xml ncpa/ncpa_passive.xml
+    fi
 
     # Add prototype file
     echo 'i pkginfo' > prototype
