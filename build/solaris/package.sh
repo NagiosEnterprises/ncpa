@@ -14,6 +14,11 @@ rm -rf $DIR/pkginfo.tmp
 # Make the package and cleanup
 (
     cd $BUILD_DIR
+
+    # Clean up old package
+    rm -f ncpa*.pkg
+
+    # Add package information/scripts to pkg base
     cp pkginfo ncpa/pkginfo
     cp solaris/postinstall postinstall
     cp solaris/preinstall preinstall
@@ -31,7 +36,6 @@ rm -rf $DIR/pkginfo.tmp
     # Build package and create the .pkg file
     pkgmk -b $(pwd) -o
     pkgtrans -s /var/spool/pkg ncpa-$VERSION.$ARCH.pkg ncpa
-    rm -f ncpa-$VERSION.$ARCH.pkg
     mv -f /var/spool/pkg/ncpa-$VERSION.$ARCH.pkg .
 
     # Remove build leftovers
