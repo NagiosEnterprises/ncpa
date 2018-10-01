@@ -4,9 +4,98 @@
 UNAME=$(uname)
 BUILD_DIR=$(dirname "$(readlink -f "$0")")
 AGENT_DIR=$(realpath "$BUILD_DIR/../agent")
-MANUAL=0
+
+# User-defined variables
+SKIP_SETUP=0
+PACKAGE_ONLY=0
+BUILD_ONLY=0
+BUILD_TRAVIS=0
+
+
+# --------------------------
+# General functions
+# --------------------------
+
+
+usage() {
+    echo "Use the build.sh script to setup build environment, compile, "
+    echo "and package builds. Works with most common linux OS."
+    echo ""
+    echo "Example: ./build.sh"
+    echo ""
+    echo "Options:"
+    echo "  -h | --help         Show help/documentation"
+    echo "  -S | --skip-setup   Use this option if you have manually set up"
+    echo "                      the build environment (don't auto setup)"
+    echo "  -p | --package-only Bundle a package only (ncpa folder must exist"
+    echo "                      in the build directory)"
+    echo "  -b | --build-only   Build the ncpa binaries only (do not package)"
+    echo "  -T | --travis       Set up environment for Travis CI builds"
+    echo "  -c | --clean        Clean up the build directory"
+    echo ""
+    echo "Operating Systems Supported:"
+    echo " - CentOS, RHEL, Oracle, CloudLinux"
+    echo " - Ubuntu, Debian"
+    echo " - OpenSUSE, SLES"
+    echo " - AIX *"
+    echo " - Solaris *"
+    echo ""
+    echo "* Some systems require extra initial setup, find out more:"
+    echo "https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst"
+    echo ""
+}
+
+
+clean_build_dir() {
+    echo "Cleaning up build directory..."
+    rm -rf $BUILD_DIR/ncpa-*
+    rm -rf $AGENT_DIR/build
+    rm -rf $BUILD_DIR/NCPA-INSTALL-*
+    rm -f $BUILD_DIR/*.rpm $BUILD_DIR/*.dmg $BUILD_DIR/*.deb
+    rm -f $BUILD_DIR/ncpa.spec
+    rm -f $BUILD_DIR/*.tar.gz
+    rm -rf $BUILD_ROOT
+    rm -rf $BUILD_DIR/debbuild
+}
+
+
+# --------------------------
+# Startup actions
+# --------------------------
+
 
 # Get the arguments passed to us
+
+while [ -n "$1" ]; do
+    case "$1" in
+        -h | --help)
+            usage
+            exit 0
+            ;;
+        -c | --clean)
+            clean_build_dir
+            exit 0
+            ;;
+        -S | --skip-setup)
+            SKIP_SETUP=1
+            ;;
+        -p | --package-only)
+            PACKAGE_ONLY=1
+            ;;
+        -b | --build-only)
+            BUILD_ONLY=1
+            ;;
+        -T | --travis)
+            BUILD_TRAVIS=1
+            ;;
+    esac
+    shift
+done
+
+
+# --------------------------
+# Do initial setup
+# --------------------------
 
 
 # Load required things for different systems
@@ -24,16 +113,43 @@ else
 fi
 
 # Check that pre-reqs have been installed
-if [ ! -f prereqs.installed ] || [ $MANUAL -eq 1 ]; then
-    read -r -p "Automatically install system pre-reqs? [Y/n]" resp
-    if [[ $resp =~ ^(yes|y|Y| ) ]] || [[ -z $resp ]]; then
-        install_prereqs
-        touch prereqs.installed
+if [ $BUILD_TRAVIS -ne 1 ] && [ $PACKAGE_ONLY -eq 0 ]; then
+    if [ ! -f prereqs.installed ] || [ $SKIP_SETUP -eq 0 ]; then
+        read -r -p "Automatically install system pre-reqs? [Y/n]" resp
+        if [[ $resp =~ ^(yes|y|Y| ) ]] || [[ -z $resp ]]; then
+            install_prereqs
+            touch prereqs.installed
+        fi
     fi
+elif [ $BUILD_TRAVIS -eq 1 ]; then
+
+    # Build cx_Freeze
+    (
+        # Install the patched version of cx_Freeze
+        # TODO: Remove this in python3 in favor of pip install
+        cd resources
+        tar xf cx_Freeze-4.3.4.tar.gz
+        cd cx_Freeze-4.3.4
+        python2.7 setup.py install
+        cd ..
+        rm -rf cx_Freeze-4.3.4
+    )
+
+    # Set up user and groups
+    sudo useradd nagios
+    sudo groupadd nagios
+    sudo usermod -g nagios nagios
+
 fi
 
-# Update the required python modules
 
+# Update the required python modules
+update_py_packages
+
+
+# --------------------------
+# Build
+# --------------------------
 
 
 # Build the python with cx_Freeze
@@ -61,6 +177,12 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     chmod 775 $BUILD_DIR/ncpa/var
     chmod 755 $BUILD_DIR/ncpa
 )
+
+
+# --------------------------
+# Package
+# --------------------------
+
 
 # Build package based on system
 echo "Packaging for system type..."

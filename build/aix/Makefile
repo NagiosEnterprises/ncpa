@@ -1,6 +1,6 @@
 PYTHONVER = python
 PYTHONBIN = /usr/bin/python
-NCPAVER = 2.1.5
+NCPAVER = 2.1.6
 INSTALLTARGET = /usr/local/ncpa/
 BUILDROOT = /tmp/test/usr/src/redhat
 BASEDIR = /tmp/test/ncpa

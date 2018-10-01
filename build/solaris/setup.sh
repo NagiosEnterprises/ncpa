@@ -73,7 +73,7 @@ install_prereqs() {
     cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
 
     # Install pip python modules
-    CPPFLAGS="-I$LIBFFI_DEV" $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary=greenlet
+    update_py_packages
 
 
     # --------------------------
@@ -86,4 +86,9 @@ install_prereqs() {
     usermod -g nagios nagios
 
 
+}
+
+
+update_py_packages() {
+    CPPFLAGS="-I$LIBFFI_DEV" $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary=greenlet
 }

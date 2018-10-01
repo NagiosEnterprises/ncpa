@@ -29,6 +29,8 @@ if [ $unixtype == "Linux" ]; then
             distro="Scientific"
         elif [ -r /etc/oracle-release ]; then
             distro="Oracle"
+        elif rpm -q cloudlinux-release; then
+            distro="CloudLinux"
         elif rpm -q fedora-release; then
             distro="Fedora"
         elif rpm -q redhat-release || rpm -q redhat-release-server; then
@@ -73,7 +75,7 @@ ver="${version%%.*}"
 
 # Set dist variable like before (el5/el6 on both CentOS & Red Hat)
 case "$distro" in
-    "CentOS" | "RHEL" | "OracleServer" )
+    "CentOS" | "RHEL" | "Oracle" | "CloudLinux" )
         dist="el$ver"
         ;;
     "Fedora" )
