@@ -118,6 +118,7 @@ if [ $BUILD_TRAVIS -ne 1 ] && [ $PACKAGE_ONLY -eq 0 ]; then
         read -r -p "Automatically install system pre-reqs? [Y/n]" resp
         if [[ $resp =~ ^(yes|y|Y| ) ]] || [[ -z $resp ]]; then
             install_prereqs
+            cd $BUILD_DIR
             touch prereqs.installed
         fi
     fi
@@ -127,7 +128,7 @@ elif [ $BUILD_TRAVIS -eq 1 ]; then
     (
         # Install the patched version of cx_Freeze
         # TODO: Remove this in python3 in favor of pip install
-        cd resources
+        cd $BUILD_DIR/resources
         tar xf cx_Freeze-4.3.4.tar.gz
         cd cx_Freeze-4.3.4
         python2.7 setup.py install
@@ -139,6 +140,8 @@ elif [ $BUILD_TRAVIS -eq 1 ]; then
     sudo useradd nagios
     sudo groupadd nagios
     sudo usermod -g nagios nagios
+
+    cd $BUILD_DIR
 
 fi
 

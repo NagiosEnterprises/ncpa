@@ -16,6 +16,10 @@ if cat /etc/release | grep s10x > /dev/null ; then
     PYTHONBIN="/opt/csw/bin/python2.7"
 fi
 
+update_py_packages() {
+    CPPFLAGS="-I$LIBFFI_DEV" $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary=greenlet
+}
+
 install_prereqs() {
 
 
@@ -86,9 +90,4 @@ install_prereqs() {
     usermod -g nagios nagios
 
 
-}
-
-
-update_py_packages() {
-    CPPFLAGS="-I$LIBFFI_DEV" $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary=greenlet
 }

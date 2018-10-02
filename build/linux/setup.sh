@@ -9,6 +9,10 @@ CXFREEZEVER="cx_Freeze-4.3.4"
 # Get information about system
 ./init.sh
 
+update_py_packages() {
+    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
+}
+
 install_prereqs() {
 
 
@@ -88,8 +92,4 @@ install_prereqs() {
     usermod -g nagios nagios
 
 
-}
-
-update_py_packages() {
-    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
 }
