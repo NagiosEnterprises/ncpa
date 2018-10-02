@@ -188,6 +188,7 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     chmod 755 $BUILD_DIR/ncpa
 
     # Build tarball
+    cd $BUILD_DIR
     tar zcvf ncpa-$VERSION.tar.gz ncpa
 )
 
