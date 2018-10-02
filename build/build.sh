@@ -8,6 +8,7 @@ fi
 UNAME=$(uname)
 BUILD_DIR=$(dirname "$(readlink -f "$0")")
 AGENT_DIR=$($realpath "$BUILD_DIR/../agent")
+VERSION=$(cat $BUILD_DIR/../VERSION)
 
 # User-defined variables
 SKIP_SETUP=0
@@ -105,25 +106,25 @@ done
 # Load required things for different systems
 echo "Running build for: $UNAME"
 if [ "$UNAME" == "Linux" ]; then
-    . linux/setup.sh
+    . $BUILD_DIR/linux/setup.sh
 elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
-    . solaris/setup.sh
+    . $BUILD_DIR/solaris/setup.sh
 elif [ "$UNAME" == "Darwin" ]; then
-    . osx/setup.sh
+    . $BUILD_DIR/osx/setup.sh
 else 
     echo "Not a supported system for our build script."
     echo "If you're sure all pre-reqs are installed, try running the"
-    echo "build manually: sh build.sh --manual"
+    echo "build without setup: ./build.sh --build-only"
 fi
 
 # Check that pre-reqs have been installed
 if [ $BUILD_TRAVIS -ne 1 ] && [ $PACKAGE_ONLY -eq 0 ]; then
-    if [ ! -f prereqs.installed ] && [ $SKIP_SETUP -eq 0 ]; then
-        read -r -p "Automatically install system pre-reqs? [Y/n]" resp
+    if [ ! -f $BUILD_DIR/prereqs.installed ] && [ $SKIP_SETUP -eq 0 ]; then
+        echo "** WARNING: This should not be done on a production system. **"
+        read -r -p "Automatically install system pre-reqs? [Y/n] " resp
         if [[ $resp =~ ^(yes|y|Y| ) ]] || [[ -z $resp ]]; then
             install_prereqs
-            cd $BUILD_DIR
-            touch prereqs.installed
+            touch $BUILD_DIR/prereqs.installed
         fi
     fi
 elif [ $BUILD_TRAVIS -eq 1 ]; then
@@ -145,13 +146,12 @@ elif [ $BUILD_TRAVIS -eq 1 ]; then
     sudo groupadd nagios
     sudo usermod -g nagios nagios
 
-    cd $BUILD_DIR
-
 fi
 
 
 # Update the required python modules
-update_py_packages >> build.log
+cd $BUILD_DIR
+update_py_packages >> $BUILD_DIR/build.log
 
 
 # --------------------------
@@ -161,7 +161,7 @@ update_py_packages >> build.log
 
 # Build the python with cx_Freeze
 echo "Building NCPA binaries..."
-
+cd $BUILD_DIR
 find $AGENT_DIR -name *.pyc -exec rm '{}' \;
 mkdir -p $AGENT_DIR/plugins
 mkdir -p $AGENT_DIR/build
@@ -186,6 +186,9 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
     chmod 755 $BUILD_DIR/ncpa/var
     chmod 755 $BUILD_DIR/ncpa
+
+    # Build tarball
+    tar zcvf ncpa-$VERSION.tar.gz ncpa
 )
 
 
