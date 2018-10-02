@@ -11,7 +11,7 @@ VERSION=$(cat $BUILD_DIR/../VERSION)
 
 # Build spec file
 cd $BUILD_DIR
-cat linux/ncpa.spec | sed "s/__VERSION__/$VERSION/g" | sed "s@__BUILDROOT__@$BUILD_RPM_DIR@g" > $BUILD_DIR/ncpa.spec
+cat linux/ncpa.spec | sed "s/__VERSION__/$VERSION/g" | sed "s|__BUILDROOT__|$BUILD_RPM_DIR|g" > $BUILD_DIR/ncpa.spec
 
 # Build rpm package (also used on Debian systems)
 (

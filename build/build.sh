@@ -189,7 +189,10 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
 
     # Build tarball
     cd $BUILD_DIR
-    tar zcvf ncpa-$VERSION.tar.gz ncpa
+    cp ncpa ncpa-$VERSION
+    tar cvf ncpa-$VERSION.tar ncpa-$VERSION
+    gzip ncpa-$VERSION.tar
+    rm ncpa-$VERSION
 )
 
 
