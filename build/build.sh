@@ -114,7 +114,7 @@ fi
 
 # Check that pre-reqs have been installed
 if [ $BUILD_TRAVIS -ne 1 ] && [ $PACKAGE_ONLY -eq 0 ]; then
-    if [ ! -f prereqs.installed ] || [ $SKIP_SETUP -eq 0 ]; then
+    if [ ! -f prereqs.installed ] && [ $SKIP_SETUP -eq 0 ]; then
         read -r -p "Automatically install system pre-reqs? [Y/n]" resp
         if [[ $resp =~ ^(yes|y|Y| ) ]] || [[ -z $resp ]]; then
             install_prereqs
@@ -144,7 +144,7 @@ fi
 
 
 # Update the required python modules
-update_py_packages
+update_py_packages >> build.log
 
 
 # --------------------------
