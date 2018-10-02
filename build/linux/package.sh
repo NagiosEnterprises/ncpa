@@ -7,5 +7,5 @@ BUILD_RPM_DIR="/usr/src/redhat"
 VERSION=$(cat $BUILD_DIR/../VERSION)
 
 # Get information about system
-./init.sh
+. $BUILD_DIR/linux/init.sh
 
