@@ -1,9 +1,13 @@
 #!/bin/bash -e
 
 # Global variables
+realpath=$(which realpath)
+if [ ! -f $realpath ]; then
+    realpath=$(which grealpath)
+fi
 UNAME=$(uname)
 BUILD_DIR=$(dirname "$(readlink -f "$0")")
-AGENT_DIR=$(realpath "$BUILD_DIR/../agent")
+AGENT_DIR=$($realpath "$BUILD_DIR/../agent")
 
 # User-defined variables
 SKIP_SETUP=0

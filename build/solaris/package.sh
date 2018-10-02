@@ -1,8 +1,12 @@
 #!/bin/bash
 
 # Get version
+realpath=$(which realpath)
+if [ ! -f $realpath ]; then
+    realpath=$(which grealpath)
+fi
 DIR=$(dirname "$(readlink -f "$0")")
-BUILD_DIR=$(realpath "$DIR/..")
+BUILD_DIR=$($realpath "$DIR/..")
 VERSION=$(cat $BUILD_DIR/../VERSION)
 ARCH=$(arch)
 
