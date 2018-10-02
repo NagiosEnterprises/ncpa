@@ -2,3 +2,7 @@ language: python
 python: "2.7"
 install: build/build.sh --travis
 script: pytest
+addons:
+  apt:
+    packages:
+    - coreutils
