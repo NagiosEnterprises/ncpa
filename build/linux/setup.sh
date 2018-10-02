@@ -7,7 +7,7 @@ PYTHONBIN="/usr/local/bin/python2.7"
 CXFREEZEVER="cx_Freeze-4.3.4"
 
 # Get information about system
-./init.sh
+$BUILD_DIR/linux/init.sh
 
 update_py_packages() {
     $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
