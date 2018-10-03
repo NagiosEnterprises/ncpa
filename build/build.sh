@@ -177,6 +177,13 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     rm -rf $BUILD_DIR/ncpa
     cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
 
+    # REMOVE LIBFFI COPY - PLEASE CHANGE THIS LATER
+    # It should be in .libs_cffi_backend for proper linking and
+    # possibly in the future we will fix this but we have to include
+    # the exact version ... this will delete the duplicate which should
+    # have a special name like libffi-6322464e.so.6.0.4
+    rm -f $BUILD_DIR/ncpa/libffi-*.so.*
+
     # Set permissions
     chmod -R g+r $BUILD_DIR/ncpa
     chmod -R a+r $BUILD_DIR/ncpa
