@@ -7,6 +7,7 @@ import shutil
 from cx_Freeze import setup, Executable
 import os
 import tarfile
+import site
 
 version_file = os.path.join(os.path.dirname(__file__),
                             '..',
@@ -40,10 +41,7 @@ if 'aix' in sys.platform:
                       ('/opt/freeware/lib/libgcc_s.a', 'libgcc_s.a')]
 
 # For new cffi and cryptography
-cffi_backend = os.path.join('/usr/lib64/python2.7/site-packages', '.libs_cffi_backend')
-if not os.path.isdir(cffi_backend):
-    cffi_backend = os.path.join('/usr/local/lib/python2.7/site-packages', '.libs_cffi_backend')
-
+cffi_backend = os.path.join(site.getsitepackages()[0], '.libs_cffi_backend')
 if os.path.isdir(cffi_backend):
     for f in os.listdir(cffi_backend):
         include_files += [(os.path.join(cffi_backend, f), os.path.join('.libs_cffi_backend', f))]
