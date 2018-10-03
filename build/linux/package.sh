@@ -24,7 +24,7 @@ cat linux/ncpa.spec | sed "s/__VERSION__/$VERSION/g" | sed "s|__BUILDROOT__|$BUI
     rm -f $BUILD_RPM_DIR/SPECS/ncpa.spec
     cp -f $BUILD_DIR/ncpa.spec $BUILD_RPM_DIR/SPECS/
     QA_RPATHS='$[ 0x0002 ]' rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --define "_topdir $BUILD_RPM_DIR"
-    find $BUILD_RPM_DIR/RPMS -name 'ncpa-$VERSION*' -exec cp {} . \;
+    find $BUILD_RPM_DIR/RPMS -name "ncpa-$VERSION*" -exec cp {} . \;
 )
 
 # Convert into a deb package for Debian systems

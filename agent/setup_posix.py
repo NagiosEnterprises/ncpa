@@ -54,8 +54,6 @@ include_files += [('build_resources/LicenseAgreement.txt', 'build_resources/Lice
                   ('build_resources/listener_init', 'build_resources/listener_init'),
                   ('build_resources/passive_init', 'build_resources/passive_init')]
 
-
-
 buildoptions = dict(includes=includes,
                     include_files=include_files,
                     excludes=excludes,
