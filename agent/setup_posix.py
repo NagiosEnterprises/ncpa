@@ -41,6 +41,9 @@ if 'aix' in sys.platform:
 
 # For new cffi and cryptography
 cffi_backend = os.path.join('/usr/lib64/python2.7/site-packages', '.libs_cffi_backend')
+if not os.path.isdir(cffi_backend):
+    cffi_backend = os.path.join('/usr/local/lib/python2.7/site-packages', '.libs_cffi_backend')
+
 if os.path.isdir(cffi_backend):
     for f in os.listdir(cffi_backend):
         include_files += [(os.path.join(cffi_backend, f), os.path.join('.libs_cffi_backend', f))]
