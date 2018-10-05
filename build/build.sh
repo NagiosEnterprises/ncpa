@@ -1,13 +1,9 @@
 #!/bin/bash -e
 
 # Global variables
-realpath=$(which realpath)
-if [ ! -f $realpath ]; then
-    realpath=$(which grealpath)
-fi
 UNAME=$(uname)
 BUILD_DIR=$(dirname "$(readlink -f "$0")")
-AGENT_DIR=$($realpath "$BUILD_DIR/../agent")
+AGENT_DIR=$(readlink -f "$BUILD_DIR/../agent")
 VERSION=$(cat $BUILD_DIR/../VERSION)
 
 # User-defined variables
@@ -151,6 +147,7 @@ fi
 
 # Update the required python modules
 cd $BUILD_DIR
+echo "Updating python modules..."
 update_py_packages >> $BUILD_DIR/build.log
 
 

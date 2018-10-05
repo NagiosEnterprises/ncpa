@@ -18,7 +18,13 @@ architecture=`uname -m`
 
 # Get OS & version
 if [ $unixtype == "Linux" ]; then
-    if which lsb_release &>/dev/null; then
+    if [ -r /etc/os-release ]; then
+        source /etc/os-release
+        if [ -n "$NAME" ]; then
+            distro=$NAME
+            version=$VERSION_ID
+        fi
+    elif which lsb_release &>/dev/null; then
         distro=`lsb_release -si`
         version=`lsb_release -sr`
     elif [ -r /etc/redhat-release ]; then
@@ -38,16 +44,6 @@ if [ $unixtype == "Linux" ]; then
         fi >/dev/null
 
         version=`sed 's/.*release \([0-9.]\+\).*/\1/' /etc/redhat-release`
-    else
-        # Release is not RedHat or CentOS, let's start by checking for SuSE
-        # or we can just make the last-ditch effort to find out the OS by sourcing os-release if it exists
-        if [ -r /etc/os-release ]; then
-            source /etc/os-release
-            if [ -n "$NAME" ]; then
-                distro=$NAME
-                version=$VERSION_ID
-            fi
-        fi
     fi
 elif [ $unixtype == "Darwin" ]; then
     distro="MacOSX"
@@ -55,11 +51,8 @@ elif [ $unixtype == "Darwin" ]; then
 fi
 
 # Add patch level to the version of SLES (because they don't...)
-if [ "$distro" == "SUSE LINUX" ]; then
-    if [ -r /etc/SuSE-release ]; then
-        patchlevel=$(cat /etc/SuSE-release | cut -d ' ' -f 3 -s | sed -n 3p)
-        version="$version.$patchlevel"
-    fi
+if [ "$distro" == "openSUSE Tumbleweed" ] || [ "$distro" == "openSUSE Leap" ]; then
+    $distro="OpenSUSE"
 fi
 
 # Verify that we have a distro now
@@ -84,11 +77,14 @@ case "$distro" in
     "Debian" )
         dist="debian$ver"
         ;;
-    "SUSE LINUX" )
-        dist="suse$ver"
+    "OpenSUSE" )
+        dist="os$ver"
         ;;
     "MacOSX" )
         dist="osx$ver"
+        ;;
+    "SLES" )
+        dist="sles$ver"
         ;;
     *)
         dist=$(echo "$distro$ver" | tr A-Z a-z)
