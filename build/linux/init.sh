@@ -18,17 +18,7 @@ architecture=`uname -m`
 
 # Get OS & version
 if [ $unixtype == "Linux" ]; then
-    if [ -r /etc/os-release ]; then
-        source /etc/os-release
-        if [ -n "$NAME" ]; then
-            distro=$NAME
-            version=$VERSION_ID
-        fi
-    elif which lsb_release &>/dev/null; then
-        distro=`lsb_release -si`
-        version=`lsb_release -sr`
-    elif [ -r /etc/redhat-release ]; then
-
+    if [ -r /etc/redhat-release ]; then
         if rpm -q centos-release; then
             distro="CentOS"
         elif rpm -q sl-release; then
@@ -42,8 +32,16 @@ if [ $unixtype == "Linux" ]; then
         elif rpm -q redhat-release || rpm -q redhat-release-server; then
             distro="RHEL"
         fi >/dev/null
-
         version=`sed 's/.*release \([0-9.]\+\).*/\1/' /etc/redhat-release`
+    elif [ -r /etc/os-release ]; then
+        source /etc/os-release
+        if [ -n "$NAME" ]; then
+            distro=$NAME
+            version=$VERSION_ID
+        fi
+    elif which lsb_release &>/dev/null; then
+        distro=`lsb_release -si`
+        version=`lsb_release -sr`
     fi
 elif [ $unixtype == "Darwin" ]; then
     distro="MacOSX"
