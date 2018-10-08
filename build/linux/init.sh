@@ -52,7 +52,7 @@ fi
 
 # Add patch level to the version of SLES (because they don't...)
 if [ "$distro" == "openSUSE Tumbleweed" ] || [ "$distro" == "openSUSE Leap" ]; then
-    $distro="OpenSUSE"
+    distro="OpenSUSE"
 fi
 
 # Verify that we have a distro now
