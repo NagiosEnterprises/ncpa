@@ -10,11 +10,6 @@ SKIP_PYTHON=0
 # Get information about system
 . $BUILD_DIR/linux/init.sh
 
-# Set the python location for special distros
-if [ "$dist" == "sles15" ] || [ "$dist" == "sles12" ] || [ "$distro" == "OpenSUSE" ]; then
-    
-fi
-
 install_prereqs() {
 
 
