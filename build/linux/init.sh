@@ -22,11 +22,11 @@ if [ $unixtype == "Linux" ]; then
         source /etc/os-release
         if [ -n "$NAME" ]; then
             distro=$NAME
-            vers=$VERSION_ID
+            version=$VERSION_ID
         fi
     elif which lsb_release &>/dev/null; then
         distro=`lsb_release -si`
-        vers=`lsb_release -sr`
+        version=`lsb_release -sr`
     elif [ -r /etc/redhat-release ]; then
 
         if rpm -q centos-release; then
@@ -43,11 +43,11 @@ if [ $unixtype == "Linux" ]; then
             distro="RHEL"
         fi >/dev/null
 
-        vers=`sed 's/.*release \([0-9.]\+\).*/\1/' /etc/redhat-release`
+        version=`sed 's/.*release \([0-9.]\+\).*/\1/' /etc/redhat-release`
     fi
 elif [ $unixtype == "Darwin" ]; then
     distro="MacOSX"
-    vers=`sw_vers -productVersion`
+    version=`sw_vers -productVersion`
 fi
 
 # Add patch level to the version of SLES (because they don't...)
@@ -64,7 +64,7 @@ fi
 # OS-related variables have a detailed long variable, and a more useful short
 # one: distro/dist, version/ver, architecture/arch. If in doubt, use the short
 # short major version, e.g. "6" instead of "6.2"
-ver="${vers%%.*}"
+ver="${version%%.*}"
 
 # Set dist variable like before (el5/el6 on both CentOS & Red Hat)
 case "$distro" in
