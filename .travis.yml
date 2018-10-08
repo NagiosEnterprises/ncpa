@@ -1,4 +1,4 @@
 language: python
 python: "2.7"
-install: sudo build/build.sh --travis
+install: sudo build/build.sh --build-only --travis
 script: pytest

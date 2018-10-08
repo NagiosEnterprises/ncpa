@@ -138,8 +138,8 @@ elif [ $BUILD_TRAVIS -eq 1 ]; then
     )
 
     # Set up user and groups
-    sudo useradd nagios
-    sudo usermod -g nagios nagios
+    useradd nagios
+    usermod -g nagios nagios
 
 fi
 
@@ -204,17 +204,20 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
 # --------------------------
 
 
-# Build package based on system
-echo "Packaging for system type..."
+if [ $BUILD_ONLY -eq 0 ]; then
 
-if [ "$UNAME" == "Linux" ]; then
-    linux/package.sh
-elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
-    solaris/package.sh
-elif [ "$UNAME" == "Darwin" ]; then
-    osx/package.sh
-else
-    echo "No packaging method exists. You can locate binaries here:"
-    echo "$BUILD_DIR/ncpa"
+    # Build package based on system
+    echo "Packaging for system type..."
+
+    if [ "$UNAME" == "Linux" ]; then
+        linux/package.sh
+    elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
+        solaris/package.sh
+    elif [ "$UNAME" == "Darwin" ]; then
+        osx/package.sh
+    else
+        echo "No packaging method exists. You can locate binaries here:"
+        echo "$BUILD_DIR/ncpa"
+    fi
+
 fi
-
