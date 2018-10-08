@@ -125,20 +125,10 @@ if [ $BUILD_TRAVIS -eq 0 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; 
     fi
 elif [ $BUILD_TRAVIS -eq 1 ]; then
 
-    # Build cx_Freeze
-    (
-        # Install the patched version of cx_Freeze
-        # TODO: Remove this in python3 in favor of pip install
-        cd $BUILD_DIR/resources
-        tar xf cx_Freeze-4.3.4.tar.gz
-        cd cx_Freeze-4.3.4
-        python setup.py install
-        cd ..
-        rm -rf cx_Freeze-4.3.4
-    )
-
-    # Set up user and groups
+    # Set up travis environment
     useradd nagios
+    python -m pip install -r resources/require.txt --upgrade
+    exit 0
 
 fi
 
@@ -146,11 +136,7 @@ fi
 # Update the required python modules
 cd $BUILD_DIR
 echo "Updating python modules..."
-if [ $BUILD_TRAVIS -eq 0 ]; then
-    update_py_packages >> $BUILD_DIR/build.log
-else
-    python -m pip install -r resources/require.txt --upgrade
-fi
+update_py_packages >> $BUILD_DIR/build.log
 
 
 # --------------------------
