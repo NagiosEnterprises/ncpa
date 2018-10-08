@@ -1,14 +1,14 @@
 #!/bin/bash
 
+# Get information about system
+. $BUILD_DIR/linux/init.sh
+
 # Globals
 PYTHONTAR="Python-2.7.14"
 PYTHONVER="python2.7"
 PYTHONBIN="/usr/local/bin/python2.7"
 CXFREEZEVER="cx_Freeze-4.3.4"
 SKIP_PYTHON=0
-
-# Get information about system
-. $BUILD_DIR/linux/init.sh
 
 # Set the python location for special distros
 if [ "$dist" == "sles15" ] || [ "$dist" == "sles12" ] || [ "$distro" == "OpenSUSE" ]; then
@@ -44,7 +44,6 @@ install_prereqs() {
 
             zypper install gcc gcc-c++ python python-devel zlib zlib-devel openssl libopenssl-devel sqlite3 sqlite3-devel rpm-build wget
             SKIP_PYTHON=1
-            PYTHONBIN=$(which python2.7)
 
         elif [ "$dist" == "sles11" ]; then
 

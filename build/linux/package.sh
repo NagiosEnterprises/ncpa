@@ -1,13 +1,13 @@
 #!/bin/bash -e
 
+# Get information about system
+. $BUILD_DIR/linux/init.sh
+
 # Set global build opts
 DIR=$(dirname "$(readlink -f "$0")")
 BUILD_DIR=$(readlink -f "$DIR/..")
 BUILD_RPM_DIR="/usr/src/redhat"
 VERSION=$(cat $BUILD_DIR/../VERSION)
-
-# Get information about system
-. $BUILD_DIR/linux/init.sh
 
 # Build spec file
 cd $BUILD_DIR
