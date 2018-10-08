@@ -132,18 +132,13 @@ elif [ $BUILD_TRAVIS -eq 1 ]; then
         cd $BUILD_DIR/resources
         tar xf cx_Freeze-4.3.4.tar.gz
         cd cx_Freeze-4.3.4
-        python2.7 setup.py install
+        python setup.py install
         cd ..
         rm -rf cx_Freeze-4.3.4
     )
 
-    # Install special packages
-    python2.7 -m pip install --upgrade pip
-    python2.7 -m pip install urllib3[secure]
-
     # Set up user and groups
     useradd nagios
-    usermod -g nagios nagios
 
 fi
 
@@ -151,7 +146,11 @@ fi
 # Update the required python modules
 cd $BUILD_DIR
 echo "Updating python modules..."
-update_py_packages >> $BUILD_DIR/build.log
+if [ $BUILD_TRAVIS -eq 0 ]; then
+    update_py_packages >> $BUILD_DIR/build.log
+else
+    python -m pip install -r ../resources/require.txt --upgrade
+fi
 
 
 # --------------------------
