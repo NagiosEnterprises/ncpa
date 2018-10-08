@@ -10,6 +10,11 @@ SKIP_PYTHON=0
 # Get information about system
 . $BUILD_DIR/linux/init.sh
 
+# Set the python location for special distros
+if [ "$dist" == "sles15" ] || [ "$dist" == "sles12" ] || [ "$distro" == "OpenSUSE" ]; then
+    PYTHONBIN=$(which python2.7)
+fi
+
 update_py_packages() {
     $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
 }
