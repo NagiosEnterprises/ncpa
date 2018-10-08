@@ -149,7 +149,7 @@ echo "Updating python modules..."
 if [ $BUILD_TRAVIS -eq 0 ]; then
     update_py_packages >> $BUILD_DIR/build.log
 else
-    python -m pip install -r ../resources/require.txt --upgrade
+    python -m pip install -r resources/require.txt --upgrade
 fi
 
 
