@@ -41,10 +41,13 @@ if 'aix' in sys.platform:
                       ('/opt/freeware/lib/libgcc_s.a', 'libgcc_s.a')]
 
 # For new cffi and cryptography
-cffi_backend = os.path.join(site.getsitepackages()[0], '.libs_cffi_backend')
-if os.path.isdir(cffi_backend):
-    for f in os.listdir(cffi_backend):
-        include_files += [(os.path.join(cffi_backend, f), os.path.join('.libs_cffi_backend', f))]
+try:
+    cffi_backend = os.path.join(site.getsitepackages()[0], '.libs_cffi_backend')
+    if os.path.isdir(cffi_backend):
+        for f in os.listdir(cffi_backend):
+            include_files += [(os.path.join(cffi_backend, f), os.path.join('.libs_cffi_backend', f))]
+except AttributeError as ex:
+    pass
 
 include_files += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                   ('build_resources/ncpa_listener.plist', 'build_resources/ncpa_listener.plist'),
