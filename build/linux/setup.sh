@@ -3,7 +3,7 @@
 # Globals
 PYTHONTAR="Python-2.7.14"
 PYTHONVER="python2.7"
-PYTHONBIN="/usr/local/bin/python2.7"
+PYTHONBIN=$(which python2.7)
 CXFREEZEVER="cx_Freeze-4.3.4"
 SKIP_PYTHON=0
 
@@ -12,12 +12,8 @@ SKIP_PYTHON=0
 
 # Set the python location for special distros
 if [ "$dist" == "sles15" ] || [ "$dist" == "sles12" ] || [ "$distro" == "OpenSUSE" ]; then
-    PYTHONBIN=$(which python2.7)
+    
 fi
-
-update_py_packages() {
-    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
-}
 
 install_prereqs() {
 
