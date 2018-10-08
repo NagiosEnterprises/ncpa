@@ -138,8 +138,8 @@ elif [ $BUILD_TRAVIS -eq 1 ]; then
     )
 
     # Install special packages
-    apt-get install -y libffi-dev libssl-dev
-    python2.7 -m pip install requests[security]
+    python2.7 -m pip install --upgrade pip
+    python2.7 -m pip install urllib3[secure]
 
     # Set up user and groups
     useradd nagios
