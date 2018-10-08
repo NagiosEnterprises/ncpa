@@ -37,5 +37,6 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
     alien -c -k -v *.rpm
     cd $BUILD_DIR
     cp debbuild/*.deb .
+    rm -rf *.rpm
 
 fi

@@ -210,4 +210,8 @@ if [ $BUILD_ONLY -eq 0 ]; then
         echo "$BUILD_DIR/ncpa"
     fi
 
+    # Remove tar.gz
+    cd $BUILD_DIR
+    rm -rf *.tar.gz
+
 fi
