@@ -114,7 +114,7 @@ else
 fi
 
 # Check that pre-reqs have been installed
-if [ $BUILD_TRAVIS -ne 1 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; then
+if [ $BUILD_TRAVIS -eq 0 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; then
     if [ ! -f $BUILD_DIR/prereqs.installed ] && [ $SKIP_SETUP -eq 0 ]; then
         echo "** WARNING: This should not be done on a production system. **"
         read -r -p "Automatically install system pre-reqs? [Y/n] " resp
@@ -139,7 +139,6 @@ elif [ $BUILD_TRAVIS -eq 1 ]; then
 
     # Set up user and groups
     sudo useradd nagios
-    sudo groupadd nagios
     sudo usermod -g nagios nagios
 
 fi
