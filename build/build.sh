@@ -4,7 +4,7 @@
 UNAME=$(uname)
 BUILD_DIR=$(dirname "$(readlink -f "$0")")
 AGENT_DIR=$(readlink -f "$BUILD_DIR/../agent")
-VERSION=$(cat $BUILD_DIR/../VERSION)
+NCPA_VER=$(cat $BUILD_DIR/../VERSION)
 
 # User-defined variables
 SKIP_SETUP=0
@@ -193,10 +193,10 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
 
     # Build tarball
     cd $BUILD_DIR
-    cp -rf ncpa ncpa-$VERSION
-    tar cvf ncpa-$VERSION.tar ncpa-$VERSION
-    gzip -f ncpa-$VERSION.tar
-    rm -rf ncpa-$VERSION
+    cp -rf ncpa ncpa-$NCPA_VER
+    tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER
+    gzip -f ncpa-$NCPA_VER.tar
+    rm -rf ncpa-$NCPA_VER
 )
 
 
