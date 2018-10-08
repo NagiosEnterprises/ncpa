@@ -137,6 +137,10 @@ elif [ $BUILD_TRAVIS -eq 1 ]; then
         rm -rf cx_Freeze-4.3.4
     )
 
+    # Install special packages
+    apt-get install -y libffi-dev libssl-dev
+    python2.7 -m pip install requests[security]
+
     # Set up user and groups
     useradd nagios
     usermod -g nagios nagios
