@@ -34,6 +34,8 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
     mkdir -p debbuild
     cp *.rpm debbuild/
     cd debbuild
+
+    # Create deb package with alien
     alien -c -k -v *.rpm  >> $BUILD_DIR/build.log
     cd $BUILD_DIR
     cp debbuild/*.deb .

@@ -183,8 +183,8 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     # Build tarball
     cd $BUILD_DIR
     cp -rf ncpa ncpa-$NCPA_VER
-    tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER
-    gzip -f ncpa-$NCPA_VER.tar
+    tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER >> $BUILD_DIR/build.log
+    gzip -f ncpa-$NCPA_VER.tar >> $BUILD_DIR/build.log
     rm -rf ncpa-$NCPA_VER
 )
 
