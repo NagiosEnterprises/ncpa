@@ -48,6 +48,11 @@ elif [ $unixtype == "Darwin" ]; then
     version=`sw_vers -productVersion`
 fi
 
+# Verify Debian system versions
+if [ "$distro" == "Debian GNU/Linux" ]; then
+    distro="Debian"
+fi
+
 # Add patch level to the version of SLES (because they don't...)
 if [ "$distro" == "openSUSE Tumbleweed" ] || [ "$distro" == "openSUSE Leap" ]; then
     distro="OpenSUSE"
