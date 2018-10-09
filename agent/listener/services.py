@@ -74,6 +74,8 @@ class ServiceNode(nodes.LazyNode):
             return self.get_services_via_launchctl
         elif uname == 'AIX':
             return self.get_services_via_lssrc
+        elif uname == 'SunOS':
+            return self.get_services_via_svcs
         else:
 
             # look for systemd
@@ -264,6 +266,36 @@ class ServiceNode(nodes.LazyNode):
             if status == 'active':
                 services[sub] = 'running'
             elif status == 'inoperative':
+                services[sub] = 'stopped'
+            else:
+                services[sub] = 'unknown'
+
+        return services
+
+    # Solaris specific svcs command to get services
+    @filter_services
+    def get_services_via_svcs(self, *args, **kwargs):
+        services = {}
+        status = tempfile.TemporaryFile()
+        service = subprocess.Popen(['svcs', '-a'], stdout=status)
+        service.wait()
+        status.seek(0)
+
+        # The first line is the header
+        status.readline()
+
+        for line in status.readlines():
+            ls = line.split()
+
+            # Skip lrc items
+            if 'lrc:/' in ls[2]:
+                continue 
+
+            sub = ls[2].replace('svc:/', '').replace('/', '|')
+            status = ls[0]
+            if status == 'online':
+                services[sub] = 'running'
+            elif 'offline' in status or status == 'maintenance' or status == 'disabled':
                 services[sub] = 'stopped'
             else:
                 services[sub] = 'unknown'

@@ -13,7 +13,7 @@ set PATH=%openssldir%\bin;%PATH%
 
 if not exist "%PROGRAMFILES%\NSIS" (
     if not exist "%PROGRAMFILES(x86)%\NSIS" (
-        echo Install NSIS 3.01 from http://nsis.sourceforge.net/Download
+        echo Install NSIS 3.03 from http://nsis.sourceforge.net/Download
    exit /B 1
     )
 )
@@ -36,10 +36,7 @@ if ERRORLEVEL 1 (
   exit /B 1
 )
 
-pip install pypiwin32
-pip install cx_Logging --allow-external cx-Logging --allow-unverified cx-Logging
-pip install cx_PyGenLib --allow-external cx-PyGenLib --allow-unverified cx-PyGenLib
-pip install psutil requests Jinja2 flask werkzeug docutils pyOpenSSL gevent cffi appdirs packaging kafka
+pip install pypiwin32 psutil requests Jinja2 flask werkzeug docutils pyOpenSSL gevent cffi appdirs packaging kafka
 
 echo to build ncpa:
 echo python build\build_windows.py

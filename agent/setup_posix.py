@@ -7,6 +7,7 @@ import shutil
 from cx_Freeze import setup, Executable
 import os
 import tarfile
+import site
 
 version_file = os.path.join(os.path.dirname(__file__),
                             '..',
@@ -28,7 +29,7 @@ excludes = ['Tkinter','tkinter','collections.sys','collections._weakref']
 packages = []
 
 # Shared library include overrides
-bin_includes = ['libffi.so', 'libssl.so', 'libcrypto.so']
+bin_includes = ['libssl.so', 'libcrypto.so']
 
 # Special includes for AIX systems
 if 'aix' in sys.platform:
@@ -40,10 +41,13 @@ if 'aix' in sys.platform:
                       ('/opt/freeware/lib/libgcc_s.a', 'libgcc_s.a')]
 
 # For new cffi and cryptography
-cffi_backend = os.path.join('/usr/lib64/python2.7/site-packages', '.libs_cffi_backend')
-if os.path.isdir(cffi_backend):
-    for f in os.listdir(cffi_backend):
-        include_files += [(os.path.join(cffi_backend, f), os.path.join('.libs_cffi_backend', f))]
+try:
+    cffi_backend = os.path.join(site.getsitepackages()[0], '.libs_cffi_backend')
+    if os.path.isdir(cffi_backend):
+        for f in os.listdir(cffi_backend):
+            include_files += [(os.path.join(cffi_backend, f), os.path.join('.libs_cffi_backend', f))]
+except AttributeError as ex:
+    pass
 
 include_files += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                   ('build_resources/ncpa_listener.plist', 'build_resources/ncpa_listener.plist'),
@@ -52,8 +56,6 @@ include_files += [('build_resources/LicenseAgreement.txt', 'build_resources/Lice
                   ('build_resources/macosuninstall.sh', 'build_resources/macosuninstall.sh'),
                   ('build_resources/listener_init', 'build_resources/listener_init'),
                   ('build_resources/passive_init', 'build_resources/passive_init')]
-
-
 
 buildoptions = dict(includes=includes,
                     include_files=include_files,
