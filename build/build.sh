@@ -3,7 +3,7 @@
 # Global variables
 UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ]; then
-    BUILD_DIR=$(dirname "$0")
+    BUILD_DIR=$( cd "$(dirname "$0")" ; pwd -P )
     AGENT_DIR="$BUILD_DIR/../agent"
 else
     BUILD_DIR=$(dirname "$(readlink -f "$0")")
@@ -169,6 +169,7 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     $PYTHONBIN setup_posix.py build_exe > $BUILD_DIR/build.log
 
     # Move the ncpa binary data
+    cd $BUILD_DIR
     rm -rf $BUILD_DIR/ncpa
     cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
 
@@ -190,7 +191,6 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     chmod 755 $BUILD_DIR/ncpa
 
     # Build tarball
-    cd $BUILD_DIR
     cp -rf ncpa ncpa-$NCPA_VER
     tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER >> $BUILD_DIR/build.log
     gzip -f ncpa-$NCPA_VER.tar >> $BUILD_DIR/build.log

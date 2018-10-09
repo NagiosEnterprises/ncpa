@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get version
-DIR=$(dirname "$0")
+DIR=$( cd "$(dirname "$0")" ; pwd -P )
 BUILD_DIR="$DIR/.."
 NCPA_VER=$(cat $BUILD_DIR/../VERSION)
 ARCH=$(arch)
