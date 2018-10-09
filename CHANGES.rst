@@ -5,6 +5,7 @@ Changelog
 ==================
 - Added max_connections listener config value to set the amount of concurrent connections
 - Fixed issue with temp directory having too many files causing python exception at launch
+- Fixed running checks on processes with float values for AIX and Mac OS X systems
 
 2.1.5 - 06/11/2018
 ==================
