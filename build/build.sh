@@ -150,6 +150,10 @@ update_py_packages >> $BUILD_DIR/build.log
 # --------------------------
 
 
+# Clean build dir
+clean_build_dir
+
+
 # Build the python with cx_Freeze
 echo "Building NCPA binaries..."
 cd $BUILD_DIR
@@ -190,7 +194,6 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     cp -rf ncpa ncpa-$NCPA_VER
     tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER >> $BUILD_DIR/build.log
     gzip -f ncpa-$NCPA_VER.tar >> $BUILD_DIR/build.log
-    rm -rf ncpa-$NCPA_VER
 )
 
 
@@ -215,8 +218,9 @@ if [ $BUILD_ONLY -eq 0 ]; then
         echo "$BUILD_DIR/ncpa"
     fi
 
-    # Remove tar.gz
+    # Remove the build directory and tar.gz
     cd $BUILD_DIR
     rm -rf *.tar.gz
+    rm -rf ncpa-$NCPA_VER
 
 fi

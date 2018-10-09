@@ -3,15 +3,15 @@
 # Get version
 DIR=$(dirname "$0")
 BUILD_DIR="$DIR/.."
-VERSION=$(cat $BUILD_DIR/../VERSION)
+NCPA_VER=$(cat $BUILD_DIR/../VERSION)
 ARCH=$(arch)
 
 (
-    mkdir NCPA-INSTALL-$VERSION
-    mv ncpa NCPA-INSTALL-$VERSION/ncpa
-    cp NCPA-INSTALL-$VERSION/ncpa/build_resources/macosuninstall.sh NCPA-INSTALL-$VERSION/ncpa/uninstall.sh
-    mv NCPA-INSTALL-$VERSION/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$VERSION/install.sh
-    install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$VERSION/ncpa/ncpa_listener
-    install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$VERSION/ncpa/ncpa_passive
-    hdiutil create -volname NCPA-$VERSION -srcfolder NCPA-INSTALL-$VERSION -ov -format UDZO ncpa-$VERSION.dmg
+    mkdir NCPA-INSTALL-$NCPA_VER
+    mv ncpa-$NCPA_VER NCPA-INSTALL-$NCPA_VER/ncpa
+    cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosuninstall.sh NCPA-INSTALL-$NCPA_VER/ncpa/uninstall.sh
+    mv NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$NCPA_VER/install.sh
+    install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$NCPA_VER/ncpa/ncpa_listener
+    install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$NCPA_VER/ncpa/ncpa_passive
+    hdiutil create -volname NCPA-$NCPA_VER -srcfolder NCPA-INSTALL-$NCPA_VER -ov -format UDZO ncpa-$NCPA_VER.dmg
 )
