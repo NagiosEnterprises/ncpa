@@ -1,4 +1,4 @@
 language: python
 python: "2.7"
-install: build/scripts/linux_build_setup.sh travis
+install: build/build.sh --travis
 script: pytest

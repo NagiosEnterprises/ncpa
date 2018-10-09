@@ -18,46 +18,44 @@ architecture=`uname -m`
 
 # Get OS & version
 if [ $unixtype == "Linux" ]; then
-    if which lsb_release &>/dev/null; then
-        distro=`lsb_release -si`
-        version=`lsb_release -sr`
-    elif [ -r /etc/redhat-release ]; then
-
+    if [ -r /etc/redhat-release ]; then
         if rpm -q centos-release; then
             distro="CentOS"
         elif rpm -q sl-release; then
             distro="Scientific"
         elif [ -r /etc/oracle-release ]; then
             distro="Oracle"
+        elif rpm -q cloudlinux-release; then
+            distro="CloudLinux"
         elif rpm -q fedora-release; then
             distro="Fedora"
         elif rpm -q redhat-release || rpm -q redhat-release-server; then
             distro="RHEL"
         fi >/dev/null
-
         version=`sed 's/.*release \([0-9.]\+\).*/\1/' /etc/redhat-release`
-    else
-        # Release is not RedHat or CentOS, let's start by checking for SuSE
-        # or we can just make the last-ditch effort to find out the OS by sourcing os-release if it exists
-        if [ -r /etc/os-release ]; then
-            source /etc/os-release
-            if [ -n "$NAME" ]; then
-                distro=$NAME
-                version=$VERSION_ID
-            fi
+    elif [ -r /etc/os-release ]; then
+        source /etc/os-release
+        if [ -n "$NAME" ]; then
+            distro=$NAME
+            version=$VERSION_ID
         fi
+    elif which lsb_release &>/dev/null; then
+        distro=`lsb_release -si`
+        version=`lsb_release -sr`
     fi
 elif [ $unixtype == "Darwin" ]; then
     distro="MacOSX"
     version=`sw_vers -productVersion`
 fi
 
+# Verify Debian system versions
+if [ "$distro" == "Debian GNU/Linux" ]; then
+    distro="Debian"
+fi
+
 # Add patch level to the version of SLES (because they don't...)
-if [ "$distro" == "SUSE LINUX" ]; then
-    if [ -r /etc/SuSE-release ]; then
-        patchlevel=$(cat /etc/SuSE-release | cut -d ' ' -f 3 -s | sed -n 3p)
-        version="$version.$patchlevel"
-    fi
+if [ "$distro" == "openSUSE Tumbleweed" ] || [ "$distro" == "openSUSE Leap" ]; then
+    distro="OpenSUSE"
 fi
 
 # Verify that we have a distro now
@@ -73,7 +71,7 @@ ver="${version%%.*}"
 
 # Set dist variable like before (el5/el6 on both CentOS & Red Hat)
 case "$distro" in
-    "CentOS" | "RHEL" | "OracleServer" )
+    "CentOS" | "RHEL" | "Oracle" | "CloudLinux" )
         dist="el$ver"
         ;;
     "Fedora" )
@@ -82,11 +80,14 @@ case "$distro" in
     "Debian" )
         dist="debian$ver"
         ;;
-    "SUSE LINUX" )
-        dist="suse$ver"
+    "OpenSUSE" )
+        dist="os$ver"
         ;;
     "MacOSX" )
         dist="osx$ver"
+        ;;
+    "SLES" )
+        dist="sles$ver"
         ;;
     *)
         dist=$(echo "$distro$ver" | tr A-Z a-z)

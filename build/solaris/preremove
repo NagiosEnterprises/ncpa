@@ -1,0 +1,29 @@
+
+# Stop and disable the services
+svcadm disable ncpa_listener
+svcadm disable ncpa_passive
+
+# Remove the service xml
+if [ -f /lib/svc/manifest/site/ncpa_listener.xml ]; then
+	rm -f /lib/svc/manifest/site/ncpa_listener.xml
+elif [ -f /var/svc/manifest/site/ncpa_listener.xml ]; then
+	rm -f /var/svc/manifest/site/ncpa_listener.xml
+fi
+if [ -f /lib/svc/manifest/site/ncpa_passive.xml ]; then
+	rm -f /lib/svc/manifest/site/ncpa_passive.xml
+elif [ -f /var/svc/manifest/site/ncpa_passive.xml ]; then
+	rm -f /var/svc/manifest/site/ncpa_passive.xml
+fi
+
+# Reload manifests
+svcadm restart manifest-import
+
+# Remove the actual service configuration
+svccfg delete ncpa_listener
+svccfg delete ncpa_passive
+
+# Remove the files from /var
+rm -rf /usr/local/ncpa/var/run
+rm -f /usr/local/ncpa/var/*.crt
+rm -f /usr/local/ncpa/var/*.db
+rm -f /usr/local/ncpa/var/*.key

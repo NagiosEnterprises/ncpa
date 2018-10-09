@@ -1,0 +1,8 @@
+
+# Add nagios user/group if it doesn't exist
+if ! getent group nagios > /dev/null; then
+    groupadd -r nagios
+fi
+if ! getent passwd nagios > /dev/null; then
+    useradd -r -g nagios nagios
+fi
