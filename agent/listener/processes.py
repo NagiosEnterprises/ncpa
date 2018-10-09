@@ -237,7 +237,7 @@ class ProcessNode(nodes.LazyNode):
             # Check if process pid is in ps_procs
             if pid in ps_procs:
                 proc = ps_procs.get(pid)
-                cpu_percent = round(proc[0], 2)
+                cpu_percent = round(float(proc[0]), 2)
             else:
                 cpu_percent = round(process.cpu_percent(sleep) / psutil.cpu_count(), 2)
         except BaseException:
@@ -247,7 +247,7 @@ class ProcessNode(nodes.LazyNode):
             # Check if process pid is in ps_procs
             if pid in ps_procs:
                 proc = ps_procs.get(pid)
-                mem_percent = round(proc[1], 2)
+                mem_percent = round(float(proc[1]), 2)
             else:
                 mem_percent = round(process.memory_percent(), 2)
         except BaseException:
