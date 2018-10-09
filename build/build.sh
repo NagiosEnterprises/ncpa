@@ -2,8 +2,13 @@
 
 # Global variables
 UNAME=$(uname)
-BUILD_DIR=$(dirname "$(readlink -f "$0")")
-AGENT_DIR=$(readlink -f "$BUILD_DIR/../agent")
+if [ "$UNAME" == "Darwin" ]; then
+    BUILD_DIR=$(dirname "$0")
+    AGENT_DIR="$BUILD_DIR/../agent"
+else
+    BUILD_DIR=$(dirname "$(readlink -f "$0")")
+    AGENT_DIR=$(readlink -f "$BUILD_DIR/../agent")
+fi
 NCPA_VER=$(cat $BUILD_DIR/../VERSION)
 
 # User-defined variables

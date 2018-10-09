@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Get version
-DIR=$(dirname "$(readlink -f "$0")")
-BUILD_DIR=$(realpath "$DIR/..")
+DIR=$(dirname "$0")
+BUILD_DIR="$DIR/.."
 VERSION=$(cat $BUILD_DIR/../VERSION)
 ARCH=$(arch)
 
