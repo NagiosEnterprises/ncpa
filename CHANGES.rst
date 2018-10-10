@@ -1,9 +1,11 @@
 Changelog
 +++++++++
 
-2.1.6 - ??/??/2018
+2.1.6 - 10/10/2018
 ==================
 - Added max_connections listener config value to set the amount of concurrent connections
+- Added Solaris support and build process
+- Added new build process that automatically creates build for OS type
 - Fixed issue with temp directory having too many files causing python exception at launch
 - Fixed running checks on processes with float values for AIX and Mac OS X systems
 - Fixed file permissions on Linux systems to increase security
