@@ -110,8 +110,6 @@ fi
 %files
 %defattr(0755,root,root,0755)
 %dir /usr/local/ncpa
-%dir /usr/local/ncpa/etc
-%dir /usr/local/ncpa/etc/ncpa.cfg.d
 %dir /usr/local/ncpa/.libs_cffi_backend
 /usr/local/ncpa/ncpa_listener
 /usr/local/ncpa/ncpa_passive
@@ -127,10 +125,12 @@ fi
 /usr/local/ncpa/listener
 /usr/local/ncpa/plugins
 
-%defattr(0644,root,nagios,0755)
+%defattr(0664,root,nagios,0755)
 /usr/local/ncpa/var
 
-%defattr(0644,root,root,0755)
+%defattr(0640,root,root,0750)
+%dir /usr/local/ncpa/etc
+%dir /usr/local/ncpa/etc/ncpa.cfg.d
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
