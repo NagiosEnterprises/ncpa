@@ -125,10 +125,10 @@ fi
 /usr/local/ncpa/listener
 /usr/local/ncpa/plugins
 
-%defattr(0664,root,nagios,0755)
+%defattr(0664,root,nagios,0775)
 /usr/local/ncpa/var
 
-%defattr(0640,root,nagios,0750)
+%defattr(0640,root,nagios,0740)
 %dir /usr/local/ncpa/etc
 %dir /usr/local/ncpa/etc/ncpa.cfg.d
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
