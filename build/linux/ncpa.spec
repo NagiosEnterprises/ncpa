@@ -108,7 +108,7 @@ if [ "$1" != "1" ]; then
 fi
 
 %files
-%defattr(0755,root,root,0755)
+%defattr(0754,root,root,0755)
 %dir /usr/local/ncpa
 %dir /usr/local/ncpa/.libs_cffi_backend
 /usr/local/ncpa/ncpa_listener
