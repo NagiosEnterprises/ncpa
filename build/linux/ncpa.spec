@@ -128,7 +128,7 @@ fi
 %defattr(0664,root,nagios,0755)
 /usr/local/ncpa/var
 
-%defattr(0640,root,root,0750)
+%defattr(0640,root,nagios,0750)
 %dir /usr/local/ncpa/etc
 %dir /usr/local/ncpa/etc/ncpa.cfg.d
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
