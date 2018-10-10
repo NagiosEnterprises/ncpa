@@ -98,7 +98,7 @@ install_prereqs() {
     if [ $SKIP_PYTHON -eq 0 ]; then
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR
-        ./configure --with-zlib=/usr/include --enable-shared && make && make altinstall
+        ./configure --enable-shared && make && make altinstall
         echo '/usr/local/lib' >> /etc/ld.so.conf 
         /sbin/ldconfig
         cd ..

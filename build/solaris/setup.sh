@@ -49,7 +49,7 @@ install_prereqs() {
     if [ $SOLARIS -eq 11 ]; then
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR
-        ./configure --with-zlib=/usr/include --enable-shared && make && make altinstall
+        ./configure --enable-shared && make && make altinstall
         cd ..
         rm -rf $PYTHONTAR
     fi
