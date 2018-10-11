@@ -15,7 +15,7 @@ ARCH="x86"
 if cat /etc/release | grep "SPARC" > /dev/null ; then
     ARCH="sparc"
 fi
-if cat /etc/release | grep s10x > /dev/null ; then
+if cat /etc/release | grep "Solaris 10" > /dev/null || ; then
     SOLARIS=10
     PYTHONBIN="/opt/csw/bin/python2.7"
 fi

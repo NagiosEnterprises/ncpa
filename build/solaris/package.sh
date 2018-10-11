@@ -17,7 +17,7 @@ rm -rf $DIR/pkginfo.tmp
 
 # Check version of Solaris
 SOLARIS=11
-if cat /etc/release | grep s10x > /dev/null ; then
+if cat /etc/release | grep "Solaris 10" > /dev/null ; then
     SOLARIS=10
 fi
 
