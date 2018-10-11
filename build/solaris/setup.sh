@@ -12,7 +12,7 @@ CXFREEZEVER="cx_Freeze-4.3.4"
 # Check version of Solaris
 SOLARIS=11
 ARCH="x86"
-if cat /etc/release | grep s10x > /dev/null ; then
+if cat /etc/release | grep "SPARC" > /dev/null ; then
     ARCH="sparc"
 fi
 if cat /etc/release | grep s10x > /dev/null ; then
