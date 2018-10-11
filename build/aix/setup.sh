@@ -3,5 +3,6 @@
 PYTHONBIN=$(which python2.7)
 
 update_py_packages() {
-    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
+    echo "Skipping update packages, manually update them with:"
+    echo "$PYTHONBIN -m pip install -r resources/require.txt --upgrade"
 }

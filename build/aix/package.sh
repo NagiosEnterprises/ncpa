@@ -1,10 +1,10 @@
 #!/bin/bash -e
 
 # Set global build opts
-DIR=$(dirname "$(readlink -f "$0")")
-BUILD_DIR=$(readlink -f "$DIR/..")
-BUILD_RPM_DIR="/tmp/test/usr/src/redhat"
+DIR=$( cd "$(dirname "$0")" ; pwd -P )
+BUILD_DIR="$DIR/.."
 NCPA_VER=$(cat $BUILD_DIR/../VERSION)
+BUILD_RPM_DIR="/tmp/test/usr/src/redhat"
 
 # Build spec file
 cd $BUILD_DIR
