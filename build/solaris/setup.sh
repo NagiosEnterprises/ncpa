@@ -12,16 +12,21 @@ CXFREEZEVER="cx_Freeze-4.3.4"
 # Check version of Solaris
 SOLARIS=11
 ARCH="x86"
+LIBFFI_DEV="/usr/lib/amd64/libffi-3.2.1/include"
 if cat /etc/release | grep "SPARC" > /dev/null ; then
     ARCH="sparc"
 fi
 if cat /etc/release | grep "Solaris 10" > /dev/null || ; then
     SOLARIS=10
     PYTHONBIN="/opt/csw/bin/python2.7"
+    LIBFFI_DEV="/opt/csw/lib/amd64/libffi-3.2.1/include"
+    if [ "$ARCH" == "sparc" ]; then
+        LIBFFI_DEV="/opt/csw/lib/libffi-3.2.1/include"
+    fi
 fi
 
 update_py_packages() {
-    if [ "$ARCH" == "sparc" ]; then
+    if [ "$ARCH" == "sparc" ] && [ $SOLARIS -eq 11 ]; then
         $PYTHONBIN -m pip install -r  $BUILD_DIR/solaris/require.sparc.txt --upgrade
     else
         CPPFLAGS="-I$LIBFFI_DEV" $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary=greenlet
@@ -38,11 +43,9 @@ install_prereqs() {
 
     # Install pre-reqs for Solaris systems
     if [ $SOLARIS -eq 10 ]; then
-        pkgutil -y -i gcc5core python27 python27_dev py_pip wget libffi_dev libssl_dev
-        LIBFFI_DEV="/opt/csw/lib/amd64/libffi-3.2.1/include"
+        pkgutil -y -i gcc5core python27 python27_dev py_pip wget libffi_dev libssl_dev        
     else
         pkg install gcc libffi zlib
-        LIBFFI_DEV="/usr/lib/amd64/libffi-3.2.1/include"
     fi
 
 
