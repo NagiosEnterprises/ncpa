@@ -110,13 +110,13 @@ fi
 %files
 %defattr(0754,root,root,0755)
 %dir /usr/local/ncpa
-%dir /usr/local/ncpa/.libs_cffi_backend
 /usr/local/ncpa/ncpa_listener
 /usr/local/ncpa/ncpa_passive
 /etc/init.d/ncpa_listener
 /etc/init.d/ncpa_passive
 
-%defattr(0655,root,root,0755)
+%defattr(0755,root,root,0755)
+%dir /usr/local/ncpa/.libs_cffi_backend
 /usr/local/ncpa/*.so*
 /usr/local/ncpa/.libs_cffi_backend/*.so*
 
