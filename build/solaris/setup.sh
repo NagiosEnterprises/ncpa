@@ -11,13 +11,21 @@ CXFREEZEVER="cx_Freeze-4.3.4"
 
 # Check version of Solaris
 SOLARIS=11
+ARCH="x86"
+if cat /etc/release | grep s10x > /dev/null ; then
+    ARCH="sparc"
+fi
 if cat /etc/release | grep s10x > /dev/null ; then
     SOLARIS=10
     PYTHONBIN="/opt/csw/bin/python2.7"
 fi
 
 update_py_packages() {
-    CPPFLAGS="-I$LIBFFI_DEV" $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary=greenlet
+    if [ "$ARCH" == "sparc" ]; then
+        $PYTHONBIN -m pip install -r require.sparc.txt --upgrade
+    else
+        CPPFLAGS="-I$LIBFFI_DEV" $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary=greenlet
+    fi
 }
 
 install_prereqs() {
