@@ -16,7 +16,7 @@ LIBFFI_DEV="/usr/lib/amd64/libffi-3.2.1/include"
 if cat /etc/release | grep "SPARC" > /dev/null ; then
     ARCH="sparc"
 fi
-if cat /etc/release | grep "Solaris 10" > /dev/null || ; then
+if cat /etc/release | grep "Solaris 10" > /dev/null ; then
     SOLARIS=10
     PYTHONBIN="/opt/csw/bin/python2.7"
     LIBFFI_DEV="/opt/csw/lib/amd64/libffi-3.2.1/include"
