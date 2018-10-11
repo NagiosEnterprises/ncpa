@@ -8,7 +8,7 @@ BUILD_RPM_DIR="/tmp/test/usr/src/redhat"
 
 # Build spec file
 cd $BUILD_DIR
-cat linux/ncpa.spec | sed "s/__VERSION__/$NCPA_VER/g" | sed "s|__BUILDROOT__|$BUILD_RPM_DIR|g" > $BUILD_DIR/ncpa.spec
+cat aix/ncpa.spec | sed "s/__VERSION__/$NCPA_VER/g" | sed "s|__BUILDROOT__|$BUILD_RPM_DIR|g" > $BUILD_DIR/ncpa.spec
 
 # Build rpm package (also used on Debian systems)
 (
