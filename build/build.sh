@@ -2,7 +2,7 @@
 
 # Global variables
 UNAME=$(uname)
-if [ "$UNAME" == "Darwin" ]; then
+if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ]; then
     BUILD_DIR=$( cd "$(dirname "$0")" ; pwd -P )
     AGENT_DIR="$BUILD_DIR/../agent"
 else
@@ -110,6 +110,8 @@ if [ "$UNAME" == "Linux" ]; then
     . $BUILD_DIR/linux/setup.sh
 elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
     . $BUILD_DIR/solaris/setup.sh
+elif [ "$UNAME" == "AIX" ]; then
+    . $BUILD_DIR/aix/setup.sh
 elif [ "$UNAME" == "Darwin" ]; then
     . $BUILD_DIR/osx/setup.sh
 else 
@@ -192,8 +194,12 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
 
     # Build tarball
     cp -rf ncpa ncpa-$NCPA_VER
-    tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER >> $BUILD_DIR/build.log
-    gzip -f ncpa-$NCPA_VER.tar >> $BUILD_DIR/build.log
+    if [ "$UNAME" == "AIX" ]; then
+        tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER >> $BUILD_DIR/build.log
+        gzip -f ncpa-$NCPA_VER.tar >> $BUILD_DIR/build.log
+    elif [ "$UNAME" == "Linux" ]; then
+        tar -czvf ncpa-$NCPA_VER.tar.gz ncpa-$NCPA_VER >> $BUILD_DIR/build.log
+    fi
 )
 
 
@@ -211,6 +217,8 @@ if [ $BUILD_ONLY -eq 0 ]; then
         linux/package.sh
     elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
         solaris/package.sh
+    elif [ "$UNAME" == "AIX" ]; then
+        aix/package.sh
     elif [ "$UNAME" == "Darwin" ]; then
         osx/package.sh
     else
