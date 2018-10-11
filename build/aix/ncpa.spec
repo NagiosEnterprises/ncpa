@@ -122,8 +122,10 @@ fi
 /usr/local/ncpa/ncpa_listener
 /usr/local/ncpa/ncpa_passive
 
-%defattr(0644,root,root,0755)
+%defattr(0655,root,root,0755)
 /usr/local/ncpa/*.so*
+
+%defattr(0644,root,root,0755)
 /usr/local/ncpa/*.a
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip

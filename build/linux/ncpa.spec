@@ -116,9 +116,11 @@ fi
 /etc/init.d/ncpa_listener
 /etc/init.d/ncpa_passive
 
-%defattr(0644,root,root,0755)
+%defattr(0655,root,root,0755)
 /usr/local/ncpa/*.so*
 /usr/local/ncpa/.libs_cffi_backend/*.so*
+
+%defattr(0644,root,root,0755)
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip
 /usr/local/ncpa/build_resources
