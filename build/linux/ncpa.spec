@@ -126,13 +126,12 @@ fi
 /usr/local/ncpa/plugins
 
 %defattr(0664,root,nagios,0775)
+%dir /usr/local/ncpa/var
 /usr/local/ncpa/var
 
 %defattr(0640,root,nagios,0755)
-%dir /usr/local/ncpa/etc
-%dir /usr/local/ncpa/etc/ncpa.cfg.d
-
-%defattr(0640,root,nagios,0755)
+/usr/local/ncpa/etc
+/usr/local/ncpa/etc/ncpa.cfg.d
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
