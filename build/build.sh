@@ -186,7 +186,7 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     chmod -R g+r $BUILD_DIR/ncpa
     chmod -R a+r $BUILD_DIR/ncpa
     chown nagios:nagios $BUILD_DIR/ncpa/var
-    chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg.*
+    chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
     chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
     chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
     chmod 755 $BUILD_DIR/ncpa/var
