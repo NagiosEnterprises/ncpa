@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-2.1.6 - 10/10/2018
+2.1.6 - 10/12/2018
 ==================
 - Added max_connections listener config value to set the amount of concurrent connections
 - Added Solaris support and build process
