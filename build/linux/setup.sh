@@ -11,7 +11,7 @@ SKIP_PYTHON=0
 . $BUILD_DIR/linux/init.sh
 
 update_py_packages() {
-    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
+    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary=cffi
 }
 
 install_prereqs() {
@@ -122,7 +122,7 @@ install_prereqs() {
     cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
 
     # Install modules
-    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt
+    update_py_packages
 
 
     # --------------------------
