@@ -63,7 +63,13 @@ gid = nagios
 
 #
 # IP address and port number for the Listener to use for the web GUI and API
+#
+# :: allows for dual stack (IPv4 and IPv6 on most linux systems) but will only allow
+# for IPv6 connections on Windows
+# 0.0.0.0 allows for IPv4 connections only on Windows and most linux systems
+#
 # Default: ip = ::
+# Default (Windows): ip = 0.0.0.0
 # Default: port = 5693
 #
 ip = ::
