@@ -13,10 +13,10 @@ CXFREEZEVER="cx_Freeze-4.3.4"
 SOLARIS=11
 ARCH="x86"
 LIBFFI_DEV="/usr/lib/amd64/libffi-3.2.1/include"
-if cat /etc/release | grep "SPARC" > /dev/null ; then
+if grep "SPARC" /etc/release > /dev/null ; then
     ARCH="sparc"
 fi
-if cat /etc/release | grep "Solaris 10" > /dev/null ; then
+if grep "Solaris 10" /etc/release > /dev/null ; then
     SOLARIS=10
     PYTHONBIN="/opt/csw/bin/python2.7"
     LIBFFI_DEV="/opt/csw/lib/amd64/libffi-3.2.1/include"
