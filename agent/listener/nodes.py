@@ -95,7 +95,7 @@ class RunnableParentNode(ParentNode):
             total, total_unit = self.children['total'].get_values(*args, **kwargs)
             total = total[0]
 
-        for name, child in self.children.iteritems():
+        for name, child in self.children.items():
             if name in self.include:
                 if name == self.primary:
                     primary_info  = child.run_check(use_prefix=True,
