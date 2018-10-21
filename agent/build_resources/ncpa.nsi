@@ -129,6 +129,14 @@ Function .onInit
     !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\nsis_passive_options.ini" "nsis_passive_options.ini"
     !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\nsis_passive_checks.ini" "nsis_passive_checks.ini"
 
+    ; Define defaults for silent installs
+    StrCpy $bind_ip "0.0.0.0"
+    StrCpy $bind_port "5693"
+    StrCpy $ssl_version "TLSv1_2"
+    StrCpy $check_interval "300"
+    StrCpy $log_level_active "warning"
+    StrCpy $log_level_passive "warning"
+
     ${GetParameters} $R0
 
     ClearErrors
@@ -142,14 +150,6 @@ Function .onInit
     ${If} $nrdp_url != ''
         StrCpy $nrdp 1
     ${EndIf}
-
-    ; Define defaults for silent installs
-    StrCpy $bind_ip "0.0.0.0"
-    StrCpy $bind_port "5693"
-    StrCpy $ssl_version "TLSv1_2"
-    StrCpy $check_interval "300"
-    StrCpy $log_level_active "warning"
-    StrCpy $log_level_passive "warning"
 
 FunctionEnd
 
