@@ -24,9 +24,9 @@ bundled version of Python.
 
 %install
 rm -rf %{buildroot} 
-mkdir -p %{buildroot}/usr/local/ncpa
+mkdir -p %{buildroot}/usr/local
+cp -rf $RPM_BUILD_DIR/ncpa-%{version} %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
-cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 
 %clean
@@ -60,17 +60,17 @@ if [ "$1" == "1" ]; then
     mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
     mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
 
-    mkitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
-    mkitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
+    mkitab "ncpa_listener:2:once:/usr/bin/startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_listener >/dev/null 2>&1"
+    mkitab "ncpa_passive:2:once:/usr/bin/startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_passive >/dev/null 2>&1"
     rm -rf $RPM_INSTALL_PREFIX/ncpa/var/ncpa.*
 elif [ "$1" == "2" ]; then
-    chitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
-    chitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
+    chitab "ncpa_listener:2:once:/usr/bin/startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_listener >/dev/null 2>&1"
+    chitab "ncpa_passive:2:once:/usr/bin/startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_passive >/dev/null 2>&1"
 fi
 
 # Start the daemons using SRC
-startsrc -s ncpa_listener >/dev/null 2>&1
-startsrc -s ncpa_passive >/dev/null 2>&1
+startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_listener >/dev/null 2>&1
+startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_passive >/dev/null 2>&1
 
 %preun
 if [ -z $RPM_INSTALL_PREFIX ]; then
@@ -117,24 +117,28 @@ if [ "$1" != "1" ]; then
 fi
 
 %files
-%defattr(0755,nagios,nagios,0755)
+%defattr(0755,root,root,0755)
 %dir /usr/local/ncpa
-%dir /usr/local/ncpa/etc
-%dir /usr/local/ncpa/etc/ncpa.cfg.d
 /usr/local/ncpa/ncpa_listener
 /usr/local/ncpa/ncpa_passive
 
-%defattr(0644,nagios,nagios,0755)
+%defattr(0755,root,root,0755)
 /usr/local/ncpa/*.so*
+
+%defattr(0644,root,root,0755)
 /usr/local/ncpa/*.a
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip
 /usr/local/ncpa/build_resources
 /usr/local/ncpa/listener
 /usr/local/ncpa/plugins
+
+%defattr(0664,root,nagios,0775)
+%dir /usr/local/ncpa/etc
+%dir /usr/local/ncpa/etc/ncpa.cfg.d
 /usr/local/ncpa/var
 
-%defattr(0644,nagios,nagios,0755)
+%defattr(0640,root,nagios,0755)
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample

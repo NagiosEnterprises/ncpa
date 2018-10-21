@@ -116,8 +116,8 @@
                             <tr>
                                 <td><i class="fa fa-asterisk"></i></td>
                                 <th>ip</th>
-                                <td>0.0.0.0</td>
-                                <td>This determines what IP the service will listen on. By default, it uses the value 0.0.0.0, which means it will listen on all interfaces and all hostname references. Change this if you would like the service to listen on a specific IP or hostname.</td>
+                                <td>::</td>
+                                <td>This determines what IP the service will listen on. By default, it uses the value ::, which means it will listen on all IPv4 and IPv6 interfaces and all hostname references on most linux systems. On windows, the value :: will only listen to IPv6 interfaces. By default on Windows the value is set to 0.0.0.0 which listens on all IPv4 instances only. Change this if you would like the service to listen on a specific IP or hostname.</td>
                             </tr>
                             <tr>
                                 <td><i class="fa fa-asterisk"></i></td>

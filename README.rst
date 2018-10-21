@@ -12,7 +12,7 @@ Downloads
 Current versions:
 
 +---------+-------------+-------------------------------------------------------+
-| Current | **2.1.4**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
+| Current | **2.1.6**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
 `Older Versions <https://www.nagios.org/ncpa/archive.php>`_
@@ -22,28 +22,30 @@ We currently build for the following operating systems:
 - Windows (Vista+)
 - Mac OS X (10.7+)
 - CentOS / RHEL 6, 7¹
-- Debian 7, 8, 9¹
+- Debian 8, 9¹
 - Ubuntu² 12, 14, 16
-- OpenSUSE 11, 12¹, 13¹, 42¹, Tumbleweed¹
+- OpenSUSE Leap 15¹, Tumbleweed¹
 - SLES 11, 12¹
 - Oracle 6, 7¹
+- Solaris 10, 11 (Experimental)
 - AIX 7
 
-¹ Builds for 64-bit versions only (2.0.6+)
+¹ Builds for 64-bit versions only (after 2.0.6+)
 ² LTS are the only "supported" versions, although builds should work for non-LTS
 
-Older systems that have past support by NCPA:
+Older systems that have been supported by NCPA in the past:
 
+- Debian 7 using NCPA 2.1.4
+- OpenSUSE 11, 12, 13 using NCPA 2.1.4
+- AIX 6 with NCPA 2.1.1
 - CentOS / RHEL 5 using NCPA 2.0.6
 - Oracle 5 using NCPA 2.0.6
-- AIX 6 with NCPA 2.1.1
 
 Other systems we are working on builds for:
 
 - Fedora
-- Solaris
 
-If you're looking for builds for CentOS / RHEL / Oracle 5, you'll need to use NCPA 2.0.6, which you can find `in the archives <https://www.nagios.org/ncpa/archive.php>`_.
+If you're looking for older builds you can find them `in the archives <https://www.nagios.org/ncpa/archive.php>`_.
 
 If your operating system of choice is not on the list and none of the builds work for you, then you can request it to be added here by creating a new GitHub issue.
 

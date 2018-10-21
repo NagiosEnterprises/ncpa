@@ -1,12 +1,11 @@
-cx_Freeze
 psutil
 requests
 Jinja2
-flask
+flask==0.10.1
 werkzeug
 docutils
-pyOpenSSL
-cryptography
+pyOpenSSL==17
+cryptography==1.8.2
 gevent==1.2.2
 gevent-websocket
 cffi

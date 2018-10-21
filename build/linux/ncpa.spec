@@ -24,11 +24,11 @@ bundled version of Python.
 
 %install
 rm -rf %{buildroot} 
-mkdir -p %{buildroot}/usr/local/ncpa
+mkdir -p %{buildroot}/usr/local
+cp -rf $RPM_BUILD_DIR/ncpa-%{version} %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
 mkdir -p %{buildroot}/etc/init.d
 touch %{buildroot}/usr/local/ncpa/var/ncpa.db
-cp -rf $RPM_BUILD_DIR/ncpa-%{version}/* %{buildroot}/usr/local/ncpa/
 chown nagios:nagios %{buildroot}/usr/local/ncpa -R
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_init %{buildroot}/etc/init.d/ncpa
 
@@ -103,23 +103,27 @@ if [ "$1" != "1" ]; then
 fi
 
 %files
-%defattr(0755,nagios,nagios,0755)
+%defattr(0755,root,root,0755)
 %dir /usr/local/ncpa
-%dir /usr/local/ncpa/etc
-%dir /usr/local/ncpa/etc/ncpa.cfg.d
 /usr/local/ncpa/ncpa
 /etc/init.d/ncpa
 
-%defattr(0644,nagios,nagios,0755)
+%defattr(0755,root,root,0755)
 /usr/local/ncpa/*.so*
+
+%defattr(0644,root,root,0755)
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip
 /usr/local/ncpa/build_resources
 /usr/local/ncpa/listener
 /usr/local/ncpa/plugins
+
+%defattr(0664,root,nagios,0775)
+%dir /usr/local/ncpa/etc
+%dir /usr/local/ncpa/etc/ncpa.cfg.d
 /usr/local/ncpa/var
 
-%defattr(0644,nagios,nagios,0755)
+%defattr(0640,root,nagios,0755)
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample

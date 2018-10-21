@@ -19,10 +19,20 @@ Changelog
 
 - Fixed errors from different language encodings due to python not being able to encode/decode strings
 
-2.1.5 - ??/??/2018
+2.1.6 - 10/12/2018
+==================
+- Added max_connections listener config value to set the amount of concurrent connections
+- Added Solaris support and build process
+- Added new build process that automatically creates build for OS type
+- Fixed issue with temp directory having too many files causing python exception at launch
+- Fixed running checks on processes with float values for AIX and Mac OS X systems
+- Fixed file permissions on Linux systems to increase security
+
+2.1.5 - 06/11/2018
 ==================
 - Fixed issue with a few Windows counters that required forward slashes in the path name
 - Fixed issue where Windows counters were not clearing the counter/query handler
+- Fixed issues with SLES installs not working properly
 
 2.1.4 - 04/17/2018
 ==================
