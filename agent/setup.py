@@ -72,7 +72,7 @@ elif __SYSTEM__ == 'posix':
 
     # Special includes for AIX systems
     if 'aix' in sys.platform:
-        include_files += [('/opt/freeware/lib/libpython2.7.so', 'libpython2.7.so'),
+        include_files += [('/opt/freeware/lib/libpython3.6.so', 'libpython3.6.so'),
                           ('/usr/lib/libsqlite3.a', 'libsqlite3.a'),
                           ('/usr/lib/libssl.so', 'libssl.so'),
                           ('/usr/lib/libcrypto.so', 'libcrypto.so'),

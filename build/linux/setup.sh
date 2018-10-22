@@ -2,8 +2,8 @@
 
 # Globals
 PYTHONTAR="Python-3.6.6"
-PYTHONVER="python3"
-PYTHONBIN=$(which python3)
+PYTHONVER="python3.6"
+PYTHONBIN=$(which python3.6)
 SKIP_PYTHON=0
 
 # Get information about system
@@ -105,12 +105,9 @@ install_prereqs() {
     fi
 
     # --------------------------
-    #  INSTALL PIP & PIP MODULES
+    #  INSTALL MODULES
     # --------------------------
 
-
-    # Install pip
-    cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
 
     # Install modules
     update_py_packages

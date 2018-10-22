@@ -486,7 +486,7 @@ class Daemon():
         if self.pidfile and os.path.exists(self.pidfile):
             os.remove(self.pidfile)
 
-    def get_uid_gid(cp, section):
+    def get_uid_gid(self, cp, section):
         user_uid = cp.get(section, 'uid')
         user_gid = cp.get(section, 'gid')
 
