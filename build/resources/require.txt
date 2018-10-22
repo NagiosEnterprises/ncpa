@@ -7,7 +7,7 @@ werkzeug
 docutils
 pyOpenSSL
 cryptography
-gevent==1.2.2
+gevent
 gevent-websocket
 cffi
 appdirs

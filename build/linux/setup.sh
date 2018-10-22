@@ -1,10 +1,9 @@
 #!/bin/bash
 
 # Globals
-PYTHONTAR="Python-2.7.14"
-PYTHONVER="python2.7"
-PYTHONBIN=$(which python2.7)
-CXFREEZEVER="cx_Freeze-4.3.4"
+PYTHONTAR="Python-3.6.6"
+PYTHONVER="python3"
+PYTHONBIN=$(which python3)
 SKIP_PYTHON=0
 
 # Get information about system
@@ -104,14 +103,6 @@ install_prereqs() {
         cd ..
         rm -rf $PYTHONTAR
     fi
-
-    # Install the patched version of cx_Freeze
-    tar xf $CXFREEZEVER.tar.gz
-    cd $CXFREEZEVER
-    $PYTHONBIN setup.py install
-    cd ..
-    rm -rf $CXFREEZEVER
-
 
     # --------------------------
     #  INSTALL PIP & PIP MODULES

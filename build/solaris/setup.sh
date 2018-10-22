@@ -4,10 +4,9 @@
 PATH=$PATH:/opt/csw/bin:/usr/ccs/bin
 
 # Globals
-PYTHONTAR="Python-2.7.14"
-PYTHONVER="python2.7"
-PYTHONBIN="/usr/local/bin/python2.7"
-CXFREEZEVER="cx_Freeze-4.3.4"
+PYTHONTAR="Python-3.6.6"
+PYTHONVER="python3"
+PYTHONBIN="/usr/local/bin/python3"
 
 # Check version of Solaris
 SOLARIS=11
@@ -18,7 +17,7 @@ if grep "SPARC" /etc/release > /dev/null ; then
 fi
 if grep "Solaris 10" /etc/release > /dev/null ; then
     SOLARIS=10
-    PYTHONBIN="/opt/csw/bin/python2.7"
+    PYTHONBIN="/opt/csw/bin/python3"
     LIBFFI_DEV="/opt/csw/lib/amd64/libffi-3.2.1/include"
     if [ "$ARCH" == "sparc" ]; then
         LIBFFI_DEV="/opt/csw/lib/libffi-3.2.1/include"
@@ -64,19 +63,6 @@ install_prereqs() {
         cd ..
         rm -rf $PYTHONTAR
     fi
-
-    # Install the patched version of cx_Freeze
-    if [ $SOLARIS -eq 11 ]; then
-        tar xf $CXFREEZEVER.tar.gz
-    else
-        gunzip $CXFREEZEVER.tar.gz
-        tar xf $CXFREEZEVER.tar
-    fi
-    cd $CXFREEZEVER
-    $PYTHONBIN setup.py install
-    cd ..
-    rm -rf *.h
-    rm -rf $CXFREEZEVER
 
 
     # --------------------------
