@@ -67,7 +67,7 @@ class WindowsCountersNode(nodes.LazyNode):
 
                 if factor != 0:
                     # Multiply results by 10^(factor) to get around limitations on threshold types
-                    win32pdh.SetCounterScaleFactor(query, factor)
+                    win32pdh.SetCounterScaleFactor(counter, factor)
 
                 win32pdh.CollectQueryData(query)
 
