@@ -44,7 +44,7 @@ import re
 import signal
 
 
-__VERSION__ = '1.1.4'
+__VERSION__ = '1.1.5'
 
 
 def parse_args():
