@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+2.1.7 - ??/??/2019
+==================
+- Fixed issue with Windows silent installs not having 0.0.0.0 set as default when no IP is defined
+
 2.1.6 - 10/12/2018
 ==================
 - Added max_connections listener config value to set the amount of concurrent connections
