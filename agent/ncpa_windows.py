@@ -132,8 +132,8 @@ class Listener(Base):
             try:
                 address = self.config.get('listener', 'ip')
             except Exception:
-                self.config.set('listener', 'ip', '::')
-                address = '::'
+                self.config.set('listener', 'ip', '0.0.0.0')
+                address = '0.0.0.0'
 
             try:
                 port = self.config.getint('listener', 'port')

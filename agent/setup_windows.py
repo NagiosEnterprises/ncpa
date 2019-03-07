@@ -34,7 +34,7 @@ includefiles = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
 
 packages = []
 includes = ['ncpa_windows', 'passive', 'listener', 'cx_Logging']
-excludes = ['Tkinter','tkinter']
+excludes = ['Tkinter','tkinter','collections.sys','collections._weakref']
 
 includefiles += [('build_resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                  ('build_resources/nsis_listener_options.ini', 'build_resources/nsis_listener_options.ini'),

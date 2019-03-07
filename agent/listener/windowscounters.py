@@ -55,14 +55,26 @@ class WindowsCountersNode(nodes.LazyNode):
         except (KeyError, TypeError, IndexError):
             sleep = 0
 
+        try:
+            factor = int(kwargs['factor'][0])
+        except (KeyError, TypeError, IndexError):
+            factor = 0
+
         query = win32pdh.OpenQuery()
         try:
             counter = win32pdh.AddCounter(query, counter_path)
             try:
+
+                if factor != 0:
+                    # Multiply results by 10^(factor) to get around limitations on threshold types
+                    win32pdh.SetCounterScaleFactor(counter, factor)
+
                 win32pdh.CollectQueryData(query)
+
                 if sleep != 0:
                     time.sleep(sleep)
                     win32pdh.CollectQueryData(query)
+
                 _, _, _, _, _, _, _, info, _ = win32pdh.GetCounterInfo(counter, False)
                 _, value = win32pdh.GetFormattedCounterValue(counter, win32pdh.PDH_FMT_DOUBLE)
             finally:
