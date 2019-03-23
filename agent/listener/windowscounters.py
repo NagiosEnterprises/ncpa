@@ -91,12 +91,26 @@ class WindowsCountersNode(nodes.LazyNode):
 
     @staticmethod
     def get_counter_path(path):
+        wpc_string = '/'.join(path)
+
+        # Regex explanation
+        # ^                                   -- Next character matched must be the beginning of the string
+        #  ([^()/]*)                          -- match an arbitrary amount of non-paren, non-slash characters, capture
+        #           \(?                       -- Optionally match (
+        #              ([^()]*?)              -- Optionally match anything except a paren, capture
+        #                       \)?           -- Optionally match )
+        #                          /          -- match a forward slash
+        #                           ([^()]*)  -- Match maximum number of non-paren characters, capture
+        #                                   $ -- Last character matched must be end of string
+        # End result after split() is length-5 array. indices 1-3 refer to the capture groups
+        wpc_regex = r'^([^(/]*)\(?(.*?)\)?/([^)]*)$'
+        print wpc_string
+        match_list = re.split(wpc_regex, wpc_string) 
         counter_path = '\\'
-        if re.match(r'.* sec', path[-2]) or re.match(r'\b[sS]ec\b', path[-1]):
-            counter_path += '\\'.join(path[:-1])
-            counter_path += '/' + path[-1]
+        if match_list[2]:
+            counter_path += match_list[1] + '(' + match_list[2] + ')\\' + match_list[3]
         else:
-            counter_path += '\\'.join(path)
+            counter_path += match_list[1] + '\\' + match_list[3]
         return counter_path
 
 def get_node():
