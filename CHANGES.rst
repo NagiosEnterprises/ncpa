@@ -4,6 +4,7 @@ Changelog
 2.1.7 - ??/??/2019
 ==================
 - Fixed issue with Windows silent installs not having 0.0.0.0 set as default when no IP is defined
+- Fixed issue where some special Windows counters could not be identified
 
 2.1.6 - 10/12/2018
 ==================
