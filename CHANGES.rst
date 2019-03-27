@@ -5,6 +5,7 @@ Changelog
 ==================
 - Fixed issue with Windows silent installs not having 0.0.0.0 set as default when no IP is defined
 - Fixed issue where some special Windows counters could not be identified
+- Fixed issue with pipe characters in returned error output for disk nodes
 
 2.1.6 - 10/12/2018
 ==================
