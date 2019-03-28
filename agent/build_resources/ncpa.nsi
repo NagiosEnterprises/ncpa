@@ -109,6 +109,7 @@ Page custom ConfigPassiveChecks
 
 ; Define function that causes changes to UI for upgrades
 !define MUI_PAGE_CUSTOMFUNCTION_SHOW UpgradeOnly
+!insertmacro MULTIUSER_PAGE_INSTALLMODE
 !insertmacro MUI_PAGE_DIRECTORY
 
 !insertmacro MUI_PAGE_INSTFILES
@@ -397,7 +398,7 @@ Section ""
     WriteRegDWORD SHCTX "${UNINST_KEY}" "EstimatedSize" "$0"
 
     WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode"
-    WriteRegStr HKLM "${UNINST_KEY}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
+    WriteRegStr SHCTX "${UNINST_KEY}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
  
     WriteUninstaller $INSTDIR\uninstall.exe
 	
@@ -438,7 +439,7 @@ Section "Uninstall"
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --uninstall ncpapassive'
     
     DeleteRegKey SHCTX "${UNINST_KEY}"
-    DeleteRegKey HKLM "${UNINST_KEY}"
+    DeleteRegKey SHCTX "${UNINST_KEY}"
     
     RMDir /r "$INSTDIR"
 
