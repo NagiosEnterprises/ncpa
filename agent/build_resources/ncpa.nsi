@@ -19,6 +19,7 @@ ${StrRep}
 !define NCPA_VERSION_CLEAN "$%NCPA_BUILD_VER_CLEAN%"
 !define UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\NCPA"
 
+!define MULTIUSER_MUI
 !define MULTIUSER_INSTALLMODE_COMMANDLINE
 !include "MultiUser.nsh"
 
