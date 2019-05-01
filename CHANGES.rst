@@ -7,7 +7,7 @@ Changelog
 - Fixed issue where some special Windows counters could not be identified
 - Fixed issue with pipe characters in returned error output for disk nodes
 - Fixed uninstall registery key in Windows not selecting the proper location due to missing install page
-- Fixed issue with mountpoints on Windows that cannot access filesystem info causing error
+- Fixed issue with mountpoints that cannot access filesystem info causing error
 
 2.1.6 - 10/12/2018
 ==================
