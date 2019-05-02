@@ -3,6 +3,7 @@ Changelog
 
 2.1.7 - ??/??/2019
 ==================
+- Updated builds to not use shared python library which causes issues on certain systems
 - Fixed issue with Windows silent installs not having 0.0.0.0 set as default when no IP is defined
 - Fixed issue where some special Windows counters could not be identified
 - Fixed issue with pipe characters in returned error output for disk nodes

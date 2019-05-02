@@ -29,7 +29,7 @@ excludes = ['Tkinter','tkinter','collections.sys','collections._weakref']
 packages = []
 
 # Shared library include overrides
-bin_includes = ['libssl.so', 'libcrypto.so', 'libffi.so']
+bin_includes = []
 
 # Special includes for AIX systems
 if 'aix' in sys.platform:

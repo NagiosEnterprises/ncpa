@@ -3,7 +3,6 @@
 # Globals
 PYTHONTAR="Python-2.7.14"
 PYTHONVER="python2.7"
-PYTHONBIN=$(which python2.7)
 CXFREEZEVER="cx_Freeze-4.3.4"
 SKIP_PYTHON=0
 
@@ -11,6 +10,7 @@ SKIP_PYTHON=0
 . $BUILD_DIR/linux/init.sh
 
 update_py_packages() {
+    PYTHONBIN=$(which python)
     $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary=cffi
 }
 
@@ -98,11 +98,10 @@ install_prereqs() {
     if [ $SKIP_PYTHON -eq 0 ]; then
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR
-        ./configure --enable-shared && make && make altinstall
-        echo '/usr/local/lib' >> /etc/ld.so.conf 
-        /sbin/ldconfig
+        ./configure && make && make altinstall
         cd ..
         rm -rf $PYTHONTAR
+        PYTHONBIN=$(which python)
     fi
 
     # Install the patched version of cx_Freeze
