@@ -10,7 +10,7 @@ SKIP_PYTHON=0
 . $BUILD_DIR/linux/init.sh
 
 update_py_packages() {
-    PYTHONBIN=$(which python)
+    PYTHONBIN=$(which python2.7)
     $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary=cffi
 }
 
@@ -101,7 +101,7 @@ install_prereqs() {
         ./configure && make && make altinstall
         cd ..
         rm -rf $PYTHONTAR
-        PYTHONBIN=$(which python)
+        PYTHONBIN=$(which python2.7)
     fi
 
     # Install the patched version of cx_Freeze
