@@ -11,7 +11,7 @@ SKIP_PYTHON=0
 
 update_py_packages() {
     PYTHONBIN=$(which python2.7)
-    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary=cffi
+    LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary :all:
 }
 
 install_prereqs() {
@@ -37,8 +37,7 @@ install_prereqs() {
         # available with the OS itself
         if [ "$dist" == "sles15" ] || [ "$dist" == "sles12" ] || [ "$distro" == "OpenSUSE" ]; then
 
-            zypper install gcc gcc-c++ python python-devel zlib zlib-devel openssl libopenssl-devel sqlite3 sqlite3-devel rpm-build wget
-            SKIP_PYTHON=1
+            zypper install gcc gcc-c++ zlib zlib-devel openssl libopenssl-devel sqlite3 sqlite3-devel rpm-build wget
 
         elif [ "$dist" == "sles11" ]; then
 
@@ -99,7 +98,7 @@ install_prereqs() {
     if [ $SKIP_PYTHON -eq 0 ]; then
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR
-        ./configure && make && make altinstall
+        ./configure LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib' && make && make altinstall
         cd ..
         rm -rf $PYTHONTAR
         PYTHONBIN=$(which python2.7)
@@ -130,9 +129,11 @@ install_prereqs() {
     # --------------------------
 
 
+    set +e
     useradd nagios
     groupadd nagios
     usermod -g nagios nagios
+    set -e
 
 
 }
