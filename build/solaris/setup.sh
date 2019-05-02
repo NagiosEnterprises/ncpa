@@ -6,7 +6,7 @@ PATH=$PATH:/opt/csw/bin:/usr/ccs/bin
 # Globals
 PYTHONTAR="Python-2.7.14"
 PYTHONVER="python2.7"
-PYTHONBIN="/usr/local/bin/python2.7"
+PYTHONBIN=$(which python2.7)
 CXFREEZEVER="cx_Freeze-4.3.4"
 
 # Check version of Solaris
@@ -60,7 +60,7 @@ install_prereqs() {
     if [ $SOLARIS -eq 11 ]; then
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR
-        ./configure --enable-shared && make && make altinstall
+        ./configure && make && make altinstall
         cd ..
         rm -rf $PYTHONTAR
     fi
