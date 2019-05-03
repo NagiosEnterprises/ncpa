@@ -49,7 +49,7 @@ install_prereqs() {
             echo "2. Install SDK repo:"
             echo "   https://www.suse.com/support/kb/doc/?id=7015337"
             if [ "$arch" == "i686" ]; then
-                $arch="i586";
+                arch="i586";
             fi
             echo "   https://nu.novell.com/repo/\$RCE/SLE11-SDK-SP4-Pool/sle-11-$arch/rpm/$arch/sle-sdk-release-11.4-1.55.$arch.rpm"
             echo "   https://nu.novell.com/repo/\$RCE/SLE11-SDK-SP4-Pool/sle-11-$arch/rpm/$arch/sle-sdk-release-SDK-11.4-1.55.$arch.rpm"
