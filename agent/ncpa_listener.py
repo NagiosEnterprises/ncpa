@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import warnings
+warnings.simplefilter('ignore')
+
 import logging
 import os
 import ncpadaemon

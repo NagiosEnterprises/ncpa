@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+
+import warnings
+warnings.simplefilter('ignore')
+
 import ncpadaemon
 import logging
 import time
