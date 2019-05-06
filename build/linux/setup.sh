@@ -24,16 +24,7 @@ install_prereqs() {
 
     if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
 
-        # Get os data for Debian 9 info
-        . /etc/os-release
-    
-        if [ $VERSION_ID -eq 9 ]; then
-            comp="gcc g++"
-        else
-            comp="gcc gcc-c++"
-        fi
-
-        apt-get install debian-builder rpm $comp wget openssl libssl-dev libffi-dev sqlite3 libsqlite3-dev zlib1g-dev alien -y
+        apt-get install debian-builder rpm gcc g++ wget openssl libssl-dev libffi-dev sqlite3 libsqlite3-dev zlib1g-dev alien -y
     
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
     
