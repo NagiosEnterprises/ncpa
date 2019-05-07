@@ -37,7 +37,7 @@ install_prereqs() {
         # available with the OS itself
         if [ "$dist" == "sles15" ] || [ "$dist" == "sles12" ] || [ "$distro" == "OpenSUSE" ]; then
 
-            zypper install gcc gcc-c++ zlib zlib-devel openssl libopenssl-devel sqlite3 sqlite3-devel rpm-build wget
+            zypper install gcc gcc-c++ zlib zlib-devel openssl libopenssl-devel sqlite3 sqlite3-devel libffi-devel rpm-build wget
 
         elif [ "$dist" == "sles11" ]; then
 
