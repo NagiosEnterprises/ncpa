@@ -27,6 +27,7 @@ We currently build for the following operating systems:
 - OpenSUSE Leap 15¹, Tumbleweed¹
 - SLES 11, 12¹
 - Oracle 6, 7¹
+- Amazon Linux 2
 - Solaris 10, 11 (Experimental)
 - AIX 7
 
