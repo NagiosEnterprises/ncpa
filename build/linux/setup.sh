@@ -102,6 +102,11 @@ install_prereqs() {
         cd ..
         rm -rf $PYTHONTAR
         PYTHONBIN=$(which python2.7)
+        
+        # Link lib-dynload from lib64 to lib due to arch issues for Python 2.7
+        if [ "$dist" == "os15" ]; then
+            ln -s /usr/local/lib64/python2.7/lib-dynload/ /usr/local/lib/python2.7/lib-dynload
+        fi
     fi
 
     # Install the patched version of cx_Freeze
