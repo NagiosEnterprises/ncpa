@@ -31,7 +31,7 @@ install_prereqs() {
         yum install epel-release -y
         yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget -y
 
-    elif [ "$distro" == "SUSE LINUX" ] || [ "$distro" == "SLES" ]; then
+    elif [ "$distro" == "SUSE LINUX" ] || [ "$distro" == "SLES" ] || [ "$distro" == "OpenSUSE" ]; then
 
         # We don't need to install python on SLES due to their updated version of python
         # available with the OS itself
