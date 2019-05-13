@@ -12,3 +12,4 @@ docs/_build
 *.exe
 agent/plugins/*
 ncpa.db
+prereqs.installed
