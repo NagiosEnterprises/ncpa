@@ -23,7 +23,7 @@ import math
 import ipaddress
 
 
-__VERSION__ = '2.1.7'
+__VERSION__ = '2.1.8'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
@@ -826,7 +826,7 @@ def error(msg=None):
     return jsonify(error=msg)
 
 
-@listener.route('/testconnect/', methods=['GET', 'POST'])
+@listener.route('/testconnect/', methods=['GET', 'POST'], strict_slashes=False)
 def testconnect():
     """
     Method meant for testing connecting with monitoring applications and wizards.

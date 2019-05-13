@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+2.1.8 - ??/??/2019
+==================
+- Fixed issue with redirection when connecting to testconnect API endpoint without forward slash
+
 2.1.7 - 05/09/2019
 ==================
 - Updated builds to not use shared python library which causes issues on certain systems
