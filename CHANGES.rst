@@ -4,6 +4,7 @@ Changelog
 2.1.8 - ??/??/2019
 ==================
 - Fixed issue with redirection when connecting to testconnect API endpoint without forward slash
+- Fixed error when using windows counters "bad file descriptor"
 
 2.1.7 - 05/09/2019
 ==================

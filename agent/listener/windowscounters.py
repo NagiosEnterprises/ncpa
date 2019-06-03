@@ -104,7 +104,6 @@ class WindowsCountersNode(nodes.LazyNode):
         #                                   $ -- Last character matched must be end of string
         # End result after split() is length-5 array. indices 1-3 refer to the capture groups
         wpc_regex = r'^([^(/]*)\(?(.*?)\)?/([^)]*)$'
-        print wpc_string
         match_list = re.split(wpc_regex, wpc_string) 
         counter_path = '\\'
         if match_list[2]:
