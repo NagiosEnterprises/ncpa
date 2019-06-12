@@ -5,6 +5,7 @@ Changelog
 ==================
 - Fixed issue with redirection when connecting to testconnect API endpoint without forward slash
 - Fixed error when using windows counters "bad file descriptor"
+- Fixed default IP address in Windows when IP address is empty in the config
 
 2.1.7 - 05/09/2019
 ==================

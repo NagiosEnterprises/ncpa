@@ -141,6 +141,12 @@ class Listener(Base):
                 self.config.set('listener', 'port', 5693)
                 port = 5693
 
+            # Make sure these values are not empty
+            if not address:
+                address = '0.0.0.0'
+            if not port:
+                port = 5693
+
             listener.server.listener.config_files = self.config_filenames
             listener.server.listener.tail_method = listener.windowslogs.tail_method
             listener.server.listener.config['iconfig'] = self.config
