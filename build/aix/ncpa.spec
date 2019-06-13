@@ -35,11 +35,11 @@ rm -rf %{buildroot}
 %pre
 if [ "$1" == "1" ]; then
     # Install the nagios user and group on fresh install
-    if ! lsgroup nagios > /dev/null;
+    if ! lsgroup nagios 2> /dev/null;
     then
         mkgroup nagios
     fi
-    if ! lsuser nagios > /dev/null;
+    if ! lsuser nagios 2> /dev/null;
     then
         mkuser groups=nagios nagios
     fi
@@ -60,17 +60,17 @@ if [ "$1" == "1" ]; then
     mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
     mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
 
-    mkitab "ncpa_listener:2:once:/usr/bin/startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_listener >/dev/null 2>&1"
-    mkitab "ncpa_passive:2:once:/usr/bin/startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_passive >/dev/null 2>&1"
+    mkitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
+    mkitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
     rm -rf $RPM_INSTALL_PREFIX/ncpa/var/ncpa.*
 elif [ "$1" == "2" ]; then
-    chitab "ncpa_listener:2:once:/usr/bin/startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_listener >/dev/null 2>&1"
-    chitab "ncpa_passive:2:once:/usr/bin/startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_passive >/dev/null 2>&1"
+    chitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
+    chitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
 fi
 
 # Start the daemons using SRC
-startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_listener >/dev/null 2>&1
-startsrc -e LIBPATH=$RPM_INSTALL_PREFIX/ncpa -s ncpa_passive >/dev/null 2>&1
+startsrc -s ncpa_listener >/dev/null 2>&1
+startsrc -s ncpa_passive >/dev/null 2>&1
 
 %preun
 if [ -z $RPM_INSTALL_PREFIX ]; then
