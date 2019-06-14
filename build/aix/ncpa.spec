@@ -35,11 +35,11 @@ rm -rf %{buildroot}
 %pre
 if [ "$1" == "1" ]; then
     # Install the nagios user and group on fresh install
-    if ! lsgroup nagios 2> /dev/null;
+    if ! lsgroup nagios >/dev/null 2>&1;
     then
         mkgroup nagios
     fi
-    if ! lsuser nagios 2> /dev/null;
+    if ! lsuser nagios >/dev/null 2>&1;
     then
         mkuser groups=nagios nagios
     fi
