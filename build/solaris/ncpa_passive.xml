@@ -9,7 +9,7 @@
         <exec_method timeout_seconds="60" type="method" name="start"
             exec="/usr/local/ncpa/ncpa_passive" />
         <exec_method timeout_seconds="60" type="method" name="stop"
-            exec="kill $(cat /usr/local/ncpa/var/run/ncpa_passive.pid)" />
+            exec="kill `cat /usr/local/ncpa/var/run/ncpa_passive.pid`" />
         <exec_method timeout_seconds="60" type="method" name="refresh"
             exec=":true" />
         <property_group type="framework" name="startd">
