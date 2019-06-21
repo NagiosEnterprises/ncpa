@@ -7,6 +7,7 @@ Changelog
 - Fixed error when using windows counters "bad file descriptor"
 - Fixed default IP address in Windows when IP address is empty in the config
 - Fixed issue with Solaris installs not properly stopping the ncpa listener service
+- Fixed issue on Windows install where the proper registry key was not being set
 
 2.1.7 - 05/09/2019
 ==================
