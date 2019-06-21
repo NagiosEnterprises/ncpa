@@ -127,6 +127,8 @@ Page custom ConfigPassiveChecks
 
 Function .onInit
 
+    !insertmacro MULTIUSER_INIT
+
     InitPluginsDir
     !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\nsis_listener_options.ini" "nsis_listener_options.ini"
     !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\nsis_passive_options.ini" "nsis_passive_options.ini"
@@ -153,6 +155,12 @@ Function .onInit
     ${If} $nrdp_url != ''
         StrCpy $nrdp 1
     ${EndIf}
+
+FunctionEnd
+
+Function un.onInit
+    
+    !insertmacro MULTIUSER_UNINIT
 
 FunctionEnd
 
