@@ -29,6 +29,7 @@ __INTERNAL__ = False
 
 base_dir = os.path.dirname(sys.path[0])
 
+
 # The following if statement is a workaround that is allowing us to run this
 # in debug mode, rather than a hard coded location.
 
@@ -47,7 +48,10 @@ if os.name == 'nt':
 else:
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
 
+
+# Set some settings for Flask
 listener.jinja_env.line_statement_prefix = '#'
+listener.url_map.strict_slashes = False
 
 
 # ------------------------------
@@ -826,7 +830,7 @@ def error(msg=None):
     return jsonify(error=msg)
 
 
-@listener.route('/testconnect/', methods=['GET', 'POST'], strict_slashes=False)
+@listener.route('/testconnect/', methods=['GET', 'POST'])
 def testconnect():
     """
     Method meant for testing connecting with monitoring applications and wizards.

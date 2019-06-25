@@ -3,7 +3,7 @@ Changelog
 
 2.1.8 - ??/??/2019
 ==================
-- Fixed issue with redirection when connecting to testconnect API endpoint without forward slash
+- Fixed issue with HTTP 308 redirection when connecting to API endpoints without forward slash
 - Fixed error when using windows counters "bad file descriptor"
 - Fixed default IP address in Windows when IP address is empty in the config
 - Fixed issue with Solaris installs not properly stopping the ncpa listener service
