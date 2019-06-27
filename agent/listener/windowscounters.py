@@ -29,7 +29,8 @@ class WindowsCountersNode(nodes.LazyNode):
             try:
                 return WindowsCountersNode.get_counter_val(counter_path, *args, **kwargs)
             except Exception as exc:
-                return [['Error: %s' % exc.strerror], 'c']
+                error = self.handle_error(exc, counter_path)
+                return [ error, '' ]
 
         self.method = counter_method
         return super(WindowsCountersNode, self).walk(*args, **kwargs)
@@ -38,15 +39,33 @@ class WindowsCountersNode(nodes.LazyNode):
         path = self.path
         self.name = WindowsCountersNode.get_counter_path(path)
 
-        def counter_method(*args, **kwargs):
-            try:
+        try:
+            def counter_method(*args, **kwargs):
                 return WindowsCountersNode.get_counter_val(self.name, *args, **kwargs)
-            except Exception as exc:
-                logging.exception(exc)
-                return [0, 'c']
 
-        self.method = counter_method
-        return super(WindowsCountersNode, self).run_check(capitalize=False, *args, **kwargs)
+            self.method = counter_method
+            return super(WindowsCountersNode, self).run_check(capitalize=False, *args, **kwargs)
+        except Exception as exc:
+            error = self.handle_error(exc, self.name)
+            return { 'stdout': error, 'returncode': 3 }
+            
+    # For certain errors, we should add more info
+    def handle_error(self, exc, name):
+        error = exc.strerror
+
+        if 'No data' in error:
+            error = error + ' Does the counter (' + name  + ') exist?'
+            logging.debug(exc)
+        elif 'not valid' in error:
+            error = error + ' You may need to add the sleep=1 parameter.'
+            logging.debug(exc)
+        elif 'negative value' in error:
+            error = error + ' You may need to add the format=1 parameter.'
+            logging.debug(exc)
+        else:
+            logging.exception(exc)
+
+        return error
 
     @staticmethod
     def get_counter_val(counter_path, *args, **kwargs):
@@ -59,6 +78,15 @@ class WindowsCountersNode(nodes.LazyNode):
             factor = int(kwargs['factor'][0])
         except (KeyError, TypeError, IndexError):
             factor = 0
+
+        # Allow using PDH_FMT_LONG for certain counter types if it is required
+        fmt = win32pdh.PDH_FMT_DOUBLE
+        try:
+            fmt = int(kwargs['format'][0])
+            if fmt == 1:
+                fmt = win32pdh.PDH_FMT_LONG
+        except (KeyError, TypeError, IndexError):
+            pass
 
         query = win32pdh.OpenQuery()
         try:
@@ -76,7 +104,8 @@ class WindowsCountersNode(nodes.LazyNode):
                     win32pdh.CollectQueryData(query)
 
                 _, _, _, _, _, _, _, info, _ = win32pdh.GetCounterInfo(counter, False)
-                _, value = win32pdh.GetFormattedCounterValue(counter, win32pdh.PDH_FMT_DOUBLE)
+                _, value = win32pdh.GetFormattedCounterValue(counter, fmt)
+
             finally:
                 win32pdh.RemoveCounter(counter)
         finally:
