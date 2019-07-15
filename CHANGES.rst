@@ -1,13 +1,23 @@
 Changelog
 +++++++++
 
+2.1.8 - 07/16/2019
+==================
+- Fixed issue with HTTP 308 redirection when connecting to API endpoints without forward slash
+- Fixed error when using windowscounters "bad file descriptor"
+- Fixed windowscounters not properly displaying errors in the check output or API output
+- Fixed windowscounters checks with errors now return unknown
+- Fixed default IP address in Windows when IP address is empty in the config
+- Fixed issue with Solaris installs not properly stopping the ncpa listener service
+- Fixed issue on Windows install where the proper registry key was not being set
+
 2.1.7 - 05/09/2019
 ==================
 - Updated builds to not use shared python library which causes issues on certain systems
 - Fixed issue with Windows silent installs not having 0.0.0.0 set as default when no IP is defined
 - Fixed issue where some special Windows counters could not be identified
 - Fixed issue with pipe characters in returned error output for disk nodes
-- Fixed uninstall registery key in Windows not selecting the proper location due to missing install page
+- Fixed uninstall registry key in Windows not selecting the proper location due to missing install page
 - Fixed issue with mountpoints that cannot access filesystem info causing error
 
 2.1.6 - 10/12/2018

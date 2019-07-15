@@ -29,7 +29,7 @@ update_py_packages() {
     if [ "$ARCH" == "sparc" ] && [ $SOLARIS -eq 11 ]; then
         $PYTHONBIN -m pip install -r  $BUILD_DIR/solaris/require.sparc.txt --upgrade
     else
-        CPPFLAGS="-I$LIBFFI_DEV" $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary=greenlet
+        CPPFLAGS="-I$LIBFFI_DEV" LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary :all:
     fi
 }
 

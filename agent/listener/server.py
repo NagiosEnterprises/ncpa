@@ -23,11 +23,12 @@ import math
 import ipaddress
 
 
-__VERSION__ = '2.1.7'
+__VERSION__ = '2.1.8'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
 base_dir = os.path.dirname(sys.path[0])
+
 
 # The following if statement is a workaround that is allowing us to run this
 # in debug mode, rather than a hard coded location.
@@ -47,7 +48,10 @@ if os.name == 'nt':
 else:
     listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
 
+
+# Set some settings for Flask
 listener.jinja_env.line_statement_prefix = '#'
+listener.url_map.strict_slashes = False
 
 
 # ------------------------------

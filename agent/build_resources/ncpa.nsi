@@ -109,9 +109,10 @@ Page custom ConfigListener
 Page custom ConfigPassive
 Page custom ConfigPassiveChecks
 
+!insertmacro MULTIUSER_PAGE_INSTALLMODE
+
 ; Define function that causes changes to UI for upgrades
 !define MUI_PAGE_CUSTOMFUNCTION_SHOW UpgradeOnly
-!insertmacro MULTIUSER_PAGE_INSTALLMODE
 !insertmacro MUI_PAGE_DIRECTORY
 
 !insertmacro MUI_PAGE_INSTFILES
@@ -126,6 +127,8 @@ Page custom ConfigPassiveChecks
 !insertmacro MUI_LANGUAGE "English"
 
 Function .onInit
+
+    !insertmacro MULTIUSER_INIT
 
     InitPluginsDir
     !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\nsis_listener_options.ini" "nsis_listener_options.ini"
@@ -153,6 +156,12 @@ Function .onInit
     ${If} $nrdp_url != ''
         StrCpy $nrdp 1
     ${EndIf}
+
+FunctionEnd
+
+Function un.onInit
+    
+    !insertmacro MULTIUSER_UNINIT
 
 FunctionEnd
 
