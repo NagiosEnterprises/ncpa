@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-2.1.8 - ??/??/2019
+2.1.8 - 07/16/2019
 ==================
 - Fixed issue with HTTP 308 redirection when connecting to API endpoints without forward slash
 - Fixed error when using windowscounters "bad file descriptor"
