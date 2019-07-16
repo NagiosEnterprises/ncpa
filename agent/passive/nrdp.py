@@ -120,7 +120,7 @@ class Handler(nagioshandler.NagiosHandler):
             logging.debug("No NRDP checks. Skipping NRDP send.")
             return
 
-        checkresults = doc.toprettyxml()
+        checkresults = doc.toxml()
         self.submit_to_nagios(checkresults)
 
     def guess_hostname(self):
