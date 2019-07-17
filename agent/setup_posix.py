@@ -35,12 +35,14 @@ bin_includes = ['libssl.so', 'libcrypto.so', 'libffi.so']
 if 'aix' in sys.platform:
     include_files += [('/opt/freeware/lib/libpython2.7.so', 'libpython2.7.so'),
                       ('/opt/freeware/lib/libncurses.so', 'libncurses.so'),
+                      ('/opt/freeware/lib/libz.a', 'libz.a'),
                       ('/usr/lib/libsqlite3.so', 'libsqlite3.so'),
                       ('/usr/lib/libssl.a', 'libssl.a'),
                       ('/usr/lib/libcrypto.a', 'libcrypto.a'),
                       ('/usr/lib/libffi.a', 'libffi.a'),
                       ('/opt/freeware/lib/libgcc_s.a', 'libgcc_s.a'),
-                      ('/opt/freeware/lib/libz.a', 'libz.a')]
+                      ('/opt/freeware/lib/libssl.so', 'libssl.so'),
+                      ('/opt/freeware/lib/libcrypto.so', 'libcrypto.so')]
 
 # For new cffi and cryptography
 try:
