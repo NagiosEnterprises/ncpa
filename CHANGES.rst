@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+2.1.9 - ??/??/2019
+==================
+- Fixed issue in Admin section where URLs not working properly
+
 2.1.8 - 07/16/2019
 ==================
 - Fixed issue with HTTP 308 redirection when connecting to API endpoints without forward slash
