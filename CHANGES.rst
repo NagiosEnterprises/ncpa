@@ -4,6 +4,7 @@ Changelog
 2.1.9 - ??/??/2019
 ==================
 - Fixed issue in Admin section where URLs not working properly
+- Fixed max_connections setting not working on Windows
 
 2.1.8 - 07/16/2019
 ==================
