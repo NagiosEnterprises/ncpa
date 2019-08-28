@@ -638,15 +638,16 @@ def api_websocket(accessor=None):
     sane_args = dict(request.args)
     sane_args['accessor'] = accessor
 
+    config = listener.config['iconfig']
+
     encoding = sys.stdin.encoding
     if encoding is None:
         encoding = sys.getdefaultencoding()
 
     # Refresh the root node before creating the websocket
-    psapi.refresh()
+    psapi.refresh(config)
 
     if request.environ.get('wsgi.websocket'):
-        config = listener.config['iconfig']
         ws = request.environ['wsgi.websocket']
         while True:
             try:
@@ -791,10 +792,12 @@ def graph(accessor=None):
     info = {'graph_path': accessor,
             'graph_hash': hash(accessor)}
 
-    # Refresh the root node before creating the websocket
-    psapi.refresh()
+    config = listener.config['iconfig']
 
-    node = psapi.getter(accessor, listener.config['iconfig'], request.path, request.args, cache=True)
+    # Refresh the root node before creating the websocket
+    psapi.refresh(config)
+
+    node = psapi.getter(accessor, config, request.path, request.args, cache=True)
     prop = node.name
 
     if request.values.get('delta'):
