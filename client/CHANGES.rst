@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+1.1.6
+-----
+- Fixed list api tree only possible with activated verbose mode
+
 1.1.5
 -----
 - Fixed incompatability with Python 3 when using certain options
