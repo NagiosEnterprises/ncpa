@@ -44,7 +44,7 @@ import re
 import signal
 
 
-__VERSION__ = '1.1.5'
+__VERSION__ = '1.1.6'
 
 
 def parse_args():
@@ -228,6 +228,9 @@ def get_json(options):
         print('File returned contained:\n' + ret)
 
     arr = json.loads(ret)
+
+    if options.list:
+        return arr
 
         # Fix for NCPA < 2
     if 'value' in arr:
