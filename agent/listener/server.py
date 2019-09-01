@@ -113,7 +113,6 @@ def before_request():
     if allowed_hosts and __INTERNAL__ is False:
         if request.remote_addr:
             ipaddr = ipaddress.ip_address(unicode(request.remote_addr))
-            logging.error(ipaddr)
             allowed_networks = [ipaddress.ip_network(unicode(_network.strip())) for _network in allowed_hosts.split(',')]
             allowed = [ipaddr in _network for _network in allowed_networks]
             if True not in allowed:
