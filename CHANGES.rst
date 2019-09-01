@@ -7,6 +7,7 @@ Changelog
 - Fixed issue in Admin section where URLs not working properly
 - Fixed max_connections setting not working on Windows
 - Fixed get_root_node() not reading and applying config on initial startup
+- Fixed allowed_hosts config option causing forbidden error messages when using passive checks
 
 2.1.8 - 07/16/2019
 ==================
