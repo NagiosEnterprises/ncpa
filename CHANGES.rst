@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-2.1.9 - ??/??/2019
+2.1.9 - 09/03/2019
 ==================
 - Added option all_partitions to ncpa.cfg to only display what psutil says are physical local disks
 - Fixed issue in Admin section where URLs not working properly
@@ -9,7 +9,7 @@ Changelog
 - Fixed get_root_node() not reading and applying config on initial startup
 - Fixed allowed_hosts config option causing forbidden error messages when using passive checks
 
-2.1.8 - 07/16/2019
+2.1.8 - 07/17/2019
 ==================
 - Fixed issue with HTTP 308 redirection when connecting to API endpoints without forward slash
 - Fixed error when using windowscounters "bad file descriptor"

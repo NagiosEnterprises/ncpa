@@ -1,0 +1,14 @@
+psutil
+requests
+Jinja2
+flask==0.10.1
+werkzeug
+docutils
+pyOpenSSL==16.2.0
+cryptography==1.8.1
+gevent==1.2.2
+gevent-websocket
+cffi
+appdirs
+packaging
+kafka
