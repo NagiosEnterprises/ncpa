@@ -25,6 +25,13 @@ check_logging = 1
 check_logging_time = 30
 
 #
+# Display all mounted disk partitions
+# (essentially setting all=True here: https://psutil.readthedocs.io/en/latest/#psutil.disk_partitions)
+# Default: 1
+#
+all_partitions = 1
+
+#
 # Excluded file system types removes these fs types from the disk metrics
 # (This is mostly only noteable on UNIX systems but also works on Windows if you need it)
 # Default: aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,
