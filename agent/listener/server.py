@@ -23,7 +23,7 @@ import math
 import ipaddress
 
 
-__VERSION__ = '2.1.9.beta'
+__VERSION__ = '2.1.9'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
