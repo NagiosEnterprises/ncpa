@@ -289,13 +289,13 @@ def main():
             stdout, returncode = run_check(info_json)
 
             if options.performance and stdout.find("|") == -1:
-                stdout = "{} | 'status'={};1;2;;".format(stdout, returncode)
+                stdout = "{0} | 'status'={1};1;2;;".format(stdout, returncode)
             return stdout, returncode
     except Exception as e:
         if options.debug:
-            return 'The stack trace:' + traceback.format_exc(), 3
+            return 'The stack trace:\n' + traceback.format_exc(), 3
         elif options.verbose:
-            return 'An error occurred:' + str(e), 3
+            return 'An error occurred:\n' + str(e), 3
         else:
             return 'UNKNOWN: Error occurred while running the plugin. Use the verbose flag for more details.', 3
 
