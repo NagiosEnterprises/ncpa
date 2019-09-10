@@ -1,9 +1,13 @@
 Changelog
 +++++++++
 
+1.1.7
+-----
+- Fixed incompatability with Python 3.7.4 (Christian Zettel)
+
 1.1.6
 -----
-- Fixed list api tree only possible with activated verbose mode
+- Fixed list api tree only possible with activated verbose mode (Christian Zettel)
 
 1.1.5
 -----
