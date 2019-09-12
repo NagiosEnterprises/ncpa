@@ -280,8 +280,7 @@ def get_json(options):
         except urlerror as e:
             raise URLError('{0}'.format(e.reason))
 
-    #ret = bytes.decode(b''.join(ret))
-    ret = ''.join(ret)
+    ret = bytes.decode(b''.join(ret))
 
     if options.verbose:
         print('File returned contained:\n' + ret)
