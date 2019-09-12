@@ -280,7 +280,8 @@ def get_json(options):
         except urlerror as e:
             raise URLError('{0}'.format(e.reason))
 
-    ret = bytes.decode(b''.join(ret))
+    #ret = bytes.decode(b''.join(ret))
+    ret = ''.join(ret)
 
     if options.verbose:
         print('File returned contained:\n' + ret)
@@ -349,7 +350,12 @@ def main():
                 stdout = "{0} | 'status'={1};1;2;;".format(stdout, returncode)
             return stdout, returncode
     except (HTTPError, URLError) as e:
-        return e.error_message, 3
+        if options.debug:
+            return 'The stack trace:\n' + traceback.format_exc(), 3
+        elif options.verbose:
+            return 'An error occurred:\n' + str(e.error_message), 3
+        else:
+            return e.error_message, 3
     except Exception as e:
         if options.debug:
             return 'The stack trace:\n' + traceback.format_exc(), 3
