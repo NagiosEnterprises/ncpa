@@ -39,12 +39,53 @@ try:
 except AttributeError:
     urlquote = urllib.quote
 
+try:
+    urlerror = urllib.error.URLError
+except AttributeError:
+    urlerror = urllib2.URLError
+
+try:
+    httperror = urllib.error.HTTPError
+except AttributeError:
+    httperror = urllib2.HTTPError
+
 import shlex
 import re
 import signal
 
 
 __VERSION__ = '1.1.7'
+
+
+class ConnectionError(Exception):
+    """Base class for connection error exceptions
+
+    """
+
+    error_output_prefix = "UNKNOWN: An error occured connecting to API. "
+    pass
+
+class URLError(ConnectionError):
+    """Raised when an URLError occures
+
+    """
+
+    def __init__(self, error_message):
+        self.error_message = ConnectionError.error_output_prefix \
+                             + "(Connection error: '" \
+                             + error_message \
+                             + "')"
+
+class HTTPError(ConnectionError):
+    """Raised when an HTTPError occures
+
+    """
+
+    def __init__(self, error_message):
+        self.error_message = ConnectionError.error_output_prefix \
+                             + "(HTTP error: '" \
+                             + error_message \
+                             + "')"
 
 
 def parse_args():
@@ -219,9 +260,19 @@ def get_json(options):
         if not options.secure:
             ctx.check_hostname = False
             ctx.verify_mode = ssl.CERT_NONE
-        ret = urlopen(url, context=ctx)
+        try:
+            ret = urlopen(url, context=ctx)
+        except httperror as e:
+            raise HTTPError('{} {}'.format(e.code, e.reason))
+        except urlerror as e:
+            raise URLError('{}'.format(e.reason))
     except AttributeError:
-        ret = urlopen(url)
+        try:
+            ret = urlopen(url)
+        except httperror as e:
+            raise HTTPError('{} {}'.format(e.code, e.reason))
+        except urlerror as e:
+            raise URLError('{}'.format(e.reason))
 
     ret = bytes.decode(b''.join(ret))
 
@@ -291,6 +342,8 @@ def main():
             if options.performance and stdout.find("|") == -1:
                 stdout = "{0} | 'status'={1};1;2;;".format(stdout, returncode)
             return stdout, returncode
+    except (HTTPError, URLError) as e:
+        return e.error_message, 3
     except Exception as e:
         if options.debug:
             return 'The stack trace:\n' + traceback.format_exc(), 3

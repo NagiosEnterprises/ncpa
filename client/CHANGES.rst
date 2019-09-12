@@ -5,6 +5,7 @@ Changelog
 -----
 - Fixed incompatibility with Python 3.7.4 (Christian Zettel)
 - Fixed Option: --performance is incompatible with Python 2.6.6 (Christian Zettel)
+- Provide more detailed informations in case of connection and http errors (Christian Zettel)
 
 1.1.6
 -----
