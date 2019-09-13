@@ -263,20 +263,20 @@ def get_json(options):
         try:
             ret = urlopen(url, context=ctx)
         except httperror as e:
-            if sys.version_info < (2,7,0):
-                raise HTTPError('{0}'.format(e.code))
-            else:
+            try:
                 raise HTTPError('{0} {1}'.format(e.code, e.reason))
+            except AttributeError:
+                raise HTTPError('{0}'.format(e.code))
         except urlerror as e:
             raise URLError('{0}'.format(e.reason))
     except AttributeError:
         try:
             ret = urlopen(url)
         except httperror as e:
-            if sys.version_info < (2,7,0):
-                raise HTTPError('{0}'.format(e.code))
-            else:
+            try:
                 raise HTTPError('{0} {1}'.format(e.code, e.reason))
+            except AttributeError:
+                raise HTTPError('{0}'.format(e.code))
         except urlerror as e:
             raise URLError('{0}'.format(e.reason))
 
