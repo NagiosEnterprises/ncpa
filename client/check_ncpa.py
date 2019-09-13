@@ -307,7 +307,10 @@ def run_check(info_json):
     """Run a check against the remote host.
 
     """
-    return info_json['stdout'], info_json['returncode']
+    if 'stdout' in info_json and 'returncode' in info_json:
+        return info_json['stdout'], info_json['returncode']
+    elif 'error' in info_json:
+        return info_json['error'], 3
 
 
 def show_list(info_json):
