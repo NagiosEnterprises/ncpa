@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+2.1.10 - ??/??/2019
+===================
+- Fixed get_counter_path() throwing exception for counter names which contain parentheses
+
 2.1.9 - 09/04/2019
 ==================
 - Added option all_partitions to ncpa.cfg to only display what psutil says are physical local disks
@@ -8,7 +12,6 @@ Changelog
 - Fixed max_connections setting not working on Windows
 - Fixed get_root_node() not reading and applying config on initial startup
 - Fixed allowed_hosts config option causing forbidden error messages when using passive checks
-- Fixed get_counter_path() throwing exception for counter names which contain parentheses
 
 2.1.8 - 07/17/2019
 ==================
