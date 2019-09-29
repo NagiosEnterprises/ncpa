@@ -26,7 +26,7 @@ cat linux/ncpa.spec | sed "s/__VERSION__/$NCPA_VER/g" | sed "s|__BUILDROOT__|$BU
 
     if [ "$distro" == "Raspbian" ]; then
         parch=`uname -m`
-        QA_RPATHS='$[ 0x0002 ]' rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --define "_topdir $BUILD_RPM_DIR" --define "_arch $parch" >> $BUILD_DIR/build.log
+        QA_RPATHS='$[ 0x0002 ]' rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --target=armhf --define "_topdir $BUILD_RPM_DIR" --define "_arch armhf" >> $BUILD_DIR/build.log
     else
         QA_RPATHS='$[ 0x0002 ]' rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --define "_topdir $BUILD_RPM_DIR" >> $BUILD_DIR/build.log
     fi
@@ -43,7 +43,11 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Ras
     cd debbuild
 
     # Create deb package with alien
-    alien -c -k -v *.rpm  >> $BUILD_DIR/build.log
+    rpm="*.rpm "
+    if [ "$distro" == "Raspbian" ]; then
+        rpm="*armhf.rpm"
+    fi
+    alien -c -k -v $rpm >> $BUILD_DIR/build.log
     cd $BUILD_DIR
     cp debbuild/*.deb .
     rm -rf *.rpm
