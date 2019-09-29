@@ -47,9 +47,13 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Ras
     if [ "$distro" == "Raspbian" ]; then
         rpm="*armhf.rpm"
     fi
+
     alien -c -k -v $rpm >> $BUILD_DIR/build.log
+    
     cd $BUILD_DIR
     cp debbuild/*.deb .
+    
     rm -rf *.rpm
+    rm -rf debbuild
 
 fi
