@@ -12,7 +12,7 @@ Downloads
 Current versions:
 
 +---------+-------------+-------------------------------------------------------+
-| Current | **2.1.8**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
+| Current | **2.1.9**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
 `Older Versions <https://www.nagios.org/ncpa/archive.php>`_
@@ -28,8 +28,9 @@ We currently build for the following operating systems:
 - SLES 11, 12¹
 - Oracle 6, 7¹
 - Amazon Linux 2
-- Solaris 10, 11 (Experimental)
+- Solaris 10, 11
 - AIX 7
+- Raspbian 10 (Buster)
 
 ¹ Builds for 64-bit versions only
 ² LTS are the only "supported" versions, although builds should work for non-LTS
