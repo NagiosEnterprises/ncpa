@@ -21,7 +21,7 @@ We currently build for the following operating systems:
 
 - Windows (Vista+)
 - Mac OS X (10.7+)
-- CentOS / RHEL 6, 7¹
+- CentOS / RHEL 6, 7, 8¹
 - Debian 8, 9
 - Ubuntu² 12, 14, 16
 - OpenSUSE Leap 15¹, Tumbleweed¹
