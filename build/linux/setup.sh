@@ -67,6 +67,10 @@ install_prereqs() {
 
         fi
 
+    elif [ "$distro" == "Raspbian" ]; then
+
+        apt-get install gcc openssl sqlite3 libsqlite3-dev libffi-dev rpm git debian-builder alien libssl-dev -y
+
     else
 
         echo "Could not determine your OS type... you need to install the following dependencies:"
