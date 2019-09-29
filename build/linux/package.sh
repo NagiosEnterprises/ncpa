@@ -35,7 +35,7 @@ cat linux/ncpa.spec | sed "s/__VERSION__/$NCPA_VER/g" | sed "s|__BUILDROOT__|$BU
 )
 
 # Convert into a deb package for Debian systems
-if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
+if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Raspbian" ]; then
 
     cd $BUILD_DIR
     mkdir -p debbuild
