@@ -23,7 +23,14 @@ cat linux/ncpa.spec | sed "s/__VERSION__/$NCPA_VER/g" | sed "s|__BUILDROOT__|$BU
     cp -f $BUILD_DIR/ncpa-$NCPA_VER.tar.gz $BUILD_RPM_DIR/SOURCES/
     rm -f $BUILD_RPM_DIR/SPECS/ncpa.spec
     cp -f $BUILD_DIR/ncpa.spec $BUILD_RPM_DIR/SPECS/
-    QA_RPATHS='$[ 0x0002 ]' rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --define "_topdir $BUILD_RPM_DIR" >> $BUILD_DIR/build.log
+
+    if [ "$distro" == "Raspbian" ]; then
+        parch=`uname -m`
+        QA_RPATHS='$[ 0x0002 ]' rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --define "_topdir $BUILD_RPM_DIR" --define "_arch $parch" >> $BUILD_DIR/build.log
+    else
+        QA_RPATHS='$[ 0x0002 ]' rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --define "_topdir $BUILD_RPM_DIR" >> $BUILD_DIR/build.log
+    fi
+
     find $BUILD_RPM_DIR/RPMS -name "ncpa-$NCPA_VER*" -exec cp {} . \;
 )
 
