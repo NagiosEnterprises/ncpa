@@ -3,6 +3,7 @@ Changelog
 
 2.1.10 - ??/??/2019
 ===================
+- Added a ProductID to Windows install registery key for easier lookup
 - Fixed get_counter_path() throwing exception for counter names which contain parentheses
 
 2.1.9 - 09/04/2019

@@ -398,6 +398,7 @@ SectionEnd
 Section ""
 
     WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "${NAME}"
+    WriteRegStr SHCTX "${UNINST_KEY}" "ProductID" "732ae10d-f3f1-4946-85c3-0a2aee05e716"
     WriteRegStr SHCTX "${UNINST_KEY}" "DisplayIcon" "$INSTDIR\ncpa_listener.exe"
     WriteRegStr SHCTX "${UNINST_KEY}" "DisplayVersion" "${NCPA_VERSION}"
     WriteRegStr SHCTX "${UNINST_KEY}" "Publisher" "${COMPANY}"
