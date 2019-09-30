@@ -4,7 +4,7 @@
 PATH=$PATH:/opt/csw/bin:/usr/ccs/bin
 
 # Globals
-PYTHONTAR="Python-2.7.14"
+PYTHONTAR="Python-2.7.16"
 PYTHONVER="python2.7"
 PYTHONBIN=$(which python2.7)
 CXFREEZEVER="cx_Freeze-4.3.4"
