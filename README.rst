@@ -43,6 +43,7 @@ Older systems that have been supported by NCPA in the past:
 - AIX 6 with NCPA 2.1.1
 - CentOS / RHEL 5 using NCPA 2.0.6
 - Oracle 5 using NCPA 2.0.6
+- Windows XP using NCPA 1.8.1
 
 Other systems we are working on builds for:
 
