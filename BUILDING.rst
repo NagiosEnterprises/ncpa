@@ -162,12 +162,18 @@ On DEB-based systems::
 Building on Mac OS X
 ====================
 
-Working on this section. It's basically the same as Linux, however you may need to
-install the libraries and python differently. You'll also have to use the following command
-to build the dmg::
+Working on this section. Using the new build system, these four lines should be enough
+to create a working NCPA DMG.
 
-  cd build
-  make build_dmg
+    sudo su -
+    xcode-select --install
+    cd build
+    ./build.sh
+
+Note that there may be some difficulty with installing this on other machines without
+Apple Developer credentials. As of MacOS Catalina, this means going to 
+System Preferences -> Security & Privacy and explicitly allowing the programs each time
+they run.
 
 Building Tips
 =============
