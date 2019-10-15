@@ -16,13 +16,13 @@ import geventwebsocket
 import listener.psapi as psapi
 import listener.processes as processes
 import listener.database as database
+import listener.windowslogs
 import math
 import ipaddress
 
 
-__VERSION__ = '3.0.0'
-__STARTED__ = datetime.datetime.now()
-__INTERNAL__ = False
+# Import the global values (TODO: Change this later)
+from ncpa import __VERSION__, __SYSTEM__, __STARTED__, __INTERNAL__
 
 
 # The following if statement is a workaround that is allowing us to run this
@@ -36,16 +36,10 @@ else:
 tmpl_dir = os.path.join(appdir, 'listener', 'templates')
 stat_dir = os.path.join(appdir, 'listener', 'static')
 
-if os.name == 'nt':
-    logging.info("Looking for templates at: %s", tmpl_dir)
-    listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
-    listener.jinja_loader = jinja2.FileSystemLoader(tmpl_dir)
-else:
-    listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
+listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
 
 
 # Set some settings for Flask
-listener.jinja_env.line_statement_prefix = '#'
 listener.url_map.strict_slashes = False
 
 
@@ -703,11 +697,10 @@ def tail_websocket():
         last_ts = datetime.datetime.now()
         while True:
             try:
-                last_ts, logs = listener.tail_method(last_ts=last_ts, **request.args)
+                last_ts, logs = listener.windowslogs.tail_method(last_ts=last_ts, **request.args)
 
-                if logs:
-                    json_log = json.dumps(logs)
-                    ws.send(json_log)
+                json_val = json.dumps(logs)
+                ws.send(json_val)
 
                 gevent.sleep(5)
             except Exception as e:

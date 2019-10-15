@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+# Monkey patch for gevent
+from gevent import monkey
+monkey.patch_all(thread=False)
+
 import threading
 import logging
 import glob
@@ -10,10 +14,6 @@ import time
 import datetime
 import tempfile
 import gevent.builtins
-from gevent import monkey
-
-# Monkey patch for gevent
-monkey.patch_all(subprocess=True, thread=False)
 
 from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
@@ -31,7 +31,7 @@ import listener
 import listener.server
 import listener.psapi
 import listener.certificate as certificate
-import listener.database as database 
+import listener.database as database
 
 # Imports for different system types
 if os.name == 'posix':
@@ -46,6 +46,8 @@ __FROZEN__ = getattr(sys, 'frozen', False)
 __VERSION__ = '3.0.0'
 __DEBUG__ = False
 __SYSTEM__ = os.name
+__STARTED__ = datetime.datetime.now()
+__INTERNAL__ = False
 
 
 # The base class for the Listener and Passive classes, which sets things
@@ -99,9 +101,6 @@ class Listener(Base):
                 ssl_str_ciphers = self.config_parser.get('listener', 'ssl_ciphers')
             except Exception:
                 ssl_str_ciphers = None
-
-            if __SYSTEM__ == 'nt':
-                listener.server.listener.tail_method = listener.windowslogs.tail_method
 
             listener.server.listener.config['iconfig'] = self.config
 

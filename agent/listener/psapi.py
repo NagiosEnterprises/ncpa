@@ -51,7 +51,7 @@ def make_mountpoint_nodes(partition_name):
     node_children = [total, used, free, used_percent, device_name, fstype, opts]
 
     # Unix specific inode counter ~ sorry Windows! :'(
-    if environment.SYSTEM != 'Windows':
+    if listener.server.__SYSTEM__ != 'nt':
         try:
             st = os.statvfs(mountpoint)
             iu = st.f_files - st.f_ffree
@@ -98,7 +98,7 @@ def make_if_nodes(if_name):
 
 def get_timezone():
     zones = time.tzname
-    if platform.uname()[0] == "Windows":
+    if listener.server.__SYSTEM__ == 'nt':
         zones = [x for x in zones]
     return zones, ''
 
@@ -229,7 +229,7 @@ def get_root_node(config):
 
     children = [cpu, memory, disk, interface, plugins, user, system, service, process]
 
-    if platform.uname()[0] == "Windows":
+    if listener.server.__SYSTEM__ == 'nt':
         for importable in importables:
             try:
                 relative_name = 'listener.' + importable
