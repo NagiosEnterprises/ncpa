@@ -4,7 +4,7 @@
 if [ -d /lib/svc/manifest/site ]; then
     svcbundle -i -s service-name=site/ncpa_listener \
           -s start-method='/usr/local/ncpa/ncpa_listener' \
-          -s stop-method='kill $(cat/usr/local/ncpa/var/run/ncpa_listener.pid)'
+          -s stop-method='kill $(cat /usr/local/ncpa/var/run/ncpa_listener.pid)'
     svcbundle -i -s service-name=site/ncpa_passive \
           -s start-method='/usr/local/ncpa/ncpa_passive' \
           -s stop-method='kill $(cat /usr/local/ncpa/var/run/ncpa_passive.pid)'

@@ -10,7 +10,8 @@ SKIP_PYTHON=0
 . $BUILD_DIR/linux/init.sh
 
 update_py_packages() {
-    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary=cffi
+    PYTHONBIN=$(which python2.7)
+    LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary :all:
 }
 
 install_prereqs() {
@@ -22,22 +23,21 @@ install_prereqs() {
 
 
     if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
-    
-        apt-get install debian-builder rpm gcc gcc-c++ wget openssl libssl-dev libffi-dev sqlite3 libsqlite3-dev zlib1g-dev alien -y
+
+        apt-get install debian-builder rpm gcc g++ wget openssl libssl-dev libffi-dev sqlite3 libsqlite3-dev zlib1g-dev alien -y
     
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
     
         yum install epel-release -y
         yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget -y
 
-    elif [ "$distro" == "SUSE LINUX" ] || [ "$distro" == "SLES" ]; then
+    elif [ "$distro" == "SUSE LINUX" ] || [ "$distro" == "SLES" ] || [ "$distro" == "OpenSUSE" ]; then
 
         # We don't need to install python on SLES due to their updated version of python
         # available with the OS itself
         if [ "$dist" == "sles15" ] || [ "$dist" == "sles12" ] || [ "$distro" == "OpenSUSE" ]; then
 
-            zypper install gcc gcc-c++ python python-devel zlib zlib-devel openssl libopenssl-devel sqlite3 sqlite3-devel rpm-build wget
-            SKIP_PYTHON=1
+            zypper install gcc gcc-c++ zlib zlib-devel openssl libopenssl-devel sqlite3 sqlite3-devel libffi-devel rpm-build wget
 
         elif [ "$dist" == "sles11" ]; then
 
@@ -49,7 +49,7 @@ install_prereqs() {
             echo "2. Install SDK repo:"
             echo "   https://www.suse.com/support/kb/doc/?id=7015337"
             if [ "$arch" == "i686" ]; then
-                $arch="i586";
+                arch="i586";
             fi
             echo "   https://nu.novell.com/repo/\$RCE/SLE11-SDK-SP4-Pool/sle-11-$arch/rpm/$arch/sle-sdk-release-11.4-1.55.$arch.rpm"
             echo "   https://nu.novell.com/repo/\$RCE/SLE11-SDK-SP4-Pool/sle-11-$arch/rpm/$arch/sle-sdk-release-SDK-11.4-1.55.$arch.rpm"
@@ -59,7 +59,8 @@ install_prereqs() {
             echo "Press enter to continue..."
             read
 
-            zypper install gcc gcc-c++ zlib zlib-devel sqlite3 sqlite3-devel rpm-build wget
+            # Install base packages
+            zypper install gcc gcc-c++ zlib zlib-devel sqlite3 sqlite3-devel rpm wget libffi-devel
 
             # Install openssl 1.0.x for TLS 1.2 support
             zypper install openssl1 libopenssl1_0_0 libopenssl1-devel libcurl4-openssl1 curl-openssl1 wget-openssl1
@@ -97,11 +98,15 @@ install_prereqs() {
     if [ $SKIP_PYTHON -eq 0 ]; then
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR
-        ./configure --enable-shared && make && make altinstall
-        echo '/usr/local/lib' >> /etc/ld.so.conf 
-        /sbin/ldconfig
+        ./configure LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib' && make && make altinstall
         cd ..
         rm -rf $PYTHONTAR
+        PYTHONBIN=$(which python2.7)
+        
+        # Link lib-dynload from lib64 to lib due to arch issues for Python 2.7
+        if [ "$dist" == "os15" ]; then
+            ln -s /usr/local/lib64/python2.7/lib-dynload/ /usr/local/lib/python2.7/lib-dynload
+        fi
     fi
 
     # --------------------------
@@ -118,9 +123,11 @@ install_prereqs() {
     # --------------------------
 
 
+    set +e
     useradd nagios
     groupadd nagios
     usermod -g nagios nagios
+    set -e
 
 
 }

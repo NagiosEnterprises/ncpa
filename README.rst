@@ -12,7 +12,7 @@ Downloads
 Current versions:
 
 +---------+-------------+-------------------------------------------------------+
-| Current | **2.1.6**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
+| Current | **2.1.8**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
 `Older Versions <https://www.nagios.org/ncpa/archive.php>`_
@@ -22,15 +22,16 @@ We currently build for the following operating systems:
 - Windows (Vista+)
 - Mac OS X (10.7+)
 - CentOS / RHEL 6, 7¹
-- Debian 8, 9¹
+- Debian 8, 9
 - Ubuntu² 12, 14, 16
 - OpenSUSE Leap 15¹, Tumbleweed¹
 - SLES 11, 12¹
 - Oracle 6, 7¹
+- Amazon Linux 2
 - Solaris 10, 11 (Experimental)
 - AIX 7
 
-¹ Builds for 64-bit versions only (after 2.0.6+)
+¹ Builds for 64-bit versions only
 ² LTS are the only "supported" versions, although builds should work for non-LTS
 
 Older systems that have been supported by NCPA in the past:

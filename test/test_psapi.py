@@ -5,7 +5,7 @@ import unittest
 class TestPSApi(unittest.TestCase):
 
     def test_get_disk_nodes(self):
-        disk_node = listener.psapi.get_disk_node()
+        disk_node = listener.psapi.get_disk_node([])
         self.assertIsInstance(disk_node, listener.nodes.ParentNode)
 
     def test_get_system_node(self):
@@ -33,5 +33,5 @@ class TestPSApi(unittest.TestCase):
         self.assertIsInstance(user_node, listener.nodes.ParentNode)
 
     def test_get_root_node(self):
-        root_node = listener.psapi.get_root_node()
+        root_node = listener.psapi.get_root_node([])
         self.assertIsInstance(root_node, listener.nodes.ParentNode)

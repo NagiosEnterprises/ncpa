@@ -44,7 +44,7 @@ import re
 import signal
 
 
-__VERSION__ = '1.1.4'
+__VERSION__ = '1.1.7'
 
 
 def parse_args():
@@ -195,7 +195,7 @@ def get_arguments_from_options(options, **kwargs):
 
     # Get the options (comma separated)
     if options.queryargs:
-        # for each comma, perform lookahead, split iff we aren't inside quotes.
+        # for each comma, perform lookahead, split if we aren't inside quotes.
         arguments_list = re.split(''',(?=(?:[^'"]|'[^']*'|"[^"]*")*$)''', options.queryargs)
         for argument in arguments_list:
             key, value = argument.split('=', 1)
@@ -211,6 +211,7 @@ def get_json(options):
     encode its finding into a Python object (from JSON).
 
     """
+
     url = get_url_from_options(options)
 
     if options.verbose:
@@ -225,12 +226,15 @@ def get_json(options):
     except AttributeError:
         ret = urlopen(url)
 
-    ret = ''.join(ret)
+    ret = bytes.decode(b''.join(ret))
 
     if options.verbose:
         print('File returned contained:\n' + ret)
 
     arr = json.loads(ret)
+
+    if options.list:
+        return arr
 
         # Fix for NCPA < 2
     if 'value' in arr:
@@ -276,26 +280,25 @@ def main():
     signal.alarm(options.timeout)
 
     try:
-
         if options.version:
             stdout = 'The version of this plugin is %s' % __VERSION__
             return stdout, 0
 
         info_json = get_json(options)
+
         if options.list:
             return show_list(info_json)
         else:
             stdout, returncode = run_check(info_json)
+
             if options.performance and stdout.find("|") == -1:
-                performance = " | 'status'={};1;2;".format(returncode)
-                return "{}{}".format(stdout, performance), returncode
-            else:
-                return stdout, returncode
-    except Exception, e:
+                stdout = "{0} | 'status'={1};1;2;;".format(stdout, returncode)
+            return stdout, returncode
+    except Exception as e:
         if options.debug:
-            return 'The stack trace:' + traceback.format_exc(), 3
+            return 'The stack trace:\n' + traceback.format_exc(), 3
         elif options.verbose:
-            return 'An error occurred:' + str(e), 3
+            return 'An error occurred:\n' + str(e), 3
         else:
             return 'UNKNOWN: Error occurred while running the plugin. Use the verbose flag for more details.', 3
 

@@ -51,15 +51,20 @@ def make_mountpoint_nodes(partition_name):
     node_children = [total, used, free, used_percent, device_name, fstype, opts]
 
     # Unix specific inode counter ~ sorry Windows! :'(
-    if platform.uname()[0] != 'Windows':
-        st = os.statvfs(mountpoint)
-        iu = st.f_files - st.f_ffree
-        inodes = RunnableNode('inodes', method=lambda: (st.f_files, 'inodes'))
-        inodes_used = RunnableNode('inodes_used', method=lambda: (iu, 'inodes'))
-        inodes_free = RunnableNode('inodes_free', method=lambda: (st.f_ffree, 'inodes'))
-        node_children.append(inodes)
-        node_children.append(inodes_used)
-        node_children.append(inodes_free)
+    if environment.SYSTEM != 'Windows':
+        try:
+            st = os.statvfs(mountpoint)
+            iu = st.f_files - st.f_ffree
+            inodes = RunnableNode('inodes', method=lambda: (st.f_files, 'inodes'))
+            inodes_used = RunnableNode('inodes_used', method=lambda: (iu, 'inodes'))
+            inodes_free = RunnableNode('inodes_free', method=lambda: (st.f_ffree, 'inodes'))
+            node_children.append(inodes)
+            node_children.append(inodes_used)
+            node_children.append(inodes_free)
+        except OSError as ex:
+            # Log this error as debug only, normally means could not count inodes because
+            # of some permissions or access related issues
+            logging.exception(ex)
 
     # Make and return the full parent node
     return RunnableParentNode(safe_mountpoint,
@@ -142,30 +147,34 @@ def get_memory_node():
     return ParentNode('memory', children=[mem_virt, mem_swap])
 
 
-def get_disk_node(config=False):
-    exclude_fs_types = []
+def get_disk_node(config):
 
+    # Get all physical disk io counters
     try:
         disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
     except IOError as ex:
         logging.exception(ex)
         disk_counters = []
 
-    # Get exclude values from the config if it exists
-    # otherwise use the defaults
-    if config:
-        try:
-            exclude_fs_types = config.get('general', 'exclude_fs_types')
-        except Exception as e:
-            exclude_fs_types = "aufs,autofs,binfmt_misc,cifs,cgroup,debugfs,devpts,devtmpfs,"\
-                               "encryptfs,efivarfs,fuse,hugelbtfs,mqueue,nfs,overlayfs,proc,"\
-                               "pstore,rpc_pipefs,securityfs,smb,sysfs,tmpfs,tracefs,xenfs"
-        exclude_fs_types = [x.strip() for x in exclude_fs_types.split(',')]
+    # Get exclude values from the config
+    try:
+        exclude_fs_types = config.get('general', 'exclude_fs_types')
+    except Exception as e:
+        exclude_fs_types = "aufs,autofs,binfmt_misc,cifs,cgroup,debugfs,devpts,devtmpfs,"\
+                           "encryptfs,efivarfs,fuse,hugelbtfs,mqueue,nfs,overlayfs,proc,"\
+                           "pstore,rpc_pipefs,securityfs,smb,sysfs,tmpfs,tracefs,xenfs"
+    exclude_fs_types = [x.strip() for x in exclude_fs_types.split(',')]
+
+    # Get the all partitions value
+    try:
+        all_partitions = bool(config.get('general', 'all_partitions'))
+    except Exception as e:
+        all_partitions = True
 
     disk_mountpoints = []
     disk_parts = []
     try:
-        for x in ps.disk_partitions(all=True):
+        for x in ps.disk_partitions(all=all_partitions):
 
             # to check against fuse.<type> etc
             fstype = x.fstype
@@ -207,7 +216,7 @@ def get_user_node():
     return ParentNode('user', children=[user_count, user_list])
 
 
-def get_root_node(config=False):
+def get_root_node(config):
     cpu = get_cpu_node()
     memory = get_memory_node()
     disk = get_disk_node(config)
@@ -238,13 +247,9 @@ def get_root_node(config=False):
     return ParentNode('root', children=children)
 
 
-# The root node (cached objects)
-root = get_root_node()
-
-
-def refresh():
+def refresh(config):
     global root
-    root = get_root_node()
+    root = get_root_node(config)
     return True
 
 
@@ -263,7 +268,7 @@ def getter(accessor, config, full_path, args, cache=False):
     # node. This normally only happens on new API calls. When we are using
     # websockets we use the cached version while it makes requests.
     if not cache:
-        root = get_root_node(config)
+        refresh(config)
 
     root.reset_valid_nodes()
     return root.accessor(path, config, full_path, args)

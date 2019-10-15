@@ -81,8 +81,13 @@ class Listener(Base):
             try:
                 address = self.config.get('listener', 'ip')
             except Exception:
-                self.config.set('listener', 'ip', '0.0.0.0')
-                address = '0.0.0.0'
+                # Set the Windows default IP address to 0.0.0.0 because :: only allows connections
+                # via IPv6 unlike Linux which can bind to both at once
+                if __SYSTEM__ == 'nt':
+                    address = '0.0.0.0'
+                else:
+                    address = '::'
+                self.config.set('listener', 'ip', address)
 
             try:
                 port = self.config.getint('listener', 'port')
@@ -126,11 +131,17 @@ class Listener(Base):
             if ssl_str_ciphers:
                 ssl_context['ciphers'] = ssl_str_ciphers
 
+            # Create connection pool
+            try:
+                max_connections = self.config_parser.get('listener', 'max_connections')
+            except Exception:
+                max_connections = 200
+
             listener.server.listener.secret_key = os.urandom(24)
             http_server = WSGIServer(listener=(address, port),
                                      application=listener.server.listener,
                                      handler_class=WebSocketHandler,
-                                     spawn=Pool(200),
+                                     spawn=Pool(max_connections),
                                      **ssl_context)
             http_server.serve_forever()
         except Exception as exc:

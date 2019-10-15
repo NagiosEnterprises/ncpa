@@ -633,5 +633,6 @@ class DoesNotExistNode():
         err = 'The %s (%s) requested does not exist.' % (self.node_type, self.failed_node_name)
         if self.extra_message:
             err = "%s %s" % (err, self.extra_message)
+        err = err.replace('|', '/')
         return { 'stdout': err,
                  'returncode': 3 }

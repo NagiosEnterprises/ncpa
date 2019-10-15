@@ -6,6 +6,20 @@ Changelog
 - Added compatability for NCPA 1.x, 2.x, and 3.x
 - Added --sleep or -S variable for setting the sleep value for counters and certain endpoints 
 
+1.1.7
+-----
+- Fixed incompatibility with Python 3.7.4 (Christian Zettel)
+- Fixed Option: --performance is incompatible with Python 2.6.6 (Christian Zettel)
+
+1.1.6
+-----
+- Fixed list api tree only possible with activated verbose mode (Christian Zettel)
+
+1.1.5
+-----
+- Fixed incompatability with Python 3 when using certain options
+>>>>>>> remotes/origin/maint
+
 1.1.4
 -----
 - Fixed issue with older NCPA < 2 with reversed stdout and returncode sections

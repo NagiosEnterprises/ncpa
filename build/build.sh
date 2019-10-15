@@ -2,7 +2,7 @@
 
 # Global variables
 UNAME=$(uname)
-if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ]; then
+if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
     BUILD_DIR=$( cd "$(dirname "$0")" ; pwd -P )
     AGENT_DIR="$BUILD_DIR/../agent"
 else

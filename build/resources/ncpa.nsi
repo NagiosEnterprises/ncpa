@@ -19,6 +19,8 @@ ${StrRep}
 !define NCPA_VERSION_CLEAN "$%NCPA_BUILD_VER_CLEAN%"
 !define UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\NCPA"
 
+!define MULTIUSER_EXECUTIONLEVEL Highest
+!define MULTIUSER_MUI
 !define MULTIUSER_INSTALLMODE_COMMANDLINE
 !include "MultiUser.nsh"
 
@@ -106,6 +108,8 @@ Page custom ConfigListener
 Page custom ConfigPassive
 Page custom ConfigPassiveChecks
 
+!insertmacro MULTIUSER_PAGE_INSTALLMODE
+
 ; Define function that causes changes to UI for upgrades
 !define MUI_PAGE_CUSTOMFUNCTION_SHOW UpgradeOnly
 !insertmacro MUI_PAGE_DIRECTORY
@@ -122,6 +126,8 @@ Page custom ConfigPassiveChecks
 !insertmacro MUI_LANGUAGE "English"
 
 Function .onInit
+
+    !insertmacro MULTIUSER_INIT
 
     InitPluginsDir
     !insertmacro INSTALLOPTIONS_EXTRACT_AS "NCPA\build_resources\nsis_listener_options.ini" "nsis_listener_options.ini"
@@ -149,6 +155,12 @@ Function .onInit
     ${If} $nrdp_url != ''
         StrCpy $nrdp 1
     ${EndIf}
+
+FunctionEnd
+
+Function un.onInit
+    
+    !insertmacro MULTIUSER_UNINIT
 
 FunctionEnd
 
@@ -373,7 +385,7 @@ Section ""
     WriteRegDWORD SHCTX "${UNINST_KEY}" "EstimatedSize" "$0"
 
     WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode"
-    WriteRegStr HKLM "${UNINST_KEY}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
+    WriteRegStr SHCTX "${UNINST_KEY}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
  
     WriteUninstaller $INSTDIR\uninstall.exe
 	
@@ -413,7 +425,7 @@ Section "Uninstall"
     nsExec::Exec '$9 /c "$INSTDIR\ncpa.exe" --uninstall NCPA'
     
     DeleteRegKey SHCTX "${UNINST_KEY}"
-    DeleteRegKey HKLM "${UNINST_KEY}"
+    DeleteRegKey SHCTX "${UNINST_KEY}"
     
     RMDir /r "$INSTDIR"
 

@@ -15,7 +15,7 @@ Prerequisites
 
 * `Git for Windows <https://git-scm.com/download/win>`_
 * Python 2.7.14 (32-Bit) (`Download <https://www.python.org/downloads/release/python-2714/>`_)
-* OpenSSL for Windows (32-bit) (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_0f.exe>`_) *Requires admin rights*
+* OpenSSL for Windows (32-bit) (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_1a.exe>`_) *Requires admin rights*
 * `Microsoft Visual C++ Compiler for Python 2.7 <http://aka.ms/vcpython27>`_
 * `Microsoft Visual C++ 2010 runtime (32-bit) <http://www.microsoft.com/en-us/download/details.aspx?id=8328>`_ *Requires admin rights*
 * `NSIS 3 <http://nsis.sourceforge.net/Download>`_ *Requires admin rights*
@@ -23,7 +23,6 @@ Prerequisites
 **Python Packages**
 
 * pip (installed by default in Python 2.7 for Windows)
-* gevent-websocket (patched)
 * cx_Freeze (patched)
 * cx_Logging (http://cx-logging.sourceforge.net/)
 
@@ -85,19 +84,19 @@ Two variables must be set for the win_build_setup.bat script to run properly:
   
   This should be::
   
-    C:\OpenSSL-Win32
+    C:\Program Files (x86)\OpenSSL-Win32
 
 Set these variables by running::
 
   set pydir=C:\Python27
-  set openssldir=C:\OpenSSL-Win32
+  set openssldir=C:\Program Files (x86)\OpenSSL-Win32
 
 Install the Last Modules
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Install the full list of python modules
 	
-  "%pydir%" -m pip install pypiwin32 psutil requests Jinja2 flask werkzeug docutils pyOpenSSL gevent cffi appdirs packaging
+  "%pydir%\python" -m pip install --upgrade -r build/resources/require.txt
 
 * cx_Logging (http://cx-logging.sourceforge.net/)
 
@@ -105,17 +104,14 @@ Install the Last Modules
 
 * cx_Freeze (patched)
 
-  * Install cx_Freeze via the included patched version::
-  
-      ncpa\build\resources\cx_Freeze-4.3.4-patched.tar.gz
-      "%pydir%\python" cx_Freeze-4.3.4\setup.py install
+  * Install cx_Freeze via pip:
 
-* gevent-websocket (patched)
+    pip install cx_Freeze==4.3.4
 
-  * Install gevent-websocket via the included patched version::
+  * Then, copy our patch into the package:
   
-      ncpa\build\resources\gevent-websocket-0.9.5-patched.tar.gz
-      "%pydir%\python" gevent-websocket-0.9.5\setup.py install
+      ncpa\build\resources\cx_Freeze-4.3.4.tar.gz
+      copy "ncpa\build\resources\cx_Freeze-4.3.4.tar\cx_Freeze-4.3.4\cx_Freeze\freezer.py" C:\Python27\Lib\site-packages\cx_Freeze\freezer.py
 
 Build NCPA
 ~~~~~~~~~~

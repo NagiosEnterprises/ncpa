@@ -19,6 +19,38 @@ Changelog
 
 - Fixed errors from different language encodings due to python not being able to encode/decode strings
 
+2.1.10 - ??/??/2019
+===================
+- Added a ProductID to Windows install registery key for easier lookup
+- Fixed get_counter_path() throwing exception for counter names which contain parentheses
+
+2.1.9 - 09/04/2019
+==================
+- Added option all_partitions to ncpa.cfg to only display what psutil says are physical local disks
+- Fixed issue in Admin section where URLs not working properly
+- Fixed max_connections setting not working on Windows
+- Fixed get_root_node() not reading and applying config on initial startup
+- Fixed allowed_hosts config option causing forbidden error messages when using passive checks
+
+2.1.8 - 07/17/2019
+==================
+- Fixed issue with HTTP 308 redirection when connecting to API endpoints without forward slash
+- Fixed error when using windowscounters "bad file descriptor"
+- Fixed windowscounters not properly displaying errors in the check output or API output
+- Fixed windowscounters checks with errors now return unknown
+- Fixed default IP address in Windows when IP address is empty in the config
+- Fixed issue with Solaris installs not properly stopping the ncpa listener service
+- Fixed issue on Windows install where the proper registry key was not being set
+
+2.1.7 - 05/09/2019
+==================
+- Updated builds to not use shared python library which causes issues on certain systems
+- Fixed issue with Windows silent installs not having 0.0.0.0 set as default when no IP is defined
+- Fixed issue where some special Windows counters could not be identified
+- Fixed issue with pipe characters in returned error output for disk nodes
+- Fixed uninstall registry key in Windows not selecting the proper location due to missing install page
+- Fixed issue with mountpoints that cannot access filesystem info causing error
+
 2.1.6 - 10/12/2018
 ==================
 - Added max_connections listener config value to set the amount of concurrent connections
@@ -142,7 +174,6 @@ Changelog
 - Fixed issue with / in arguments passed to plugins (via check_ncpa.py and the API)
 - Fixed output of check_ncpa.py in the "view alternative format" popup to use proper units argument
 - Fixed service status output to display proper messages when pid file exists but daemon is not running
->>>>>>> remotes/origin/master
 
 2.0.1 - 01/03/2017
 ==================
@@ -324,3 +355,4 @@ Changelog
 - Fixed build issue with docs not building during build process
 - Fixed dependency issues with Debian systems
 - Fixed doc builds during compilation
+>>>>>>> remotes/origin/maint
