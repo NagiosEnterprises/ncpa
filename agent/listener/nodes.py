@@ -69,7 +69,7 @@ class ParentNode(object):
         return { self.name: stat }
 
     def run_check(self, *args, **kwargs):
-        err = 'Unable to run check on node without check method. Requested \'%s\' node.' % self.name
+        err = 'UNKNOWN: Unable to run check on node without check method. Requested \'%s\' node.' % self.name
         return { 'stdout': err,
                  'returncode': 3 }
 
@@ -632,7 +632,7 @@ class DoesNotExistNode():
         return obj
 
     def run_check(self, *args, **kwargs):
-        err = 'The %s (%s) requested does not exist.' % (self.node_type, self.failed_node_name)
+        err = 'UNKNOWN: The %s (%s) requested does not exist.' % (self.node_type, self.failed_node_name)
         if self.extra_message:
             err = "%s %s" % (err, self.extra_message)
         err = err.replace('|', '/')
