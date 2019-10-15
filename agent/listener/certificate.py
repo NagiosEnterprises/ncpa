@@ -3,11 +3,6 @@ from OpenSSL import crypto
 import socket
 import os
 import time
-import appdirs
-import packaging
-import packaging.version
-import packaging.specifiers
-import packaging.requirements
 
 def remove_empty_file(file):
     if os.path.exists(file):

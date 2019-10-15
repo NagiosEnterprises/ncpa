@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Globals
-PYTHONTAR="Python-3.6.6"
+PYTHONTAR="Python-3.6.9"
 PYTHONVER="python3.6"
 PYTHONBIN=$(which python3.6)
 SKIP_PYTHON=0

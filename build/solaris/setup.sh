@@ -4,7 +4,7 @@
 PATH=$PATH:/opt/csw/bin:/usr/ccs/bin
 
 # Globals
-PYTHONTAR="Python-3.6.6"
+PYTHONTAR="Python-3.6.9"
 PYTHONVER="python3"
 PYTHONBIN="/usr/local/bin/python3"
 

@@ -30,7 +30,7 @@ if ERRORLEVEL 1 (
   exit /B 1
 )
 
-pip install pypiwin32 cx_Freeze psutil requests Jinja2 flask werkzeug docutils pyOpenSSL gevent karellen-geventws cffi appdirs packaging
+pip install pypiwin32 cx_Freeze psutil requests flask pyOpenSSL gevent gevent-websocket
 
 echo to build ncpa:
 echo python build\build_windows.py
