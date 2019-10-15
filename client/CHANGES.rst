@@ -18,7 +18,6 @@ Changelog
 1.1.5
 -----
 - Fixed incompatability with Python 3 when using certain options
->>>>>>> remotes/origin/maint
 
 1.1.4
 -----
