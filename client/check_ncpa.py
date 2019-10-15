@@ -54,38 +54,20 @@ import re
 import signal
 
 
-__VERSION__ = '1.1.7'
+__VERSION__ = '1.2.0'
 
 
 class ConnectionError(Exception):
-    """Base class for connection error exceptions
-
-    """
-
     error_output_prefix = "UNKNOWN: An error occured connecting to API. "
     pass
 
 class URLError(ConnectionError):
-    """Raised when an URLError occures
-
-    """
-
     def __init__(self, error_message):
-        self.error_message = ConnectionError.error_output_prefix \
-                             + "(Connection error: '" \
-                             + error_message \
-                             + "')"
+        self.error_message = ConnectionError.error_output_prefix + "(Connection error: '" + error_message + "')"
 
 class HTTPError(ConnectionError):
-    """Raised when an HTTPError occures
-
-    """
-
     def __init__(self, error_message):
-        self.error_message = ConnectionError.error_output_prefix \
-                             + "(HTTP error: '" \
-                             + error_message \
-                             + "')"
+        self.error_message = ConnectionError.error_output_prefix + "(HTTP error: '" + error_message + "')"
 
 
 def parse_args():
@@ -256,30 +238,25 @@ def get_json(options):
         print('Connecting to: ' + url)
 
     try:
-        ctx = ssl.create_default_context()
-        if not options.secure:
-            ctx.check_hostname = False
-            ctx.verify_mode = ssl.CERT_NONE
-        try:
-            ret = urlopen(url, context=ctx)
-        except httperror as e:
-            try:
-                raise HTTPError('{0} {1}'.format(e.code, e.reason))
-            except AttributeError:
-                raise HTTPError('{0}'.format(e.code))
-        except urlerror as e:
-            raise URLError('{0}'.format(e.reason))
-    except AttributeError:
-        try:
-            ret = urlopen(url)
-        except httperror as e:
-            try:
-                raise HTTPError('{0} {1}'.format(e.code, e.reason))
-            except AttributeError:
-                raise HTTPError('{0}'.format(e.code))
-        except urlerror as e:
-            raise URLError('{0}'.format(e.reason))
 
+        try:
+            ctx = ssl.create_default_context()
+            if not options.secure:
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
+            ret = urlopen(url, context=ctx)
+        except AttributeError:
+            ret = urlopen(url)
+
+    except httperror as e:
+        if e.reason:
+            raise HTTPError('{0} {1}'.format(e.code, e.reason))
+        else:
+            raise HTTPError('{0}'.format(e.code))
+    except urlerror as e:
+        raise URLError('{0}'.format(e.reason))
+
+    # Get returned data
     ret = bytes.decode(b''.join(ret))
 
     if options.verbose:
@@ -290,7 +267,7 @@ def get_json(options):
     if options.list:
         return arr
 
-        # Fix for NCPA < 2
+    # Fix for NCPA < 2
     if 'value' in arr:
         arr = arr['value']
 
