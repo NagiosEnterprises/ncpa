@@ -1,8 +1,9 @@
+import os
 import sys
 import unittest
 
 # Load NCPA
-sys.path.append('../agent/')
+sys.path.append(os.path.join(os.path.dirname(__file__), '../agent/'))
 import listener.server
 
 class TestPSApi(unittest.TestCase):

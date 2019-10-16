@@ -6,7 +6,7 @@ import json
 import configparser
 
 # Load NCPA
-sys.path.append('../agent/')
+sys.path.append(os.path.join(os.path.dirname(__file__), '../agent/'))
 import passive.ncpacheck
 
 
