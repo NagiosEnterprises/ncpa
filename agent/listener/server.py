@@ -12,7 +12,6 @@ import psutil
 import listener.psapi as psapi
 import listener.processes as processes
 import listener.database as database
-import listener.windowslogs
 import math
 import ipaddress
 import urllib.parse
@@ -689,6 +688,8 @@ def top_websocket():
 @listener.route('/ws/tail')
 @requires_token_or_auth
 def tail_websocket():
+
+    import listener.windowslogs
 
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']

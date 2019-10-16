@@ -305,7 +305,7 @@ def datetime_from_event_date(evt_date):
     doesn't take care of this, but alas, here we are.
     """
     date_string = str(evt_date)
-    time_generated = datetime.datetime.strptime(date_string, '%m/%d/%y %H:%M:%S')
+    time_generated = datetime.datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
     return time_generated
 
 
