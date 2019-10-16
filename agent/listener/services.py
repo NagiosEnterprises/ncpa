@@ -143,7 +143,7 @@ class ServiceNode(listener.nodes.LazyNode):
 
         for line in status.readlines():
             line.rstrip()
-            unit, load, active, sub, description = re.split('\s+', line, 4)
+            unit, load, active, sub, description = re.split(r'\s+', line, 4)
             if unit.endswith('.service'):
                 unit = unit[:-8]
             if 'not-found' not in load:
@@ -169,7 +169,7 @@ class ServiceNode(listener.nodes.LazyNode):
         # Check to see if there are any services we need to add that
         # weren't already caught by the initd script check
         for line in status.readlines():
-            m = re.match("(.*) (?:\w*)/(\w*)(?:, .*)?", line)
+            m = re.match(r"(.*) (?:\w*)/(\w*)(?:, .*)?", line)
             try:
                 if m.group(1) not in services:
                     if m.group(2) == 'running':
