@@ -1,27 +1,25 @@
 from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response, abort
 import logging
-import urllib.parse
 import os
 import sys
 import platform
 import requests
 import functools
-import jinja2
 import datetime
 import json
 import re
 import psutil
-import gevent
-import geventwebsocket
 import listener.psapi as psapi
 import listener.processes as processes
 import listener.database as database
 import listener.windowslogs
 import math
 import ipaddress
+import urllib.parse
+import gevent
 
 
-# Import the global values (TODO: Change this later)
+# Import the global values (TODO: Change this later, should be imported from a module)
 from ncpa import __VERSION__, __SYSTEM__, __STARTED__, __INTERNAL__
 
 

@@ -2,6 +2,7 @@ import xml.dom.minidom
 import logging
 import passive.utils
 import passive.nagioshandler
+import listener.server
 
 
 class Handler(passive.nagioshandler.NagiosHandler):
@@ -122,7 +123,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
     def guess_hostname(self):
         try:
-            hostname = self.config.get('nrdp', 'hostname', None)
+            hostname = self.config.get('nrdp', 'hostname')
             assert hostname
         except Exception:
             logging.debug("No hostname given in the config, falling back to parent class.")

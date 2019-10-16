@@ -1,8 +1,12 @@
 import os
-import listener.certificate
-import unittest
+import sys
 import tempfile
 import time
+import unittest
+
+# Load NCPA
+sys.path.append('../agent/')
+import listener.certificate
 
 
 class TestCertificate(unittest.TestCase):
@@ -26,8 +30,8 @@ class TestCertificate(unittest.TestCase):
 
         kcm, ccm = os.path.getmtime(key), os.path.getmtime(crt)
 
-        self.assertEquals(kc, kcm, "Key file edited. File modified times do not match.")
-        self.assertEquals(cc, ccm, "Cert file edited. File modified times do not match.")
+        self.assertEqual(kc, kcm, "Key file edited. File modified times do not match.")
+        self.assertEqual(cc, ccm, "Cert file edited. File modified times do not match.")
 
     # Tests whether or not the empty .crt and .key file will be removed
     # and properly replaced with new cert files
@@ -38,18 +42,18 @@ class TestCertificate(unittest.TestCase):
         key_file = open(key, 'w')
         crt_file = open(crt, 'w')
 
+        key_file.close()
+        crt_file.close()
+
         kc, cc = os.path.getmtime(key), os.path.getmtime(crt)
 
         listener.certificate.create_self_signed_cert(self.testing_dir, self.testing_crt, self.testing_key)
 
         kcm, ccm = os.path.getmtime(key), os.path.getmtime(crt)
 
-        self.assertNotEquals(kc, kcm, "Empty key file was not removed.")
-        self.assertNotEquals(cc, ccm, "Empty cert file was not removed.")
+        self.assertNotEqual(kc, kcm, "Empty key file was not removed.")
+        self.assertNotEqual(cc, ccm, "Empty cert file was not removed.")
 
-        key_file.close()
-        crt_file.close()
-    
     def test_create_self_signed_certificate_nonexisting_file(self):
         key = "%s/%s" % (self.testing_dir, self.testing_key)
         crt = "%s/%s" % (self.testing_dir, self.testing_crt)

@@ -1,8 +1,10 @@
 import os
 import sys
 import unittest
-import listener.psapi
-import listener.nodes
+
+# Load NCPA
+sys.path.append('../agent/')
+import listener.server
 
 class EmptyNode(object):
     def __init__(self, name):
@@ -20,7 +22,7 @@ class TestParentNode(unittest.TestCase):
 
         for node in test_nodes:
             self.assertTrue(node.name in p.children)
-            self.assertEquals(node, p.children[node.name])
+            self.assertEqual(node, p.children[node.name])
 
     def test_add_child(self):
         self.assertEqual(self.n.children, {})

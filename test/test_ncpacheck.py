@@ -1,19 +1,21 @@
+import os
+import sys
 import unittest
 import platform
-import ConfigParser as configparser
-import os
 import json
-import listener
-import passive
+import configparser
+
+# Load NCPA
+sys.path.append('../agent/')
+import passive.ncpacheck
 
 
 class TestNCPACheck(unittest.TestCase):
+
     def setUp(self):
         self.config = configparser.ConfigParser()
         self.config.add_section('api')
         self.config.set('api', 'community_string', 'mytoken')
-        listener.server.__INTERNAL__ = True
-        listener.server.listener.config['iconfig'] = {}
 
     def test_get_api_url_from_instruction(self):
         instruction = 'cpu/percent --warning 10 --critical=11'
@@ -29,13 +31,13 @@ class TestNCPACheck(unittest.TestCase):
         stdout, returncode = ncpa_check.run()
 
         self.assertIsInstance(stdout, str)
-        self.assertIsInstance(returncode, str)
+        self.assertIsInstance(returncode, int)
 
         new_check = passive.ncpacheck.NCPACheck(self.config, '/invalid/check', 'test_host', 'test_service', 300)
         stdout, returncode = new_check.run()
 
         self.assertIsInstance(stdout, str)
-        self.assertIsInstance(returncode, str)
+        self.assertIsInstance(returncode, int)
 
     def test_run_check(self):
         api_url = '/api/cpu/percent/'
@@ -52,7 +54,7 @@ class TestNCPACheck(unittest.TestCase):
     def test_handle_agent_response(self):
         response = '{ "stdout": "Hi", "returncode": 0 }'
         expected_stdout = "Hi"
-        expected_returncode = "0"
+        expected_returncode = 0
 
         stdout, returncode = passive.ncpacheck.NCPACheck.handle_agent_response(response)
         self.assertEqual(expected_returncode, returncode)

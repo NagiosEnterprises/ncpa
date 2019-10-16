@@ -13,7 +13,6 @@ import ssl
 import time
 import datetime
 import tempfile
-import gevent.builtins
 
 from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
@@ -24,10 +23,6 @@ from io import open
 from configparser import ConfigParser
 
 # NCPA-specific module imports
-import passive
-import passive.nrds
-import passive.nrdp
-import listener
 import listener.server
 import listener.psapi
 import listener.certificate as certificate

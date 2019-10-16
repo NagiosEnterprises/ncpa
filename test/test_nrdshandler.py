@@ -1,25 +1,21 @@
-from unittest import TestCase
-from unittest import skip
-import ConfigParser
 import os
 import sys
 import tempfile
 import shutil
+import configparser
+from unittest import TestCase
 
-sys.path.append(os.path.dirname(__file__))
-
-import listener
-import passive
+# Load NCPA
+sys.path.append('../agent/')
 import passive.nrds
 
 
 class NRDSHandler(TestCase):
 
     def setUp(self):
-        listener.server.listener.config['iconfig'] = {}
         self.testing_plugin_dir = os.path.join(tempfile.gettempdir(), 'testing-plugins')
-        shutil.rmtree(self.testing_plugin_dir, ignore_errors=True)
-        self.config = ConfigParser.ConfigParser()
+
+        self.config = configparser.ConfigParser()
         self.config.optionxform = str
         self.config.file_path = os.path.join(self.testing_plugin_dir, "test.cfg")
         self.config.add_section('plugin directives')
@@ -55,7 +51,9 @@ class NRDSHandler(TestCase):
 
         with open(expected_abs_plugin_path, 'r') as plugin_test:
             l = plugin_test.readlines()[0].strip()
-            self.assertEquals(l, 'SECRET PAYLOAD')
+            self.assertEqual(l, 'SECRET PAYLOAD')
+
+        os.unlink(expected_abs_plugin_path)
 
     def test_config_update_is_required(self):
         def mock_request(*args, **kwargs):
@@ -102,27 +100,27 @@ class NRDSHandler(TestCase):
 
     def test_list_missing_plugins(self):
         required_plugins = self.n.get_required_plugins()
-        self.assertEquals(required_plugins, set())
+        self.assertEqual(required_plugins, set())
 
         self.n.config.set('passive checks', 'bingo|bongo', '/api/plugin/foobar.py/moola')
 
         required_plugins = self.n.get_required_plugins()
-        self.assertEquals(required_plugins, {'foobar.py'})
+        self.assertEqual(required_plugins, {'foobar.py'})
 
         self.n.config.set('passive checks', 'bogus_entry', '/api/plugin/bogus.bingo/foobar')
         required_plugins = self.n.get_required_plugins()
-        self.assertEquals(required_plugins, {'foobar.py'})
+        self.assertEqual(required_plugins, {'foobar.py'})
 
     def test_get_installed_plugins(self):
         installed_plugins = self.n.get_installed_plugins()
-        self.assertEquals(installed_plugins, set())
+        self.assertEqual(installed_plugins, set())
 
         foobar_plugin = os.path.join(self.testing_plugin_dir, 'foobar')
         with open(foobar_plugin, 'w') as _:
             installed_plugins = self.n.get_installed_plugins()
-            self.assertEquals(installed_plugins, {'foobar'})
+            self.assertEqual(installed_plugins, {'foobar'})
 
         os.unlink(foobar_plugin)
 
     def tearDown(self):
-        shutil.rmtree(self.testing_plugin_dir, ignore_errors=True)
+        os.rmdir(self.testing_plugin_dir)

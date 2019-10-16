@@ -1,21 +1,16 @@
 import os
 import sys
+import configparser
 from unittest import TestCase
-from unittest import skip
-import ConfigParser
-import xml.etree.ElementTree as ET
 
-sys.path.append(os.path.dirname(__file__))
-
-import listener
-import passive
+# Load NCPA
+sys.path.append('../agent/')
 import passive.nrdp
 
-
 class TestNRDPHandler(TestCase):
+
     def setUp(self):
-        listener.server.listener.config['iconfig'] = {}
-        self.config = ConfigParser.ConfigParser()
+        self.config = configparser.ConfigParser()
         self.config.optionxform = str
         self.config.add_section('nrdp')
         self.config.set('nrdp', 'hostname', 'testing')
@@ -28,16 +23,6 @@ class TestNRDPHandler(TestCase):
         self.config.set('api', 'community_string', 'mytoken')
         self.n = passive.nrdp.Handler(self.config)
 
-    def test_run(self):
-        def mock_stub(*args, **kwargs):
-            pass
-
-        #self.n.submit_to_nagios = mock_stub
-        #self.n.run()
-
-        #self.assertIsNotNone(self.n.checks)
-        #self.assertEquals(len(self.n.checks), 2)
-
     def test_guess_hostname(self):
         self.config.set('nrdp', 'hostname', '')
         hostname = self.n.guess_hostname()
@@ -45,4 +30,4 @@ class TestNRDPHandler(TestCase):
 
         self.config.set('nrdp', 'hostname', 'silver')
         hostname = self.n.guess_hostname()
-        self.assertEquals(hostname, 'silver')
+        self.assertEqual(hostname, 'silver')

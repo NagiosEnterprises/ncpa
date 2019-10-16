@@ -33,7 +33,8 @@ class NCPACheck(object):
         self.duration = float(duration)
 
         # Set the next run for this specific check
-        key = hashlib.sha256(self.hostname + self.servicename).hexdigest()
+        obj = (self.hostname + self.servicename).encode('utf-8')
+        key = hashlib.sha256(obj).hexdigest()
         if not key in NEXT_RUN:
             NEXT_RUN[key] = 0
 
@@ -111,7 +112,7 @@ class NCPACheck(object):
                  check
         :rtype: str
         """
-        query = urllib.urlencode(api_args)
+        query = urllib.parse.urlencode(api_args)
         complete_api_url = "{}?{}".format(api_url, query)
 
         logging.debug("Access the API with %s", complete_api_url)
@@ -265,7 +266,7 @@ class NCPACheck(object):
         api_args = []
 
         # Parse arguments for URL
-        args = urlparse.parse_qs(parse.query).items()
+        args = urllib.parse.parse_qs(parse.query).items()
         for x, v in args:
             if len(v) == 1:
                 api_args.append((x, v[0]))

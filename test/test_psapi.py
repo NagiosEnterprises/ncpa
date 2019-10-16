@@ -1,6 +1,9 @@
-import listener
+import sys
 import unittest
 
+# Load NCPA
+sys.path.append('../agent/')
+import listener.server
 
 class TestPSApi(unittest.TestCase):
 
