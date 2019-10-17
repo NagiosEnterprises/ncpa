@@ -3,9 +3,10 @@ Changelog
 
 2.1.10 - ??/??/2019
 ===================
-- Added a ProductID to Windows install registery key for easier lookup
+- Added registry ProductID to Windows install registery key for easier lookup
 - Added proper UNKNOWN output text prefix on checks that return UNKNOWN states
 - Fixed get_counter_path() throwing exception for counter names which contain parentheses
+- Fixed improper check_ncpa.py active check command when using the delta option
 
 2.1.9 - 09/04/2019
 ==================
