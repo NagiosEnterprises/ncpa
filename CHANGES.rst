@@ -11,7 +11,7 @@ Changelog
 
 **Updates**
 
-- Updated the version of Python to 3.6
+- Updated the version of Python to 3.6.x
 - The listener and passive services/daemons are now combined into one service/daemon called ncpa
 - Systems with systemd now use a service definition instead of init.d script
 

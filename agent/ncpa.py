@@ -610,14 +610,19 @@ def get_filename(file):
 
 
 # Get all the configuration options and return the config parser for them
-def get_configuration(config='ncpa.cfg', configdir=None):
-    config_filenames = [get_filename(os.path.join('etc', config))]
-    if config is 'ncpa.cfg':
-        configdir = 'ncpa.cfg.d'
-    
-    # Add config directory if it is not defined
+def get_configuration(config=None, configdir=None):
+
+    # Use default config/directory if none is given to us
+    if config is None:
+        config = os.path.join('etc', 'ncpa.cfg')
+        configdir = os.path.join('etc', 'ncpa.cfg.d', '*.cfg')
+
+    # Get the configuration
+    config_filenames = [get_filename(config)]
+
+    # Add config directory if it is defined
     if configdir is not None:
-        config_filenames.extend(sorted(glob.glob(get_filename(os.path.join('etc', configdir, '*.cfg')))))
+        config_filenames.extend(sorted(glob.glob(get_filename(configdir))))
 
     cp = ConfigParser()
     cp.optionxform = str
@@ -678,8 +683,12 @@ def main():
                             help='run NCPA in the foreground')
 
     # Allow using an external configuration file
-    parser.add_argument('-c', '--config-file', action='store', default='ncpa.cfg',
+    parser.add_argument('-c', '--config-file', action='store', default=None,
                         help='specify alternate configuration file name')
+
+    # Allow using an external configuration directory
+    parser.add_argument('-C', '--config-dir', action='store', default=None,
+                        help='specify alternate configuration directory location')
 
     # Debug mode (should work on all OS)
     parser.add_argument('-d', '--debug-mode', action='store_true', default=False,
@@ -694,7 +703,7 @@ def main():
     options = vars(parser.parse_args())
 
     # Read and parse the configuration file
-    config = get_configuration()
+    config = get_configuration(options['config_file'], options['config_dir'])
 
     # If we are running on Linux or Mac OS X we will be using the
     # Daemon class to control the agent
@@ -711,7 +720,7 @@ def main():
     # wait for the proper output to exit and kill the Passive and Listener
     # Note: We currently do not care about "safely" exiting them
     if options['debug_mode']:
-        __DEBUG__ == True
+        __DEBUG__ = True
 
         # Set config value for port to 5700 and start Listener and Passive
         config.set('listener', 'port', '5700')
