@@ -7,6 +7,7 @@ Changelog
 - Added proper UNKNOWN output text prefix on checks that return UNKNOWN states
 - Fixed get_counter_path() throwing exception for counter names which contain parentheses
 - Fixed improper check_ncpa.py active check command when using the delta option
+- Fixed unnecessary perfdata value in JSON output that is only used internally
 
 2.1.9 - 09/04/2019
 ==================
