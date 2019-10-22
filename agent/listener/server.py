@@ -122,7 +122,7 @@ def before_request():
 
 
 @listener.after_request
-def apply_caching(response):
+def apply_headers(response):
     allowed_sources = get_config_value('listener', 'allowed_sources')
     if allowed_sources:
         response.headers["X-Frame-Options"] = "ALLOW-FROM %s" % allowed_sources
