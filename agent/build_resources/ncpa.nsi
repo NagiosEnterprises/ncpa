@@ -397,14 +397,16 @@ SectionEnd
 
 Section ""
 
+    ; Remove old user key to fix double uninstall oafter SHCTX fix
+    DeleteRegKey HKCU "${UNINST_KEY}"
+
     WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "${NAME}"
     WriteRegStr SHCTX "${UNINST_KEY}" "ProductID" "732ae10d-f3f1-4946-85c3-0a2aee05e716"
     WriteRegStr SHCTX "${UNINST_KEY}" "DisplayIcon" "$INSTDIR\ncpa_listener.exe"
     WriteRegStr SHCTX "${UNINST_KEY}" "DisplayVersion" "${NCPA_VERSION}"
     WriteRegStr SHCTX "${UNINST_KEY}" "Publisher" "${COMPANY}"
 
-    ; get the size of our install dir, convert it from KB to a DWORD
-    ; and write the size regkey
+    ; Get the size of our install dir, convert it from KB to a DWORD and write the size regkey
     ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
     IntFmt $0 "0x%08X" $0
     WriteRegDWORD SHCTX "${UNINST_KEY}" "EstimatedSize" "$0"
@@ -450,7 +452,6 @@ Section "Uninstall"
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_listener.exe" --uninstall ncpalistener'
     nsExec::Exec '$9 /c "$INSTDIR\ncpa_passive.exe" --uninstall ncpapassive'
     
-    DeleteRegKey SHCTX "${UNINST_KEY}"
     DeleteRegKey SHCTX "${UNINST_KEY}"
     
     RMDir /r "$INSTDIR"

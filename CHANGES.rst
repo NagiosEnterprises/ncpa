@@ -3,11 +3,13 @@ Changelog
 
 2.1.10 - ??/??/2019
 ===================
-- Added registry ProductID to Windows install registery key for easier lookup
-- Added proper UNKNOWN output text prefix on checks that return UNKNOWN states
-- Fixed get_counter_path() throwing exception for counter names which contain parentheses
-- Fixed improper check_ncpa.py active check command when using the delta option
-- Fixed unnecessary perfdata value in JSON output that is only used internally
+- Added registry ProductID to Windows install registery key for easier lookup (#579)
+- Added proper UNKNOWN output text prefix on checks that return UNKNOWN states (#575)
+- Fixed get_counter_path() throwing exception for counter names which contain parentheses (#564)
+- Fixed GUI creating improper check_ncpa.py active check command when using the delta option (#583)
+- Fixed unnecessary perfdata value in JSON output that is only used internally (#570)
+- Fixed old uninstall registry key on Windows systems (#551)
+- Fixed random UNKNOWN check_ncpa.py responses from gevent causing socket disconnects (#532)
 
 2.1.9 - 09/04/2019
 ==================
