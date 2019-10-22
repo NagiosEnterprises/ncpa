@@ -5,6 +5,9 @@ Changelog
 ===================
 - Added registry ProductID to Windows install registery key for easier lookup (#579)
 - Added proper UNKNOWN output text prefix on checks that return UNKNOWN states (#575)
+- Added X-Frame-Options and Content-Security-Policy to not allow NCPA in frames by default
+- Added allowed_sources option in ncpa.cfg to give allowed sources to bypass the frame restrictions
+- Added autocomplete="off" tag to stop autocomplete on login pages for GUI and Admin section
 - Fixed get_counter_path() throwing exception for counter names which contain parentheses (#564)
 - Fixed GUI creating improper check_ncpa.py active check command when using the delta option (#583)
 - Fixed unnecessary perfdata value in JSON output that is only used internally (#570)

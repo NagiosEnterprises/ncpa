@@ -121,6 +121,18 @@ def before_request():
             abort(403)
 
 
+@listener.after_request
+def apply_caching(response):
+    allowed_sources = get_config_value('listener', 'allowed_sources')
+    if allowed_sources:
+        response.headers["X-Frame-Options"] = "ALLOW-FROM %s" % allowed_sources
+        response.headers["Content-Security-Policy"] = "frame-ancestors %s" % allowed_sources
+    else:
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
+    return response
+
+
 # Variable injection for all pages that flask creates
 @listener.context_processor
 def inject_variables():
