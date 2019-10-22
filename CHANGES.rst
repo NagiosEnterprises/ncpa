@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-2.1.10 - ??/??/2019
+2.2.0 - ??/??/2019
 ===================
 - Added registry ProductID to Windows install registery key for easier lookup (#579)
 - Added proper UNKNOWN output text prefix on checks that return UNKNOWN states (#575)
