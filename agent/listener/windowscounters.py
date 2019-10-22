@@ -90,7 +90,7 @@ class WindowsCountersNode(nodes.LazyNode):
 
         query = win32pdh.OpenQuery()
         try:
-            counter = win32pdh.AddCounter(query, counter_path)
+            counter = win32pdh.AddEnglishCounter(query, counter_path)
             try:
 
                 if factor != 0:
