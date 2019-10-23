@@ -14,8 +14,8 @@ Prerequisites
 -------------
 
 * `Git for Windows <https://git-scm.com/download/win>`_
-* Python 2.7.14 (32-Bit) (`Download <https://www.python.org/downloads/release/python-2714/>`_)
-* OpenSSL for Windows (32-bit) (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_1a.exe>`_) *Requires admin rights*
+* Python 2.7.16 (32-Bit) (`Download <https://www.python.org/downloads/release/python-2716/>`_)
+* OpenSSL for Windows (32-bit) (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_1d.exe>`_) *Requires admin rights*
 * `Microsoft Visual C++ Compiler for Python 2.7 <http://aka.ms/vcpython27>`_
 * `Microsoft Visual C++ 2010 runtime (32-bit) <http://www.microsoft.com/en-us/download/details.aspx?id=8328>`_ *Requires admin rights*
 * `NSIS 3 <http://nsis.sourceforge.net/Download>`_ *Requires admin rights*
@@ -36,7 +36,7 @@ Install Prerequisites
 
 * Python
 
-  1. Download and install Python 2.7.14. (`see prerequisites <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#prerequisites>`_)
+  1. Download and install Python 2.7.16. (`see prerequisites <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#prerequisites>`_)
   2. Execute the installer as usual. It's important that the
      installation path is not changed from the default of
      C:\\python27 as cx_Freeze can have difficulty finding
@@ -66,7 +66,7 @@ Install Prerequisites
 
 * pip
   
-  * Pip is installed by default in Python 2.7.14 but should be updated before continuing::
+  * Pip is installed by default in Python 2.7.16 but should be updated before continuing::
 
       "%pydir%" -m pip install --upgrade pip
 	  
