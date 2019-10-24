@@ -90,7 +90,7 @@ class WindowsCountersNode(nodes.LazyNode):
 
         query = win32pdh.OpenQuery()
         try:
-            counter = win32pdh.AddCounter(query, counter_path)
+            counter = win32pdh.AddEnglishCounter(query, counter_path)
             try:
 
                 if factor != 0:
@@ -123,16 +123,19 @@ class WindowsCountersNode(nodes.LazyNode):
         wpc_string = '/'.join(path)
 
         # Regex explanation
-        # ^                                   -- Next character matched must be the beginning of the string
-        #  ([^()/]*)                          -- match an arbitrary amount of non-paren, non-slash characters, capture
-        #           \(?                       -- Optionally match (
-        #              ([^()]*?)              -- Optionally match anything except a paren, capture
-        #                       \)?           -- Optionally match )
-        #                          /          -- match a forward slash
-        #                           ([^()]*)  -- Match maximum number of non-paren characters, capture
-        #                                   $ -- Last character matched must be end of string
+        # ^                            -- Next character matched must be the beginning of the string
+        #  ([^(/]*)                    -- match an arbitrary amount of non-left-paren, non-slash characters, capture
+        #                                 (This capture group contains the object name)
+        #           \(?                -- Optionally match (
+        #              (.*?)           -- Optionally match anything and capture
+        #                                 (This capture group contains the instance name)
+        #                   \)?        -- Optionally match )
+        #                      /       -- match a forward slash
+        #                       (.*)   -- Match any characters after the slash and capture
+        #                                 (This capture group contains the counter name)
+        #                           $  -- Last character matched must be end of string
         # End result after split() is length-5 array. indices 1-3 refer to the capture groups
-        wpc_regex = r'^([^(/]*)\(?(.*?)\)?/([^)]*)$'
+        wpc_regex = r'^([^(/]*)\(?(.*?)\)?/(.*)$'
         match_list = re.split(wpc_regex, wpc_string) 
         counter_path = '\\'
         if match_list[2]:

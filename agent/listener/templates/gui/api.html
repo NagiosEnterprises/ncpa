@@ -802,7 +802,7 @@ function generate_active_check() {
     if (aggregate) { active += " -q 'aggregate=" + aggregate + "'"; }
     if (units) { active += ' -u ' + units; }
     if (unit) { active += ' -n ' + unit; }
-    if (delta) { active += ' --delta=1'; }
+    if (delta) { active += ' --delta'; }
 
     switch (module) {
 

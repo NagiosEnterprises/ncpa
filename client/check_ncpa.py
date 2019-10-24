@@ -39,12 +39,35 @@ try:
 except AttributeError:
     urlquote = urllib.quote
 
+try:
+    urlerror = urllib.error.URLError
+except AttributeError:
+    urlerror = urllib2.URLError
+
+try:
+    httperror = urllib.error.HTTPError
+except AttributeError:
+    httperror = urllib2.HTTPError
+
 import shlex
 import re
 import signal
 
 
-__VERSION__ = '1.1.6'
+__VERSION__ = '1.2.0'
+
+
+class ConnectionError(Exception):
+    error_output_prefix = "UNKNOWN: An error occured connecting to API. "
+    pass
+
+class URLError(ConnectionError):
+    def __init__(self, error_message):
+        self.error_message = ConnectionError.error_output_prefix + "(Connection error: '" + error_message + "')"
+
+class HTTPError(ConnectionError):
+    def __init__(self, error_message):
+        self.error_message = ConnectionError.error_output_prefix + "(HTTP error: '" + error_message + "')"
 
 
 def parse_args():
@@ -192,7 +215,7 @@ def get_arguments_from_options(options, **kwargs):
 
     # Get the options (comma separated)
     if options.queryargs:
-        # for each comma, perform lookahead, split iff we aren't inside quotes.
+        # for each comma, perform lookahead, split if we aren't inside quotes.
         arguments_list = re.split(''',(?=(?:[^'"]|'[^']*'|"[^"]*")*$)''', options.queryargs)
         for argument in arguments_list:
             key, value = argument.split('=', 1)
@@ -208,21 +231,32 @@ def get_json(options):
     encode its finding into a Python object (from JSON).
 
     """
+
     url = get_url_from_options(options)
 
     if options.verbose:
         print('Connecting to: ' + url)
 
     try:
-        ctx = ssl.create_default_context()
-        if not options.secure:
-            ctx.check_hostname = False
-            ctx.verify_mode = ssl.CERT_NONE
-        ret = urlopen(url, context=ctx)
-    except AttributeError:
-        ret = urlopen(url)
 
-    ret = ''.join(ret)
+        try:
+            ctx = ssl.create_default_context()
+            if not options.secure:
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
+            ret = urlopen(url, context=ctx)
+        except AttributeError:
+            ret = urlopen(url)
+
+    except httperror as e:
+        if e.reason:
+            raise HTTPError('{0} {1}'.format(e.code, e.reason))
+        else:
+            raise HTTPError('{0}'.format(e.code))
+    except urlerror as e:
+        raise URLError('{0}'.format(e.reason))
+
+    ret = ret.read()
 
     if options.verbose:
         print('File returned contained:\n' + ret)
@@ -232,7 +266,7 @@ def get_json(options):
     if options.list:
         return arr
 
-        # Fix for NCPA < 2
+    # Fix for NCPA < 2
     if 'value' in arr:
         arr = arr['value']
 
@@ -249,7 +283,10 @@ def run_check(info_json):
     """Run a check against the remote host.
 
     """
-    return info_json['stdout'], info_json['returncode']
+    if 'stdout' in info_json and 'returncode' in info_json:
+        return info_json['stdout'], info_json['returncode']
+    elif 'error' in info_json:
+        return info_json['error'], 3
 
 
 def show_list(info_json):
@@ -276,26 +313,32 @@ def main():
     signal.alarm(options.timeout)
 
     try:
-
         if options.version:
             stdout = 'The version of this plugin is %s' % __VERSION__
             return stdout, 0
 
         info_json = get_json(options)
+
         if options.list:
             return show_list(info_json)
         else:
             stdout, returncode = run_check(info_json)
+
             if options.performance and stdout.find("|") == -1:
-                performance = " | 'status'={};1;2;".format(returncode)
-                return "{}{}".format(stdout, performance), returncode
-            else:
-                return stdout, returncode
+                stdout = "{0} | 'status'={1};1;2;;".format(stdout, returncode)
+            return stdout, returncode
+    except (HTTPError, URLError) as e:
+        if options.debug:
+            return 'The stack trace:\n' + traceback.format_exc(), 3
+        elif options.verbose:
+            return 'An error occurred:\n' + str(e.error_message), 3
+        else:
+            return e.error_message, 3
     except Exception as e:
         if options.debug:
-            return 'The stack trace:' + traceback.format_exc(), 3
+            return 'The stack trace:\n' + traceback.format_exc(), 3
         elif options.verbose:
-            return 'An error occurred:' + str(e), 3
+            return 'An error occurred:\n' + str(e), 3
         else:
             return 'UNKNOWN: Error occurred while running the plugin. Use the verbose flag for more details.', 3
 

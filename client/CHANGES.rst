@@ -1,9 +1,15 @@
 Changelog
 +++++++++
 
+1.2.0
+-----
+- Added detailed information in case of connection errors, http errors and errors thrown by the agent (Christian Zettel)
+- Fixed incompatibility with Python 3.7 and 3.8 (Christian Zettel)
+- Fixed Option: --performance is incompatible with Python 2.6.6 (Christian Zettel)
+
 1.1.6
 -----
-- Fixed list api tree only possible with activated verbose mode
+- Fixed list api tree only possible with activated verbose mode (Christian Zettel)
 
 1.1.5
 -----

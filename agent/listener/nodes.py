@@ -69,7 +69,7 @@ class ParentNode(object):
         return { self.name: stat }
 
     def run_check(self, *args, **kwargs):
-        err = 'Unable to run check on node without check method. Requested \'%s\' node.' % self.name
+        err = 'UNKNOWN: Unable to run check on node without check method. Requested \'%s\' node.' % self.name
         return { 'stdout': err,
                  'returncode': 3 }
 
@@ -131,8 +131,9 @@ class RunnableParentNode(ParentNode):
                 extra_perfdata += primary_info['perfdata'] + ' '
             extra_perfdata += ' '.join(secondary_perfdata)
             primary_info['stdout'] = primary_info['stdout'] + ' | ' + extra_perfdata
-        elif self.primary_unit == '%':
-            del primary_info['perfdata']
+
+        # Remove perfdata from actual check data sent out
+        del primary_info['perfdata']
 
         # Get the check logging value
         try:
@@ -328,7 +329,9 @@ class RunnableNode(ParentNode):
             db.add_check(kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
                          stdout, kwargs['remote_addr'], 'Active')
 
-        data = { 'returncode': returncode, 'stdout': stdout, 'perfdata': perfdata }
+        data = { 'returncode': returncode, 'stdout': stdout }
+        if child_check:
+            data['perfdata'] = perfdata
 
         return data
 
@@ -632,7 +635,7 @@ class DoesNotExistNode():
         return obj
 
     def run_check(self, *args, **kwargs):
-        err = 'The %s (%s) requested does not exist.' % (self.node_type, self.failed_node_name)
+        err = 'UNKNOWN: The %s (%s) requested does not exist.' % (self.node_type, self.failed_node_name)
         if self.extra_message:
             err = "%s %s" % (err, self.extra_message)
         err = err.replace('|', '/')

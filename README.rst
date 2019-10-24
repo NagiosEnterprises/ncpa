@@ -12,7 +12,7 @@ Downloads
 Current versions:
 
 +---------+-------------+-------------------------------------------------------+
-| Current | **2.1.9**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
+| Current | **2.2.0**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
 `Older Versions <https://www.nagios.org/ncpa/archive.php>`_

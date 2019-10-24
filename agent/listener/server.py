@@ -23,7 +23,7 @@ import math
 import ipaddress
 
 
-__VERSION__ = '2.1.9'
+__VERSION__ = '2.2.0'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
@@ -119,6 +119,18 @@ def before_request():
                 abort(403)
         else:
             abort(403)
+
+
+@listener.after_request
+def apply_headers(response):
+    allowed_sources = get_config_value('listener', 'allowed_sources')
+    if allowed_sources:
+        response.headers["X-Frame-Options"] = "ALLOW-FROM %s" % allowed_sources
+        response.headers["Content-Security-Policy"] = "frame-ancestors %s" % allowed_sources
+    else:
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
+    return response
 
 
 # Variable injection for all pages that flask creates

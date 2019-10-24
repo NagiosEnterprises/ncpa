@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Globals
-PYTHONTAR="Python-2.7.14"
+PYTHONTAR="Python-2.7.16"
 PYTHONVER="python2.7"
 CXFREEZEVER="cx_Freeze-4.3.4"
 SKIP_PYTHON=0
