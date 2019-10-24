@@ -23,24 +23,27 @@ We currently build for the following operating systems:
 - Mac OS X (10.7+)
 - CentOS / RHEL 6, 7¹, 8¹
 - Debian 8, 9, 10¹
-- Ubuntu² 12, 14, 16
+- Ubuntu² 14, 16, 18
 - OpenSUSE Leap 15¹, Tumbleweed¹
 - SLES 11, 12¹
 - Oracle 6, 7¹, 8¹
 - Amazon Linux 2
-- Solaris 10, 11 (Experimental)
+- Solaris 10, 11
 - AIX 7
+- Raspbian 10 (Buster)
 
 ¹ Builds for 64-bit versions only
 ² LTS are the only "supported" versions, although builds should work for non-LTS
 
 Older systems that have been supported by NCPA in the past:
 
+- Ubuntu 12 using NCPA 2.1.4
 - Debian 7 using NCPA 2.1.4
 - OpenSUSE 11, 12, 13 using NCPA 2.1.4
 - AIX 6 with NCPA 2.1.1
 - CentOS / RHEL 5 using NCPA 2.0.6
 - Oracle 5 using NCPA 2.0.6
+- Windows XP using NCPA 1.8.1
 
 Other systems we are working on builds for:
 
