@@ -16,6 +16,9 @@ The Nagios Cross-Platform Agent is used with Nagios XI and Nagios Core to run ac
 and/or passive checks on any operating system. Installs with zero requirements using a
 bundled version of Python.
 
+%global debug_package %{nil}
+%global _build_id_links alldebug
+
 %prep
 %setup -q
 
