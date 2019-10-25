@@ -6,7 +6,7 @@ PATH=$PATH:/opt/csw/bin:/usr/ccs/bin
 # Globals
 PYTHONTAR="Python-2.7.16"
 PYTHONVER="python2.7"
-PYTHONBIN=$(which python2.7)
+PYTHONBIN="/usr/local/bin/python2.7"
 CXFREEZEVER="cx_Freeze-4.3.4"
 
 # Check version of Solaris
@@ -83,9 +83,13 @@ install_prereqs() {
     #  INSTALL PIP & PIP MODULES
     # --------------------------
 
+    OPTS="--no-check-certificate"
+    if [ $SOLARIS -eq 11 ]; then
+        OPTS="$OPTS --secure-protocol=TLSv1_2"
+    fi
 
     # Install pip
-    cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
+    cd /tmp && wget $OPTS https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
 
     # Install pip python modules
     update_py_packages
