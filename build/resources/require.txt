@@ -1,7 +1,7 @@
 psutil
 requests
 Jinja2
-flask==0.10.1
+flask==1.0
 werkzeug
 docutils
 pyOpenSSL
