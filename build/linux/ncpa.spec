@@ -109,12 +109,14 @@ fi
 %postun
 # Only run on upgrades (restart fixes db removal issue)
 if [ "$1" == "1" ]; then
-    if [ `command -v systemctl` ]; then
-        systemctl restart ncpa_listener
-        systemctl restart ncpa_passive
-    else
-        service ncpa_listener restart
-        service ncpa_passive restart
+    if [ ! -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.db ]; then
+        if [ `command -v systemctl` ]; then
+            systemctl restart ncpa_listener
+            systemctl restart ncpa_passive
+        else
+            service ncpa_listener restart
+            service ncpa_passive restart
+        fi
     fi
 fi
 
