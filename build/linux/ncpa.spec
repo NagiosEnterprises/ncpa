@@ -107,6 +107,10 @@ if [ "$1" != "1" ]; then
 fi
 
 %postun
+if [ -z $RPM_INSTALL_PREFIX ]; then
+    RPM_INSTALL_PREFIX="/usr/local"
+fi
+
 # Only run on upgrades (restart fixes db removal issue)
 if [ "$1" == "1" ]; then
     if [ ! -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.db ]; then
