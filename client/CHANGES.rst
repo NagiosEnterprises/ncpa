@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+1.2.1
+-----
+- Fixed an issue throwing an attribute error in case of an http error with python 2.6. (Christian Zettel)
+
 1.2.0
 -----
 - Added detailed information in case of connection errors, http errors and errors thrown by the agent (Christian Zettel)
