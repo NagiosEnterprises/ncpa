@@ -54,7 +54,7 @@ import re
 import signal
 
 
-__VERSION__ = '1.2.0'
+__VERSION__ = '1.2.1'
 
 
 class ConnectionError(Exception):
@@ -249,9 +249,9 @@ def get_json(options):
             ret = urlopen(url)
 
     except httperror as e:
-        if e.reason:
+        try:
             raise HTTPError('{0} {1}'.format(e.code, e.reason))
-        else:
+        except AttributeError:
             raise HTTPError('{0}'.format(e.code))
     except urlerror as e:
         raise URLError('{0}'.format(e.reason))
