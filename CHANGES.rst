@@ -1,11 +1,12 @@
 Changelog
 +++++++++
 
-2.2.1 - ??/??/2019
+2.2.1 - ??/??/2020
 ==================
 - Updated jQuery to 3.4.1 to fix security issues in CVE-2015-9251 and CVE-2019-11358
 - Updated D3.js graphing library from version 4.x to 5.x
 - Fixed ncpa.db file would being rewritten on upgrades, future upgrades will not have this happen (#589)
+- Fixed issue with Solaris 11.4 services output parsing (thanks ljlapierre) (#610)
 
 2.2.0 - 10/24/2019
 ==================
