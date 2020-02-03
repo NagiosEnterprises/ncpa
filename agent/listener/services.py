@@ -277,7 +277,7 @@ class ServiceNode(nodes.LazyNode):
     def get_services_via_svcs(self, *args, **kwargs):
         services = {}
         status = tempfile.TemporaryFile()
-        service = subprocess.Popen(['svcs', '-a'], stdout=status)
+        service = subprocess.Popen(['svcs', '-a', '-o', 'STATE,FMRI'], stdout=status)
         service.wait()
         status.seek(0)
 
@@ -288,10 +288,10 @@ class ServiceNode(nodes.LazyNode):
             ls = line.split()
 
             # Skip lrc items
-            if 'lrc:/' in ls[2]:
+            if 'lrc:/' in ls[1]:
                 continue 
 
-            sub = ls[2].replace('svc:/', '').replace('/', '|')
+            sub = ls[1].replace('svc:/', '').replace('/', '|')
             status = ls[0]
             if status == 'online':
                 services[sub] = 'running'
