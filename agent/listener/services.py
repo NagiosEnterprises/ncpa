@@ -277,7 +277,7 @@ class ServiceNode(nodes.LazyNode):
     def get_services_via_svcs(self, *args, **kwargs):
         services = {}
         status = tempfile.TemporaryFile()
-        service = subprocess.Popen(['svcs', '-a', '-o STATE,FMRI'], stdout=status)
+        service = subprocess.Popen(['svcs', '-a', '-o', 'STATE,FMRI'], stdout=status)
         service.wait()
         status.seek(0)
 
