@@ -31,7 +31,6 @@ mkdir -p %{buildroot}/usr/local
 cp -rf $RPM_BUILD_DIR/ncpa-%{version} %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
 mkdir -p %{buildroot}/etc/init.d
-touch %{buildroot}/usr/local/ncpa/var/ncpa.db
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/listener_init %{buildroot}/etc/init.d/ncpa_listener
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{buildroot}/etc/init.d/ncpa_passive
@@ -107,6 +106,24 @@ if [ "$1" != "1" ]; then
     else
         service ncpa_listener stop
         service ncpa_passive stop
+    fi
+fi
+
+%postun
+if [ -z $RPM_INSTALL_PREFIX ]; then
+    RPM_INSTALL_PREFIX="/usr/local"
+fi
+
+# Only run on upgrades (restart fixes db removal issue)
+if [ "$1" == "1" ]; then
+    if [ ! -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.db ]; then
+        if [ `command -v systemctl` ]; then
+            systemctl restart ncpa_listener
+            systemctl restart ncpa_passive
+        else
+            service ncpa_listener restart
+            service ncpa_passive restart
+        fi
     fi
 fi
 
