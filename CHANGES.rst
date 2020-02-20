@@ -5,6 +5,7 @@ Changelog
 ==================
 - Updated jQuery to 3.4.1 to fix security issues in CVE-2015-9251 and CVE-2019-11358
 - Updated D3.js graphing library from version 4.x to 5.x
+- Updated service API endpoint UNKNOWN output to explain what services were not found (#600,#601)
 - Fixed ncpa.db file would being rewritten on upgrades, future upgrades will not have this happen (#589)
 - Fixed issue with Solaris 11.4 services output parsing (thanks ljlapierre) (#610)
 - Fixed GUI API browser active/passive check examples for the logs module missing filters (#595)
