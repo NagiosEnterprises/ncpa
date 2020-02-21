@@ -90,11 +90,11 @@ fi
 
 if [ `command -v systemctl` ]; then
     systemctl daemon-reload
-    systemctl restart ncpa_listener
-    systemctl restart ncpa_passive
+    systemctl start ncpa_listener
+    systemctl start ncpa_passive
 else
-    service ncpa_listener restart
-    service ncpa_passive restart
+    service ncpa_listener start
+    service ncpa_passive start
 fi
 
 %preun
@@ -112,6 +112,19 @@ fi
 %postun
 if [ -z $RPM_INSTALL_PREFIX ]; then
     RPM_INSTALL_PREFIX="/usr/local"
+fi
+
+# Only run on upgrades (restart fixes db removal issue)
+if [ "$1" == "1" ]; then
+    if [ ! -f "$RPM_INSTALL_PREFIX/ncpa/var/ncpa.db" ]; then
+        if [ `command -v systemctl` ]; then
+            systemctl restart ncpa_listener
+            systemctl restart ncpa_passive
+        else
+            service ncpa_listener restart
+            service ncpa_passive restart
+        fi
+    fi
 fi
 
 %files
