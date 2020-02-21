@@ -2,7 +2,7 @@ psutil
 requests
 Jinja2
 flask==0.10.1
-werkzeug
+werkzeug==0.16.1
 docutils
 pyOpenSSL
 cryptography
