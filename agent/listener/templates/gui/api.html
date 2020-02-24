@@ -860,6 +860,39 @@ function generate_active_check() {
             active += " -q '" + q.join(',') + "'";
             break;
 
+        case 'logs':
+            q = [];
+
+            // Get names, if any
+            $('input.name').each(function(i, name) {
+                if ($(name).val() != '') {
+                    q.push('name='+$(name).val());
+                }
+            });
+
+            // Get logged_after
+            logged_after = $('input.time-frame').val();
+            if (logged_after) {
+                q.push('logged_after='+logged_after+$('select.time-frame-suffix').val());
+            }
+
+            // Get filters
+            var severity = $('select.severity').val();
+            var match = $('input.event-id').val();
+            var application = $('input.application').val();
+            var name = $('input.computer-name').val();
+            var category = $('.input.category').val();
+            var message = $('input.message').val();
+            if (severity) { q.push('severity=' + severity); }
+            if (match) { q.push('event_id=' + match); }
+            if (application) { q.push('application=' + application); }
+            if (name) { q.push('computer_name' + name); }
+            if (category) { q.push('category=' + category); }
+            if (message) { q.push('message=' + message); }
+
+            active += " -q '" + q.join(',') + "'";
+            break;
+
     }
 
     $('.active-check-val').html(active);
@@ -870,7 +903,7 @@ function generate_passive_check() {
     var passive = '%HOSTNAME%|&lt;service name&gt; = ';
 
     // Use the URL passive check type for services, processes, and plugins
-    if (module == "services" || module == "processes" || module == "plugins") {
+    if (module == "services" || module == "processes" || module == "plugins" || module == "logs") {
 
         passive += generate_url(false, true);
 

@@ -277,7 +277,7 @@ class ServiceNode(nodes.LazyNode):
     def get_services_via_svcs(self, *args, **kwargs):
         services = {}
         status = tempfile.TemporaryFile()
-        service = subprocess.Popen(['svcs', '-a'], stdout=status)
+        service = subprocess.Popen(['svcs', '-a', '-o', 'STATE,FMRI'], stdout=status)
         service.wait()
         status.seek(0)
 
@@ -288,10 +288,10 @@ class ServiceNode(nodes.LazyNode):
             ls = line.split()
 
             # Skip lrc items
-            if 'lrc:/' in ls[2]:
+            if 'lrc:/' in ls[1]:
                 continue 
 
-            sub = ls[2].replace('svc:/', '').replace('/', '|')
+            sub = ls[1].replace('svc:/', '').replace('/', '|')
             status = ls[0]
             if status == 'online':
                 services[sub] = 'running'
@@ -320,8 +320,10 @@ class ServiceNode(nodes.LazyNode):
     def make_stdout(returncode, stdout_builder):
         if returncode == 0:
             prefix = 'OK'
+        elif returncode == 2:
+            prefix = 'CRITICAL';
         else:
-            prefix = 'CRITICAL'
+            prefix = 'UNKNOWN'
 
         prioritized_stdout = sorted(stdout_builder, key=lambda x: x['priority'], reverse=True)
         info_line = ', '.join([x['info'] for x in prioritized_stdout])
@@ -332,6 +334,11 @@ class ServiceNode(nodes.LazyNode):
     def run_check(self, *args, **kwargs):
         target_status = self.get_target_status(kwargs)
         method = self.get_service_method(*args, **kwargs)
+
+        # Get a list of all services to be looking for
+        filtered_services = kwargs.get('service', [])
+        if not isinstance(filtered_services, list):
+            filtered_services = [filtered_services]
 
         # Default to running status, so it will alert on not running
         if not target_status:
@@ -354,6 +361,10 @@ class ServiceNode(nodes.LazyNode):
                     priority = 1
                     builder = '%s (should be %s)' % (builder, ''.join(target_status))
 
+                # Remove each service with status from filtered_services to find out if we are missing some
+                i = filtered_services.index(service)
+                filtered_services.pop(i)
+
                 if priority > returncode:
                     returncode = priority
 
@@ -362,10 +373,15 @@ class ServiceNode(nodes.LazyNode):
             if returncode > 0:
                 returncode = 2
 
+            if filtered_services:
+                for service in filtered_services:
+                    stdout_builder.append({ 'info': '%s could not be found' % service, 'priority': 0 })
+                returncode = 3
+
             stdout = self.make_stdout(returncode, stdout_builder)
         else:
-            returncode = 3
-            stdout = "UNKNOWN: No services selected with 'service' value given"
+            returncode = 3   
+            stdout = "UNKNOWN: No services found for service names: %s" % ', '.join(filtered_services)
 
         # Get the check logging value
         try:
