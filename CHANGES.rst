@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-2.2.1 - ??/??/2020
+2.2.1 - 02/24/2020
 ==================
 - Updated jQuery to 3.4.1 to fix security issues in CVE-2015-9251 and CVE-2019-11358
 - Updated D3.js graphing library from version 4.x to 5.x
