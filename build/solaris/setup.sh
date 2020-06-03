@@ -26,7 +26,8 @@ if grep "Solaris 10" /etc/release > /dev/null ; then
 fi
 
 update_py_packages() {
-    if [ "$ARCH" == "sparc" ] && [ $SOLARIS -eq 11 ]; then
+    # Do special things for Solaris 11 (do not build with special flags)
+    if [ $SOLARIS -eq 11 ]; then
         $PYTHONBIN -m pip install -r  $BUILD_DIR/solaris/require.solaris.txt --upgrade
     else
         CPPFLAGS="-I$LIBFFI_DEV" LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.solaris.txt --upgrade --no-binary :all:
