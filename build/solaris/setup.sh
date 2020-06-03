@@ -26,16 +26,11 @@ if grep "Solaris 10" /etc/release > /dev/null ; then
 fi
 
 update_py_packages() {
-    reqfile="require.txt"
-    if [ "$ARCH" == "sparc" ]; then
-        reqfile="require.sparc.txt"
-    fi
-
     # Do special things for Solaris 11 (do not build with special flags)
     if [ $SOLARIS -eq 11 ]; then
-        $PYTHONBIN -m pip install -r  $BUILD_DIR/solaris/$reqfile --upgrade
+        $PYTHONBIN -m pip install -r  $BUILD_DIR/solaris/require.solaris.txt --upgrade
     else
-        CPPFLAGS="-I$LIBFFI_DEV" LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/$reqfile --upgrade --no-binary :all:
+        CPPFLAGS="-I$LIBFFI_DEV" LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.solaris.txt --upgrade --no-binary :all:
     fi
 }
 
@@ -51,7 +46,9 @@ install_prereqs() {
     if [ $SOLARIS -eq 10 ]; then
         pkgutil -y -i gcc5core python27 python27_dev py_pip wget libffi_dev libssl_dev        
     else
-        pkg install gcc libffi zlib
+        if [ ! -f /usr/bin/gcc ]; then
+            pkg install gcc libffi zlib
+        fi
     fi
 
 

@@ -54,7 +54,7 @@ import re
 import signal
 
 
-__VERSION__ = '1.2.1'
+__VERSION__ = '1.2.2'
 
 
 class ConnectionError(Exception):
@@ -276,6 +276,11 @@ def get_json(options):
             arr['returncode'] = arr['stdout']
             arr['stdout'] = tmp
 
+    # If we recieve and error, return critical and give out error text
+    elif 'error' in arr:
+        arr['stdout'] = 'CRITICAL: %s' % arr['error']
+        arr['returncode'] = 2
+
     return arr
 
 
@@ -345,5 +350,5 @@ def main():
 
 if __name__ == "__main__":
     stdout, returncode = main()
-    print(stdout)
+    print(stdout.encode('utf-8', 'replace'))
     sys.exit(returncode)
