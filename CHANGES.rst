@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-2.2.2 - ??/??/2020
+2.2.2 - 06/19/2020
 ==================
 - Updated jQuery to 3.5.1 to fix security issues in CVE-2020-11022
 - Fixed issue with Windows silent install where not defining /PORT would open firewall for any port (#631)
