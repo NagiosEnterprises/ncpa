@@ -11,7 +11,12 @@ SKIP_PYTHON=0
 
 update_py_packages() {
     PYTHONBIN=$(which python2.7)
-    LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary :all:
+    resources="require.txt"
+    if [ "$dist" == "el6" ]; then
+        resources="require.el6.txt"
+    fi
+
+    LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/$resources --upgrade --no-binary :all:
 }
 
 install_prereqs() {
