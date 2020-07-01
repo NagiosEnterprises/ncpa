@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+1.2.3
+-----
+- Fixed issue with Python 3 binary string being printed
+
 1.2.2
 -----
 - Fixed error output text giving no check output, now errors show CRITICAL with error message when encountered
