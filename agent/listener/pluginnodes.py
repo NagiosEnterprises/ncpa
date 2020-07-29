@@ -188,13 +188,13 @@ class PluginAgentNode(nodes.ParentNode):
         self.children = {}
 
         try:
-            plugins = os.listdir(plugin_path)
-            for plugin in plugins:
-                if plugin == '.keep':
-                    continue
-                plugin_abs_path = os.path.join(plugin_path, plugin)
-                if os.path.isfile(plugin_abs_path):
-                    self.children[plugin] = PluginNode(plugin, plugin_abs_path)
+            for root,dirs,files in os.walk(plugin_path,followlinks=True):
+                for plugin in files:
+                    if plugin == '.keep':
+                        continue
+                    plugin_abs_path = os.path.join(root, plugin)
+                    if os.path.isfile(plugin_abs_path):
+                        self.children[plugin] = PluginNode(plugin, plugin_abs_path)
         except OSError as exc:
             logging.warning('Unable to access directory %s', plugin_path)
             logging.warning('Unable to assemble plugins. Does the directory exist? - %r', exc)
