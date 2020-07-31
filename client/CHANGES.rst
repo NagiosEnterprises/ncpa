@@ -1,6 +1,11 @@
 Changelog
 +++++++++
 
+1.2.2
+-----
+- Fixed error output text giving no check output, now errors show CRITICAL with error message when encountered
+- Fixed output of UTF-8 characters that are passed back by the agent
+
 1.2.1
 -----
 - Fixed an issue throwing an attribute error in case of an http error with python 2.6. (Christian Zettel)

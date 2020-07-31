@@ -6,7 +6,7 @@ PATH=$PATH:/opt/csw/bin:/usr/ccs/bin
 # Globals
 PYTHONTAR="Python-2.7.16"
 PYTHONVER="python2.7"
-PYTHONBIN=$(which python2.7)
+PYTHONBIN="/usr/local/bin/python2.7"
 CXFREEZEVER="cx_Freeze-4.3.4"
 
 # Check version of Solaris
@@ -26,10 +26,11 @@ if grep "Solaris 10" /etc/release > /dev/null ; then
 fi
 
 update_py_packages() {
-    if [ "$ARCH" == "sparc" ] && [ $SOLARIS -eq 11 ]; then
-        $PYTHONBIN -m pip install -r  $BUILD_DIR/solaris/require.sparc.txt --upgrade
+    # Do special things for Solaris 11 (do not build with special flags)
+    if [ $SOLARIS -eq 11 ]; then
+        $PYTHONBIN -m pip install -r  $BUILD_DIR/solaris/require.solaris.txt --upgrade
     else
-        CPPFLAGS="-I$LIBFFI_DEV" LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary :all:
+        CPPFLAGS="-I$LIBFFI_DEV" LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.solaris.txt --upgrade --no-binary :all:
     fi
 }
 
@@ -45,7 +46,9 @@ install_prereqs() {
     if [ $SOLARIS -eq 10 ]; then
         pkgutil -y -i gcc5core python27 python27_dev py_pip wget libffi_dev libssl_dev        
     else
-        pkg install gcc libffi zlib
+        if [ ! -f /usr/bin/gcc ]; then
+            pkg install gcc libffi zlib
+        fi
     fi
 
 
@@ -83,9 +86,13 @@ install_prereqs() {
     #  INSTALL PIP & PIP MODULES
     # --------------------------
 
+    OPTS="--no-check-certificate"
+    if [ $SOLARIS -eq 11 ]; then
+        OPTS="$OPTS --secure-protocol=TLSv1_2"
+    fi
 
     # Install pip
-    cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
+    cd /tmp && wget $OPTS https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
 
     # Install pip python modules
     update_py_packages

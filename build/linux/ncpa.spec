@@ -16,6 +16,9 @@ The Nagios Cross-Platform Agent is used with Nagios XI and Nagios Core to run ac
 and/or passive checks on any operating system. Installs with zero requirements using a
 bundled version of Python.
 
+%global debug_package %{nil}
+%global _build_id_links alldebug
+
 %prep
 %setup -q
 
@@ -106,21 +109,19 @@ if [ "$1" != "1" ]; then
     fi
 fi
 
-%postun
+%posttrans
 if [ -z $RPM_INSTALL_PREFIX ]; then
     RPM_INSTALL_PREFIX="/usr/local"
 fi
 
 # Only run on upgrades (restart fixes db removal issue)
-if [ "$1" == "1" ]; then
-    if [ ! -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.db ]; then
-        if [ `command -v systemctl` ]; then
-            systemctl restart ncpa_listener
-            systemctl restart ncpa_passive
-        else
-            service ncpa_listener restart
-            service ncpa_passive restart
-        fi
+if [ ! -f "$RPM_INSTALL_PREFIX/ncpa/var/ncpa.db" ]; then
+    if [ `command -v systemctl` ]; then
+        systemctl restart ncpa_listener
+        systemctl restart ncpa_passive
+    else
+        service ncpa_listener restart
+        service ncpa_passive restart
     fi
 fi
 

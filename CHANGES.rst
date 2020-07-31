@@ -1,11 +1,21 @@
 Changelog
 +++++++++
 
-2.2.1 - ??/??/2019
+2.2.2 - ??/??/2020
+==================
+- Updated jQuery to 3.5.1 to fix security issues in CVE-2020-11022
+- Fixed issue with Windows silent install where not defining /PORT would open firewall for any port (#631)
+- Fixed documentation issue with run_with_sudo (#623)
+
+2.2.1 - 02/24/2020
 ==================
 - Updated jQuery to 3.4.1 to fix security issues in CVE-2015-9251 and CVE-2019-11358
 - Updated D3.js graphing library from version 4.x to 5.x
+- Updated service API endpoint UNKNOWN output to explain what services were not found (#600,#601)
 - Fixed ncpa.db file would being rewritten on upgrades, future upgrades will not have this happen (#589)
+- Fixed issue with Solaris 11.4 services output parsing (thanks ljlapierre) (#610)
+- Fixed GUI API browser active/passive check examples for the logs module missing filters (#595)
+- Fixed issue with Kernel version 5.5+ not working properly on disk checks
 
 2.2.0 - 10/24/2019
 ==================
