@@ -148,7 +148,7 @@ admin_auth_only = 0
 
 #
 # Set the URL to use in the X-Frame-Options and Content-Security-Policy headers
-# in order to enable the NCPA GUI to be allowed to load intp a frame
+# in order to enable the NCPA GUI to be allowed to load into a frame
 # Default: None
 # Example: mycoolwebsite.com
 # Example: *.mycoolwebsite.com
