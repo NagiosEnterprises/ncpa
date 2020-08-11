@@ -185,10 +185,17 @@ class PluginAgentNode(nodes.ParentNode):
 
     def setup_plugin_children(self, config):
         plugin_path = config.get('plugin directives', 'plugin_path')
+
+        # Get the follow_symlinks value
+        try:
+            follow_symlinks = int(config.get('plugin directives', 'follow_symlinks'))
+        except Exception as e:
+            follow_symlinks = 0
+
         self.children = {}
 
         try:
-            for root,dirs,files in os.walk(plugin_path,followlinks=True):
+            for root,dirs,files in os.walk(plugin_path,followlinks=follow_symlinks):
                 for plugin in files:
                     if plugin == '.keep':
                         continue

@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+2.2.3 - ??/??/2020
+==================
+- Added option to to use symlinks in the plugin path directory (#577) (infraweavers, Christian Zettel)
+
 2.2.2 - 06/19/2020
 ==================
 - Updated jQuery to 3.5.1 to fix security issues in CVE-2020-11022
