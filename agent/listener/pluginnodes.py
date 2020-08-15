@@ -188,9 +188,9 @@ class PluginAgentNode(nodes.ParentNode):
 
         # Get the follow_symlinks value
         try:
-            follow_symlinks = int(config.get('plugin directives', 'follow_symlinks'))
+            follow_symlinks = bool(config.get('plugin directives', 'follow_symlinks'))
         except Exception as e:
-            follow_symlinks = 0
+            follow_symlinks = False
 
         self.children = {}
 
