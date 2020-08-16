@@ -101,6 +101,21 @@ def make_info_dict():
              'total_checks': format(total_checks, ",d"),
              'check_logging_time': check_logging_time }
 
+# Return the IPv4 or IPv6 address of remote_addr
+def get_remote_addr(remote_addr):
+    # check if remote_addr is IPv6
+    if ipaddress.ip_address(unicode(remote_addr)).version == 6:
+        # check if remote_addr is a mapped IPv4 address
+        if ipaddress.IPv6Address(unicode(remote_addr)).ipv4_mapped is not None:
+            # return the mapped IPv4 address
+            return ipaddress.IPv6Address(unicode(remote_addr)).ipv4_mapped
+        else:
+            # return the IPv6 address
+            return ipaddress.IPv6Address(unicode(remote_addr))
+    else:
+        # return the IPv4 address
+        return ipaddress.ip_address(unicode(remote_addr))
+
 
 # ------------------------------
 # Authentication Wrappers
@@ -112,7 +127,7 @@ def before_request():
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
     if allowed_hosts and __INTERNAL__ is False:
         if request.remote_addr:
-            ipaddr = ipaddress.ip_address(unicode(request.remote_addr))
+            ipaddr = ipaddress.ip_address(unicode(get_remote_addr(request.remote_addr)))
             allowed_networks = [ipaddress.ip_network(unicode(_network.strip())) for _network in allowed_hosts.split(',')]
             allowed = [ipaddr in _network for _network in allowed_networks]
             if True not in allowed:
