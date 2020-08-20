@@ -101,20 +101,20 @@ def make_info_dict():
              'total_checks': format(total_checks, ",d"),
              'check_logging_time': check_logging_time }
 
-# Return the IPv4 or IPv6 (unmapped) address of remote_addr
-def get_unmapped_ip(remote_addr):
-    # check if remote_addr is IPv6
-    if ipaddress.ip_address(unicode(remote_addr)).version == 6:
-        # check if remote_addr is a mapped IPv4 address
-        if ipaddress.IPv6Address(unicode(remote_addr)).ipv4_mapped is not None:
+# Return the IPv4 or IPv6 (unmapped) address of an ip
+def get_unmapped_ip(ip):
+    # check if ip is IPv6
+    if ipaddress.ip_address(unicode(ip)).version == 6:
+        # check if ip is a mapped IPv4 address
+        if ipaddress.IPv6Address(unicode(ip)).ipv4_mapped is not None:
             # return the mapped IPv4 address
-            return ipaddress.IPv6Address(unicode(remote_addr)).ipv4_mapped
+            return ipaddress.IPv6Address(unicode(ip)).ipv4_mapped
         else:
             # return the IPv6 address
-            return ipaddress.IPv6Address(unicode(remote_addr))
+            return ipaddress.IPv6Address(unicode(ip))
     else:
         # return the IPv4 address
-        return ipaddress.ip_address(unicode(remote_addr))
+        return ipaddress.ip_address(unicode(ip))
 
 
 # ------------------------------
