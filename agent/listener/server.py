@@ -101,8 +101,13 @@ def make_info_dict():
              'total_checks': format(total_checks, ",d"),
              'check_logging_time': check_logging_time }
 
-# Return the IPv4 or IPv6 (unmapped) address of an ip
 def get_unmapped_ip(ip):
+    """
+    This function gets an IPv4, IPv6 or IPv4-mapped IPv6 address.
+    It returns the given ip, but in case ip is an IPv4-mapped IPv6 address,
+    it returns ip unmapped.
+    """
+
     # check if ip is IPv6
     if ipaddress.ip_address(unicode(ip)).version == 6:
         # check if ip is a mapped IPv4 address
