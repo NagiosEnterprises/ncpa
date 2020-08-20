@@ -105,7 +105,7 @@ def get_unmapped_ip(ip):
     """
     This function gets an IPv4, IPv6 or IPv4-mapped IPv6 address.
     It returns the given ip, but in case ip is an IPv4-mapped IPv6 address,
-    it returns ip unmapped.
+    it returns ip as ordinary IPv4.
     """
 
     # check if ip is IPv6
