@@ -108,18 +108,22 @@ def get_unmapped_ip(ip):
     it returns ip as ordinary IPv4.
     """
 
-    # check if ip is IPv6
-    if ipaddress.ip_address(unicode(ip)).version == 6:
-        # check if ip is a IPv4-mapped IPv6 address
-        if ipaddress.IPv6Address(unicode(ip)).ipv4_mapped is not None:
-            # return the ordinary IPv4 address
-            return ipaddress.IPv6Address(unicode(ip)).ipv4_mapped
+    try:
+        # check if ip is IPv6
+        if ipaddress.ip_address(unicode(ip)).version == 6:
+            # check if ip is a IPv4-mapped IPv6 address
+            if ipaddress.IPv6Address(unicode(ip)).ipv4_mapped is not None:
+                # return the ordinary IPv4 address
+                return ipaddress.IPv6Address(unicode(ip)).ipv4_mapped
+            else:
+                # return the IPv6 address
+                return ipaddress.IPv6Address(unicode(ip))
         else:
-            # return the IPv6 address
-            return ipaddress.IPv6Address(unicode(ip))
-    else:
-        # return the IPv4 address
-        return ipaddress.ip_address(unicode(ip))
+            # return the IPv4 address
+            return ipaddress.ip_address(unicode(ip))
+    except Exception as e:
+        return ip
+
 
 
 # ------------------------------
