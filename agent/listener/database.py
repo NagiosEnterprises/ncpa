@@ -62,7 +62,7 @@ class DB(object):
 
     # Add a check to the check database
     def add_check(self, accessor, run_time_start, run_time_end, result, output, sender, checktype):
-        data = (accessor, run_time_start, run_time_end, result, output, str(server.get_unmapped_ip(sender)), checktype)
+        data = (accessor, run_time_start, run_time_end, result, output, sender, checktype)
         try:
             self.cursor.execute('INSERT INTO checks VALUES (?, ?, ?, ?, ?, ?, ?)', data)
         except Exception as ex:
