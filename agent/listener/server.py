@@ -21,6 +21,7 @@ import processes
 import database
 import math
 import ipaddress
+import socket
 
 
 __VERSION__ = '2.2.1'
@@ -101,6 +102,7 @@ def make_info_dict():
              'total_checks': format(total_checks, ",d"),
              'check_logging_time': check_logging_time }
 
+
 def get_unmapped_ip(ip):
     """
     This function gets an IPv4, IPv6 or IPv4-mapped IPv6 address.
@@ -121,8 +123,29 @@ def get_unmapped_ip(ip):
         else:
             # return the IPv4 address
             return ipaddress.ip_address(unicode(ip))
-    except Exception as e:
+    # Needed for passive checks, in this case ip is 'Internal'
+    except ValueError as e:
         return ip
+
+
+def get_hostname(ip):
+    try:
+        # TODO: Socket timeout, get multiple ips of one dns entry...
+        hostname = socket.gethostbyaddr(str(ip))
+        return hostname[0]
+    except socket.gaierror as e:
+        # TODO: Implementation, logging...
+        return
+
+
+def is_ip(ip):
+    try:
+        ipaddress.ip_address(unicode(ip)).version
+        return True
+    except ValueError as e:
+        return False
+    
+
 
 
 
@@ -133,13 +156,26 @@ def get_unmapped_ip(ip):
 
 @listener.before_request
 def before_request():
+    allowed = False
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
     if allowed_hosts and __INTERNAL__ is False:
         if request.remote_addr:
-            ipaddr = get_unmapped_ip(request.remote_addr)
-            allowed_networks = [ipaddress.ip_network(unicode(_network.strip())) for _network in allowed_hosts.split(',')]
-            allowed = [ipaddr in _network for _network in allowed_networks]
-            if True not in allowed:
+            for host in allowed_hosts.split(','):
+                host = host.strip()
+                remote_ipaddr = get_unmapped_ip(request.remote_addr)
+                if is_ip(host):
+                    allowed_network = ipaddress.ip_network(unicode(host))
+                    for ip in allowed_network:
+                        if remote_ipaddr == ip:
+                            allowed = True
+                            break
+                else:
+                    remote_hostname = get_hostname(remote_ipaddr)
+                    if remote_hostname == host:
+                        allowed = True
+                        break
+
+            if not allowed:
                 abort(403)
         else:
             abort(403)
