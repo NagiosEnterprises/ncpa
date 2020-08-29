@@ -3,7 +3,7 @@ Changelog
 
 2.2.3 - ??/??/2020
 ==================
-- Added version option for ncpa_listener and ncpa_passive (Christian Zettel)
+- Added version option to ncpa_listener and ncpa_passive (Christian Zettel)
 - Fixed issue with allowed_hosts config directive doesnt work (#638, #660) (Christian Zettel)
 
 2.2.2 - 06/19/2020
