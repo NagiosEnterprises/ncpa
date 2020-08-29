@@ -79,7 +79,7 @@ gid = nagios
 # Default (Windows): ip = 0.0.0.0
 # Default: port = 5693
 #
-ip = 0.0.0.0
+# ip =
 # port =
 
 #
