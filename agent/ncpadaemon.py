@@ -106,9 +106,9 @@ class Daemon(object):
         p.add_option(u'-n', u'--nodaemon', dest=u'daemonize',
                      action=u'store_false', default=True,
                      help=u'Run in the foreground')
-        p.add_option(u'--version', dest=u'action',
+        p.add_option(u'-v', u'--version', dest=u'action',
                      action=u'store_const', const=u'version', default=False,
-                     help=u'Print version number of ncpa_listener.')
+                     help=u'Print version number')
         self.options, self.args = p.parse_args()
         if not os.path.exists(self.options.config_filename):
             p.error(u'configuration file not found: %s'
@@ -248,7 +248,7 @@ class Daemon(object):
             sys.exit(u"NCPA %s: Service is not running." % self.section.title())
 
     def version(self):
-        sys.exit(u"NCPA version, %s" % listener.server.__VERSION__)
+        sys.exit(u"NCPA %s version, %s" % (self.section.title(), listener.server.__VERSION__))
 
     def prepare_dirs(self):
         u"""Ensure the log and pid file directories exist and are writable"""
