@@ -104,7 +104,8 @@ def make_info_dict():
 
 
 def get_unmapped_ip(ip):
-    """
+    """ Get unmapped IPv4 in case ip is an IPv4-mapped IPv6
+
     This function gets an IPv4, IPv6 or IPv4-mapped IPv6 address.
     It returns the given ip, but in case ip is an IPv4-mapped IPv6 address,
     it returns ip as ordinary IPv4.
@@ -116,33 +117,55 @@ def get_unmapped_ip(ip):
             # check if ip is a IPv4-mapped IPv6 address
             if ipaddress.IPv6Address(unicode(ip)).ipv4_mapped is not None:
                 # return the ordinary IPv4 address
-                return ipaddress.IPv6Address(unicode(ip)).ipv4_mapped
+                return str(ipaddress.IPv6Address(unicode(ip)).ipv4_mapped)
             else:
                 # return the IPv6 address
-                return ipaddress.IPv6Address(unicode(ip))
+                return str(ipaddress.IPv6Address(unicode(ip)))
         else:
             # return the IPv4 address
-            return ipaddress.ip_address(unicode(ip))
+            return str(ipaddress.ip_address(unicode(ip)))
     # Needed for passive checks, in this case ip is 'Internal'
     except ValueError as e:
+        logging.debug(e)
         return ip
 
 
-def get_hostname(ip):
+def reverse_lookup_hostname(ip):
+    """
+    This function gets an ip and returns the hostname reverse lookuped by DNS.
+    """
+
     try:
-        # TODO: Socket timeout, get multiple ips of one dns entry...
         hostname = socket.gethostbyaddr(str(ip))
         return hostname[0]
-    except socket.gaierror as e:
-        # TODO: Implementation, logging...
+    except Exception as e:
+        logging.error(e)
         return
 
 
 def is_ip(ip):
+    """
+    Checks if ip is a valid IP address.
+    """
+
     try:
         ipaddress.ip_address(unicode(ip)).version
         return True
     except ValueError as e:
+        logging.debug(e)
+        return False
+
+
+def is_network(ip):
+    """
+    Checks if ip is a valid IP network.
+    """
+
+    try:
+        ipaddress.ip_network(unicode(ip))
+        return True
+    except ValueError as e:
+        logging.debug(e)
         return False
     
 
@@ -156,25 +179,46 @@ def is_ip(ip):
 
 @listener.before_request
 def before_request():
+    # allowed is set to False by default
     allowed = False
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
+
     if allowed_hosts and __INTERNAL__ is False:
         if request.remote_addr:
             for host in allowed_hosts.split(','):
                 host = host.strip()
-                remote_ipaddr = get_unmapped_ip(request.remote_addr)
-                if is_ip(host):
-                    allowed_network = ipaddress.ip_network(unicode(host))
-                    for ip in allowed_network:
-                        if remote_ipaddr == ip:
+                remote_ipaddr = request.remote_addr
+                remote_ipaddr_unmapped = get_unmapped_ip(request.remote_addr)
+
+                # check if host is written as CIDR suffix notation
+                if is_network(host):
+                    # host is an ordinary ip
+                    if is_ip(host):
+                        # check if ip is allowed
+                        if remote_ipaddr == host or remote_ipaddr_unmapped == host:
                             allowed = True
                             break
+                    else:
+                        # host is written as CIDR suffix notation
+                        # get all ip's from the given subnet
+                        allowed_network = ipaddress.ip_network(unicode(host))
+
+                        for ip in allowed_network:
+                            ip = str(ip)
+                            # check if an ip of the subnet is allowed
+                            if remote_ipaddr == ip or remote_ipaddr_unmapped == ip:
+                                allowed = True
+                                break
                 else:
-                    remote_hostname = get_hostname(remote_ipaddr)
+                    # reverse lookup of the remote_ipaddr_unmapped
+                    remote_hostname = reverse_lookup_hostname(remote_ipaddr_unmapped)
+
+                    # check if hostname is allowed
                     if remote_hostname == host:
                         allowed = True
                         break
 
+            # if not allowed, abort
             if not allowed:
                 abort(403)
         else:
