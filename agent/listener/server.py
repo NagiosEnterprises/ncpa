@@ -145,7 +145,7 @@ def reverse_lookup_hostname(ip):
 
 def is_ip(ip):
     """
-    Checks if ip is a valid IP address.
+    Checks if ip is a valid ip address.
     """
 
     try:
@@ -158,7 +158,7 @@ def is_ip(ip):
 
 def is_network(ip):
     """
-    Checks if ip is a valid IP network.
+    Checks if ip is a valid ip network.
     """
 
     try:
