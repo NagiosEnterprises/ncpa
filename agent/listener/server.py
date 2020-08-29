@@ -187,12 +187,12 @@ def before_request():
         if request.remote_addr:
             for host in allowed_hosts.split(','):
                 host = host.strip()
-                remote_ipaddr = request.remote_addr
                 remote_ipaddr_unmapped = get_unmapped_ip(request.remote_addr)
 
                 # check if host is written as CIDR suffix notation
                 if is_network(host):
-                    # host is an ordinary ip
+                    remote_ipaddr = request.remote_addr
+                    # check if host is a valid ip
                     if is_ip(host):
                         # check if ip is allowed
                         if remote_ipaddr == host or remote_ipaddr_unmapped == host:
