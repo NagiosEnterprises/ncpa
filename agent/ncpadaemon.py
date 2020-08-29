@@ -248,7 +248,7 @@ class Daemon(object):
             sys.exit(u"NCPA %s: Service is not running." % self.section.title())
 
     def version(self):
-        sys.exit(u"NCPA %s version, %s" % (self.section.title(), listener.server.__VERSION__))
+        sys.exit(u"ncpa_%s version, %s" % (self.section.title().lower(), listener.server.__VERSION__))
 
     def prepare_dirs(self):
         u"""Ensure the log and pid file directories exist and are writable"""
