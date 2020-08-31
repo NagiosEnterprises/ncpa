@@ -6,6 +6,7 @@ Changelog
 - Added version option to ncpa_listener and ncpa_passive (Christian Zettel)
 - Added support of hostnames in allowed_hosts (#653) (Christian Zettel)
 - Fixed issue with allowed_hosts config directive doesnt work (#638, #660) (Christian Zettel)
+- Fixed ncpa_listener fails to start when IPv6 is disabled. (#648) (Christian Zettel)
 
 2.2.2 - 06/19/2020
 ==================
