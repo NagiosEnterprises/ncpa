@@ -111,7 +111,7 @@ class Listener(ncpadaemon.Daemon):
                 http_server.serve_forever()
             except SocketError as e:
                 if address == '::':
-                    logging.info("Failed to start ncpa_listener in dual stack mode (%s)", e)
+                    logging.info("Failed to start in dual stack mode: %s", e)
                     logging.info("Falling back to IPv4 only")
                 else:
                     logging.exception(e)
