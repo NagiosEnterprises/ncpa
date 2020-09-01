@@ -3,7 +3,13 @@ Changelog
 
 2.2.3 - ??/??/2020
 ==================
+
 - Added option to to use symlinks in the plugin path directory (#577) (infraweavers, Christian Zettel)
+- Added version option to ncpa_listener and ncpa_passive (Christian Zettel)
+- Added support of hostnames in allowed_hosts (#653) (Christian Zettel)
+- Fixed issue with allowed_hosts config directive doesnt work (#638, #660) (Christian Zettel)
+- Fixed ncpa_listener fails to start when IPv6 is disabled. (#648) (Christian Zettel)
+- Fixed if an exception was thrown in one api endpoint it breaks the wohle api (#670) (Christian Zettel)
 
 2.2.2 - 06/19/2020
 ==================
