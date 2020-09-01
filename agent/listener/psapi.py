@@ -156,8 +156,6 @@ def get_memory_node():
 
 
 def get_disk_node(config):
-    raise ps.Error('NotImplementedError')
-
     # Get all physical disk io counters
     try:
         disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
