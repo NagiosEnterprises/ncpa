@@ -156,7 +156,6 @@ def get_memory_node():
 
 
 def get_disk_node(config):
-
     # Get all physical disk io counters
     try:
         disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
@@ -225,15 +224,59 @@ def get_user_node():
 
 
 def get_root_node(config):
-    cpu = get_cpu_node()
-    memory = get_memory_node()
-    disk = get_disk_node(config)
-    interface = get_interface_node()
-    plugins = get_plugins_node()
-    user = get_user_node()
-    system = get_system_node()
-    service = services.get_node()
-    process = processes.get_node()
+    try:
+        cpu = get_cpu_node()
+    except Exception as e:
+        cpu = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        memory = get_memory_node()
+    except Exception as e:
+        memory = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        disk = get_disk_node(config)
+    except Exception as e:
+        disk = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        interface = get_interface_node()
+    except Exception as e:
+        interface = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        plugins = get_plugins_node()
+    except Exception as e:
+        plugins = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        user = get_user_node()
+    except Exception as e:
+        user = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        system = get_system_node()
+    except Exception as e:
+        system = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        service = services.get_node()
+    except Exception as e:
+        service = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        process = processes.get_node()
+    except Exception as e:
+        process = ParentNode('N/A')
+        logging.exception(e)
 
     children = [cpu, memory, disk, interface, plugins, user, system, service, process]
 
