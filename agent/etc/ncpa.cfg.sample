@@ -12,8 +12,9 @@
 [general]
 
 #
-# Check logging is on by default, you can disable it if you do not want to record
-# the check requests that are coming in or checks being sent over NRDP.
+# Check logging (in ncpa.db and the interface) is on by default, you can disable it
+# if you do not want to record the check requests that are coming in or checks being
+# sent over NRDP.
 # Default: check_logging = 1
 #
 check_logging = 1
@@ -155,7 +156,7 @@ admin_auth_only = 0
 
 #
 # Set the URL to use in the X-Frame-Options and Content-Security-Policy headers
-# in order to enable the NCPA GUI to be allowed to load intp a frame
+# in order to enable the NCPA GUI to be allowed to load into a frame
 # Default: None
 # Example: mycoolwebsite.com
 # Example: *.mycoolwebsite.com
@@ -196,7 +197,7 @@ community_string = mytoken
 handlers = None
 
 #
-# User and group to run passive checks as (recommended to use nagios:nagios)
+# User and group to run passive checks as (Recommended to use nagios:nagios)
 # Default: uid = nagios
 # Default: gid = nagios
 #
@@ -272,6 +273,19 @@ config_version =
 update_config = 1
 update_plugins = 1
 
+[kafkaproducer]
+
+#
+# -------------------------------
+# Passive Configuration (Kafka)
+# -------------------------------
+#
+
+hostname = None
+servers = localhost:9092
+clientname = NCPA-Kafka
+topic = ncpa
+
 #
 # -------------------------------
 # Plugin Configuration
@@ -284,6 +298,13 @@ update_plugins = 1
 # Plugin path where all plugins will be ran from.
 #
 plugin_path = plugins/
+
+#
+# Follow symlinks located in the plugin path
+#
+# This is for Unix only (Linux, Mac OS X, etc)
+#
+follow_symlinks = 0
 
 #
 # Plugin execution timeout in seconds. Different than the check_ncpa.py timeout, which is
@@ -299,6 +320,8 @@ plugin_path = plugins/
 #
 # Example: check_special,check_root_files
 # (Command line: sudo /<plugin_absolute_path>/check_special <arguments>)
+#
+# This is for Unix only (Linux, Mac OS X, etc)
 #
 # run_with_sudo =
 
@@ -330,4 +353,5 @@ plugin_path = plugins/
 # Windows
 .ps1 = powershell -ExecutionPolicy Bypass -File $plugin_name $plugin_args
 .vbs = cscript $plugin_name $plugin_args //NoLogo
+.wsf = cscript $plugin_name $plugin_args //NoLogo
 .bat = cmd /c $plugin_name $plugin_args

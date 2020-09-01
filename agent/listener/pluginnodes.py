@@ -185,16 +185,23 @@ class PluginAgentNode(nodes.ParentNode):
 
     def setup_plugin_children(self, config):
         plugin_path = config.get('plugin directives', 'plugin_path')
+
+        # Get the follow_symlinks value
+        try:
+            follow_symlinks = bool(config.get('plugin directives', 'follow_symlinks'))
+        except Exception as e:
+            follow_symlinks = False
+
         self.children = {}
 
         try:
-            plugins = os.listdir(plugin_path)
-            for plugin in plugins:
-                if plugin == '.keep':
-                    continue
-                plugin_abs_path = os.path.join(plugin_path, plugin)
-                if os.path.isfile(plugin_abs_path):
-                    self.children[plugin] = PluginNode(plugin, plugin_abs_path)
+            for root,dirs,files in os.walk(plugin_path,followlinks=follow_symlinks):
+                for plugin in files:
+                    if plugin == '.keep':
+                        continue
+                    plugin_abs_path = os.path.join(root, plugin)
+                    if os.path.isfile(plugin_abs_path):
+                        self.children[plugin] = PluginNode(plugin, plugin_abs_path)
         except OSError as exc:
             logging.warning('Unable to access directory %s', plugin_path)
             logging.warning('Unable to assemble plugins. Does the directory exist? - %r', exc)
