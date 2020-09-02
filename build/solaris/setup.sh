@@ -28,7 +28,7 @@ fi
 update_py_packages() {
     # Do special things for Solaris 11 (do not build with special flags)
     if [ $SOLARIS -eq 11 ]; then
-        $PYTHONBIN -m pip install -r  $BUILD_DIR/solaris/require.solaris.txt --upgrade
+        CPPFLAGS="-I$LIBFFI_DEV" $PYTHONBIN -m pip install -r  $BUILD_DIR/solaris/require.solaris.txt --upgrade
     else
         CPPFLAGS="-I$LIBFFI_DEV" LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/solaris/require.solaris.txt --upgrade --no-binary :all:
     fi
