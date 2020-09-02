@@ -53,6 +53,9 @@ else:
 # Set some settings for Flask
 listener.jinja_env.line_statement_prefix = '#'
 listener.url_map.strict_slashes = False
+listener.config.update(
+    SESSION_COOKIE_SECURE = True
+);
 
 
 # ------------------------------
