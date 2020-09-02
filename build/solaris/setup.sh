@@ -30,7 +30,7 @@ update_py_packages() {
     if [ $SOLARIS -eq 11 ]; then
         $PYTHONBIN -m pip install -r  $BUILD_DIR/solaris/require.solaris.txt --upgrade
     else
-        CPPFLAGS="-I$LIBFFI_DEV" LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.solaris.txt --upgrade --no-binary :all:
+        CPPFLAGS="-I$LIBFFI_DEV" LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/solaris/require.solaris.txt --upgrade --no-binary :all:
     fi
 }
 
