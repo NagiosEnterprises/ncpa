@@ -24,7 +24,7 @@ import ipaddress
 import socket
 
 
-__VERSION__ = '2.2.1'
+__VERSION__ = '2.3.0'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
