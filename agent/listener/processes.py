@@ -363,11 +363,11 @@ class ProcessNode(nodes.LazyNode):
                 if cpu_percent or mem_percent:
                     title += ' ' + combiner
             if cpu_percent:
-                title += ' CPU usage greater than %.2f' % cpu_percent
+                title += ' CPU usage greater than %.2f %s' % (cpu_percent, '%')
                 if mem_percent:
                     title += ' ' + combiner
             if mem_percent:
-                title += ' Memory Usage greater than %.2f' % mem_percent
+                title += ' Memory Usage greater than %.2f %s' % (mem_percent, '%')
         return [title]
 
     def run_check(self, *args, **kwargs):
