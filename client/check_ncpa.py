@@ -54,7 +54,7 @@ import re
 import signal
 
 
-__VERSION__ = '1.2.2'
+__VERSION__ = '1.2.3'
 
 
 class ConnectionError(Exception):
@@ -73,55 +73,67 @@ class HTTPError(ConnectionError):
 def parse_args():
     version = 'check_ncpa.py, Version %s' % __VERSION__
 
-    parser = optparse.OptionParser()
-    parser.add_option("-H", "--hostname", help="The hostname to be connected to.")
-    parser.add_option("-M", "--metric", default='',
+    parser = optparse.OptionParser(add_help_option=False)
+    general = optparse.OptionGroup(parser, "General Options")
+    general.add_option("-h", "--help", action='help',
+                      help='show this help message and exit')
+    general.add_option("-H", "--hostname", help="The hostname to be connected to.")
+    general.add_option("-M", "--metric", default='',
                       help="The metric to check, this is defined on client "
                            "system. This would also be the plugin name in the "
                            "plugins directory. Do not attach arguments to it, "
                            "use the -a directive for that. DO NOT INCLUDE the api/ "
                            "instruction.")
-    parser.add_option("-P", "--port", default=5693, type="int",
+    general.add_option("-P", "--port", default=5693, type="int",
                       help="Port to use to connect to the client.")
-    parser.add_option("-w", "--warning", default=None, type="str",
+    general.add_option("-w", "--warning", default=None, type="str",
                       help="Warning value to be passed for the check.")
-    parser.add_option("-c", "--critical", default=None, type="str",
+    general.add_option("-c", "--critical", default=None, type="str",
                       help="Critical value to be passed for the check.")
-    parser.add_option("-u", "--units", default=None,
+    general.add_option("-u", "--units", default=None,
                       help="The unit prefix (k, Ki, M, Mi, G, Gi, T, Ti) for b and B unit "
                            "types which calculates the value returned.")
-    parser.add_option("-n", "--unit", default=None,
+    general.add_option("-n", "--unit", default=None,
                       help="Overrides the unit with whatever unit you define. "
                            "Does not perform calculations. This changes the unit of measurement only.")
-    parser.add_option("-a", "--arguments", default=None,
+    general.add_option("-a", "--arguments", default=None,
                       help="Arguments for the plugin to be run. Not necessary "
                            "unless you're running a custom plugin. Given in the same "
                            "as you would call from the command line. Example: -a '-w 10 -c 20 -f /usr/local'")
-    parser.add_option("-t", "--token", default='',
+    general.add_option("-t", "--token", default='',
                       help="The token for connecting.")
-    parser.add_option("-T", "--timeout", default=60, type="int",
+    general.add_option("-T", "--timeout", default=60, type="int",
                       help="Enforced timeout, will terminate plugins after "
                            "this amount of seconds. [%default]")
-    parser.add_option("-d", "--delta", action='store_true',
+    general.add_option("-d", "--delta", action='store_true',
                       help="Signals that this check is a delta check and a "
                            "local state will kept.")
-    parser.add_option("-l", "--list", action='store_true',
+    general.add_option("-l", "--list", action='store_true',
                       help="List all values under a given node. Do not perform "
                            "a check.")
-    parser.add_option("-v", "--verbose", action='store_true',
+    general.add_option("-v", "--verbose", action='store_true',
                       help='Print more verbose error messages.')
-    parser.add_option("-D", "--debug", action='store_true',
+    general.add_option("-D", "--debug", action='store_true',
                       help='Print LOTS of error messages. Used mostly for debugging.')
-    parser.add_option("-V", "--version", action='store_true',
+    general.add_option("-V", "--version", action='store_true',
                       help='Print version number of plugin.')
-    parser.add_option("-q", "--queryargs", default=None,
+    general.add_option("-q", "--queryargs", default=None,
                       help='Extra query arguments to pass in the NCPA URL.')
-    parser.add_option("-s", "--secure", action='store_true', default=False,
+    general.add_option("-s", "--secure", action='store_true', default=False,
                       help='Require successful certificate verification. Does not work on Python < 2.7.9.')
-    parser.add_option("-p", "--performance", action='store_true', default=False,
+    parser.add_option_group(general)
+
+    perfdata = optparse.OptionGroup(parser, "Performance Data Options")
+    perfdata .add_option("-p", "--performance", action='store_true', default=False,
                       help='Print performance data even when there is none. '
                            'Will print data matching the return code of this script')
-    options, _ = parser.parse_args()
+    perfdata.add_option("--perfdata-prefix", action='store', type="string",
+                      help='Add a prefix to perfdata labels.')
+    perfdata.add_option("--perfdata-suffix", action='store', type="string",
+                      help='Add a suffix to perfdata labels.')
+    parser.add_option_group(perfdata)
+
+    (options, args) = parser.parse_args()
 
     if options.version:
         print(version)
@@ -145,8 +157,8 @@ def parse_args():
     return options
 
 
-# ~ The following are all helper functions. I would normally split these out into
-# ~ a new module but this needs to be portable.
+# The following are all helper functions. I would normally split these out into
+# a new module but this needs to be portable.
 
 
 def get_url_from_options(options):
@@ -222,7 +234,7 @@ def get_arguments_from_options(options, **kwargs):
             if value is not None:
                 args.append((key, value))
 
-    #~ Encode the items in the dictionary that are not None
+    # Encode the items in the dictionary that are not None
     return urlencode(args)
 
 
@@ -301,6 +313,41 @@ def show_list(info_json):
     return json.dumps(info_json, indent=4), 0
 
 
+def split_output(stdout):
+    """Split stdout to output and perfdata (if available).
+
+    """
+    match = re.match(r"^(.*)(\|)(.*)$", stdout)
+    if match is not None:
+        return match.group(1), list(match.group(3).strip().split(" "))
+    else:
+        return stdout, None
+
+
+def add_perfdata_prefix(perfdata, perfdata_prefix):
+    """Add the perfdata prefix to perfdata.
+
+    """
+    perfdata_list = []
+    for ds in perfdata:
+        match = re.match(r"^(')(.*)(')(=)(.*)$", ds)
+        if match is not None:
+            perfdata_list.append("'{0}{1}'={2}".format(perfdata_prefix, match.group(2), match.group(5)))
+    return perfdata_list
+
+
+def add_perfdata_suffix(perfdata, perfdata_suffix):
+    """Add the perfdata suffix to perfdata.
+
+    """
+    perfdata_list = []
+    for ds in perfdata:
+        match = re.match(r"^(')(.*)(')(=)(.*)$", ds)
+        if match is not None:
+            perfdata_list.append("'{0}{1}'={2}".format(match.group(2), perfdata_suffix, match.group(5)))
+    return perfdata_list
+
+
 def timeout_handler(threshold):
     def wrapped(signum, frames):
         stdout = "UNKNOWN: Execution exceeded timeout threshold of %ds" % threshold
@@ -318,10 +365,6 @@ def main():
     signal.alarm(options.timeout)
 
     try:
-        if options.version:
-            stdout = 'The version of this plugin is %s' % __VERSION__
-            return stdout, 0
-
         info_json = get_json(options)
 
         if options.list:
@@ -331,6 +374,14 @@ def main():
 
             if options.performance and stdout.find("|") == -1:
                 stdout = "{0} | 'status'={1};1;2;;".format(stdout, returncode)
+
+            stdout, perfdata = split_output(stdout)
+            if perfdata is not None:
+                if options.perfdata_prefix is not None:
+                    perfdata = add_perfdata_prefix(perfdata, options.perfdata_prefix)
+                if options.perfdata_suffix is not None:
+                    perfdata = add_perfdata_suffix(perfdata,options.perfdata_suffix)
+                stdout = stdout + '| ' + ' '.join(perfdata)
             return stdout, returncode
     except (HTTPError, URLError) as e:
         if options.debug:
