@@ -54,7 +54,7 @@ import re
 import signal
 
 
-__VERSION__ = '1.2.3'
+__VERSION__ = '1.2.4'
 
 
 class ConnectionError(Exception):
@@ -401,5 +401,5 @@ def main():
 
 if __name__ == "__main__":
     stdout, returncode = main()
-    print(stdout.encode('utf-8', 'replace'))
+    print(stdout.encode('utf-8', 'replace').decode('utf-8'))
     sys.exit(returncode)

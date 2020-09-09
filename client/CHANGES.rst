@@ -1,9 +1,13 @@
 Changelog
 +++++++++
 
-1.2.3
+1.2.4
 -----
 - Added options --perfdata-prefix, --perfdata-suffix (#629) (Christian Zettel)
+
+1.2.3
+-----
+- Fixed issue with Python 3 binary string being printed
 
 1.2.2
 -----
