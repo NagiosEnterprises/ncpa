@@ -215,7 +215,7 @@ def get_arguments_from_options(options, **kwargs):
     # API call which can confuse people if they don't match
     arguments = { 'token': options.token,
                   'units': options.units }
-    
+
     if not options.list:
         arguments['warning'] = options.warning
         arguments['critical'] = options.critical
