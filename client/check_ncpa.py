@@ -53,7 +53,6 @@ import shlex
 import re
 import signal
 
-
 __VERSION__ = '1.2.4'
 
 
@@ -61,9 +60,11 @@ class ConnectionError(Exception):
     error_output_prefix = "UNKNOWN: An error occured connecting to API. "
     pass
 
+
 class URLError(ConnectionError):
     def __init__(self, error_message):
         self.error_message = ConnectionError.error_output_prefix + "(Connection error: '" + error_message + "')"
+
 
 class HTTPError(ConnectionError):
     def __init__(self, error_message):
@@ -76,61 +77,61 @@ def parse_args():
     parser = optparse.OptionParser(add_help_option=False)
     general = optparse.OptionGroup(parser, "General Options")
     general.add_option("-h", "--help", action='help',
-                      help='show this help message and exit')
+                       help='show this help message and exit')
     general.add_option("-H", "--hostname", help="The hostname to be connected to.")
     general.add_option("-M", "--metric", default='',
-                      help="The metric to check, this is defined on client "
-                           "system. This would also be the plugin name in the "
-                           "plugins directory. Do not attach arguments to it, "
-                           "use the -a directive for that. DO NOT INCLUDE the api/ "
-                           "instruction.")
+                       help="The metric to check, this is defined on client "
+                            "system. This would also be the plugin name in the "
+                            "plugins directory. Do not attach arguments to it, "
+                            "use the -a directive for that. DO NOT INCLUDE the api/ "
+                            "instruction.")
     general.add_option("-P", "--port", default=5693, type="int",
-                      help="Port to use to connect to the client.")
+                       help="Port to use to connect to the client.")
     general.add_option("-w", "--warning", default=None, type="str",
-                      help="Warning value to be passed for the check.")
+                       help="Warning value to be passed for the check.")
     general.add_option("-c", "--critical", default=None, type="str",
-                      help="Critical value to be passed for the check.")
+                       help="Critical value to be passed for the check.")
     general.add_option("-u", "--units", default=None,
-                      help="The unit prefix (k, Ki, M, Mi, G, Gi, T, Ti) for b and B unit "
-                           "types which calculates the value returned.")
+                       help="The unit prefix (k, Ki, M, Mi, G, Gi, T, Ti) for b and B unit "
+                            "types which calculates the value returned.")
     general.add_option("-n", "--unit", default=None,
-                      help="Overrides the unit with whatever unit you define. "
-                           "Does not perform calculations. This changes the unit of measurement only.")
+                       help="Overrides the unit with whatever unit you define. "
+                            "Does not perform calculations. This changes the unit of measurement only.")
     general.add_option("-a", "--arguments", default=None,
-                      help="Arguments for the plugin to be run. Not necessary "
-                           "unless you're running a custom plugin. Given in the same "
-                           "as you would call from the command line. Example: -a '-w 10 -c 20 -f /usr/local'")
+                       help="Arguments for the plugin to be run. Not necessary "
+                            "unless you're running a custom plugin. Given in the same "
+                            "as you would call from the command line. Example: -a '-w 10 -c 20 -f /usr/local'")
     general.add_option("-t", "--token", default='',
-                      help="The token for connecting.")
+                       help="The token for connecting.")
     general.add_option("-T", "--timeout", default=60, type="int",
-                      help="Enforced timeout, will terminate plugins after "
-                           "this amount of seconds. [%default]")
+                       help="Enforced timeout, will terminate plugins after "
+                            "this amount of seconds. [%default]")
     general.add_option("-d", "--delta", action='store_true',
-                      help="Signals that this check is a delta check and a "
-                           "local state will kept.")
+                       help="Signals that this check is a delta check and a "
+                            "local state will kept.")
     general.add_option("-l", "--list", action='store_true',
-                      help="List all values under a given node. Do not perform "
-                           "a check.")
+                       help="List all values under a given node. Do not perform "
+                            "a check.")
     general.add_option("-v", "--verbose", action='store_true',
-                      help='Print more verbose error messages.')
+                       help='Print more verbose error messages.')
     general.add_option("-D", "--debug", action='store_true',
-                      help='Print LOTS of error messages. Used mostly for debugging.')
+                       help='Print LOTS of error messages. Used mostly for debugging.')
     general.add_option("-V", "--version", action='store_true',
-                      help='Print version number of plugin.')
+                       help='Print version number of plugin.')
     general.add_option("-q", "--queryargs", default=None,
-                      help='Extra query arguments to pass in the NCPA URL.')
+                       help='Extra query arguments to pass in the NCPA URL.')
     general.add_option("-s", "--secure", action='store_true', default=False,
-                      help='Require successful certificate verification. Does not work on Python < 2.7.9.')
+                       help='Require successful certificate verification. Does not work on Python < 2.7.9.')
     parser.add_option_group(general)
 
     perfdata = optparse.OptionGroup(parser, "Performance Data Options")
-    perfdata .add_option("-p", "--performance", action='store_true', default=False,
-                      help='Print performance data even when there is none. '
-                           'Will print data matching the return code of this script')
+    perfdata.add_option("-p", "--performance", action='store_true', default=False,
+                        help='Print performance data even when there is none. '
+                             'Will print data matching the return code of this script')
     perfdata.add_option("--perfdata-prefix", action='store', type="string",
-                      help='Add a prefix to perfdata labels.')
+                        help='Add a prefix to perfdata labels.')
     perfdata.add_option("--perfdata-suffix", action='store', type="string",
-                      help='Add a suffix to perfdata labels.')
+                        help='Add a suffix to perfdata labels.')
     parser.add_option_group(perfdata)
 
     (options, args) = parser.parse_args()
@@ -139,7 +140,7 @@ def parse_args():
         print(version)
         sys.exit(0)
 
-    if options.arguments and options.metric and not 'plugin' in options.metric:
+    if options.arguments and options.metric and 'plugin' not in options.metric:
         parser.print_help()
         parser.error('You cannot specify arguments without running a custom plugin.')
 
@@ -174,7 +175,7 @@ def get_host_part_from_options(options):
     hostname = options.hostname
     port = options.port
 
-    if not options.metric is None:
+    if options.metric is not None:
         metric = urlquote(options.metric)
     else:
         metric = ''
@@ -213,8 +214,8 @@ def get_arguments_from_options(options, **kwargs):
 
     # Note: Changed back to units due to the units being what is passed via the
     # API call which can confuse people if they don't match
-    arguments = { 'token': options.token,
-                  'units': options.units }
+    arguments = {'token': options.token,
+                 'units': options.units}
 
     if not options.list:
         arguments['warning'] = options.warning
@@ -353,6 +354,7 @@ def timeout_handler(threshold):
         stdout = "UNKNOWN: Execution exceeded timeout threshold of %ds" % threshold
         print(stdout)
         sys.exit(3)
+
     return wrapped
 
 
@@ -376,12 +378,14 @@ def main():
                 stdout = "{0} | 'status'={1};1;2;;".format(stdout, returncode)
 
             stdout, perfdata = split_output(stdout)
+
             if perfdata is not None:
                 if options.perfdata_prefix is not None:
                     perfdata = add_perfdata_prefix(perfdata, options.perfdata_prefix)
                 if options.perfdata_suffix is not None:
-                    perfdata = add_perfdata_suffix(perfdata,options.perfdata_suffix)
+                    perfdata = add_perfdata_suffix(perfdata, options.perfdata_suffix)
                 stdout = stdout + '| ' + ' '.join(perfdata)
+
             return stdout, returncode
     except (HTTPError, URLError) as e:
         if options.debug:
