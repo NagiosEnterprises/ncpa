@@ -133,9 +133,9 @@ def get_unmapped_ip(ip):
         return ip
 
 
-def reverse_lookup_hostname(ip):
+def lookup_hostname(ip):
     """
-    This function gets an ip and returns the hostname reverse lookuped by DNS.
+    This function gets an ip and returns the hostname lookuped by DNS.
     """
 
     try:
@@ -213,8 +213,8 @@ def before_request():
                                 allowed = True
                                 break
                 else:
-                    # reverse lookup of the remote_ipaddr_unmapped
-                    remote_hostname = reverse_lookup_hostname(remote_ipaddr_unmapped)
+                    # lookup of the remote_ipaddr_unmapped
+                    remote_hostname = lookup_hostname(remote_ipaddr_unmapped)
 
                     # check if hostname is allowed
                     if remote_hostname == host:
