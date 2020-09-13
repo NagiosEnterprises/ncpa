@@ -314,7 +314,7 @@ def show_list(info_json):
     return json.dumps(info_json, indent=4), 0
 
 
-def split_output(stdout):
+def split_stdout(stdout):
     """Split stdout to output and perfdata (if available).
 
     """
@@ -377,7 +377,7 @@ def main():
             if options.performance and stdout.find("|") == -1:
                 stdout = "{0} | 'status'={1};1;2;;".format(stdout, returncode)
 
-            stdout, perfdata = split_output(stdout)
+            stdout, perfdata = split_stdout(stdout)
 
             if perfdata is not None:
                 if options.perfdata_prefix is not None:
