@@ -128,9 +128,9 @@ def parse_args():
     perfdata.add_option("-p", "--performance", action='store_true', default=False,
                         help='Print performance data even when there is none. '
                              'Will print data matching the return code of this script')
-    perfdata.add_option("--perfdata-prefix", action='store', type="string",
+    perfdata.add_option("-A", "--perfdata-prefix", action='store', type="string",
                         help='Add a prefix to perfdata labels.')
-    perfdata.add_option("--perfdata-suffix", action='store', type="string",
+    perfdata.add_option("-B", "--perfdata-suffix", action='store', type="string",
                         help='Add a suffix to perfdata labels.')
     parser.add_option_group(perfdata)
 
