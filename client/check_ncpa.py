@@ -134,7 +134,12 @@ def parse_args():
                         help='Add a suffix to perfdata labels.')
     parser.add_option_group(perfdata)
 
-    (options, args) = parser.parse_args()
+    output = optparse.OptionGroup(parser, "Output Manipulation Options")
+    output.add_option("-L", "--html-single-line", action='store_true', default=False,
+                        help='Convert multi line output to single line html output.')
+    parser.add_option_group(output)
+
+    options, _ = parser.parse_args()
 
     if options.version:
         print(version)

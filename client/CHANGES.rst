@@ -4,6 +4,7 @@ Changelog
 1.2.4
 -----
 - Added options --perfdata-prefix, --perfdata-suffix (#629) (Christian Zettel)
+- Added option --html-single-line (#681) (Christian Zettel)
 
 1.2.3
 -----
