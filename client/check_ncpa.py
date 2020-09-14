@@ -53,7 +53,7 @@ import shlex
 import re
 import signal
 
-__VERSION__ = '1.2.4'
+__VERSION__ = '1.3.0'
 
 
 class ConnectionError(Exception):

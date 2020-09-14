@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-1.2.4
+1.3.0
 -----
 - Added options --perfdata-prefix, --perfdata-suffix (#629) (Christian Zettel)
 
