@@ -324,7 +324,7 @@ def show_list(info_json):
 
 
 def split_stdout(stdout):
-    """Split stdout to output and perfdata (if available).
+    """Split stdout to output and perfdata if available.
 
     """
     output_list = []
@@ -341,6 +341,25 @@ def split_stdout(stdout):
         return '\n'.join(map(str, output_list)), perfdata
     else:
         return stdout, None
+
+
+def rebuild_stdout(stdout, perfdata):
+    """Rebuilds stdout when the function split_stdout has splitted stdout into stdout and perfdata.
+
+    """
+    lines = len(stdout.splitlines())
+
+    if lines == 1:
+        stdout = stdout + ' | ' + ' '.join(perfdata)
+    else:
+        counter = 0
+        for line in stdout.splitlines():
+            counter += 1
+            if counter == 1:
+                stdout = line + ' | ' + ' '.join(perfdata) + '\n'
+            else:
+                stdout += line + '\n'
+    return stdout
 
 
 def add_perfdata_prefix(perfdata, perfdata_prefix):
@@ -405,7 +424,7 @@ def main():
                     perfdata = add_perfdata_prefix(perfdata, options.perfdata_prefix)
                 if options.perfdata_suffix is not None:
                     perfdata = add_perfdata_suffix(perfdata, options.perfdata_suffix)
-                stdout = stdout + ' | ' + ' '.join(perfdata)
+                stdout = rebuild_stdout(stdout, perfdata)
 
             return stdout, returncode
     except (HTTPError, URLError) as e:
