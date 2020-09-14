@@ -53,7 +53,7 @@ import shlex
 import re
 import signal
 
-__VERSION__ = '1.2.4'
+__VERSION__ = '1.3.0'
 
 
 class ConnectionError(Exception):
@@ -134,7 +134,7 @@ def parse_args():
                         help='Add a suffix to perfdata labels.')
     parser.add_option_group(perfdata)
 
-    output = optparse.OptionGroup(parser, "Output Manipulation Options")
+    output = optparse.OptionGroup(parser, "Output Conversion Options")
     output.add_option("-L", "--html-single-line", action='store_true', default=False,
                         help='Convert multi line output to single line html output.')
     parser.add_option_group(output)
@@ -157,6 +157,10 @@ def parse_args():
         parser.print_help()
         parser.error('No metric given, if you want to list all possible items '
                      'use --list.')
+
+    if options.html_single_line and options.list:
+        parser.print_help()
+        parser.error('Option --html-single-line is not allowed to use with option --list')
 
     options.metric = re.sub(r'^/?(api/)?', '', options.metric)
 
@@ -323,9 +327,18 @@ def split_stdout(stdout):
     """Split stdout to output and perfdata (if available).
 
     """
-    match = re.match(r"^(.*)(\|)(.*)$", stdout)
-    if match is not None:
-        return match.group(1), list(match.group(3).strip().split(" "))
+    output_list = []
+    perfdata = None
+    for line in stdout.splitlines():
+        match = re.match(r"^(.*)(\|)(.*)$", line)
+        if match is not None:
+            output_list.append(match.group(1).strip())
+            perfdata = list(match.group(3).strip().split(" "))
+        else:
+            output_list.append(line)
+
+    if perfdata is not None:
+        return '\n'.join(map(str, output_list)), perfdata
     else:
         return stdout, None
 
@@ -384,12 +397,15 @@ def main():
 
             stdout, perfdata = split_stdout(stdout)
 
+            if options.html_single_line:
+                stdout = stdout.replace('\n', '<br>')
+
             if perfdata is not None:
                 if options.perfdata_prefix is not None:
                     perfdata = add_perfdata_prefix(perfdata, options.perfdata_prefix)
                 if options.perfdata_suffix is not None:
                     perfdata = add_perfdata_suffix(perfdata, options.perfdata_suffix)
-                stdout = stdout + '| ' + ' '.join(perfdata)
+                stdout = stdout + ' | ' + ' '.join(perfdata)
 
             return stdout, returncode
     except (HTTPError, URLError) as e:
