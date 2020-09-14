@@ -315,12 +315,20 @@ def show_list(info_json):
 
 
 def split_stdout(stdout):
-    """Split stdout to output and perfdata (if available).
-
+    """Split stdout to output and perfdata if available.
     """
-    match = re.match(r"^(.*)(\|)(.*)$", stdout)
-    if match is not None:
-        return match.group(1), list(match.group(3).strip().split(" "))
+    output_list = []
+    perfdata = None
+    for line in stdout.splitlines():
+        match = re.match(r"^(.*)(\|)(.*)$", line)
+        if match is not None:
+            output_list.append(match.group(1).strip())
+            perfdata = list(match.group(3).strip().split(" "))
+        else:
+            output_list.append(line)
+
+    if perfdata is not None:
+        return '\n'.join(map(str, output_list)), perfdata
     else:
         return stdout, None
 
