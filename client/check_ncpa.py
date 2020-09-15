@@ -135,8 +135,8 @@ def parse_args():
     parser.add_option_group(perfdata)
 
     output = optparse.OptionGroup(parser, "Output Conversion Options")
-    output.add_option("-L", "--html-single-line", action='store_true', default=False,
-                        help='Convert multi line output to single line html output.')
+    output.add_option("-S", "--html-single-line", action='store_true', default=False,
+                      help='Convert multi line output to single line html output.')
     parser.add_option_group(output)
 
     options, _ = parser.parse_args()
@@ -160,7 +160,7 @@ def parse_args():
 
     if options.html_single_line and options.list:
         parser.print_help()
-        parser.error('Option --html-single-line is not allowed to use with option --list')
+        parser.error('Option --html-single-line can not be used with option --list')
 
     options.metric = re.sub(r'^/?(api/)?', '', options.metric)
 
@@ -343,23 +343,23 @@ def split_stdout(stdout):
         return stdout, None
 
 
-def rebuild_stdout(stdout, perfdata):
-    """Rebuilds stdout when the function split_stdout has splitted stdout into stdout and perfdata.
+def rebuild_stdout(output, perfdata):
+    """Rebuilds stdout when the function split_stdout has splitted stdout into output and perfdata.
 
     """
-    lines = len(stdout.splitlines())
+    lines = len(output.splitlines())
 
     if lines == 1:
-        stdout = stdout + ' | ' + ' '.join(perfdata)
+        output = output + ' | ' + ' '.join(perfdata)
     else:
-        counter = 0
-        for line in stdout.splitlines():
-            counter += 1
+        counter = 1
+        for line in output.splitlines():
             if counter == 1:
-                stdout = line + ' | ' + ' '.join(perfdata) + '\n'
+                output = line + ' | ' + ' '.join(perfdata) + '\n'
             else:
-                stdout += line + '\n'
-    return stdout
+                output += line + '\n'
+            counter += 1
+    return output
 
 
 def add_perfdata_prefix(perfdata, perfdata_prefix):
@@ -391,7 +391,6 @@ def timeout_handler(threshold):
         stdout = "UNKNOWN: Execution exceeded timeout threshold of %ds" % threshold
         print(stdout)
         sys.exit(3)
-
     return wrapped
 
 
@@ -414,17 +413,18 @@ def main():
             if options.performance and stdout.find("|") == -1:
                 stdout = "{0} | 'status'={1};1;2;;".format(stdout, returncode)
 
-            stdout, perfdata = split_stdout(stdout)
+            if options.perfdata_prefix is not None or options.perfdata_suffix is not None or options.html_single_line:
+                output, perfdata = split_stdout(stdout)
 
-            if options.html_single_line:
-                stdout = stdout.replace('\n', '<br>')
+                if options.html_single_line:
+                    output = output.replace('\n', '<br>')
 
-            if perfdata is not None:
-                if options.perfdata_prefix is not None:
-                    perfdata = add_perfdata_prefix(perfdata, options.perfdata_prefix)
-                if options.perfdata_suffix is not None:
-                    perfdata = add_perfdata_suffix(perfdata, options.perfdata_suffix)
-                stdout = rebuild_stdout(stdout, perfdata)
+                if perfdata is not None:
+                    if options.perfdata_prefix is not None:
+                        perfdata = add_perfdata_prefix(perfdata, options.perfdata_prefix)
+                    if options.perfdata_suffix is not None:
+                        perfdata = add_perfdata_suffix(perfdata, options.perfdata_suffix)
+                    stdout = rebuild_stdout(output, perfdata)
 
             return stdout, returncode
     except (HTTPError, URLError) as e:
