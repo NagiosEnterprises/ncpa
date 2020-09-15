@@ -347,17 +347,16 @@ def rebuild_stdout(output, perfdata):
     """Rebuilds stdout when the function split_stdout has splitted stdout into output and perfdata.
 
     """
+    stdout = None
     if len(output.splitlines()) == 1:
-        output = output + ' | ' + ' '.join(perfdata)
+        stdout = output + ' | ' + ' '.join(perfdata)
     else:
-        counter = 1
         for line in output.splitlines():
-            if counter == 1:
-                output = line + ' | ' + ' '.join(perfdata) + '\n'
+            if stdout is None:
+                stdout = line + ' | ' + ' '.join(perfdata) + '\n'
             else:
-                output += line + '\n'
-            counter += 1
-    return output
+                stdout += line + '\n'
+    return stdout
 
 
 def add_perfdata_prefix(perfdata, perfdata_prefix):
