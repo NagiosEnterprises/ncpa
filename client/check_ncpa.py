@@ -347,9 +347,7 @@ def rebuild_stdout(output, perfdata):
     """Rebuilds stdout when the function split_stdout has splitted stdout into output and perfdata.
 
     """
-    lines = len(output.splitlines())
-
-    if lines == 1:
+    if len(output.splitlines()) == 1:
         output = output + ' | ' + ' '.join(perfdata)
     else:
         counter = 1
