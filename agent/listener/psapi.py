@@ -287,7 +287,11 @@ def get_root_node(config):
                 tmp = __import__(relative_name, fromlist=['get_node'])
                 get_node = getattr(tmp, 'get_node')
 
-                node = get_node()
+                try:
+                    node = get_node()
+                except Exception as e:
+                    node = ParentNode('N/A')
+                    logging.exception(e)
                 children.append(node)
                 logging.debug("Imported %s into the API tree.", importable)
             except ImportError:
