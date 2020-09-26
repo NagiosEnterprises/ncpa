@@ -229,27 +229,9 @@ def get_plugins_node():
     return PluginAgentNode('plugins')
 
 
-def get_user_start_time(start_time):
-    current_time = time.time()
-    return (int(current_time) - int(start_time))
-
-
-def make_user_nodes(user):
-    start_time = get_user_start_time(user.started)
-    name = RunnableNode('name', method=lambda: (user.name, 'name'))
-    terminal = RunnableNode('terminal', method=lambda: (user.terminal, 'terminal'))
-    host = RunnableNode('host', method=lambda: (user.host, 'host'))
-    started = RunnableNode('started', method=lambda: (start_time, 's'))
-    pid = RunnableNode('pid', method=lambda: (user.pid, 'pid'))
-    return ParentNode(user.pid, children=[name, terminal, host, started, pid])
-    #return ParentNode('user_list', children=[name, terminal, host, pid])
-    #return ParentNode('session', children=[name, terminal, host, pid])
-
-
 def get_user_node():
     user_count = RunnableNode('count', method=lambda: (len([x.name for x in ps.users()]), 'users'))
-    users = [make_user_nodes(x) for x in ps.users()]
-    user_list = ParentNode('user_list', children=users)
+    user_list = RunnableNode('list', method=lambda: ([x.name for x in ps.users()], 'users'))
     return ParentNode('user', children=[user_count, user_list])
 
 
