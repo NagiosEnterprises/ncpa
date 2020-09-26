@@ -149,8 +149,20 @@ def get_memory_node():
     mem_swap_percent = RunnableNode('percent', method=lambda: (ps.swap_memory().percent, '%'))
     mem_swap_used = RunnableNode('used', method=lambda: (ps.swap_memory().used, 'B'))
     mem_swap_free = RunnableNode('free', method=lambda: (ps.swap_memory().free, 'B'))
+    node_children = [mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used]
+
+    # Unix specific metrics ~ sorry Windows! :'(
+    if environment.SYSTEM != 'Windows':
+        try:
+            mem_swap_in = RunnableNode('swapped_in', method=lambda: (ps.swap_memory().sin, 'B'))
+            mem_swap_out = RunnableNode('swapped_out', method=lambda: (ps.swap_memory().sout, 'B'))
+            node_children.append(mem_swap_in)
+            node_children.append(mem_swap_out)
+        except OSError as ex:
+            logging.exception(ex)
+
     mem_swap = RunnableParentNode('swap', primary='percent', primary_unit='%',
-                    children=[mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used],
+                    children=node_children,
                     custom_output='Used swap was')
     return ParentNode('memory', children=[mem_virt, mem_swap])
 
@@ -217,9 +229,27 @@ def get_plugins_node():
     return PluginAgentNode('plugins')
 
 
+def get_user_start_time(start_time):
+    current_time = time.time()
+    return (int(current_time) - int(start_time))
+
+
+def make_user_nodes(user):
+    start_time = get_user_start_time(user.started)
+    name = RunnableNode('name', method=lambda: (user.name, 'name'))
+    terminal = RunnableNode('terminal', method=lambda: (user.terminal, 'terminal'))
+    host = RunnableNode('host', method=lambda: (user.host, 'host'))
+    started = RunnableNode('started', method=lambda: (start_time, 's'))
+    pid = RunnableNode('pid', method=lambda: (user.pid, 'pid'))
+    return ParentNode(user.pid, children=[name, terminal, host, started, pid])
+    #return ParentNode('user_list', children=[name, terminal, host, pid])
+    #return ParentNode('session', children=[name, terminal, host, pid])
+
+
 def get_user_node():
     user_count = RunnableNode('count', method=lambda: (len([x.name for x in ps.users()]), 'users'))
-    user_list = RunnableNode('list', method=lambda: ([x.name for x in ps.users()], 'users'))
+    users = [make_user_nodes(x) for x in ps.users()]
+    user_list = ParentNode('user_list', children=users)
     return ParentNode('user', children=[user_count, user_list])
 
 
