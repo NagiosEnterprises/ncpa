@@ -9,9 +9,11 @@ Changelog
 - Added support of hostnames in allowed_hosts (#653) (Christian Zettel)
 - Added secure cookie attribute (#659)
 - Added new ednpoints in the user node: pid, started, host, terminal (#606) (Christian Zettel)
+- Added new disk endpoint inodes_used_percent (#672) (Christian Zettel)
 - Fixed issue with allowed_hosts config directive doesnt work (#638, #660) (Christian Zettel)
 - Fixed ncpa_listener fails to start when IPv6 is disabled. (#648) (Christian Zettel)
 - Fixed if an exception was thrown in one api endpoint it breaks the wohle api (#670) (Christian Zettel)
+- Fixed missing unit (%) for some process checks (#681) (Christian Zettel)
 
 2.2.2 - 06/19/2020
 ==================
