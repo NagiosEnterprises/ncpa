@@ -13,6 +13,7 @@ from pluginnodes import PluginAgentNode
 import services
 import processes
 import environment
+import math
 
 importables = (
     'windowscounters',
@@ -58,12 +59,15 @@ def make_mountpoint_nodes(partition_name):
         try:
             st = os.statvfs(mountpoint)
             iu = st.f_files - st.f_ffree
+            iup = math.ceil(100 * float(iu) / float(st.f_files))
             inodes = RunnableNode('inodes', method=lambda: (st.f_files, 'inodes'))
             inodes_used = RunnableNode('inodes_used', method=lambda: (iu, 'inodes'))
             inodes_free = RunnableNode('inodes_free', method=lambda: (st.f_ffree, 'inodes'))
+            inodes_used_percent = RunnableNode('inodes_used_percent', method=lambda: (iup, '%'))
             node_children.append(inodes)
             node_children.append(inodes_used)
             node_children.append(inodes_free)
+            node_children.append(inodes_used_percent)
         except OSError as ex:
             # Log this error as debug only, normally means could not count inodes because
             # of some permissions or access related issues
