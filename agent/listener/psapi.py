@@ -153,13 +153,10 @@ def get_memory_node():
 
     # Unix specific metrics ~ sorry Windows! :'(
     if environment.SYSTEM != 'Windows':
-        try:
-            mem_swap_in = RunnableNode('swapped_in', method=lambda: (ps.swap_memory().sin, 'B'))
-            mem_swap_out = RunnableNode('swapped_out', method=lambda: (ps.swap_memory().sout, 'B'))
-            node_children.append(mem_swap_in)
-            node_children.append(mem_swap_out)
-        except OSError as ex:
-            logging.exception(ex)
+        mem_swap_in = RunnableNode('swapped_in', method=lambda: (ps.swap_memory().sin, 'B'))
+        mem_swap_out = RunnableNode('swapped_out', method=lambda: (ps.swap_memory().sout, 'B'))
+        node_children.append(mem_swap_in)
+        node_children.append(mem_swap_out)
 
     mem_swap = RunnableParentNode('swap', primary='percent', primary_unit='%',
                     children=node_children,
