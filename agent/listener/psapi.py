@@ -162,9 +162,11 @@ def get_memory_node():
         node_children.append(mem_swap_in)
         node_children.append(mem_swap_out)
 
-    mem_swap = RunnableParentNode('swap', primary='percent', primary_unit='%',
+    mem_swap = RunnableParentNode('swap',
                     children=node_children,
-                    custom_output='Used swap was')
+                    primary='percent', primary_unit='%',
+                    custom_output='Used swap was',
+                    include=('total', 'used', 'free', 'percent'))
     return ParentNode('memory', children=[mem_virt, mem_swap])
 
 
