@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-PYTHONTAR="Python-2.7.14"
+PYTHONTAR="Python-2.7.16"
 PYTHONBIN="python"
 SKIP_PYTHON=0
 CXFREEZEVER="cx_Freeze-4.3.4"
