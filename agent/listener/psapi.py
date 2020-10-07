@@ -155,7 +155,7 @@ def get_memory_node():
     mem_swap_free = RunnableNode('free', method=lambda: (ps.swap_memory().free, 'B'))
     node_children = [mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used]
 
-    # Unix specific metrics ~ sorry Windows! :'(
+    # sin and sout on Windows are always set to 0 ~ sorry Windows! :'(
     if environment.SYSTEM != 'Windows':
         mem_swap_in = RunnableNode('swapped_in', method=lambda: (ps.swap_memory().sin, 'B'))
         mem_swap_out = RunnableNode('swapped_out', method=lambda: (ps.swap_memory().sout, 'B'))
