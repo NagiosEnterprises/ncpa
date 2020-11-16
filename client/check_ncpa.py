@@ -259,7 +259,7 @@ def get_json(options):
     ret = ret.read()
 
     if options.verbose:
-        print('File returned contained:\n' + ret)
+        print('File returned contained:\n' + ret.decode('utf-8'))
 
     arr = json.loads(ret)
 
