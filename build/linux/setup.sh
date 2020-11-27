@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Globals
-PYTHONTAR="Python-2.7.16"
+PYTHONTAR="Python-2.7.18"
 PYTHONVER="python2.7"
 CXFREEZEVER="cx_Freeze-4.3.4"
 SKIP_PYTHON=0
@@ -11,7 +11,12 @@ SKIP_PYTHON=0
 
 update_py_packages() {
     PYTHONBIN=$(which python2.7)
-    LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary :all:
+    resources="require.txt"
+    if [ "$dist" == "el6" ] || [ "$dist" == "el7" ] || [ "$dist" == "debian8" ]; then
+        resources="require.dep.txt"
+    fi
+
+    LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/$resources --upgrade --no-binary :all:
 }
 
 install_prereqs() {
