@@ -67,7 +67,7 @@ class PluginNode(nodes.RunnableNode):
         except ConfigParser.NoOptionError:
             return '$plugin_name $plugin_args'
 
-    def kill_proc(self, p, t):
+    def kill_proc(self, p):
         self.killed = True
         if environment.SYSTEM == 'Windows':
             p.kill()
