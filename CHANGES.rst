@@ -14,7 +14,7 @@ Changelog
 - Fixed ncpa_listener fails to start when IPv6 is disabled. (#648) (Christian Zettel)
 - Fixed if an exception was thrown in one api endpoint it breaks the wohle api (#670) (Christian Zettel)
 - Fixed missing unit (%) for some process checks (#681) (Christian Zettel)
-- Fixed childs started from a plugin will not be killed in case plugin_output was reached (#714) (Christian Zettel)
+- Fixed childs started from a plugin will not be killed in case plugin_timeout was reached (#714) (Christian Zettel)
 - Fixed error message in case plugin runs into timeout out was not shown (#714) (Christian Zettel)
 
 2.2.2 - 06/19/2020
