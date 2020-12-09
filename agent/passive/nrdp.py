@@ -156,8 +156,8 @@ class Handler(nagioshandler.NagiosHandler):
             logging.warning('XML returned did not contain a message, or was malformed.')
             meta = 'Nonexistent'
 
-        logging.info('Message from NRDP server: %s', server, message)
-        logging.info('Meta output from NRDP server: %s', server, meta)
+        logging.info('Message from NRDP server (%s): %s', server, message)
+        logging.info('Meta output from NRDP server (%s): %s', server, meta)
 
     def submit_to_nagios(self, checkresults):
         """
