@@ -1,4 +1,5 @@
 import requests
+import requests.exceptions
 import logging
 
 
@@ -10,6 +11,21 @@ def send_request(url, **kwargs):
     :param kwargs: Extra keywords to be passed to requests.post
     :rtype: requests.models.Response
     """
-    r = requests.post(url, data=kwargs, verify=False, allow_redirects=True)
-    logging.debug('Content response from URL: %s' % unicode(r.content))
-    return r.content
+
+    try:
+        r = requests.post(url, data=kwargs, verify=False, allow_redirects=True)
+    except requests.exceptions.HTTPError as e:
+        logging.error("HTTP Error: %s", e)
+        return None
+    except requests.exceptions.ConnectionError as e:
+        logging.error("Connection Error: %s", e)
+        return None
+    except requests.exceptions.Timeout as e:
+        logging.error("Connection Timeout: %s", e)
+        return None
+    except Exception as ex:
+        logging.exception(ex)
+        return None
+    else:
+        logging.debug('Content response from URL: %s' % unicode(r.content))
+        return r.content
