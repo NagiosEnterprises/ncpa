@@ -8,17 +8,17 @@ Changelog
 
 1.2.1
 -----
-- Fixed an issue throwing an attribute error in case of an http error with python 2.6. (Christian Zettel)
+- Fixed an issue throwing an attribute error in case of an http error with python 2.6. (ccztux)
 
 1.2.0
 -----
-- Added detailed information in case of connection errors, http errors and errors thrown by the agent (Christian Zettel)
-- Fixed incompatibility with Python 3.7 and 3.8 (Christian Zettel)
-- Fixed Option: --performance is incompatible with Python 2.6.6 (Christian Zettel)
+- Added detailed information in case of connection errors, http errors and errors thrown by the agent (ccztux)
+- Fixed incompatibility with Python 3.7 and 3.8 (ccztux)
+- Fixed Option: --performance is incompatible with Python 2.6.6 (ccztux)
 
 1.1.6
 -----
-- Fixed list api tree only possible with activated verbose mode (Christian Zettel)
+- Fixed list api tree only possible with activated verbose mode (ccztux)
 
 1.1.5
 -----
