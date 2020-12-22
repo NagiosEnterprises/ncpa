@@ -625,9 +625,17 @@ def admin():
 @listener.route('/gui/admin/global', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_global():
+    exclude_fs_types = 'aufs,autofs,binfmt_misc,cifs,cgroup,configfs,\
+                        debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,\
+                        fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,\
+                        rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs'
+
     tmp_args = { 'no_nav': True,
                  'check_logging': int(get_config_value('general', 'check_logging', 1)),
-                 'check_logging_time': get_config_value('general', 'check_logging_time', 30) }
+                 'check_logging_time': get_config_value('general', 'check_logging_time', 30),
+                 'all_partitions': int(get_config_value('general', 'all_partitions', 1)),
+                 'exclude_fs_types': get_config_value('general', 'exclude_fs_types', exclude_fs_types),
+                 'default_units': get_config_value('general', 'default_units', 'Gi') }
 
     # Check session for flash message
     flash_msg_text = session.get('flash_msg_text', '')
@@ -658,7 +666,10 @@ def admin_listener_config():
                  'logbackups': get_config_value('listener', 'logbackups', '5'),
                  'admin_gui_access': int(get_config_value('listener', 'admin_gui_access', 1)),
                  'admin_auth_only': int(get_config_value('listener', 'admin_auth_only', 0)),
-                 'delay_start': get_config_value('listener', 'delay_start', '0') }
+                 'delay_start': get_config_value('listener', 'delay_start', '0'),
+                 'allowed_hosts': get_config_value('listener', 'allowed_hosts', 'All'),
+                 'allowed_sources': get_config_value('listener', 'allowed_sources', 'None'),
+                 'max_connections': get_config_value('listener', 'max_connections', '200') }
 
     # Todo: add form actions when submitted
 
@@ -712,6 +723,8 @@ def admin_plugin_config():
     tmp_args = { 'no_nav': True,
                  'plugin_path': get_config_value('plugin directives', 'plugin_path', 'plugins/'),
                  'plugin_timeout': get_config_value('plugin directives', 'plugin_timeout', '60'),
+                 'follow_symlinks': int(get_config_value('plugin directives', 'follow_symlinks', '0')),
+                 'run_with_sudo': get_config_value('plugin directives', 'run_with_sudo', 'None'),
                  'directives': directives }
     return render_template('admin/plugins.html', **tmp_args)
 
