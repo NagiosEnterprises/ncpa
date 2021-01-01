@@ -676,6 +676,15 @@ def admin_listener_config():
     return render_template('admin/listener.html', **tmp_args)
 
 
+@listener.route('/gui/admin/api', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_api_config():
+    tmp_args = { 'no_nav': True,
+                 'community_string': get_config_value('api', 'community_string', 'mytoken') }
+
+    return render_template('admin/api.html', **tmp_args)
+
+
 @listener.route('/gui/admin/passive', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_passive_config():
@@ -713,6 +722,30 @@ def admin_nrdp_config():
     return render_template('admin/nrdp.html', **tmp_args)
 
 
+@listener.route('/gui/admin/nrds', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_nrds_config():
+    tmp_args = { 'no_nav': True,
+                 'nrds_url': get_config_value('nrds', 'url', ''),
+                 'nrds_token': get_config_value('nrds', 'token', ''),
+                 'config_name': get_config_value('nrds', 'config_name', ''),
+                 'config_version': get_config_value('nrds', 'config_version', ''),
+                 'update_config': int(get_config_value('nrds', 'update_config', '1')),
+                 'update_plugins': int(get_config_value('nrds', 'update_plugins', '1')) }
+    return render_template('admin/nrds.html', **tmp_args)
+
+
+@listener.route('/gui/admin/kafkaproducer', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_kafkaproducer_config():
+    tmp_args = { 'no_nav': True,
+                 'hostname': get_config_value('kafkaproducer', 'hostname', ''),
+                 'servers': get_config_value('kafkaproducer', 'servers', ''),
+                 'client_name': get_config_value('kafkaproducer', 'client_name', 'NCPA-Kafka'),
+                 'topic': get_config_value('kafkaproducer', 'topic', 'ncpa') }
+    return render_template('admin/kafkaproducer.html', **tmp_args)
+
+
 @listener.route('/gui/admin/plugin-directives', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_plugin_config():
@@ -724,7 +757,7 @@ def admin_plugin_config():
                  'plugin_path': get_config_value('plugin directives', 'plugin_path', 'plugins/'),
                  'plugin_timeout': get_config_value('plugin directives', 'plugin_timeout', '60'),
                  'follow_symlinks': int(get_config_value('plugin directives', 'follow_symlinks', '0')),
-                 'run_with_sudo': get_config_value('plugin directives', 'run_with_sudo', 'None'),
+                 'run_with_sudo': get_config_value('plugin directives', 'run_with_sudo', ''),
                  'directives': directives }
     return render_template('admin/plugins.html', **tmp_args)
 
