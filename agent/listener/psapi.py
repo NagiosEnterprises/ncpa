@@ -244,7 +244,6 @@ def get_user_start_time(start_time):
 
 def make_session_nodes(user, users):
     sessions = []
-    childs = []
     counter = 0
 
     for x in users:
@@ -255,11 +254,7 @@ def make_session_nodes(user, users):
             host = RunnableNode('host', method=lambda: (x.host, 'host'))
             started = RunnableNode('started', method=lambda: (start_time, 's'))
             pid = RunnableNode('pid', method=lambda: (x.pid, 'pid'))
-            childs.append(terminal)
-            childs.append(host)
-            childs.append(started)
-            childs.append(pid)
-            sessions.append(ParentNode("session_#{0}".format(counter), children=childs))
+            sessions.append(ParentNode("session_#{0}".format(counter), children=[terminal, started, host, pid]))
 
     return ParentNode(user, children=sessions)
 
