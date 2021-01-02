@@ -133,7 +133,7 @@ class Handler(nagioshandler.NagiosHandler):
         return hostname
 
     @staticmethod
-    def log_result(ret_xml):
+    def log_result(server, ret_xml):
         """
         Helper function to log the XML returned by the NRDP server.
 
@@ -156,8 +156,8 @@ class Handler(nagioshandler.NagiosHandler):
             logging.warning('XML returned did not contain a message, or was malformed.')
             meta = 'Nonexistent'
 
-        logging.info('Message from NRDP server: %s', message)
-        logging.info('Meta output from NRDP server: %s', meta)
+        logging.info('Message from NRDP server (%s): %s', server, message)
+        logging.info('Meta output from NRDP server (%s): %s', server, meta)
 
     def submit_to_nagios(self, checkresults):
         """
@@ -194,8 +194,9 @@ class Handler(nagioshandler.NagiosHandler):
             logging.debug('XML to be submitted: %s', checkresults)
             ret_xml = utils.send_request(url=server, token=token, XMLDATA=checkresults, cmd='submitcheck')
 
-            try:
-                Handler.log_result(ret_xml)
-            except Exception as ex:
-                logging.debug(ret_xml)
-                logging.exception(ex)
+            if ret_xml is not None:
+                try:
+                    Handler.log_result(server, ret_xml)
+                except Exception as ex:
+                    logging.debug(ret_xml)
+                    logging.exception(ex)

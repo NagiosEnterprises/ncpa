@@ -4,16 +4,20 @@ Changelog
 2.3.0 - ??/??/2020
 ==================
 
-- Added option to to use symlinks in the plugin path directory (#577) (infraweavers, Christian Zettel)
-- Added version option to ncpa_listener and ncpa_passive (Christian Zettel)
-- Added support of hostnames in allowed_hosts (#653) (Christian Zettel)
+- Added option to to use symlinks in the plugin path directory (#577) (infraweavers, ccztux)
+- Added version option to ncpa_listener and ncpa_passive (ccztux)
+- Added support of hostnames in allowed_hosts (#653) (ccztux)
 - Added secure cookie attribute (#659)
-- Added new ednpoints in the user node: pid, started, host, terminal (#606) (Christian Zettel)
-- Added new disk endpoint inodes_used_percent (#672) (Christian Zettel)
-- Fixed issue with allowed_hosts config directive doesnt work (#638, #660) (Christian Zettel)
-- Fixed ncpa_listener fails to start when IPv6 is disabled. (#648) (Christian Zettel)
-- Fixed if an exception was thrown in one api endpoint it breaks the wohle api (#670) (Christian Zettel)
-- Fixed missing unit (%) for some process checks (#681) (Christian Zettel)
+- Added new memory endpoints swap/swapped_in and swap/swapped_out (#674) (ccztux)
+- Added new disk endpoint inodes_used_percent (#672) (ccztux)
+- Added new endpoint 'session_list' in the user node containing the fields: pid, started, host, terminal per user session (#606) (ccztux)
+- Fixed issue with allowed_hosts config directive doesnt work (#638, #660) (ccztux)
+- Fixed ncpa_listener fails to start when IPv6 is disabled. (#648) (ccztux)
+- Fixed if an exception was thrown in one api endpoint it breaks the wohle api (#670) (ccztux)
+- Fixed missing unit (%) for some process checks (#681) (ccztux)
+- Fixed childs started from a plugin will not be killed in case plugin_timeout was reached (#714) (ccztux)
+- Fixed error message in case plugin runs into timeout out was not shown (#714) (ccztux)
+- Fixed passive checks stop sending if there are multiple NRDP servers configured and both NRDP servers are not listening. (#715) (ccztux)
 
 2.2.2 - 06/19/2020
 ==================

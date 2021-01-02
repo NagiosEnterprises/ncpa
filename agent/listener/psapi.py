@@ -153,9 +153,20 @@ def get_memory_node():
     mem_swap_percent = RunnableNode('percent', method=lambda: (ps.swap_memory().percent, '%'))
     mem_swap_used = RunnableNode('used', method=lambda: (ps.swap_memory().used, 'B'))
     mem_swap_free = RunnableNode('free', method=lambda: (ps.swap_memory().free, 'B'))
-    mem_swap = RunnableParentNode('swap', primary='percent', primary_unit='%',
-                    children=[mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used],
-                    custom_output='Used swap was')
+    node_children = [mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used]
+
+    # sin and sout on Windows are always set to 0 ~ sorry Windows! :'(
+    if environment.SYSTEM != 'Windows':
+        mem_swap_in = RunnableNode('swapped_in', method=lambda: (ps.swap_memory().sin, 'B'))
+        mem_swap_out = RunnableNode('swapped_out', method=lambda: (ps.swap_memory().sout, 'B'))
+        node_children.append(mem_swap_in)
+        node_children.append(mem_swap_out)
+
+    mem_swap = RunnableParentNode('swap',
+                    children=node_children,
+                    primary='percent', primary_unit='%',
+                    custom_output='Used swap was',
+                    include=('total', 'used', 'free', 'percent'))
     return ParentNode('memory', children=[mem_virt, mem_swap])
 
 
@@ -221,20 +232,9 @@ def get_plugins_node():
     return PluginAgentNode('plugins')
 
 
-<<<<<<< HEAD
 def get_user_start_time(start_time):
     current_time = time.time()
     return (int(current_time) - int(start_time))
-
-
-def make_user_nodes(user):
-    start_time = get_user_start_time(user.started)
-    name = RunnableNode('name', method=lambda: (user.name, 'name'))
-    terminal = RunnableNode('terminal', method=lambda: (user.terminal, 'terminal'))
-    host = RunnableNode('host', method=lambda: (user.host, 'host'))
-    started = RunnableNode('started', method=lambda: (start_time, 's'))
-    pid = RunnableNode('pid', method=lambda: (user.pid, 'pid'))
-    return ParentNode(user.pid, children=[name, terminal, host, started, pid])
 
 
 def get_user_start_time(start_time):
@@ -242,24 +242,36 @@ def get_user_start_time(start_time):
     return (int(current_time) - int(start_time))
 
 
-def make_session_nodes(user):
-    start_time = get_user_start_time(user.started)
-    name = RunnableNode('name', method=lambda: (user.name, 'name'))
-    terminal = RunnableNode('terminal', method=lambda: (user.terminal, 'terminal'))
-    host = RunnableNode('host', method=lambda: (user.host, 'host'))
-    started = RunnableNode('started', method=lambda: (start_time, 's'))
-    pid = RunnableNode('pid', method=lambda: (user.pid, 'pid'))
-    return ParentNode(user.name, children=[name, terminal, host, started, pid])
+def make_session_nodes(user, users):
+    sessions = []
+    childs = []
+    counter = 0
+
+    for x in users:
+        if x.name == user:
+            counter += 1
+            start_time = get_user_start_time(x.started)
+            terminal = RunnableNode('terminal', method=lambda: (x.terminal, 'terminal'))
+            host = RunnableNode('host', method=lambda: (x.host, 'host'))
+            started = RunnableNode('started', method=lambda: (start_time, 's'))
+            pid = RunnableNode('pid', method=lambda: (x.pid, 'pid'))
+            childs.append(terminal)
+            childs.append(host)
+            childs.append(started)
+            childs.append(pid)
+            sessions.append(ParentNode("session_#{0}".format(counter), children=childs))
+
+    return ParentNode(user, children=sessions)
 
 
 def get_user_node():
-    users = [x.name for x in ps.users()]
+    users = ps.users()
     user_count = RunnableNode('count', method=lambda: (len(users), 'users'))
-    unique_users = list(set(list(users)))
+    tmp = [x.name for x in users]
+    unique_users = list(set(list(tmp)))
     user_list = RunnableNode('list', method=lambda: ([x for x in unique_users], 'users'))
-    session_list = RunnableNode('session_list', method=lambda: ([x for x in unique_users], 'sessions'))
-
-    sesstion_details = [make_session_nodes(x) for x in ps.users()]
+    session_details = [make_session_nodes(x, users) for x in unique_users]
+    session_list = ParentNode('session_list', children=session_details)
 
     return ParentNode('user', children=[user_count, user_list, session_list])
 
