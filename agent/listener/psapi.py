@@ -237,11 +237,6 @@ def get_user_start_time(start_time):
     return (int(current_time) - int(start_time))
 
 
-def get_user_start_time(start_time):
-    current_time = time.time()
-    return (int(current_time) - int(start_time))
-
-
 def make_session_nodes(user, users):
     sessions = []
     counter = 0
