@@ -350,8 +350,5 @@ def main():
 
 if __name__ == "__main__":
     stdout, returncode = main()
-    if sys.version_info[0] < 3:
-        print(stdout.encode('utf-8', 'replace').decode('utf-8'))
-    else:
-        print(stdout.encode('utf-8', 'replace'))
+    print(stdout.encode().decode('utf-8'))
     sys.exit(returncode)
