@@ -72,6 +72,43 @@ $(document).ready(function() {
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">All Partitions</label>
+                        <div class="col-sm-6">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-sm btn-default{% if all_partitions %} active{% endif %}">
+                                    <input type="radio" name="all_partitions" value="1" autocomplete="off"{% if all_partitions %} checked{% endif %}> Enabled
+                                </label>
+                                <label class="btn btn-sm btn-default{% if not all_partitions %} active{% endif %}">
+                                    <input type="radio" name="all_partitions" value="0" autocomplete="off"{% if not all_partitions %} checked{% endif %}> Disabled
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Default Units</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <select class="form-control" name="default_units">
+                                <option value="k"{% if default_units == 'K' %} selected{% endif %}>k</option>
+                                <option value="Ki"{% if default_units == 'Ki' %} selected{% endif %}>Ki</option>
+                                <option value="M"{% if default_units == 'M' %} selected{% endif %}>M</option>
+                                <option value="Mi"{% if default_units == 'Mi' %} selected{% endif %}>Mi</option>
+                                <option value="G"{% if default_units == 'G' %} selected{% endif %}>G</option>
+                                <option value="Gi"{% if default_units == 'Gi' %} selected{% endif %}>Gi</option>
+                                <option value="T"{% if default_units == 'T' %} selected{% endif %}>T</option>
+                                <option value="Ti"{% if default_units == 'Ti' %} selected{% endif %}>Ti</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Exclude FS Types</label>
+                        <div class="col-sm-6 col-md-4 col-lg-6 col-xl-9">
+                            <input type="text" class="form-control" style="display: inline-block; width: 100%;" name="exclude_fs_types" value="{{ exclude_fs_types }}" readonly>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
