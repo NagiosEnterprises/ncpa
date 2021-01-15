@@ -17,6 +17,7 @@ Changelog
 - Fixed childs started from a plugin will not be killed in case plugin_timeout was reached (#714) (ccztux)
 - Fixed error message in case plugin runs into timeout out was not shown (#714) (ccztux)
 - Fixed passive checks stop sending if there are multiple NRDP servers configured and both NRDP servers are not listening. (#715) (ccztux)
+- Updated bootstrap to 3.4.1 to fix security issue in CVE-2019-8331 (#728) (ccztux)
 - Fixed missing configuration sections in the admin section of the GUI (#725) (ccztux)
 
 2.2.2 - 06/19/2020
