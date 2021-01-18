@@ -106,7 +106,9 @@ install_prereqs() {
 
     # Install bundled Python version from source
     if [ $SKIP_PYTHON -eq 0 ]; then
-        wget https://www.python.org/ftp/python/$PYTHONVERSION/$PYTHONTAR.tgz
+        if [ ! -f $PYTHONTAR.tgz ]; then
+            wget https://www.python.org/ftp/python/$PYTHONVERSION/$PYTHONTAR.tgz
+        fi
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR
         ./configure LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib' && make && make altinstall
