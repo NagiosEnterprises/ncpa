@@ -54,7 +54,7 @@ import re
 import signal
 
 
-__VERSION__ = '1.2.3'
+__VERSION__ = '1.2.4'
 
 
 class ConnectionError(Exception):
@@ -259,7 +259,7 @@ def get_json(options):
     ret = ret.read()
 
     if options.verbose:
-        print('File returned contained:\n' + ret)
+        print('File returned contained:\n' + ret.decode('utf-8'))
 
     arr = json.loads(ret)
 
@@ -350,5 +350,8 @@ def main():
 
 if __name__ == "__main__":
     stdout, returncode = main()
-    print(stdout.encode('utf-8', 'replace').decode('utf-8'))
+    if sys.version_info[0] < 3:
+        print(unicode(stdout).encode('utf-8'))
+    else:
+        print(stdout.encode().decode('utf-8'))
     sys.exit(returncode)
