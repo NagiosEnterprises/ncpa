@@ -586,7 +586,7 @@ def tail_base():
     return render_template('gui/tail.html')
 
 
-# This function renders the graph picker page, which can be though of the
+# This function renders the graph picker page, which can be though of
 # the explorer for the graphs.
 @listener.route('/gui/graphs', methods=['GET', 'POST'])
 @requires_auth
