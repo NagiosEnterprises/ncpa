@@ -6,23 +6,17 @@ on:
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-    - name: Display Python Version
-      run: |
-        pwd
-        ls -l
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         python -m pip install pytest
-        python -m pip install --upgrade -r build/resources/requires.txt
+        python -m pip install --upgrade -r build/resources/require.txt
     - name: Run Tests
       run: pytest
