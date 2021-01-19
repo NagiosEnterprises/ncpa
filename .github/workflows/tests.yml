@@ -1,10 +1,11 @@
-name: NCPA
+name: Tests
 
 on:
   push:
     branches: [ 'dev-v3' ]
 
 jobs:
+
   test:
     runs-on: ubuntu-latest
     steps:
