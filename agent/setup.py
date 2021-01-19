@@ -61,8 +61,8 @@ if __SYSTEM__ == 'nt':
 # Specific build settings for Linux / Max OS X
 elif __SYSTEM__ == 'posix':
 
+    # ('../startup/macosinstall.sh', 'build_resources/macosinstall.sh')
     include_files += [('../startup/default-plist', 'build_resources/default-plist'),
-                      ('../startup/macosinstall.sh', 'build_resources/macosinstall.sh'),
                       ('../startup/default-init', 'build_resources/default-init'),
                       ('../startup/default-service', 'build_resources/default-service'),
                       (os.path.join(sys.executable), 'python')]
