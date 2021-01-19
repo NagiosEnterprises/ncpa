@@ -24,6 +24,5 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install --upgrade -r build/resources/require.txt
     - name: Build the NCPA binaries
-      run: |
-        python agent/setup.py build_exe
-        
+      run: python setup.py build_exe
+      working-directory: agent
