@@ -71,7 +71,8 @@ elif __SYSTEM__ == 'posix':
 
     # Special includes for Mac OS X
     if 'darwin' in sys.platform:
-       include_files += [('../startup/macosinstall.sh', 'build_resources/macosinstall.sh')]
+       include_files += [('../build/resources/macosinstall.sh', 'build_resources/macosinstall.sh'),
+                         ('../build/resources/macosuninstall.sh', 'build_resources/macosuninstall.sh')]
 
     # Special includes for AIX systems
     if 'aix' in sys.platform:
