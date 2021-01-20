@@ -498,7 +498,7 @@ def admin_global():
 
     # Check session for flash message
     flash_msg_text = session.get('flash_msg_text', '')
-    if flash_msg_text is not '':
+    if flash_msg_text != '':
         flash_msg_type = session.get('flash_msg_type', 'info')
         tmp_args['flash_msg_text'] = flash_msg_text
         tmp_args['flash_msg_type'] = flash_msg_type

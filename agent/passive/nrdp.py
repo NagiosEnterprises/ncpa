@@ -114,7 +114,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
         # Verify there are any checks to send
         checks = doc.getElementsByTagName('checkresult')
-        if len(checks) is 0:
+        if len(checks) == 0:
             logging.debug("No NRDP checks. Skipping NRDP send.")
             return
 

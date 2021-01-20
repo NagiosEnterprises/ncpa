@@ -61,7 +61,6 @@ if __SYSTEM__ == 'nt':
 # Specific build settings for Linux / Max OS X
 elif __SYSTEM__ == 'posix':
 
-    # ('../startup/macosinstall.sh', 'build_resources/macosinstall.sh')
     include_files += [('../startup/default-plist', 'build_resources/default-plist'),
                       ('../startup/default-init', 'build_resources/default-init'),
                       ('../startup/default-service', 'build_resources/default-service'),
@@ -69,6 +68,10 @@ elif __SYSTEM__ == 'posix':
 
     # Shared library include overrides
     bin_includes += ['libffi.so', 'libssl.so', 'libcrypto.so']
+
+    # Special includes for Mac OS X
+    if 'darwin' in sys.platform:
+       include_files += [('../startup/macosinstall.sh', 'build_resources/macosinstall.sh')]
 
     # Special includes for AIX systems
     if 'aix' in sys.platform:

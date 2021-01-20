@@ -25,6 +25,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install --upgrade -r build/resources/require.txt
+    - name: Install OS-specific dependencies
+      if: runner.os == 'Windows'
+      run: python -m pip install pypiwin32
     - name: Build the NCPA binaries
       run: python setup.py build_exe
       working-directory: agent
