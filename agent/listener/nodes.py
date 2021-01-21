@@ -8,7 +8,6 @@ import copy
 import re
 import listener.server
 import listener.database as database
-import ncpa
 
 
 # Valid nodes is updated as it gets set when calling a node via accessor
@@ -140,7 +139,7 @@ class RunnableParentNode(ParentNode):
             check_logging = 1
 
         # Send check results to database
-        if not ncpa.__INTERNAL__ and check_logging == 1:
+        if not listener.server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
             current_time = time.time()
             db.add_check(kwargs['accessor'].rstrip('/'), current_time, current_time, primary_info['returncode'],
@@ -321,7 +320,7 @@ class RunnableNode(ParentNode):
             check_logging = 1
 
         # Send check results to database
-        if not child_check and not ncpa.__INTERNAL__ and check_logging == 1:
+        if not child_check and not listener.server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
             current_time = time.time()
             db.add_check(kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,

@@ -19,6 +19,10 @@ import gevent
 import ncpa
 
 
+# Set whether or not a request is internal or not
+__INTERNAL__ = False
+
+
 # The following if statement is a workaround that is allowing us to run this
 # in debug mode, rather than a hard coded location.
 
@@ -94,7 +98,7 @@ def make_info_dict():
 @listener.before_request
 def before_request():
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
-    if allowed_hosts and ncpa.__INTERNAL__ is False:
+    if allowed_hosts and __INTERNAL__ is False:
         if request.remote_addr:
             ipaddr = ipaddress.ip_address(request.remote_addr)
             allowed_networks = [ipaddress.ip_network(_network.strip()) for _network in allowed_hosts.split(',')]
@@ -145,7 +149,7 @@ def requires_token_or_auth(f):
         token = request.values.get('token', None)
 
         # This is an internal call, we don't check
-        if ncpa.__INTERNAL__ is True:
+        if __INTERNAL__ is True:
             pass
         elif session.get('logged', False) or token == ncpa_token:
             pass
@@ -165,7 +169,7 @@ def requires_auth(f):
     def auth_decoration(*args, **kwargs):
 
         # This is an internal call, we don't check
-        if ncpa.__INTERNAL__ is True:
+        if __INTERNAL__ is True:
             pass
         elif session.get('logged', False):
             pass

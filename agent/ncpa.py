@@ -42,7 +42,6 @@ __VERSION__ = '3.0.0'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
-__INTERNAL__ = False
 
 
 # The base class for the Listener and Passive classes, which sets things
