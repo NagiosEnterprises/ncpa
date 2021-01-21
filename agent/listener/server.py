@@ -34,6 +34,7 @@ listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
 
 
 # Set some settings for Flask
+listener.config.update(SECRET_KEY=os.urandom(24))
 listener.url_map.strict_slashes = False
 
 
