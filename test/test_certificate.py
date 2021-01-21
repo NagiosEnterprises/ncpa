@@ -6,6 +6,7 @@ import unittest
 
 # Load NCPA
 sys.path.append(os.path.join(os.path.dirname(__file__), '../agent/'))
+import ncpa # import this first to monkey patch properly
 import listener.certificate
 
 
