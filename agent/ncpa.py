@@ -542,6 +542,7 @@ class WinService():
         self.options = {}
         self.config = get_configuration()
         self.stopEvent = threading.Event()
+        self.stopRequestedEvent = threading.Event()
 
     def setup_plugins(self):
         plugin_path = self.config.get('plugin directives', 'plugin_path')
@@ -577,7 +578,7 @@ class WinService():
         log_level = getattr(logging, log_level_str, logging.INFO)
         logging.getLogger().setLevel(log_level)
 
-    def Initialize(self, config_ini):
+    def initialize(self, config_ini):
         self.setup_logging()
         self.setup_plugins()
         logging.info("Looking for plugins at: %s" % self.abs_plugin_path)
@@ -586,13 +587,15 @@ class WinService():
     # use this to perform the work of the service; don't forget to set or check
     # for the stop event or the service GUI will not respond to requests to
     # stop the service
-    def Run(self):
+    def run(self):
         start_modules(self.options, self.config)
-        self.stopEvent.wait()
+        self.stopRequestedEvent.wait()
+        self.stopEvent.set()
 
     # called when the service is being stopped by the service manager GUI
-    def Stop(self):
-        self.stopEvent.set()
+    def stop(self):
+        self.stopRequestedEvent.set()
+        self.stopEvent.wait()
 
 
 # --------------------------
