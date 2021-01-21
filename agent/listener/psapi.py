@@ -9,9 +9,7 @@ from listener.nodes import ParentNode, RunnableNode, RunnableParentNode, LazyNod
 from listener.pluginnodes import PluginAgentNode
 import listener.services as services
 import listener.processes as processes
-
-# Import the global values (TODO: Change this later, should be imported from a module)
-from ncpa import __VERSION__, __SYSTEM__, __STARTED__, __INTERNAL__
+import ncpa
 
 importables = (
     'windowscounters',
@@ -53,7 +51,7 @@ def make_mountpoint_nodes(partition_name):
     node_children = [total, used, free, used_percent, device_name, fstype, opts]
 
     # Unix specific inode counter ~ sorry Windows! :'(
-    if __SYSTEM__ != 'nt':
+    if ncpa.__SYSTEM__ != 'nt':
         try:
             st = os.statvfs(mountpoint)
             iu = st.f_files - st.f_ffree
@@ -100,7 +98,7 @@ def make_if_nodes(if_name):
 
 def get_timezone():
     zones = time.tzname
-    if __SYSTEM__ == 'nt':
+    if ncpa.__SYSTEM__ == 'nt':
         zones = [x for x in zones]
     return zones, ''
 
@@ -113,7 +111,7 @@ def get_system_node():
     sys_machine = RunnableNode('machine', method=lambda: (platform.uname()[4], ''))
     sys_processor = RunnableNode('processor', method=lambda: (platform.uname()[5], ''))
     sys_uptime = RunnableNode('uptime', method=get_uptime)
-    sys_agent = RunnableNode('agent_version', method=lambda: (__VERSION__, ''))
+    sys_agent = RunnableNode('agent_version', method=lambda: (ncpa.__VERSION__, ''))
     sys_time = RunnableNode('time', method=lambda: (time.time(), ''))
     sys_timezone = RunnableNode('timezone', method=get_timezone)
     return ParentNode('system', children=[sys_system, sys_node, sys_release, sys_version,
@@ -231,7 +229,7 @@ def get_root_node(config):
 
     children = [cpu, memory, disk, interface, plugins, user, system, service, process]
 
-    if __SYSTEM__ == 'nt':
+    if ncpa.__SYSTEM__ == 'nt':
         for importable in importables:
             try:
                 relative_name = 'listener.' + importable

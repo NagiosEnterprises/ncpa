@@ -16,10 +16,7 @@ import math
 import ipaddress
 import urllib.parse
 import gevent
-
-
-# Import the global values (TODO: Change this later, should be imported from a module)
-from ncpa import __VERSION__, __SYSTEM__, __STARTED__, __INTERNAL__
+import ncpa
 
 
 # The following if statement is a workaround that is allowing us to run this
@@ -64,7 +61,7 @@ def get_config_items(section):
 # Misc function for making information for main page
 def make_info_dict():
     now = datetime.datetime.now()
-    uptime = str(now - __STARTED__)
+    uptime = str(now - ncpa.__STARTED__)
     uptime = uptime.split('.', 1)[0]
 
     # Get check status
@@ -77,7 +74,7 @@ def make_info_dict():
     if proc_type == '':
         proc_type = uname[4];
 
-    return { 'agent_version': __VERSION__,
+    return { 'agent_version': ncpa.__VERSION__,
              'uptime': uptime,
              'processor': proc_type,
              'node': uname[1],
@@ -96,7 +93,7 @@ def make_info_dict():
 @listener.before_request
 def before_request():
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
-    if allowed_hosts and __INTERNAL__ is False:
+    if allowed_hosts and ncpa.__INTERNAL__ is False:
         if request.remote_addr:
             ipaddr = ipaddress.ip_address(request.remote_addr)
             allowed_networks = [ipaddress.ip_network(_network.strip()) for _network in allowed_hosts.split(',')]
@@ -147,7 +144,7 @@ def requires_token_or_auth(f):
         token = request.values.get('token', None)
 
         # This is an internal call, we don't check
-        if __INTERNAL__ is True:
+        if ncpa.__INTERNAL__ is True:
             pass
         elif session.get('logged', False) or token == ncpa_token:
             pass
@@ -167,7 +164,7 @@ def requires_auth(f):
     def auth_decoration(*args, **kwargs):
 
         # This is an internal call, we don't check
-        if __INTERNAL__ is True:
+        if ncpa.__INTERNAL__ is True:
             pass
         elif session.get('logged', False):
             pass
@@ -913,7 +910,6 @@ def api(accessor=''):
         value = node.walk(**sane_args)
 
     # Generate page and add cross-domain loading
-    response = Response(json.dumps(dict(value), indent=None if request.is_xhr else 4,
-                                   ensure_ascii=False), mimetype='application/json')
+    response = Response(json.dumps(dict(value), ensure_ascii=False), mimetype='application/json')
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
