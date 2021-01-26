@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-2.3.0 - ??/??/2020
+2.3.0 - 01/28/2020
 ==================
 
 - Added option to to use symlinks in the plugin path directory (#577) (infraweavers, ccztux)
