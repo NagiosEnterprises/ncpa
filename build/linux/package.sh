@@ -48,7 +48,7 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Ras
         rpm="*armhf.rpm"
     fi
 
-    if [ "$architecture" == "aarch64"]; then
+    if [ "$architecture" == "aarch64" ]; then
       alien -c -k -v --target=arm64 $rpm >> $BUILD_DIR/build.log
     else
       alien -c -k -v $rpm >> $BUILD_DIR/build.log
