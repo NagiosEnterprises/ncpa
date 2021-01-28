@@ -53,11 +53,11 @@ Install Prerequisites
 
   Running the installer without administrator privileges will
   cause the files to be installed to::
-  
+
   %LOCALAPPDATA%\Programs\Common\Microsoft\Visual C++ for Python\9.0
 
 * Microsoft Visual C++ 2010 runtime (32-bit)
-  
+
   1. Download and run the installer. (`see prerequisites <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#prerequisites>`_)
 
 * NSIS
@@ -65,11 +65,11 @@ Install Prerequisites
   1. Download and run the installer. (`see prerequisites <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#prerequisites>`_)
 
 * pip
-  
+
   * Pip is installed by default in Python 2.7.16 but should be updated before continuing::
 
       "%pydir%" -m pip install --upgrade pip
-	  
+
 Set Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Two variables must be set for the win_build_setup.bat script to run properly:
@@ -77,13 +77,13 @@ Two variables must be set for the win_build_setup.bat script to run properly:
 * **pydir**: The root directory of your Python installation.
 
   This should be::
-  
+
     C:\Python27
 
 * **openssldir**: The root directory of your OpenSSL installation.
-  
+
   This should be::
-  
+
     C:\Program Files (x86)\OpenSSL-Win32
 
 Set these variables by running::
@@ -95,7 +95,7 @@ Install the Last Modules
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Install the full list of python modules
-	
+
   "%pydir%\python" -m pip install --upgrade -r build/resources/require.txt
 
 * cx_Logging (http://cx-logging.sourceforge.net/)
@@ -109,7 +109,7 @@ Install the Last Modules
     pip install cx_Freeze==4.3.4
 
   * Then, copy our patch into the package:
-  
+
       ncpa\build\resources\cx_Freeze-4.3.4.tar.gz
       copy "ncpa\build\resources\cx_Freeze-4.3.4.tar\cx_Freeze-4.3.4\cx_Freeze\freezer.py" C:\Python27\Lib\site-packages\cx_Freeze\freezer.py
 
@@ -138,9 +138,8 @@ that comes with it, but you will have to install things manually.*
 
 Now run the setup scripts to install the requirements::
 
-  cd ncpa/build/scripts
-  ./linux_build_prereqs.sh
-  ./linux_build_setup.sh
+  cd ncpa/build/
+  ./build.sh
 
 Once these have completed you can do an actual build. You can run make differently depending
 on which type of Linux you have.
@@ -171,7 +170,7 @@ to create a working NCPA DMG.
     ./build.sh
 
 Note that there may be some difficulty with installing this on other machines without
-Apple Developer credentials. As of MacOS Catalina, this means going to 
+Apple Developer credentials. As of MacOS Catalina, this means going to
 System Preferences -> Security & Privacy and explicitly allowing the programs each time
 they run.
 

@@ -12,8 +12,9 @@
 [general]
 
 #
-# Check logging is on by default, you can disable it if you do not want to record
-# the check requests that are coming in or checks being sent over NRDP.
+# Check logging (in ncpa.db and the interface) is on by default, you can disable it
+# if you do not want to record the check requests that are coming in or checks being
+# sent over NRDP.
 # Default: check_logging = 1
 #
 check_logging = 1
@@ -134,8 +135,15 @@ admin_auth_only = 0
 
 #
 # Comma separated list of allowed hosts that can access the API (and GUI)
-# Exmaple: 192.168.23.15
-# Example subnet: 192.168.0.0/28
+# Supported types: IPv4, IPv4-mapped IPv6, IPv6, hostnames
+# Hostname wildcards are not supported.
+#
+# Exmaple IPv4: 192.168.23.15
+# Example IPv4 subnet: 192.168.0.0/28
+# Example IPv4-mapped IPv6: ::ffff:192.168.1.15
+# Example IPv6: 2001:0db8:85a3:0000:0000:8a2e:0370:7334
+# Example hostname: asterisk.mydomain.com
+# Example mixed types: 192.168.23.15, 192.168.0.0/28, ::ffff:192.168.1.15, 2001:0db8:85a3:0000:0000:8a2e:0370:7334, asterisk.mydomain.com
 #
 # allowed_hosts =
 
@@ -181,15 +189,15 @@ community_string = mytoken
 # Handlers are a comma separated list of what you would like the passive agent to run
 # Default: None
 # Options:
-#   nrds, nrdp, kafkaproducer
+#   nrdp, kafkaproducer
 #
 # Example:
-# handlers = nrds,nrdp,kafkaproducer
+# handlers = nrdp,kafkaproducer
 #
 handlers = None
 
 #
-# User and group to run passive checks as (recommended to use nagios:nagios)
+# User and group to run passive checks as (Recommended to use nagios:nagios)
 # Default: uid = nagios
 # Default: gid = nagios
 #
@@ -245,25 +253,16 @@ hostname = NCPA 2
 
 #
 # -------------------------------
-# Passive Configuration (NRDS)
+# Passive Configuration (Kafka)
 # -------------------------------
 #
 
-[nrds]
+[kafkaproducer]
 
-#
-# NRDS CONFIGURATION DOES NOT WORK YET. MORE TO COME IN VERSION 2.1.0.
-#
-
-#
-# NRDS connection information
-#
-url = 
-token = 
-config_name = 
-config_version = 
-update_config = 1
-update_plugins = 1
+hostname = None
+servers = localhost:9092
+clientname = NCPA-Kafka
+topic = ncpa
 
 #
 # -------------------------------
@@ -279,6 +278,13 @@ update_plugins = 1
 plugin_path = plugins/
 
 #
+# Follow symlinks located in the plugin path
+#
+# This is for Unix only (Linux, Mac OS X, etc)
+#
+follow_symlinks = 0
+
+#
 # Plugin execution timeout in seconds. Different than the check_ncpa.py timeout, which is
 # normally for network connection issues. Will return a CRITICAL value and error when the plugin
 # reaches the defined max execution timeout and kills the process.
@@ -292,6 +298,8 @@ plugin_path = plugins/
 #
 # Example: check_special,check_root_files
 # (Command line: sudo /<plugin_absolute_path>/check_special <arguments>)
+#
+# This is for Unix only (Linux, Mac OS X, etc)
 #
 # run_with_sudo =
 
@@ -323,4 +331,5 @@ plugin_path = plugins/
 # Windows
 .ps1 = powershell -ExecutionPolicy Bypass -File $plugin_name $plugin_args
 .vbs = cscript $plugin_name $plugin_args //NoLogo
+.wsf = cscript $plugin_name $plugin_args //NoLogo
 .bat = cmd /c $plugin_name $plugin_args

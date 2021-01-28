@@ -1,6 +1,26 @@
 Changelog
 +++++++++
 
+2.3.0 - 01/28/2020
+==================
+
+- Added option to to use symlinks in the plugin path directory (#577) (infraweavers, ccztux)
+- Added version option to ncpa_listener and ncpa_passive (ccztux)
+- Added support of hostnames in allowed_hosts (#653) (ccztux)
+- Added secure cookie attribute (#659)
+- Added new memory endpoints swap/swapped_in and swap/swapped_out (#674) (ccztux)
+- Added new disk endpoint inodes_used_percent (#672) (ccztux)
+- Fixed issue with allowed_hosts config directive doesnt work (#638, #660) (ccztux)
+- Fixed ncpa_listener fails to start when IPv6 is disabled. (#648) (ccztux)
+- Fixed if an exception was thrown in one api endpoint it breaks the wohle api (#670) (ccztux)
+- Fixed missing unit (%) for some process checks (#681) (ccztux)
+- Fixed childs started from a plugin will not be killed in case plugin_timeout was reached (#714) (ccztux)
+- Fixed error message in case plugin runs into timeout out was not shown (#714) (ccztux)
+- Fixed passive checks stop sending if there are multiple NRDP servers configured and both NRDP servers are not listening. (#715) (ccztux)
+- Fixed missing configuration options in the default ncpa.cfg (#726) (ccztux)
+- Updated bootstrap to 3.4.1 to fix security issue in CVE-2019-8331 (#728) (ccztux)
+- Fixed missing configuration sections in the admin section of the GUI (#725) (ccztux)
+
 2.2.2 - 06/19/2020
 ==================
 - Updated jQuery to 3.5.1 to fix security issues in CVE-2020-11022

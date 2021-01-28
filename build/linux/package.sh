@@ -48,11 +48,15 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Ras
         rpm="*armhf.rpm"
     fi
 
-    alien -c -k -v $rpm >> $BUILD_DIR/build.log
-    
+    if [ "$architecture" == "aarch64" ]; then
+      alien -c -k -v --target=arm64 $rpm >> $BUILD_DIR/build.log
+    else
+      alien -c -k -v $rpm >> $BUILD_DIR/build.log
+    fi
+
     cd $BUILD_DIR
     cp debbuild/*.deb .
-    
+
     rm -rf *.rpm
     rm -rf debbuild
 

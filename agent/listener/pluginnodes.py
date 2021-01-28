@@ -9,10 +9,10 @@ import subprocess
 import shlex
 import re
 import copy
-import Queue
 import environment
 import database
 import server
+import signal
 from threading import Timer
 
 # Windows does not have the pwd and grp module and does not need it since only Unix
@@ -33,6 +33,7 @@ class PluginNode(nodes.RunnableNode):
         self.name = plugin
         self.plugin_abs_path = plugin_abs_path
         self.arguments = []
+        self.killed = False
 
     def accessor(self, path, config, full_path, args):
 
@@ -66,9 +67,12 @@ class PluginNode(nodes.RunnableNode):
         except ConfigParser.NoOptionError:
             return '$plugin_name $plugin_args'
 
-    def kill_proc(self, p, t, q):
-        p.kill()
-        q.put("Error: Plugin command timed out. (%d sec)" % t)
+    def kill_proc(self, p, t):
+        self.killed = True
+        if environment.SYSTEM == 'Windows':
+            p.kill()
+        else:
+            os.killpg(p.pid, signal.SIGKILL)
 
     def execute_plugin(self, config, *args, **kwargs):
         """Runs custom scripts that MUST be located in the scripts subdirectory
@@ -104,9 +108,13 @@ class PluginNode(nodes.RunnableNode):
 
         # Run the command in a new subprocess
         run_time_start = time.time()
-        running_check = subprocess.Popen(cmd, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        queue = Queue.Queue(maxsize=2)
-        timer = Timer(timeout, self.kill_proc, [running_check, timeout, queue])
+
+        if environment.SYSTEM == 'Windows':
+            running_check = subprocess.Popen(cmd, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        else:
+            running_check = subprocess.Popen(cmd, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, preexec_fn=os.setsid)
+
+        timer = Timer(timeout, self.kill_proc, [running_check, timeout])
 
         try:
             timer.start()
@@ -117,10 +125,11 @@ class PluginNode(nodes.RunnableNode):
         run_time_end = time.time()
         returncode = running_check.returncode
 
-        # Pull from the queue if we have a error and the stdout is empty
-        if returncode == 1 and not stdout:
-            if queue.qsize() > 0:
-                stdout = queue.get()
+        # In case the plugin call timed out, set stdout and returncode to an error
+        if self.killed:
+            stdout = 'Error: Plugin command ({0}) timed out. ({1} sec)'.format(' '.join(cmd), timeout)
+            returncode = -1
+            logging.error(stdout)
 
         cleaned_stdout = unicode(''.join(stdout.decode("utf-8", "ignore")).replace('\r\n', '\n').replace('\r', '\n').strip())
 
@@ -185,16 +194,23 @@ class PluginAgentNode(nodes.ParentNode):
 
     def setup_plugin_children(self, config):
         plugin_path = config.get('plugin directives', 'plugin_path')
+
+        # Get the follow_symlinks value
+        try:
+            follow_symlinks = bool(config.get('plugin directives', 'follow_symlinks'))
+        except Exception as e:
+            follow_symlinks = False
+
         self.children = {}
 
         try:
-            plugins = os.listdir(plugin_path)
-            for plugin in plugins:
-                if plugin == '.keep':
-                    continue
-                plugin_abs_path = os.path.join(plugin_path, plugin)
-                if os.path.isfile(plugin_abs_path):
-                    self.children[plugin] = PluginNode(plugin, plugin_abs_path)
+            for root,dirs,files in os.walk(plugin_path,followlinks=follow_symlinks):
+                for plugin in files:
+                    if plugin == '.keep':
+                        continue
+                    plugin_abs_path = os.path.join(root, plugin)
+                    if os.path.isfile(plugin_abs_path):
+                        self.children[plugin] = PluginNode(plugin, plugin_abs_path)
         except OSError as exc:
             logging.warning('Unable to access directory %s', plugin_path)
             logging.warning('Unable to assemble plugins. Does the directory exist? - %r', exc)

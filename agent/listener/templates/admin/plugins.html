@@ -53,12 +53,33 @@ $(document).ready(function() {
                         </div>
                     </div>
 
-                    {% for directive in directives %}
-                    {% if directive[0] != 'plugin_path' %}
                     <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1"></label>
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">Follow Symlinks</label>
+                        <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-sm btn-default{% if follow_symlinks %} active{% endif %}">
+                                    <input type="radio" name="follow_symlinks" value="1" autocomplete="off"{% if follow_symlinks %} checked{% endif %}> Enabled
+                                </label>
+                                <label class="btn btn-sm btn-default{% if not follow_symlinks %} active{% endif %}">
+                                    <input type="radio" name="follow_symlinks" value="0" autocomplete="off"{% if not follow_symlinks %} checked{% endif %}> Disabled
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">Run With Sudo</label>
+                        <div class="col-sm-6 col-md-4 col-lg-4 col-xl-5">
+                            <input type="text" class="form-control" name="run_with_sudo" value="{{ run_with_sudo }}" readonly>
+                        </div>
+                    </div>
+
+                    {% for directive in directives %}
+                    {% if directive[0] != 'plugin_path' and directive[0] != 'plugin_timeout' and directive[0] != 'follow_symlinks' and directive[0] != 'run_with_sudo' %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">{{ directive[0] }}</label>
                         <div class="col-sm-6 col-md-6 col-lg-6 col-xl-5">
-                            <input type="text" class="form-control" style="display: inline-block; width: 10%; border-right: none;" name="directive[]" value="{{ directive[0] }}" readonly><input type="text" class="form-control" style="display: inline-block; width: 90%;" name="directive[]" value="{{ directive[1] }}" readonly>
+                            <input type="text" class="form-control" style="display: inline-block; width: 100%;" name="directive[]" value="{{ directive[1] }}" readonly>
                         </div>
                     </div>
                     {% endif %}

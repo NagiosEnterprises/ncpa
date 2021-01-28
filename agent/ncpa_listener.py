@@ -19,6 +19,7 @@ import ssl
 if 'threading' in sys.modules:
     del sys.modules['threading']
 import gevent.builtins
+from socket import error as SocketError
 from gevent import monkey
 monkey.patch_all(subprocess=True)
 
@@ -100,12 +101,27 @@ class Listener(ncpadaemon.Daemon):
                 max_connections = 200
 
             listener.server.listener.secret_key = os.urandom(24)
-            http_server = WSGIServer(listener=(address, port),
-                                     application=listener.server.listener,
-                                     handler_class=WebSocketHandler,
-                                     spawn=Pool(max_connections),
-                                     **ssl_context)
-            http_server.serve_forever()
+
+            try:
+                http_server = WSGIServer(listener=(address, port),
+                                         application=listener.server.listener,
+                                         handler_class=WebSocketHandler,
+                                         spawn=Pool(max_connections),
+                                         **ssl_context)
+                http_server.serve_forever()
+            except SocketError as e:
+                if address == '::':
+                    logging.error("Failed to start in dual stack mode: %s", e)
+                    logging.info("Falling back to IPv4 only")
+                else:
+                    logging.exception(e)
+                address = '0.0.0.0'
+                http_server = WSGIServer(listener=(address, port),
+                                         application=listener.server.listener,
+                                         handler_class=WebSocketHandler,
+                                         spawn=Pool(max_connections),
+                                         **ssl_context)
+                http_server.serve_forever()
         except Exception, e:
             logging.exception(e)
 

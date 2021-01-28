@@ -6,7 +6,7 @@ Summary:        A cross-platform active and passive monitoring agent
 BuildRoot:      __BUILDROOT__/BUILDROOT/
 Prefix:         /usr/local
 Group:          Network/Monitoring
-License:        Nagios Open Software License Version 1.3
+License:        Nagios Community Software License Version 1.3
 URL:            https://www.nagios.org/ncpa/help.php
 Source:         ncpa-%{version}.tar.gz
 AutoReqProv:    no

@@ -12,6 +12,7 @@ import sys
 import time
 import filename
 import listener.database
+import listener.server
 import tempfile
 from itertools import imap
 from io import open
@@ -82,6 +83,8 @@ class Daemon(object):
             self.stop()
         elif action == u'status':
             self.status()
+        elif action == u'version':
+            self.version()
         else:
             raise ValueError(action)
 
@@ -103,6 +106,9 @@ class Daemon(object):
         p.add_option(u'-n', u'--nodaemon', dest=u'daemonize',
                      action=u'store_false', default=True,
                      help=u'Run in the foreground')
+        p.add_option(u'-V', u'--version', dest=u'action',
+                     action=u'store_const', const=u'version', default=u'start',
+                     help=u'Print version number')
         self.options, self.args = p.parse_args()
         if not os.path.exists(self.options.config_filename):
             p.error(u'configuration file not found: %s'
@@ -240,6 +246,9 @@ class Daemon(object):
                         sys.exit(u"NCPA %s: Service is not running but pid file exists." % self.section.title())
         else:
             sys.exit(u"NCPA %s: Service is not running." % self.section.title())
+
+    def version(self):
+        sys.exit(u"ncpa_%s version, %s" % (self.section.title().lower(), listener.server.__VERSION__))
 
     def prepare_dirs(self):
         u"""Ensure the log and pid file directories exist and are writable"""

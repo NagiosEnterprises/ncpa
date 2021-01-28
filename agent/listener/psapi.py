@@ -13,6 +13,7 @@ from pluginnodes import PluginAgentNode
 import services
 import processes
 import environment
+import math
 
 importables = (
     'windowscounters',
@@ -58,12 +59,17 @@ def make_mountpoint_nodes(partition_name):
         try:
             st = os.statvfs(mountpoint)
             iu = st.f_files - st.f_ffree
+            iup = 0
+            if iu > 0:
+                iup = math.ceil(100 * float(iu) / float(st.f_files))
             inodes = RunnableNode('inodes', method=lambda: (st.f_files, 'inodes'))
             inodes_used = RunnableNode('inodes_used', method=lambda: (iu, 'inodes'))
             inodes_free = RunnableNode('inodes_free', method=lambda: (st.f_ffree, 'inodes'))
+            inodes_used_percent = RunnableNode('inodes_used_percent', method=lambda: (iup, '%'))
             node_children.append(inodes)
             node_children.append(inodes_used)
             node_children.append(inodes_free)
+            node_children.append(inodes_used_percent)
         except OSError as ex:
             # Log this error as debug only, normally means could not count inodes because
             # of some permissions or access related issues
@@ -149,14 +155,24 @@ def get_memory_node():
     mem_swap_percent = RunnableNode('percent', method=lambda: (ps.swap_memory().percent, '%'))
     mem_swap_used = RunnableNode('used', method=lambda: (ps.swap_memory().used, 'B'))
     mem_swap_free = RunnableNode('free', method=lambda: (ps.swap_memory().free, 'B'))
-    mem_swap = RunnableParentNode('swap', primary='percent', primary_unit='%',
-                    children=[mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used],
-                    custom_output='Used swap was')
+    node_children = [mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used]
+
+    # sin and sout on Windows are always set to 0 ~ sorry Windows! :'(
+    if environment.SYSTEM != 'Windows':
+        mem_swap_in = RunnableNode('swapped_in', method=lambda: (ps.swap_memory().sin, 'B'))
+        mem_swap_out = RunnableNode('swapped_out', method=lambda: (ps.swap_memory().sout, 'B'))
+        node_children.append(mem_swap_in)
+        node_children.append(mem_swap_out)
+
+    mem_swap = RunnableParentNode('swap',
+                    children=node_children,
+                    primary='percent', primary_unit='%',
+                    custom_output='Used swap was',
+                    include=('total', 'used', 'free', 'percent'))
     return ParentNode('memory', children=[mem_virt, mem_swap])
 
 
 def get_disk_node(config):
-
     # Get all physical disk io counters
     try:
         disk_counters = [make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())]
@@ -225,15 +241,59 @@ def get_user_node():
 
 
 def get_root_node(config):
-    cpu = get_cpu_node()
-    memory = get_memory_node()
-    disk = get_disk_node(config)
-    interface = get_interface_node()
-    plugins = get_plugins_node()
-    user = get_user_node()
-    system = get_system_node()
-    service = services.get_node()
-    process = processes.get_node()
+    try:
+        cpu = get_cpu_node()
+    except Exception as e:
+        cpu = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        memory = get_memory_node()
+    except Exception as e:
+        memory = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        disk = get_disk_node(config)
+    except Exception as e:
+        disk = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        interface = get_interface_node()
+    except Exception as e:
+        interface = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        plugins = get_plugins_node()
+    except Exception as e:
+        plugins = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        user = get_user_node()
+    except Exception as e:
+        user = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        system = get_system_node()
+    except Exception as e:
+        system = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        service = services.get_node()
+    except Exception as e:
+        service = ParentNode('N/A')
+        logging.exception(e)
+
+    try:
+        process = processes.get_node()
+    except Exception as e:
+        process = ParentNode('N/A')
+        logging.exception(e)
 
     children = [cpu, memory, disk, interface, plugins, user, system, service, process]
 
@@ -244,7 +304,11 @@ def get_root_node(config):
                 tmp = __import__(relative_name, fromlist=['get_node'])
                 get_node = getattr(tmp, 'get_node')
 
-                node = get_node()
+                try:
+                    node = get_node()
+                except Exception as e:
+                    node = ParentNode('N/A')
+                    logging.exception(e)
                 children.append(node)
                 logging.debug("Imported %s into the API tree.", importable)
             except ImportError:
