@@ -1,11 +1,7 @@
 Changelog
 +++++++++
 
-2.3.1 - ??/??/2021
-==================
-- Fixed uinstalling DEB package leave systemd service active (#651) (ccztux)
-
-2.3.0 - 01/28/2021
+2.3.0 - 01/28/2020
 ==================
 
 - Added option to to use symlinks in the plugin path directory (#577) (infraweavers, ccztux)
