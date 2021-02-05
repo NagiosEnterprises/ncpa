@@ -25,8 +25,13 @@ if grep "Solaris 10" /etc/release > /dev/null ; then
         LIBFFI_DEV="/opt/csw/lib/libffi-3.2.1/include"
     fi
 fi
+
+# Different libffi for Solaris 11.3
 if grep "11.3" /etc/release > /dev/null ; then
     LIBFFI_DEV="/usr/lib/amd64/libffi-3.0.9/include"
+    if [ "$ARCH" == "sparc" ]; then
+        LIBFFI_DEV="/usr/lib/libffi-3.0.9/include"
+    fi
 fi
 
 update_py_packages() {
