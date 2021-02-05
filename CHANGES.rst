@@ -1,14 +1,13 @@
 Changelog
 +++++++++
 
-2.3.1 - ??/??/2021
+2.3.1 - 02/11/2021
 ==================
-
 - Fixed uinstalling DEB package leave systemd service active (#651) (ccztux)
+- Fixed error when running a service check using match=search or match=regex searching
 
 2.3.0 - 01/28/2021
 ==================
-
 - Added option to to use symlinks in the plugin path directory (#577) (infraweavers, ccztux)
 - Added version option to ncpa_listener and ncpa_passive (ccztux)
 - Added support of hostnames in allowed_hosts (#653) (ccztux)
