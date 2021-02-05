@@ -25,6 +25,9 @@ if grep "Solaris 10" /etc/release > /dev/null ; then
         LIBFFI_DEV="/opt/csw/lib/libffi-3.2.1/include"
     fi
 fi
+if grep "11.3" /etc/release > /dev/null ; then
+    LIBFFI_DEV="/usr/lib/amd64/libffi-3.0.9/include"
+fi
 
 update_py_packages() {
     # Do special things for Solaris 11 (do not build with special flags)
