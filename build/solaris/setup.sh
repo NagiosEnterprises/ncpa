@@ -15,6 +15,7 @@ ARCH="x86"
 LIBFFI_DEV="/usr/lib/amd64/libffi-3.2.1/include"
 if grep "SPARC" /etc/release > /dev/null ; then
     ARCH="sparc"
+    LIBFFI_DEV="/usr/lib/libffi-3.2.1/include"
 fi
 if grep "Solaris 10" /etc/release > /dev/null ; then
     SOLARIS=10
@@ -22,6 +23,14 @@ if grep "Solaris 10" /etc/release > /dev/null ; then
     LIBFFI_DEV="/opt/csw/lib/amd64/libffi-3.2.1/include"
     if [ "$ARCH" == "sparc" ]; then
         LIBFFI_DEV="/opt/csw/lib/libffi-3.2.1/include"
+    fi
+fi
+
+# Different libffi for Solaris 11.3
+if grep "11.3" /etc/release > /dev/null ; then
+    LIBFFI_DEV="/usr/lib/amd64/libffi-3.0.9/include"
+    if [ "$ARCH" == "sparc" ]; then
+        LIBFFI_DEV="/usr/lib/libffi-3.0.9/include"
     fi
 fi
 
@@ -92,7 +101,7 @@ install_prereqs() {
     fi
 
     # Install pip
-    cd /tmp && wget $OPTS https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
+    cd /tmp && wget $OPTS https://raw.githubusercontent.com/pypa/get-pip/master/2.7/get-pip.py && $PYTHONBIN /tmp/get-pip.py
 
     # Install pip python modules
     update_py_packages
