@@ -5,6 +5,7 @@ Changelog
 ==================
 - Fixed uinstalling DEB package leave systemd service active (#651) (ccztux)
 - Fixed error when running a service check using match=search or match=regex searching
+- Fixed perfdata variable not being set for child node run_check command causing 500 error if the check errors
 
 2.3.0 - 01/28/2021
 ==================

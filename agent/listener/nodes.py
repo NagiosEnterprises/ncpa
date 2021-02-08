@@ -300,6 +300,7 @@ class RunnableNode(ParentNode):
             return self.execute_plugin(*args, **kwargs)
 
         try:
+            perfdata = None
             self.set_warning(kwargs)
             self.set_critical(kwargs)
             is_warning = False
@@ -330,7 +331,7 @@ class RunnableNode(ParentNode):
                          stdout, kwargs['remote_addr'], 'Active')
 
         data = { 'returncode': returncode, 'stdout': stdout }
-        if child_check:
+        if child_check and perfdata is not None:
             data['perfdata'] = perfdata
 
         return data
