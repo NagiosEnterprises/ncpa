@@ -150,7 +150,7 @@ def get_memory_node():
     mem_virt = RunnableParentNode('virtual', primary='percent', primary_unit='%',
                     children=(mem_virt_total, mem_virt_available, mem_virt_free,
                               mem_virt_percent, mem_virt_used),
-                    custom_output='Used memory was')
+                    custom_output='Memory usage was')
     mem_swap_total = RunnableNode('total', method=lambda: (ps.swap_memory().total, 'B'))
     mem_swap_percent = RunnableNode('percent', method=lambda: (ps.swap_memory().percent, '%'))
     mem_swap_used = RunnableNode('used', method=lambda: (ps.swap_memory().used, 'B'))
@@ -167,7 +167,7 @@ def get_memory_node():
     mem_swap = RunnableParentNode('swap',
                     children=node_children,
                     primary='percent', primary_unit='%',
-                    custom_output='Used swap was',
+                    custom_output='Swap usage was',
                     include=('total', 'used', 'free', 'percent'))
     return ParentNode('memory', children=[mem_virt, mem_swap])
 

@@ -1,9 +1,16 @@
 Changelog
 +++++++++
 
-2.3.0 - 01/28/2020
+2.3.1 - 02/11/2021
 ==================
+- Fixed uninstalling DEB package leaves systemd service active (#651) (ccztux)
+- Fixed error when running a service check using match=search or match=regex searching (#626,#679,#742)
+- Fixed perfdata variable not being set for child node run_check command causing 500 error if the check errors (#733)
+- Fixed API page output for active/passive checks using windowscounters sleep options (#722)
+- Fixed warning/critical values in perfdata output when values were not actually related to the data (#712,#713)
 
+2.3.0 - 01/28/2021
+==================
 - Added option to to use symlinks in the plugin path directory (#577) (infraweavers, ccztux)
 - Added version option to ncpa_listener and ncpa_passive (ccztux)
 - Added support of hostnames in allowed_hosts (#653) (ccztux)
