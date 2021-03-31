@@ -24,7 +24,7 @@ import ipaddress
 import socket
 
 
-__VERSION__ = '2.3.0'
+__VERSION__ = '2.3.1'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
@@ -133,9 +133,9 @@ def get_unmapped_ip(ip):
         return ip
 
 
-def reverse_lookup_hostname(ip):
+def lookup_hostname(ip):
     """
-    This function gets an ip and returns the hostname reverse lookuped by DNS.
+    This function gets an ip and returns the hostname lookuped by DNS.
     """
 
     try:
@@ -213,8 +213,8 @@ def before_request():
                                 allowed = True
                                 break
                 else:
-                    # reverse lookup of the remote_ipaddr_unmapped
-                    remote_hostname = reverse_lookup_hostname(remote_ipaddr_unmapped)
+                    # lookup of the remote_ipaddr_unmapped
+                    remote_hostname = lookup_hostname(remote_ipaddr_unmapped)
 
                     # check if hostname is allowed
                     if remote_hostname == host:
@@ -586,7 +586,7 @@ def tail_base():
     return render_template('gui/tail.html')
 
 
-# This function renders the graph picker page, which can be though of the
+# This function renders the graph picker page, which can be though of
 # the explorer for the graphs.
 @listener.route('/gui/graphs', methods=['GET', 'POST'])
 @requires_auth
@@ -625,9 +625,17 @@ def admin():
 @listener.route('/gui/admin/global', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_global():
+    exclude_fs_types = 'aufs,autofs,binfmt_misc,cifs,cgroup,configfs,\
+                        debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,\
+                        fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,\
+                        rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs'
+
     tmp_args = { 'no_nav': True,
                  'check_logging': int(get_config_value('general', 'check_logging', 1)),
-                 'check_logging_time': get_config_value('general', 'check_logging_time', 30) }
+                 'check_logging_time': get_config_value('general', 'check_logging_time', 30),
+                 'all_partitions': int(get_config_value('general', 'all_partitions', 1)),
+                 'exclude_fs_types': get_config_value('general', 'exclude_fs_types', exclude_fs_types),
+                 'default_units': get_config_value('general', 'default_units', 'Gi') }
 
     # Check session for flash message
     flash_msg_text = session.get('flash_msg_text', '')
@@ -658,11 +666,23 @@ def admin_listener_config():
                  'logbackups': get_config_value('listener', 'logbackups', '5'),
                  'admin_gui_access': int(get_config_value('listener', 'admin_gui_access', 1)),
                  'admin_auth_only': int(get_config_value('listener', 'admin_auth_only', 0)),
-                 'delay_start': get_config_value('listener', 'delay_start', '0') }
+                 'delay_start': get_config_value('listener', 'delay_start', '0'),
+                 'allowed_hosts': get_config_value('listener', 'allowed_hosts', 'All'),
+                 'allowed_sources': get_config_value('listener', 'allowed_sources', 'None'),
+                 'max_connections': get_config_value('listener', 'max_connections', '200') }
 
     # Todo: add form actions when submitted
 
     return render_template('admin/listener.html', **tmp_args)
+
+
+@listener.route('/gui/admin/api', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_api_config():
+    tmp_args = { 'no_nav': True,
+                 'community_string': get_config_value('api', 'community_string', 'mytoken') }
+
+    return render_template('admin/api.html', **tmp_args)
 
 
 @listener.route('/gui/admin/passive', methods=['GET', 'POST'])
@@ -702,6 +722,30 @@ def admin_nrdp_config():
     return render_template('admin/nrdp.html', **tmp_args)
 
 
+@listener.route('/gui/admin/nrds', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_nrds_config():
+    tmp_args = { 'no_nav': True,
+                 'nrds_url': get_config_value('nrds', 'url', ''),
+                 'nrds_token': get_config_value('nrds', 'token', ''),
+                 'config_name': get_config_value('nrds', 'config_name', ''),
+                 'config_version': get_config_value('nrds', 'config_version', ''),
+                 'update_config': int(get_config_value('nrds', 'update_config', '1')),
+                 'update_plugins': int(get_config_value('nrds', 'update_plugins', '1')) }
+    return render_template('admin/nrds.html', **tmp_args)
+
+
+@listener.route('/gui/admin/kafkaproducer', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_kafkaproducer_config():
+    tmp_args = { 'no_nav': True,
+                 'hostname': get_config_value('kafkaproducer', 'hostname', ''),
+                 'servers': get_config_value('kafkaproducer', 'servers', ''),
+                 'client_name': get_config_value('kafkaproducer', 'client_name', 'NCPA-Kafka'),
+                 'topic': get_config_value('kafkaproducer', 'topic', 'ncpa') }
+    return render_template('admin/kafkaproducer.html', **tmp_args)
+
+
 @listener.route('/gui/admin/plugin-directives', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_plugin_config():
@@ -712,6 +756,8 @@ def admin_plugin_config():
     tmp_args = { 'no_nav': True,
                  'plugin_path': get_config_value('plugin directives', 'plugin_path', 'plugins/'),
                  'plugin_timeout': get_config_value('plugin directives', 'plugin_timeout', '60'),
+                 'follow_symlinks': int(get_config_value('plugin directives', 'follow_symlinks', '0')),
+                 'run_with_sudo': get_config_value('plugin directives', 'run_with_sudo', ''),
                  'directives': directives }
     return render_template('admin/plugins.html', **tmp_args)
 

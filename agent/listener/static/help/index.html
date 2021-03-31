@@ -93,7 +93,44 @@ sudo launchctl start com.nagios.ncpa.passive</pre>
 
                 </div>
 
-                <a name="index-changes-in-21"></a>
+                <a name="changes-in-23"></a>
+                <div class="section">
+
+                    <h2>Changes from 2.2 to 2.3</h2>
+                    <p>You can also view the full changelog on the <a target="_new" href="https://github.com/NagiosEnterprises/ncpa/blob/master/CHANGES.rst">NCPA GitHub repository</a> <i class="fa fa-external-link"></i>.</p>
+                    <p>
+                        <ol>
+                            <li><b>Allowed hosts</b> - The configuration option <code>allowed_hosts</code> now supports hostnames and IPv4-mapped IPv6 addresses.</li>
+                            <li><b>Swap checks</b> - The <code>memory</code> node now contains new endpoints: swap/swapped_in and swap/swapped_out.</li>
+                            <li><b>Disk checks</b> - The <code>disk</code> node now contains a new endpoint: inodes_used_percent.</li>
+                            <li><b>New configuration option</b> - New configuration option available:
+                                <ol>
+                                    <li><code>follow_symlinks</code> - Follow symlinks located in the plugin path</li>
+                                </ol>
+                            </li>
+                        </ol>
+                    </p>
+
+                </div>
+
+                <a name="changes-in-22"></a>
+                <div class="section">
+
+                    <h2>Changes from 2.1 to 2.2</h2>
+                    <p>You can also view the full changelog on the <a target="_new" href="https://github.com/NagiosEnterprises/ncpa/blob/master/CHANGES.rst">NCPA GitHub repository</a> <i class="fa fa-external-link"></i>.</p>
+                    <p>
+                        <ol>
+                            <li><b>New configuration option</b> - New configuration option available:
+                                <ol>
+                                    <li><code>allowed_sources</code> - Set the URL to use in the X-Frame-Options and Content-Security-Policy headers in order to enable the NCPA GUI to be allowed to load into a frame.</li>
+                                </ol>
+                            </li>
+                        </ol>
+                    </p>
+
+                </div>
+
+                <a name="changes-in-21"></a>
                 <div class="section">
 
                     <h2>Changes from 2.0 to 2.1</h2>

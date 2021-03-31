@@ -19,7 +19,7 @@ architecture=`uname -m`
 # Get OS & version
 if [ $unixtype == "Linux" ]; then
     if [ -r /etc/redhat-release ]; then
-        if rpm -q centos-release; then
+        if rpm -q centos-linux-release || rpm -q centos-stream-release || rpm -q centos-release; then
             distro="CentOS"
         elif rpm -q sl-release; then
             distro="Scientific"

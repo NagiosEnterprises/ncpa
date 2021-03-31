@@ -6,7 +6,7 @@ Summary:        A cross-platform active and passive monitoring agent
 BuildRoot:      __BUILDROOT__/BUILDROOT/
 Prefix:         /usr/local
 Group:          Network/Monitoring
-License:        Nagios Open Software License Version 1.3
+License:        Nagios Community Software License Version 1.3
 URL:            https://www.nagios.org/ncpa/help.php
 Source:         ncpa-%{version}.tar.gz
 AutoReqProv:    no
@@ -57,8 +57,8 @@ fi
 
 # Install/update SRC and add entries into inittab and remove blank files on install
 if [ "$1" == "1" ]; then
-    mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
-    mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
+    mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 -f 9 >/dev/null 2>&1
+    mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 >/dev/null 2>&1
 
     mkitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
     mkitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"

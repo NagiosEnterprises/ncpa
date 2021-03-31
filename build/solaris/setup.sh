@@ -4,7 +4,7 @@
 PATH=$PATH:/opt/csw/bin:/usr/ccs/bin
 
 # Globals
-PYTHONTAR="Python-2.7.16"
+PYTHONTAR="Python-2.7.18"
 PYTHONVER="python2.7"
 PYTHONBIN="/usr/local/bin/python2.7"
 CXFREEZEVER="cx_Freeze-4.3.4"
@@ -15,6 +15,7 @@ ARCH="x86"
 LIBFFI_DEV="/usr/lib/amd64/libffi-3.2.1/include"
 if grep "SPARC" /etc/release > /dev/null ; then
     ARCH="sparc"
+    LIBFFI_DEV="/usr/lib/libffi-3.2.1/include"
 fi
 if grep "Solaris 10" /etc/release > /dev/null ; then
     SOLARIS=10
@@ -25,12 +26,20 @@ if grep "Solaris 10" /etc/release > /dev/null ; then
     fi
 fi
 
+# Different libffi for Solaris 11.3
+if grep "11.3" /etc/release > /dev/null ; then
+    LIBFFI_DEV="/usr/lib/amd64/libffi-3.0.9/include"
+    if [ "$ARCH" == "sparc" ]; then
+        LIBFFI_DEV="/usr/lib/libffi-3.0.9/include"
+    fi
+fi
+
 update_py_packages() {
     # Do special things for Solaris 11 (do not build with special flags)
     if [ $SOLARIS -eq 11 ]; then
-        $PYTHONBIN -m pip install -r  $BUILD_DIR/solaris/require.solaris.txt --upgrade
+        CPPFLAGS="-I$LIBFFI_DEV" $PYTHONBIN -m pip install -r  $BUILD_DIR/solaris/require.solaris.txt --upgrade
     else
-        CPPFLAGS="-I$LIBFFI_DEV" LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.solaris.txt --upgrade --no-binary :all:
+        CPPFLAGS="-I$LIBFFI_DEV" LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/solaris/require.solaris.txt --upgrade --no-binary :all:
     fi
 }
 
@@ -92,7 +101,7 @@ install_prereqs() {
     fi
 
     # Install pip
-    cd /tmp && wget $OPTS https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
+    cd /tmp && wget $OPTS https://raw.githubusercontent.com/pypa/get-pip/master/2.7/get-pip.py && $PYTHONBIN /tmp/get-pip.py
 
     # Install pip python modules
     update_py_packages

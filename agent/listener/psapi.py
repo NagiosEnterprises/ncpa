@@ -13,6 +13,7 @@ from pluginnodes import PluginAgentNode
 import services
 import processes
 import environment
+import math
 
 importables = (
     'windowscounters',
@@ -58,12 +59,17 @@ def make_mountpoint_nodes(partition_name):
         try:
             st = os.statvfs(mountpoint)
             iu = st.f_files - st.f_ffree
+            iup = 0
+            if iu > 0:
+                iup = math.ceil(100 * float(iu) / float(st.f_files))
             inodes = RunnableNode('inodes', method=lambda: (st.f_files, 'inodes'))
             inodes_used = RunnableNode('inodes_used', method=lambda: (iu, 'inodes'))
             inodes_free = RunnableNode('inodes_free', method=lambda: (st.f_ffree, 'inodes'))
+            inodes_used_percent = RunnableNode('inodes_used_percent', method=lambda: (iup, '%'))
             node_children.append(inodes)
             node_children.append(inodes_used)
             node_children.append(inodes_free)
+            node_children.append(inodes_used_percent)
         except OSError as ex:
             # Log this error as debug only, normally means could not count inodes because
             # of some permissions or access related issues
@@ -144,14 +150,25 @@ def get_memory_node():
     mem_virt = RunnableParentNode('virtual', primary='percent', primary_unit='%',
                     children=(mem_virt_total, mem_virt_available, mem_virt_free,
                               mem_virt_percent, mem_virt_used),
-                    custom_output='Used memory was')
+                    custom_output='Memory usage was')
     mem_swap_total = RunnableNode('total', method=lambda: (ps.swap_memory().total, 'B'))
     mem_swap_percent = RunnableNode('percent', method=lambda: (ps.swap_memory().percent, '%'))
     mem_swap_used = RunnableNode('used', method=lambda: (ps.swap_memory().used, 'B'))
     mem_swap_free = RunnableNode('free', method=lambda: (ps.swap_memory().free, 'B'))
-    mem_swap = RunnableParentNode('swap', primary='percent', primary_unit='%',
-                    children=[mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used],
-                    custom_output='Used swap was')
+    node_children = [mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used]
+
+    # sin and sout on Windows are always set to 0 ~ sorry Windows! :'(
+    if environment.SYSTEM != 'Windows':
+        mem_swap_in = RunnableNode('swapped_in', method=lambda: (ps.swap_memory().sin, 'B'))
+        mem_swap_out = RunnableNode('swapped_out', method=lambda: (ps.swap_memory().sout, 'B'))
+        node_children.append(mem_swap_in)
+        node_children.append(mem_swap_out)
+
+    mem_swap = RunnableParentNode('swap',
+                    children=node_children,
+                    primary='percent', primary_unit='%',
+                    custom_output='Swap usage was',
+                    include=('total', 'used', 'free', 'percent'))
     return ParentNode('memory', children=[mem_virt, mem_swap])
 
 
@@ -287,7 +304,11 @@ def get_root_node(config):
                 tmp = __import__(relative_name, fromlist=['get_node'])
                 get_node = getattr(tmp, 'get_node')
 
-                node = get_node()
+                try:
+                    node = get_node()
+                except Exception as e:
+                    node = ParentNode('N/A')
+                    logging.exception(e)
                 children.append(node)
                 logging.debug("Imported %s into the API tree.", importable)
             except ImportError:

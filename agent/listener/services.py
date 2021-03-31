@@ -340,6 +340,11 @@ class ServiceNode(nodes.LazyNode):
         if not isinstance(filtered_services, list):
             filtered_services = [filtered_services]
 
+        # Match type for services
+        match = kwargs.get('match', None)
+        if isinstance(match, list):
+            match = match[0]
+
         # Default to running status, so it will alert on not running
         if not target_status:
             target_status = 'running'
@@ -352,6 +357,10 @@ class ServiceNode(nodes.LazyNode):
         status = 'not a problem'
         stdout_builder = []
 
+        # Remove filtered_services if we are doing anything but an exact match
+        if match == 'search' or match == 'regex':
+            filtered_services = []
+
         if services:
             for service in services:
                 priority = 0
@@ -361,9 +370,12 @@ class ServiceNode(nodes.LazyNode):
                     priority = 1
                     builder = '%s (should be %s)' % (builder, ''.join(target_status))
 
-                # Remove each service with status from filtered_services to find out if we are missing some
-                i = filtered_services.index(service)
-                filtered_services.pop(i)
+                # Remove each service that has a status from the list of services the user provided
+                # so that we can display the services that can't be found ... this only works with
+                # exact match lists of services
+                if filtered_services:
+                    i = filtered_services.index(service)
+                    filtered_services.pop(i)
 
                 if priority > returncode:
                     returncode = priority

@@ -1,15 +1,32 @@
 Changelog
 +++++++++
 
-2.2.3 - ??/??/2020
+2.3.1 - 02/11/2021
 ==================
+- Fixed uninstalling DEB package leaves systemd service active (#651) (ccztux)
+- Fixed error when running a service check using match=search or match=regex searching (#626,#679,#742)
+- Fixed perfdata variable not being set for child node run_check command causing 500 error if the check errors (#733)
+- Fixed API page output for active/passive checks using windowscounters sleep options (#722)
+- Fixed warning/critical values in perfdata output when values were not actually related to the data (#712,#713)
 
-- Added option to to use symlinks in the plugin path directory (#577) (infraweavers, Christian Zettel)
-- Added version option to ncpa_listener and ncpa_passive (Christian Zettel)
-- Added support of hostnames in allowed_hosts (#653) (Christian Zettel)
-- Fixed issue with allowed_hosts config directive doesnt work (#638, #660) (Christian Zettel)
-- Fixed ncpa_listener fails to start when IPv6 is disabled. (#648) (Christian Zettel)
-- Fixed if an exception was thrown in one api endpoint it breaks the wohle api (#670) (Christian Zettel)
+2.3.0 - 01/28/2021
+==================
+- Added option to to use symlinks in the plugin path directory (#577) (infraweavers, ccztux)
+- Added version option to ncpa_listener and ncpa_passive (ccztux)
+- Added support of hostnames in allowed_hosts (#653) (ccztux)
+- Added secure cookie attribute (#659)
+- Added new memory endpoints swap/swapped_in and swap/swapped_out (#674) (ccztux)
+- Added new disk endpoint inodes_used_percent (#672) (ccztux)
+- Fixed issue with allowed_hosts config directive doesnt work (#638, #660) (ccztux)
+- Fixed ncpa_listener fails to start when IPv6 is disabled. (#648) (ccztux)
+- Fixed if an exception was thrown in one api endpoint it breaks the wohle api (#670) (ccztux)
+- Fixed missing unit (%) for some process checks (#681) (ccztux)
+- Fixed childs started from a plugin will not be killed in case plugin_timeout was reached (#714) (ccztux)
+- Fixed error message in case plugin runs into timeout out was not shown (#714) (ccztux)
+- Fixed passive checks stop sending if there are multiple NRDP servers configured and both NRDP servers are not listening. (#715) (ccztux)
+- Fixed missing configuration options in the default ncpa.cfg (#726) (ccztux)
+- Updated bootstrap to 3.4.1 to fix security issue in CVE-2019-8331 (#728) (ccztux)
+- Fixed missing configuration sections in the admin section of the GUI (#725) (ccztux)
 
 2.2.2 - 06/19/2020
 ==================

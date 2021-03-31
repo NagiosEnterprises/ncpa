@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Globals
-PYTHONTAR="Python-2.7.16"
+PYTHONVERSION="2.7.18"
+PYTHONTAR="Python-$PYTHONVERSION"
 PYTHONVER="python2.7"
 CXFREEZEVER="cx_Freeze-4.3.4"
 SKIP_PYTHON=0
@@ -11,7 +12,12 @@ SKIP_PYTHON=0
 
 update_py_packages() {
     PYTHONBIN=$(which python2.7)
-    LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary :all:
+    resources="require.txt"
+    if [ "$dist" == "el6" ] || [ "$dist" == "el7" ] || [ "$dist" == "debian8" ]; then
+        resources="require.dep.txt"
+    fi
+
+    LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/$resources --upgrade --no-binary :all:
 }
 
 install_prereqs() {
@@ -25,9 +31,9 @@ install_prereqs() {
     if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
 
         apt-get install debian-builder rpm gcc g++ wget openssl libssl-dev libffi-dev sqlite3 libsqlite3-dev zlib1g-dev alien -y
-    
+
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
-    
+
         yum install epel-release -y
         yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make -y
 
@@ -100,13 +106,16 @@ install_prereqs() {
 
     # Install bundled Python version from source
     if [ $SKIP_PYTHON -eq 0 ]; then
+        if [ ! -f $PYTHONTAR.tgz ]; then
+            wget https://www.python.org/ftp/python/$PYTHONVERSION/$PYTHONTAR.tgz
+        fi
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR
         ./configure LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib' && make && make altinstall
         cd ..
         rm -rf $PYTHONTAR
         PYTHONBIN=$(which python2.7)
-        
+
         # Link lib-dynload from lib64 to lib due to arch issues for Python 2.7
         if [ "$dist" == "os15" ]; then
             ln -s /usr/local/lib64/python2.7/lib-dynload/ /usr/local/lib/python2.7/lib-dynload
@@ -127,7 +136,7 @@ install_prereqs() {
 
 
     # Install pip
-    cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
+    cd /tmp && wget --no-check-certificate https://raw.githubusercontent.com/pypa/get-pip/master/2.7/get-pip.py && $PYTHONBIN /tmp/get-pip.py
 
     # Install modules
     update_py_packages
