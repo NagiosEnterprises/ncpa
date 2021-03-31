@@ -300,6 +300,7 @@ class RunnableNode(ParentNode):
             return self.execute_plugin(*args, **kwargs)
 
         try:
+            perfdata = None
             self.set_warning(kwargs)
             self.set_critical(kwargs)
             is_warning = False
@@ -330,7 +331,7 @@ class RunnableNode(ParentNode):
                          stdout, kwargs['remote_addr'], 'Active')
 
         data = { 'returncode': returncode, 'stdout': stdout }
-        if child_check:
+        if child_check and perfdata is not None:
             data['perfdata'] = perfdata
 
         return data
@@ -385,22 +386,21 @@ class RunnableNode(ParentNode):
         if isinstance(self.critical, list):
             self.critical = self.critical[0]
 
-        # For a % based parent check we should get the values in the checks
-        # base type (normally GiB or B)
-        if primary_total:
-            if self.warning:
-                self.warning = int(round(primary_total * (float(self.warning) / 100)))
-            if self.critical:
-                self.critical = int(round(primary_total * (float(self.critical) / 100)))
-
         perfdata = []
         v = len(values)
         for i, x in enumerate(values):
 
             if isinstance(x, (int, long)):
-                perf = "=%d%s;%s;%s;" % (x, perf_unit, self.warning, self.critical)
-            else: 
-                perf = "=%0.2f%s;%s;%s;" % (x, perf_unit, self.warning, self.critical)
+                perf = "=%d%s;" % (x, perf_unit)
+            else:
+                perf = "=%0.2f%s;" % (x, perf_unit)
+
+            # Only display on primary value to the fact that warning/critical values are ONLY
+            # accurate when on the primary value's perfdata
+            if primary_total == 0:
+                perf += '%s;%s;' % (self.warning, self.critical)
+            else:
+                perf += ';;'
 
             if v == 1:
                 perf = "'%s'%s" % (perfdata_label, perf)

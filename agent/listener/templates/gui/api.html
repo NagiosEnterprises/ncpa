@@ -893,6 +893,11 @@ function generate_active_check() {
             active += " -q '" + q.join(',') + "'";
             break;
 
+        case 'windowscounters':
+            var sleep = $('input.sleep').val();
+            if (sleep) { active += " -q 'sleep=" + sleep + "'"; }
+            break;
+
     }
 
     $('.active-check-val').html(active);
@@ -922,10 +927,12 @@ function generate_passive_check() {
         var units = $('.units').val();
         var unit = $('.unit').val();
         var delta = $('.delta').is(':checked');
+        var sleep = $('input.sleep').val();
         if (aggregate) { passive += ' --aggregate ' + aggregate; }
         if (units) { passive += ' --units ' + units; }
         if (unit) { passive += ' --unit ' + unit; }
         if (delta) { passive += ' --delta 1'; }
+        if (sleep) { active += ' --sleep ' + sleep; }
 
     }
 
