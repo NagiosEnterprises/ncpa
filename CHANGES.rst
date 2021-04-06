@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+2.3.2 - ??/??/2021
+==================
+- Fixed ncpa hangs if mounted nfs partition has a problems (#757) (ccztux)
+
 2.3.1 - 02/11/2021
 ==================
 - Fixed uninstalling DEB package leaves systemd service active (#651) (ccztux)

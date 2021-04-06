@@ -191,7 +191,7 @@ def get_disk_node(config):
 
     # Get the all partitions value
     try:
-        all_partitions = bool(config.get('general', 'all_partitions'))
+        all_partitions = config.getboolean('general', 'all_partitions')
     except Exception as e:
         all_partitions = True
 
