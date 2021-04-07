@@ -3,7 +3,7 @@ Changelog
 
 2.3.2 - ??/??/2021
 ==================
-- Fixed ncpa hangs if mounted nfs partition has a problems (#757) (ccztux)
+- Fixed some configuration directives doesnt work, e.g. all_partitions and follow_symlinks (#757) (ccztux)
 
 2.3.1 - 02/11/2021
 ==================
