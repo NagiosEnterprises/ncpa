@@ -54,7 +54,7 @@ import re
 import signal
 
 
-__VERSION__ = '1.2.4'
+__VERSION__ = '1.2.5'
 
 
 class ConnectionError(Exception):
