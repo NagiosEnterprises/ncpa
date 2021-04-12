@@ -3,6 +3,10 @@ Changelog
 
 1.2.4
 -----
+- Changed the default timeout value from 60s to 59s
+
+1.2.4
+-----
 - Fixed encoding issues on Python 2 vs Python 3
 
 1.2.3
