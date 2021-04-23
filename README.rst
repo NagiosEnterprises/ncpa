@@ -26,7 +26,7 @@ We currently build for the following operating systems:
 - Debian 9, 10
 - Ubuntu 16.04, 18.04, 20.04
 - OpenSUSE Leap 15, Tumbleweed
-- SLES 11, 12
+- SLES 11, 12, 15
 - Oracle 7, 8
 - Amazon Linux 2
 - Solaris 10, 11
