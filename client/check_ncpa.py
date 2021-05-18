@@ -54,7 +54,7 @@ import re
 import signal
 
 
-__VERSION__ = '1.2.4'
+__VERSION__ = '1.2.5'
 
 
 class ConnectionError(Exception):
@@ -99,7 +99,7 @@ def parse_args():
                            "as you would call from the command line. Example: -a '-w 10 -c 20 -f /usr/local'")
     parser.add_option("-t", "--token", default='',
                       help="The token for connecting.")
-    parser.add_option("-T", "--timeout", default=60, type="int",
+    parser.add_option("-T", "--timeout", default=59, type="int",
                       help="Enforced timeout, will terminate plugins after "
                            "this amount of seconds. [%default]")
     parser.add_option("-d", "--delta", action='store_true',
