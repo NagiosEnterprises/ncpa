@@ -82,7 +82,7 @@ def parse_args():
                            "use the -a directive for that. DO NOT INCLUDE the api/ "
                            "instruction.")
     parser.add_option("-P", "--port", default=5693, type="int",
-                      help="Port to use to connect to the client.")
+                      help="Port to use to connect to the client. [Default: %default]")
     parser.add_option("-w", "--warning", default=None, type="str",
                       help="Warning value to be passed for the check.")
     parser.add_option("-c", "--critical", default=None, type="str",
@@ -101,7 +101,7 @@ def parse_args():
                       help="The token for connecting.")
     parser.add_option("-T", "--timeout", default=59, type="int",
                       help="Enforced timeout, will terminate plugins after "
-                           "this amount of seconds. [%default]")
+                           "this amount of seconds. [Default: %default]")
     parser.add_option("-d", "--delta", action='store_true',
                       help="Signals that this check is a delta check and a "
                            "local state will kept.")
