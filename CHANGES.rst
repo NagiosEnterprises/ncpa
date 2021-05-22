@@ -4,6 +4,7 @@ Changelog
 2.4.0 - ??/??/2021
 ==================
 - Added new disk metrics max_file_length and max_path_length (#760) (ccztux)
+- Added php and perl to the default plugin extensions (#766) (ccztux)
 
 2.3.1 - 02/11/2021
 ==================
