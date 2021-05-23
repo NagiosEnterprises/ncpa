@@ -86,7 +86,7 @@ class PluginNode(nodes.RunnableNode):
         try:
             timeout = int(config.get('plugin directives', 'plugin_timeout'))
         except Exception as e:
-            timeout = 60
+            timeout = 59
 
         # Get the check logging value
         try:
