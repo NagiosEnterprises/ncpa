@@ -62,7 +62,7 @@ def make_mountpoint_nodes(partition_name):
             st = os.statvfs(mountpoint)
             iu = st.f_files - st.f_ffree
             iup = 0
-            if iu > 0 and st.f_files > 0:
+            if st.f_files > 0:
                 iup = math.ceil(100 * float(iu) / float(st.f_files))
             inodes = RunnableNode('inodes', method=lambda: (st.f_files, 'inodes'))
             inodes_used = RunnableNode('inodes_used', method=lambda: (iu, 'inodes'))
