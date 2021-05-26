@@ -164,6 +164,20 @@ admin_auth_only = 0
 # allowed_sources = 
 
 #
+# The max size allowed for a log file in megabytes.
+# When the log becomes larger than this, the log will be rolled over
+# and a new log will be started.
+# Default: 5
+#
+# logmaxmb =
+
+#
+# The max number of log rollovers that will be kept.
+# Default: 5
+#
+# logbackups =
+
+#
 # -------------------------------
 # Listener Configuration (API)
 # -------------------------------
@@ -230,6 +244,20 @@ pidfile = var/run/ncpa_passive.pid
 # delay_start = 30
 
 #
+# The max size allowed for a log file in megabytes.
+# When the log becomes larger than this, the log will be rolled over
+# and a new log will be started.
+# Default: 5
+#
+# logmaxmb =
+
+#
+# The max number of log rollovers that will be kept.
+# Default: 5
+#
+# logbackups =
+
+#
 # -------------------------------
 # Passive Configuration (NRDP)
 # -------------------------------
@@ -250,6 +278,11 @@ token =
 # sent to NRDP with the check name as the service description (service name)
 #
 hostname = NCPA 2
+
+#
+# Connection timeout in seconds that will be used when transmitting the NRDP checks.
+#
+connection_timeout = 10
 
 #
 # -------------------------------

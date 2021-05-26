@@ -379,8 +379,14 @@
                             <tr>
                                 <td></td>
                                 <th>hostname</th>
-                                <td>NCPA</td>
+                                <td>NCPA 2</td>
                                 <td>This is the value that will be used for the <code>%HOSTNAME%</code> macro in the <a href="#passive-checks">[passive checks]</a> configuration section.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>connection_timeout</th>
+                                <td>10</td>
+                                <td>Connection timeout in seconds that will be used when transmitting the NRDP checks.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -480,6 +486,12 @@
                                     The path to the directory containing any third party plugins that you would like to be able to run. Note that the forward slash at the beginning is left off. This makes it a relative path to the location of the NCPA directory. You can use a full directory path also.
                                     <div><em>Requires nagios:nagios (or whatever your uid:gid is set to) permissions on the plugin location. The user must also be able to execute the plugins.</em></div>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>follow_symlinks</th>
+                                <td>0</td>
+                                <td>Follow symlinks located in the plugin path. Linux and Mac OS X only.</td>
                             </tr>
                             <tr>
                                 <td></td>
