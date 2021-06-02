@@ -39,7 +39,7 @@ all_partitions = 1
 #          encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,
 #          rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs
 #
-exclude_fs_types = aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs
+exclude_fs_types = aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs,nfsd
 
 #
 # The default unit to convert bytes (B) into if no unit is specified
@@ -164,6 +164,20 @@ admin_auth_only = 0
 # allowed_sources = 
 
 #
+# The max size allowed for a log file in megabytes.
+# When the log becomes larger than this, the log will be rolled over
+# and a new log will be started.
+# Default: 5
+#
+# logmaxmb =
+
+#
+# The max number of log rollovers that will be kept.
+# Default: 5
+#
+# logbackups =
+
+#
 # -------------------------------
 # Listener Configuration (API)
 # -------------------------------
@@ -228,6 +242,20 @@ pidfile = var/run/ncpa_passive.pid
 # Default: 0
 #
 # delay_start = 30
+
+#
+# The max size allowed for a log file in megabytes.
+# When the log becomes larger than this, the log will be rolled over
+# and a new log will be started.
+# Default: 5
+#
+# logmaxmb =
+
+#
+# The max number of log rollovers that will be kept.
+# Default: 5
+#
+# logbackups =
 
 #
 # -------------------------------
