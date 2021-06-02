@@ -3,8 +3,11 @@ Changelog
 
 2.4.0 - ??/??/2021
 ==================
+- Fixed ZeroDivisionError: float division by zero (#769) (ccztux)
 - Added new disk metrics max_file_length and max_path_length (#760) (ccztux)
 - Changed the default plugin_timeout value from 60s to 59s (#761) (ccztux)
+- Fixed toggle long output doesnt work (#778) (ccztux)
+- Fixed the filter Type gets lost on pages > 1 (#780) (ccztux)
 
 2.3.1 - 02/11/2021
 ==================
