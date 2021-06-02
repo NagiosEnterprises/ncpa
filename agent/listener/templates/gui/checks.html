@@ -132,7 +132,7 @@ $(document).ready(function() {
                                     {{ check.output }}
                                     {% if check.longoutput %}
                                     <a style="cursor: pointer;" class="toggle-longoutput">Toggle long output</a>
-                                    <div class="longoutput hide">
+                                    <div class="longoutput" style="display: none;">
                                         {{ check.longoutput|safe }}
                                     <div>
                                     {% endif %}

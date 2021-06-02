@@ -528,7 +528,7 @@ def checks():
     if status != '':
         link_vals += '&status=' + str(status)
     if ctype != '':
-        link_vals += '&ctype=' + str(status)
+        link_vals += '&ctype=' + str(ctype)
     if search != '':
         link_vals += '&search=' + str(search)
     if len(check_senders) > 0:
