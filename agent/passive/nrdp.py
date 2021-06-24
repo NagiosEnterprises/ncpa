@@ -173,6 +173,12 @@ class Handler(nagioshandler.NagiosHandler):
         except Exception as ex:
             logging.exception(ex)
 
+        # Get the connection_timeout value
+        try:
+            timeout = self.config.getfloat('nrdp', 'connection_timeout')
+        except Exception as e:
+            timeout = 10.0
+
         # Get the list of servers (and tokens, if available)
         servers = server.split(',')
         tokens = token.split(',')
@@ -192,7 +198,7 @@ class Handler(nagioshandler.NagiosHandler):
                 server += '/'
 
             logging.debug('XML to be submitted: %s', checkresults)
-            ret_xml = utils.send_request(url=server, token=token, XMLDATA=checkresults, cmd='submitcheck')
+            ret_xml = utils.send_request(url=server, connection_timeout=timeout, token=token, XMLDATA=checkresults, cmd='submitcheck')
 
             if ret_xml is not None:
                 try:
