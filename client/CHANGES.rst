@@ -3,7 +3,7 @@ Changelog
 
 1.2.5
 -----
-- Changed the default timeout value from 60s to 59s (#761) (ccztux)
+- Changed the default timeout value from 60s to 58s (#761) (ccztux)
 
 1.2.4
 -----

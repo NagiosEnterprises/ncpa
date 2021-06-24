@@ -3,7 +3,7 @@ import requests.exceptions
 import logging
 
 
-def send_request(url, **kwargs):
+def send_request(url, connection_timeout, **kwargs):
     """
     Send an HTTP POST request to given url.
 
@@ -13,7 +13,7 @@ def send_request(url, **kwargs):
     """
 
     try:
-        r = requests.post(url, data=kwargs, verify=False, allow_redirects=True)
+        r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=False, allow_redirects=True)
     except requests.exceptions.HTTPError as e:
         logging.error("HTTP Error: %s", e)
     except requests.exceptions.ConnectionError as e:
