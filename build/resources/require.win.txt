@@ -11,5 +11,6 @@ gevent
 gevent-websocket
 cffi
 appdirs
+kafka
 packaging
 pypiwin32
