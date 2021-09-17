@@ -11,6 +11,7 @@
 agent/build/*
 docs/_build
 *.exe
+build/resources/*.tgz
 agent/plugins/*
 ncpa.db
 prereqs.installed

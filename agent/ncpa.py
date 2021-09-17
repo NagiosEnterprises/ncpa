@@ -2,7 +2,7 @@
 
 # Monkey patch for gevent
 from gevent import monkey
-monkey.patch_all(thread=False)
+monkey.patch_all()
 
 import threading
 import logging
@@ -14,6 +14,7 @@ import time
 import datetime
 import tempfile
 
+from multiprocessing import Process
 from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
 from geventwebsocket.handler import WebSocketHandler
@@ -510,7 +511,7 @@ class Daemon():
             else:
                 gid = int(user_gid)
 
-        return uid, gid, username
+        return uid, gid
 
     def daemonize(self):
         """Detach from the terminal and continue as a daemon"""
@@ -632,8 +633,7 @@ def get_configuration(config=None, configdir=None):
     return cp
 
 
-# Actually starts the processes and threading for the
-# components that will be used
+# Actually starts the processes for the components that will be used
 def start_modules(options, config):
     try:
 
@@ -642,14 +642,16 @@ def start_modules(options, config):
         db.setup()
 
         # Create the passive thread
-        p = threading.Thread(target=Passive, args=(options, config, True))
+        p = Process(target=Passive, args=(options, config, True))
         p.daemon = True
         p.start()
 
         # Create the listener process
-        l = threading.Thread(target=Listener, args=(options, config, True))
+        l = Process(target=Listener, args=(options, config, True))
         l.daemon = True
         l.start()
+
+        return p, l
 
     except Exception as exc:
         logging.exception(exc)
@@ -707,17 +709,6 @@ def main():
     # Read and parse the configuration file
     config = get_configuration(options['config_file'], options['config_dir'])
 
-    # If we are running on Linux or Mac OS X we will be using the
-    # Daemon class to control the agent
-    if __SYSTEM__ == 'posix':
-
-        # If we are in debug mode, do not daemonize
-        if options['debug_mode']:
-            options['non_daemon'] = True
-
-        d = Daemon(options, config)
-        d.main()
-
     # If we are running this in debug mode from the command line, we need to
     # wait for the proper output to exit and kill the Passive and Listener
     # Note: We currently do not care about "safely" exiting them
@@ -732,13 +723,20 @@ def main():
         log.addHandler(logging.StreamHandler())
         log.setLevel('DEBUG')
 
-        start_modules(options, config)
+        p, l = start_modules(options, config)
         
         # Wait for exit
         print("Running in Debug Mode (https://localhost:5700/)")
-        input("Press enter to exit..")
+        input("Press enter to exit..\n")
         sys.exit(0)
 
+    # If we are running on Linux or Mac OS X we will be using the
+    # Daemon class to control the agent
+    if __SYSTEM__ == 'posix':
+        d = Daemon(options, config)
+        d.main()
+    else:
+        start_modules(options, config)
 
 if __name__ == '__main__':
     main()

@@ -1,17 +1,20 @@
 #!/bin/bash
 
 # Globals
-PYTHONTAR="Python-3.6.9"
-PYTHONVER="python3.6"
-PYTHONBIN=$(which python3.6)
+PYTHONVER="3.9.7"
+PYTHONTAR="Python-$PYTHONVER"
+PYTHONBIN=$(which python3)
 SKIP_PYTHON=0
 
 # Get information about system
 . $BUILD_DIR/linux/init.sh
 
 update_py_packages() {
-    PYTHONBIN=$(which python2.7)
-    LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary :all:
+    PYTHONBIN=$(which python3.9)
+    # Removed from before PYTHONBIN: LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib'
+    # Removed from end: --no-binary :all:
+    $PYTHONBIN -m pip install --upgrade pip
+    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
 }
 
 install_prereqs() {
@@ -94,19 +97,21 @@ install_prereqs() {
 
     cd $BUILD_DIR/resources
 
+    echo "Building python..."
+
+    if [ ! -f "$PYTHONTAR.tgz" ]; then
+        wget "https://www.python.org/ftp/python/$PYTHONVER/$PYTHONTAR.tgz"
+    fi
+
     # Install bundled Python version from source
     if [ $SKIP_PYTHON -eq 0 ]; then
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR
-        ./configure LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib' && make && make altinstall
+        # Removed from configure: LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib'
+        ./configure && make && make altinstall
         cd ..
         rm -rf $PYTHONTAR
-        PYTHONBIN=$(which python2.7)
-        
-        # Link lib-dynload from lib64 to lib due to arch issues for Python 2.7
-        if [ "$dist" == "os15" ]; then
-            ln -s /usr/local/lib64/python2.7/lib-dynload/ /usr/local/lib/python2.7/lib-dynload
-        fi
+        PYTHONBIN=$(which python3.9)
     fi
 
     # --------------------------

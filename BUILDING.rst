@@ -16,9 +16,9 @@ Prerequisites
 -------------
 
 * `Git for Windows <https://git-scm.com/download/win>`_
-* Python 3.x (32-Bit) (`Download <https://www.python.org/downloads/>`_)
-* OpenSSL for Windows (32-bit) (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_1a.exe>`_) *Requires admin rights*
-* `Microsoft Visual C++ Compiler` Build Tools <https://wiki.python.org/moin/WindowsCompilers>`_ *Requires admin rights/version used is based on version of python installed*
+* Python 3.9.x (32-Bit) (`Download <https://www.python.org/downloads/>`_)
+* OpenSSL for Windows (32-bit) (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_1a.exe>`_) *(Requires admin rights)*
+* `Microsoft Visual C++ Compiler Build Tools <https://wiki.python.org/moin/WindowsCompilers>`_ *(Requires admin rights/version used is based on version of python installed)*
 * `NSIS 3 <http://nsis.sourceforge.net/Download>`_ *Requires admin rights*
 
 Configure the Build Environment

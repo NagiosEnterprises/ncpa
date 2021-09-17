@@ -25,7 +25,7 @@ been installed and working.
 
 You will need to install git for windows. Then, download and install:
 i
-* `Python 3.x on Windows (32bit) <https://www.python.org/downloads/>`_
+* `Python 3.9.x on Windows (32bit) <https://www.python.org/downloads/>`_
 * OpenSSL 3 for Windows (32bit) (`Download <https://slproweb.com/download/Win32OpenSSL-3_0_0.exe>`_)
 
 To set up the python requirements, in `cmd.exe` clone the NCPA repo and run::
@@ -38,7 +38,7 @@ You will need `git` installed in order to clone the repo to do the following.
 
 Once cloned, to install the prereqs::
 
-    cd ncpa/build
+    cd build
     ./build.sh
 
 Running NCPA in Development
@@ -47,7 +47,9 @@ Running NCPA in Development
 The below examples assume you are inside the NCPA git working directory.
 
 	cd agent
-	python ncpa.py -d
+	python3.9 ncpa.py -d
+
+This command will run a development version of NCPA on the machine at https://localhost:5700/
 
 Code Readability
 ~~~~~~~~~~~~~~~~
