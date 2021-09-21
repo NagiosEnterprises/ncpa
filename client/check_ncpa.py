@@ -71,7 +71,7 @@ class HTTPError(ConnectionError):
 
 
 def parse_args():
-    version = 'check_ncpa.py, version: %s' % __VERSION__
+    version = 'check_ncpa.py, Version %s' % __VERSION__
 
     parser = optparse.OptionParser()
     parser.add_option("-H", "--hostname", help="The hostname to be connected to.")
