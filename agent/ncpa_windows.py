@@ -188,7 +188,7 @@ class Listener(Base):
 
             # Create connection pool
             try:
-                max_connections = self.config_parser.get('listener', 'max_connections')
+                max_connections = self.config_parser.getint('listener', 'max_connections')
             except Exception:
                 max_connections = 200
 
