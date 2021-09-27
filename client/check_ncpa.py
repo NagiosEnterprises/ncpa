@@ -58,7 +58,7 @@ __VERSION__ = '1.2.4'
 
 
 class ConnectionError(Exception):
-    error_output_prefix = "UNKNOWN: An error occured connecting to API. "
+    error_output_prefix = "UNKNOWN: An error occurred connecting to API. "
     pass
 
 class URLError(ConnectionError):
@@ -203,7 +203,7 @@ def get_arguments_from_options(options, **kwargs):
     # API call which can confuse people if they don't match
     arguments = { 'token': options.token,
                   'units': options.units }
-    
+
     if not options.list:
         arguments['warning'] = options.warning
         arguments['critical'] = options.critical
