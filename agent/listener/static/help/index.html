@@ -100,10 +100,29 @@ sudo launchctl start com.nagios.ncpa.passive</pre>
                     <p>You can also view the full changelog on the <a target="_new" href="https://github.com/NagiosEnterprises/ncpa/blob/master/CHANGES.rst">NCPA GitHub repository</a> <i class="fa fa-external-link"></i>.</p>
                     <p>
                         <ol>
-                            <li><b>Disk checks</b> - The <code>disk</code> node now contains the following new endpoints:</li>
+                            <li><b>Disk checks</b> - The <code>disk</code> node now contains the following new endpoints:
                                 <ol>
                                     <li><code>logical/max_file_length</code> - The maximum length a file name can have</li>
                                     <li><code>logical/max_path_length</code> - The maximum length a path name (directory name + base file name) can have</li>
+                                </ol>
+                            </li>
+                            <li><b>New plugin extensions</b> - New plugin extensions available:
+                                <ol>
+                                    <li><code>.pl</code> - To execute perl plugins</li>
+                                    <li><code>.php</code> - To execute php plugins</li>
+                                </ol>
+                            </li>
+                            <li><b>Modified plugin extensions</b>
+                                <ol>
+                                    <li><code>.py</code> - Changed to python3</li>
+                                </ol>
+                            </li>
+                            <li><b>Plugin timeout</b> - The default value of the configuration option <code>plugin_timeout</code> was changed from <b>60s</b> to <b>59s</b>.</li>
+                        </ol>
+                        <ol>
+                            <li><b>New configuration option</b> - New configuration option available:
+                                <ol>
+                                    <li><code>connection_timeout</code> - You can specify the connection_timeout in seconds for the check results being transmitted to the NRDP server</li>
                                 </ol>
                             </li>
                         </ol>

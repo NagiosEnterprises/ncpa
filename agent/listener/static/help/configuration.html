@@ -379,8 +379,14 @@
                             <tr>
                                 <td></td>
                                 <th>hostname</th>
-                                <td>NCPA</td>
+                                <td>NCPA 2</td>
                                 <td>This is the value that will be used for the <code>%HOSTNAME%</code> macro in the <a href="#passive-checks">[passive checks]</a> configuration section.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>connection_timeout</th>
+                                <td>10</td>
+                                <td>Connection timeout in seconds that will be used for transmitting the passive check results via HTTP POST requests to the NRDP server.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -483,8 +489,14 @@
                             </tr>
                             <tr>
                                 <td></td>
+                                <th>follow_symlinks</th>
+                                <td>0</td>
+                                <td>Follow symlinks located in the plugin path. Linux and Mac OS X only.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
                                 <th>plugin_timeout</th>
-                                <td>60</td>
+                                <td>59</td>
                                 <td>The plugin execution timeout on the NCPA side. For both active and passive checks. There is also a timeout specified in <code>check_ncpa.py</code>.</td>
                             </tr>
                         </tbody>
@@ -497,7 +509,13 @@
                                 <td>.sh = /bin/sh $plugin_name $plugin_args</td>
                             </tr>
                             <tr>
-                                <td>.py = python $plugin_name $plugin_args</td>
+                                <td>.py = python3 $plugin_name $plugin_args</td>
+                            </tr>
+                            <tr>
+                                <td>.pl = perl $plugin_name $plugin_args</td>
+                            </tr>
+                            <tr>
+                                <td>.php = php $plugin_name $plugin_args</td>
                             </tr>
                             <tr>
                                 <td>.ps1 = powershell -ExecutionPolicy Bypass -File $plugin_name $plugin_args</td>
