@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+1.2.5
+-----
+- Changed the default timeout value from 60s to 58s (#761) (ccztux)
+
 1.2.4
 -----
 - Fixed encoding issues on Python 2 vs Python 3

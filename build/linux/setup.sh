@@ -136,7 +136,6 @@ install_prereqs() {
 
 
     # Install pip
-    # Updated URL for fetching pip for Python2.7, old URL was broken
     cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/pip/2.7/get-pip.py && $PYTHONBIN /tmp/get-pip.py
 
     # Install modules

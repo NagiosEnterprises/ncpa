@@ -50,9 +50,11 @@ def make_mountpoint_nodes(partition_name):
     device_name = RunnableNode('device_name', method=lambda: ([partition_name.device], ''))
     fstype = RunnableNode('fstype', method=lambda: (partition_name.fstype, ''))
     opts = RunnableNode('opts', method=lambda: (partition_name.opts, ''))
+    maxfile = RunnableNode('max_file_length', method=lambda: (partition_name.maxfile, ''))
+    maxpath = RunnableNode('max_path_length', method=lambda: (partition_name.maxpath, ''))
     safe_mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
 
-    node_children = [total, used, free, used_percent, device_name, fstype, opts]
+    node_children = [total, used, free, used_percent, device_name, fstype, opts, maxfile, maxpath]
 
     # Unix specific inode counter ~ sorry Windows! :'(
     if environment.SYSTEM != 'Windows':
@@ -60,7 +62,7 @@ def make_mountpoint_nodes(partition_name):
             st = os.statvfs(mountpoint)
             iu = st.f_files - st.f_ffree
             iup = 0
-            if iu > 0:
+            if st.f_files > 0:
                 iup = math.ceil(100 * float(iu) / float(st.f_files))
             inodes = RunnableNode('inodes', method=lambda: (st.f_files, 'inodes'))
             inodes_used = RunnableNode('inodes_used', method=lambda: (iu, 'inodes'))
