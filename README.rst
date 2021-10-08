@@ -29,7 +29,7 @@ We currently build for the following operating systems:
 - SLES 11, 12, 15
 - Oracle 7, 8
 - Amazon Linux 2
-- Solaris 10, 11
+- Solaris 11
 - AIX 7
 - Raspbian 10 (Buster)
 
@@ -46,6 +46,7 @@ Older systems that have been supported by NCPA in the past:
 - Oracle 5 using NCPA 2.0.6
 - Oracle 6 using NCPA 2.2.2
 - Windows XP/Vista using NCPA 1.8.1
+- Solaris 10
 
 If you're looking for older builds you can find them `in the archives <https://www.nagios.org/ncpa/archive.php>`_.
 

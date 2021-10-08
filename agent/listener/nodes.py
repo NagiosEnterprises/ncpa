@@ -508,16 +508,16 @@ class RunnableNode(ParentNode):
         elif units in ['TI', 'GI', 'MI', 'KI']:
             if units == 'TI':
                 units = 'Ti'
-                factor = 1.1e12
+                factor = 1099511627776.0
             elif units == 'GI':
                 units = 'Gi'
-                factor = 1.074e9
+                factor = 1073741824.0
             elif units == 'MI':
                 units = 'Mi'
-                factor = 1.049e6
+                factor = 1048576.0
             elif units == 'KI':
                 units = 'Ki'
-                factor = 1.024e3
+                factor = 1024.0
 
         # Process the values and put them back into list, also check if
         # the value is just a bytes value - keep as integer
