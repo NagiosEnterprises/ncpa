@@ -511,7 +511,7 @@ class RunnableNode(ParentNode):
                 factor = 1.1e12
             elif units == 'GI':
                 units = 'Gi'
-                factor = 1.074e9
+                factor = 1073741824
             elif units == 'MI':
                 units = 'Mi'
                 factor = 1.049e6
