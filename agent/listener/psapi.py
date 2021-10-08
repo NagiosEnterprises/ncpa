@@ -150,7 +150,9 @@ def get_memory_node():
     mem_virt = RunnableParentNode('virtual', primary='percent', primary_unit='%',
                     children=(mem_virt_total, mem_virt_available, mem_virt_free,
                               mem_virt_percent, mem_virt_used),
-                    custom_output='Memory usage was')
+                    custom_output='Memory usage was',
+                    # See https://github.com/NagiosEnterprises/ncpa/issues/783
+                    add_primary_node_to_perfdata=True)
     mem_swap_total = RunnableNode('total', method=lambda: (ps.swap_memory().total, 'B'))
     mem_swap_percent = RunnableNode('percent', method=lambda: (ps.swap_memory().percent, '%'))
     mem_swap_used = RunnableNode('used', method=lambda: (ps.swap_memory().used, 'B'))
