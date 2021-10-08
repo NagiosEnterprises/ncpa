@@ -135,7 +135,7 @@ class RunnableParentNode(ParentNode):
         # Add extra perfdata on (if it exists)
         if secondary_perfdata:
             extra_perfdata = ''
-            if self.primary_unit != '%' and False:
+            if self.primary_unit != '%':
                 extra_perfdata += primary_info['perfdata'] + ' '
             extra_perfdata += ' '.join(secondary_perfdata)
             primary_info['stdout'] = primary_info['stdout'] + ' | ' + extra_perfdata
