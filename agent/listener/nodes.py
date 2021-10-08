@@ -77,11 +77,13 @@ class ParentNode(object):
 class RunnableParentNode(ParentNode):
 
     def __init__(self, name, children, primary, primary_unit='',
-                 custom_output=None, include=None, *args, **kwargs):
+                 custom_output=None, include=None, add_primary_node_to_perfdata=False, *args, **kwargs):
         super(RunnableParentNode, self).__init__(name, children)
         self.primary = primary
         self.primary_unit = primary_unit
         self.custom_output = custom_output
+        # See https://github.com/NagiosEnterprises/ncpa/issues/783
+        self.add_primary_node_to_perfdata = add_primary_node_to_perfdata
         if include is None:
             self.include = [x for x in self.children]
         else:
@@ -107,6 +109,12 @@ class RunnableParentNode(ParentNode):
                                                     custom_output=self.custom_output,
                                                     child_check=True,
                                                     *args, **kwargs)
+
+                    # See https://github.com/NagiosEnterprises/ncpa/issues/783
+                    if self.add_primary_node_to_perfdata:
+                        perfdata = primary_info.get('perfdata')
+                        if perfdata is not None:
+                            secondary_perfdata.append(perfdata)
                 else:
                     result = child.run_check(use_prefix=False, use_perfdata=False,
                                              primary=False, primary_total=total,
