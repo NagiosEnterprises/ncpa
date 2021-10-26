@@ -77,11 +77,13 @@ class ParentNode(object):
 class RunnableParentNode(ParentNode):
 
     def __init__(self, name, children, primary, primary_unit='',
-                 custom_output=None, include=None, *args, **kwargs):
+                 custom_output=None, include=None, add_primary_node_to_perfdata=False, *args, **kwargs):
         super(RunnableParentNode, self).__init__(name, children)
         self.primary = primary
         self.primary_unit = primary_unit
         self.custom_output = custom_output
+        # See https://github.com/NagiosEnterprises/ncpa/issues/783
+        self.add_primary_node_to_perfdata = add_primary_node_to_perfdata
         if include is None:
             self.include = [x for x in self.children]
         else:
@@ -107,6 +109,12 @@ class RunnableParentNode(ParentNode):
                                                     custom_output=self.custom_output,
                                                     child_check=True,
                                                     *args, **kwargs)
+
+                    # See https://github.com/NagiosEnterprises/ncpa/issues/783
+                    if self.add_primary_node_to_perfdata:
+                        perfdata = primary_info.get('perfdata')
+                        if perfdata is not None:
+                            secondary_perfdata.append(perfdata)
                 else:
                     result = child.run_check(use_prefix=False, use_perfdata=False,
                                              primary=False, primary_total=total,
@@ -508,16 +516,16 @@ class RunnableNode(ParentNode):
         elif units in ['TI', 'GI', 'MI', 'KI']:
             if units == 'TI':
                 units = 'Ti'
-                factor = 1.1e12
+                factor = 1099511627776.0
             elif units == 'GI':
                 units = 'Gi'
-                factor = 1.074e9
+                factor = 1073741824.0
             elif units == 'MI':
                 units = 'Mi'
-                factor = 1.049e6
+                factor = 1048576.0
             elif units == 'KI':
                 units = 'Ki'
-                factor = 1.024e3
+                factor = 1024.0
 
         # Process the values and put them back into list, also check if
         # the value is just a bytes value - keep as integer
