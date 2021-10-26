@@ -11,6 +11,7 @@ Changelog
 - Fixed connection to NRDP server can hang indefinitely (#776) (ccztux)
 - Fixed toggle long output doesnt work (#778) (ccztux)
 - Fixed the filter Type gets lost on pages > 1 (#780) (ccztux)
+- Fixed issue with systemctl not showing services due to output (#791)
 
 2.3.1 - 02/11/2021
 ==================
