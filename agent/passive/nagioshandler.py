@@ -45,7 +45,7 @@ class NagiosHandler(object):
                     duration = values[2]
                 else:
                     try:
-                        duration = int(self.config.get('passive', 'sleep'))
+                        duration = self.config.getint('passive', 'sleep')
                     except Exception:
                         duration = 300
 
