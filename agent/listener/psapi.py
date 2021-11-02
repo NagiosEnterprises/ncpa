@@ -188,9 +188,9 @@ def get_disk_node(config):
     try:
         exclude_fs_types = config.get('general', 'exclude_fs_types')
     except Exception as e:
-        exclude_fs_types = "aufs,autofs,binfmt_misc,cifs,cgroup,debugfs,devpts,devtmpfs,"\
-                           "encryptfs,efivarfs,fuse,hugelbtfs,mqueue,nfs,overlayfs,proc,"\
-                           "pstore,rpc_pipefs,securityfs,smb,sysfs,tmpfs,tracefs,xenfs"
+        exclude_fs_types = "aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,"\
+                           "encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,"\
+                           "pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs,nfsd,xenfs"
     exclude_fs_types = [x.strip() for x in exclude_fs_types.split(',')]
 
     # Get the all partitions value
