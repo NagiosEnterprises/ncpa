@@ -203,7 +203,7 @@ class Daemon(object):
         self.write_pid()
 
         try:
-            logging.info(u"started")
+            logging.info(u"started ncpa_%s, version: %s", self.section.title().lower(), listener.server.__VERSION__)
             try:
                 self.run()
             except (KeyboardInterrupt, SystemExit):
@@ -213,7 +213,7 @@ class Daemon(object):
                 raise
         finally:
             self.remove_pid()
-            logging.info(u"stopped")
+            logging.info(u"stopped ncpa_%s, version: %s", self.section.title().lower(), listener.server.__VERSION__)
 
     def stop(self):
         u"""Stop the running process"""
@@ -248,7 +248,7 @@ class Daemon(object):
             sys.exit(u"NCPA %s: Service is not running." % self.section.title())
 
     def version(self):
-        sys.exit(u"ncpa_%s version, %s" % (self.section.title().lower(), listener.server.__VERSION__))
+        sys.exit(u"ncpa_%s, version: %s" % (self.section.title().lower(), listener.server.__VERSION__))
 
     def prepare_dirs(self):
         u"""Ensure the log and pid file directories exist and are writable"""

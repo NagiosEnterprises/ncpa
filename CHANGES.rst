@@ -14,6 +14,7 @@ Changelog
 - Fixed some configuration directives doesnt work, e.g. all_partitions and follow_symlinks (#757) (ccztux)
 - Fixed issue with systemctl not showing services due to output (#791)
 - Fixed default value of exlude_fs_types differs from documented default value (#823) (ccztux)
+- Fixed ERROR an integer is required on max_connections configuration (#812) (ccztux)
 
 2.3.1 - 02/11/2021
 ==================
