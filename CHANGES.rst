@@ -15,6 +15,7 @@ Changelog
 - Fixed issue with systemctl not showing services due to output (#791)
 - Fixed default value of exlude_fs_types differs from documented default value (#823) (ccztux)
 - Fixed ERROR an integer is required on max_connections configuration (#812) (ccztux)
+- Fixed Minor bug. Delta checkbox isn't showing in NCPA interface on Windows (#747) (ccztux)
 
 2.3.1 - 02/11/2021
 ==================
