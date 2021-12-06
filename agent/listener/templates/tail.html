@@ -67,7 +67,7 @@ $(document).ready(function() {
     $('.btn-apply').click(function() {
         var name = $('input[name="name"]').val();
         query_string = "name=" + name;
-        $('.name').html(name);
+        $('.name').text(name);
 
         // Restart the websocket
         ws.close();
