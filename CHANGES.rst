@@ -16,6 +16,7 @@ Changelog
 - Fixed default value of exlude_fs_types differs from documented default value (#823) (ccztux)
 - Fixed ERROR an integer is required on max_connections configuration (#812) (ccztux)
 - Fixed Minor bug. Delta checkbox isn't showing in NCPA interface on Windows (#747) (ccztux)
+- Fixed XSS security vulnerability in tail event log gui page (CVE-2021-43584) (#830)
 
 2.3.1 - 02/11/2021
 ==================
