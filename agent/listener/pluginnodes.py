@@ -84,13 +84,13 @@ class PluginNode(nodes.RunnableNode):
 
         # Get plugin command timeout value, if it exists
         try:
-            timeout = int(config.get('plugin directives', 'plugin_timeout'))
+            timeout = config.getint('plugin directives', 'plugin_timeout')
         except Exception as e:
-            timeout = 60
+            timeout = 59
 
         # Get the check logging value
         try:
-            check_logging = int(config.get('general', 'check_logging'))
+            check_logging = config.getint('general', 'check_logging')
         except Exception as e:
             check_logging = 1
 
@@ -197,7 +197,7 @@ class PluginAgentNode(nodes.ParentNode):
 
         # Get the follow_symlinks value
         try:
-            follow_symlinks = bool(config.get('plugin directives', 'follow_symlinks'))
+            follow_symlinks = config.getboolean('plugin directives', 'follow_symlinks')
         except Exception as e:
             follow_symlinks = False
 

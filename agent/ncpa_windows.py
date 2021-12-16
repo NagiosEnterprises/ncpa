@@ -74,18 +74,26 @@ class Base(object):
         """This should always setup the logger.
 
         """
-        config = dict(self.config.items(self.c_type, 1))
 
         # Now we grab the logging specific items
-        log_file = os.path.normpath(config['logfile'])
+        log_file = os.path.normpath(self.config.get(self.c_type, 'logfile'))
         if not os.path.isabs(log_file):
             log_file = self.determine_relative_filename(log_file)
 
         logging.getLogger().handlers = []
 
-        # Max size of log files will be 20MB, and we'll keep one of them as backup
-        max_log_size_bytes = int(config.get('logmaxmb', 5))
-        max_log_rollovers = int(config.get('logbackups', 5))
+        # Get the log settings
+        try:
+            max_log_size_bytes = self.config.getint(self.c_type, 'logmaxmb')
+        except Exception:
+            max_log_size_bytes = 5
+
+        try:
+            max_log_rollovers = self.config.getint(self.c_type, 'logbackups')
+        except Exception:
+            max_log_rollovers = 5
+
+        # Max size of log files set, and we'll keep one of them as backup
         max_file_size = max_log_size_bytes * 1024 * 1024
         file_handler = logging.handlers.RotatingFileHandler(log_file,
                                                             maxBytes=max_file_size,
@@ -95,8 +103,14 @@ class Base(object):
 
         logging.getLogger().addHandler(file_handler)
 
+        # Get loglevel value
+        try:
+            loglevel = self.config.get(self.c_type, 'loglevel')
+        except Exception:
+            loglevel = 'INFO'
+
         # Set log level
-        log_level_str = config.get('loglevel', 'INFO').upper()
+        log_level_str = loglevel.upper()
         log_level = getattr(logging, log_level_str, logging.INFO)
         logging.getLogger().setLevel(log_level)
 
@@ -188,7 +202,7 @@ class Listener(Base):
 
             # Create connection pool
             try:
-                max_connections = self.config_parser.get('listener', 'max_connections')
+                max_connections = self.config_parser.getint('listener', 'max_connections')
             except Exception:
                 max_connections = 200
 

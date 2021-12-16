@@ -54,7 +54,7 @@ import re
 import signal
 
 
-__VERSION__ = '1.2.4'
+__VERSION__ = '1.2.5'
 
 
 class ConnectionError(Exception):
@@ -71,7 +71,7 @@ class HTTPError(ConnectionError):
 
 
 def parse_args():
-    version = 'check_ncpa.py, Version %s' % __VERSION__
+    version = 'check_ncpa.py, version: %s' % __VERSION__
 
     parser = optparse.OptionParser()
     parser.add_option("-H", "--hostname", help="The hostname to be connected to.")
@@ -82,7 +82,7 @@ def parse_args():
                            "use the -a directive for that. DO NOT INCLUDE the api/ "
                            "instruction.")
     parser.add_option("-P", "--port", default=5693, type="int",
-                      help="Port to use to connect to the client.")
+                      help="Port to use to connect to the client. [Default: %default]")
     parser.add_option("-w", "--warning", default=None, type="str",
                       help="Warning value to be passed for the check.")
     parser.add_option("-c", "--critical", default=None, type="str",
@@ -99,9 +99,9 @@ def parse_args():
                            "as you would call from the command line. Example: -a '-w 10 -c 20 -f /usr/local'")
     parser.add_option("-t", "--token", default='',
                       help="The token for connecting.")
-    parser.add_option("-T", "--timeout", default=60, type="int",
+    parser.add_option("-T", "--timeout", default=58, type="int",
                       help="Enforced timeout, will terminate plugins after "
-                           "this amount of seconds. [%default]")
+                           "this amount of seconds. [Default: %default]")
     parser.add_option("-d", "--delta", action='store_true',
                       help="Signals that this check is a delta check and a "
                            "local state will kept.")

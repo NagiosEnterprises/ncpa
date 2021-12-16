@@ -93,6 +93,43 @@ sudo launchctl start com.nagios.ncpa.passive</pre>
 
                 </div>
 
+                <a name="changes-in-24"></a>
+                <div class="section">
+
+                    <h2>Changes from 2.3 to 2.4</h2>
+                    <p>You can also view the full changelog on the <a target="_new" href="https://github.com/NagiosEnterprises/ncpa/blob/master/CHANGES.rst">NCPA GitHub repository</a> <i class="fa fa-external-link"></i>.</p>
+                    <p>
+                        <ol>
+                            <li><b>Disk checks</b> - The <code>disk</code> node now contains the following new endpoints:
+                                <ol>
+                                    <li><code>logical/max_file_length</code> - The maximum length a file name can have</li>
+                                    <li><code>logical/max_path_length</code> - The maximum length a path name (directory name + base file name) can have</li>
+                                </ol>
+                            </li>
+                            <li><b>New plugin extensions</b> - New plugin extensions available:
+                                <ol>
+                                    <li><code>.pl</code> - To execute perl plugins</li>
+                                    <li><code>.php</code> - To execute php plugins</li>
+                                </ol>
+                            </li>
+                            <li><b>Modified plugin extensions</b>
+                                <ol>
+                                    <li><code>.py</code> - Changed to python3</li>
+                                </ol>
+                            </li>
+                            <li><b>Plugin timeout</b> - The default value of the configuration option <code>plugin_timeout</code> was changed from <b>60s</b> to <b>59s</b>.</li>
+                        </ol>
+                        <ol>
+                            <li><b>New configuration option</b> - New configuration option available:
+                                <ol>
+                                    <li><code>connection_timeout</code> - You can specify the connection_timeout in seconds for the check results being transmitted to the NRDP server</li>
+                                </ol>
+                            </li>
+                        </ol>
+                    </p>
+
+                </div>
+
                 <a name="changes-in-23"></a>
                 <div class="section">
 
@@ -101,7 +138,12 @@ sudo launchctl start com.nagios.ncpa.passive</pre>
                     <p>
                         <ol>
                             <li><b>Allowed hosts</b> - The configuration option <code>allowed_hosts</code> now supports hostnames and IPv4-mapped IPv6 addresses.</li>
-                            <li><b>Swap checks</b> - The <code>memory</code> node now contains new endpoints: swap/swapped_in and swap/swapped_out.</li>
+                            <li><b>Swap checks</b> - The <code>memory</code> node now contains the following new endpoints:</li>
+                                <ol>
+                                    <li><code>swap/swapped_in</code> - The number of bytes the system has swapped in from disk (cumulative)</li>
+                                    <li><code>swap/swapped_out</code> - The number of bytes the system has swapped out from disk (cumulative)<li>
+                                </ol>
+                            </li>
                             <li><b>Disk checks</b> - The <code>disk</code> node now contains a new endpoint: inodes_used_percent.</li>
                             <li><b>New configuration option</b> - New configuration option available:
                                 <ol>

@@ -50,9 +50,11 @@ def make_mountpoint_nodes(partition_name):
     device_name = RunnableNode('device_name', method=lambda: ([partition_name.device], ''))
     fstype = RunnableNode('fstype', method=lambda: (partition_name.fstype, ''))
     opts = RunnableNode('opts', method=lambda: (partition_name.opts, ''))
+    maxfile = RunnableNode('max_file_length', method=lambda: (partition_name.maxfile, ''))
+    maxpath = RunnableNode('max_path_length', method=lambda: (partition_name.maxpath, ''))
     safe_mountpoint = re.sub(r'[\\/]+', '|', mountpoint)
 
-    node_children = [total, used, free, used_percent, device_name, fstype, opts]
+    node_children = [total, used, free, used_percent, device_name, fstype, opts, maxfile, maxpath]
 
     # Unix specific inode counter ~ sorry Windows! :'(
     if environment.SYSTEM != 'Windows':
@@ -60,7 +62,7 @@ def make_mountpoint_nodes(partition_name):
             st = os.statvfs(mountpoint)
             iu = st.f_files - st.f_ffree
             iup = 0
-            if iu > 0:
+            if st.f_files > 0:
                 iup = math.ceil(100 * float(iu) / float(st.f_files))
             inodes = RunnableNode('inodes', method=lambda: (st.f_files, 'inodes'))
             inodes_used = RunnableNode('inodes_used', method=lambda: (iu, 'inodes'))
@@ -150,7 +152,9 @@ def get_memory_node():
     mem_virt = RunnableParentNode('virtual', primary='percent', primary_unit='%',
                     children=(mem_virt_total, mem_virt_available, mem_virt_free,
                               mem_virt_percent, mem_virt_used),
-                    custom_output='Memory usage was')
+                    custom_output='Memory usage was',
+                    # See https://github.com/NagiosEnterprises/ncpa/issues/783
+                    add_primary_node_to_perfdata=True)
     mem_swap_total = RunnableNode('total', method=lambda: (ps.swap_memory().total, 'B'))
     mem_swap_percent = RunnableNode('percent', method=lambda: (ps.swap_memory().percent, '%'))
     mem_swap_used = RunnableNode('used', method=lambda: (ps.swap_memory().used, 'B'))
@@ -184,14 +188,14 @@ def get_disk_node(config):
     try:
         exclude_fs_types = config.get('general', 'exclude_fs_types')
     except Exception as e:
-        exclude_fs_types = "aufs,autofs,binfmt_misc,cifs,cgroup,debugfs,devpts,devtmpfs,"\
-                           "encryptfs,efivarfs,fuse,hugelbtfs,mqueue,nfs,overlayfs,proc,"\
-                           "pstore,rpc_pipefs,securityfs,smb,sysfs,tmpfs,tracefs,xenfs"
+        exclude_fs_types = "aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,"\
+                           "encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,"\
+                           "pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs,nfsd,xenfs"
     exclude_fs_types = [x.strip() for x in exclude_fs_types.split(',')]
 
     # Get the all partitions value
     try:
-        all_partitions = bool(config.get('general', 'all_partitions'))
+        all_partitions = config.getboolean('general', 'all_partitions')
     except Exception as e:
         all_partitions = True
 

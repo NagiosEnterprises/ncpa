@@ -1,6 +1,23 @@
 Changelog
 +++++++++
 
+2.4.0 - 12/16/2021
+==================
+- Added new disk metrics max_file_length and max_path_length (#760) (ccztux)
+- Added php and perl to the default plugin extensions (#766) (ccztux)
+- Changed the default plugin_timeout value from 60s to 59s (#761) (ccztux)
+- Changed python default plugin extension to python3 (#786) (ccztux)
+- Fixed ZeroDivisionError: float division by zero (#769) (ccztux)
+- Fixed connection to NRDP server can hang indefinitely (#776) (ccztux)
+- Fixed toggle long output doesnt work (#778) (ccztux)
+- Fixed the filter Type gets lost on pages > 1 (#780) (ccztux)
+- Fixed some configuration directives doesnt work, e.g. all_partitions and follow_symlinks (#757) (ccztux)
+- Fixed issue with systemctl not showing services due to output (#791)
+- Fixed default value of exlude_fs_types differs from documented default value (#823) (ccztux)
+- Fixed ERROR an integer is required on max_connections configuration (#812) (ccztux)
+- Fixed Minor bug. Delta checkbox isn't showing in NCPA interface on Windows (#747) (ccztux)
+- Fixed XSS security vulnerability in tail event log gui page (CVE-2021-43584) (#830)
+
 2.3.1 - 02/11/2021
 ==================
 - Fixed uninstalling DEB package leaves systemd service active (#651) (ccztux)
