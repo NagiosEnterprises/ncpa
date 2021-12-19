@@ -67,7 +67,7 @@ function render_graph(target) {
 function generate_select(obj) {
     var select = $('<select>', { 'class': 'form-control nodes' });
     $.each(obj, function(k, value) {
-        if (k == 'opts' || k == 'fstype' || k == 'device_name') { return; }
+        if (k == 'opts' || k == 'fstype' || k == 'device_name' || k == 'mtu' || k == 'isup' || k == 'duplex' || k == 'speed') { return; }
         select.append($('<option>', { value: k, text: k }));
     });
     $('#graph-selector-div').append(select);
