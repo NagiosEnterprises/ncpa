@@ -3,7 +3,7 @@ Changelog
 
 2.5.0 - ??/??/2022
 ==================
--  Added new interface metrics speed, duplex, mtu and isup (#646) (ccztux)
+- Added new interface metrics speed, duplex, mtu and isup (#646) (ccztux)
 
 2.4.0 - 12/16/2021
 ==================
