@@ -92,24 +92,39 @@ def make_mount_other_nodes(partition):
     return ParentNode(safe_mountpoint, children=[dvn, fstype, opts])
 
 def make_if_nodes(if_name):
-    x = ps.net_io_counters(pernic=True)
+    duplex_map = {
+        ps.NIC_DUPLEX_FULL: "full",
+        ps.NIC_DUPLEX_HALF: "half",
+        ps.NIC_DUPLEX_UNKNOWN: "unknown",
+    }
 
-    bytes_sent = RunnableNode('bytes_sent', method=lambda: (x[if_name].bytes_sent, 'B'))
-    bytes_recv = RunnableNode('bytes_recv', method=lambda: (x[if_name].bytes_recv, 'B'))
-    packets_sent = RunnableNode('packets_sent', method=lambda: (x[if_name].packets_sent, 'packets'))
-    packets_recv = RunnableNode('packets_recv', method=lambda: (x[if_name].packets_recv, 'packets'))
-    errin = RunnableNode('errin', method=lambda: (x[if_name].errin, 'errors'))
-    errout = RunnableNode('errout', method=lambda: (x[if_name].errout, 'errors'))
-    dropin = RunnableNode('dropin', method=lambda: (x[if_name].dropin, 'packets'))
-    dropout = RunnableNode('dropout', method=lambda: (x[if_name].dropout, 'packets'))
+    io_counters = ps.net_io_counters(pernic=True)
+    io = io_counters[if_name]
+    bytes_sent = RunnableNode('bytes_sent', method=lambda: (io.bytes_sent, 'B'))
+    bytes_recv = RunnableNode('bytes_recv', method=lambda: (io.bytes_recv, 'B'))
+    packets_sent = RunnableNode('packets_sent', method=lambda: (io.packets_sent, 'packets'))
+    packets_recv = RunnableNode('packets_recv', method=lambda: (io.packets_recv, 'packets'))
+    errin = RunnableNode('errin', method=lambda: (io.errin, 'errors'))
+    errout = RunnableNode('errout', method=lambda: (io.errout, 'errors'))
+    dropin = RunnableNode('dropin', method=lambda: (io.dropin, 'packets'))
+    dropout = RunnableNode('dropout', method=lambda: (io.dropout, 'packets'))
+
+    stats = ps.net_if_stats()
+    st = stats[if_name]
+    isup = RunnableNode('isup', method=lambda: ("true" if st.isup else "false", ''))
+    duplex = RunnableNode('duplex', method=lambda: (duplex_map[st.duplex], ''))
+    speed = RunnableNode('speed', method=lambda: (st.speed, 'Mbit/s'))
+    mtu = RunnableNode('mtu', method=lambda: (st.mtu, ''))
 
     # Temporary fix for Windows (latin-1 should catch most things)
     name = if_name
     if environment.SYSTEM == "Windows":
         name = unicode(if_name, "latin-1", errors="replace")
 
-    return RunnableParentNode(name, primary='bytes_sent', children=[bytes_sent, bytes_recv, packets_sent,
-                              packets_recv, errin, errout, dropin, dropout])
+    return RunnableParentNode(name,
+                    children=[bytes_sent, bytes_recv, packets_sent, packets_recv, errin, errout, dropin, dropout, isup, duplex, speed, mtu],
+                    primary='bytes_sent',
+                    include=('bytes_sent', 'bytes_recv', 'packets_sent', 'packets_recv', 'errin', 'errout', 'dropin', 'dropout', 'speed'))
 
 
 def get_timezone():

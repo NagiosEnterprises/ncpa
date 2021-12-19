@@ -93,6 +93,26 @@ sudo launchctl start com.nagios.ncpa.passive</pre>
 
                 </div>
 
+                <a name="changes-in-25"></a>
+                <div class="section">
+
+                    <h2>Changes from 2.4 to 2.5</h2>
+                    <p>You can also view the full changelog on the <a target="_new" href="https://github.com/NagiosEnterprises/ncpa/blob/master/CHANGES.rst">NCPA GitHub repository</a> <i class="fa fa-external-link"></i>.</p>
+                    <p>
+                        <ol>
+                            <li><b>Interface checks</b> - The <code>interface</code> node now contains the following new endpoints:
+                                <ol>
+                                    <li><code>speed</code> - The NIC speed expressed in mega bits (Mbit/s), if it can’t be determined (e.g. ‘localhost’) it will be set to <b>0</b>.
+                                    <li><code>mtu</code> - NIC’s maximum transmission unit expressed in bytes.
+                                    <li><code>duplex</code> - The duplex communication type; it can be either <b>full</b>, <b>half</b> or <b>unknown</b>.
+                                    <li><code>isup</code> - A <b>bool</b> indicating whether the NIC is up and running (meaning ethernet cable or Wi-Fi is connected).
+                                </ol>
+                            </li>
+                        </ol>
+                    </p>
+
+                </div>
+
                 <a name="changes-in-24"></a>
                 <div class="section">
 
