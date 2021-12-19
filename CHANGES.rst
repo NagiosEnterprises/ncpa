@@ -4,7 +4,7 @@ Changelog
 2.5.0 - 2022-??-??
 ==================
 - Added new interface metrics speed, duplex, mtu and isup (#646) (ccztux)
-- Change the date format in the changelog (#838) (ccztux)
+- Changed the date format in the changelog (#838) (ccztux)
 
 2.4.0 - 2021-12-16
 ==================
