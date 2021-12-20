@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+2.5.0 - ??/??/2022
+==================
+- NRDP connection timeout is missing in the admin section of the gui (#841) (ccztux)
+
 2.4.0 - 12/16/2021
 ==================
 - Added new disk metrics max_file_length and max_path_length (#760) (ccztux)
