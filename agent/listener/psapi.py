@@ -111,7 +111,7 @@ def make_if_nodes(if_name):
 
     stats = ps.net_if_stats()
     st = stats[if_name]
-    isup = RunnableNode('isup', method=lambda: ("true" if st.isup else "false", ''))
+    isup = RunnableNode('isup', method=lambda: (True if st.isup else "false", ''))
     duplex = RunnableNode('duplex', method=lambda: (duplex_map[st.duplex], ''))
     speed = RunnableNode('speed', method=lambda: (st.speed, 'Mbit/s'))
     mtu = RunnableNode('mtu', method=lambda: (st.mtu, ''))
