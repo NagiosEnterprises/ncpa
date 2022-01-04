@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
 
-# Monkey patch for gevent
-from gevent import monkey
-monkey.patch_all()
-
 import threading
 import logging
 import glob
@@ -13,21 +9,25 @@ import ssl
 import time
 import datetime
 import tempfile
+# import uvicorn
+import asyncio
+import hypercorn.asyncio
+from hypercorn.config import Config as HypercornConfig
 
 from multiprocessing import Process
-from gevent.pywsgi import WSGIServer
-from gevent.pool import Pool
-from geventwebsocket.handler import WebSocketHandler
 from logging.handlers import RotatingFileHandler
 from argparse import ArgumentParser
 from io import open
 from configparser import ConfigParser
 
 # NCPA-specific module imports
-import listener.server
+import listener.asgi_server as server
 import listener.psapi
 import listener.certificate as certificate
 import listener.database as database
+
+webapp = server.webapp
+
 
 # Imports for different system types
 if os.name == 'posix':
@@ -97,7 +97,7 @@ class Listener(Base):
             except Exception:
                 ssl_str_ciphers = None
 
-            listener.server.listener.config['iconfig'] = self.config
+            server.config = self.config
 
             try:
                 ssl_str_version = self.config.get('listener', 'ssl_version')
@@ -116,14 +116,14 @@ class Listener(Base):
                 cert, key = user_cert.split(',')
 
             ssl_context = {
-                'certfile': cert,
-                'keyfile': key,
-                'ssl_version': ssl_version
+                'ssl_certfile': cert,
+                'ssl_keyfile': key,
+                # 'ssl_version': ssl_version
             }
 
             # Add SSL cipher list if one is given
             if ssl_str_ciphers:
-                ssl_context['ciphers'] = ssl_str_ciphers
+                ssl_context['ssl_ciphers'] = ssl_str_ciphers
 
             # Create connection pool
             try:
@@ -131,13 +131,20 @@ class Listener(Base):
             except Exception:
                 max_connections = 200
 
-            listener.server.listener.secret_key = os.urandom(24)
-            http_server = WSGIServer(listener=(address, port),
-                                     application=listener.server.listener,
-                                     handler_class=WebSocketHandler,
-                                     spawn=Pool(max_connections),
-                                     **ssl_context)
-            http_server.serve_forever()
+            # uvicorn.run(server.webapp, host=address, port=port, **ssl_context)
+            # uvicorn.run('listener.asgi_server:webapp', host=address, port=port, log_level='debug')
+
+            hc = HypercornConfig()
+            hc.bind = ["%s:%s" % (address, port)]
+            asyncio.run(hypercorn.asyncio.serve(server.webapp, hc))
+
+            # listener.server.listener.secret_key = os.urandom(24)
+            # http_server = WSGIServer(listener=(address, port),
+            #                          application=listener.server.listener,
+            #                          handler_class=WebSocketHandler,
+            #                          spawn=Pool(max_connections),
+            #                          **ssl_context)
+            # http_server.serve_forever()
         except Exception as exc:
             logging.exception(exc)
 
@@ -707,6 +714,9 @@ def main():
     options = vars(parser.parse_args())
 
     # Read and parse the configuration file
+
+    print(options['config_file'])
+
     config = get_configuration(options['config_file'], options['config_dir'])
 
     # If we are running this in debug mode from the command line, we need to

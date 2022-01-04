@@ -2,7 +2,7 @@ import os
 import time
 import sqlite3
 import sys
-import listener.server
+import listener.asgi_server as server
 import logging
 
 # A module to wrap sqlite3 for use with a small database to store things

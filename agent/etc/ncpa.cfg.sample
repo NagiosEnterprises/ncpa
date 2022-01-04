@@ -28,8 +28,8 @@ pidfile = var/ncpa.pid
 #
 # This is for Unix only (Linux, Mac OS X, etc)
 #
-uid = nagios
-gid = nagios
+uid = svandahm
+gid = svandahm
 
 #
 # Check logging is on by default, you can disable it if you do not want to record
@@ -175,8 +175,8 @@ handlers = None
 #
 # This is for Unix only (Linux, Mac OS X, etc)
 #
-uid = nagios
-gid = nagios
+uid = svandahm
+gid = svandahm
 
 #
 # Passive check interval - the amount in seconds to wait between each passive check by default,
