@@ -571,6 +571,16 @@ function generate_url(skip_settings, use_for_pcheck) {
                 extra += '&service=' + val;
             }
         });
+
+        var start_type = $('select.start-type').val();
+        if (start_type != '') {
+            extra += '&start_type=' + start_type;
+        }
+
+        var exclude = $('input.exclude').is(':checked');
+        if (exclude) {
+            extra += '&exclude=';
+        }
     }
 
     // Apply filters for processes
@@ -1045,6 +1055,17 @@ function generate_passive_check() {
                         <button type="button" class="btn btn-xs btn-default add-service">
                             <i class="fa fa-plus"></i> Add Filter
                         </button>
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" class="exclude" name="exclude" value="1"> Exclude above</label>
+                    </div>
+                    <div class="input-group match">
+                        <div class="input-group-addon">Start type</div>
+                        <select class="form-control start-type">
+                            <option></option>
+                            <option value="automatic">automatic</option>
+                            <option value="manual">manual</option>
+                        </select>
                     </div>
                 </div>
                 <div class="settings proc-filters">

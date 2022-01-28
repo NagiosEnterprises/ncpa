@@ -17,17 +17,17 @@ from threading import Timer
 
 def filter_services(m):
     def wrapper(*args, **kwargs):
-        services = m(*args, **kwargs)
+        # Service names (or partials to match)
+        filtered_services = kwargs.get('service', [])
+        if not isinstance(filtered_services, list):
+            filtered_services = [filtered_services]
+
+        services = m(filtered_services=filtered_services, *args, **kwargs)
 
         # Match type for services
         match = kwargs.get('match', None)
         if isinstance(match, list):
             match = match[0]
-
-        # Service names (or partials to match)
-        filtered_services = kwargs.get('service', [])
-        if not isinstance(filtered_services, list):
-            filtered_services = [filtered_services]
 
         # Filter by status (only really used for checks...)
         filter_statuses = kwargs.get('status', [])
@@ -35,7 +35,8 @@ def filter_services(m):
             filter_statuses = [filter_statuses]
 
         if filtered_services or filter_statuses:
-            accepted = {}
+            exclude = 'exclude' in kwargs
+            accepted = services if exclude and not match else {}
 
             # Match filters, do like, or regex
             if filtered_services:
@@ -43,14 +44,25 @@ def filter_services(m):
                     if match == 'search':
                         for s in services:
                             if service.lower() in s.lower():
+                                if exclude:
+                                    continue
+                                accepted[s] = services[s]
+                            elif exclude:
                                 accepted[s] = services[s]
                     elif match == 'regex':
                         for s in services:
                             if re.search(service, s):
+                                if exclude:
+                                    continue
+                                accepted[s] = services[s]
+                            elif exclude:
                                 accepted[s] = services[s]
                     else:
                         if service in services:
-                            accepted[service] = services[service]
+                            if exclude:
+                                del services[service]
+                            else:
+                                accepted[service] = services[service]
             
             # Match statuses
             if filter_statuses:
@@ -109,12 +121,21 @@ class ServiceNode(nodes.LazyNode):
     @filter_services
     def get_services_via_psutil(self, *args, **kwargs):
         services = {}
+
+        filtered_services = kwargs['filtered_services']
+
+        # Filter for specified startup type services only
+        start_type = kwargs.get('start_type', None)
+        if isinstance(start_type, list):
+            start_type = start_type[0]
+
         for service in psutil.win_service_iter():
             name = service.name()
-            if service.status() == 'running':
-                services[name] = 'running'
-            else:
-                services[name] = 'stopped'
+            if service.name() in filtered_services or not start_type or service.start_type() == start_type:
+                if service.status() == 'running':
+                    services[name] = 'running'
+                else:
+                    services[name] = 'stopped'
         return services
 
     @filter_services
@@ -337,6 +358,7 @@ class ServiceNode(nodes.LazyNode):
 
         # Get a list of all services to be looking for
         filtered_services = kwargs.get('service', [])
+
         if not isinstance(filtered_services, list):
             filtered_services = [filtered_services]
 
@@ -347,10 +369,10 @@ class ServiceNode(nodes.LazyNode):
 
         # Default to running status, so it will alert on not running
         if not target_status:
-            target_status = 'running'
+            target_status = [u'running']
 
         # Remove status from kwargs since we use it for checking service status
-        kwargs['status'] = ''
+        kwargs['status'] = []
 
         services = method(*args, **kwargs)
         returncode = 0
@@ -362,13 +384,16 @@ class ServiceNode(nodes.LazyNode):
             filtered_services = []
 
         if services:
+            if 'exclude' in kwargs:
+                filtered_services = None
+
             for service in services:
                 priority = 0
                 status = services[service]
                 builder = '%s is %s' % (service, status)
                 if not status in target_status:
                     priority = 1
-                    builder = '%s (should be %s)' % (builder, ''.join(target_status))
+                    builder = '%s (should be %s)' % (builder, target_status[0])
 
                 # Remove each service that has a status from the list of services the user provided
                 # so that we can display the services that can't be found ... this only works with
@@ -376,6 +401,8 @@ class ServiceNode(nodes.LazyNode):
                 if filtered_services:
                     i = filtered_services.index(service)
                     filtered_services.pop(i)
+                elif status in target_status:
+                    continue
 
                 if priority > returncode:
                     returncode = priority
@@ -390,7 +417,8 @@ class ServiceNode(nodes.LazyNode):
                     stdout_builder.append({ 'info': '%s could not be found' % service, 'priority': 0 })
                 returncode = 3
 
-            stdout = self.make_stdout(returncode, stdout_builder)
+            stdout = self.make_stdout(returncode, stdout_builder
+                                      or [{ 'info': 'All services are %s' % target_status[0], 'priority': 0 }])
         else:
             returncode = 3   
             stdout = "UNKNOWN: No services found for service names: %s" % ', '.join(filtered_services)
