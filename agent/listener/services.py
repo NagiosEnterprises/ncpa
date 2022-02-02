@@ -22,12 +22,18 @@ def filter_services(m):
         if not isinstance(filtered_services, list):
             filtered_services = [filtered_services]
 
-        services = m(filtered_services=filtered_services, *args, **kwargs)
-
         # Match type for services
         match = kwargs.get('match', None)
         if isinstance(match, list):
             match = match[0]
+
+        expression_match = {
+            'search': lambda fs, svc: fs.lower() in svc.lower(),
+            'regex': lambda fs, svc: re.search(fs, svc)
+        }.get(match, False)
+
+        [self] = args
+        services = m(self, filtered_services, expression_match, **kwargs)
 
         # Filter by status (only really used for checks...)
         filter_statuses = kwargs.get('status', [])
@@ -41,29 +47,21 @@ def filter_services(m):
             # Match filters, do like, or regex
             if filtered_services:
                 for service in filtered_services:
-                    if match == 'search':
-                        for s in services:
-                            if service.lower() in s.lower():
-                                if exclude:
-                                    continue
-                                accepted[s] = services[s]
-                            elif exclude:
-                                accepted[s] = services[s]
-                    elif match == 'regex':
-                        for s in services:
-                            if re.search(service, s):
-                                if exclude:
-                                    continue
-                                accepted[s] = services[s]
-                            elif exclude:
-                                accepted[s] = services[s]
-                    else:
+                    if not expression_match:
                         if service in services:
                             if exclude:
                                 del services[service]
                             else:
                                 accepted[service] = services[service]
-            
+                    else:
+                        for s in services:
+                            if expression_match(service, s):
+                                if exclude:
+                                    continue
+                                accepted[s] = services[s]
+                            elif exclude:
+                                accepted[s] = services[s]
+
             # Match statuses
             if filter_statuses:
                 for service in services:
@@ -120,9 +118,14 @@ class ServiceNode(nodes.LazyNode):
 
     @filter_services
     def get_services_via_psutil(self, *args, **kwargs):
-        services = {}
+        def is_service_filtered():
+            if not expression_match:
+                return name in filtered_services
+            else:
+                return any(expression_match(filtered_service, name) for filtered_service in filtered_services)
 
-        filtered_services = kwargs['filtered_services']
+        services = {}
+        filtered_services, expression_match = args
 
         # Filter for specified startup type services only
         start_type = kwargs.get('start_type', None)
@@ -131,7 +134,7 @@ class ServiceNode(nodes.LazyNode):
 
         for service in psutil.win_service_iter():
             name = service.name()
-            if service.name() in filtered_services or not start_type or service.start_type() == start_type:
+            if not start_type or service.start_type() == start_type or is_service_filtered():
                 if service.status() == 'running':
                     services[name] = 'running'
                 else:
