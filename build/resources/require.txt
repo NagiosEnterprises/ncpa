@@ -2,7 +2,6 @@ cx_Freeze
 psutil
 requests
 Jinja2
-<<<<<<< HEAD
 flask==0.10.1
 werkzeug==0.16.1
 docutils
