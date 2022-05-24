@@ -1,6 +1,7 @@
 import os
 import time
 import logging
+import ConfigParser
 import subprocess
 import shlex
 import re
@@ -9,6 +10,7 @@ import queue
 import listener.nodes as nodes
 import listener.database as database
 import listener.server
+import signal
 from threading import Timer
 
 
@@ -16,22 +18,26 @@ from threading import Timer
 # uses these modules to change permissions.
 try:
     import pwd
+except ImportError:
+    pass
+
+try:
     import grp
 except ImportError:
     pass
 
 
 class PluginNode(nodes.RunnableNode):
-
     def __init__(self, plugin, plugin_abs_path, *args, **kwargs):
         self.name = plugin
         self.plugin_abs_path = plugin_abs_path
         self.arguments = []
+        self.killed = False
 
     def accessor(self, path, config, full_path, args):
 
         # Get raw args value(s) and check if we need to add them
-        raw_args = args.getlist('args')
+        raw_args = args.getlist("args")
         if len(raw_args) > 0:
             self.arguments += raw_args
 
@@ -51,18 +57,21 @@ class PluginNode(nodes.RunnableNode):
         """Returns the instruction to use for the given plugin.
         If nothing exists for the suffix, then simply return the basic
 
-        $plugin_name $plugin_args   
+        $plugin_name $plugin_args
 
         """
         _, extension = os.path.splitext(self.name)
         try:
-            return config.get('plugin directives', extension)
-        except Exception:
-            return '$plugin_name $plugin_args'
+            return config.get("plugin directives", extension)
+        except ConfigParser.NoOptionError:
+            return "$plugin_name $plugin_args"
 
-    def kill_proc(self, p, t, q):
-        p.kill()
-        q.put("Error: Plugin command timed out. (%d sec)" % t)
+    def kill_proc(self, p, t):
+        self.killed = True
+        if environment.SYSTEM == "Windows":
+            p.kill()
+        else:
+            os.killpg(p.pid, signal.SIGKILL)
 
     def execute_plugin(self, config, *args, **kwargs):
         """Runs custom scripts that MUST be located in the scripts subdirectory
@@ -74,59 +83,87 @@ class PluginNode(nodes.RunnableNode):
 
         # Get plugin command timeout value, if it exists
         try:
-            timeout = int(config.get('plugin directives', 'plugin_timeout'))
+            timeout = config.getint("plugin directives", "plugin_timeout")
         except Exception as e:
-            timeout = 60
+            timeout = 59
 
         # Get the check logging value
         try:
-            check_logging = int(config.get('general', 'check_logging'))
+            check_logging = config.getint("general", "check_logging")
         except Exception as e:
             check_logging = 1
 
         # Create a list of plugin names that should be ran as sudo
         sudo_plugins = []
         try:
-            run_with_sudo = config.get('plugin directives', 'run_with_sudo')
-            sudo_plugins = [x.strip() for x in run_with_sudo.split(',')]
+            run_with_sudo = config.get("plugin directives", "run_with_sudo")
+            sudo_plugins = [x.strip() for x in run_with_sudo.split(",")]
         except Exception as e:
             pass
 
         # Make our command line
         cmd = self.get_cmdline(instructions, sudo_plugins)
-        logging.debug('Running process with command line: `%s`', ' '.join(cmd))
+        logging.debug("Running process with command line: `%s`", " ".join(cmd))
 
-        # Run a command and wait for return
+        # Run the command in a new subprocess
         run_time_start = time.time()
-        running_check = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                         universal_newlines=True)
+
+        if environment.SYSTEM == "Windows":
+            running_check = subprocess.Popen(
+                cmd, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+            )
+        else:
+            running_check = subprocess.Popen(
+                cmd,
+                bufsize=-1,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                preexec_fn=os.setsid,
+            )
+
+        timer = Timer(timeout, self.kill_proc, [running_check, timeout])
 
         try:
-            stdout, stderr = running_check.communicate(timeout=timeout)
-        except TimeoutExpired:
-            running_check.kill()
+            timer.start()
             stdout, stderr = running_check.communicate()
+        finally:
+            timer.cancel()
 
         run_time_end = time.time()
         returncode = running_check.returncode
 
-        # Pull from the queue if we have a error and the stdout is empty
-        if returncode == 1 and not stdout:
-            if q.qsize() > 0:
-                stdout = q.get()
+        # In case the plugin call timed out, set stdout and returncode to an error
+        if self.killed:
+            stdout = "Error: Plugin command ({0}) timed out. ({1} sec)".format(
+                " ".join(cmd), timeout
+            )
+            returncode = -1
+            logging.error(stdout)
 
-        cleaned_stdout = ''.join(stdout).strip()
+        cleaned_stdout = unicode(
+            "".join(stdout.decode("utf-8", "ignore"))
+            .replace("\r\n", "\n")
+            .replace("\r", "\n")
+            .strip()
+        )
 
-        if not listener.server.__INTERNAL__ and check_logging == 1:
+        if not server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
-            db.add_check(kwargs['accessor'].rstrip('/'), run_time_start, run_time_end, returncode,
-                         cleaned_stdout, kwargs['remote_addr'], 'Active')
+            db.add_check(
+                kwargs["accessor"].rstrip("/"),
+                run_time_start,
+                run_time_end,
+                returncode,
+                cleaned_stdout,
+                kwargs["remote_addr"],
+                "Active",
+            )
 
-        output = { 'returncode': returncode, 'stdout': cleaned_stdout }
+        output = {"returncode": returncode, "stdout": cleaned_stdout}
 
         # If debug=1 or true then show the command we ran
-        if kwargs['debug']:
-            output['cmd'] = ' '.join(cmd)
+        if kwargs["debug"]:
+            output["cmd"] = " ".join(cmd)
 
         return output
 
@@ -143,26 +180,26 @@ class PluginNode(nodes.RunnableNode):
         command = []
 
         # Add sudo for commands that need to run as sudo
-        if os.name == 'posix':
+        if os.name == "posix":
             if self.name in sudo_plugins:
-                command.append('sudo')
+                command.append("sudo")
 
         # Set shlex to use posix mode on posix machines (so that we can pass something like
         # --metric='disk/logical/|' and have it properly format quotes)
         mode = False
-        if os.name == 'posix':
+        if os.name == "posix":
             mode = True
-        
+
         lexer = shlex.shlex(instruction, posix=mode)
         lexer.whitespace_split = True
 
         for x in lexer:
-            if '$plugin_name' in x:
-                replaced = x.replace('$plugin_name', self.plugin_abs_path)
+            if "$plugin_name" in x:
+                replaced = x.replace("$plugin_name", self.plugin_abs_path)
                 command.append(replaced)
-            elif '$plugin_args' == x:
+            elif "$plugin_args" == x:
                 if self.arguments:
-                    args = shlex.shlex(' '.join(self.arguments), posix=mode)
+                    args = shlex.shlex(" ".join(self.arguments), posix=mode)
                     args.whitespace_split = True
                     for a in args:
                         command.append(a)
@@ -172,32 +209,40 @@ class PluginNode(nodes.RunnableNode):
 
 
 class PluginAgentNode(nodes.ParentNode):
-
     def __init__(self, name, *args, **kwargs):
         self.name = name
 
     def setup_plugin_children(self, config):
-        plugin_path = config.get('plugin directives', 'plugin_path')
+        plugin_path = config.get("plugin directives", "plugin_path")
+
+        # Get the follow_symlinks value
+        try:
+            follow_symlinks = config.getboolean("plugin directives", "follow_symlinks")
+        except Exception as e:
+            follow_symlinks = False
+
         self.children = {}
 
         try:
-            plugins = os.listdir(plugin_path)
-            for plugin in plugins:
-                if plugin == '.keep':
-                    continue
-                plugin_abs_path = os.path.join(plugin_path, plugin)
-                if os.path.isfile(plugin_abs_path):
-                    self.children[plugin] = PluginNode(plugin, plugin_abs_path)
+            for root, dirs, files in os.walk(plugin_path, followlinks=follow_symlinks):
+                for plugin in files:
+                    if plugin == ".keep":
+                        continue
+                    plugin_abs_path = os.path.join(root, plugin)
+                    if os.path.isfile(plugin_abs_path):
+                        self.children[plugin] = PluginNode(plugin, plugin_abs_path)
         except OSError as exc:
-            logging.warning('Unable to access directory %s', plugin_path)
-            logging.warning('Unable to assemble plugins. Does the directory exist? - %r', exc)
+            logging.warning("Unable to access directory %s", plugin_path)
+            logging.warning(
+                "Unable to assemble plugins. Does the directory exist? - %r", exc
+            )
 
     def accessor(self, path, config, full_path, args):
         self.setup_plugin_children(config)
         return super(PluginAgentNode, self).accessor(path, config, full_path, args)
 
     def walk(self, *args, **kwargs):
-        self.setup_plugin_children(kwargs['config'])
+        self.setup_plugin_children(kwargs["config"])
         plugins = list(self.children.keys())
         plugins.sort()
-        return { self.name: plugins }
+        return {self.name: plugins}

@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}NRDS{% endblock %}
+
+{% block headerjs %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $(document).keydown(function(e) {
+        if (e.keyCode == 82 && e.ctrlKey || e.keyCode == 116) {
+            if (window.self !== window.top) {
+                location.reload(true);
+            } else {
+                document.getElementById('help-iframe').contentWindow.location.reload(true);
+            }
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="alert alert-info">
+    This section is currently in <b>read only</b> mode and any setting changes will not be saved. This will be updated in future versions.
+</div>
+
+<div style="padding: 3rem;">
+
+    <h3>NRDS</h3>
+    <p>These are the NRDS settings.</p>
+
+    <div class="container-fluid" style="margin-top: 3rem; padding: 0;">
+        
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-horizontal">
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">NRDS URL</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                            <input type="text" class="form-control" name="nrds_url" value="{{ nrds_url }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">NRDS Token</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                            <input type="password" class="form-control" name="nrds_token" value="{{ nrds_token }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Config Name</label>
+                        <div class="col-sm-6 col-md-4 col-lg-2 col-xl-3">
+                            <input type="text" class="form-control" name="config_name" value="{{ config_name }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Config Version</label>
+                        <div class="col-sm-6 col-md-4 col-lg-2 col-xl-3">
+                            <input type="text" class="form-control" name="config_version" value="{{ config_version }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Update Config</label>
+                        <div class="col-sm-6">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-sm btn-default{% if update_config %} active{% endif %}">
+                                    <input type="radio" name="update_config" value="1" autocomplete="off"{% if update_config %} checked{% endif %}> Enabled
+                                </label>
+                                <label class="btn btn-sm btn-default{% if not update_config %} active{% endif %}">
+                                    <input type="radio" name="update_config" value="0" autocomplete="off"{% if not update_config %} checked{% endif %}> Disabled
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Update Plugins</label>
+                        <div class="col-sm-6">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-sm btn-default{% if update_plugins %} active{% endif %}">
+                                    <input type="radio" name="update_plugins" value="1" autocomplete="off"{% if update_plugins %} checked{% endif %}> Enabled
+                                </label>
+                                <label class="btn btn-sm btn-default{% if not update_plugins %} active{% endif %}">
+                                    <input type="radio" name="update_plugins" value="0" autocomplete="off"{% if not update_plugins %} checked{% endif %}> Disabled
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

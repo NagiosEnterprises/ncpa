@@ -19,10 +19,80 @@ Changelog
 
 - Fixed errors from different language encodings due to python not being able to encode/decode strings
 
-2.1.10 - ??/??/2019
-===================
-- Added a ProductID to Windows install registery key for easier lookup
-- Fixed get_counter_path() throwing exception for counter names which contain parentheses
+2.4.0 - 12/16/2021
+==================
+- Added new disk metrics max_file_length and max_path_length (#760) (ccztux)
+- Added php and perl to the default plugin extensions (#766) (ccztux)
+- Changed the default plugin_timeout value from 60s to 59s (#761) (ccztux)
+- Changed python default plugin extension to python3 (#786) (ccztux)
+- Fixed ZeroDivisionError: float division by zero (#769) (ccztux)
+- Fixed connection to NRDP server can hang indefinitely (#776) (ccztux)
+- Fixed toggle long output doesnt work (#778) (ccztux)
+- Fixed the filter Type gets lost on pages > 1 (#780) (ccztux)
+- Fixed some configuration directives doesnt work, e.g. all_partitions and follow_symlinks (#757) (ccztux)
+- Fixed issue with systemctl not showing services due to output (#791)
+- Fixed default value of exlude_fs_types differs from documented default value (#823) (ccztux)
+- Fixed ERROR an integer is required on max_connections configuration (#812) (ccztux)
+- Fixed Minor bug. Delta checkbox isn't showing in NCPA interface on Windows (#747) (ccztux)
+- Fixed XSS security vulnerability in tail event log gui page (CVE-2021-43584) (#830)
+
+2.3.1 - 02/11/2021
+==================
+- Fixed uninstalling DEB package leaves systemd service active (#651) (ccztux)
+- Fixed error when running a service check using match=search or match=regex searching (#626,#679,#742)
+- Fixed perfdata variable not being set for child node run_check command causing 500 error if the check errors (#733)
+- Fixed API page output for active/passive checks using windowscounters sleep options (#722)
+- Fixed warning/critical values in perfdata output when values were not actually related to the data (#712,#713)
+
+2.3.0 - 01/28/2021
+==================
+- Added option to to use symlinks in the plugin path directory (#577) (infraweavers, ccztux)
+- Added version option to ncpa_listener and ncpa_passive (ccztux)
+- Added support of hostnames in allowed_hosts (#653) (ccztux)
+- Added secure cookie attribute (#659)
+- Added new memory endpoints swap/swapped_in and swap/swapped_out (#674) (ccztux)
+- Added new disk endpoint inodes_used_percent (#672) (ccztux)
+- Fixed issue with allowed_hosts config directive doesnt work (#638, #660) (ccztux)
+- Fixed ncpa_listener fails to start when IPv6 is disabled. (#648) (ccztux)
+- Fixed if an exception was thrown in one api endpoint it breaks the wohle api (#670) (ccztux)
+- Fixed missing unit (%) for some process checks (#681) (ccztux)
+- Fixed childs started from a plugin will not be killed in case plugin_timeout was reached (#714) (ccztux)
+- Fixed error message in case plugin runs into timeout out was not shown (#714) (ccztux)
+- Fixed passive checks stop sending if there are multiple NRDP servers configured and both NRDP servers are not listening. (#715) (ccztux)
+- Fixed missing configuration options in the default ncpa.cfg (#726) (ccztux)
+- Updated bootstrap to 3.4.1 to fix security issue in CVE-2019-8331 (#728) (ccztux)
+- Fixed missing configuration sections in the admin section of the GUI (#725) (ccztux)
+- Fixed Swap Memory issue causing errors for Solaris 10/11 builds
+
+2.2.2 - 06/19/2020
+==================
+- Updated jQuery to 3.5.1 to fix security issues in CVE-2020-11022
+- Fixed issue with Windows silent install where not defining /PORT would open firewall for any port (#631)
+- Fixed documentation issue with run_with_sudo (#623)
+
+2.2.1 - 02/24/2020
+==================
+- Updated jQuery to 3.4.1 to fix security issues in CVE-2015-9251 and CVE-2019-11358
+- Updated D3.js graphing library from version 4.x to 5.x
+- Updated service API endpoint UNKNOWN output to explain what services were not found (#600,#601)
+- Fixed ncpa.db file would being rewritten on upgrades, future upgrades will not have this happen (#589)
+- Fixed issue with Solaris 11.4 services output parsing (thanks ljlapierre) (#610)
+- Fixed GUI API browser active/passive check examples for the logs module missing filters (#595)
+- Fixed issue with Kernel version 5.5+ not working properly on disk checks
+
+2.2.0 - 10/24/2019
+==================
+- Added registry ProductID to Windows install registery key for easier lookup (#579)
+- Added proper UNKNOWN output text prefix on checks that return UNKNOWN states (#575)
+- Added X-Frame-Options and Content-Security-Policy to not allow NCPA in frames by default
+- Added allowed_sources option in ncpa.cfg to give allowed sources to bypass the frame restrictions
+- Added autocomplete="off" tag to stop autocomplete on login pages for GUI and Admin section
+- Updated windowscounters API to use AddEnglishCounter instead of AddCounter to not translate counter names
+- Fixed get_counter_path() throwing exception for counter names which contain parentheses (#564)
+- Fixed GUI creating improper check_ncpa.py active check command when using the delta option (#583)
+- Fixed unnecessary perfdata value in JSON output that is only used internally (#570)
+- Fixed old uninstall registry key on Windows systems (#551)
+- Fixed random UNKNOWN check_ncpa.py responses from gevent causing socket disconnects (#532)
 
 2.1.9 - 09/04/2019
 ==================

@@ -149,7 +149,7 @@ UNTIL THE CUSTOMER HAS COMPLIED WITH THE ABOVE PROCEDURES, NAGIOS ENTERPRISES CA
 7 TERM AND TERMINATION
 
 7.1 Term
-The term of this Agreement and the provision of Support Services hereunder begins on the Effective Date and continues for the period of one (1) year.  Thereafter, the the term for the Support Services will renew for successive one (1) year terms, unless either party gives written notice to the other of its intention not to renew at least thirty (30) days before commencement of the next term. 
+The term of this Agreement and the provision of Support Services hereunder begins on the Effective Date and continues for the period of one (1) year.  Thereafter, the term for the Support Services will renew for successive one (1) year terms, unless either party gives written notice to the other of its intention not to renew at least thirty (30) days before commencement of the next term. 
 
 7.2 Termination
 If Customer or Nagios Enterprises materially breaches the terms of this Agreement, and such breach is not cured or remedied within thirty (30) days after written notice of the breach is given to the breaching party, then the other party, by giving written notice of termination to the breaching party, may terminate this Agreement; provided, however, that no cure period will be required for a breach of Section 11 hereof. Nagios Enterprises reserves the right to terminate this Agreement at any time within thirty (30) days after written notice to Customer.  Without prejudice to any other right or remedy of Nagios Enterprises, in the event either party terminates this Agreement, Customer will pay Nagios Enterprises for all Nagios Software provided up to the effective date of termination. 

@@ -39,16 +39,39 @@ try:
 except AttributeError:
     urlquote = urllib.quote
 
+try:
+    urlerror = urllib.error.URLError
+except AttributeError:
+    urlerror = urllib2.URLError
+
+try:
+    httperror = urllib.error.HTTPError
+except AttributeError:
+    httperror = urllib2.HTTPError
+
 import shlex
 import re
 import signal
 
 
-__VERSION__ = '1.1.7'
+__VERSION__ = '1.2.5'
+
+
+class ConnectionError(Exception):
+    error_output_prefix = "UNKNOWN: An error occurred connecting to API. "
+    pass
+
+class URLError(ConnectionError):
+    def __init__(self, error_message):
+        self.error_message = ConnectionError.error_output_prefix + "(Connection error: '" + error_message + "')"
+
+class HTTPError(ConnectionError):
+    def __init__(self, error_message):
+        self.error_message = ConnectionError.error_output_prefix + "(HTTP error: '" + error_message + "')"
 
 
 def parse_args():
-    version = 'check_ncpa.py, Version %s' % __VERSION__
+    version = 'check_ncpa.py, version: %s' % __VERSION__
 
     parser = optparse.OptionParser()
     parser.add_option("-H", "--hostname", help="The hostname to be connected to.")
@@ -59,7 +82,7 @@ def parse_args():
                            "use the -a directive for that. DO NOT INCLUDE the api/ "
                            "instruction.")
     parser.add_option("-P", "--port", default=5693, type="int",
-                      help="Port to use to connect to the client.")
+                      help="Port to use to connect to the client. [Default: %default]")
     parser.add_option("-w", "--warning", default=None, type="str",
                       help="Warning value to be passed for the check.")
     parser.add_option("-c", "--critical", default=None, type="str",
@@ -76,9 +99,9 @@ def parse_args():
                            "as you would call from the command line. Example: -a '-w 10 -c 20 -f /usr/local'")
     parser.add_option("-t", "--token", default='',
                       help="The token for connecting.")
-    parser.add_option("-T", "--timeout", default=60, type="int",
+    parser.add_option("-T", "--timeout", default=58, type="int",
                       help="Enforced timeout, will terminate plugins after "
-                           "this amount of seconds. [%default]")
+                           "this amount of seconds. [Default: %default]")
     parser.add_option("-d", "--delta", action='store_true',
                       help="Signals that this check is a delta check and a "
                            "local state will kept.")
@@ -182,7 +205,7 @@ def get_arguments_from_options(options, **kwargs):
     # API call which can confuse people if they don't match
     arguments = { 'token': options.token,
                   'units': options.units }
-    
+
     if not options.list:
         arguments['warning'] = options.warning
         arguments['critical'] = options.critical
@@ -218,25 +241,35 @@ def get_json(options):
         print('Connecting to: ' + url)
 
     try:
-        ctx = ssl.create_default_context()
-        if not options.secure:
-            ctx.check_hostname = False
-            ctx.verify_mode = ssl.CERT_NONE
-        ret = urlopen(url, context=ctx)
-    except AttributeError:
-        ret = urlopen(url)
 
-    ret = bytes.decode(b''.join(ret))
+        try:
+            ctx = ssl.create_default_context()
+            if not options.secure:
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
+            ret = urlopen(url, context=ctx)
+        except AttributeError:
+            ret = urlopen(url)
+
+    except httperror as e:
+        try:
+            raise HTTPError('{0} {1}'.format(e.code, e.reason))
+        except AttributeError:
+            raise HTTPError('{0}'.format(e.code))
+    except urlerror as e:
+        raise URLError('{0}'.format(e.reason))
+
+    ret = ret.read()
 
     if options.verbose:
-        print('File returned contained:\n' + ret)
+        print('File returned contained:\n' + ret.decode('utf-8'))
 
     arr = json.loads(ret)
 
     if options.list:
         return arr
 
-        # Fix for NCPA < 2
+    # Fix for NCPA < 2
     if 'value' in arr:
         arr = arr['value']
 
@@ -246,6 +279,11 @@ def get_json(options):
             arr['returncode'] = arr['stdout']
             arr['stdout'] = tmp
 
+    # If we recieve and error, return critical and give out error text
+    elif 'error' in arr:
+        arr['stdout'] = 'CRITICAL: %s' % arr['error']
+        arr['returncode'] = 2
+
     return arr
 
 
@@ -253,7 +291,10 @@ def run_check(info_json):
     """Run a check against the remote host.
 
     """
-    return info_json['stdout'], info_json['returncode']
+    if 'stdout' in info_json and 'returncode' in info_json:
+        return info_json['stdout'], info_json['returncode']
+    elif 'error' in info_json:
+        return info_json['error'], 3
 
 
 def show_list(info_json):
@@ -294,6 +335,13 @@ def main():
             if options.performance and stdout.find("|") == -1:
                 stdout = "{0} | 'status'={1};1;2;;".format(stdout, returncode)
             return stdout, returncode
+    except (HTTPError, URLError) as e:
+        if options.debug:
+            return 'The stack trace:\n' + traceback.format_exc(), 3
+        elif options.verbose:
+            return 'An error occurred:\n' + str(e.error_message), 3
+        else:
+            return e.error_message, 3
     except Exception as e:
         if options.debug:
             return 'The stack trace:\n' + traceback.format_exc(), 3
@@ -305,5 +353,8 @@ def main():
 
 if __name__ == "__main__":
     stdout, returncode = main()
-    print(stdout)
+    if sys.version_info[0] < 3:
+        print(unicode(stdout).encode('utf-8'))
+    else:
+        print(stdout.encode().decode('utf-8'))
     sys.exit(returncode)

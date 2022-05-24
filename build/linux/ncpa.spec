@@ -6,8 +6,8 @@ Summary:        A cross-platform active and passive monitoring agent
 BuildRoot:      __BUILDROOT__/BUILDROOT/
 Prefix:         /usr/local
 Group:          Network/Monitoring
-License:        Nagios Open Software License Version 1.3
-URL:            https://www.nagios.org/ncpa/
+License:        Nagios Community Software License Version 1.3
+URL:            https://www.nagios.org/ncpa/help.php
 Source:         ncpa-%{version}.tar.gz
 AutoReqProv:    no
 
@@ -15,6 +15,9 @@ AutoReqProv:    no
 The Nagios Cross-Platform Agent is used with Nagios XI and Nagios Core to run active
 and/or passive checks on any operating system. Installs with zero requirements using a
 bundled version of Python.
+
+%global debug_package %{nil}
+%global _build_id_links alldebug
 
 %prep
 %setup -q
@@ -36,7 +39,8 @@ install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_init %{buildr
 rm -rf %{buildroot}
 
 %pre
-if [ `command -v systemctl` ]; then
+if command -v systemctl > /dev/null
+then
     systemctl stop ncpa_listener &> /dev/null || true
     systemctl stop ncpa_passive &> /dev/null || true
     systemctl stop ncpa &> /dev/null || true
@@ -46,11 +50,12 @@ else
     service ncpa stop &> /dev/null || true
 fi
 
-if ! getent group nagios > /dev/null;
+if ! getent group nagios > /dev/null
 then
     groupadd -r nagios
 fi
-if ! getent passwd nagios > /dev/null;
+
+if ! getent passwd nagios > /dev/null
 then
     useradd -r -g nagios nagios
 else
@@ -68,7 +73,8 @@ elif which update-rc.d > /dev/null; then
     update-rc.d ncpa defaults &> /dev/null
 fi
 
-if [ -z $RPM_INSTALL_PREFIX ]; then
+if [ -z $RPM_INSTALL_PREFIX ]
+then
     RPM_INSTALL_PREFIX="/usr/local"
 fi
 
@@ -77,14 +83,18 @@ dir=$RPM_INSTALL_PREFIX/ncpa
 sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa
 
 # Remove empty cert and key files
-if [ -f $RPM_INSTALL_PREFIX/ncpa/ncpa.crt ]; then
+if [ -f $RPM_INSTALL_PREFIX/ncpa/ncpa.crt ]
+then
     rm $RPM_INSTALL_PREFIX/ncpa/ncpa.crt
 fi
-if [ -f $RPM_INSTALL_PREFIX/ncpa/ncpa.key ]; then
+
+if [ -f $RPM_INSTALL_PREFIX/ncpa/ncpa.key ]
+then
     rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
 fi
 
-if [ `command -v systemctl` ]; then
+if command -v systemctl > /dev/null
+then
     systemctl daemon-reload
     systemctl start ncpa
 else
@@ -99,6 +109,35 @@ if [ "$1" != "1" ]; then
         systemctl stop ncpa
     else
         service ncpa stop
+    fi
+fi
+
+%postun
+# Only do systemctl daemon-reload after uninstall
+if [ "$1" == "0" ]
+then
+    if command -v systemctl > /dev/null
+    then
+        systemctl daemon-reload
+    fi
+fi
+
+%posttrans
+if [ -z $RPM_INSTALL_PREFIX ]
+then
+    RPM_INSTALL_PREFIX="/usr/local"
+fi
+
+# Only run on upgrades (restart fixes db removal issue)
+if [ ! -f "$RPM_INSTALL_PREFIX/ncpa/var/ncpa.db" ]
+then
+    if command -v systemctl > /dev/null
+    then
+        systemctl restart ncpa_listener
+        systemctl restart ncpa_passive
+    else
+        service ncpa_listener restart
+        service ncpa_passive restart
     fi
 fi
 

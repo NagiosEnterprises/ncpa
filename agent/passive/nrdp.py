@@ -131,7 +131,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
         return hostname
 
     @staticmethod
-    def log_result(ret_xml):
+    def log_result(server, ret_xml):
         """
         Helper function to log the XML returned by the NRDP server.
 
@@ -154,8 +154,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
             logging.warning('XML returned did not contain a message, or was malformed.')
             meta = 'Nonexistent'
 
-        logging.info('Message from NRDP server: %s', message)
-        logging.info('Meta output from NRDP server: %s', meta)
+        logging.info('Message from NRDP server (%s): %s', server, message)
+        logging.info('Meta output from NRDP server (%s): %s', server, meta)
 
     def submit_to_nagios(self, checkresults):
         """
@@ -170,6 +170,12 @@ class Handler(passive.nagioshandler.NagiosHandler):
             token = self.config.get('nrdp', 'token')
         except Exception as ex:
             logging.exception(ex)
+
+        # Get the connection_timeout value
+        try:
+            timeout = self.config.getfloat('nrdp', 'connection_timeout')
+        except Exception as e:
+            timeout = 10.0
 
         # Get the list of servers (and tokens, if available)
         servers = server.split(',')
@@ -190,10 +196,11 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 server += '/'
 
             logging.debug('XML to be submitted: %s', checkresults)
-            ret_xml = utils.send_request(url=server, token=token, XMLDATA=checkresults, cmd='submitcheck')
+            ret_xml = utils.send_request(url=server, connection_timeout=timeout, token=token, XMLDATA=checkresults, cmd='submitcheck')
 
-            try:
-                Handler.log_result(ret_xml)
-            except Exception as ex:
-                logging.debug(ret_xml)
-                logging.exception(ex)
+            if ret_xml is not None:
+                try:
+                    Handler.log_result(server, ret_xml)
+                except Exception as ex:
+                    logging.debug(ret_xml)
+                    logging.exception(ex)

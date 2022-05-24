@@ -6,14 +6,36 @@ Changelog
 - Added compatability for NCPA 1.x, 2.x, and 3.x
 - Added --sleep or -S variable for setting the sleep value for counters and certain endpoints 
 
-1.1.7
+1.2.5
 -----
-- Fixed incompatibility with Python 3.7.4 (Christian Zettel)
-- Fixed Option: --performance is incompatible with Python 2.6.6 (Christian Zettel)
+- Changed the default timeout value from 60s to 58s (#761) (ccztux)
+
+1.2.4
+-----
+- Fixed encoding issues on Python 2 vs Python 3
+
+1.2.3
+-----
+- Fixed issue with Python 3 binary string being printed
+
+1.2.2
+-----
+- Fixed error output text giving no check output, now errors show CRITICAL with error message when encountered
+- Fixed output of UTF-8 characters that are passed back by the agent
+
+1.2.1
+-----
+- Fixed an issue throwing an attribute error in case of an http error with python 2.6. (ccztux)
+
+1.2.0
+-----
+- Added detailed information in case of connection errors, http errors and errors thrown by the agent (ccztux)
+- Fixed incompatibility with Python 3.7 and 3.8 (ccztux)
+- Fixed Option: --performance is incompatible with Python 2.6.6 (ccztux)
 
 1.1.6
 -----
-- Fixed list api tree only possible with activated verbose mode (Christian Zettel)
+- Fixed list api tree only possible with activated verbose mode (ccztux)
 
 1.1.5
 -----

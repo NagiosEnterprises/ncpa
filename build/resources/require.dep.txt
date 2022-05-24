@@ -1,14 +1,12 @@
-cx_Freeze
 psutil
 requests
 Jinja2
-<<<<<<< HEAD
 flask==0.10.1
 werkzeug==0.16.1
 docutils
-pyOpenSSL
-cryptography
-gevent
+pyOpenSSL==19.1
+cryptography==2.8
+gevent==1.2.2
 gevent-websocket
 cffi
 appdirs

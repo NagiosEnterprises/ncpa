@@ -12,28 +12,9 @@
 [general]
 
 #
-# Listener logging file level, location, and the PID location
-# Default: loglevel = info (debug, info, warning, error)
-# Default: logfile = var/log/ncpa.log
-# Default: pidfile = var/run/ncpa.pid (leave listener in pid file name)
-#
-loglevel = info
-logfile = var/log/ncpa.log
-pidfile = var/ncpa.pid
-
-#
-# User and group to run the daemon as on Linux / Mac OS X
-# Default: uid = nagios
-# Default: gid = nagios
-#
-# This is for Unix only (Linux, Mac OS X, etc)
-#
-uid = nagios
-gid = nagios
-
-#
-# Check logging is on by default, you can disable it if you do not want to record
-# the check requests that are coming in or checks being sent over NRDP.
+# Check logging (in ncpa.db and the interface) is on by default, you can disable it
+# if you do not want to record the check requests that are coming in or checks being
+# sent over NRDP.
 # Default: check_logging = 1
 #
 check_logging = 1
@@ -45,19 +26,20 @@ check_logging = 1
 check_logging_time = 30
 
 #
-# Delay the service / daemon startup
-# Default: 0
+# Display all mounted disk partitions
+# (essentially setting all=True here: https://psutil.readthedocs.io/en/latest/#psutil.disk_partitions)
+# Default: 1
 #
-# delay_start = 30
+all_partitions = 1
 
 #
 # Excluded file system types removes these fs types from the disk metrics
 # (This is mostly only noteable on UNIX systems but also works on Windows if you need it)
 # Default: aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,
 #          encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,
-#          rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs
+#          rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs,nfsd,xenfs
 #
-exclude_fs_types = aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs
+exclude_fs_types = aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs,nfsd,xenfs
 
 #
 # The default unit to convert bytes (B) into if no unit is specified
@@ -74,6 +56,20 @@ default_units = Gi
 [listener]
 
 #
+# User and group to run plugins as (recommended to use nagios:nagios)
+# Default: uid = nagios
+# Default: gid = nagios
+#
+# ** Note - The daemon runs as root, but forks a child process when running a plugin
+#    that is defined by the user, for security reasons. However, without the main daemon
+#    running as root, much of the system information would be missing. This is typical behavior. **
+#
+# This is for Unix only (Linux, Mac OS X, etc)
+#
+uid = nagios
+gid = nagios
+
+#
 # IP address and port number for the Listener to use for the web GUI and API
 #
 # :: allows for dual stack (IPv4 and IPv6 on most linux systems) but will only allow
@@ -84,8 +80,8 @@ default_units = Gi
 # Default (Windows): ip = 0.0.0.0
 # Default: port = 5693
 #
-ip = ::
-port = 5693
+# ip =
+# port =
 
 #
 # SSL connection and certificate config (if an SSL option is not available on some older
@@ -96,6 +92,22 @@ port = 5693
 #
 ssl_version = TLSv1_2
 certificate = adhoc
+
+#
+# Listener logging file level, location, and the PID location
+# Default: loglevel = info (debug, info, warning, error)
+# Default: logfile = var/log/ncpa_listener.log
+# Default: pidfile = var/run/ncpa_listener.pid (leave listener in pid file name)
+#
+loglevel = info
+logfile = var/log/ncpa_listener.log
+pidfile = var/run/ncpa_listener.pid
+
+#
+# Delay the listener (API & web GUI) from starting in seconds
+# Default: 0
+#
+# delay_start = 30
 
 #
 # Allow admin functionality in the web GUI. When this is set to 0, the admin section will not
@@ -123,8 +135,15 @@ admin_auth_only = 0
 
 #
 # Comma separated list of allowed hosts that can access the API (and GUI)
-# Exmaple: 192.168.23.15
-# Example subnet: 192.168.0.0/28
+# Supported types: IPv4, IPv4-mapped IPv6, IPv6, hostnames
+# Hostname wildcards are not supported.
+#
+# Exmaple IPv4: 192.168.23.15
+# Example IPv4 subnet: 192.168.0.0/28
+# Example IPv4-mapped IPv6: ::ffff:192.168.1.15
+# Example IPv6: 2001:0db8:85a3:0000:0000:8a2e:0370:7334
+# Example hostname: asterisk.mydomain.com
+# Example mixed types: 192.168.23.15, 192.168.0.0/28, ::ffff:192.168.1.15, 2001:0db8:85a3:0000:0000:8a2e:0370:7334, asterisk.mydomain.com
 #
 # allowed_hosts =
 
@@ -134,6 +153,29 @@ admin_auth_only = 0
 # Example: 200
 #
 # max_connections =
+
+#
+# Set the URL to use in the X-Frame-Options and Content-Security-Policy headers
+# in order to enable the NCPA GUI to be allowed to load into a frame
+# Default: None
+# Example: mycoolwebsite.com
+# Example: *.mycoolwebsite.com
+#
+# allowed_sources = 
+
+#
+# The max size allowed for a log file in megabytes.
+# When the log becomes larger than this, the log will be rolled over
+# and a new log will be started.
+# Default: 5
+#
+# logmaxmb =
+
+#
+# The max number of log rollovers that will be kept.
+# Default: 5
+#
+# logbackups =
 
 #
 # -------------------------------
@@ -161,15 +203,15 @@ community_string = mytoken
 # Handlers are a comma separated list of what you would like the passive agent to run
 # Default: None
 # Options:
-#   nrds, nrdp, kafkaproducer
+#   nrdp, kafkaproducer
 #
 # Example:
-# handlers = nrds,nrdp,kafkaproducer
+# handlers = nrdp,kafkaproducer
 #
 handlers = None
 
 #
-# User and group to run passive checks as (recommended to use nagios:nagios)
+# User and group to run passive checks as (Recommended to use nagios:nagios)
 # Default: uid = nagios
 # Default: gid = nagios
 #
@@ -184,6 +226,36 @@ gid = nagios
 # Default: 300 (5 minutes)
 #
 sleep = 300
+
+#
+# Passive logging file level, location, and the PID location
+# Default: loglevel = info (debug, info, warning, error)
+# Default: logfile = var/log/ncpa_passive.log
+# Default: pidfile = var/run/ncpa_passive.pid (leave passive in pid file name)
+#
+loglevel = info
+logfile = var/log/ncpa_passive.log
+pidfile = var/run/ncpa_passive.pid
+
+#
+# Delay passive checks from starting in seconds
+# Default: 0
+#
+# delay_start = 30
+
+#
+# The max size allowed for a log file in megabytes.
+# When the log becomes larger than this, the log will be rolled over
+# and a new log will be started.
+# Default: 5
+#
+# logmaxmb =
+
+#
+# The max number of log rollovers that will be kept.
+# Default: 5
+#
+# logbackups =
 
 #
 # -------------------------------
@@ -208,26 +280,10 @@ token =
 hostname = NCPA 2
 
 #
-# -------------------------------
-# Passive Configuration (NRDS)
-# -------------------------------
+# Connection timeout in seconds that will be used for transmitting the 
+# passive check results via HTTP POST requests to the NRDP server
 #
-
-[nrds]
-
-#
-# NRDS CONFIGURATION DOES NOT WORK YET. MORE TO COME IN VERSION 2.1.0.
-#
-
-#
-# NRDS connection information
-#
-url = 
-token = 
-config_name = 
-config_version = 
-update_config = 1
-update_plugins = 1
+connection_timeout = 10
 
 #
 # -------------------------------
@@ -237,9 +293,6 @@ update_plugins = 1
 
 [kafkaproducer]
 
-#
-# Kafka connection information and settings
-#
 hostname = None
 servers = localhost:9092
 clientname = NCPA-Kafka
@@ -259,12 +312,19 @@ topic = ncpa
 plugin_path = plugins/
 
 #
+# Follow symlinks located in the plugin path
+#
+# This is for Unix only (Linux, Mac OS X, etc)
+#
+follow_symlinks = 0
+
+#
 # Plugin execution timeout in seconds. Different than the check_ncpa.py timeout, which is
 # normally for network connection issues. Will return a CRITICAL value and error when the plugin
 # reaches the defined max execution timeout and kills the process.
-# Default: 60
+# Default: 59
 #
-# plugin_timeout = 60
+# plugin_timeout = 59
 
 #
 # Comma separated list of plugins to run through sudo. Note: You will need to update your sudoers
@@ -272,6 +332,8 @@ plugin_path = plugins/
 #
 # Example: check_special,check_root_files
 # (Command line: sudo /<plugin_absolute_path>/check_special <arguments>)
+#
+# This is for Unix only (Linux, Mac OS X, etc)
 #
 # run_with_sudo =
 
@@ -286,9 +348,12 @@ plugin_path = plugins/
 #
 # Defaults:
 # .sh = /bin/sh $plugin_name $plugin_args
-# .py = python $plugin_name $plugin_args
+# .py = python3 $plugin_name $plugin_args
+# .pl = perl $plugin_name $plugin_args
+# .php = php $plugin_name $plugin_args
 # .ps1 = powershell -ExecutionPolicy Bypass -File $plugin_name $plugin_args
 # .vbs = cscript $plugin_name $plugin_args //NoLogo
+# .wsf = cscript $plugin_name $plugin_args //NoLogo
 # .bat = cmd /c $plugin_name $plugin_args
 #
 # Since windows NCPA is 32-bit, if you need to use 64-bit powershell, try the following for
@@ -298,7 +363,9 @@ plugin_path = plugins/
 
 # Linux / Mac OS X
 .sh = /bin/sh $plugin_name $plugin_args
-.py = python $plugin_name $plugin_args
+.py = python3 $plugin_name $plugin_args
+.pl = perl $plugin_name $plugin_args
+.php = php $plugin_name $plugin_args
 
 # Windows
 .ps1 = powershell -ExecutionPolicy Bypass -File $plugin_name $plugin_args

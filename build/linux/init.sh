@@ -54,6 +54,11 @@ if [ "$distro" == "Debian GNU/Linux" ]; then
     distro="Debian"
 fi
 
+# Verify Raspbian system versions
+if [ "$distro" == "Raspbian GNU/Linux" ]; then
+    distro="Raspbian"
+fi
+
 # Add patch level to the version of SLES (because they don't...)
 if [ "$distro" == "openSUSE Tumbleweed" ] || [ "$distro" == "openSUSE Leap" ] || [ "$distro" == "openSUSE" ]; then
     distro="OpenSUSE"
@@ -80,6 +85,9 @@ case "$distro" in
         ;;
     "Debian" )
         dist="debian$ver"
+        ;;
+    "Raspbian" )
+        dist="rasp$ver"
         ;;
     "OpenSUSE" )
         dist="os$ver"

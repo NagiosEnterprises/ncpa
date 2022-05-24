@@ -14,6 +14,7 @@ ARCH="x86"
 LIBFFI_DEV="/usr/lib/amd64/libffi-3.2.1/include"
 if grep "SPARC" /etc/release > /dev/null ; then
     ARCH="sparc"
+    LIBFFI_DEV="/usr/lib/libffi-3.2.1/include"
 fi
 if grep "Solaris 10" /etc/release > /dev/null ; then
     SOLARIS=10
@@ -24,11 +25,20 @@ if grep "Solaris 10" /etc/release > /dev/null ; then
     fi
 fi
 
+# Different libffi for Solaris 11.3
+if grep "11.3" /etc/release > /dev/null ; then
+    LIBFFI_DEV="/usr/lib/amd64/libffi-3.0.9/include"
+    if [ "$ARCH" == "sparc" ]; then
+        LIBFFI_DEV="/usr/lib/libffi-3.0.9/include"
+    fi
+fi
+
 update_py_packages() {
-    if [ "$ARCH" == "sparc" ] && [ $SOLARIS -eq 11 ]; then
-        $PYTHONBIN -m pip install -r  $BUILD_DIR/solaris/require.sparc.txt --upgrade
+    # Do special things for Solaris 11 (do not build with special flags)
+    if [ $SOLARIS -eq 11 ]; then
+        CPPFLAGS="-I$LIBFFI_DEV" $PYTHONBIN -m pip install -r  $BUILD_DIR/solaris/require.solaris.txt --upgrade
     else
-        CPPFLAGS="-I$LIBFFI_DEV" LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary :all:
+        CPPFLAGS="-I$LIBFFI_DEV" LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/solaris/require.solaris.txt --upgrade --no-binary :all:
     fi
 }
 
@@ -44,7 +54,9 @@ install_prereqs() {
     if [ $SOLARIS -eq 10 ]; then
         pkgutil -y -i gcc5core python27 python27_dev py_pip wget libffi_dev libssl_dev        
     else
-        pkg install gcc libffi zlib
+        if [ ! -f /usr/bin/gcc ]; then
+            pkg install gcc libffi zlib
+        fi
     fi
 
 
@@ -69,9 +81,13 @@ install_prereqs() {
     #  INSTALL PIP & PIP MODULES
     # --------------------------
 
+    OPTS="--no-check-certificate"
+    if [ $SOLARIS -eq 11 ]; then
+        OPTS="$OPTS --secure-protocol=TLSv1_2"
+    fi
 
     # Install pip
-    cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && $PYTHONBIN /tmp/get-pip.py
+    cd /tmp && wget $OPTS https://bootstrap.pypa.io/pip/2.7/get-pip.py && $PYTHONBIN /tmp/get-pip.py
 
     # Install pip python modules
     update_py_packages

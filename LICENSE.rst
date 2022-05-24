@@ -1,4 +1,4 @@
-Nagios Open Software License Version 1.3
+Nagios Community Software License Version 1.3
 
 Copyright (c) 2010-2017 Nagios Enterprises, LLC
 

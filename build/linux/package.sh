@@ -23,12 +23,19 @@ cat linux/ncpa.spec | sed "s/__VERSION__/$NCPA_VER/g" | sed "s|__BUILDROOT__|$BU
     cp -f $BUILD_DIR/ncpa-$NCPA_VER.tar.gz $BUILD_RPM_DIR/SOURCES/
     rm -f $BUILD_RPM_DIR/SPECS/ncpa.spec
     cp -f $BUILD_DIR/ncpa.spec $BUILD_RPM_DIR/SPECS/
-    QA_RPATHS='$[ 0x0002 ]' rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --define "_topdir $BUILD_RPM_DIR" >> $BUILD_DIR/build.log
+
+    if [ "$distro" == "Raspbian" ]; then
+        parch=`uname -m`
+        QA_RPATHS='$[ 0x0002 ]' rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --target=armhf --define "_topdir $BUILD_RPM_DIR" --define "_arch armhf" >> $BUILD_DIR/build.log
+    else
+        QA_RPATHS='$[ 0x0002 ]' rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --define "_topdir $BUILD_RPM_DIR" >> $BUILD_DIR/build.log
+    fi
+
     find $BUILD_RPM_DIR/RPMS -name "ncpa-$NCPA_VER*" -exec cp {} . \;
 )
 
 # Convert into a deb package for Debian systems
-if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
+if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Raspbian" ]; then
 
     cd $BUILD_DIR
     mkdir -p debbuild
@@ -36,9 +43,21 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
     cd debbuild
 
     # Create deb package with alien
-    alien -c -k -v *.rpm  >> $BUILD_DIR/build.log
+    rpm="*.rpm "
+    if [ "$distro" == "Raspbian" ]; then
+        rpm="*armhf.rpm"
+    fi
+
+    if [ "$architecture" == "aarch64" ]; then
+      alien -c -k -v --target=arm64 $rpm >> $BUILD_DIR/build.log
+    else
+      alien -c -k -v $rpm >> $BUILD_DIR/build.log
+    fi
+
     cd $BUILD_DIR
     cp debbuild/*.deb .
+
     rm -rf *.rpm
+    rm -rf debbuild
 
 fi

@@ -28,11 +28,11 @@ install_prereqs() {
     if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
 
         apt-get install debian-builder rpm gcc g++ wget openssl libssl-dev libffi-dev sqlite3 libsqlite3-dev zlib1g-dev alien -y
-    
+
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
-    
+
         yum install epel-release -y
-        yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget -y
+        yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make -y
 
     elif [ "$distro" == "SUSE LINUX" ] || [ "$distro" == "SLES" ] || [ "$distro" == "OpenSUSE" ]; then
 
@@ -70,6 +70,10 @@ install_prereqs() {
 
         fi
 
+    elif [ "$distro" == "Raspbian" ]; then
+
+        apt-get install gcc openssl sqlite3 libsqlite3-dev libffi-dev rpm git debian-builder alien libssl-dev -y
+
     else
 
         echo "Could not determine your OS type... you need to install the following dependencies:"
@@ -105,6 +109,9 @@ install_prereqs() {
 
     # Install bundled Python version from source
     if [ $SKIP_PYTHON -eq 0 ]; then
+        if [ ! -f $PYTHONTAR.tgz ]; then
+            wget https://www.python.org/ftp/python/$PYTHONVERSION/$PYTHONTAR.tgz
+        fi
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR
         # Removed from configure: LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib'

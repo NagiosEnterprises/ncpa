@@ -7,7 +7,6 @@ import requests
 import functools
 import datetime
 import json
-import re
 import psutil
 import listener.psapi as psapi
 import listener.processes as processes
@@ -20,6 +19,11 @@ import ncpa
 
 
 # Set whether or not a request is internal or not
+import socket
+
+
+__VERSION__ = '3.0.0'
+__STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
 
@@ -40,6 +44,9 @@ listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
 # Set some settings for Flask
 listener.config.update(SECRET_KEY=os.urandom(24))
 listener.url_map.strict_slashes = False
+listener.config.update(
+    SESSION_COOKIE_SECURE = True
+);
 
 
 # ------------------------------
@@ -90,6 +97,75 @@ def make_info_dict():
              'check_logging_time': check_logging_time }
 
 
+def get_unmapped_ip(ip):
+    """ Get unmapped IPv4 in case ip is an IPv4-mapped IPv6
+
+    This function gets an IPv4, IPv6 or IPv4-mapped IPv6 address.
+    It returns the given ip, but in case ip is an IPv4-mapped IPv6 address,
+    it returns ip as ordinary IPv4.
+    """
+
+    try:
+        # check if ip is IPv6
+        if ipaddress.ip_address(unicode(ip)).version == 6:
+            # check if ip is a IPv4-mapped IPv6 address
+            if ipaddress.IPv6Address(unicode(ip)).ipv4_mapped is not None:
+                # return the ordinary IPv4 address
+                return str(ipaddress.IPv6Address(unicode(ip)).ipv4_mapped)
+            else:
+                # return the IPv6 address
+                return str(ipaddress.IPv6Address(unicode(ip)))
+        else:
+            # return the IPv4 address
+            return str(ipaddress.ip_address(unicode(ip)))
+    # Needed for passive checks, in this case ip is 'Internal'
+    except ValueError as e:
+        logging.debug(e)
+        return ip
+
+
+def lookup_hostname(ip):
+    """
+    This function gets an ip and returns the hostname lookuped by DNS.
+    """
+
+    try:
+        hostname = socket.gethostbyaddr(str(ip))
+        return hostname[0]
+    except Exception as e:
+        logging.error(e)
+        return
+
+
+def is_ip(ip):
+    """
+    Checks if ip is a valid ip address.
+    """
+
+    try:
+        ipaddress.ip_address(unicode(ip)).version
+        return True
+    except ValueError as e:
+        logging.debug(e)
+        return False
+
+
+def is_network(ip):
+    """
+    Checks if ip is a valid ip network.
+    """
+
+    try:
+        ipaddress.ip_network(unicode(ip))
+        return True
+    except ValueError as e:
+        logging.debug(e)
+        return False
+    
+
+
+
+
 # ------------------------------
 # Authentication Wrappers
 # ------------------------------
@@ -97,16 +173,62 @@ def make_info_dict():
 
 @listener.before_request
 def before_request():
+    # allowed is set to False by default
+    allowed = False
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
+
     if allowed_hosts and __INTERNAL__ is False:
         if request.remote_addr:
-            ipaddr = ipaddress.ip_address(request.remote_addr)
-            allowed_networks = [ipaddress.ip_network(_network.strip()) for _network in allowed_hosts.split(',')]
-            allowed = [ipaddr in _network for _network in allowed_networks]
-            if True not in allowed:
+            for host in allowed_hosts.split(','):
+                host = host.strip()
+                remote_ipaddr_unmapped = get_unmapped_ip(request.remote_addr)
+
+                # check if host is written as CIDR suffix notation
+                if is_network(host):
+                    remote_ipaddr = request.remote_addr
+                    # check if host is a valid ip
+                    if is_ip(host):
+                        # check if ip is allowed
+                        if remote_ipaddr == host or remote_ipaddr_unmapped == host:
+                            allowed = True
+                            break
+                    else:
+                        # host is written as CIDR suffix notation
+                        # get all ip's from the given subnet
+                        allowed_network = ipaddress.ip_network(unicode(host))
+
+                        for ip in allowed_network:
+                            ip = str(ip)
+                            # check if an ip of the subnet is allowed
+                            if remote_ipaddr == ip or remote_ipaddr_unmapped == ip:
+                                allowed = True
+                                break
+                else:
+                    # lookup of the remote_ipaddr_unmapped
+                    remote_hostname = lookup_hostname(remote_ipaddr_unmapped)
+
+                    # check if hostname is allowed
+                    if remote_hostname == host:
+                        allowed = True
+                        break
+
+            # if not allowed, abort
+            if not allowed:
                 abort(403)
         else:
             abort(403)
+
+
+@listener.after_request
+def apply_headers(response):
+    allowed_sources = get_config_value('listener', 'allowed_sources')
+    if allowed_sources:
+        response.headers["X-Frame-Options"] = "ALLOW-FROM %s" % allowed_sources
+        response.headers["Content-Security-Policy"] = "frame-ancestors %s" % allowed_sources
+    else:
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
+    return response
 
 
 # Variable injection for all pages that flask creates
@@ -397,7 +519,7 @@ def checks():
     if status != '':
         link_vals += '&status=' + str(status)
     if ctype != '':
-        link_vals += '&ctype=' + str(status)
+        link_vals += '&ctype=' + str(ctype)
     if search != '':
         link_vals += '&search=' + str(search)
     if len(check_senders) > 0:
@@ -455,7 +577,7 @@ def tail_base():
     return render_template('gui/tail.html')
 
 
-# This function renders the graph picker page, which can be though of the
+# This function renders the graph picker page, which can be though of
 # the explorer for the graphs.
 @listener.route('/gui/graphs', methods=['GET', 'POST'])
 @requires_auth
@@ -494,9 +616,17 @@ def admin():
 @listener.route('/gui/admin/global', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_global():
+    exclude_fs_types = 'aufs,autofs,binfmt_misc,cifs,cgroup,configfs,\
+                        debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,\
+                        fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,\
+                        rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs'
+
     tmp_args = { 'no_nav': True,
                  'check_logging': int(get_config_value('general', 'check_logging', 1)),
-                 'check_logging_time': get_config_value('general', 'check_logging_time', 30) }
+                 'check_logging_time': get_config_value('general', 'check_logging_time', 30),
+                 'all_partitions': int(get_config_value('general', 'all_partitions', 1)),
+                 'exclude_fs_types': get_config_value('general', 'exclude_fs_types', exclude_fs_types),
+                 'default_units': get_config_value('general', 'default_units', 'Gi') }
 
     # Check session for flash message
     flash_msg_text = session.get('flash_msg_text', '')
@@ -527,11 +657,23 @@ def admin_listener_config():
                  'logbackups': get_config_value('listener', 'logbackups', '5'),
                  'admin_gui_access': int(get_config_value('listener', 'admin_gui_access', 1)),
                  'admin_auth_only': int(get_config_value('listener', 'admin_auth_only', 0)),
-                 'delay_start': get_config_value('listener', 'delay_start', '0') }
+                 'delay_start': get_config_value('listener', 'delay_start', '0'),
+                 'allowed_hosts': get_config_value('listener', 'allowed_hosts', 'All'),
+                 'allowed_sources': get_config_value('listener', 'allowed_sources', 'None'),
+                 'max_connections': get_config_value('listener', 'max_connections', '200') }
 
     # Todo: add form actions when submitted
 
     return render_template('admin/listener.html', **tmp_args)
+
+
+@listener.route('/gui/admin/api', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_api_config():
+    tmp_args = { 'no_nav': True,
+                 'community_string': get_config_value('api', 'community_string', 'mytoken') }
+
+    return render_template('admin/api.html', **tmp_args)
 
 
 @listener.route('/gui/admin/passive', methods=['GET', 'POST'])
@@ -571,6 +713,30 @@ def admin_nrdp_config():
     return render_template('admin/nrdp.html', **tmp_args)
 
 
+@listener.route('/gui/admin/nrds', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_nrds_config():
+    tmp_args = { 'no_nav': True,
+                 'nrds_url': get_config_value('nrds', 'url', ''),
+                 'nrds_token': get_config_value('nrds', 'token', ''),
+                 'config_name': get_config_value('nrds', 'config_name', ''),
+                 'config_version': get_config_value('nrds', 'config_version', ''),
+                 'update_config': int(get_config_value('nrds', 'update_config', '1')),
+                 'update_plugins': int(get_config_value('nrds', 'update_plugins', '1')) }
+    return render_template('admin/nrds.html', **tmp_args)
+
+
+@listener.route('/gui/admin/kafkaproducer', methods=['GET', 'POST'])
+@requires_admin_auth
+def admin_kafkaproducer_config():
+    tmp_args = { 'no_nav': True,
+                 'hostname': get_config_value('kafkaproducer', 'hostname', ''),
+                 'servers': get_config_value('kafkaproducer', 'servers', ''),
+                 'client_name': get_config_value('kafkaproducer', 'client_name', 'NCPA-Kafka'),
+                 'topic': get_config_value('kafkaproducer', 'topic', 'ncpa') }
+    return render_template('admin/kafkaproducer.html', **tmp_args)
+
+
 @listener.route('/gui/admin/plugin-directives', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_plugin_config():
@@ -581,6 +747,8 @@ def admin_plugin_config():
     tmp_args = { 'no_nav': True,
                  'plugin_path': get_config_value('plugin directives', 'plugin_path', 'plugins/'),
                  'plugin_timeout': get_config_value('plugin directives', 'plugin_timeout', '60'),
+                 'follow_symlinks': int(get_config_value('plugin directives', 'follow_symlinks', '0')),
+                 'run_with_sudo': get_config_value('plugin directives', 'run_with_sudo', ''),
                  'directives': directives }
     return render_template('admin/plugins.html', **tmp_args)
 

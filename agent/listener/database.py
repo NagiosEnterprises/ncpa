@@ -46,7 +46,7 @@ class DB(object):
 
     def run_db_maintenance(self, config):
         try:
-            days = int(config.get('general', 'check_logging_time'))
+            days = config.getint('general', 'check_logging_time')
         except Exception as e:
             days = 30;
         timestamp = time.time() - (days * 86400)
