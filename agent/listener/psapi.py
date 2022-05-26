@@ -9,7 +9,7 @@ from listener.pluginnodes import PluginAgentNode
 import listener.services as services
 import listener.processes as processes
 import ncpa
-import environment
+import listener.environment as environment
 import math
 
 importables = ("windowscounters", "windowslogs")

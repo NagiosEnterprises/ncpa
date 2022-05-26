@@ -1,7 +1,7 @@
 import os
 import time
 import logging
-import ConfigParser
+from configparser import ConfigParser
 import subprocess
 import shlex
 import re
