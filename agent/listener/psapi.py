@@ -241,7 +241,9 @@ def get_plugins_node():
 def get_user_node():
     user_count = RunnableNode('count', method=lambda: (len([x.name for x in ps.users()]), 'users'))
     user_list = RunnableNode('list', method=lambda: ([x.name for x in ps.users()], 'users'))
-    return ParentNode('user', children=[user_count, user_list])
+    unit_str='['+','.join(map(str,[x.name for x in ps.users()]))+'] users'
+    user_countlist = RunnableNode('countlist', method=lambda: (len([x.name for x in ps.users()]),unit_str))
+    return ParentNode('user', children=[user_count, user_list, user_countlist])
 
 
 def get_root_node(config):
