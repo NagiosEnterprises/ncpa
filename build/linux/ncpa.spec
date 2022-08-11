@@ -10,6 +10,10 @@ License:        Nagios Community Software License Version 1.3
 URL:            https://www.nagios.org/ncpa/help.php
 Source:         ncpa-%{version}.tar.gz
 AutoReqProv:    no
+Requires: systemd
+Requires: compat-openssl11
+BuildRequires: systemd
+BuildRequires: systemd-rpm-macros
 
 %description
 The Nagios Cross-Platform Agent is used with Nagios XI and Nagios Core to run active
@@ -30,10 +34,10 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/local
 cp -rf $RPM_BUILD_DIR/ncpa-%{version} %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
-mkdir -p %{buildroot}/etc/init.d
+mkdir -p %{buildroot}/%{_unitdir}
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa
-install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/listener_init %{buildroot}/etc/init.d/ncpa_listener
-install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{buildroot}/etc/init.d/ncpa_passive
+install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_listener.service %{buildroot}/%{_unitdir}/ncpa_listener.service
+install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_passive.service %{buildroot}/%{_unitdir}/ncpa_passive.service
 
 %clean
 rm -rf %{buildroot}
@@ -82,8 +86,6 @@ fi
 
 # Set the directory inside the init scripts
 dir=$RPM_INSTALL_PREFIX/ncpa
-sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_listener
-sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa_passive
 
 # Remove empty cert and key files
 if [ -f $RPM_INSTALL_PREFIX/ncpa/ncpa.crt ]
@@ -154,8 +156,6 @@ fi
 %dir /usr/local/ncpa
 /usr/local/ncpa/ncpa_listener
 /usr/local/ncpa/ncpa_passive
-/etc/init.d/ncpa_listener
-/etc/init.d/ncpa_passive
 
 %defattr(0755,root,root,0755)
 /usr/local/ncpa/*.so*
@@ -173,6 +173,8 @@ fi
 /usr/local/ncpa/var
 
 %defattr(0640,root,nagios,0755)
+%config %{_unitdir}/ncpa_listener.service
+%config %{_unitdir}/ncpa_passive.service
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
