@@ -62,8 +62,15 @@ $(document).ready(function() {
 
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Hostname</label>
-                        <div class="col-sm-6 col-md-4 col-lg-2 col-xl-3">
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3">
                             <input type="text" class="form-control" name="hostname" value="{{ hostname }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Connection timeout</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                            <input type="text" class="form-control" name="connection_timeout" value="{{ connection_timeout }}" readonly>
                         </div>
                     </div>
 
