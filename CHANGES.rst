@@ -5,8 +5,8 @@ Changelog
 ==================
 - Changed the date format in the changelog (#838) (ccztux)
 - NRDP connection timeout is missing in the admin section of the gui (#841) (ccztux)
-- Changed the way NCPA detects the number of CPUs (#864)
 - Updated psutil to address incorrectly reported mounts on Windows (#863)
+- Changed the way NCPA detects the number of CPUs (#864)
 
 2.4.0 - 2021-12-16
 ==================

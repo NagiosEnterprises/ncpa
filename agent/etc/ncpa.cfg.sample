@@ -283,6 +283,8 @@ hostname = NCPA 2
 # Connection timeout in seconds that will be used for transmitting the 
 # passive check results via HTTP POST requests to the NRDP server
 #
+# Default: 10
+#
 connection_timeout = 10
 
 #
