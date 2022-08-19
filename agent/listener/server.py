@@ -718,7 +718,8 @@ def admin_nrdp_config():
                  'handlers': handlers,
                  'nrdp_url': get_config_value('nrdp', 'parent', ''),
                  'nrdp_token': get_config_value('nrdp', 'token', ''),
-                 'hostname': get_config_value('nrdp', 'hostname', 'NCPA') }
+                 'hostname': get_config_value('nrdp', 'hostname', 'NCPA 2'),
+                 'connection_timeout': get_config_value('nrdp', 'connection_timeout', '10') }
     return render_template('admin/nrdp.html', **tmp_args)
 
 
