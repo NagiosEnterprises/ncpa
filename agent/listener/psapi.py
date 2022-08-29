@@ -135,7 +135,7 @@ def get_system_node():
 
 
 def get_cpu_node():
-    cpu_count = RunnableNode('count', method=lambda: ([len(ps.cpu_percent(percpu=True))], 'cores'))
+    cpu_count = RunnableNode('count', method=lambda: ([ps.cpu_count(logical=True)], 'cores'))
     cpu_percent = LazyNode('percent', method=lambda: (ps.cpu_percent(interval=0.5, percpu=True), '%'))
     cpu_user = RunnableNode('user', method=lambda: ([x.user for x in ps.cpu_times(percpu=True)], 'ms'))
     cpu_system = RunnableNode('system', method=lambda: ([x.system for x in ps.cpu_times(percpu=True)], 'ms'))
@@ -241,7 +241,9 @@ def get_plugins_node():
 def get_user_node():
     user_count = RunnableNode('count', method=lambda: (len([x.name for x in ps.users()]), 'users'))
     user_list = RunnableNode('list', method=lambda: ([x.name for x in ps.users()], 'users'))
-    return ParentNode('user', children=[user_count, user_list])
+    unit_str='['+','.join(map(str,[x.name for x in ps.users()]))+'] users'
+    user_countlist = RunnableNode('countlist', method=lambda: (len([x.name for x in ps.users()]),unit_str))
+    return ParentNode('user', children=[user_count, user_list, user_countlist])
 
 
 def get_root_node(config):
