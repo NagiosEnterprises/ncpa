@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-2.4.1 - 2022-08-16
+2.4.1 - 2022-09-13
 ==================
 - Changed the date format in the changelog (#838) (ccztux)
 - NRDP connection timeout is missing in the admin section of the gui (#841) (ccztux)
