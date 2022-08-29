@@ -1,7 +1,6 @@
 Changelog
 +++++++++
 
-<<<<<<< HEAD
 3.0.0 - 2022-??-??
 ==================
 
@@ -12,10 +11,9 @@ Changelog
 
 **Updates**
 
-- Updated the version of Python to 3.6.x
+- Updated the version of Python to 3.9.x
 - The listener and passive services/daemons are now combined into one service/daemon called ncpa
 - Systems with systemd now use a service definition instead of init.d script
-- Changed the date format in the changelog (#838) (ccztux)
 
 **Bug Fixes**
 

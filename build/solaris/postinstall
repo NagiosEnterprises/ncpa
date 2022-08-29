@@ -1,20 +1,8 @@
 
 # Create services
-
-if [ -d /lib/svc/manifest/site ]; then
-    svcbundle -i -s service-name=site/ncpa_listener \
-          -s start-method='/usr/local/ncpa/ncpa_listener' \
-          -s stop-method='kill $(cat /usr/local/ncpa/var/run/ncpa_listener.pid)'
-    svcbundle -i -s service-name=site/ncpa_passive \
-          -s start-method='/usr/local/ncpa/ncpa_passive' \
-          -s stop-method='kill $(cat /usr/local/ncpa/var/run/ncpa_passive.pid)'
-else
-	mv /usr/local/ncpa/ncpa_listener.xml /var/svc/manifest/site/ncpa_listener.xml
-	mv /usr/local/ncpa/ncpa_passive.xml /var/svc/manifest/site/ncpa_passive.xml
-	svccfg import /var/svc/manifest/site/ncpa_listener.xml
-	svccfg import /var/svc/manifest/site/ncpa_passive.xml
-fi
+svcbundle -i -s service-name=site/ncpa \
+  -s start-method='/usr/local/ncpa/ncpa' \
+  -s stop-method='kill $(cat /usr/local/ncpa/var/run/ncpa.pid)'
 
 # Enable services
-svcadm enable site/ncpa_listener
-svcadm enable site/ncpa_passive
+svcadm enable site/ncpa
