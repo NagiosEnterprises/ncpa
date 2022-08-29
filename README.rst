@@ -21,9 +21,10 @@ We currently build for the following operating systems:
 
 - Windows (7+)
 - Mac OS X (10.7+)
-- CentOS / RHEL 7, 8
-- CentOS Stream
-- Debian 9, 10
+- RHEL 7, 8, 9
+- CentOS 7
+- CentOS Stream 8, 9
+- Debian 9, 10, 11
 - Ubuntu 16.04, 18.04, 20.04
 - OpenSUSE Leap 15, Tumbleweed
 - SLES 11, 12, 15
