@@ -1,16 +1,15 @@
 #!/bin/bash
 
 # Globals
-PYTHONVER="3.9.7"
+PYTHONVER="3.9.13"
 PYTHONTAR="Python-$PYTHONVER"
-PYTHONBIN=$(which python3)
+PYTHONBIN=$(which python3.9)
 SKIP_PYTHON=0
 
 # Get information about system
 . $BUILD_DIR/linux/init.sh
 
 update_py_packages() {
-    PYTHONBIN=$(which python3.9)
     # Removed from before PYTHONBIN: LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib'
     # Removed from end: --no-binary :all:
     $PYTHONBIN -m pip install --upgrade pip
@@ -102,10 +101,6 @@ install_prereqs() {
     cd $BUILD_DIR/resources
 
     echo "Building python..."
-
-    if [ ! -f "$PYTHONTAR.tgz" ]; then
-        wget "https://www.python.org/ftp/python/$PYTHONVER/$PYTHONTAR.tgz"
-    fi
 
     # Install bundled Python version from source
     if [ $SKIP_PYTHON -eq 0 ]; then

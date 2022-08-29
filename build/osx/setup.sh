@@ -1,10 +1,12 @@
 #!/bin/bash -e
 
-PYTHONTAR="Python-2.7.18"
-PYTHONBIN="python"
+PYTHONVER="3.9.13"
+PYTHONTAR="Python-$PYTHONVER"
+PYTHONBIN=$(which python3.9)
 SKIP_PYTHON=0
-CXFREEZEVER="cx_Freeze-4.3.4"
+
 update_py_packages() {
+    $PYTHONBIN -m pip install --upgrade pip
     $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
 }
 
@@ -19,22 +21,8 @@ install_prereqs() {
         ./configure LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib' && make && make altinstall
         cd ..
         rm -rf $PYTHONTAR
-        PYTHONBIN=$(which python2.7)
+        PYTHONBIN=$(which python3.9)
     fi
-
-    # Install the patched version of cx_Freeze
-    tar xf $CXFREEZEVER.tar.gz
-    cd $CXFREEZEVER
-    $PYTHONBIN setup.py install
-    cd ..
-    rm -rf $CXFREEZEVER
-
-    # --------------------------
-    #  INSTALL PIP & PIP MODULES
-    # --------------------------
-
-    # Install pip
-    cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/pip/2.7/get-pip.py && $PYTHONBIN /tmp/get-pip.py
 
     # Install modules
     update_py_packages

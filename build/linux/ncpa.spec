@@ -41,12 +41,8 @@ rm -rf %{buildroot}
 %pre
 if command -v systemctl > /dev/null
 then
-    systemctl stop ncpa_listener &> /dev/null || true
-    systemctl stop ncpa_passive &> /dev/null || true
     systemctl stop ncpa &> /dev/null || true
 else
-    service ncpa_listener stop &> /dev/null || true
-    service ncpa_passive stop &> /dev/null || true
     service ncpa stop &> /dev/null || true
 fi
 
@@ -133,11 +129,9 @@ if [ ! -f "$RPM_INSTALL_PREFIX/ncpa/var/ncpa.db" ]
 then
     if command -v systemctl > /dev/null
     then
-        systemctl restart ncpa_listener
-        systemctl restart ncpa_passive
+        systemctl restart ncpa
     else
-        service ncpa_listener restart
-        service ncpa_passive restart
+        service ncpa restart
     fi
 fi
 

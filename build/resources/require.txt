@@ -2,8 +2,8 @@ cx_Freeze
 psutil
 requests
 Jinja2
-flask==0.10.1
-werkzeug==0.16.1
+flask
+werkzeug
 docutils
 pyOpenSSL
 cryptography
