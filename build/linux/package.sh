@@ -55,6 +55,18 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Ras
     fi
 
     cd $BUILD_DIR
+
+    # For Ubuntu 22 we need to repack to use xz rather than zstd
+    if [ "$dist" == "ubuntu22" ]; then
+        file=$(echo ncpa_*.deb)
+        ar x $file
+        rm -f $file
+        zstd -d < control.tar.zst | xz > control.tar.xz
+        zstd -d < data.tar.zst | xz > data.tar.xz
+        ar -m -c -a $file debian-binary control.tar.xz data.tar.xz
+        rm -f debian-binary control.tar.xz data.tar.xz control.tar.zst data.tar.zst
+    fi
+
     cp debbuild/*.deb .
 
     rm -rf *.rpm
