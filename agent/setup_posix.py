@@ -31,6 +31,10 @@ packages = []
 # Shared library include overrides
 bin_includes = ['libssl.so', 'libcrypto.so', 'libffi.so']
 
+# Special includes for OSX systems
+if 'osx' in sys.platform:
+    include_files += [('/usr/lib/libsqlite3.so', 'libsqlite3.so')]
+
 # Special includes for AIX systems
 if 'aix' in sys.platform:
     include_files += [('/opt/freeware/lib/libpython2.7.so', 'libpython2.7.so'),
