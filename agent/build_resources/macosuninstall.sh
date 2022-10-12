@@ -5,6 +5,7 @@ if ! id -Gn "${scriptUser}" | grep -q -w admin; then
     echo -e "\n\n        ERROR!!!: You must have admin privileges to run this script!\n\n"
     exit 1
 fi
+
 # These values are set in the ncpa.cfg for the user to drop permissions to
 username="nagios"
 groupname="nagios"
@@ -84,7 +85,7 @@ killNCPAprocesses() {
 }
 
 removeNCPAuser() {
-    if dscl . -read /Groups/${groupname} > /dev/null 2>&1; then
+    if dscl . -read "/Groups/${groupname}" > /dev/null 2>&1; then
         echo -n "    Removing nagios user and group... "
         echo -n "/Users/${username}... "
         sudo dscl . -delete "/Users/${username}"
@@ -95,17 +96,6 @@ removeNCPAuser() {
         echo "Done."
     else
         echo "No group/user to remove."
-    fi
-}
-
-removeNCPApython() {
-    pyDir="/usr/local/opt/python@2/Frameworks/Python.framework/Versions/2.7"
-    if [[ -f "${pyDir}/installed_by_ncpa" ]]; then
-        echo -n "    Removing custom Python ${pyDir}/Python... "
-        rm -rf "/usr/local/opt/python@2"
-        echo "Done."
-    else
-        echo "No Python to remove."
     fi
 }
 
@@ -139,21 +129,17 @@ listNCPAcomponents() {
 
     echo "\nHome dir?:"
     ls -al /usr/local | grep ncpa
-
-    echo "\nCustom Python?:"
-    pyDir="/usr/local/opt/python@2/Frameworks/Python.framework/Versions/2.7"
-    ls -l ${pyDir} 2>/dev/null
-
 }
 
 removeNCPAdaemons
 removeNCPAplists
 killNCPAprocesses
 removeNCPAuser
-removeNCPApython
 removeNCPAcode
 listNCPAcomponents
 
 echo "\n--------------------------"
 echo " Uninstall NCPA Completed "
 echo "--------------------------"
+
+exit

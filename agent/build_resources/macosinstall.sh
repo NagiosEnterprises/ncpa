@@ -31,23 +31,6 @@ fi
 # Go to install script directory
 pushd $( dirname -- "${0}" )
 
-# Check if this terminal program has Full Disk Access.
-# Since there is no direct method, we try a command that requires FDA
-hasFDA=$(cat /Library/Preferences/com.apple.TimeMachine.plist 2>/dev/null)
-if [[ ! $hasFDA ]]; then
-    echo -e "\nERROR: Full Disk Access is not available!\n"
-    echo "    This terminal program must be given 'Full Disk Access' in order to run this installer:"
-    echo "        1. Go to System Preferences/Security & Privacy"
-    echo "        2. Click the Full Disk Access (FDA) tab"
-    echo "        3. Find this terminal program, and check its checkbox"
-    echo "        4. Restart this terminal program, and re-run this installer."
-    echo "     "
-    echo "        Note: For security purposes, turn off FDA privileges for this program by unchecking the checkbox when you are done with this installation."
-    exit 1
-else
-    echo "    Full Disk Access is on for this terminal app."
-fi
-
 # Quit if any errors occur
 set -e
 
@@ -56,7 +39,6 @@ if [ ${upgrade} -eq "1" ]; then
     # Temporarily save etc directory
     echo -n "    Saving configuration... "
     cp -Rf ${homedir}/etc /tmp/ncpa_etc
-#     cat /tmp/ncpa_etc/ncpa.cfg | grep "community_string ="
     echo "Done."
 
     echo -n "    Stopping old NCPA services... "
@@ -137,7 +119,6 @@ echo "Done."
 echo -n "    Copying new NCPA files... "
 mkdir -p ${homedir}
 cp -Rf ncpa/* ${homedir}
-# cat ${homedir}/etc/ncpa.cfg | grep "community_string ="
 echo "Done."
 
 echo -n "    Setting permissions... "
@@ -154,50 +135,9 @@ echo "Done."
 if [ ${upgrade} -eq "1" ]; then
     echo -n "    Restoring configuration to ${homedir}/etc... "
     rm -rf ${homedir}/etc
-#     ls ${homedir}/etc
     cp -Rf "/tmp/ncpa_etc" "${homedir}/etc"
     rm -rf /tmp/ncpa_etc
-#     cat ${homedir}/etc/ncpa.cfg | grep "community_string ="
     echo "Done."
-#     ls ${homedir}/etc
-fi
-
-# Check if required python directory exists, if not make one
-pyDir="/usr/local/opt/python@2/Frameworks/Python.framework/Versions/2.7"
-if [[ ! -d ${pyDir} ]]; then
-    echo "    Installing Python... "
-    echo "        Creating Python directory: ${pyDir}... "
-    mkdir -p ${pyDir}
-#    ls ${pyDir}
-fi
-
-# Python doesn't exist in directory, we probably created it,
-# so we copy installer provided copy of Python into directory.
-if [[ ! -f "${pyDir}/Python" ]]; then
-    pyFile="${homedir}/Python"
-    echo "        Copying ${pyFile} to ${pyDir}... "
-#     echo  "${pyDir}/"
-    cp ${pyFile} ${pyDir}
-
-    # Add file so we can identify if we installed this for uninstaller
-    touch "${pyDir}/installed_by_ncpa"
-#     ls -l ${pyDir}
-    echo "    Done."
-
-    echo " "
-    echo "    ******** Attention!! ********"
-    echo "    An unsigned version of Python, needed for NCPA, has been installed at:.\n        ${pyDir}/Python"
-    echo "     "
-    echo "    To allow this Python to execute, follow these steps:"
-    echo "      1. In the Finder on your Mac, choose from the Go menu: go to folder... "
-    echo "      2. enter: '${pyDir}'"
-    echo "      3. Control/Right click the Python icon, then choose 'Open' from the shortcut menu. "
-    echo "         A terminal window will pop up, and you can ignore it or close it."
-    echo "      4. Return to this window and press any key to Continue."
-    read -s -k $'?    Press any key to continue.\n'
-    echo " "
-else
-    echo "    Python v2.7 available"
 fi
 
 echo -n "    Starting NCPA... "
@@ -228,10 +168,6 @@ listNCPAcomponents() {
 
     echo "\nHome dir?:"
     ls -al /usr/local | grep ncpa
-
-    echo "\nCustom Python?:"
-    pyDir="/usr/local/opt/python@2/Frameworks/Python.framework/Versions/2.7"
-    ls -l ${pyDir} 2>/dev/null
 }
 
 listNCPAcomponents
@@ -259,3 +195,4 @@ echo "    After several seconds the graphs should start populating with data."
 echo "    NCPA is now capturing data from your Mac!"
 
 popd
+exit 0
