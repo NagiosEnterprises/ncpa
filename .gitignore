@@ -14,3 +14,7 @@ agent/plugins/*
 ncpa.db
 prereqs.installed
 .python-version
+.DS_Store
+build/ncpa
+build/*.dmg
+build/NCPA-*
