@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+# minor change to allow push to trigger build
+
 PYTHONVER="3.9.13"
 PYTHONTAR="Python-$PYTHONVER"
 PYTHONBIN=$(which python3.9)
