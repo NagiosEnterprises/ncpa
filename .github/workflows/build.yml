@@ -35,3 +35,9 @@ jobs:
         pwd
         ../build/build.sh
       working-directory: agent
+    - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          if: matrix.os == 'macos-latest'
+            name: NCPA-artifact
+            path: ../build/ncpa-3.0.0.dmg
