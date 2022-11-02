@@ -33,5 +33,5 @@ jobs:
       run: |
         python setup.py build_exe
         pwd
-        ../build/build.sh
+        sudo ../build/build.sh
       working-directory: agent
