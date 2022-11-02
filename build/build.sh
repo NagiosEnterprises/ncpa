@@ -68,6 +68,8 @@ echo -e "***** ls -al ncpa"
 ls -al ncpa
 echo -e "***** ls -al ncpa-$NCPA_VER"
 ls -al ncpa-$NCPA_VER
+echo -e "***** ls -al ncpa-$NCPA_VER/listener"
+ls -al ncpa-$NCPA_VER/listener
 
 echo -e "***** Tail build.log"
 tail $BUILD_DIR/build.log
