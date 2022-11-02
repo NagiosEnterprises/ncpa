@@ -17,14 +17,14 @@ cat linux/ncpa.spec | sed "s/__VERSION__/$NCPA_VER/g" | sed "s|__BUILDROOT__|$BU
 
 # Build rpm package (also used on Debian systems)
 (
-    mkdir -p $BUILD_RPM_DIR/SPECS
-    mkdir -p $BUILD_RPM_DIR/SRPMS
-    mkdir -p $BUILD_RPM_DIR/RPMS
-    mkdir -p $BUILD_RPM_DIR/SOURCES
-    mkdir -p $BUILD_RPM_DIR/BUILD
-    cp -f $BUILD_DIR/ncpa-$NCPA_VER.tar.gz $BUILD_RPM_DIR/SOURCES/
-    rm -f $BUILD_RPM_DIR/SPECS/ncpa.spec
-    cp -f $BUILD_DIR/ncpa.spec $BUILD_RPM_DIR/SPECS/
+    sudo mkdir -p $BUILD_RPM_DIR/SPECS
+    sudo mkdir -p $BUILD_RPM_DIR/SRPMS
+    sudo mkdir -p $BUILD_RPM_DIR/RPMS
+    sudo mkdir -p $BUILD_RPM_DIR/SOURCES
+    sudo mkdir -p $BUILD_RPM_DIR/BUILD
+    sudo cp -f $BUILD_DIR/ncpa-$NCPA_VER.tar.gz $BUILD_RPM_DIR/SOURCES/
+    sudo rm -f $BUILD_RPM_DIR/SPECS/ncpa.spec
+    sudo cp -f $BUILD_DIR/ncpa.spec $BUILD_RPM_DIR/SPECS/
 
     if [ "$distro" == "Raspbian" ]; then
         parch=`uname -m`
@@ -33,7 +33,7 @@ cat linux/ncpa.spec | sed "s/__VERSION__/$NCPA_VER/g" | sed "s|__BUILDROOT__|$BU
         QA_RPATHS='$[ 0x0002 ]' rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --define "_topdir $BUILD_RPM_DIR" >> $BUILD_DIR/build.log
     fi
 
-    find $BUILD_RPM_DIR/RPMS -name "ncpa-$NCPA_VER*" -exec cp {} . \;
+    sudo find $BUILD_RPM_DIR/RPMS -name "ncpa-$NCPA_VER*" -exec cp {} . \;
 )
 
 # Convert into a deb package for Debian systems

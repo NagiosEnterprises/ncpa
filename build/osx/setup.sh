@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-# minor change to allow push to trigger build in fork
+echo -e "***** osx/setup.sh"
 
 PYTHONVER="3.9.13"
 PYTHONTAR="Python-$PYTHONVER"

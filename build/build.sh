@@ -13,6 +13,22 @@ NCPA_VER=$(cat $BUILD_DIR/../VERSION)
 
 echo "***** UNAME: $UNAME, BUILD_DIR: $BUILD_DIR, AGENT_DIR: $AGENT_DIR"
 
+echo -e "***** Initial setup"
+if [ "$UNAME" == "Linux" ]; then
+    . $BUILD_DIR/linux/setup.sh
+elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
+    . $BUILD_DIR/solaris/setup.sh
+elif [ "$UNAME" == "AIX" ]; then
+    . $BUILD_DIR/aix/setup.sh
+elif [ "$UNAME" == "Darwin" ]; then
+    . $BUILD_DIR/osx/setup.sh
+else
+    echo "Not a supported system for our build script."
+    echo "If you're sure all pre-reqs are installed, try running the"
+    echo "build without setup: ./build.sh --build-only"
+fi
+
+
 # Move the ncpa binary data
 cd $BUILD_DIR
 rm -rf $BUILD_DIR/ncpa
@@ -28,9 +44,9 @@ rm -f $BUILD_DIR/ncpa/libffi-*.so.*
 # Set permissions
 chmod -R g+r $BUILD_DIR/ncpa
 chmod -R a+r $BUILD_DIR/ncpa
-# chown nagios:nagios $BUILD_DIR/ncpa/var
-# chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
-# chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
+chown nagios:nagios $BUILD_DIR/ncpa/var
+chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
+chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
 chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
 chmod 755 $BUILD_DIR/ncpa/var
 chmod 755 $BUILD_DIR/ncpa
