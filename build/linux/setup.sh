@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo -e "***** linux/setup.sh"
+
 # Globals
 PYTHONVER="3.9.13"
 PYTHONTAR="Python-$PYTHONVER"
@@ -122,7 +124,7 @@ install_prereqs() {
 
 
     # Install modules
-    update_py_packages
+#     update_py_packages
 
 
     # --------------------------
@@ -130,11 +132,11 @@ install_prereqs() {
     # --------------------------
 
 
-    set +e
-    useradd nagios
-    groupadd nagios
-    usermod -g nagios nagios
-    set -e
-
 
 }
+
+set +e
+useradd nagios
+groupadd nagios
+usermod -g nagios nagios
+set -e

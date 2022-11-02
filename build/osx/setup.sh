@@ -29,11 +29,12 @@ install_prereqs() {
     # Install modules
     update_py_packages
 
-	# Add users/groups
-	set +e
-	sudo sysadminctl -addUser nagios
-	sudo dseditgroup -o create nagios
-	sudo dseditgroup -o edit -a nagios -t user nagios
-	set -e
 }
+
+# Add users/groups
+set +e
+sudo sysadminctl -addUser nagios
+sudo dseditgroup -o create nagios
+sudo dseditgroup -o edit -a nagios -t user nagios
+set -e
 
