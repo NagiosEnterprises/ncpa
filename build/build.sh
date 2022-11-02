@@ -64,6 +64,11 @@ elif [ "$UNAME" == "Linux" ]; then
 fi
 echo -e "***** ls -al"
 ls -al
+echo -e "***** ls -al ncpa"
+ls -al ncpa
+echo -e "***** ls -al ncpa-$NCPA_VER"
+ls -al ncpa-$NCPA_VER
+
 echo -e "***** Tail build.log"
 tail $BUILD_DIR/build.log
 
