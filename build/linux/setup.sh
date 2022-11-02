@@ -135,6 +135,7 @@ install_prereqs() {
 
 }
 
+# Add users/groups
 set +e
 sudo useradd nagios
 sudo groupadd nagios
