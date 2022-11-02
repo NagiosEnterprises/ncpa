@@ -28,9 +28,9 @@ rm -f $BUILD_DIR/ncpa/libffi-*.so.*
 # Set permissions
 chmod -R g+r $BUILD_DIR/ncpa
 chmod -R a+r $BUILD_DIR/ncpa
-chown nagios:nagios $BUILD_DIR/ncpa/var
-chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
-chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
+# chown nagios:nagios $BUILD_DIR/ncpa/var
+# chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
+# chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
 chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
 chmod 755 $BUILD_DIR/ncpa/var
 chmod 755 $BUILD_DIR/ncpa

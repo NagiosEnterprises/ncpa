@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+echo -e "***** linux/package.sh"
+
 # Set global build opts
 DIR=$(dirname "$(readlink -f "$0")")
 BUILD_DIR=$(readlink -f "$DIR/..")
