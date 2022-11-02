@@ -136,7 +136,7 @@ install_prereqs() {
 }
 
 set +e
-useradd nagios
-groupadd nagios
-usermod -g nagios nagios
+sudo useradd nagios
+sudo groupadd nagios
+sudo usermod -g nagios nagios
 set -e
