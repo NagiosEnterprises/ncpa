@@ -71,8 +71,8 @@ ls -al ncpa-$NCPA_VER
 echo -e "***** ls -al ncpa-$NCPA_VER/listener"
 ls -al ncpa-$NCPA_VER/listener
 
-echo -e "***** Tail build.log"
-tail $BUILD_DIR/build.log
+# echo -e "***** Tail build.log"
+# tail $BUILD_DIR/build.log
 
 # --------------------------
 # Package
