@@ -26,14 +26,14 @@ bundled version of Python.
 %define _python_bytecompile_errors_terminate_build 0
 
 %install
-rm -rf %{buildroot} 
+rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/local
 cp -rf $RPM_BUILD_DIR/ncpa-%{version} %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
 mkdir -p %{buildroot}/etc/init.d
 touch %{buildroot}/usr/local/ncpa/var/ncpa.db
 chown nagios:nagios %{buildroot}/usr/local/ncpa -R
-install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_init %{buildroot}/etc/init.d/ncpa
+install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-init %{buildroot}/etc/init.d/ncpa
 
 %clean
 rm -rf %{buildroot}
