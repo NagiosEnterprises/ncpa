@@ -12,11 +12,14 @@ BUILD_RPM_DIR="/usr/src/redhat"
 NCPA_VER=$(cat $BUILD_DIR/../VERSION)
 
 # Build spec file
+echo -e "***** Build spec file"
 cd $BUILD_DIR
 sudo cat linux/ncpa.spec | sudo sed "s/__VERSION__/$NCPA_VER/g" | sudo sed "s|__BUILDROOT__|$BUILD_RPM_DIR|g" > $BUILD_DIR/ncpa.spec
 
 # Build rpm package (also used on Debian systems)
+echo -e "***** Build rpm package"
 (
+echo -e "***** Build rpm package - make directories"
     sudo mkdir -p $BUILD_RPM_DIR/SPECS
     sudo mkdir -p $BUILD_RPM_DIR/SRPMS
     sudo mkdir -p $BUILD_RPM_DIR/RPMS
@@ -26,6 +29,7 @@ sudo cat linux/ncpa.spec | sudo sed "s/__VERSION__/$NCPA_VER/g" | sudo sed "s|__
     sudo rm -f $BUILD_RPM_DIR/SPECS/ncpa.spec
     sudo cp -f $BUILD_DIR/ncpa.spec $BUILD_RPM_DIR/SPECS/
 
+echo -e "***** Build rpm package - rpmbuild"
     if [ "$distro" == "Raspbian" ]; then
         parch=`uname -m`
         QA_RPATHS='$[ 0x0002 ]' rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --target=armhf --define "_topdir $BUILD_RPM_DIR" --define "_arch armhf" >> $BUILD_DIR/build.log
@@ -33,16 +37,18 @@ sudo cat linux/ncpa.spec | sudo sed "s/__VERSION__/$NCPA_VER/g" | sudo sed "s|__
         QA_RPATHS='$[ 0x0002 ]' rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --define "_topdir $BUILD_RPM_DIR" >> $BUILD_DIR/build.log
     fi
 
+echo -e "***** Build rpm package - find"
     sudo find $BUILD_RPM_DIR/RPMS -name "ncpa-$NCPA_VER*" -exec cp {} . \;
 )
 
 # Convert into a deb package for Debian systems
 if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Raspbian" ]; then
+echo -e "***** Build rpm package - convert to .deb"
 
-    cd $BUILD_DIR
+    sudo cd $BUILD_DIR
     sudo mkdir -p debbuild
-    cp *.rpm debbuild/
-    cd debbuild
+    sudo cp *.rpm debbuild/
+    sudo cd debbuild
 
     # Create deb package with alien
     rpm="*.rpm "
@@ -51,12 +57,12 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Ras
     fi
 
     if [ "$architecture" == "aarch64" ]; then
-      alien -c -k -v --target=arm64 $rpm >> $BUILD_DIR/build.log
+      sudo alien -c -k -v --target=arm64 $rpm >> $BUILD_DIR/build.log
     else
-      alien -c -k -v $rpm >> $BUILD_DIR/build.log
+      sudo alien -c -k -v $rpm >> $BUILD_DIR/build.log
     fi
 
-    cd $BUILD_DIR
+    sudo cd $BUILD_DIR
     sudo cp debbuild/*.deb .
 
     sudo rm -rf *.rpm
