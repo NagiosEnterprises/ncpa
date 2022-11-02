@@ -31,5 +31,6 @@ jobs:
     - name: Build the NCPA binaries
       run: |
         python setup.py build_exe
-        build/build.sh
+        pwd
+        ../build/build.sh
       working-directory: agent
