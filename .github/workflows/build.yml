@@ -39,5 +39,5 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
       name: NCPA-artifact
-        if: matrix.os == 'macos-latest'
-        path: ../build/ncpa-3.0.0.dmg
+      if: matrix.os == 'macos-latest'
+      path: ../build/ncpa-3.0.0.dmg
