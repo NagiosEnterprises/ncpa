@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+echo -e "***** linux/setup.sh"
+
 # Global variables
 UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
@@ -42,14 +44,14 @@ cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
 rm -f $BUILD_DIR/ncpa/libffi-*.so.*
 
 # Set permissions
-chmod -R g+r $BUILD_DIR/ncpa
-chmod -R a+r $BUILD_DIR/ncpa
-chown nagios:nagios $BUILD_DIR/ncpa/var
-chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
-chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
-chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
-chmod 755 $BUILD_DIR/ncpa/var
-chmod 755 $BUILD_DIR/ncpa
+sudo chmod -R g+r $BUILD_DIR/ncpa
+sudo chmod -R a+r $BUILD_DIR/ncpa
+sudo chown nagios:nagios $BUILD_DIR/ncpa/var
+sudo chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
+sudo chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
+sudo chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
+sudo chmod 755 $BUILD_DIR/ncpa/var
+sudo chmod 755 $BUILD_DIR/ncpa
 
 # Build tarball
 echo -e "***** Build tarball"
