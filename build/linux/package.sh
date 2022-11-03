@@ -57,9 +57,9 @@ echo -e "***** Build rpm package - convert to .deb"
     fi
 
     if [ "$architecture" == "aarch64" ]; then
-      sudo alien -c -k -v --target=arm64 $rpm >> $BUILD_DIR/build.log
+      alien -c -k -v --target=arm64 $rpm >> $BUILD_DIR/build.log
     else
-      sudo alien -c -k -v $rpm >> $BUILD_DIR/build.log
+      alien -c -k -v $rpm >> $BUILD_DIR/build.log
     fi
 
     cd $BUILD_DIR
