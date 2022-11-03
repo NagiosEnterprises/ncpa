@@ -56,6 +56,7 @@ echo -e "***** Build rpm package - do conversion"
     cd $BUILD_DIR
     pwd
     sudo mkdir -p debbuild
+    sudo chmod +w debbuild
     sudo cp *.rpm debbuild/
     cd debbuild
     pwd
