@@ -45,7 +45,7 @@ echo -e "***** Build rpm package - find"
 if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Raspbian" ]; then
 echo -e "***** Build rpm package - convert to .deb"
 
-    apt install alien
+    sudo apt install alien
 
     cd $BUILD_DIR
     sudo mkdir -p debbuild
