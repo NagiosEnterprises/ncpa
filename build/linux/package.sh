@@ -52,26 +52,29 @@ echo -e "***** Build rpm package - apt install alien"
     pwd
     sudo apt install alien
 
-echo -e "***** Build rpm package - do conversion"
     cd $BUILD_DIR
     pwd
+echo -e "***** Build rpm package - mk debbuild dir"
     sudo mkdir -p debbuild
     sudo chmod +w debbuild
+    ls -al
     sudo cp *.rpm debbuild/
     cd debbuild
     pwd
-
+df
     # Create deb package with alien
     rpm="*.rpm "
     if [ "$distro" == "Raspbian" ]; then
         rpm="*armhf.rpm"
     fi
 
+echo -e "***** Build rpm package - run alien"
     if [ "$architecture" == "aarch64" ]; then
       alien -c -k -v --target=arm64 $rpm >> $BUILD_DIR/build.log
     else
       alien -c -k -v $rpm >> $BUILD_DIR/build.log
     fi
+echo -e "***** Build rpm package - alien done"
 
     cd $BUILD_DIR
     sudo cp debbuild/*.deb .
