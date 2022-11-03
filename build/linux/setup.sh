@@ -107,7 +107,7 @@ install_prereqs() {
     # Install bundled Python version from source
     if [ $SKIP_PYTHON -eq 0 ]; then
         if [ ! -f $PYTHONTAR.tgz ]; then
-            wget https://www.python.org/ftp/python/$PYTHONVERSION/$PYTHONTAR.tgz
+            wget https://www.python.org/ftp/python/$PYTHONVER/$PYTHONTAR.tgz
         fi
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR

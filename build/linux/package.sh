@@ -45,10 +45,10 @@ echo -e "***** Build rpm package - find"
 if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Raspbian" ]; then
 echo -e "***** Build rpm package - convert to .deb"
 
-    sudo cd $BUILD_DIR
+    cd $BUILD_DIR
     sudo mkdir -p debbuild
     sudo cp *.rpm debbuild/
-    sudo cd debbuild
+    cd debbuild
 
     # Create deb package with alien
     rpm="*.rpm "
@@ -62,7 +62,7 @@ echo -e "***** Build rpm package - convert to .deb"
       sudo alien -c -k -v $rpm >> $BUILD_DIR/build.log
     fi
 
-    sudo cd $BUILD_DIR
+    cd $BUILD_DIR
     sudo cp debbuild/*.deb .
 
     sudo rm -rf *.rpm
