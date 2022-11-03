@@ -57,12 +57,13 @@ echo -e "***** Build rpm package - apt install alien"
 echo -e "***** Build rpm package - mk debbuild dir"
     sudo mkdir -p debbuild
     sudo chown runner:docker debbuild
+    sudo chown runner:docker *.rpm
     sudo chmod +w debbuild
     ls -al
     sudo cp *.rpm debbuild/
     cd debbuild
     pwd
-df
+
     # Create deb package with alien
     rpm="*.rpm "
     if [ "$distro" == "Raspbian" ]; then
