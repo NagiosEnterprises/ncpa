@@ -56,6 +56,7 @@ echo -e "***** Build rpm package - apt install alien"
     pwd
 echo -e "***** Build rpm package - mk debbuild dir"
     sudo mkdir -p debbuild
+    sudo chown runner:docker debbuild
     sudo chmod +w debbuild
     ls -al
     sudo cp *.rpm debbuild/
