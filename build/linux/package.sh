@@ -46,20 +46,20 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Ras
 echo -e "***** Build rpm package - convert to .deb"
 
 echo -e "***** Build rpm package - apt install alien"
-    pwd
-    ls -al ..
-    cd /tmp
-    pwd
+#     pwd
+#     ls -al ..
+#     cd /tmp
+#     pwd
     sudo apt install alien
 
     cd $BUILD_DIR
     pwd
 echo -e "***** Build rpm package - mk debbuild dir"
     sudo mkdir -p debbuild
-    sudo chown runner:docker debbuild
-    sudo chown runner:docker *.rpm
-    sudo chmod +w debbuild
-    ls -al
+#     sudo chown runner:docker debbuild
+#     sudo chown runner:docker *.rpm
+#     sudo chmod +w debbuild
+#     ls -al
     sudo cp *.rpm debbuild/
     cd debbuild
     pwd

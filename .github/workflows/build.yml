@@ -35,11 +35,8 @@ jobs:
         pwd
         ../build/build_github.sh
       working-directory: agent
-    - name: Upload artifact
       uses: actions/upload-artifact@v2
+    - name: Upload ${{ matrix.os }} artifact
       with:
-        name: NCPA-artifact
-        if: matrix.os == macos.latest
-        path: build/ncpa-3.0.0.dmg
-        if: matrix.os == ubuntu.latest
-        path: build/ncpa_3.0.0-1_amd64.deb
+        name: NCPA-3.0.0-${{ matrix.os }}
+        path: build/ncpa_3.0.0-1*.*
