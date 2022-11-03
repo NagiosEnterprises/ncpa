@@ -72,9 +72,9 @@ echo -e "***** Build rpm package - mk debbuild dir"
 
 echo -e "***** Build rpm package - run alien"
     if [ "$architecture" == "aarch64" ]; then
-      alien -c -k -v --target=arm64 $rpm >> $BUILD_DIR/build.log
+      sudo alien -c -k -v --target=arm64 $rpm >> $BUILD_DIR/build.log
     else
-      alien -c -k -v $rpm >> $BUILD_DIR/build.log
+      sudo alien -c -k -v $rpm >> $BUILD_DIR/build.log
     fi
 echo -e "***** Build rpm package - alien done"
 
