@@ -89,8 +89,8 @@ class Listener(Base):
             try:
                 port = self.config.getint('listener', 'port')
             except Exception:
-                self.config.set('listener', 'port', '5693')
-                port = '5693'
+                self.config.set('listener', 'port', 5693)
+                port = 5693
 
             try:
                 ssl_str_ciphers = self.config_parser.get('listener', 'ssl_ciphers')
@@ -301,7 +301,7 @@ class Daemon():
             # Drop permissions to specified user/group in ncpa.cfg
             self.set_uid_gid()
 
-            # Function check_pid_writable must come after set_uid_gid in
+            # Function check_pid_writable must come after set_uid_gid in 
             # order to detect whether the daemon user can write to the pidfile
             self.check_pid_writable()
 
@@ -674,7 +674,7 @@ def main():
                             const='start', default='start',
                             help='start the daemon')
 
-        parser.add_argument('--stop', dest='action', action='store_const',
+        parser.add_argument('--stop', dest='action', action='store_const', 
                             const='stop', default='start',
                             help='stop the daemon')
 
@@ -724,7 +724,7 @@ def main():
         log.setLevel('DEBUG')
 
         p, l = start_modules(options, config)
-
+        
         # Wait for exit
         print("Running in Debug Mode (https://localhost:5700/)")
         input("Press enter to exit..\n")
