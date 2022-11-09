@@ -43,26 +43,16 @@ echo -e "***** Build rpm package - find"
 
 # Convert into a deb package for Debian systems
 if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Raspbian" ]; then
-echo -e "***** Build rpm package - convert to .deb"
+    echo -e "***** Convert to .deb"
 
-echo -e "***** Build rpm package - apt install alien"
-#     pwd
-#     ls -al ..
-#     cd /tmp
-#     pwd
+    echo -e "***** Convert to .deb - apt install alien"
     sudo apt install alien
 
+    echo -e "***** Convert to .deb - mk debbuild dir"
     cd $BUILD_DIR
-    pwd
-echo -e "***** Build rpm package - mk debbuild dir"
     sudo mkdir -p debbuild
-#     sudo chown runner:docker debbuild
-#     sudo chown runner:docker *.rpm
-#     sudo chmod +w debbuild
-#     ls -al
     sudo cp *.rpm debbuild/
     cd debbuild
-    pwd
 
     # Create deb package with alien
     rpm="*.rpm "
@@ -70,18 +60,19 @@ echo -e "***** Build rpm package - mk debbuild dir"
         rpm="*armhf.rpm"
     fi
 
-echo -e "***** Build rpm package - run alien"
+    echo -e "***** Convert to .deb - run alien"
     if [ "$architecture" == "aarch64" ]; then
       sudo alien -c -k -v --target=arm64 $rpm >> $BUILD_DIR/build.log
     else
       sudo alien -c -k -v $rpm >> $BUILD_DIR/build.log
     fi
-echo -e "***** Build rpm package - alien done"
+    echo -e "***** Convert to .deb - alien done"
 
     cd $BUILD_DIR
     sudo cp debbuild/*.deb .
 
     sudo rm -rf *.rpm
     sudo rm -rf debbuild
+    ls -al
 
 fi
