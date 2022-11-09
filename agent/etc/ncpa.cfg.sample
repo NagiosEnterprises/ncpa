@@ -25,6 +25,20 @@ check_logging = 1
 #
 check_logging_time = 30
 
+# Logging file level, location, and the PID location
+# Default: loglevel = info (debug, info, warning, error)
+# Default: logfile = var/log/ncpa_listener.log
+# Default: pidfile = var/run/ncpa_listener.pid (leave listener in pid file name)
+#
+loglevel = info
+logfile = var/log/ncpa.log
+pidfile = var/run/ncpa.pid
+
+# This is for Unix only (Linux, Mac OS X, etc)
+#
+uid = nagios
+gid = nagios
+
 #
 # Display all mounted disk partitions
 # (essentially setting all=True here: https://psutil.readthedocs.io/en/latest/#psutil.disk_partitions)
@@ -161,7 +175,7 @@ admin_auth_only = 0
 # Example: mycoolwebsite.com
 # Example: *.mycoolwebsite.com
 #
-# allowed_sources = 
+# allowed_sources =
 
 #
 # The max size allowed for a log file in megabytes.
@@ -280,7 +294,7 @@ token =
 hostname = NCPA 2
 
 #
-# Connection timeout in seconds that will be used for transmitting the 
+# Connection timeout in seconds that will be used for transmitting the
 # passive check results via HTTP POST requests to the NRDP server
 #
 connection_timeout = 10
