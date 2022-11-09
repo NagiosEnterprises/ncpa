@@ -165,8 +165,8 @@ find $AGENT_DIR -name *.pyc -exec rm '{}' \;
 mkdir -p $AGENT_DIR/plugins
 mkdir -p $AGENT_DIR/build
 mkdir -p $AGENT_DIR/var/log
-cat /dev/null > $AGENT_DIR/var/log/ncpa_passive.log
-cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
+# cat /dev/null > $AGENT_DIR/var/log/ncpa_passive.log
+# cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
 
 (
     cd $AGENT_DIR
@@ -191,7 +191,7 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
     chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
     chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
-    chmod 755 $BUILD_DIR/ncpa/var
+    chmod -R 755 $BUILD_DIR/ncpa/var
     chmod 755 $BUILD_DIR/ncpa
 
     # Build tarball
