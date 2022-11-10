@@ -114,7 +114,7 @@ install_prereqs() {
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR
         # Removed from configure: LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib'
-        ./configure && make && make altinstall
+        ./configure --enable-shared && make && make altinstall
         cd ..
         rm -rf $PYTHONTAR
         PYTHONBIN=$(which python3.9)
