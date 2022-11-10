@@ -5,7 +5,9 @@ echo -e "***** linux/setup.sh"
 # Globals
 PYTHONVER="3.9.13"
 PYTHONTAR="Python-$PYTHONVER"
+set +e
 PYTHONBIN=$(which python3.9)
+set -e
 SKIP_PYTHON=0
 
 # Get information about system
