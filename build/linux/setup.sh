@@ -135,11 +135,12 @@ install_prereqs() {
     #  MISC ADDITIONS
     # --------------------------
 
-    echo -e "***** linux/setup.sh - add users/groups"
-    set +e
-    sudo useradd nagios
-    sudo groupadd nagios
-    sudo usermod -g nagios nagios
-    set -e
-
 }
+
+# This must be outside of install_prereqs(), so it will be executed during workflow build.
+echo -e "***** linux/setup.sh - add users/groups"
+set +e
+sudo useradd nagios
+sudo groupadd nagios
+sudo usermod -g nagios nagios
+set -e
