@@ -126,7 +126,7 @@ install_prereqs() {
 
 
     # Install modules
-#     update_py_packages
+    update_py_packages
 
 
     # --------------------------
