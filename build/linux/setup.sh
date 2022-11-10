@@ -14,6 +14,7 @@ SKIP_PYTHON=0
 . $BUILD_DIR/linux/init.sh
 
 update_py_packages() {
+    echo -e "***** linux/setup.sh - update_py_packages()"
     # Removed from before PYTHONBIN: LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib'
     # Removed from end: --no-binary :all:
     $PYTHONBIN -m pip install --upgrade pip
@@ -21,6 +22,7 @@ update_py_packages() {
 }
 
 install_prereqs() {
+    echo -e "***** linux/setup.sh - install_prereqs()"
 
 
     # --------------------------
@@ -104,10 +106,10 @@ install_prereqs() {
 
     cd $BUILD_DIR/resources
 
-    echo "Building python..."
-
     # Install bundled Python version from source
     if [ $SKIP_PYTHON -eq 0 ]; then
+        echo -e "***** linux/setup.sh - Building python..."
+
         if [ ! -f $PYTHONTAR.tgz ]; then
             wget https://www.python.org/ftp/python/$PYTHONVER/$PYTHONTAR.tgz
         fi
@@ -133,13 +135,11 @@ install_prereqs() {
     #  MISC ADDITIONS
     # --------------------------
 
-
+    echo -e "***** linux/setup.sh - add users/groups"
+    set +e
+    sudo useradd nagios
+    sudo groupadd nagios
+    sudo usermod -g nagios nagios
+    set -e
 
 }
-
-# Add users/groups
-set +e
-sudo useradd nagios
-sudo groupadd nagios
-sudo usermod -g nagios nagios
-set -e
