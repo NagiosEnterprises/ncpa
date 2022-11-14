@@ -16,3 +16,4 @@ agent/plugins/*
 ncpa.db
 prereqs.installed
 .python-version
+agent/var/log/*
