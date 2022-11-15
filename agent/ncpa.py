@@ -81,11 +81,11 @@ class Listener(Base):
                 address = '::'
 
             try:
-                address = self.config.get('listener', 'ip')
+                address = self.config.get('listener', 'ip', fallback=address)
             except Exception:
                 # Set the Windows default IP address to 0.0.0.0 because :: only allows connections
                 # via IPv6 unlike Linux which can bind to both at once
-                self.config.set('listener', 'ip', fallback=address)
+                self.config.set('listener', 'ip', address)
 
             try:
                 port = self.config.getint('listener', 'port', fallback=5693)
