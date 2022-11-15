@@ -7,6 +7,7 @@ Changelog
 - NRDP connection timeout is missing in the admin section of the gui (#841) (ccztux)
 - Updated psutil to address incorrectly reported mounts on Windows (#863)
 - Changed the way NCPA detects the number of CPUs (#864)
+- Fixed passive checks on CentOS 7.9 - requires two or more defined before it is listed in the GUI (#896) (ccztux)
 
 2.4.0 - 2021-12-16
 ==================
