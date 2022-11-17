@@ -73,7 +73,8 @@ class Listener(Base):
             if delay_start:
                 logging.info('Delayed start in configuration. Waiting %s seconds to start.', delay_start)
                 time.sleep(int(delay_start))
-        except Exception:
+        except Exception as e:
+            print("***** delay_start Exeption: ",e)
             pass
 
         try:
@@ -201,7 +202,8 @@ class Passive(Base):
             if delay_start:
                 logging.info('Delayed start in configuration. Waiting %s seconds to start.', delay_start)
                 time.sleep(int(delay_start))
-        except Exception:
+        except Exception as e:
+            print("***** Exeption: ",e)
             pass
 
         # Set next DB maintenance period to +1 day
@@ -344,9 +346,11 @@ class Daemon():
             logging.info("started")
             try:
                 start_modules(self.options, self.config)
-            except (KeyboardInterrupt, SystemExit):
+            except (KeyboardInterrupt, SystemExit) as e:
+                print("***** Exeption: ",e)
                 pass
-            except:
+            except Exception as e:
+                print("***** Exeption: ",e)
                 logging.exception("stopping with an exception")
                 raise
         finally:
