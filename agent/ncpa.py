@@ -64,10 +64,12 @@ class Base():
 class Listener(Base):
 
     def run(self):
+        print("***** Listener - run()")
 
         # Check if there is a start delay
         try:
             delay_start = self.config.get('listener', 'delay_start')
+            print('***** delay_start: ', delay_start)
             if delay_start:
                 logging.info('Delayed start in configuration. Waiting %s seconds to start.', delay_start)
                 time.sleep(int(delay_start))
@@ -78,6 +80,7 @@ class Listener(Base):
             try:
                 address = self.config.get('listener', 'ip')
             except Exception:
+                print('***** address1: ', address)
                 # Set the Windows default IP address to 0.0.0.0 because :: only allows connections
                 # via IPv6 unlike Linux which can bind to both at once
                 if __SYSTEM__ == 'nt':
@@ -86,10 +89,12 @@ class Listener(Base):
                     address = '::'
                 self.config.set('listener', 'ip', address)
 
+            print('***** address2: ', address)
             try:
                 port = self.config.getint('listener', 'port')
             except Exception:
                 self.config.set('listener', 'port', 5693)
+                print('***** Port1: ', port)
                 port = 5693
 
             try:
@@ -111,7 +116,11 @@ class Listener(Base):
             user_cert = self.config.get('listener', 'certificate')
 
             if user_cert == 'adhoc':
+                print('Start create cert')
                 cert, key = certificate.create_self_signed_cert(get_filename('var'), 'ncpa.crt', 'ncpa.key')
+                print('cert: %s', cert)
+                print('key: %s', key)
+                print('End create cert')
             else:
                 cert, key = user_cert.split(',')
 
@@ -123,6 +132,7 @@ class Listener(Base):
 
             # Add SSL cipher list if one is given
             if ssl_str_ciphers:
+                print("***** Listener - run() - ssl_str_ciphers: ", ssl_str_ciphers)
                 ssl_context['ciphers'] = ssl_str_ciphers
 
             # Create connection pool
@@ -132,12 +142,15 @@ class Listener(Base):
                 max_connections = 200
 
             listener.server.listener.secret_key = os.urandom(24)
+            print("***** Listener - run() - define http_server")
             http_server = WSGIServer(listener=(address, port),
                                      application=listener.server.listener,
                                      handler_class=WebSocketHandler,
                                      spawn=Pool(max_connections),
                                      **ssl_context)
+            print("***** Listener - run() - start http_server")
             http_server.serve_forever()
+            print("***** Listener - run() - http_server running")
         except Exception as exc:
             logging.exception(exc)
 
@@ -180,6 +193,7 @@ class Passive(Base):
                     logging.exception(e)
 
     def run(self):
+        print("***** Passive - run()")
 
         # Check if there is a start delay
         try:
@@ -215,6 +229,8 @@ class Daemon():
 
     # Set the options
     def __init__(self, options, config):
+        print("***** Daemon init - options: ", options)
+        print("***** Daemon init - config: ", config)
         self.options = options
         self.config = config
 
@@ -250,6 +266,7 @@ class Daemon():
         terminal has not been detached and the pid of the long-running
         process is not yet known.
         """
+        print("***** Daemon init - setup_root()")
 
         # We need to chown any temp files we wrote out as root (or any other user)
         # to the currently set user and group so checks don't error out
@@ -268,6 +285,7 @@ class Daemon():
 
     def on_sigterm(self, signalnum, frame):
         """Handle segterm by treating as a keyboard interrupt"""
+        print ("***** signalnum, frame: ",signalnum, frame)
         raise KeyboardInterrupt('SIGTERM')
 
     def add_signal_handlers(self):
@@ -276,6 +294,7 @@ class Daemon():
 
     def start(self):
         """Initialize and run the daemon"""
+        print("***** Daemon -start() - Initialize and run the daemon")
 
         # Don't proceed if another instance is already running.
         self.check_pid()
@@ -336,6 +355,8 @@ class Daemon():
 
     def stop(self):
         """Stop the running process"""
+        print("***** Daemon -stop() - Stop the running process")
+
         if self.pidfile and os.path.exists(self.pidfile):
             pid = int(open(self.pidfile).read())
             os.kill(pid, signal.SIGTERM)
@@ -345,6 +366,7 @@ class Daemon():
                 try:
                     # poll the process state
                     os.kill(pid, 0)
+                    logging.info("stopped2")
                 except OSError as err:
                     if err.errno == errno.ESRCH:
                         # process has died
@@ -373,6 +395,7 @@ class Daemon():
 
     def prepare_dirs(self):
         """Ensure the log and pid file directories exist and are writable"""
+        print("***** Daemon - prepare_dirs()")
         for fn in (self.pidfile, self.logfile):
             if not fn:
                 continue
@@ -383,6 +406,7 @@ class Daemon():
 
     def set_uid_gid(self):
         """Drop root privileges"""
+        print("***** Daemon - set_uid_gid()")
         if self.gid:
             try:
                 os.setgid(self.gid)
@@ -396,6 +420,7 @@ class Daemon():
 
     def chown(self, fn):
         """Change the ownership of a file to match the daemon uid/gid"""
+        print("***** Daemon - chown()")
         if self.uid or self.gid:
             uid = self.uid
             if not uid:
@@ -411,6 +436,7 @@ class Daemon():
 
     def start_logging(self):
         """Configure the logging module"""
+        print("***** Daemon - start_logging()")
         try:
             level = int(self.loglevel)
         except ValueError:
@@ -441,6 +467,8 @@ class Daemon():
         If the pid file exists but no other instance is running,
         delete the pid file.
         """
+        print("***** Daemon - check_pid()")
+
         if not self.pidfile:
             return
         # based on twisted/scripts/twistd.py
@@ -467,10 +495,13 @@ class Daemon():
 
     def check_pid_writable(self):
         u"""Verify the user has access to write to the pid file.
+        print("***** Daemon - check_pid_writable()")
 
         Note that the eventual process ID isn't known until after
         daemonize(), so it's not possible to write the PID here.
         """
+        print("***** Daemon - check_pid_writable()")
+
         if not self.pidfile:
             return
         if os.path.exists(self.pidfile):
@@ -483,15 +514,18 @@ class Daemon():
 
     def write_pid(self):
         u"""Write to the pid file"""
+        print("***** Daemon - write_pid()")
         if self.pidfile:
             open(self.pidfile, 'w').write(str(os.getpid()))
 
     def remove_pid(self):
         u"""Delete the pid file"""
+        print("***** Daemon - remove_pid()")
         if self.pidfile and os.path.exists(self.pidfile):
             os.remove(self.pidfile)
 
     def get_uid_gid(self, cp, section):
+        print("***** Daemon - get_uid_gid()")
         user_uid = cp.get(section, 'uid')
         user_gid = cp.get(section, 'gid')
 
@@ -515,6 +549,7 @@ class Daemon():
 
     def daemonize(self):
         """Detach from the terminal and continue as a daemon"""
+        print("***** Daemon - daemonize()")
         # swiped from twisted/scripts/twistd.py
         # See http://www.erlenstar.demon.co.uk/unix/faq_toc.html#TOC16
         if os.fork():   # launch child and...
@@ -605,6 +640,7 @@ class WinService():
 
 # Gets the proper file name when the application is frozen
 def get_filename(file):
+    print("***** get_filename()")
     if __FROZEN__:
         appdir = os.path.dirname(sys.executable)
     else:
@@ -614,6 +650,7 @@ def get_filename(file):
 
 # Get all the configuration options and return the config parser for them
 def get_configuration(config=None, configdir=None):
+    print("***** get_configuration()")
 
     # Use default config/directory if none is given to us
     if config is None:
@@ -635,6 +672,8 @@ def get_configuration(config=None, configdir=None):
 
 # Actually starts the processes for the components that will be used
 def start_modules(options, config):
+    print("***** start_modules()")
+
     try:
 
         # Create the database structure for checks
@@ -660,6 +699,7 @@ def start_modules(options, config):
 
 # This handles calls to the main NCPA binary
 def main():
+    print("***** main()")
     parser = ArgumentParser(description='''NCPA has multiple options and can
         be used to run Python scripts with the embedded version of Python or
         run the service/daemon in debug mode.''')
