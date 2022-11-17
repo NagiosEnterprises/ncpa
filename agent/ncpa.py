@@ -75,33 +75,32 @@ class Listener(Base):
             pass
 
         try:
-            if __SYSTEM__ == 'nt':
-                address = '0.0.0.0'
-            else:
-                address = '::'
-
             try:
-                address = self.config.get('listener', 'ip', fallback=address)
+                address = self.config.get('listener', 'ip')
             except Exception:
                 # Set the Windows default IP address to 0.0.0.0 because :: only allows connections
                 # via IPv6 unlike Linux which can bind to both at once
+                if __SYSTEM__ == 'nt':
+                    address = '0.0.0.0'
+                else:
+                    address = '::'
                 self.config.set('listener', 'ip', address)
 
             try:
-                port = self.config.getint('listener', 'port', fallback=5693)
+                port = self.config.getint('listener', 'port')
             except Exception:
-                self.config.set('listener', 'port', '5693')
-                port = '5693'
+                self.config.set('listener', 'port', 5693)
+                port = 5693
 
             try:
-                ssl_str_ciphers = self.config_parser.get('listener', 'ssl_ciphers', fallback='None')
+                ssl_str_ciphers = self.config_parser.get('listener', 'ssl_ciphers')
             except Exception:
                 ssl_str_ciphers = None
 
             listener.server.listener.config['iconfig'] = self.config
 
             try:
-                ssl_str_version = self.config.get('listener', 'ssl_version', fallback='TLSv1')
+                ssl_str_version = self.config.get('listener', 'ssl_version')
                 ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
             except:
                 ssl_version = getattr(ssl, 'PROTOCOL_TLSv1')
@@ -112,9 +111,7 @@ class Listener(Base):
             user_cert = self.config.get('listener', 'certificate')
 
             if user_cert == 'adhoc':
-                logging.info('Start create cert')
                 cert, key = certificate.create_self_signed_cert(get_filename('var'), 'ncpa.crt', 'ncpa.key')
-                logging.info('End create cert')
             else:
                 cert, key = user_cert.split(',')
 
@@ -271,7 +268,6 @@ class Daemon():
 
     def on_sigterm(self, signalnum, frame):
         """Handle segterm by treating as a keyboard interrupt"""
-        print ("***** signalnum, frame: ",signalnum, frame)
         raise KeyboardInterrupt('SIGTERM')
 
     def add_signal_handlers(self):
