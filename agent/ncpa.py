@@ -230,8 +230,8 @@ class Passive(Base):
                     next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
 
                 time.sleep(1)
-        except Exception as exc:
-            logging.exception(exc)
+        except Exception as e:
+            logging.exception(e)
 
 
 # Re-done Daemon class does the startup and control options for the NCPA
@@ -286,8 +286,8 @@ class Daemon():
                 if os.path.isfile(file):
                     if 'ncpa-' in file:
                         self.chown(os.path.join(tmpdir, file))
-        except OSError as err:
-            logging.exception(err)
+        except OSError as e:
+            logging.exception(e)
             pass
 
     def setup_user(self):
@@ -343,8 +343,8 @@ class Daemon():
             if not self.options['non_daemon']:
                 self.daemonize()
 
-        except:
-            logging.exception("failed to start due to an exception")
+        except Exception as e:
+            logging.exception("Failed to start due to an exception: %s", e)
             raise
 
         # Function write_pid must come after daemonizing since the pid of the
@@ -355,12 +355,15 @@ class Daemon():
             logging.info("started")
             try:
                 start_modules(self.options, self.config)
+                while True:
+                    time.sleep(1)
+
             except (KeyboardInterrupt, SystemExit) as e:
-                print("***** Exeption: ",e)
+                print("***** Exiting with interrupt: ", e)
                 pass
             except Exception as e:
-                print("***** Exeption: ",e)
-                logging.exception("stopping with an exception")
+                print("***** Exception: ", e)
+                logging.exception("Stopping with an exception: %s", e)
                 raise
         finally:
             self.remove_pid()
@@ -428,13 +431,13 @@ class Daemon():
         if self.gid:
             try:
                 os.setgid(self.gid)
-            except OSError as err:
-                logging.exception(err)
+            except OSError as e:
+                logging.exception(e)
         if self.uid:
             try:
                 os.setuid(self.uid)
-            except OSError as err:
-                logging.exception(err)
+            except OSError as e:
+                logging.exception(e)
 
     def chown(self, fn):
         """Change the ownership of a file to match the daemon uid/gid"""
@@ -693,10 +696,10 @@ def start_modules(options, config):
     logging.info("start_modules()")
 
     try:
-
         # Create the database structure for checks
         db = database.DB()
         db.setup()
+        l = p = ''
 
         # Create the passive thread
         p = Process(target=Passive, args=(options, config, True))
@@ -710,14 +713,15 @@ def start_modules(options, config):
 
         return p, l
 
-    except Exception as exc:
-        logging.exception(exc)
+    except Exception as e:
+        logging.exception(e)
         sys.exit(1)
 
 
 # This handles calls to the main NCPA binary
 def main():
     logging.info("main()")
+
     parser = ArgumentParser(description='''NCPA has multiple options and can
         be used to run Python scripts with the embedded version of Python or
         run the service/daemon in debug mode.''')
