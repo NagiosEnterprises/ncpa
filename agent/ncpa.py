@@ -203,7 +203,7 @@ class Passive(Base):
                     logging.exception(e)
 
     def run(self):
-        print("***** Passive - run()")
+        logging.info("Passive - run()")
 
         # Check if there is a start delay
         try:
@@ -212,7 +212,7 @@ class Passive(Base):
                 logging.info('Delayed start in configuration. Waiting %s seconds to start.', delay_start)
                 time.sleep(int(delay_start))
         except Exception as e:
-            print("***** Exeption: ",e)
+            print("***** Passive - Exception: ", e)
             pass
 
         # Set next DB maintenance period to +1 day
@@ -240,8 +240,7 @@ class Daemon():
 
     # Set the options
     def __init__(self, options, config):
-        print("***** Daemon init - options: ", options)
-        print("***** Daemon init - config: ", config)
+        print("Daemon init - options: ", options)
         self.options = options
         self.config = config
 
@@ -277,7 +276,7 @@ class Daemon():
         terminal has not been detached and the pid of the long-running
         process is not yet known.
         """
-        print("***** Daemon init - setup_root()")
+        logging.info("Daemon init - setup_root()")
 
         # We need to chown any temp files we wrote out as root (or any other user)
         # to the currently set user and group so checks don't error out
@@ -297,6 +296,7 @@ class Daemon():
     def on_sigterm(self, signalnum, frame):
         """Handle segterm by treating as a keyboard interrupt"""
         print ("***** signalnum, frame: ",signalnum, frame)
+        print("***** sys.exc_info: ",sys.exc_info())
         raise KeyboardInterrupt('SIGTERM')
 
     def add_signal_handlers(self):
@@ -305,7 +305,7 @@ class Daemon():
 
     def start(self):
         """Initialize and run the daemon"""
-        print("***** Daemon -start() - Initialize and run the daemon")
+        print("Daemon -start() - Initialize and run the daemon")
 
         # Don't proceed if another instance is already running.
         self.check_pid()
@@ -368,18 +368,20 @@ class Daemon():
 
     def stop(self):
         """Stop the running process"""
-        print("***** Daemon -stop() - Stop the running process")
+        logging.info("Daemon -stop() - Stop the running process")
 
         if self.pidfile and os.path.exists(self.pidfile):
             pid = int(open(self.pidfile).read())
+            self.remove_pid()
             os.kill(pid, signal.SIGTERM)
+            logging.info("Killed process: %d", pid)
             # wait for a moment to see if the process dies
             for n in range(10):
                 time.sleep(0.25)
                 try:
                     # poll the process state
                     os.kill(pid, 0)
-                    logging.info("stopped2")
+                    logging.info("Killed process2: %d", pid)
                 except OSError as err:
                     if err.errno == errno.ESRCH:
                         # process has died
@@ -392,6 +394,9 @@ class Daemon():
             sys.exit("not running")
 
     def status(self):
+        """Return the process status"""
+        logging.info("Daemon - status() - Return the process status")
+
         if self.pidfile and os.path.exists(self.pidfile):
             pid = int(open(self.pidfile).read())
 
@@ -408,7 +413,7 @@ class Daemon():
 
     def prepare_dirs(self):
         """Ensure the log and pid file directories exist and are writable"""
-        print("***** Daemon - prepare_dirs()")
+        logging.info("Daemon - prepare_dirs()")
         for fn in (self.pidfile, self.logfile):
             if not fn:
                 continue
@@ -419,7 +424,7 @@ class Daemon():
 
     def set_uid_gid(self):
         """Drop root privileges"""
-        print("***** Daemon - set_uid_gid()")
+        logging.info("Daemon - set_uid_gid()")
         if self.gid:
             try:
                 os.setgid(self.gid)
@@ -433,7 +438,7 @@ class Daemon():
 
     def chown(self, fn):
         """Change the ownership of a file to match the daemon uid/gid"""
-        print("***** Daemon - chown()")
+        logging.info("Daemon - chown()")
         if self.uid or self.gid:
             uid = self.uid
             if not uid:
@@ -449,7 +454,7 @@ class Daemon():
 
     def start_logging(self):
         """Configure the logging module"""
-        print("***** Daemon - start_logging()")
+        logging.info("Daemon - start_logging()")
         try:
             level = int(self.loglevel)
         except ValueError:
@@ -480,7 +485,7 @@ class Daemon():
         If the pid file exists but no other instance is running,
         delete the pid file.
         """
-        print("***** Daemon - check_pid()")
+        logging.info("Daemon - check_pid()")
 
         if not self.pidfile:
             return
@@ -508,12 +513,11 @@ class Daemon():
 
     def check_pid_writable(self):
         u"""Verify the user has access to write to the pid file.
-        print("***** Daemon - check_pid_writable()")
 
         Note that the eventual process ID isn't known until after
         daemonize(), so it's not possible to write the PID here.
         """
-        print("***** Daemon - check_pid_writable()")
+        logging.info("Daemon - check_pid_writable()")
 
         if not self.pidfile:
             return
@@ -527,18 +531,18 @@ class Daemon():
 
     def write_pid(self):
         u"""Write to the pid file"""
-        print("***** Daemon - write_pid()")
+        logging.info("Daemon - write_pid()")
         if self.pidfile:
             open(self.pidfile, 'w').write(str(os.getpid()))
 
     def remove_pid(self):
         u"""Delete the pid file"""
-        print("***** Daemon - remove_pid()")
+        logging.info("Daemon - remove_pid()")
         if self.pidfile and os.path.exists(self.pidfile):
             os.remove(self.pidfile)
 
     def get_uid_gid(self, cp, section):
-        print("***** Daemon - get_uid_gid()")
+        logging.info("Daemon - get_uid_gid()")
         user_uid = cp.get(section, 'uid')
         user_gid = cp.get(section, 'gid')
 
@@ -562,7 +566,7 @@ class Daemon():
 
     def daemonize(self):
         """Detach from the terminal and continue as a daemon"""
-        print("***** Daemon - daemonize()")
+        logging.info("Daemon - daemonize()")
         # swiped from twisted/scripts/twistd.py
         # See http://www.erlenstar.demon.co.uk/unix/faq_toc.html#TOC16
         if os.fork():   # launch child and...
@@ -653,7 +657,7 @@ class WinService():
 
 # Gets the proper file name when the application is frozen
 def get_filename(file):
-    print("***** get_filename()")
+    logging.info("get_filename()")
     if __FROZEN__:
         appdir = os.path.dirname(sys.executable)
     else:
@@ -663,7 +667,7 @@ def get_filename(file):
 
 # Get all the configuration options and return the config parser for them
 def get_configuration(config=None, configdir=None):
-    print("***** get_configuration()")
+    logging.info("get_configuration()")
 
     # Use default config/directory if none is given to us
     if config is None:
@@ -685,7 +689,7 @@ def get_configuration(config=None, configdir=None):
 
 # Actually starts the processes for the components that will be used
 def start_modules(options, config):
-    print("***** start_modules()")
+    logging.info("start_modules()")
 
     try:
 
@@ -712,7 +716,7 @@ def start_modules(options, config):
 
 # This handles calls to the main NCPA binary
 def main():
-    print("***** main()")
+    logging.info("main()")
     parser = ArgumentParser(description='''NCPA has multiple options and can
         be used to run Python scripts with the embedded version of Python or
         run the service/daemon in debug mode.''')
@@ -767,6 +771,7 @@ def main():
     # Note: We currently do not care about "safely" exiting them
     if options['debug_mode']:
         __DEBUG__ = True
+        logging.info("Debug init - options: %s", options)
 
         # Set config value for port to 5700 and start Listener and Passive
         config.set('listener', 'port', '5700')
