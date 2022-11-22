@@ -683,6 +683,7 @@ def get_configuration(config=None, configdir=None):
 
     cp = ConfigParser()
     cp.optionxform = str
+    cp.read_dict(cfg_defaults)
     cp.read(config_filenames)
     return cp
 
