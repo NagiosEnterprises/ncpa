@@ -706,15 +706,19 @@ def start_modules(options, config):
         db.setup()
         l = p = ''
 
-        # Create the passive thread
-        p = Process(target=Passive, args=(options, config, True))
-        p.daemon = True
-        p.start()
+        if not options['listener_only'] or options['passive_only']:
+            # Create the passive process
+            logging.info("Spawning Passive process")
+            p = Process(target=Passive, args=(options, config, has_error, True))
+            p.daemon = True
+            p.start()
 
-        # Create the listener process
-        l = Process(target=Listener, args=(options, config, True))
-        l.daemon = True
-        l.start()
+        if not options['passive_only'] or options['listener_only']:
+            # Create the listener process
+            logging.info("Spawning Listener process")
+            l = Process(target=Listener, args=(options, config, has_error, True))
+            l.daemon = True
+            l.start()
 
         return p, l
 
@@ -752,6 +756,12 @@ def main():
         # Non-Daemonizing mode
         parser.add_argument('-n', '--non-daemon', action='store_true', default=False,
                             help='run NCPA in the foreground')
+
+        parser.add_argument('-l', '--listener-only', action='store_true', default=False,
+                            help='start listener without passive (if --passive-only is not selected)')
+
+        parser.add_argument('-p', '--passive-only', action='store_true', default=False,
+                            help='start passive without listener (if --listener-only is not selected)')
 
     # Allow using an external configuration file
     parser.add_argument('-c', '--config-file', action='store', default=None,
