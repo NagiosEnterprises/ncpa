@@ -44,6 +44,44 @@ __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
 
+# Define config defaults
+# We assign a lot of (but not all) defaults in the code, so let's keep them in one place.
+
+# Set the Windows default IP address to 0.0.0.0 because :: only allows connections
+# via IPv6 unlike Linux which can bind to both at once
+address = '::'
+if __SYSTEM__ == 'nt':
+    address = '0.0.0.0'
+
+cfg_defaults = {
+            'general': {
+                'loglevel': 'info',
+                'logfile': 'var/log/ncpa.log',
+                'pidfile': 'var/run/ncpa.pid',
+                'uid': 'nagios',
+                'gid': 'nagios',
+                'all_partitions': '1',
+                'default_units': 'Gi',
+                'exclude_fs_types': 'aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs,nfsd,xenfs'
+            },
+            'listener':
+                {'delay_start': '0',
+                'ip': address,
+                'port': '5693',
+                'ssl_ciphers': 'None',
+                'ssl_version': 'TLSv1_2',
+                'certificate': 'adhoc',
+                'max_connections': '200',
+                'admin_gui_access': '1',
+                'admin_password': 'None',
+                'admin_auth_only': '0',
+            },
+            'passive':
+                {'handlers': '',
+                'delay_start': '0'
+            }
+        }
+
 
 # The base class for the Listener and Passive classes, which sets things
 # like options, config, autostart, etc so that they can be accesssed inside
@@ -64,64 +102,37 @@ class Base():
 class Listener(Base):
 
     def run(self):
-        print("***** Listener - run()")
-
-        # Check if there is a start delay
-        try:
-            delay_start = self.config.get('listener', 'delay_start')
-            print('***** delay_start: ', delay_start)
-            if delay_start:
-                logging.info('Delayed start in configuration. Waiting %s seconds to start.', delay_start)
-                time.sleep(int(delay_start))
-        except Exception as e:
-            print("***** delay_start Exeption: ",e)
-            pass
+        logging.info("Listener - run()")
 
         try:
-            try:
-                address = self.config.get('listener', 'ip')
-            except Exception:
-                print('***** address1: ', address)
-                # Set the Windows default IP address to 0.0.0.0 because :: only allows connections
-                # via IPv6 unlike Linux which can bind to both at once
-                if __SYSTEM__ == 'nt':
-                    address = '0.0.0.0'
-                else:
-                    address = '::'
-                self.config.set('listener', 'ip', address)
+            address = self.config.get('listener', 'ip')
+            print('***** address1: ', address)
 
-            print('***** address2: ', address)
-            try:
-                port = self.config.getint('listener', 'port')
-            except Exception:
-                self.config.set('listener', 'port', 5693)
-                print('***** Port1: ', port)
-                port = 5693
+            port = int(self.config.get('listener', 'port'))
+            self.config.set('listener', 'port', '5693')
+            print('***** port: ', port)
 
-            try:
-                ssl_str_ciphers = self.config_parser.get('listener', 'ssl_ciphers')
-            except Exception:
-                ssl_str_ciphers = None
+            ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
+            if  (ssl_str_ciphers == 'None'):
+                ssl_str_ciphers = ''
+            print('***** ssl_str_ciphers: ', ssl_str_ciphers)
 
+            # Pass config to Flask instance
+            print('***** pass listener.config to flask instance')
             listener.server.listener.config['iconfig'] = self.config
 
-            try:
-                ssl_str_version = self.config.get('listener', 'ssl_version')
-                ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
-            except:
-                ssl_version = getattr(ssl, 'PROTOCOL_TLSv1')
-                ssl_str_version = 'TLSv1'
+            ssl_str_version = self.config.get('listener', 'ssl_version')
+            ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
+            print('***** ssl_version: ', ssl_version)
 
             logging.info('Using SSL version %s', ssl_str_version)
 
             user_cert = self.config.get('listener', 'certificate')
 
             if user_cert == 'adhoc':
-                print('Start create cert')
+                logging.info('Listener - Start create cert')
                 cert, key = certificate.create_self_signed_cert(get_filename('var'), 'ncpa.crt', 'ncpa.key')
-                print('cert: %s', cert)
-                print('key: %s', key)
-                print('End create cert')
+                logging.info('Listener - Cert created')
             else:
                 cert, key = user_cert.split(',')
 
@@ -137,26 +148,24 @@ class Listener(Base):
                 ssl_context['ciphers'] = ssl_str_ciphers
 
             # Create connection pool
-            try:
-                max_connections = self.config_parser.get('listener', 'max_connections')
-            except Exception:
-                max_connections = 200
+            max_connections = int(self.config.get('listener', 'max_connections'))
+            print("***** max_connections: ", max_connections)
 
             listener.server.listener.secret_key = os.urandom(24)
-            print("***** Listener - run() - define http_server")
+            logging.info("Listener - run() - define http_server")
             http_server = WSGIServer(listener=(address, port),
                                      application=listener.server.listener,
                                      handler_class=WebSocketHandler,
                                      spawn=Pool(max_connections),
                                      **ssl_context)
-            print("***** Listener - run() - start http_server")
+            logging.info("Listener - run() - start http_server")
             http_server.serve_forever()
-            print("***** Listener - run() - http_server running")
-        except Exception as exc:
-            logging.exception(exc)
+            logging.info("Listener - run() - http_server running")
+        except Exception as e:
+            logging.exception("Listener - exception: %s", e)
 
 
-# The passive service that runs in the background - this is ran in a
+# The passive service that runs in the background - this is run in a
 # separate thread since it is what the main process is used for
 class Passive(Base):
 
