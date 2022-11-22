@@ -14,7 +14,7 @@ import time
 import datetime
 import tempfile
 
-from multiprocessing import Process
+from multiprocessing import Process, Value
 from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
 from geventwebsocket.handler import WebSocketHandler
@@ -88,12 +88,18 @@ cfg_defaults = {
 # the other classes
 class Base():
 
-    def __init__(self, options, config, autostart=False):
+    def __init__(self, options, config, has_error, autostart=False):
         self.options = options
         self.config = config
+        self.has_error = has_error
 
         if autostart:
             self.run()
+
+    # Set error flag for parent process to true
+    def send_error(self):
+        self.has_error.value = True
+        sys.exit(1)
 
 
 # The listener, which serves the web GUI and API - starting in NCPA 3
@@ -138,6 +144,7 @@ class Listener(Base):
 
             except Exception as e:
                 logging.exception("Listener - run() - config exception: %s", e)
+                self.send_error()
 
             if user_cert == 'adhoc':
                 logging.info('Listener - Start create cert')
@@ -168,6 +175,7 @@ class Listener(Base):
             logging.info("Listener - run() - http_server running")
         except Exception as e:
             logging.exception("Listener - exception: %s", e)
+            self.send_error()
 
 
 # The passive service that runs in the background - this is run in a
@@ -244,10 +252,11 @@ class Passive(Base):
 class Daemon():
 
     # Set the options
-    def __init__(self, options, config):
+    def __init__(self, options, config, has_error):
         print("Daemon init - options: ", options)
         self.options = options
         self.config = config
+        self.has_error = has_error
 
         # Default settings (can be overwritten)
         self.pidfile = get_filename('var/ncpa.pid')
@@ -359,8 +368,8 @@ class Daemon():
         try:
             logging.info("started")
             try:
-                start_modules(self.options, self.config)
-                while True:
+                start_modules(self.options, self.config, self.has_error)
+                while not self.has_error.value:
                     time.sleep(1)
 
             except (KeyboardInterrupt, SystemExit) as e:
@@ -697,7 +706,7 @@ def get_configuration(config=None, configdir=None):
 
 
 # Actually starts the processes for the components that will be used
-def start_modules(options, config):
+def start_modules(options, config, has_error):
     logging.info("start_modules()")
 
     try:
@@ -730,6 +739,7 @@ def start_modules(options, config):
 # This handles calls to the main NCPA binary
 def main():
     logging.info("main()")
+    has_error = Value('i', False)
 
     parser = ArgumentParser(description='''NCPA has multiple options and can
         be used to run Python scripts with the embedded version of Python or
@@ -801,7 +811,7 @@ def main():
         log.addHandler(logging.StreamHandler())
         log.setLevel('DEBUG')
 
-        p, l = start_modules(options, config)
+        p, l = start_modules(options, config, has_error)
 
         # Wait for exit
         print("Running in Debug Mode (https://localhost:5700/)")
@@ -811,10 +821,10 @@ def main():
     # If we are running on Linux or Mac OS X we will be using the
     # Daemon class to control the agent
     if __SYSTEM__ == 'posix':
-        d = Daemon(options, config)
+        d = Daemon(options, config, has_error)
         d.main()
     else:
-        start_modules(options, config)
+        start_modules(options, config, has_error)
 
 if __name__ == '__main__':
     main()
