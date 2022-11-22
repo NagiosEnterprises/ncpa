@@ -105,29 +105,39 @@ class Listener(Base):
         logging.info("Listener - run()")
 
         try:
-            address = self.config.get('listener', 'ip')
-            print('***** address1: ', address)
+            try:
+            # Build config
+                delay_start = int(self.config.get('listener', 'delay_start'))
+                logging.info("Listener - delay_start: %s", delay_start)
+                if delay_start:
+                    logging.info('Listener - Delayed start in configuration. Waiting %s seconds to start.', delay_start)
+                    time.sleep(int(delay_start))
 
-            port = int(self.config.get('listener', 'port'))
-            self.config.set('listener', 'port', '5693')
-            print('***** port: ', port)
+                address = self.config.get('listener', 'ip')
+                logging.info("Listener - address1: %s", address)
 
-            ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
-            if  (ssl_str_ciphers == 'None'):
-                ssl_str_ciphers = ''
-            print('***** ssl_str_ciphers: ', ssl_str_ciphers)
+                port = int(self.config.get('listener', 'port'))
+                logging.info("Listener - port: %s", port)
 
-            # Pass config to Flask instance
-            print('***** pass listener.config to flask instance')
-            listener.server.listener.config['iconfig'] = self.config
+                ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
+                if  (ssl_str_ciphers == 'None'):
+                    ssl_str_ciphers = ''
+                else:
+                    logging.info("Listener - run() - ssl_str_ciphers: %s", ssl_str_ciphers)
+                    ssl_context['ciphers'] = ssl_str_ciphers
+                logging.info("Listener - ssl_str_ciphers: %s", ssl_str_ciphers)
 
-            ssl_str_version = self.config.get('listener', 'ssl_version')
-            ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
-            print('***** ssl_version: ', ssl_version)
+                ssl_str_version = self.config.get('listener', 'ssl_version')
+                ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
+                logging.info('Listener - Using SSL version %s', ssl_str_version)
 
-            logging.info('Using SSL version %s', ssl_str_version)
+                max_connections = int(self.config.get('listener', 'max_connections'))
+                logging.info("Listener - max_connections: %s", max_connections)
 
-            user_cert = self.config.get('listener', 'certificate')
+                user_cert = self.config.get('listener', 'certificate')
+
+            except Exception as e:
+                logging.exception("Listener - run() - config exception: %s", e)
 
             if user_cert == 'adhoc':
                 logging.info('Listener - Start create cert')
@@ -142,22 +152,17 @@ class Listener(Base):
                 'ssl_version': ssl_version
             }
 
-            # Add SSL cipher list if one is given
-            if ssl_str_ciphers:
-                print("***** Listener - run() - ssl_str_ciphers: ", ssl_str_ciphers)
-                ssl_context['ciphers'] = ssl_str_ciphers
+            # Pass config to Flask instance
+            listener.server.listener.config['iconfig'] = self.config
 
             # Create connection pool
-            max_connections = int(self.config.get('listener', 'max_connections'))
-            print("***** max_connections: ", max_connections)
-
             listener.server.listener.secret_key = os.urandom(24)
             logging.info("Listener - run() - define http_server")
             http_server = WSGIServer(listener=(address, port),
-                                     application=listener.server.listener,
-                                     handler_class=WebSocketHandler,
-                                     spawn=Pool(max_connections),
-                                     **ssl_context)
+                                        application=listener.server.listener,
+                                        handler_class=WebSocketHandler,
+                                        spawn=Pool(max_connections),
+                                        **ssl_context)
             logging.info("Listener - run() - start http_server")
             http_server.serve_forever()
             logging.info("Listener - run() - http_server running")
