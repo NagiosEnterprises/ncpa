@@ -112,16 +112,16 @@ class Listener(Base):
         try:
             try:
             # Build config
-                delay_start = int(self.config.get('listener', 'delay_start'))
+                delay_start = self.config.getint('listener', 'delay_start')
                 logging.info("Listener - delay_start: %s", delay_start)
                 if delay_start:
                     logging.info('Listener - Delayed start in configuration. Waiting %s seconds to start.', delay_start)
-                    time.sleep(int(delay_start))
+                    time.sleep(delay_start)
 
                 address = self.config.get('listener', 'ip')
                 logging.info("Listener - address1: %s", address)
 
-                port = int(self.config.get('listener', 'port'))
+                port = self.config.getint('listener', 'port')
                 logging.info("Listener - port: %s", port)
 
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
@@ -136,7 +136,7 @@ class Listener(Base):
                 ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
                 logging.info('Listener - Using SSL version %s', ssl_str_version)
 
-                max_connections = int(self.config.get('listener', 'max_connections'))
+                max_connections = self.config.getint('listener', 'max_connections')
                 logging.info("Listener - max_connections: %s", max_connections)
 
                 user_cert = self.config.get('listener', 'certificate')
@@ -225,10 +225,11 @@ class Passive(Base):
 
         # Check if there is a start delay
         try:
-            delay_start = self.config.get('passive', 'delay_start')
+            delay_start = self.config.getint('passive', 'delay_start')
+            logging.info("Passive - delay_start: %s", delay_start)
             if delay_start:
-                logging.info('Delayed start in configuration. Waiting %s seconds to start.', delay_start)
-                time.sleep(int(delay_start))
+                logging.info('Passive - Delayed start in configuration. Waiting %s seconds to start.', delay_start)
+                time.sleep(delay_start)
         except Exception as e:
             print("***** Passive - Exception: ", e)
             pass
