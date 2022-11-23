@@ -262,7 +262,6 @@ class Daemon():
 
     # Set the options
     def __init__(self, options, config, has_error):
-        print("Daemon init - options: ", options)
         self.options = options
         self.config = config
         self.has_error = has_error
@@ -328,9 +327,11 @@ class Daemon():
         """Register the sigterm handler"""
         signal.signal(signal.SIGTERM, self.on_sigterm)
 
+    # ATTENTION - This function contians the infinite while loop that prevents
+    # the process from exiting during normal operation
     def start(self):
         """Initialize and run the daemon"""
-        print("Daemon -start() - Initialize and run the daemon")
+        print("Daemon - start() - Initialize and run the daemon")
 
         # Don't proceed if another instance is already running.
         self.check_pid()
@@ -341,17 +342,15 @@ class Daemon():
         # Create log file and pid file directories if they don't exist
         self.prepare_dirs()
 
-        # Start_logging must come after check_pid so that two
-        # processes don't write to the same log file, but before
-        # setup_root so that work done with root privileges can be
-        # logged.
         try:
+            # Start_logging must come after check_pid so that two
+            # processes don't write to the same log file, but before
+            # setup_root so that work done with root privileges can be
+            # logged.
+            self.start_logging()
 
             # Setup with root privileges
             self.setup_root()
-
-            # Start logging
-            self.start_logging()
 
             # Drop permissions to specified user/group in ncpa.cfg
             self.set_uid_gid()
@@ -369,7 +368,7 @@ class Daemon():
                 self.daemonize()
 
         except Exception as e:
-            logging.exception("Failed to start due to an exception: %s", e)
+            logging.exception("Daemon - Failed to start due to an exception: %s", e)
             raise
 
         # Function write_pid must come after daemonizing since the pid of the
@@ -380,46 +379,52 @@ class Daemon():
             logging.info("started")
             try:
                 start_processes(self.options, self.config, self.has_error)
+
+                # Loop forever unless process throws error
                 while not self.has_error.value:
                     time.sleep(1)
+                else:
+                    logging.info("Daemon - Exit loop - self.has_error.value: %s", self.has_error.value)
 
             except (KeyboardInterrupt, SystemExit) as e:
                 print("***** Exiting with interrupt: ", e)
                 pass
             except Exception as e:
                 print("***** Exception: ", e)
-                logging.exception("Stopping with an exception: %s", e)
+                logging.exception("Daemon - Stopping with an exception: %s", e)
                 raise
         finally:
             self.remove_pid()
-            logging.info("stopped")
+            logging.info("Daemon - start() - Done")
 
     def stop(self):
         """Stop the running process"""
-        logging.info("Daemon -stop() - Stop the running process")
+        self.start_logging()
+        logging.info("Daemon - stop() - Stop the running process")
 
         if self.pidfile and os.path.exists(self.pidfile):
             pid = int(open(self.pidfile).read())
+            logging.info("Daemon - stop() - Try killing process: %d", pid)
             os.kill(pid, signal.SIGTERM)
-            logging.info("Killed process: %d", pid)
             # wait for a moment to see if the process dies
             for n in range(10):
                 time.sleep(0.25)
                 try:
                     # poll the process state
                     os.kill(pid, 0)
-                    logging.info("Killed process2: %d", pid)
+                    logging.info("Daemon - stop() - Try killing process again: %d", pid)
                 except OSError as err:
                     if err.errno == errno.ESRCH:
                         # process has died
                         self.remove_pid()
+                        logging.info("Daemon - stop() - Stopped")
                         break
                     else:
                         raise
             else:
                 sys.exit("pid %d did not die" % pid)
         else:
-            sys.exit("not running")
+            sys.exit("Not running")
 
     def status(self):
         """Return the process status"""
@@ -432,12 +437,12 @@ class Daemon():
             if pid > 0:
                 try:
                     os.kill(pid, 0)
-                    sys.exit("service is running (pid %d)" % pid)
+                    sys.exit("Service is running (pid %d)" % pid)
                 except OSError as err:
                     if err.errno != errno.ESRCH:
-                        sys.exit("service is not running but pid file exists")
+                        sys.exit("Service is not running but pid file exists")
         else:
-            sys.exit("service is not running")
+            sys.exit("Service is not running")
 
     def prepare_dirs(self):
         """Ensure the log and pid file directories exist and are writable"""
@@ -482,9 +487,10 @@ class Daemon():
 
     def start_logging(self):
         """Configure the logging module"""
-        logging.info("Daemon - start_logging()")
+        print ("Daemon - start_logging()")
         try:
             level = int(self.loglevel)
+            print("***** start_loggin - loglevel, level: ", self.loglevel, level, flush = True)
         except ValueError:
             level = getattr(logging, self.loglevel.upper())
 
@@ -522,7 +528,7 @@ class Daemon():
             try:
                 pid = int(open(self.pidfile, 'r').read().strip())
             except ValueError:
-                msg = 'pidfile %s contains a non-integer value' % self.pidfile
+                msg = 'Pidfile %s contains a non-integer value' % self.pidfile
                 sys.exit(msg)
             try:
                 os.kill(pid, 0)
@@ -531,11 +537,11 @@ class Daemon():
                     # The pid doesn't exist, so remove the stale pidfile.
                     os.remove(self.pidfile)
                 else:
-                    msg = ("failed to check status of process %s "
+                    msg = ("Failed to check status of process %s "
                            "from pidfile %s: %s" % (pid, self.pidfile, err.strerror))
                     sys.exit(msg)
             else:
-                msg = ('another instance seems to be running (pid %s), '
+                msg = ('Another instance seems to be running (pid %s), '
                        'exiting' % pid)
                 sys.exit(msg)
 
@@ -559,9 +565,10 @@ class Daemon():
 
     def write_pid(self):
         u"""Write to the pid file"""
-        logging.info("Daemon - write_pid()")
+        pid = str(os.getpid())
+        logging.info("Daemon - write_pid(): %s", pid)
         if self.pidfile:
-            open(self.pidfile, 'w').write(str(os.getpid()))
+            open(self.pidfile, 'w').write(pid)
 
     def remove_pid(self):
         u"""Delete the pid file"""
@@ -656,6 +663,7 @@ class WinService():
         # Set log level
         log_level_str = config.get('loglevel', 'INFO').upper()
         log_level = getattr(logging, log_level_str, logging.INFO)
+        print("loglevel: ", log_level)
         logging.getLogger().setLevel(log_level)
 
     def initialize(self, config_ini):
@@ -728,14 +736,14 @@ def start_modules(options, config, has_error):
 
         if not options['listener_only'] or options['passive_only']:
             # Create the passive process
-            logging.info("Spawning Passive process")
+            logging.info("Spawning process for Passive")
             p = Process(target=Passive, args=(options, config, has_error, True))
             p.daemon = True
             p.start()
 
         if not options['passive_only'] or options['listener_only']:
             # Create the listener process
-            logging.info("Spawning Listener process")
+            logging.info("Spawning process for Listener")
             l = Process(target=Listener, args=(options, config, has_error, True))
             l.daemon = True
             l.start()
@@ -803,6 +811,7 @@ def main(has_error):
 
     # Get all options as a dict
     options = vars(parser.parse_args())
+    print("main - options: ", options)
 
     # Read and parse the configuration file
     config = get_configuration(options['config_file'], options['config_dir'])
@@ -812,7 +821,7 @@ def main(has_error):
     # Note: We currently do not care about "safely" exiting them
     if options['debug_mode']:
         __DEBUG__ = True
-        logging.info("Debug init - options: %s", options)
+        print("Debug init - options: ", options)
 
         # Set config value for port to 5700 and start Listener and Passive
         config.set('listener', 'port', '5700')
@@ -825,7 +834,7 @@ def main(has_error):
         p, l = start_processes(options, config, has_error)
 
         # Wait for exit
-        print("Running in Debug Mode (https://localhost:5700/)")
+        print("Running in Debug Mode (https://localhost:5700/)\nPress enter to exit...\n", flush = True)
         input("Press enter to exit..\n")
         sys.exit(0)
 
