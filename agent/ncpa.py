@@ -379,7 +379,7 @@ class Daemon():
         try:
             logging.info("started")
             try:
-                start_modules(self.options, self.config, self.has_error)
+                start_processes(self.options, self.config, self.has_error)
                 while not self.has_error.value:
                     time.sleep(1)
 
@@ -668,7 +668,7 @@ class WinService():
     # for the stop event or the service GUI will not respond to requests to
     # stop the service
     def run(self):
-        start_modules(self.options, self.config)
+        start_processes(self.options, self.config)
         self.stopRequestedEvent.wait()
         self.stopEvent.set()
 
@@ -822,7 +822,7 @@ def main(has_error):
         log.addHandler(logging.StreamHandler())
         log.setLevel('DEBUG')
 
-        p, l = start_modules(options, config, has_error)
+        p, l = start_processes(options, config, has_error)
 
         # Wait for exit
         print("Running in Debug Mode (https://localhost:5700/)")
@@ -835,7 +835,7 @@ def main(has_error):
         d = Daemon(options, config, has_error)
         d.main()
     else:
-        start_modules(options, config, has_error)
+        start_processes(options, config, has_error)
 
 if __name__ == '__main__':
     main(has_error)
