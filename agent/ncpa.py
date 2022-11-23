@@ -725,8 +725,8 @@ def get_configuration(config=None, configdir=None):
 
 
 # Actually starts the processes for the components that will be used
-def start_modules(options, config, has_error):
-    logging.info("start_modules()")
+def start_processes(options, config, has_error):
+    logging.info("start_processes()")
 
     try:
         # Create the database structure for checks
