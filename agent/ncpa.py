@@ -268,7 +268,7 @@ class Daemon():
         self.has_error = has_error
 
         # Default settings (can be overwritten)
-        self.pidfile = get_filename('var/ncpa.pid')
+        self.pidfile = get_filename(self.config.get('general', 'pidfile'))
         self.logfile = get_filename(self.config.get('general', 'logfile'))
         self.loglevel = self.config.get('general', 'loglevel')
         self.logmaxmb = 5
