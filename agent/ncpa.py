@@ -99,7 +99,6 @@ class Base():
     # Set error flag for parent process to true
     def send_error(self):
         self.has_error.value = True
-        sys.exit(1)
 
 
 # The listener, which serves the web GUI and API - starting in NCPA 3
@@ -145,7 +144,9 @@ class Listener(Base):
             except Exception as e:
                 logging.exception("Listener - run() - config exception: %s", e)
                 self.send_error()
+                return
 
+            # Set up certs and start http server
             if user_cert == 'adhoc':
                 logging.info('Listener - Start create cert')
                 cert, key = certificate.create_self_signed_cert(get_filename('var'), 'ncpa.crt', 'ncpa.key')
@@ -173,9 +174,11 @@ class Listener(Base):
             logging.info("Listener - run() - start http_server")
             http_server.serve_forever()
             logging.info("Listener - run() - http_server running")
+
         except Exception as e:
             logging.exception("Listener - exception: %s", e)
             self.send_error()
+            return
 
 
 # The passive service that runs in the background - this is run in a
@@ -214,6 +217,8 @@ class Passive(Base):
                     logging.debug('Successfully ran handler %s' % handler)
                 except Exception as e:
                     logging.exception(e)
+                    self.send_error()
+                    return
 
     def run(self):
         logging.info("Passive - run()")
@@ -234,7 +239,8 @@ class Passive(Base):
         next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
 
         try:
-            while True:
+            logging.info("Passive - loop calling run_all_handlers()")
+            while not self.has_error.value:
                 self.run_all_handlers()
 
                 # Do DB maintenance if the time is greater than next DB maintenance run
@@ -245,6 +251,8 @@ class Passive(Base):
                 time.sleep(1)
         except Exception as e:
             logging.exception(e)
+            self.send_error()
+            return
 
 
 # Re-done Daemon class does the startup and control options for the NCPA
@@ -308,10 +316,12 @@ class Daemon():
         pass
 
     def on_sigterm(self, signalnum, frame):
+        global has_error
         """Handle segterm by treating as a keyboard interrupt"""
-        print ("***** signalnum, frame: ",signalnum, frame)
-        print("***** sys.exc_info: ",sys.exc_info())
-        raise KeyboardInterrupt('SIGTERM')
+        logging.info("on_sigterm - handle SIGTERM")
+        print ("***** on_sigterm - signalnum, frame: ",signalnum, frame)
+        sys.exit()
+        # raise KeyboardInterrupt('SIGTERM')
 
     def add_signal_handlers(self):
         """Register the sigterm handler"""
@@ -389,7 +399,6 @@ class Daemon():
 
         if self.pidfile and os.path.exists(self.pidfile):
             pid = int(open(self.pidfile).read())
-            self.remove_pid()
             os.kill(pid, signal.SIGTERM)
             logging.info("Killed process: %d", pid)
             # wait for a moment to see if the process dies
@@ -402,6 +411,7 @@ class Daemon():
                 except OSError as err:
                     if err.errno == errno.ESRCH:
                         # process has died
+                        self.remove_pid()
                         break
                     else:
                         raise
@@ -735,11 +745,11 @@ def start_modules(options, config, has_error):
         logging.exception(e)
         sys.exit(1)
 
-
+has_error = Value('i', False)
 # This handles calls to the main NCPA binary
-def main():
-    logging.info("main()")
-    has_error = Value('i', False)
+def main(has_error):
+    print("main()")
+    # has_error = Value('i', False)
 
     parser = ArgumentParser(description='''NCPA has multiple options and can
         be used to run Python scripts with the embedded version of Python or
@@ -827,4 +837,4 @@ def main():
         start_modules(options, config, has_error)
 
 if __name__ == '__main__':
-    main()
+    main(has_error)
