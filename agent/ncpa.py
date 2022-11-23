@@ -649,8 +649,8 @@ class WinService():
         logging.getLogger().handlers = []
 
         # Max size of log files will be 20MB, and we'll keep one of them as backup
-        max_log_size_bytes = int(config.get('logmaxmb', 5))
-        max_log_rollovers = int(config.get('logbackups', 5))
+        max_log_size_bytes = config.getint('logmaxmb', 5)
+        max_log_rollovers = config.getint('logbackups', 5)
         max_file_size = max_log_size_bytes * 1024 * 1024
         file_handler = logging.handlers.RotatingFileHandler(log_file,
                                                             maxBytes=max_file_size,
