@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ 'dev-v3' ]
+    branches: [ 'dev-v3-app-changes' ]
 
 jobs:
 
