@@ -317,11 +317,13 @@ class Daemon():
     def setup_user(self):
         pass
 
+    # This (ongoing NCPA) process is normally terminated by a different instance of this code launched with the '--stop' option.
+    # The 'stop' instance reads the PID of the parent NCPA process and kills it by sending it SIGTERM. When SIGTERM is received, this
+    # function handels it by exiting, which also closes the subordinate processes.
     def on_sigterm(self, signalnum, frame):
         global has_error
         """Handle segterm by treating as a keyboard interrupt"""
-        logging.info("on_sigterm - handle SIGTERM")
-        print ("***** on_sigterm - signalnum, frame: ",signalnum, frame)
+        logging.info("on_sigterm - exit")
         sys.exit()
         # raise KeyboardInterrupt('SIGTERM')
 
@@ -393,7 +395,6 @@ class Daemon():
                 pass
             except Exception as e:
                 print("***** Exception: ", e)
-                logging.exception("Daemon - Stopping with an exception: %s", e)
                 raise
         finally:
             self.remove_pid()
