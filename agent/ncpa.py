@@ -72,13 +72,15 @@ cfg_defaults = {
                 'ssl_version': 'TLSv1_2',
                 'certificate': 'adhoc',
                 'max_connections': '200',
+                'logfile': 'var/log/ncpa_listener.log',
                 'admin_gui_access': '1',
                 'admin_password': 'None',
                 'admin_auth_only': '0',
             },
             'passive':
                 {'handlers': '',
-                'delay_start': '0'
+                'delay_start': '0',
+                'logfile': 'var/log/ncpa_passive.log'
             }
         }
 
