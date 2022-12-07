@@ -6,7 +6,8 @@ echo -e "***** linux/setup.sh"
 PYTHONVER="3.9.13"
 PYTHONTAR="Python-$PYTHONVER"
 set +e
-PYTHONBIN="/repos/ncpa/build/bin/python3.9" # $(which python3.9)
+PYTHONBIN=$(which python3.9)
+# PYTHONBIN="$BUILD_DIR/bin/python3.9"
 set -e
 SKIP_PYTHON=0
 
@@ -31,6 +32,8 @@ install_prereqs() {
 
 
     if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
+        echo -e "***** linux/setup.sh - install_prereqs() - Debian/Ubuntu"
+        echo -e "***** linux/setup.sh - PYTHONTAR: $PYTHONTAR"
 
         apt-get install debian-builder rpm gcc g++ wget openssl libssl-dev libffi-dev sqlite3 libsqlite3-dev zlib1g-dev alien -y
 
@@ -118,11 +121,13 @@ install_prereqs() {
         # Removed from configure: LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib'
         # Need --enable-shared to get libpython, need LDFLAGS so python can find libpython
         # ./configure --enable-shared --prefix=/repos/ncpa/build && make && make altinstall
-        ./configure --enable-shared LDFLAGS="-Wl,-rpath /repos/ncpa/build/lib" --prefix=/repos/ncpa/build && make && make altinstall
+        # ./configure --enable-shared LDFLAGS="-Wl,-rpath /repos/ncpa/build/lib" --prefix=/repos/ncpa/build && make && make altinstall
+    	# ./configure --prefix=/repos/ncpa/build && make && make altinstall
+    	./configure && make && make altinstall
         cd ..
-        rm -rf $PYTHONTAR
-        # PYTHONBIN=$(which python3.9)
-        PYTHONBIN="/repos/ncpa/build/bin/python3.9"
+        # rm -rf $PYTHONTAR
+        PYTHONBIN=$(which python3.9)
+        # PYTHONBIN="$BUILD_DIR/bin/python3.9"
         export PATH=$PATH:$BUILD_DIR/bin
     fi
 
