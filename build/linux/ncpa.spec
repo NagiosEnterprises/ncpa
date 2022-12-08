@@ -18,6 +18,7 @@ requirements using a bundled version of Python.
 
 %global debug_package %{nil}
 %global _build_id_links alldebug
+%global __os_install_post %{nil}
 
 %prep
 %setup -q
