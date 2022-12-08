@@ -24,6 +24,8 @@ __SYSTEM__ = os.name
 version_file = os.path.join(os.path.dirname(__file__), '..', 'VERSION')
 version = open(version_file, 'r').readline().strip()
 
+print("***** Freezing: ", __ARCH__, __SYSTEM__, version)
+
 if not version[-1].isdigit():
     x = version.rsplit('.', 1)
     version = x[0]
