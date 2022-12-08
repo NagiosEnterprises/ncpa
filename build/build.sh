@@ -143,7 +143,7 @@ elif [ $BUILD_TRAVIS -eq 1 ]; then
 fi
 
 
-# Update the required python modules
+# Update the required python modules !!! update_py_packages() Already run in install_prereqs()
 cd $BUILD_DIR
 echo "Updating python modules..."
 update_py_packages >> $BUILD_DIR/build.log
