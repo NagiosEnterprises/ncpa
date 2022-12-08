@@ -19,7 +19,7 @@ sudo cat linux/ncpa.spec | sudo sed "s/__VERSION__/$NCPA_VER/g" | sudo sed "s|__
 # Build rpm package (also used on Debian systems)
 echo -e "***** Build rpm package"
 (
-echo -e "***** Build rpm package - make directories"
+    echo -e "***** Build rpm package - make directories"
     sudo mkdir -p $BUILD_RPM_DIR/SPECS
     sudo mkdir -p $BUILD_RPM_DIR/SRPMS
     sudo mkdir -p $BUILD_RPM_DIR/RPMS
@@ -29,7 +29,7 @@ echo -e "***** Build rpm package - make directories"
     sudo rm -f $BUILD_RPM_DIR/SPECS/ncpa.spec
     sudo cp -f $BUILD_DIR/ncpa.spec $BUILD_RPM_DIR/SPECS/
 
-echo -e "***** Build rpm package - rpmbuild"
+    echo -e "***** Build rpm package - rpmbuild"
     if [ "$distro" == "Raspbian" ]; then
         parch=`uname -m`
         QA_RPATHS='$[ 0x0002 ]' sudo rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --target=armhf --define "_topdir $BUILD_RPM_DIR" --define "_arch armhf" >> $BUILD_DIR/build.log
@@ -37,7 +37,7 @@ echo -e "***** Build rpm package - rpmbuild"
         QA_RPATHS='$[ 0x0002 ]' sudo rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --define "_topdir $BUILD_RPM_DIR" >> $BUILD_DIR/build.log
     fi
 
-echo -e "***** Build rpm package - find"
+    echo -e "***** Build rpm package - find"
     sudo find $BUILD_RPM_DIR/RPMS -name "ncpa-$NCPA_VER*" -exec cp {} . \;
 )
 
