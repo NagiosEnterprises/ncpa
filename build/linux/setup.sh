@@ -7,7 +7,6 @@ PYTHONVER="3.9.13"
 PYTHONTAR="Python-$PYTHONVER"
 set +e
 PYTHONBIN=$(which python3.9)
-# PYTHONBIN="$BUILD_DIR/bin/python3.9"
 set -e
 SKIP_PYTHON=0
 
@@ -119,15 +118,10 @@ install_prereqs() {
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR
         # Removed from configure: LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib'
-        # Need --enable-shared to get libpython, need LDFLAGS so python can find libpython
-        # ./configure --enable-shared --prefix=/repos/ncpa/build && make && make altinstall
-        # ./configure --enable-shared LDFLAGS="-Wl,-rpath /repos/ncpa/build/lib" --prefix=/repos/ncpa/build && make && make altinstall
-    	# ./configure --prefix=/repos/ncpa/build && make && make altinstall
     	./configure && make && make altinstall
         cd ..
-        # rm -rf $PYTHONTAR
+        rm -rf $PYTHONTAR
         PYTHONBIN=$(which python3.9)
-        # PYTHONBIN="$BUILD_DIR/bin/python3.9"
         export PATH=$PATH:$BUILD_DIR/bin
     fi
 
