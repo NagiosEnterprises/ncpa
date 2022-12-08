@@ -12,9 +12,9 @@ Source:         ncpa-%{version}.tar.gz
 AutoReqProv:    no
 
 %description
-The Nagios Cross-Platform Agent is used with Nagios XI and Nagios Core to run active
-and/or passive checks on any operating system. Installs with zero requirements using a
-bundled version of Python.
+The Nagios Cross-Platform Agent is used with Nagios XI and Nagios Core to run
+active and/or passive checks on any operating system. Installs with zero
+requirements using a bundled version of Python.
 
 %global debug_package %{nil}
 %global _build_id_links alldebug
