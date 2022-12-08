@@ -5,6 +5,8 @@
 # don't have lsb_release by default and SuSE doesn't have it either. Also added support
 # for Unix systems like Mac OS X.
 
+echo -e "***** linux/init.sh"
+
 unixtype=`uname -s`
 
 # Make sure we're on a Linux distro
