@@ -25,6 +25,7 @@ requirements using a bundled version of Python.
 
 %build
 %define _python_bytecompile_errors_terminate_build 0
+%define _unpackaged_files_terminate_build 0
 
 %install
 rm -rf %{buildroot}
