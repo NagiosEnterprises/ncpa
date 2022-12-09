@@ -21,7 +21,7 @@ install_prereqs() {
     if [ $SKIP_PYTHON -eq 0 ]; then
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR
-        ./configure LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib' && make && make altinstall
+        ./configure && make && make altinstall
         cd ..
         rm -rf $PYTHONTAR
         PYTHONBIN=$(which python3.9)
