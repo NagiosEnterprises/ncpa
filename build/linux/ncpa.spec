@@ -18,6 +18,8 @@ requirements using a bundled version of Python.
 
 %global debug_package %{nil}
 %global _build_id_links alldebug
+
+# Prevent stripping by rpmbuild - this fails and breaks the build
 %global __os_install_post %{nil}
 
 %prep
@@ -25,6 +27,10 @@ requirements using a bundled version of Python.
 
 %build
 %define _python_bytecompile_errors_terminate_build 0
+
+# Prevent exit on unpackaged file error. This happens copying the Python
+# executable, which we only do to bring its libraries.
+# TODO: This is a bit  of a hack. Probably should clean this up.
 %define _unpackaged_files_terminate_build 0
 
 %install
