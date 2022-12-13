@@ -197,9 +197,11 @@ mkdir -p $AGENT_DIR/var/log
     # Build tarball
     cp -rf ncpa ncpa-$NCPA_VER
     if [ "$UNAME" == "AIX" ]; then
+        echo -e "***** Build tarball"
         tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER >> $BUILD_DIR/build.log
         gzip -f ncpa-$NCPA_VER.tar >> $BUILD_DIR/build.log
     elif [ "$UNAME" == "Linux" ]; then
+        echo -e "***** Build tarball"
         tar -czvf ncpa-$NCPA_VER.tar.gz ncpa-$NCPA_VER >> $BUILD_DIR/build.log
     fi
 )

@@ -53,13 +53,14 @@ sudo chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
 sudo chmod 755 $BUILD_DIR/ncpa/var
 sudo chmod 755 $BUILD_DIR/ncpa
 
-# Build tarball
-echo -e "***** Build tarball"
+# Build tarball for AIX and Linux
 cp -rf ncpa ncpa-$NCPA_VER
 if [ "$UNAME" == "AIX" ]; then
+    echo -e "***** Build tarball"
     tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER >> $BUILD_DIR/build.log
     gzip -f ncpa-$NCPA_VER.tar >> $BUILD_DIR/build.log
 elif [ "$UNAME" == "Linux" ]; then
+    echo -e "***** Build tarball"
     tar -czvf ncpa-$NCPA_VER.tar.gz ncpa-$NCPA_VER >> $BUILD_DIR/build.log
 fi
 echo -e "***** ls -al"

@@ -37,7 +37,7 @@ echo -e "***** Build rpm package"
         QA_RPATHS='$[ 0x0002 ]' sudo rpmbuild $BUILD_RPM_DIR/SPECS/ncpa.spec -bb --define "_topdir $BUILD_RPM_DIR" >> $BUILD_DIR/build.log
     fi
 
-    echo -e "***** Build rpm package - find"
+    echo -e "***** Build rpm package - find RPMs and copy to build dir"
     sudo find $BUILD_RPM_DIR/RPMS -name "ncpa-$NCPA_VER*" -exec cp {} . \;
 )
 
