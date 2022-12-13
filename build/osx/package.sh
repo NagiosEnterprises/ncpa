@@ -10,7 +10,7 @@ ARCH=$(arch)
 
 (
     # Move .dylib files into lib folder. TODO: make python install do this correctly?
-    mv NCPA-INSTALL-$NCPA_VER/ncpa/*.dylib NCPA-INSTALL-$NCPA_VER/lib
+    mv ncpa-$NCPA_VER/ncpa/*.dylib ncpa-$NCPA_VER/ncpa/lib
     mkdir NCPA-INSTALL-$NCPA_VER
     mv ncpa-$NCPA_VER NCPA-INSTALL-$NCPA_VER/ncpa
     cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosuninstall.sh NCPA-INSTALL-$NCPA_VER/ncpa/uninstall.sh
