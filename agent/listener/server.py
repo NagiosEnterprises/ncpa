@@ -22,9 +22,9 @@ import database
 import math
 import ipaddress
 import socket
+from hmac import compare_digest
 
-
-__VERSION__ = '2.4.0'
+__VERSION__ = '2.4.1'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
@@ -170,7 +170,7 @@ def is_network(ip):
     except ValueError as e:
         logging.debug(e)
         return False
-    
+
 
 
 
@@ -278,16 +278,17 @@ def requires_token_or_auth(f):
     def token_auth_decoration(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
         token = request.values.get('token', None)
+        token_valid = compare_digest(token, ncpa_token)
 
         # This is an internal call, we don't check
         if __INTERNAL__ is True:
             pass
-        elif session.get('logged', False) or token == ncpa_token:
+        elif session.get('logged', False) or token_valid:
             pass
         elif token is None:
             session['redirect'] = request.url
             return redirect(url_for('login'))
-        elif token != ncpa_token:
+        elif not token_valid:
             return error(msg='Incorrect credentials given.')
         return f(*args, **kwargs)
 
@@ -389,7 +390,7 @@ def login():
             return redirect(url)
         else:
             return redirect(url_for('index'))
-    
+
     # Display error messages depending on what was given
     if token is not None:
         if not admin_auth_only:
@@ -422,7 +423,7 @@ def admin_login():
 
     session['message'] = None
 
-    if password == admin_password and admin_password is not None:
+    if admin_password is not None and compare_digest(password, admin_password):
         session['admin_logged'] = True
         return redirect(url_for('admin'))
     elif password is not None:
@@ -476,7 +477,7 @@ def gui_index():
     info = make_info_dict()
     try:
         return render_template('gui/dashboard.html', **info)
-    except Exception, e:
+    except Exception as e:
         logging.exception(e)
 
 
@@ -558,7 +559,7 @@ def checks():
         data['start_record'] = format(start_record + 1, ",d")
         end_record = start_record + size
         if end_record > total:
-            end_record = total 
+            end_record = total
         data['end_record'] = format(end_record, ",d")
 
     # Switch if we have any filters applied
@@ -854,7 +855,7 @@ def top_websocket():
                     continue
                 process_list.append(process)
 
-            
+
             json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list},
                                   encoding=encoding)
 
