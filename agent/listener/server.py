@@ -278,17 +278,16 @@ def requires_token_or_auth(f):
     def token_auth_decoration(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
         token = request.values.get('token', None)
-        token_valid = compare_digest(token, ncpa_token)
 
         # This is an internal call, we don't check
         if __INTERNAL__ is True:
             pass
-        elif session.get('logged', False) or token_valid:
+        elif session.get('logged', False) or compare_digest(token, ncpa_token):
             pass
         elif token is None:
             session['redirect'] = request.url
             return redirect(url_for('login'))
-        elif not token_valid:
+        elif not compare_digest(token, ncpa_token):
             return error(msg='Incorrect credentials given.')
         return f(*args, **kwargs)
 
