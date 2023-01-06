@@ -1,11 +1,12 @@
+greenlet==0.4.17
 psutil
 requests
 Jinja2
 flask==0.10.1
 werkzeug==0.16.1
 docutils
-pyOpenSSL
-cryptography
+pyOpenSSL==19.1
+cryptography==2.8
 gevent==1.2.2
 gevent-websocket
 cffi
