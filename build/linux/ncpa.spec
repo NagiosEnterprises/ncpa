@@ -36,8 +36,8 @@ install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/listener_init %{bu
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{buildroot}/etc/init.d/ncpa_passive
 
 mkdir -p %{buildroot}/usr/lib/systemd/system
-install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_listener.service %{buildroot}/usr/lib/systemd/system/ncpa_listener.service
-install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_passive.service %{buildroot}/usr/lib/systemd/system/ncpa_passive.service
+install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_listener.service %{buildroot}/usr/lib/systemd/system/ncpa_listener.service
+install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_passive.service %{buildroot}/usr/lib/systemd/system/ncpa_passive.service
 
 %clean
 rm -rf %{buildroot}
@@ -181,3 +181,5 @@ fi
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
 /usr/local/ncpa/etc/ncpa.cfg.d/README.txt
+/usr/lib/systemd/system/ncpa_listener.service
+/usr/lib/systemd/system/ncpa_passive.service
