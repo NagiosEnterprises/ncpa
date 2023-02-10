@@ -26,7 +26,7 @@ bundled version of Python.
 %define _python_bytecompile_errors_terminate_build 0
 
 %install
-rm -rf %{buildroot} 
+rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/local
 cp -rf $RPM_BUILD_DIR/ncpa-%{version} %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
@@ -34,6 +34,10 @@ mkdir -p %{buildroot}/etc/init.d
 chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/listener_init %{buildroot}/etc/init.d/ncpa_listener
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{buildroot}/etc/init.d/ncpa_passive
+
+mkdir -p %{buildroot}/usr/lib/systemd/system
+install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_listener.service %{buildroot}/usr/lib/systemd/system/ncpa_listener.service
+install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_passive.service %{buildroot}/usr/lib/systemd/system/ncpa_passive.service
 
 %clean
 rm -rf %{buildroot}
