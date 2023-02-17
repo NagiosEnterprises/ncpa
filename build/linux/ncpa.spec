@@ -18,6 +18,7 @@ bundled version of Python.
 
 %global debug_package %{nil}
 %global _build_id_links alldebug
+%global sysctl_only false
 
 %prep
 %setup -q
@@ -35,9 +36,19 @@ chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/listener_init %{buildroot}/etc/init.d/ncpa_listener
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{buildroot}/etc/init.d/ncpa_passive
 
-mkdir -p %{buildroot}/usr/lib/systemd/system
-install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_listener.service %{buildroot}/usr/lib/systemd/system/ncpa_listener.service
-install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_passive.service %{buildroot}/usr/lib/systemd/system/ncpa_passive.service
+if command -v chkconfig > /dev/null
+then
+    echo "nope"
+elif command -v update-rc.d > /dev/null
+then
+   echo "nope"
+elif command -v systemctl > /dev/null
+then
+    %global sysctl_only = true
+    mkdir -p %{buildroot}/usr/lib/systemd/system
+    install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_listener.service %{buildroot}/usr/lib/systemd/system/ncpa_listener.service
+    install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_passive.service %{buildroot}/usr/lib/systemd/system/ncpa_passive.service
+fi
 
 %clean
 rm -rf %{buildroot}
@@ -77,6 +88,10 @@ elif command -v update-rc.d > /dev/null
 then
     update-rc.d ncpa_listener defaults &> /dev/null
     update-rc.d ncpa_passive defaults &> /dev/null
+elif command -v systemctl > /dev/null
+then
+    systemctl enable ncpa_listener.service &> /dev/null
+    systemctl enable ncpa_passive.service &> /dev/null
 fi
 
 if [ -z $RPM_INSTALL_PREFIX ]
@@ -167,6 +182,7 @@ fi
 %defattr(0644,root,root,0755)
 /usr/local/ncpa/*.py
 /usr/local/ncpa/*.zip
+/usr/local/ncpa/*.githash
 /usr/local/ncpa/build_resources
 /usr/local/ncpa/listener
 /usr/local/ncpa/plugins
@@ -181,5 +197,10 @@ fi
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
 /usr/local/ncpa/etc/ncpa.cfg.d/README.txt
+
+
+%if "%{sysctl_only}" == "true"
+%defattr(0640,root,nagios,0755)
 /usr/lib/systemd/system/ncpa_listener.service
 /usr/lib/systemd/system/ncpa_passive.service
+%endif
