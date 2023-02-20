@@ -78,11 +78,11 @@ elif command -v systemctl > /dev/null
 then
     systemctl enable ncpa_listener.service &> /dev/null
     systemctl enable ncpa_passive.service &> /dev/null
-fi
 elif command -v update-rc.d > /dev/null
 then
     update-rc.d ncpa_listener defaults &> /dev/null
     update-rc.d ncpa_passive defaults &> /dev/null
+fi
 
 if [ -z $RPM_INSTALL_PREFIX ]
 then
