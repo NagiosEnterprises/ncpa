@@ -186,8 +186,6 @@ if command -v git > /dev/null; then
     echo "GIT_SHORT: $GIT_SHORT"
     echo "GIT_HASH_FILE: $GIT_HASH_FILE"
 fi
-# ls $AGENT_DIR/*.githash >/dev/null && rm $AGENT_DIR/*.githash
-# echo $GIT_LONG > "$AGENT_DIR/$GIT_HASH_FILE"
 
 (
     cd $AGENT_DIR
