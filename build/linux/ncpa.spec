@@ -145,7 +145,6 @@ fi
 
 %files
 /usr/local/ncpa/python*
-/usr/local/ncpa/libpython*
 
 %defattr(0755,root,root,0755)
 %dir /usr/local/ncpa
