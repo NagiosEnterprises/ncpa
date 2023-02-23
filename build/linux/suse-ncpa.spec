@@ -1,6 +1,6 @@
 Name:           ncpa
 Version:        __VERSION__
-Release:        1%{?dist}
+Release:        sle15
 Vendor:         Nagios Enterprises, LLC
 Summary:        A cross-platform active and passive monitoring agent
 BuildRoot:      __BUILDROOT__/BUILDROOT/
@@ -9,6 +9,9 @@ Group:          Network/Monitoring
 License:        Nagios Community Software License Version 1.3
 URL:            https://www.nagios.org/ncpa/help.php
 Source:         ncpa-%{version}.tar.gz
+
+Requires: insserv-compat
+
 AutoReqProv:    no
 
 %description

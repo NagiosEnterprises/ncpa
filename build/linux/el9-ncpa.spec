@@ -35,6 +35,10 @@ chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/listener_init %{buildroot}/etc/init.d/ncpa_listener
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/passive_init %{buildroot}/etc/init.d/ncpa_passive
 
+mkdir -p %{buildroot}/usr/lib/systemd/system
+install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_listener.service %{buildroot}/usr/lib/systemd/system/ncpa_listener.service
+install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/ncpa_passive.service %{buildroot}/usr/lib/systemd/system/ncpa_passive.service
+
 %clean
 rm -rf %{buildroot}
 
@@ -69,6 +73,10 @@ if command -v chkconfig > /dev/null
 then
     chkconfig --level 3,5 --add ncpa_listener &> /dev/null
     chkconfig --level 3,5 --add ncpa_passive &> /dev/null
+elif command -v systemctl > /dev/null
+then
+    systemctl enable ncpa_listener.service &> /dev/null
+    systemctl enable ncpa_passive.service &> /dev/null
 elif command -v update-rc.d > /dev/null
 then
     update-rc.d ncpa_listener defaults &> /dev/null
@@ -178,3 +186,7 @@ fi
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
 /usr/local/ncpa/etc/ncpa.cfg.d/README.txt
+
+%defattr(0640,root,nagios,0755)
+/usr/lib/systemd/system/ncpa_listener.service
+/usr/lib/systemd/system/ncpa_passive.service

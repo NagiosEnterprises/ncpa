@@ -114,7 +114,7 @@ elif [ "$UNAME" == "AIX" ]; then
     . $BUILD_DIR/aix/setup.sh
 elif [ "$UNAME" == "Darwin" ]; then
     . $BUILD_DIR/osx/setup.sh
-else 
+else
     echo "Not a supported system for our build script."
     echo "If you're sure all pre-reqs are installed, try running the"
     echo "build without setup: ./build.sh --build-only"
@@ -166,6 +166,27 @@ mkdir -p $AGENT_DIR/var/log
 cat /dev/null > $AGENT_DIR/var/log/ncpa_passive.log
 cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
 
+# Add file with current GIT hash to build
+GIT_LONG="Not built under GIT"
+GIT_HASH_FILE="NoGIT.githash"
+
+if command -v git > /dev/null; then
+    GIT_LONG=$(git rev-parse HEAD)
+    GIT_SHORT=$(git rev-parse --short HEAD)
+    GIT_UNCOMMITTED=$(git status --untracked-files=no --porcelain)
+    echo "GIT_UNCOMMITTED: $GIT_UNCOMMITTED"
+    if [ "$GIT_UNCOMMITTED" ]; then
+        GIT_LONG="$GIT_LONG++  compiled with uncommitted changes"
+        GIT_SHORT="$GIT_SHORT++"
+    fi
+    GIT_HASH_FILE="git-$GIT_SHORT.githash"
+    echo "GIT_LONG: $GIT_LONG"
+    echo "GIT_SHORT: $GIT_SHORT"
+    echo "GIT_HASH_FILE: $GIT_HASH_FILE"
+fi
+# ls $AGENT_DIR/*.githash >/dev/null && rm $AGENT_DIR/*.githash
+# echo $GIT_LONG > "$AGENT_DIR/$GIT_HASH_FILE"
+
 (
     cd $AGENT_DIR
     $PYTHONBIN setup_posix.py build_exe > $BUILD_DIR/build.log
@@ -174,6 +195,7 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     cd $BUILD_DIR
     rm -rf $BUILD_DIR/ncpa
     cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
+    echo $GIT_LONG >  $BUILD_DIR/ncpa/$GIT_HASH_FILE
 
     # REMOVE LIBFFI COPY - PLEASE CHANGE THIS LATER
     # It should be in .libs_cffi_backend for proper linking and

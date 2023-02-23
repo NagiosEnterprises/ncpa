@@ -1,3 +1,4 @@
+greenlet==0.4.17
 psutil
 requests
 Jinja2

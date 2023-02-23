@@ -22,9 +22,9 @@ import database
 import math
 import ipaddress
 import socket
+from hmac import compare_digest
 
-
-__VERSION__ = '2.4.0'
+__VERSION__ = '2.4.1'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
@@ -170,9 +170,26 @@ def is_network(ip):
     except ValueError as e:
         logging.debug(e)
         return False
-    
 
+# Securely compares strings - byte string or unicode
+# Comparison is done via compare_digest() to prevent timing attacks
+# If both items evaluate to false, they match. This makes it easier to handle
+# empty strings or variables which may have "NoneType"
+def secure_compare(item1, item2):
+    is_match = False
 
+    # Convert to unicode, if necessary, both items must have the same encoding
+    if item1 and not isinstance(item1, unicode):
+        item1 = item1.decode('utf-8')
+    if item2 and not isinstance(item2, unicode):
+        item2 = item2.decode('utf-8')
+
+    if item1 and item2 and compare_digest(item1, item2):
+        is_match = True
+    elif not item1 and not item2:
+        is_match = True
+
+    return is_match
 
 
 # ------------------------------
@@ -278,16 +295,17 @@ def requires_token_or_auth(f):
     def token_auth_decoration(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
         token = request.values.get('token', None)
+        token_valid = secure_compare(token, ncpa_token)
 
         # This is an internal call, we don't check
         if __INTERNAL__ is True:
             pass
-        elif session.get('logged', False) or token == ncpa_token:
+        elif session.get('logged', False) or token_valid:
             pass
         elif token is None:
             session['redirect'] = request.url
             return redirect(url_for('login'))
-        elif token != ncpa_token:
+        elif not token_valid:
             return error(msg='Incorrect credentials given.')
         return f(*args, **kwargs)
 
@@ -368,6 +386,9 @@ def login():
     url = session.get('redirect', None)
     token = request.values.get('token', None)
 
+    token_valid = secure_compare(token, ncpa_token)
+    token_is_admin = secure_compare(token, admin_password)
+
     template_args = { 'hide_page_links': True,
                       'message': message,
                       'url': url,
@@ -377,9 +398,9 @@ def login():
     session['message'] = None
 
     # Do actual authentication check
-    if token == ncpa_token and not admin_auth_only:
+    if not admin_auth_only and token_valid:
         session['logged'] = True
-    elif token == admin_password and admin_password is not None:
+    elif admin_password is not None and token_is_admin:
         session['logged'] = True
         session['admin_logged'] = True
 
@@ -389,14 +410,14 @@ def login():
             return redirect(url)
         else:
             return redirect(url_for('index'))
-    
+
     # Display error messages depending on what was given
     if token is not None:
         if not admin_auth_only:
-            if token != ncpa_token or token != admin_password:
+            if not token_valid and not token_is_admin:
                 template_args['error'] = 'Invalid token or password.'
         else:
-            if token == ncpa_token:
+            if token_valid:
                 template_args['error'] = 'Admin authentication only.'
             else:
                 template_args['error'] = 'Invalid password.'
@@ -414,15 +435,16 @@ def admin_login():
 
     # Admin password
     admin_password = get_config_value('listener', 'admin_password', None)
+    password = request.values.get('password', None)
+    password_valid = secure_compare(password, admin_password)
 
     message = session.get('message', None)
-    password = request.values.get('password', None)
     template_args = { 'hide_page_links': False,
                       'message': message }
 
     session['message'] = None
 
-    if password == admin_password and admin_password is not None:
+    if admin_password is not None and password_valid:
         session['admin_logged'] = True
         return redirect(url_for('admin'))
     elif password is not None:
@@ -476,7 +498,7 @@ def gui_index():
     info = make_info_dict()
     try:
         return render_template('gui/dashboard.html', **info)
-    except Exception, e:
+    except Exception as e:
         logging.exception(e)
 
 
@@ -558,7 +580,7 @@ def checks():
         data['start_record'] = format(start_record + 1, ",d")
         end_record = start_record + size
         if end_record > total:
-            end_record = total 
+            end_record = total
         data['end_record'] = format(end_record, ",d")
 
     # Switch if we have any filters applied
@@ -854,7 +876,7 @@ def top_websocket():
                     continue
                 process_list.append(process)
 
-            
+
             json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list},
                                   encoding=encoding)
 

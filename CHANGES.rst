@@ -1,6 +1,11 @@
 Changelog
 +++++++++
 
+2.4.1 - 12/20/2022
+==================
+- Replaced timing attack vulnerable password/token comparisons with HMAC compare_digest (#902) (PhreditorNG)
+- Made minor modifications to dependencies and build code to enable building with increasingly out of date Python  (PhreditorNG)
+
 2.4.0 - 12/16/2021
 ==================
 - Added new disk metrics max_file_length and max_path_length (#760) (ccztux)
