@@ -5,7 +5,7 @@ flask==0.10.1
 werkzeug==0.16.1
 docutils
 pyOpenSSL==17
-cryptography==1.8.2
+cryptography==39.0.1
 gevent==1.2.2
 gevent-websocket
 cffi
