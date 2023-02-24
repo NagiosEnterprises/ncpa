@@ -1,10 +1,10 @@
 Changelog
 +++++++++
 
-2.4.1 - 02/23/2023
+2.4.1 - 02/27/2023
 ==================
 - Replaced timing attack vulnerable password/token comparisons with HMAC compare_digest (#902) (PhreditorNG)
-- Made minor modifications to dependencies and build code to enable building with increasingly out of date Python  (PhreditorNG)
+- Made minor modifications to dependencies and build code to maintain Python 2 build process (PhreditorNG)
 
 2.4.0 - 12/16/2021
 ==================
