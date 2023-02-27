@@ -3,6 +3,7 @@ Changelog
 
 2.4.1 - 02/27/2023
 ==================
+- Note: For the time being, we're stopping 1st-party builds for the following platforms: 32-bit Macintosh, CentOS 8 on ARM, Solaris 11. We also unofficially stopped building for AIX 7 and Raspbian during NCPA 2.2.x - we're making that official now. (Sebastian Wolf)
 - Replaced timing attack vulnerable password/token comparisons with HMAC compare_digest (#902) (PhreditorNG)
 - Made minor modifications to dependencies and build code to maintain Python 2 build process (PhreditorNG)
 
