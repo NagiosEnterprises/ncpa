@@ -7,6 +7,7 @@ Changelog
    - 32-bit Macintosh 
    - CentOS 8 on ARM
    - Solaris 11
+   - SLES 11
    - AIX 7 (as of NCPA 2.2.2)
    - Raspbian (as of NCPA 2.3.0)
 - (cont.) You are still welcome to build these packages yourself - see BUILDING.rst for details (Sebastian Wolf)
