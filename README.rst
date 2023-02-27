@@ -24,6 +24,8 @@ We currently build for the following operating systems:
 - RHEL 7, 8, 9
 - CentOS 7
 - CentOS Stream 8, 9
+- Oracle 7, 8
+- Amazon Linux 2
 - Debian 8 (32 & 64 bit), 9 (32 & 64 bit), 10, 11
 - Ubuntu 16.04 (32 & 64 bit), 18.04 (32 & 64 bit), 20.04, 22.04
 - OpenSUSE Leap 15, Tumbleweed
@@ -32,7 +34,6 @@ We currently build for the following operating systems:
 Older systems that have been supported by NCPA in the past:
 
 - Mac OS X (10.7-10.10) using NCPA 2.4.0
-- Amazon Linux 2 using NCPA 2.4.0
 - Raspbian 10 (Buster) using NCPA 2.2.2
 - Ubuntu 12.04 using NCPA 2.1.4
 - Ubuntu 14.04 using NCPA 2.2.2
@@ -41,12 +42,12 @@ Older systems that have been supported by NCPA in the past:
 - OpenSUSE 11, 12, 13 using NCPA 2.1.4
 - SLES 11 using v2.4.0
 - AIX 6 with NCPA 2.1.1
-- AIX 7 using NCPA 2.4.0
+- AIX 7 using NCPA 2.2.1
 - CentOS / RHEL 5 using NCPA 2.0.6
-- CentOS / RHEL 6 using 2.2.2
+- CentOS / RHEL 6 using NCPA 2.2.2
+- CentOS Stream 8 ARM using NCPA 2.4.0
 - Oracle 5 using NCPA 2.0.6
 - Oracle 6 using NCPA 2.2.2
-- Oracle 7, 8 using NCPA 2.4.0
 - Windows XP/Vista using NCPA 1.8.1
 - Solaris 10
 - Solaris 11 using NCPA 2.4.0
