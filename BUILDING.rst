@@ -4,11 +4,11 @@ Building NCPA
 
 This document contains instructions for:
 
-* `Building on Windows <https://github.com/NagiosEnterprises/ncpa/master/BUILDING.rst#building-on-windows>`_
+* `Building on Windows <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-windows>`_
 
-* `Building on Linux <https://github.com/NagiosEnterprises/ncpa/master/BUILDING.rst#building-on-linux>`_
+* `Building on Linux <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-linux>`_
 
-* `Building on MacOS <https://github.com/NagiosEnterprises/ncpa/master/BUILDING.rst#building-on-macos>`_
+* `Building on MacOS <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-macos>`_
 
 
 Building on Windows
