@@ -145,7 +145,6 @@ fi
 
 %files
 /usr/local/ncpa/python*
-/usr/local/ncpa/libpython*
 
 %defattr(0755,root,root,0755)
 %dir /usr/local/ncpa
@@ -156,6 +155,8 @@ fi
 /usr/local/ncpa/lib/*.so*
 
 %defattr(0644,root,root,0755)
+/usr/local/ncpa/*.githash
+/usr/local/ncpa/frozen_application_license.txt
 /usr/local/ncpa/lib/*.py
 /usr/local/ncpa/lib/*.zip
 /usr/local/ncpa/build_resources
