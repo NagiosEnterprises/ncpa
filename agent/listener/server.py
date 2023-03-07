@@ -192,7 +192,9 @@ def before_request():
     logging.debug("     ***** before_request() - !!!!!URL!!!!! request.url: %s", request.url)
     logging.debug("     ***** before_request() - request.authorization: %s", request.authorization)
     logging.debug("     ***** before_request() - request.scheme: %s", request.scheme)
+    logging.debug("     ***** before_request() - request.method: %s", request.method)
     logging.debug("     ***** before_request() - request.values: %s", request.values)
+    logging.debug("     ***** before_request() - request.want_form_data_parsed: %s", request.want_form_data_parsed)
     logging.debug("     ***** before_request() - request.view_args: %s", request.view_args)
     logging.debug("     ***** before_request() - request.routing_exception: %s", request.routing_exception)
 
