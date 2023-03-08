@@ -34,7 +34,10 @@ install_prereqs() {
 
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
 
-        yum install epel-release -y
+        # epel not available for 32-bit
+        if [ "$arch" != "i686" ]; then
+            yum install epel-release -y
+        fi
         yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make -y
 
     elif [ "$distro" == "SUSE LINUX" ] || [ "$distro" == "SLES" ] || [ "$distro" == "OpenSUSE" ]; then

@@ -1,6 +1,19 @@
 Changelog
 +++++++++
 
+2.4.1 - 02/27/2023
+==================
+- Note: For the time being, we're stopping 1st-party builds for the following platforms:
+   - 32-bit Macintosh 
+   - CentOS 8 on ARM
+   - Solaris 11
+   - SLES 11
+   - AIX 7 (as of NCPA 2.2.2)
+   - Raspbian (as of NCPA 2.3.0)
+- (cont.) You are still welcome to build these packages yourself - see BUILDING.rst for details (Sebastian Wolf)
+- Replaced timing attack vulnerable password/token comparisons with HMAC compare_digest (#902) (PhreditorNG)
+- Made minor modifications to dependencies and build code to maintain Python 2 build process (PhreditorNG)
+
 2.4.0 - 12/16/2021
 ==================
 - Added new disk metrics max_file_length and max_path_length (#760) (ccztux)
