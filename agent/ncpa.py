@@ -228,9 +228,7 @@ class Passive(Base):
         # Check if there is a start delay
         try:
             delay_start = self.config.getint('passive', 'delay_start')
-            logging.debug("Passive - delay_start: %s", delay_start)
             if delay_start:
-                logging.debug('Passive - Delayed start in configuration. Waiting %s seconds to start.', delay_start)
                 time.sleep(delay_start)
         except Exception as e:
             print("***** Passive - Exception: ", e)
@@ -242,7 +240,6 @@ class Passive(Base):
         next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
 
         try:
-            logging.info("Passive - loop calling run_all_handlers()")
             while not self.has_error.value:
                 self.run_all_handlers()
 

@@ -22,8 +22,6 @@ import inspect
 # Set whether or not a request is internal or not
 import socket
 
-logging.debug("     **** server.py")
-
 __VERSION__ = '3.0.0'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
