@@ -842,8 +842,8 @@ def admin_clear_check_log():
 # ------------------------------
 
 
-# @requires_token_or_auth
-@listener.route('/ws/api/<path:accessor>')
+@listener.route('/ws/api/<path:accessor>', websocket=True)
+@requires_token_or_auth
 def api_websocket(accessor=None):
     logging.info("========== api_websocket()")
     """Meant for use with the websocket and API.
@@ -898,7 +898,7 @@ def api_websocket(accessor=None):
     return ''
 
 
-@listener.route('/ws/top')
+@listener.route('/ws/top', websocket=True)
 @requires_token_or_auth
 def top_websocket():
     logging.info("========== top_websocket()")
@@ -934,7 +934,7 @@ def top_websocket():
     return ''
 
 
-@listener.route('/ws/tail')
+@listener.route('/ws/tail', websocket=True)
 @requires_token_or_auth
 def tail_websocket():
     logging.debug("========== tail_websocket()")
