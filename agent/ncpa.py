@@ -115,31 +115,31 @@ class Listener(Base):
             try:
             # Build config
                 delay_start = self.config.getint('listener', 'delay_start')
-                logging.info("Listener - delay_start: %s", delay_start)
+                logging.debug("Listener - delay_start: %s", delay_start)
                 if delay_start:
-                    logging.info('Listener - Delayed start in configuration. Waiting %s seconds to start.', delay_start)
+                    logging.debug('Listener - Delayed start in configuration. Waiting %s seconds to start.', delay_start)
                     time.sleep(delay_start)
 
                 address = self.config.get('listener', 'ip')
-                logging.info("Listener - address1: %s", address)
+                logging.debug("Listener - address1: %s", address)
 
                 port = self.config.getint('listener', 'port')
-                logging.info("Listener - port: %s", port)
+                logging.debug("Listener - port: %s", port)
 
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
                 if  (ssl_str_ciphers == 'None'):
                     ssl_str_ciphers = ''
                 else:
-                    logging.info("Listener - run() - ssl_str_ciphers: %s", ssl_str_ciphers)
+                    logging.debug("Listener - run() - ssl_str_ciphers: %s", ssl_str_ciphers)
                     ssl_context['ciphers'] = ssl_str_ciphers
-                logging.info("Listener - ssl_str_ciphers: %s", ssl_str_ciphers)
+                logging.debug("Listener - ssl_str_ciphers: %s", ssl_str_ciphers)
 
                 ssl_str_version = self.config.get('listener', 'ssl_version')
                 ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
-                logging.info('Listener - Using SSL version %s', ssl_str_version)
+                logging.debug('Listener - Using SSL version %s', ssl_str_version)
 
                 max_connections = self.config.getint('listener', 'max_connections')
-                logging.info("Listener - max_connections: %s", max_connections)
+                logging.debug("Listener - max_connections: %s", max_connections)
 
                 user_cert = self.config.get('listener', 'certificate')
 
@@ -150,9 +150,9 @@ class Listener(Base):
 
             # Set up certs and start http server
             if user_cert == 'adhoc':
-                logging.info('Listener - Start create cert')
+                logging.debug('Listener - Start create cert')
                 cert, key = certificate.create_self_signed_cert(get_filename('var'), 'ncpa.crt', 'ncpa.key')
-                logging.info('Listener - Cert created')
+                logging.debug('Listener - Cert created')
             else:
                 cert, key = user_cert.split(',')
 
@@ -167,15 +167,15 @@ class Listener(Base):
 
             # Create connection pool
             listener.server.listener.secret_key = os.urandom(24)
-            logging.info("Listener - run() - define http_server")
+            logging.debug("Listener - run() - define http_server")
             http_server = WSGIServer(listener=(address, port),
                                         application=listener.server.listener,
                                         handler_class=WebSocketHandler,
                                         spawn=Pool(max_connections),
                                         **ssl_context)
-            logging.info("Listener - run() - start http_server")
+            logging.debug("Listener - run() - start http_server")
             http_server.serve_forever()
-            logging.info("Listener - run() - http_server running")
+            logging.debug("Listener - run() - http_server running")
 
         except Exception as e:
             logging.exception("Listener - exception: %s", e)
@@ -228,9 +228,9 @@ class Passive(Base):
         # Check if there is a start delay
         try:
             delay_start = self.config.getint('passive', 'delay_start')
-            logging.info("Passive - delay_start: %s", delay_start)
+            logging.debug("Passive - delay_start: %s", delay_start)
             if delay_start:
-                logging.info('Passive - Delayed start in configuration. Waiting %s seconds to start.', delay_start)
+                logging.debug('Passive - Delayed start in configuration. Waiting %s seconds to start.', delay_start)
                 time.sleep(delay_start)
         except Exception as e:
             print("***** Passive - Exception: ", e)
@@ -335,7 +335,7 @@ class Daemon():
     # the process from exiting during normal operation
     def start(self):
         """Initialize and run the daemon"""
-        print("Daemon - start() - Initialize and run the daemon")
+        logging.info("Daemon - start() - Initialize and run the daemon")
 
         # Don't proceed if another instance is already running.
         self.check_pid()
@@ -380,7 +380,7 @@ class Daemon():
         self.write_pid()
 
         try:
-            logging.info("started")
+            logging.debug("Daemon - started")
             try:
                 start_processes(self.options, self.config, self.has_error)
 
@@ -388,7 +388,7 @@ class Daemon():
                 while not self.has_error.value:
                     time.sleep(1)
                 else:
-                    logging.info("Daemon - Exit loop - self.has_error.value: %s", self.has_error.value)
+                    logging.debug("Daemon - Exit loop - self.has_error.value: %s", self.has_error.value)
 
             except (KeyboardInterrupt, SystemExit) as e:
                 print("***** Exiting with interrupt: ", e)
@@ -398,7 +398,7 @@ class Daemon():
                 raise
         finally:
             self.remove_pid()
-            logging.info("Daemon - start() - Done")
+            logging.debug("Daemon - start() - Done")
 
     def stop(self):
         """Stop the running process"""
@@ -407,7 +407,7 @@ class Daemon():
 
         if self.pidfile and os.path.exists(self.pidfile):
             pid = int(open(self.pidfile).read())
-            logging.info("Daemon - stop() - Try killing process: %d", pid)
+            logging.debug("Daemon - stop() - Try killing process: %d", pid)
             os.kill(pid, signal.SIGTERM)
             # wait for a moment to see if the process dies
             for n in range(10):
@@ -415,7 +415,7 @@ class Daemon():
                 try:
                     # poll the process state
                     os.kill(pid, 0)
-                    logging.info("Daemon - stop() - Try killing process again: %d", pid)
+                    logging.debug("Daemon - stop() - Try killing process again: %d", pid)
                 except OSError as err:
                     if err.errno == errno.ESRCH:
                         # process has died
@@ -431,7 +431,7 @@ class Daemon():
 
     def status(self):
         """Return the process status"""
-        logging.info("Daemon - status() - Return the process status")
+        logging.debug("Daemon - status() - Return the process status")
 
         if self.pidfile and os.path.exists(self.pidfile):
             pid = int(open(self.pidfile).read())
@@ -449,7 +449,7 @@ class Daemon():
 
     def prepare_dirs(self):
         """Ensure the log and pid file directories exist and are writable"""
-        logging.info("Daemon - prepare_dirs()")
+        logging.debug("Daemon - prepare_dirs()")
         for fn in (self.pidfile, self.logfile):
             if not fn:
                 continue
@@ -460,7 +460,7 @@ class Daemon():
 
     def set_uid_gid(self):
         """Drop root privileges"""
-        logging.info("Daemon - set_uid_gid()")
+        logging.debug("Daemon - set_uid_gid()")
         if self.gid:
             try:
                 os.setgid(self.gid)
@@ -474,7 +474,7 @@ class Daemon():
 
     def chown(self, fn):
         """Change the ownership of a file to match the daemon uid/gid"""
-        logging.info("Daemon - chown()")
+        logging.debug("Daemon - chown()")
         if self.uid or self.gid:
             uid = self.uid
             if not uid:
@@ -522,7 +522,7 @@ class Daemon():
         If the pid file exists but no other instance is running,
         delete the pid file.
         """
-        logging.info("Daemon - check_pid()")
+        logging.debug("Daemon - check_pid()")
 
         if not self.pidfile:
             return
@@ -554,7 +554,7 @@ class Daemon():
         Note that the eventual process ID isn't known until after
         daemonize(), so it's not possible to write the PID here.
         """
-        logging.info("Daemon - check_pid_writable()")
+        logging.debug("Daemon - check_pid_writable()")
 
         if not self.pidfile:
             return
@@ -569,18 +569,18 @@ class Daemon():
     def write_pid(self):
         u"""Write to the pid file"""
         pid = str(os.getpid())
-        logging.info("Daemon - write_pid(): %s", pid)
+        logging.debug("Daemon - write_pid(): %s", pid)
         if self.pidfile:
             open(self.pidfile, 'w').write(pid)
 
     def remove_pid(self):
         u"""Delete the pid file"""
-        logging.info("Daemon - remove_pid()")
+        logging.debug("Daemon - remove_pid()")
         if self.pidfile and os.path.exists(self.pidfile):
             os.remove(self.pidfile)
 
     def get_uid_gid(self, cp, section):
-        logging.info("Daemon - get_uid_gid()")
+        logging.debug("Daemon - get_uid_gid()")
         user_uid = cp.get(section, 'uid')
         user_gid = cp.get(section, 'gid')
 
@@ -672,7 +672,7 @@ class WinService():
     def initialize(self, config_ini):
         self.setup_logging()
         self.setup_plugins()
-        logging.info("Looking for plugins at: %s" % self.abs_plugin_path)
+        logging.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
     # Called when the service is starting immediately after Initialize()
     # use this to perform the work of the service; don't forget to set or check
@@ -696,7 +696,7 @@ class WinService():
 
 # Gets the proper file name when the application is frozen
 def get_filename(file):
-    logging.info("get_filename()")
+    logging.debug("get_filename()")
     if __FROZEN__:
         appdir = os.path.dirname(sys.executable)
     else:
@@ -706,7 +706,7 @@ def get_filename(file):
 
 # Get all the configuration options and return the config parser for them
 def get_configuration(config=None, configdir=None):
-    logging.info("get_configuration()")
+    logging.debug("get_configuration()")
 
     # Use default config/directory if none is given to us
     if config is None:
