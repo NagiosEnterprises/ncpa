@@ -9,7 +9,8 @@ import copy
 import queue
 import listener.nodes as nodes
 import listener.database as database
-import listener.server
+import listener.environment as environment
+import listener.server as server
 import signal
 from threading import Timer
 
