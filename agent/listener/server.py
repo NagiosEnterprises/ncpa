@@ -105,17 +105,17 @@ def get_unmapped_ip(ip):
     """
     try:
         # check if ip is IPv6
-        if ipaddress.ip_address(unicode(ip)).version == 6:
+        if ipaddress.ip_address(str(ip)).version == 6:
             # check if ip is a IPv4-mapped IPv6 address
-            if ipaddress.IPv6Address(unicode(ip)).ipv4_mapped is not None:
+            if ipaddress.IPv6Address(str(ip)).ipv4_mapped is not None:
                 # return the ordinary IPv4 address
-                return str(ipaddress.IPv6Address(unicode(ip)).ipv4_mapped)
+                return str(ipaddress.IPv6Address(str(ip)).ipv4_mapped)
             else:
                 # return the IPv6 address
-                return str(ipaddress.IPv6Address(unicode(ip)))
+                return str(ipaddress.IPv6Address(str(ip)))
         else:
             # return the IPv4 address
-            return str(ipaddress.ip_address(unicode(ip)))
+            return str(ipaddress.ip_address(str(ip)))
     # Needed for passive checks, in this case ip is 'Internal'
     except ValueError as e:
         logging.debug(e)
@@ -139,7 +139,7 @@ def is_ip(ip):
     Checks if ip is a valid ip address.
     """
     try:
-        ipaddress.ip_address(unicode(ip)).version
+        ipaddress.ip_address(str(ip)).version
         return True
     except ValueError as e:
         logging.debug(e)
@@ -151,7 +151,7 @@ def is_network(ip):
     Checks if ip is a valid ip network.
     """
     try:
-        ipaddress.ip_network(unicode(ip))
+        ipaddress.ip_network(str(ip))
         return True
     except ValueError as e:
         logging.debug(e)
@@ -193,7 +193,7 @@ def before_request():
                     else:
                         # host is written as CIDR suffix notation
                         # get all ip's from the given subnet
-                        allowed_network = ipaddress.ip_network(unicode(host))
+                        allowed_network = ipaddress.ip_network(str(host))
 
                         for ip in allowed_network:
                             ip = str(ip)

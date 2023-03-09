@@ -141,7 +141,7 @@ class PluginNode(nodes.RunnableNode):
             returncode = -1
             logging.error(stdout)
 
-        cleaned_stdout = unicode(
+        cleaned_stdout = str(
             "".join(stdout.decode("utf-8", "ignore"))
             .replace("\r\n", "\n")
             .replace("\r", "\n")
