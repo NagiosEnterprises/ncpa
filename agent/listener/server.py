@@ -187,9 +187,14 @@ def before_request():
     # allowed is set to False by default
     allowed = False
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
-    logging.debug("     ***** before_request() - allowed_hosts: %s", allowed_hosts)
     logging.debug("     ***** before_request() - request.remote_addr: %s", request.remote_addr)
+    logging.debug("     ***** before_request() - !!!!!URL!!!!! request.host: %s", request.host)
+    logging.debug("     ***** before_request() - !!!!!URL!!!!! request.url_charset: %s", request.url_charset)
     logging.debug("     ***** before_request() - !!!!!URL!!!!! request.url: %s", request.url)
+    logging.debug("     ***** before_request() - !!!!!URL!!!!! request.url_root: %s", request.url_root)
+    logging.debug("     ***** before_request() - !!!!!URL!!!!! request.path: %s", request.path)
+    logging.debug("     ***** before_request() - !!!!!URL!!!!! request.url_rule: %s", request.url_rule)
+    # logging.debug("     ***** before_request() - !!!!!URL!!!!! request.url_rule.methods: %s", request.url_rule.methods)
     logging.debug("     ***** before_request() - request.authorization: %s", request.authorization)
     logging.debug("     ***** before_request() - request.scheme: %s", request.scheme)
     logging.debug("     ***** before_request() - request.method: %s", request.method)
