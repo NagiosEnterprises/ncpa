@@ -55,32 +55,74 @@ if __SYSTEM__ == 'nt':
 
 cfg_defaults = {
             'general': {
+                'check_logging': '1',
+                'check_logging_time': '30',
                 'loglevel': 'info',
                 'logfile': 'var/log/ncpa.log',
+                'logmaxmb': '5',
+                'logbackups': '5',
                 'pidfile': 'var/run/ncpa.pid',
+                'logmaxmb': '5',
+                'logbackups': '5',
                 'uid': 'nagios',
                 'gid': 'nagios',
                 'all_partitions': '1',
+                'exclude_fs_types': 'aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs,nfsd,xenfs',
                 'default_units': 'Gi',
-                'exclude_fs_types': 'aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs,nfsd,xenfs'
             },
-            'listener':
-                {'delay_start': '0',
+            'listener': {
+                'uid': 'nagios',
+                'gid': 'nagios',
                 'ip': address,
                 'port': '5693',
-                'ssl_ciphers': 'None',
                 'ssl_version': 'TLSv1_2',
                 'certificate': 'adhoc',
-                'max_connections': '200',
+                'ssl_ciphers': 'None',
                 'logfile': 'var/log/ncpa_listener.log',
+                'delay_start': '0',
                 'admin_gui_access': '1',
                 'admin_password': 'None',
                 'admin_auth_only': '0',
+                'allowed_hosts': '',
+                'max_connections': '200',
+                'allowed_sources': '',
             },
-            'passive':
-                {'handlers': '',
+            'api': {
+                'community_string': 'mytoken',
+            },
+            'passive': {
+                'handlers': 'None',
+                'uid': 'nagios',
+                'gid': 'nagios',
+                'sleep': '300',
+                'logfile': 'var/log/ncpa_passive.log',
                 'delay_start': '0',
-                'logfile': 'var/log/ncpa_passive.log'
+            },
+            'nrdp': {
+                'parent': '',
+                'token': '',
+                'hostname': 'NCPA 2',
+                'connection_timeout': '10',
+            },
+            'kafkaproducer': {
+                'hostname': 'None',
+                'servers': 'localhost:9092',
+                'clientname': 'NCPA-Kafka',
+                'topic': 'ncpa',
+            },
+            'plugin directives': {
+                'plugin_path': 'plugins/',
+                'follow_symlinks': '0',
+                'plugin_timeout': '59',
+                'run_with_sudo': '',
+                '.sh': '/bin/sh $plugin_name $plugin_args',
+                '.py': 'python3 $plugin_name $plugin_args',
+                '.pl': 'perl $plugin_name $plugin_args',
+                '.php': 'php $plugin_name $plugin_args',
+                '.ps1': 'powershell -ExecutionPolicy Bypass -File $plugin_name $plugin_args',
+                '.vbs': 'cscript $plugin_name $plugin_args //NoLogo',
+                '.wsf': 'cscript $plugin_name $plugin_args //NoLogo',
+                '.bat': 'cmd /c $plugin_name $plugin_args',
             }
         }
 
