@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response, abort
-import logging
+# import logging
 import os
 import sys
 import platform
@@ -25,6 +25,7 @@ import socket
 __VERSION__ = '3.0.0'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
+logging = ncpa.listener_logger
 
 # The following if statement is a workaround that is allowing us to run this
 # in debug mode, rather than a hard coded location.
