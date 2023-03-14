@@ -808,7 +808,7 @@ def chown(user_uid, user_gid, fn):
 
 def setup_logger(config, loggerinstance, logfile):
     """Configure the logging module"""
-    print ("Main - setup_logger() - logfile: %s", logfile)
+    print ("setup_logger() - logfile: ", logfile)
     loglevel = config.get('general', 'loglevel')
     logmaxmb = config.getint('general', 'logmaxmb')
     logbackups = config.getint('general', 'logbackups')
@@ -817,7 +817,6 @@ def setup_logger(config, loggerinstance, logfile):
 
     try:
         level = int(loglevel)
-        print("***** setup_logger - loglevel, level: ", loglevel, level, flush = True)
     except ValueError:
         level = getattr(logging, loglevel.upper())
 
