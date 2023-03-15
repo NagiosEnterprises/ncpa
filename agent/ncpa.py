@@ -422,10 +422,11 @@ class Daemon():
 
             setup_logger(self.config, listener_logger, '')
 
-            passive_logger = logging.getLogger('passive')
-            passive_logger.propagate = False
-
-            setup_logger(self.config, passive_logger, self.passive_logfile)
+            passive_logger = ''
+            if not self.options['listener_only'] or self.options['passive_only']:
+                passive_logger = logging.getLogger('passive')
+                passive_logger.propagate = False
+                setup_logger(self.config, passive_logger, self.passive_logfile)
 
             # Setup with root privileges
             self.setup_root()
