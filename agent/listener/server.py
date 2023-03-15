@@ -1,5 +1,4 @@
 from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response, abort
-# import logging
 import os
 import sys
 import platform
@@ -16,7 +15,8 @@ import ipaddress
 import urllib.parse
 import gevent
 import ncpa
-import inspect
+from ncpa import listener_logger as logging
+#import inspect
 
 
 # Set whether or not a request is internal or not
@@ -25,7 +25,6 @@ import socket
 __VERSION__ = '3.0.0'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
-logging = ncpa.listener_logger
 
 # The following if statement is a workaround that is allowing us to run this
 # in debug mode, rather than a hard coded location.
@@ -166,15 +165,15 @@ def is_network(ip):
 
 @listener.before_request
 def before_request():
-    logging.debug("========== before_request() - called by: %s/%s:%s", inspect.stack()[1].filename, inspect.stack()[1].function, inspect.stack()[1].lineno)
+    logging.debug("before_request()")
     # allowed is set to False by default
     allowed = False
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
-    logging.debug("     ***** before_request() - request.url: %s", request.url)
-    logging.debug("     ***** before_request() - request.path: %s", request.path)
-    logging.debug("     ***** before_request() - request.url_rule: %s", request.url_rule)
-    logging.debug("     ***** before_request() - request.view_args: %s", request.view_args)
-    logging.debug("     ***** before_request() - request.routing_exception: %s", request.routing_exception)
+    logging.debug("before_request() - request.url: %s", request.url)
+    logging.debug("before_request() - request.path: %s", request.path)
+    logging.debug("before_request() - request.url_rule: %s", request.url_rule)
+    logging.debug("before_request() - request.view_args: %s", request.view_args)
+    logging.debug("before_request() - request.routing_exception: %s", request.routing_exception)
 
     if allowed_hosts and __INTERNAL__ is False:
         if request.remote_addr:
