@@ -420,7 +420,8 @@ class Daemon():
             # setup_root so that work done with root privileges can be
             # logged.
 
-            setup_logger(self.config, listener_logger, '')
+            if not self.options['passive_only'] or self.options['listener_only']:
+                setup_logger(self.config, listener_logger, '')
 
             passive_logger = ''
             if not self.options['listener_only'] or self.options['passive_only']:
