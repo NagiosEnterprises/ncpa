@@ -165,15 +165,18 @@ def is_network(ip):
 
 @listener.before_request
 def before_request():
-    logging.debug("before_request()")
     # allowed is set to False by default
     allowed = False
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
-    logging.debug("before_request() - request.url: %s", request.url)
-    logging.debug("before_request() - request.path: %s", request.path)
-    logging.debug("before_request() - request.url_rule: %s", request.url_rule)
-    logging.debug("before_request() - request.view_args: %s", request.view_args)
-    logging.debug("before_request() - request.routing_exception: %s", request.routing_exception)
+    logging.debug("    before_request() - type(request.view_args): %s", type(request.view_args))
+
+    # For logging some debug info for actual page requests
+    if isinstance(request.view_args, dict) and ('filename' not in request.view_args):
+        logging.info("before_request() - request.url: %s", request.url)
+        logging.debug("    before_request() - request.path: %s", request.path)
+        logging.debug("    before_request() - request.url_rule: %s", request.url_rule)
+        logging.debug("    before_request() - request.view_args: %s", request.view_args)
+        logging.debug("    before_request() - request.routing_exception: %s", request.routing_exception)
 
     if allowed_hosts and __INTERNAL__ is False:
         if request.remote_addr:
@@ -782,7 +785,7 @@ def admin_clear_check_log():
 @listener.route('/ws/api/<path:accessor>', websocket=True)
 @requires_token_or_auth
 def api_websocket(accessor=None):
-    logging.debug("========== api_websocket()")
+    logging.debug("api_websocket()")
     """Meant for use with the websocket and API.
 
     Make a connection to this function, and then pass it the API
@@ -792,7 +795,7 @@ def api_websocket(accessor=None):
     """
     sane_args = dict(request.args)
     sane_args['accessor'] = accessor
-    logging.debug("     ***** api_websocket() - sane_args: %s: ", sane_args)
+    logging.debug("api_websocket() - sane_args: %s: ", sane_args)
 
     config = listener.config['iconfig']
 
@@ -804,33 +807,34 @@ def api_websocket(accessor=None):
     psapi.refresh(config)
 
     if request.environ.get('wsgi.websocket'):
-        logging.debug("     ***** api_websocket() - has get(wsgi.websocket)")
-
         ws = request.environ['wsgi.websocket']
-        logging.debug("     ***** api_websocket() - has ws")
-        while True:
-            logging.debug("     ***** api_websocket() - while true")
+        logging.info("===== api_websocket() - websocket for %s listening...", accessor)
+
+        while not ws.closed:
+            logging.debug("    **** api_websocket() - while open...")
             try:
                 message = ws.receive()
-                logging.debug("api_websocket - message: %s", message)
-
-                node = psapi.getter(message, config, request.path, request.args)
-                logging.debug("api_websocket - node: %s", node)
-                prop = node.name
-                logging.debug("api_websocket - prop: %s", prop)
-                val = node.walk(first=True, **sane_args)
-                logging.debug("api_websocket - val: %s", val)
-                jval = json.dumps(val[prop])
-                logging.debug("api_websocket - jval: %s", jval)
-                ws.send(jval)
+                if message:
+                    logging.debug("        api_websocket - message: %s", message)
+                    node = psapi.getter(message, config, request.path, request.args)
+                    logging.debug("        api_websocket - node: %s", node)
+                    prop = node.name
+                    logging.debug("        api_websocket - prop: %s", prop)
+                    val = node.walk(first=True, **sane_args)
+                    logging.debug("        api_websocket - val: %s", val)
+                    jval = json.dumps(val[prop])
+                    logging.debug("        api_websocket - jval: %s", jval)
+                    ws.send(jval)
             except Exception as e:
                 # Socket was probably closed by the browser changing pages
-                logging.debug("api_websocket Exception: %s", e)
+                logging.warning("api_websocket() Exception: %s", e)
                 ws.close()
                 break
+        else:
+            logging.info("===== api_websocket() - websocket for %s closed.", accessor)
 
     else:
-        logging.debug("     ***** api_websocket() - NO request.environ.wsgi.websocket")
+        logging.warning("api_websocket() - NO request.environ.wsgi.websocket")
 
     return ''
 
@@ -840,7 +844,10 @@ def api_websocket(accessor=None):
 def top_websocket():
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
-        while True:
+        logging.info("===== top_websocket() - websocket listening...")
+
+        while not ws.closed:
+            logging.debug("    **** top_websocket() - while open...")
             load = psutil.cpu_percent()
             vir_mem = psutil.virtual_memory().percent
             swap_mem = psutil.swap_memory().percent
@@ -862,9 +869,12 @@ def top_websocket():
                 gevent.sleep(1)
             except Exception as e:
                 # Socket was probably closed by the browser changing pages
-                logging.debug("top_websocket Exception: %s", e)
+                logging.warning("top_websocket Exception: %s", e)
                 ws.close()
                 break
+        else:
+            logging.info("===== top_websocket() - websocket closed.")
+
     return ''
 
 
@@ -875,8 +885,11 @@ def tail_websocket():
 
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
+        logging.info("===== top_websocket() - websocket listening...")
+
         last_ts = datetime.datetime.now()
-        while True:
+        while not ws.closed:
+            logging.debug("    **** tail_websocket() - while open...")
             try:
                 last_ts, logs = listener.windowslogs.tail_method(last_ts=last_ts, **request.args)
 
@@ -885,9 +898,12 @@ def tail_websocket():
 
                 gevent.sleep(5)
             except Exception as e:
-                logging.debug("tail_websocket Exception: %s", e)
+                logging.warning("tail_websocket Exception: %s", e)
                 ws.close()
                 break
+        else:
+            logging.info("===== tail_websocket() - websocket closed.")
+
     return ''
 
 
