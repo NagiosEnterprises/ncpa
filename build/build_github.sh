@@ -30,11 +30,30 @@ else
     echo "build without setup: ./build.sh --build-only"
 fi
 
+# Add file with current GIT hash to build
+GIT_LONG="Not built under GIT"
+GIT_HASH_FILE="NoGIT.githash"
+
+if command -v git > /dev/null; then
+    GIT_LONG=$(git rev-parse HEAD)
+    GIT_SHORT=$(git rev-parse --short HEAD)
+    GIT_UNCOMMITTED=$(git status --untracked-files=no --porcelain)
+    echo "GIT_UNCOMMITTED: $GIT_UNCOMMITTED"
+    if [ "$GIT_UNCOMMITTED" ]; then
+        GIT_LONG="$GIT_LONG++  compiled with uncommitted changes"
+        GIT_SHORT="$GIT_SHORT++"
+    fi
+    GIT_HASH_FILE="git-$GIT_SHORT.githash"
+    echo "GIT_LONG: $GIT_LONG"
+    echo "GIT_SHORT: $GIT_SHORT"
+    echo "GIT_HASH_FILE: $GIT_HASH_FILE"
+fi
 
 # Move the ncpa binary data
 cd $BUILD_DIR
 rm -rf $BUILD_DIR/ncpa
 cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
+echo $GIT_LONG >  $BUILD_DIR/ncpa/$GIT_HASH_FILE
 
 # REMOVE LIBFFI COPY - PLEASE CHANGE THIS LATER
 # It should be in .libs_cffi_backend for proper linking and
