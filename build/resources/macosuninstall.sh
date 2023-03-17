@@ -97,10 +97,11 @@ killNCPAprocesses() {
         echo -n "Killed $pid ncpa_passive, "
     fi
 
-    pid=`ps aux | grep -v grep | grep ncpa  | awk '{print $2}'`
+    pid=`ps aux| grep /ncpa | grep -v grep | grep -v uninstall | awk '{print $2}'`
     if [[ $pid ]]; then
-        kill $pid
-        echo -n "Killed $pid ncpa, "
+        echo $pid
+        echo $pid | xargs kill
+        echo -n "Killed $pid ncpa and sub-processes, "
     fi
     echo "Done."
 }
@@ -134,7 +135,7 @@ listNCPAcomponents() {
     echo "\n---------------------------------------"
     echo "Listing NCPA components... "
     echo "\nProcesses?:"
-    ps aux | grep -v grep | grep ncpa_
+    ps aux| grep /ncpa | grep -v grep | grep -v uninstall
 
     echo "\nLaunchDaemons?:"
     launchctl list | grep nagios
