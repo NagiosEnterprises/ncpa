@@ -116,6 +116,11 @@ def parse_args():
                       help='Print version number of plugin.')
     parser.add_option("-q", "--queryargs", default=None,
                       help='Extra query arguments to pass in the NCPA URL.')
+    parser.add_option("-r", "--raw-plugin-args", default=None,
+                      help="Raw plugin arguments for the plugin to be run. "
+                           "This is an alternative to -a and should be used if the arguments are "
+                           "more complex, like URL parameters. "
+                           "Example: -r '-H inside01 -P 443 -p interface-rest/incident/count?incidentType=failedTask -s -w count,@1: -c count,@1: -e count'")
     parser.add_option("-s", "--secure", action='store_true', default=False,
                       help='Require successful certificate verification. Does not work on Python < 2.7.9.')
     parser.add_option("-p", "--performance", action='store_true', default=False,
@@ -127,9 +132,13 @@ def parse_args():
         print(version)
         sys.exit(0)
 
-    if options.arguments and options.metric and not 'plugin' in options.metric:
+    if options.arguments or options.raw_plugin_args and options.metric and not 'plugin' in options.metric:
         parser.print_help()
         parser.error('You cannot specify arguments without running a custom plugin.')
+
+    if options.arguments and options.raw_plugin_args:
+        parser.print_help()
+        parser.error('You cannot specify arguments and raw-plugin-args.')
 
     if not options.hostname:
         parser.print_help()
@@ -151,7 +160,11 @@ def parse_args():
 
 def get_url_from_options(options):
     host_part = get_host_part_from_options(options)
-    arguments = get_arguments_from_options(options)
+
+    if options.raw_plugin_args is None:
+        arguments = get_arguments_from_options(options)
+    else:
+        arguments = urlencode({'token': options.token, 'args': options.raw_plugin_args})
     return '%s?%s' % (host_part, arguments)
 
 
