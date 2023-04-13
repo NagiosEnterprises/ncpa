@@ -80,9 +80,6 @@ VIAddVersionKey "FileVersion" ${NCPA_VERSION}
 VIAddVersionKey "LegalCopyright" "2014-2017 ${COMPANY}"
 VIAddVersionKey "FileDescription" "NCPA Setup"
 
-; Language
-!insertmacro MUI_LANGUAGE "English"
-
 ; Language values for pages
 LangString PAGE_TITLE ${LANG_ENGLISH} "Nagios Cross-Platform Agent (${NAME})"
 LangString PAGE_SUBTITLE ${LANG_ENGLISH} "Windows Version - ${NCPA_VERSION}"
@@ -125,6 +122,9 @@ Page custom ConfigPassiveChecks
 !insertmacro MUI_UNPAGE_INSTFILES
 
 ;--------------------------------
+; Language
+!insertmacro MUI_LANGUAGE "English"
+
 Function .onInit
 
     !insertmacro MULTIUSER_INIT
