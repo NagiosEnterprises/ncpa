@@ -80,6 +80,9 @@ VIAddVersionKey "FileVersion" ${NCPA_VERSION}
 VIAddVersionKey "LegalCopyright" "2014-2017 ${COMPANY}"
 VIAddVersionKey "FileDescription" "NCPA Setup"
 
+; Language
+!insertmacro MUI_LANGUAGE "English"
+
 ; Language values for pages
 LangString PAGE_TITLE ${LANG_ENGLISH} "Nagios Cross-Platform Agent (${NAME})"
 LangString PAGE_SUBTITLE ${LANG_ENGLISH} "Windows Version - ${NCPA_VERSION}"
@@ -122,9 +125,6 @@ Page custom ConfigPassiveChecks
 !insertmacro MUI_UNPAGE_INSTFILES
 
 ;--------------------------------
-; Language
-!insertmacro MUI_LANGUAGE "English"
-
 Function .onInit
 
     !insertmacro MULTIUSER_INIT
@@ -167,7 +167,7 @@ Function .onInit
 FunctionEnd
 
 Function un.onInit
-    
+
     !insertmacro MULTIUSER_UNINIT
 
 FunctionEnd
@@ -227,7 +227,7 @@ Function ConfigPassive
 
     IfFileExists $INSTDIR\etc\ncpa.cfg 0 +2
     Abort
-    
+
     ; Display the passive setup options
     !insertmacro INSTALLOPTIONS_DISPLAY "nsis_passive_options.ini"
 
@@ -247,11 +247,11 @@ Function ConfigPassiveChecks
 
     IfFileExists $INSTDIR\etc\ncpa.cfg 0 +2
     Abort
-    
+
     ; Skip this step unless 'send passive checks over NRDP' is checked
     ${If} $nrdp == 0
         Abort
-    ${EndIf} 
+    ${EndIf}
 
     ; Display the passive setup options
     !insertmacro INSTALLOPTIONS_DISPLAY "nsis_passive_checks.ini"
@@ -292,16 +292,16 @@ Section # "Create Config.ini"
     ; --------------
     ; ncpa.cfg Setup
     ; --------------
-    
+
     CreateDirectory $INSTDIR\etc
     CreateDirectory $INSTDIR\etc\ncpa.cfg.d
 
     IfFileExists $INSTDIR\etc\ncpa.cfg SkipUpdateConfig UpdateConfig
-    
+
     ; If it's a fresh install, set the config options
     UpdateConfig:
     File /oname=$INSTDIR\etc\ncpa.cfg .\NCPA\etc\ncpa.cfg
-    
+
     WriteINIStr $INSTDIR\etc\ncpa.cfg api "community_string" "$token"
 
     ; Listener settings
@@ -338,7 +338,7 @@ Section # "Create Config.ini"
 
     ; Set log locations for Windows
     WriteINIStr $INSTDIR\etc\ncpa.cfg general "logfile" " var/log/ncpa.log"
-    
+
     SkipUpdateConfig:
     ; Don't overwrite the old config file...
     SetOverwrite off
@@ -348,7 +348,7 @@ Section # "Create Config.ini"
     ; ---------
     ; Directory
     ; ---------
-    
+
     ; Copy over everything we need for NCPA
     File /r .\NCPA\listener
     File /r .\NCPA\var
@@ -394,11 +394,11 @@ Section ""
 
     WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode"
     WriteRegStr SHCTX "${UNINST_KEY}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
- 
+
     WriteUninstaller $INSTDIR\uninstall.exe
-	
+
     !define PORT $bind_port
-  
+
     ; Install the service on new install
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c diskperf -Y'
@@ -428,13 +428,13 @@ SectionEnd
 Section "Uninstall"
 
     Delete "$INSTDIR\uninstall.exe"
-    
+
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c "$INSTDIR\ncpa.exe" --uninstall NCPA'
-    
+
     DeleteRegKey SHCTX "${UNINST_KEY}"
     DeleteRegKey SHCTX "${UNINST_KEY}"
-    
+
     RMDir /r "$INSTDIR"
 
 SectionEnd
