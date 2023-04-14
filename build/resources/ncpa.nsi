@@ -55,7 +55,7 @@ Var status_service
 OutFile "ncpa-${NCPA_VERSION}.exe"
 
 ; The installer styling
-!define MUI_ICON "NCPA\build_resources\ncpa.ico"
+; !define MUI_ICON "NCPA\build_resources\ncpa.ico"
 !define MUI_WELCOMEFINISHPAGE_BITMAP "NCPA\build_resources\nagios_installer.bmp"
 !define MUI_UNWELCOMEFINISHPAGE_BITMAP "NCPA\build_resources\nagios_installer.bmp"
 !define MUI_HEADERIMAGE
