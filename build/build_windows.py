@@ -5,11 +5,14 @@ import sys
 
 # Grab command line arguments
 buildtype = 'release'
+buildtype = 'nightly'
 if len(sys.argv) > 1:
     buildtype = sys.argv[1]
 
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 nsi_store = os.path.join(basedir, 'build', 'resources', 'ncpa.nsi')
+print("nsi_store:", nsi_store)
+
 nsi = os.path.join(basedir, 'agent', 'build', 'ncpa.nsi')
 nsis = os.path.join(os.environ['PROGRAMFILES(X86)'] if 'PROGRAMFILES(X86)' in os.environ else os.environ['PROGRAMFILES'], 'NSIS', 'makensis.exe')
 
@@ -25,7 +28,7 @@ except:
 
 # Building nightly versions requires a git pull and pip upgrade
 if buildtype == 'nightly':
-	subprocess.Popen(['git', 'pull']).wait()
+	# subprocess.Popen(['git', 'pull']).wait()
 	subprocess.Popen(['pip', 'install', '--upgrade', '-r', os.path.join(basedir, 'build', 'resources', 'require.txt')]).wait()
 
 # Remove old build
@@ -38,6 +41,9 @@ if not os.path.exists('var'):
 
 if not os.path.exists('plugins'):
     os.mkdir('plugins')
+
+if not os.path.exists('build'):
+    os.mkdir('build')
 
 sys.path.append(os.getcwd())
 subprocess.Popen(['python', 'setup.py', 'build_exe']).wait()
