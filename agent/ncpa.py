@@ -173,8 +173,7 @@ class Listener(Base):
         logger = self.logger
 
         logger.info("run()")
-        logging = self.logging
-        logging.info("run()")
+        print("Listener - run()")
 
         try:
             try:
