@@ -151,7 +151,7 @@ class Base():
         self.options = options
         self.config = config
         self.has_error = has_error
-        self.logging = logger
+        print("Listener/Passive - init()")
 
         if autostart:
             self.run()
