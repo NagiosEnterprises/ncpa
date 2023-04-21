@@ -14,6 +14,9 @@ import time
 import datetime
 import tempfile
 
+import errno
+import signal
+
 from multiprocessing import Process, Value
 from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
@@ -33,8 +36,6 @@ import listener.database as database
 if os.name == 'posix':
     import grp
     import pwd
-    import signal
-    import errno
 
 
 # Set some global variables for later
@@ -857,7 +858,9 @@ def setup_logger(config, loggerinstance, logfile):
         else:
             max_log_size_bytes = logmaxmb * 1024 * 1024
             handlers.append(RotatingFileHandler(logfile, maxBytes=max_log_size_bytes, backupCount=logbackups))
-        chown(uid, gid, logfile)
+
+        if __SYSTEM__ == 'posix':
+            chown(uid, gid, logfile)
 
     handlers.append(logging.StreamHandler())
     loggerinstance.setLevel(level)
