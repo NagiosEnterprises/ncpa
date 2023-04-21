@@ -60,6 +60,17 @@ if __SYSTEM__ == 'nt':
                         targetName="ncpa.exe",
                         icon="../build/resources/ncpa.ico")
 
+    # Rename to enable NSI to find stuff
+    if platform.architecture()[0].lower() == '32bit':
+        os.rename(os.path.join('build', 'exe.win32-3.9'), os.path.join('build', 'NCPA'))
+    elif platform.architecture()[0].lower() == '64bit':
+        os.rename(os.path.join('build', 'exe.win-amd64-3.9'), os.path.join('build', 'NCPA'))
+    else:
+        print("unhandled architecture")
+        sys.exit(1)
+
+    shutil.copy(u'build_resources/ncpa.nsi', u'build/')
+
 # Specific build settings for Linux / Max OS X
 elif __SYSTEM__ == 'posix':
 
