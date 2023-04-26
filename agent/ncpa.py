@@ -769,7 +769,7 @@ class WinService():
     # stop the service
     def run(self):
         print("---------------- Winservice.run()")
-        # start_processes(self.options, self.config)
+        start_processes(self.options, self.config, self.has_error)
         self.stopRequestedEvent.wait()
         self.stopEvent.set()
 
