@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 
+import os
 # Monkey patch for gevent
 from gevent import monkey
-monkey.patch_all()
+
+if os.name == 'posix':
+    monkey.patch_all()
+else:
+    monkey.patch_all(subprocess=True, thread=False)
 
 import threading
 import logging
 import glob
-import os
 import sys
 import ssl
 import time
@@ -44,6 +48,8 @@ __VERSION__ = '3.0.0'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
+
+options = {}
 
 # Logging
 # Asynchronous processes require separate loggers. Additionally, the parent process
@@ -169,6 +175,7 @@ class Listener(Base):
 
     def run(self):
         self.logger = logging.getLogger('listener')
+        self.logger.propagate = False
         logfile = get_filename(self.config.get('listener', 'logfile'))
         setup_logger(self.config, self.logger, logfile)
         logger = self.logger
@@ -701,14 +708,17 @@ class Daemon():
         os.close(null)
 
 
-# Windows service handler, this can be effectively ignored on systems like
+# Windows service handler, this can be ignored on systems like
 # Mac OS X and Linux since they use Daemon instead
 class WinService():
 
     # No parameters here, everything should be set in Initialize()
     def __init__(self):
-        self.options = {}
+        print("---------------- Winservice.__init__()")
+        self.options = get_options()
         self.config = get_configuration()
+        print("winservice-self.options:", self.options)
+        self.has_error = Value('i', False)
         self.stopEvent = threading.Event()
         self.stopRequestedEvent = threading.Event()
 
@@ -744,11 +754,12 @@ class WinService():
         # Set log level
         log_level_str = config.get('loglevel', 'INFO').upper()
         log_level = getattr(logging, log_level_str, logging.INFO)
-        print("loglevel: ", log_level)
+        print("Winservice.loglevel: ", log_level)
         logging.getLogger().setLevel(log_level)
 
     def initialize(self, config_ini):
-        self.setup_logging()
+        print("---------------- Winservice.initialize()")
+        # self.setup_logging()
         self.setup_plugins()
         logging.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
@@ -757,12 +768,14 @@ class WinService():
     # for the stop event or the service GUI will not respond to requests to
     # stop the service
     def run(self):
+        print("---------------- Winservice.run()")
         # start_processes(self.options, self.config)
         self.stopRequestedEvent.wait()
         self.stopEvent.set()
 
     # called when the service is being stopped by the service manager GUI
     def stop(self):
+        print("---------------- Winservice.stop()")
         self.stopRequestedEvent.set()
         self.stopEvent.wait()
 
@@ -834,6 +847,7 @@ def chown(user_uid, user_gid, fn):
 
 def setup_logger(config, loggerinstance, logfile):
     """Configure the logging module"""
+    print ("setup_logger()")
 
     name = getattr(loggerinstance, 'name')
     if config.get('general', 'loglevel') == 'debug':
@@ -887,16 +901,18 @@ def start_processes(options, config, has_error):
         if not options['listener_only'] or options['passive_only']:
             # Create the passive process
             parent_logger.info("Spawning process for Passive")
-            p = Process(target=Passive, args=(options, config, has_error, passive_logger, True))
+            p = Process(target=Passive, args=(options, config, has_error, True))
             p.daemon = True
             p.start()
+            # p = Passive(options, config, has_error, True)
 
         if not options['passive_only'] or options['listener_only']:
             # Create the listener process
             parent_logger.info("Spawning process for Listener")
-            l = Process(target=Listener, args=(options, config, has_error, listener_logger, True))
+            l = Process(target=Listener, args=(options, config, has_error, True))
             l.daemon = True
             l.start()
+            # l = Listener(listener, config, has_error, True)
 
         return p, l
 
@@ -904,10 +920,16 @@ def start_processes(options, config, has_error):
         parent_logger.exception(e)
         sys.exit(1)
 
+# Provides global access for options for WinService
+def get_options():
+    global options
+    parent_logger.debug("get_options()")
+    return options
 has_error = Value('i', False)
 
 # This handles calls to the main NCPA binary
 def main(has_error):
+    global options
     parser = ArgumentParser(description='''NCPA has multiple options and can
         be used to run Python scripts with the embedded version of Python or
         run the service/daemon in debug mode.''')
@@ -1007,6 +1029,10 @@ def main(has_error):
         d = Daemon(options, config, has_error, parent_logger)
         d.main()
     else:
+        # start_processes(options, config, has_error)
+        w = WinService()
+        w.run()
+        print("Main windows finished start_processes")
         start_processes(options, config, has_error)
 
 if __name__ == '__main__':
