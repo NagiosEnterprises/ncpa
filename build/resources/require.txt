@@ -2,7 +2,7 @@ greenlet==0.4.17
 psutil
 requests
 Jinja2
-flask==0.10.1
+flask==2.3.2
 werkzeug==0.16.1
 docutils
 pyOpenSSL==19.1
