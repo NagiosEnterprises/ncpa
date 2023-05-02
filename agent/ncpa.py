@@ -716,13 +716,8 @@ class WinService():
 
     # No parameters here, everything should be set in Initialize()
     def __init__(self):
-        print("---------------- Winservice.__init__()")
-        self.options = get_options()
-        self.config = get_configuration()
-        print("winservice-self.options:", self.options)
-        self.has_error = Value('i', False)
-        self.stopEvent = threading.Event()
-        self.stopRequestedEvent = threading.Event()
+        parent_logger.debug("---------------- Winservice.__init__()")
+        self.initialize("")
 
     def setup_plugins(self):
         plugin_path = self.config.get('plugin directives', 'plugin_path')
@@ -760,8 +755,15 @@ class WinService():
         logging.getLogger().setLevel(log_level)
 
     def initialize(self, config_ini):
-        print("---------------- Winservice.initialize()")
-        # self.setup_logging()
+        self.logger = parent_logger
+        self.logger.debug("---------------- Winservice.initialize()")
+        self.options = get_options()
+        self.config = get_configuration()
+        self.logger.debug("winservice-self.options:", self.options)
+        self.has_error = Value('i', False)
+        self.stopEvent = threading.Event()
+        self.stopRequestedEvent = threading.Event()
+
         self.setup_plugins()
         logging.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
