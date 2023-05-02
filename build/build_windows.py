@@ -29,7 +29,7 @@ except:
 # Building nightly versions requires a git pull and pip upgrade
 if buildtype == 'nightly':
 	# subprocess.Popen(['git', 'pull']).wait()
-	subprocess.Popen(['pip', 'install', '--upgrade', '-r', os.path.join(basedir, 'build', 'resources', 'require.txt')]).wait()
+	subprocess.Popen(['pip', 'install', '--upgrade', '-r', os.path.join(basedir, 'build', 'resources', 'require.win.txt')]).wait()
 
 # Remove old build
 subprocess.Popen(['rmdir', os.path.join(basedir, 'agent', 'build'), '/s', '/q'], shell=True).wait()
