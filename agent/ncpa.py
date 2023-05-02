@@ -55,10 +55,10 @@ __STARTED__ = datetime.datetime.now()
 
 options = {}
 
-# Logging
+# About Logging
 # Asynchronous processes require separate loggers. Additionally, the parent process
-# gets a logger just to make it easy to see what is logging. The parent logger covers the
-# startup code and the Daemon class used to spawn Listener and Passive.
+# gets a logger to cover the startup code, global functions and the Daemon or Winservice classes used
+# to spawn Listener and Passive processes on posix and Windows respectively.
 #
 # The root logger, parent log and listener log share the listener log file. This allows
 # the various components' loggers, which are primarily associated with the listener, to be
@@ -69,6 +69,7 @@ options = {}
 #
 # Here, we only create the instances. They are configured later via setup_logger().
 parent_logger = logging.getLogger("parent")
+
 
 # Define config defaults
 # We assign a lot of (but not all) defaults in the code, so let's keep them in one place.
@@ -170,6 +171,11 @@ class Base():
     def send_error(self):
         self.has_error.value = True
 
+    def init_logger(self, logger_name):
+        self.logger = logging.getLogger(logger_name)
+        self.logger.propagate = False
+        logfile = get_filename(self.config.get(logger_name, 'logfile'))
+        setup_logger(self.config, self.logger, logfile)
 
 # The listener, which serves the web GUI and API - starting in NCPA 3
 # we will be using a seperate process that is forked off the main process
@@ -177,10 +183,7 @@ class Base():
 class Listener(Base):
 
     def run(self):
-        self.logger = logging.getLogger('listener')
-        self.logger.propagate = False
-        logfile = get_filename(self.config.get('listener', 'logfile'))
-        setup_logger(self.config, self.logger, logfile)
+        self.init_logger('listener')
         logger = self.logger
 
         logger.info("run()")
@@ -300,10 +303,7 @@ class Passive(Base):
                     return
 
     def run(self):
-        self.logger = logging.getLogger('passive')
-        self.logger.propagate = False
-        logfile = get_filename(self.config.get('passive', 'logfile'))
-        setup_logger(self.config, self.logger, logfile)
+        self.init_logger('passive')
         logger = self.logger
         logger.info("run()")
 
@@ -324,7 +324,6 @@ class Passive(Base):
         try:
             while not self.has_error.value:
                 logger.debug('run() - loop while true')
-                print('run() - loop while true')
                 self.run_all_handlers()
 
                 # Do DB maintenance if the time is greater than next DB maintenance run
@@ -333,7 +332,7 @@ class Passive(Base):
                     self.db.run_db_maintenance(self.config)
                     next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
 
-                time.sleep(1)
+                time.sleep(5)
         except Exception as e:
             logger.exception("run() - exception: %s", e)
             self.send_error()
@@ -861,7 +860,6 @@ def setup_logger(config, loggerinstance, logfile):
     logbackups = config.getint('general', 'logbackups')
     uid = config.get('general', 'uid')
     gid = config.get('general', 'gid')
-    name = getattr(loggerinstance, 'name')
 
     try:
         level = int(loglevel)
@@ -928,6 +926,7 @@ def get_options():
     global options
     parent_logger.debug("get_options()")
     return options
+
 has_error = Value('i', False)
 
 # This handles calls to the main NCPA binary
@@ -1036,7 +1035,6 @@ def main(has_error):
         w = WinService()
         w.run()
         print("Main windows finished start_processes")
-        start_processes(options, config, has_error)
 
 if __name__ == '__main__':
     main(has_error)
