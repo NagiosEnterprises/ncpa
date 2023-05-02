@@ -37,6 +37,8 @@ includes = ['ncpa', 'jinja2.ext']
 excludes = ['Tkinter', 'tkinter', 'unittest']
 bin_includes = []
 include_files = [('var/log/ncpa.log', 'var/log/ncpa.log'),
+                 ('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
+                 ('var/log/ncpa_passive.log', 'var/log/ncpa_passive.log'),
                  ('listener/templates', 'listener/templates'),
                  ('listener/static', 'listener/static'),
                  ('../build/resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
@@ -118,4 +120,4 @@ if __SYSTEM__ == 'nt':
         print("unhandled architecture")
         sys.exit(1)
 
-    shutil.copy(u'build_resources/ncpa.nsi', u'build/')
+    # shutil.copy(u'build_resources/ncpa.nsi', u'build/')
