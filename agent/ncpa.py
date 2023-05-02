@@ -30,6 +30,10 @@ from argparse import ArgumentParser
 from io import open
 from configparser import ConfigParser
 
+# Create the listener logger instance, now, because it is required by listener.server.
+# It will be configured later via setup_logger(). See note 'About Logging' below.
+listener_logger = logging.getLogger("listener")
+
 # NCPA-specific module imports
 import listener.server
 import listener.psapi
@@ -64,7 +68,6 @@ options = {}
 # by server.py, and the parent logger to be available to the start up code.
 #
 # Here, we only create the instances. They are configured later via setup_logger().
-listener_logger = logging.getLogger("listener")
 parent_logger = logging.getLogger("parent")
 
 # Define config defaults
