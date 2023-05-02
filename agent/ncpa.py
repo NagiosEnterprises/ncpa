@@ -765,23 +765,31 @@ class WinService():
         self.stopRequestedEvent = threading.Event()
 
         self.setup_plugins()
-        logging.debug("Looking for plugins at: %s" % self.abs_plugin_path)
+        self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
     # Called when the service is starting immediately after Initialize()
     # use this to perform the work of the service; don't forget to set or check
     # for the stop event or the service GUI will not respond to requests to
     # stop the service
     def run(self):
-        print("---------------- Winservice.run()")
+        self.logger.debug("---------------- Winservice.run()")
         start_processes(self.options, self.config, self.has_error)
+        # time.sleep(60)
+        # self.stop()
+
+        self.logger.debug("---------------- Winservice.run BEFORE .RqEvent.wait()")
         self.stopRequestedEvent.wait()
+        self.logger.debug("---------------- Winservice.run AFTER .RqEvent.wait()")
         self.stopEvent.set()
+        self.logger.debug("---------------- Winservice.run.Event.set()")
 
     # called when the service is being stopped by the service manager GUI
     def stop(self):
-        print("---------------- Winservice.stop()")
+        self.logger.debug("---------------- Winservice.stop()")
         self.stopRequestedEvent.set()
+        self.logger.debug("---------------- Winservice.stop.RqEvent.set()")
         self.stopEvent.wait()
+        self.logger.debug("---------------- Winservice.stop.Event.wait()")
 
 
 # --------------------------
