@@ -85,10 +85,10 @@ sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa
 sed -i "s|_BASEDIR_|$dir|" /usr/lib/systemd/system/ncpa.service
 
 
-if which chkconfig > /dev/null; then
-    chkconfig --level 3,5 --add ncpa &> /dev/null
-elif command -v systemctl > /dev/null; then
+if command -v systemctl > /dev/null; then
     systemctl enable ncpa &> /dev/null
+elif which chkconfig > /dev/null; then
+    chkconfig --level 3,5 --add ncpa &> /dev/null
 elif which update-rc.d > /dev/null; then
     update-rc.d ncpa defaults &> /dev/null
 fi
