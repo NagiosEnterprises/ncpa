@@ -1,6 +1,6 @@
 Name:           ncpa
 Version:        __VERSION__
-Release:        1%{?dist}
+Release:        beta01
 Vendor:         Nagios Enterprises, LLC
 Summary:        A cross-platform active and passive monitoring agent
 BuildRoot:      __BUILDROOT__/BUILDROOT/
@@ -43,6 +43,9 @@ touch %{buildroot}/usr/local/ncpa/var/ncpa.db
 chown nagios:nagios %{buildroot}/usr/local/ncpa -R
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-init %{buildroot}/etc/init.d/ncpa
 
+mkdir -p %{buildroot}/usr/lib/systemd/system
+install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-service %{buildroot}/usr/lib/systemd/system/ncpa.service
+
 %clean
 rm -rf %{buildroot}
 
@@ -71,12 +74,6 @@ else
 fi
 
 %post
-if which chkconfig > /dev/null; then
-    chkconfig --level 3,5 --add ncpa &> /dev/null
-elif which update-rc.d > /dev/null; then
-    update-rc.d ncpa defaults &> /dev/null
-fi
-
 if [ -z $RPM_INSTALL_PREFIX ]
 then
     RPM_INSTALL_PREFIX="/usr/local"
@@ -85,6 +82,16 @@ fi
 # Set the directory inside the init scripts
 dir=$RPM_INSTALL_PREFIX/ncpa
 sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa
+sed -i "s|_BASEDIR_|$dir|" /usr/lib/systemd/system/ncpa.service
+
+
+if which chkconfig > /dev/null; then
+    chkconfig --level 3,5 --add ncpa &> /dev/null
+elif command -v systemctl > /dev/null; then
+    systemctl enable ncpa &> /dev/null
+elif which update-rc.d > /dev/null; then
+    update-rc.d ncpa defaults &> /dev/null
+fi
 
 # Remove empty cert and key files
 if [ -f $RPM_INSTALL_PREFIX/ncpa/ncpa.crt ]
@@ -110,8 +117,12 @@ fi
 # TODO: Make upgrades from NCPA 2 -> 3 seemless (stop old services)
 if [ "$1" != "1" ]; then
     if [ `command -v systemctl` ]; then
+        systemctl stop ncpa_listener
+        systemctl stop ncpa_passive
         systemctl stop ncpa
     else
+        service ncpa_listener stop
+        service ncpa_passive stop
         service ncpa stop
     fi
 fi
@@ -173,3 +184,6 @@ fi
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
 /usr/local/ncpa/etc/ncpa.cfg.d/README.txt
+
+%defattr(0640,root,nagios,0755)
+/usr/lib/systemd/system/ncpa.service
