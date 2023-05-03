@@ -529,7 +529,6 @@ class Daemon():
                         self.logging.debug(msg)
                         sys.exit(msg)
         else:
-            self.logging.debug("Daemon - status() - PID in file: %s", pid)
             msg = "Daemon - status() - Service is not running"
             self.logging.info(msg)
             sys.exit(msg)
