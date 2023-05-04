@@ -52,6 +52,7 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Ras
     cd $BUILD_DIR
     sudo mkdir -p debbuild
     sudo cp *.rpm debbuild/
+    ls -al
     cd debbuild
 
     # Create deb package with alien
@@ -70,8 +71,9 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Ras
 
     cd $BUILD_DIR
     sudo cp debbuild/*.deb .
+    sudo cp debbuild/*.rpm .
 
-    sudo rm -rf *.rpm
+    # sudo rm -rf *.rpm
     sudo rm -rf debbuild
     ls -al
 
