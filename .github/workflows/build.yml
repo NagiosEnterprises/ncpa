@@ -39,4 +39,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: NCPA-3.0.0-${{ matrix.os }}
-        path: build/ncpa_3.0.0-1*.*
+        path: build/ncpa_3.0.0-*.*
