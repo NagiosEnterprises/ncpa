@@ -9,12 +9,12 @@ ZLIBVER="1.2.13"
 
 # Make python command, e.g. python3.11
 PYTHONCMD="python$(echo $PYTHONVER | sed -r 's/(3.[1-9]+)\..+/\1/g')"
+echo -e "***** linux/setup.sh - PYTHONCMD: $PYTHONCMD"
+
 set +e
 PYTHONBIN=$(which $PYTHONCMD)
 set -e
 SKIP_PYTHON=0
-
-echo -e "***** linux/setup.sh - PYTHONBIN: $PYTHONBIN"
 
 # Get information about system
 . $BUILD_DIR/linux/init.sh
@@ -139,7 +139,7 @@ install_prereqs() {
 
         if [[ "$ssl_maj_ver" -lt 3 ]]; then
 
-            update_ssl $SSLVER $ZLIBVER
+            install_ssl_and_zlib $SSLVER $ZLIBVER
         else
             echo -e "***** linux/setup.sh - OpenSSL version already greater than 3. Not changed."
         fi
