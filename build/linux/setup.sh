@@ -15,14 +15,19 @@ SKIP_PYTHON=0
 
 update_py_packages() {
     echo -e "***** linux/setup.sh - update_py_packages()"
-    # Removed from before PYTHONBIN: LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib'
-    # Removed from end: --no-binary :all:
     $PYTHONBIN -m pip install --upgrade pip
-    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
+    LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary :all:
+    # $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
+
 }
 
 install_prereqs() {
     echo -e "***** linux/setup.sh - install_prereqs()"
+    echo -e "***** linux/setup.sh - dist: $dist"
+
+    # SSL version as an integer, e.g. 101
+    ssl_ver=$(openssl version | grep -e "[1-3].[0-9].[0-9]" -o | head -n1 | sed 's/\.//g')
+    echo -e "***** linux/setup.sh - ssl_ver: $ssl_ver"
 
 
     # --------------------------
@@ -37,9 +42,24 @@ install_prereqs() {
         apt-get install debian-builder rpm gcc g++ wget openssl libssl-dev libffi-dev sqlite3 libsqlite3-dev zlib1g-dev alien -y
 
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
+        echo -e "***** linux/setup.sh - install_prereqs() - CentOS/RHEL"
 
+        # yum install epel-release -y
+        if [ "$dist" == "el7" ]; then
+            echo -e "***** linux/setup.sh - fix yum.repos.d"
+            # epel repo metalinks aren't valid for early distros, so we use baseurls instead.
+            sed -i -e s/^#baseurl/baseurl/g -e s/^metalink/#metalink/g /etc/yum.repos.d/epel*
+        fi
         yum install epel-release -y
-        yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make -y
+
+        # If openssl is 2.0.0 or greater, it may have been manually installed, so don't try and install a new package
+        if (( "$ssl_ver" >= 200 )); then
+            echo -e "***** linux/setup.sh - yum install NO SSL"
+            yum install gcc gcc-c++ rpm-build libffi-devel sqlite sqlite-devel wget make -y
+        else
+            echo -e "***** linux/setup.sh - yum install with SSL"
+            yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make -y
+        fi
 
     elif [ "$distro" == "SUSE LINUX" ] || [ "$distro" == "SLES" ] || [ "$distro" == "OpenSUSE" ]; then
 
@@ -118,6 +138,7 @@ install_prereqs() {
         tar xf $PYTHONTAR.tgz
         cd $PYTHONTAR
         # Removed from configure: LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib'
+        # ./configure LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib' && make && make altinstall
     	./configure && make && make altinstall
         cd ..
         rm -rf $PYTHONTAR
