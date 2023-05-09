@@ -3,10 +3,10 @@
 echo -e "***** linux/setup.sh"
 
 # Globals
-PYTHONVER="3.9.13"
+PYTHONVER="3.11.3"
 PYTHONTAR="Python-$PYTHONVER"
 set +e
-PYTHONBIN=$(which python3.9)
+PYTHONBIN=$(which python3.11)
 set -e
 SKIP_PYTHON=0
 
