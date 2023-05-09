@@ -21,7 +21,7 @@ agent/var/log/*
 agent/var/run/*.pid
 
 build/resources/*.tgz
-build/resources/Python/*
+build/resources/Python*/*
 build/resources/openssl/*
 build/bin
 build/include
