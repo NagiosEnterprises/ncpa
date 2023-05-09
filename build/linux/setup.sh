@@ -4,9 +4,10 @@ echo -e "***** linux/setup.sh"
 
 # Globals
 PYTHONVER="3.11.3"
+PYTHONCMD="python3.11"
 PYTHONTAR="Python-$PYTHONVER"
 set +e
-PYTHONBIN=$(which python3.11)
+PYTHONBIN=$(which $PYTHONCMD)
 set -e
 SKIP_PYTHON=0
 
@@ -39,7 +40,14 @@ install_prereqs() {
         echo -e "***** linux/setup.sh - install_prereqs() - Debian/Ubuntu"
         echo -e "***** linux/setup.sh - PYTHONTAR: $PYTHONTAR"
 
-        apt-get install debian-builder rpm gcc g++ wget openssl libssl-dev libffi-dev sqlite3 libsqlite3-dev zlib1g-dev alien -y
+        # If openssl is 2.0.0 or greater, it may have been manually installed, so don't try and install a new package
+        if (( "$ssl_ver" >= 200 )); then
+            echo -e "***** linux/setup.sh - apt-get install NO SSL"
+            apt-get install gcc g++ debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y
+        else
+            echo -e "***** linux/setup.sh - apt-get install with SSL"
+            apt-get install gcc g++ zlib1g-dev openssl libssl-dev debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y
+        fi
 
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
         echo -e "***** linux/setup.sh - install_prereqs() - CentOS/RHEL"
@@ -150,7 +158,7 @@ install_prereqs() {
     	./configure && make && make altinstall
         cd ..
         rm -rf $PYTHONTAR
-        PYTHONBIN=$(which python3.9)
+        PYTHONBIN=$(which $PYTHONCMD)
         export PATH=$PATH:$BUILD_DIR/bin
     fi
 
