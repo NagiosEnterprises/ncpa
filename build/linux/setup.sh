@@ -135,7 +135,7 @@ install_prereqs() {
 
         # First update OpenSSL if necessary
         ## SSL major version, e.g. 3
-        ssl_maj_ver=$(openssl version | grep -e "[1-3].[0-9].[0-9]" -o | head -n1 | sed -r 's/([1-9.[1-9]+)\..+/\1/g')
+        ssl_maj_ver=$(openssl version | grep -e "[1-9].[0-9].[0-9]" -o | head -n1 | sed -r 's/([1-9]+).[1-9]+\..+/\1/g')
 
         if [[ "$ssl_maj_ver" -lt 3 ]]; then
 
