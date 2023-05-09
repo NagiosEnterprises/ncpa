@@ -954,9 +954,6 @@ def main(has_error):
     if config.get('general', 'loglevel') == 'debug':
         print("main - options: ", options)
 
-    print("main - Python version:", sys.version)
-    print("main - SSL version:", ssl.OPENSSL_VERSION)
-
     # We set up the root logger here. It uses the listener log file, because the web components,
     # which are part of the listener system, need to propagate up to this log. We don't assign a file
     # handler to the listener_log, since it, too, will propagate up to the root logger and into the
@@ -969,6 +966,9 @@ def main(has_error):
     listener_logfile = get_filename(config.get('listener', 'logfile'))
     log = logging.getLogger()
     setup_logger(config, log, listener_logfile)
+
+    log.info("main - Python version: %s", sys.version)
+    log.info("main - SSL version: %s", ssl.OPENSSL_VERSION)
 
     # If we are running this in debug mode from the command line, we need to
     # wait for the proper output to exit and kill the Passive and Listener
