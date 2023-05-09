@@ -16,8 +16,8 @@ SKIP_PYTHON=0
 update_py_packages() {
     echo -e "***** linux/setup.sh - update_py_packages()"
     $PYTHONBIN -m pip install --upgrade pip
-    LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary :all:
-    # $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
+    # LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary :all:
+    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
 
 }
 
@@ -46,9 +46,15 @@ install_prereqs() {
 
         # yum install epel-release -y
         if [ "$dist" == "el7" ]; then
-            echo -e "***** linux/setup.sh - fix yum.repos.d"
-            # epel repo metalinks aren't valid for early distros, so we use baseurls instead.
-            sed -i -e s/^#baseurl/baseurl/g -e s/^metalink/#metalink/g /etc/yum.repos.d/epel*
+            if [ -f /etc/yum.repos.d/epel.repo ]; then
+                echo -e "***** linux/setup.sh - fix yum.repos.d"
+                # epel repo metalinks aren't valid for early distros, so we use baseurls instead.
+                sed -i -e s/^#baseurl/baseurl/g -e s/^metalink/#metalink/g /etc/yum.repos.d/epel*
+            fi
+            yum install epel-release -y
+            if [ -f /etc/yum.repos.d/epel.repo ]; then
+                sed -i -e s/^#baseurl/baseurl/g -e s/^metalink/#metalink/g /etc/yum.repos.d/epel*
+            fi
         fi
         yum install epel-release -y
 
