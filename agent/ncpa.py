@@ -32,10 +32,11 @@ import tempfile
 import time
 
 # pywin32 imports
-import servicemanager
-import win32event
-import win32service
-import win32serviceutil
+if os.name == 'nt':
+    import servicemanager
+    import win32event
+    import win32service
+    import win32serviceutil
 
 import errno
 import signal
@@ -105,7 +106,7 @@ cfg_defaults = {
             'general': {
                 'check_logging': '1',
                 'check_logging_time': '30',
-                'loglevel': logging.DEBUG,
+                'loglevel': 'info',
                 'logmaxmb': '5',
                 'logbackups': '5',
                 'pidfile': 'var/run/ncpa.pid',
@@ -740,7 +741,7 @@ class WinService(win32serviceutil.ServiceFramework):
         self.running = False
 
         # child process handles (Passive, Listener)
-        self.p, self.l = None, None 
+        self.p, self.l = None, None
 
         self.options = get_options()
         self.config = get_configuration()
@@ -806,7 +807,7 @@ class WinService(win32serviceutil.ServiceFramework):
         while self.running: # shouldn't loop, but just in case the event triggers without stop being called
             win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
             time.sleep(1)
-        
+
         # kill/clean up child processes
         self.p.terminate()
         self.l.terminate()
