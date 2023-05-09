@@ -51,12 +51,14 @@ install_prereqs() {
                 # epel repo metalinks aren't valid for early distros, so we use baseurls instead.
                 sed -i -e s/^#baseurl/baseurl/g -e s/^metalink/#metalink/g /etc/yum.repos.d/epel*
             fi
+
             yum install epel-release -y
             if [ -f /etc/yum.repos.d/epel.repo ]; then
                 sed -i -e s/^#baseurl/baseurl/g -e s/^metalink/#metalink/g /etc/yum.repos.d/epel*
             fi
+        else
+            yum install epel-release -y
         fi
-        yum install epel-release -y
 
         # If openssl is 2.0.0 or greater, it may have been manually installed, so don't try and install a new package
         if (( "$ssl_ver" >= 200 )); then
