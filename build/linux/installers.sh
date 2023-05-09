@@ -107,7 +107,8 @@ install_openssl() {
     fi
 
     local new_ver_int=$(echo "$ssl_new_version"  | sed 's/\.//g')
-    ssl_new_path="$ssl_new_base_path/ssl$new_ver_int"
+    # ssl_new_path="$ssl_new_base_path/ssl$new_ver_int"
+    ssl_new_path="$ssl_new_base_path/openssl"
     SSL_NEW_PATH=$ssl_new_path
 
     echo -e " "
@@ -134,7 +135,7 @@ install_openssl() {
     make all && make test && make install
     # popd
 
-    # If lib path hasn't changed then we don't need to link the new libraries. TODO confirm this.
+    If lib path hasn't changed then we don't need to link the new libraries. TODO confirm this.
     if [[ "$ssl_old_lib" != "$ssl_new_path/lib64" ]]; then
         if [[ -f "$ssl_old_lib/libssl.so" ]]; then
             mv $ssl_old_lib/libssl.so $ssl_old_lib/libssl.so.bak
