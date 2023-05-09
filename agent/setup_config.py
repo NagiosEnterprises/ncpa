@@ -41,7 +41,7 @@
 # or
 #   sc create ncpa binPath= "path/to/ncpa.exe"
 #
-# then 
+# then
 #   sc start ncpa
 #
 # the ncpa from the first command will be used as %s in the following values
