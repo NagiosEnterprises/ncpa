@@ -135,7 +135,7 @@ install_openssl() {
     make all && make test && make install
     # popd
 
-    If lib path hasn't changed then we don't need to link the new libraries. TODO confirm this.
+    #If lib path hasn't changed then we don't need to link the new libraries. TODO confirm this.
     if [[ "$ssl_old_lib" != "$ssl_new_path/lib64" ]]; then
         if [[ -f "$ssl_old_lib/libssl.so" ]]; then
             mv $ssl_old_lib/libssl.so $ssl_old_lib/libssl.so.bak
