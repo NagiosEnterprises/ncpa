@@ -64,7 +64,7 @@ if not os.path.exists('build'):
 sys.path.append(os.getcwd())
 
 # --------------------------
-# build with cx_Freeze 
+# build with cx_Freeze
 # --------------------------
 
 subprocess.Popen([python_launcher, 'setup.py', 'build_exe']).wait()
