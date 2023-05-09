@@ -287,7 +287,9 @@ update_py_packages() {
     ssl_so=$(basename $(ls $pylibpath/lib-dynload/_ssl*.so))
     echo -e "***** linux/installers.sh - update_py_packages() - linking cx_freeze lib-dynload to: $pylibpath/lib-dynload"
 
-    mkdir $pylibpath/site-packages/cx_Freeze/bases/lib-dynload_Orig
+    if [ -d "$pylibpath/site-packages/cx_Freeze/bases/lib-dynload_Orig" ]; then
+        mkdir $pylibpath/site-packages/cx_Freeze/bases/lib-dynload_Orig
+    fi
     cp $pylibpath/site-packages/cx_Freeze/bases/lib-dynload/* $pylibpath/site-packages/cx_Freeze/bases/lib-dynload_Orig/
 
     # Copy any libs that cx_freeze has, but Python doesn't
