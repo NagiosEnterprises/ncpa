@@ -287,7 +287,7 @@ update_py_packages() {
     ssl_so=$(basename $(ls $pylibpath/lib-dynload/_ssl*.so))
     echo -e "***** linux/installers.sh - update_py_packages() - linking cx_freeze lib-dynload to: $pylibpath/lib-dynload"
 
-    if [ -d "$pylibpath/site-packages/cx_Freeze/bases/lib-dynload_Orig" ]; then
+    if [ ! -d "$pylibpath/site-packages/cx_Freeze/bases/lib-dynload_Orig" ]; then
         mkdir $pylibpath/site-packages/cx_Freeze/bases/lib-dynload_Orig
     fi
     cp $pylibpath/site-packages/cx_Freeze/bases/lib-dynload/* $pylibpath/site-packages/cx_Freeze/bases/lib-dynload_Orig/
