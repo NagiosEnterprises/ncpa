@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 echo " "
-echo "Functions: get_distro, install_devtools, install_zlib, install_openssl, update_ssl"
+echo "Functions: get_distro, install_devtools, install_zlib, install_openssl, install_ssl_and_zlib"
 echo " "
-echo "To do full update, enter: update_ssl"
+echo "To do full update, enter: install_ssl_and_zlib"
 echo " "
 
 
