@@ -19,7 +19,6 @@ update_py_packages() {
     $PYTHONBIN -m pip install --upgrade pip
     # LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary :all:
     $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
-
 }
 
 install_prereqs() {
@@ -52,7 +51,6 @@ install_prereqs() {
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
         echo -e "***** linux/setup.sh - install_prereqs() - CentOS/RHEL"
 
-        # yum install epel-release -y
         if [ "$dist" == "el7" ]; then
             if [ -f /etc/yum.repos.d/epel.repo ]; then
                 echo -e "***** linux/setup.sh - fix yum.repos.d"
