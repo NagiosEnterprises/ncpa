@@ -4,12 +4,17 @@ echo -e "***** linux/setup.sh"
 
 # Globals
 PYTHONVER="3.11.3"
-PYTHONCMD="python3.11"
-PYTHONTAR="Python-$PYTHONVER"
+SSLVER="3.0.8"
+ZLIBVER="1.2.13"
+
+# Make python command, e.g. python3.11
+PYTHONCMD="python$(echo $PYTHONVER | sed -r 's/(3.[1-9]+)\..+/\1/g')"
 set +e
 PYTHONBIN=$(which $PYTHONCMD)
 set -e
 SKIP_PYTHON=0
+
+echo -e "***** linux/setup.sh - PYTHONBIN: $PYTHONBIN"
 
 # Get information about system
 . $BUILD_DIR/linux/init.sh
@@ -22,28 +27,23 @@ install_prereqs() {
     echo -e "***** linux/setup.sh - install_prereqs()"
     echo -e "***** linux/setup.sh - dist: $dist"
 
-    # SSL version as an integer, e.g. 101
-    ssl_ver=$(openssl version | grep -e "[1-3].[0-9].[0-9]" -o | head -n1 | sed 's/\.//g')
-    echo -e "***** linux/setup.sh - ssl_ver: $ssl_ver"
-
-
     # --------------------------
-    #  INSTALL SYSTEM REQS
+    #  INSTALL SYSTEM REQS - PACKAGES
     # --------------------------
-
 
     if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
         echo -e "***** linux/setup.sh - install_prereqs() - Debian/Ubuntu"
-        echo -e "***** linux/setup.sh - PYTHONTAR: $PYTHONTAR"
 
-        # If openssl is 2.0.0 or greater, it may have been manually installed, so don't try and install a new package
-        if (( "$ssl_ver" >= 200 )); then
-            echo -e "***** linux/setup.sh - apt-get install NO SSL"
-            apt-get install gcc g++ debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y
-        else
-            echo -e "***** linux/setup.sh - apt-get install with SSL"
-            apt-get install gcc g++ zlib1g-dev openssl libssl-dev debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y
+        # deb9 apt sources are no longer valid. This is solved by deb8 installer, but not deb9.
+        if [[ "$dist" == "debian9" ]]; then
+            mv /etc/apt/sources.list /etc/apt/sources.list.orig
+            echo "deb http://archive.debian.org/debian/ stretch  main contrib non-free" >> /etc/apt/sources.list
+            echo "deb http://security.debian.org/ stretch/updates main contrib non-free" >> /etc/apt/sources.list
+            cat /etc/apt/sources.list
         fi
+
+        echo -e "***** linux/setup.sh - apt-get install with SSL"
+        apt-get install gcc g++ zlib1g-dev openssl libssl-dev debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y
 
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
         echo -e "***** linux/setup.sh - install_prereqs() - CentOS/RHEL"
@@ -63,14 +63,8 @@ install_prereqs() {
             yum install epel-release -y
         fi
 
-        # If openssl is 2.0.0 or greater, it may have been manually installed, so don't try and install a new package
-        if (( "$ssl_ver" >= 200 )); then
-            echo -e "***** linux/setup.sh - yum install NO SSL"
-            yum install gcc gcc-c++ rpm-build libffi-devel sqlite sqlite-devel wget make -y
-        else
-            echo -e "***** linux/setup.sh - yum install with SSL"
-            yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make -y
-        fi
+        echo -e "***** linux/setup.sh - yum install with SSL"
+        yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make -y
 
     elif [ "$distro" == "SUSE LINUX" ] || [ "$distro" == "SLES" ] || [ "$distro" == "OpenSUSE" ]; then
 
@@ -132,19 +126,22 @@ install_prereqs() {
     fi
 
 
-    # --------------------------
-    #  INSTALL SOURCE FILES
-    # --------------------------
+    # -----------------------------------------
+    #  INSTALL SYSTEM REQS - BUILD FROM SOURCE
+    # -----------------------------------------
 
-
-    cd $BUILD_DIR/resources
-
-    # Install bundled Python version from source
+    # Install Python version from source
     if [ $SKIP_PYTHON -eq 0 ]; then
-        echo -e "***** linux/setup.sh - Building python..."
 
-        if [ ! -f $PYTHONTAR.tgz ]; then
-            wget https://www.python.org/ftp/python/$PYTHONVER/$PYTHONTAR.tgz
+        # First update OpenSSL if necessary
+        ## SSL major version, e.g. 3
+        ssl_maj_ver=$(openssl version | grep -e "[1-3].[0-9].[0-9]" -o | head -n1 | sed -r 's/([1-9.[1-9]+)\..+/\1/g')
+
+        if [[ "$ssl_maj_ver" -lt 3 ]]; then
+
+            update_ssl $SSLVER $ZLIBVER
+        else
+            echo -e "***** linux/setup.sh - OpenSSL version already greater than 3. Not changed."
         fi
 
         echo -e "***** linux/setup.sh - Building python..."
@@ -157,7 +154,6 @@ install_prereqs() {
     # --------------------------
     #  INSTALL MODULES
     # --------------------------
-
 
     # Install modules
     update_py_packages
