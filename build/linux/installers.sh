@@ -25,7 +25,7 @@ install_devtools() {
     local my_distro=$(get_distro)
     if [[ "$my_distro" == "debian"* ]] || [[ "$my_distro" == "ubuntu"* ]]; then
 
-        # deb9 apt sources are no longer valid. This is solved by deb8 installer, but not deb9.
+        # Update pkg repo file - deb9 apt sources are no longer valid. This is solved by deb8 installer, but not deb9.
         if [[ "$my_distro" == "debian9" ]]; then
             mv /etc/apt/sources.list /etc/apt/sources.list.orig
             echo "deb http://archive.debian.org/debian/ stretch  main contrib non-free" >> /etc/apt/sources.list
@@ -40,6 +40,7 @@ install_devtools() {
     fi
 }
 
+# Can take a zLib version number as arg
 install_zlib() {
     local zLib_new_version="1.2.13"
     if [[ ! -z $1 ]]; then
@@ -50,15 +51,16 @@ install_zlib() {
     pushd /usr/src
     wget https://zlib.net/zlib-$zLib_new_version.tar.gz --no-check-certificate
     tar -zxf zlib-$zLib_new_version.tar.gz
-    rm zlib-$zLib_new_version.tar.gz
-    cd zlib-$zLib_new_version
+
+    pushd zlib-$zLib_new_version
     ./configure --64
     make && make test && make install
+    popd
 
     local libz=$(find "/usr" -name "libz.so*" | grep -v "/src" | grep $zLib_new_version | head -n 1)
 
-    popd
     if [[ ! -z $libz ]]; then
+        rm -rf zlib-$zLib_new_version
         echo -e "SUCCESS! zLib $zLib_new_version is installed @ $libz"
         echo -e " "
         return 0
@@ -69,6 +71,7 @@ install_zlib() {
     fi
 }
 
+# Can take an OpenSSL version number as arg
 install_openssl() {
     local ssl_new_version="3.0.8"
     if [[ ! -z $1 ]]; then
@@ -81,10 +84,11 @@ install_openssl() {
 
     wget https://www.openssl.org/source/openssl-$ssl_new_version.tar.gz --no-check-certificate
     tar -zxf openssl-$ssl_new_version.tar.gz
-    rm openssl-$ssl_new_version.tar.gz
-    cd openssl-$ssl_new_version
+
+    pushd openssl-$ssl_new_version
     ./config --prefix=/usr
     make all && make test && make install
+    popd
 
     if [[ "$my_distro" == "debian"* ]] || [[ "$my_distro" == "ubuntu"* ]]; then
         ln -s /usr/lib64/libssl.so.3 /lib/x86_64-linux-gnu/libssl.so.3
@@ -93,24 +97,47 @@ install_openssl() {
 
     local sslchk=$(openssl version | grep $ssl_new_version)
 
-    popd
     if [[ ! -z $sslchk ]]; then
+        rm -rf openssl-$ssl_new_version
         echo -e "SUCCESS! OpenSSL $ssl_new_version is installed"
         echo -e " "
         return 0
     else
-        echo -e "ERROR! OpenSSL $ssl_new_version filed to install correctly"
+        echo -e "ERROR! OpenSSL $ssl_new_version failed to install correctly"
         echo -e " "
         return 1
     fi
 }
 
-update_ssl() {
+# Can take a Python version number as arg
+install_python() {
+    local python_new_version="3.11.3"
+    if [[ ! -z "$1" ]]; then
+        python_new_version="$1"
+    fi
+    local pythontar="Python-$python_new_version"
+
+    if [ ! -f $pythontar.tgz ]; then
+        wget https://www.python.org/ftp/python/$python_new_version/$pythontar.tgz
+    fi
+    tar xf $pythontar.tgz
+    cd $pythontar
+    ./configure && make && make altinstall
+    cd ..
+    rm -rf $pythontar
+}
+
+# Can take an OpenSSL version and a zLib verions number number as args
+install_ssl_and_zlib() {
     local ssl_new_version="3.0.8"
     local zLib_new_version="1.2.13"
 
     if [[ ! -z "$1" ]]; then
         ssl_new_version="$1"
+    fi
+
+    if [[ ! -z "$2" ]]; then
+        zLib_new_version="$2"
     fi
 
     curr_ver_int=$(get_sslver)
@@ -123,7 +150,16 @@ update_ssl() {
         install_zlib $zLib_new_version && \
         install_openssl $ssl_new_version
 
+        return 0
     else
         echo "Current OpenSSL is as good or better. Nothing changed."
+        return 0
     fi
+}
+
+# Requires globals $PYTHONBIN and $BUILD_DIR
+update_py_packages() {
+    echo -e "***** linux/setup.sh - update_py_packages()"
+    $PYTHONBIN -m pip install --upgrade pip
+    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
 }

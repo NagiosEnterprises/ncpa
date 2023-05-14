@@ -14,12 +14,9 @@ SKIP_PYTHON=0
 # Get information about system
 . $BUILD_DIR/linux/init.sh
 
-update_py_packages() {
-    echo -e "***** linux/setup.sh - update_py_packages()"
-    $PYTHONBIN -m pip install --upgrade pip
-    # LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade --no-binary :all:
-    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
-}
+# Load some installers and support functions
+. $BUILD_DIR/linux/installers.sh
+
 
 install_prereqs() {
     echo -e "***** linux/setup.sh - install_prereqs()"
@@ -149,13 +146,10 @@ install_prereqs() {
         if [ ! -f $PYTHONTAR.tgz ]; then
             wget https://www.python.org/ftp/python/$PYTHONVER/$PYTHONTAR.tgz
         fi
-        tar xf $PYTHONTAR.tgz
-        cd $PYTHONTAR
-        # Removed from configure: LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib'
-        # ./configure LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib' && make && make altinstall
-    	./configure && make && make altinstall
-        cd ..
-        rm -rf $PYTHONTAR
+
+        echo -e "***** linux/setup.sh - Building python..."
+        cd $BUILD_DIR/resources
+        install_python $PYTHONVER
         PYTHONBIN=$(which $PYTHONCMD)
         export PATH=$PATH:$BUILD_DIR/bin
     fi
