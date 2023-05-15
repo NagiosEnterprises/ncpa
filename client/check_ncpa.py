@@ -132,9 +132,10 @@ def parse_args():
         print(version)
         sys.exit(0)
 
-    if options.arguments or options.raw_plugin_args and options.metric and not 'plugin' in options.metric:
-        parser.print_help()
-        parser.error('You cannot specify arguments without running a custom plugin.')
+    if options.arguments or options.raw_plugin_args:
+        if options.metric and not 'plugin' in options.metric:
+            parser.print_help()
+            parser.error('You cannot specify arguments without running a custom plugin.')
 
     if options.arguments and options.raw_plugin_args:
         parser.print_help()
