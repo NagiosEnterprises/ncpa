@@ -43,11 +43,16 @@ install_devtools() {
 # Can take a zLib version number as arg
 install_zlib() {
     local zLib_new_version="1.2.13"
+    echo -e " "
+    echo -e " "
+    echo -e "********************************************"
+    echo -e "Building zLib $zLib_new_version..."
+    echo -e " "
+
     if [[ ! -z $1 ]]; then
         zLib_new_version=$1
     fi
 
-    echo -e "Building zLib $zLib_new_version..."
     pushd /usr/src
     wget https://zlib.net/zlib-$zLib_new_version.tar.gz --no-check-certificate
     tar -zxf zlib-$zLib_new_version.tar.gz
@@ -58,14 +63,21 @@ install_zlib() {
     popd
 
     local libz=$(find "/usr" -name "libz.so*" | grep -v "/src" | grep $zLib_new_version | head -n 1)
+    echo -e " "
+    echo -e " "
+    echo -e "********************************************"
 
     if [[ ! -z $libz ]]; then
         rm -rf zlib-$zLib_new_version
         echo -e "SUCCESS! zLib $zLib_new_version is installed @ $libz"
+        echo -e "********************************************"
+        echo -e " "
         echo -e " "
         return 0
     else
         echo -e "ERROR! zLib $zLib_new_version failed to install correctly"
+        echo -e "********************************************"
+        echo -e " "
         echo -e " "
         return 1
     fi
@@ -74,36 +86,62 @@ install_zlib() {
 # Can take an OpenSSL version number as arg
 install_openssl() {
     local ssl_new_version="3.0.8"
+    local ssl3_path="/usr/local/ssl3"
+
+    echo -e " "
+    echo -e " "
+    echo -e "********************************************"
+    echo -e "Building OpenSSL $ssl_new_version..."
+    echo -e " "
+
     if [[ ! -z $1 ]]; then
         ssl_new_version=$1
     fi
 
-    echo -e "Building OpenSSL $ssl_new_version..."
-    pushd /usr/src
+    local ssl_old_path=$(dirname $(dirname $(which openssl)))
+    local ssl_old_lib=$(dirname $(find /usr -name "libssl.so*" | grep -v /src | head -n1))
     local my_distro=$(get_distro)
+
+    echo -e " "
+    echo "ssl3_path: $ssl3_path, ssl_old_path: $ssl_old_path, ssl_old_lib: $ssl_old_lib"
+    echo -e " "
+
+    pushd /usr/src
 
     wget https://www.openssl.org/source/openssl-$ssl_new_version.tar.gz --no-check-certificate
     tar -zxf openssl-$ssl_new_version.tar.gz
 
     pushd openssl-$ssl_new_version
-    ./config --prefix=/usr
+    ./config --prefix=$ssl3_path
     make all && make test && make install
     popd
 
     if [[ "$my_distro" == "debian"* ]] || [[ "$my_distro" == "ubuntu"* ]]; then
-        ln -s /usr/lib64/libssl.so.3 /lib/x86_64-linux-gnu/libssl.so.3
-        ln -s /usr/lib64/libcrypto.so.3 /lib/x86_64-linux-gnu/libcrypto.so.3
+        if [[ -f "$ssl_old_lib/libssl.so" ]]; then
+            mv $ssl_old_lib/libssl.so $ssl_old_lib/libssl.so.bak
+        fi
+        ln -s $ssl3_path/lib64/libssl.so $ssl_old_lib/libssl.so
+        ln -s $ssl3_path/lib64/libssl.so.3 $ssl_old_lib/libssl.so.3
+        ln -s $ssl3_path/lib64/libcrypto.so.3 $ssl_old_lib/libcrypto.so.3
     fi
 
-    local sslchk=$(openssl version | grep $ssl_new_version)
+    local sslchk=$($ssl_path/bin/openssl version | grep $ssl_new_version)
+    echo -e " "
+    echo -e " "
+    echo -e "********************************************"
 
     if [[ ! -z $sslchk ]]; then
+        PATH=$ssl3_path:$PATH
         rm -rf openssl-$ssl_new_version
         echo -e "SUCCESS! OpenSSL $ssl_new_version is installed"
+        echo -e "********************************************"
+        echo -e " "
         echo -e " "
         return 0
     else
         echo -e "ERROR! OpenSSL $ssl_new_version failed to install correctly"
+        echo -e "********************************************"
+        echo -e " "
         echo -e " "
         return 1
     fi
@@ -112,6 +150,7 @@ install_openssl() {
 # Can take a Python version number as arg
 install_python() {
     local python_new_version="3.11.3"
+    local ssl3_path="/usr/local/ssl3"
     if [[ ! -z "$1" ]]; then
         python_new_version="$1"
     fi
@@ -122,9 +161,11 @@ install_python() {
     fi
     tar xf $pythontar.tgz
     cd $pythontar
-    ./configure && make && make altinstall
+    #./configure  --with-openssl=$ssl3_path --with-openssl-rpath=auto && \
+    ./configure  --with-openssl=$ssl3_path && \
+    make && make altinstall
     cd ..
-    rm -rf $pythontar
+    #rm -rf $pythontar
 }
 
 # Can take an OpenSSL version and a zLib verions number number as args
