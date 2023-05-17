@@ -86,7 +86,7 @@ install_zlib() {
 # Can take an OpenSSL version number as arg
 install_openssl() {
     local ssl_new_version="3.0.8"
-    local ssl3_path="/usr/local/ssl3"
+    local ssl_new_path="/usr/local/ssl3"
 
     echo -e " "
     echo -e " "
@@ -103,7 +103,7 @@ install_openssl() {
     local my_distro=$(get_distro)
 
     echo -e " "
-    echo "ssl3_path: $ssl3_path, ssl_old_path: $ssl_old_path, ssl_old_lib: $ssl_old_lib"
+    echo "ssl_new_path: $ssl_new_path, ssl_old_path: $ssl_old_path, ssl_old_lib: $ssl_old_lib"
     echo -e " "
 
     pushd /usr/src
@@ -112,26 +112,43 @@ install_openssl() {
     tar -zxf openssl-$ssl_new_version.tar.gz
 
     pushd openssl-$ssl_new_version
-    ./config --prefix=$ssl3_path
+    ./config --prefix=$ssl_new_path
     make all && make test && make install
     popd
 
-    if [[ "$my_distro" == "debian"* ]] || [[ "$my_distro" == "ubuntu"* ]]; then
+    # If lib path hasn't changed then we don't need to link the new libraries. TODO confirm this.
+    if [[ "$ssl_old_lib" != "$ssl_new_path/lib64" ]]; then
         if [[ -f "$ssl_old_lib/libssl.so" ]]; then
             mv $ssl_old_lib/libssl.so $ssl_old_lib/libssl.so.bak
+            mv $ssl_old_lib/libcrypto.so $ssl_old_lib/libcrypto.so.bak
         fi
-        ln -s $ssl3_path/lib64/libssl.so $ssl_old_lib/libssl.so
-        ln -s $ssl3_path/lib64/libssl.so.3 $ssl_old_lib/libssl.so.3
-        ln -s $ssl3_path/lib64/libcrypto.so.3 $ssl_old_lib/libcrypto.so.3
+        ln -s $ssl_new_path/lib64/libssl.so $ssl_old_lib/libssl.so
+        ln -s $ssl_new_path/lib64/libcrypto.so $ssl_old_lib/libcrypto.so
+
+        if [[ -f "$ssl_old_lib/libssl.so3" ]]; then
+            mv $ssl_old_lib/libssl.so3 $ssl_old_lib/libssl.so3.bak
+            mv $ssl_old_lib/libcrypto.so3 $ssl_old_lib/libcrypto.so3.bak
+        fi
+        ln -s $ssl_new_path/lib64/libssl.so.3 $ssl_old_lib/libssl.so.3
+        ln -s $ssl_new_path/lib64/libcrypto.so.3 $ssl_old_lib/libcrypto.so.3
     fi
 
-    local sslchk=$($ssl_path/bin/openssl version | grep $ssl_new_version)
+    echo -e " "
+    echo -e "libssl under /usr:"
+    find "/usr" -name "libssl.so*" | grep -v /src
+    echo -e " "
+    echo -e "old lib ($ssl_old_lib) links :"
+    ls -al $ssl_old_lib | grep -E "lib(ssl|crypto)"
+
+    local sslchk=$($ssl_new_path/bin/openssl version | grep $ssl_new_version)
+    echo -e " "
+    echo -e "sslchk: $sslchk"
     echo -e " "
     echo -e " "
     echo -e "********************************************"
 
     if [[ ! -z $sslchk ]]; then
-        PATH=$ssl3_path:$PATH
+        PATH=$ssl_new_path:$PATH
         rm -rf openssl-$ssl_new_version
         echo -e "SUCCESS! OpenSSL $ssl_new_version is installed"
         echo -e "********************************************"
