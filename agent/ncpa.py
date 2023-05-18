@@ -953,6 +953,7 @@ def main(has_error):
 
     if config.get('general', 'loglevel') == 'debug':
         print("main - options: ", options)
+        print("main - Python version:", sys.version)
         print("main - SSL version:", ssl.OPENSSL_VERSION)
 
     # We set up the root logger here. It uses the listener log file, because the web components,
