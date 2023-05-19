@@ -4,6 +4,7 @@ Changelog
 1.2.5
 -----
 - Changed the default timeout value from 60s to 58s (#761) (ccztux)
+- Added argument -r to handle complex plugin arguments (#937) (ccztux)
 
 1.2.4
 -----
