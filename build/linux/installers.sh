@@ -93,6 +93,8 @@ install_zlib() {
 install_openssl() {
     local ssl_new_version=""
     local ssl_new_path=""
+    # local ssl_new_base_path="/usr/local"
+    local ssl_new_base_path="/repos/ncpa/build/resources"
 
     if [[ ! -z $1 ]]; then
         ssl_new_version=$1
@@ -105,7 +107,7 @@ install_openssl() {
     fi
 
     local new_ver_int=$(echo "$ssl_new_version"  | sed 's/\.//g')
-    ssl_new_path="/usr/local/ssl$new_ver_int"
+    ssl_new_path="$ssl_new_base_path/ssl$new_ver_int"
     SSL_NEW_PATH=$ssl_new_path
 
     echo -e " "
@@ -122,7 +124,7 @@ install_openssl() {
     echo "ssl_new_path: $ssl_new_path, ssl_old_path: $ssl_old_path, ssl_old_lib: $ssl_old_lib"
     echo -e " "
 
-    pushd /usr/src
+    # pushd /usr/src
 
     wget https://www.openssl.org/source/openssl-$ssl_new_version.tar.gz --no-check-certificate
     tar -zxf openssl-$ssl_new_version.tar.gz
@@ -130,7 +132,7 @@ install_openssl() {
     pushd openssl-$ssl_new_version
     ./config --prefix=$ssl_new_path
     make all && make test && make install
-    popd
+    # popd
 
     # If lib path hasn't changed then we don't need to link the new libraries. TODO confirm this.
     if [[ "$ssl_old_lib" != "$ssl_new_path/lib64" ]]; then
