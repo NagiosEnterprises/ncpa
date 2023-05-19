@@ -138,7 +138,7 @@ install_prereqs() {
         ssl_maj_ver=$(openssl version | grep -e "[1-9].[0-9].[0-9]" -o | head -n1 | sed -e 's/\([0-9]*\)\..*/\1/')
 
         if [[ "$ssl_maj_ver" -lt 3 ]]; then
-
+            cd $BUILD_DIR/resources
             install_ssl_and_zlib $SSLVER $ZLIBVER
         else
             echo -e "***** linux/setup.sh - OpenSSL version already greater than 3. Not changed."
