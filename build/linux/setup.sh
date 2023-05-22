@@ -148,6 +148,7 @@ install_prereqs() {
         cd $BUILD_DIR/resources
         install_python $PYTHONVER
         PYTHONBIN=$(which $PYTHONCMD)
+        echo -e "***** linux/setup.sh - after Py install PYTHONBIN: $PYTHONBIN"
         export PATH=$PATH:$BUILD_DIR/bin
     fi
 
