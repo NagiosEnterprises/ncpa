@@ -4,6 +4,8 @@ Changelog
 2.4.1 - 2022-09-13
 ==================
 - Changed the date format in the changelog (#838) (ccztux)
+- Added new interface metrics speed, duplex, mtu and isup (#646) (ccztux)
+- Removed max_file_length and max_file_path from graphing (ccztux)
 - NRDP connection timeout is missing in the admin section of the gui (#841) (ccztux)
 - Updated psutil to address incorrectly reported mounts on Windows (#863)
 - Changed the way NCPA detects the number of CPUs (#864)

@@ -10,6 +10,7 @@ ARCH=$(arch)
     mkdir NCPA-INSTALL-$NCPA_VER
     mv ncpa-$NCPA_VER NCPA-INSTALL-$NCPA_VER/ncpa
     cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosuninstall.sh NCPA-INSTALL-$NCPA_VER/ncpa/uninstall.sh
+    cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosreadme.txt NCPA-INSTALL-$NCPA_VER/README.txt
     mv NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$NCPA_VER/install.sh
     install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$NCPA_VER/ncpa/ncpa_listener
     install_name_tool -change /Library/Frameworks/Python.framework/Versions/2.7/Python @executable_path/Python NCPA-INSTALL-$NCPA_VER/ncpa/ncpa_passive

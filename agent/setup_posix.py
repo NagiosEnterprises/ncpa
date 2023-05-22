@@ -31,6 +31,10 @@ packages = []
 # Shared library include overrides
 bin_includes = ['libssl.so', 'libcrypto.so', 'libffi.so']
 
+# Special includes for OSX systems
+if 'osx' in sys.platform:
+    include_files += [('/usr/lib/libsqlite3.so', 'libsqlite3.so')]
+
 # Special includes for AIX systems
 if 'aix' in sys.platform:
     include_files += [('/opt/freeware/lib/libpython2.7.so', 'libpython2.7.so'),
@@ -57,6 +61,7 @@ include_files += [('build_resources/LicenseAgreement.txt', 'build_resources/Lice
                   ('build_resources/ncpa_listener.plist', 'build_resources/ncpa_listener.plist'),
                   ('build_resources/ncpa_passive.plist', 'build_resources/ncpa_passive.plist'),
                   ('build_resources/macosinstall.sh', 'build_resources/macosinstall.sh'),
+                  ('build_resources/macosreadme.txt', 'build_resources/macosreadme.txt'),
                   ('build_resources/macosuninstall.sh', 'build_resources/macosuninstall.sh'),
                   ('build_resources/listener_init', 'build_resources/listener_init'),
                   ('build_resources/passive_init', 'build_resources/passive_init')]
