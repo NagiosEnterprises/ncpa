@@ -131,9 +131,9 @@ install_openssl() {
         ln -s $ssl_new_path/lib64/libssl.so $ssl_old_lib/libssl.so
         ln -s $ssl_new_path/lib64/libcrypto.so $ssl_old_lib/libcrypto.so
 
-        if [[ -f "$ssl_old_lib/libssl.so3" ]]; then
-            mv $ssl_old_lib/libssl.so3 $ssl_old_lib/libssl.so3.bak
-            mv $ssl_old_lib/libcrypto.so3 $ssl_old_lib/libcrypto.so3.bak
+        if [[ -f "$ssl_old_lib/libssl.so.3" ]]; then
+            mv $ssl_old_lib/libssl.so.3 $ssl_old_lib/libssl.so.3.bak
+            mv $ssl_old_lib/libcrypto.so.3 $ssl_old_lib/libcrypto.so.3.bak
         fi
         ln -s $ssl_new_path/lib64/libssl.so.3 $ssl_old_lib/libssl.so.3
         ln -s $ssl_new_path/lib64/libcrypto.so.3 $ssl_old_lib/libcrypto.so.3
