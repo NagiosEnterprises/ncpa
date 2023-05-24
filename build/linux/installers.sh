@@ -277,5 +277,8 @@ update_py_packages() {
     pylibpath=$(echo $PYTHONBIN | sed 's/bin/lib/g')
     ssl_so=$(basename $(ls $pylibpath/lib-dynload/_ssl*.so))
     echo -e "***** linux/installers.sh - update_py_packages() - copying _SSL so file: $pylibpath/lib-dynload/$ssl_so"
+
+    mv $pylibpath/site-packages/cx_Freeze/bases/lib-dynload $pylibpath/site-packages/cx_Freeze/bases/lib-dynload_Orig
+    ln -s $pylibpath/lib-dynload $pylibpath/site-packages/cx_Freeze/bases/lib-dynload
     # cp $pylibpath/lib-dynload/$ssl_so $pylibpath/site-packages/cx_Freeze/bases/lib-dynload/$ssl_so
 }
