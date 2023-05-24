@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
-echo " "
-echo "Functions: get_distro, install_devtools, install_zlib, install_openssl, install_ssl_and_zlib"
-echo " "
-echo "To do full update, enter: install_ssl_and_zlib"
-echo " "
 
+# Scripts to install zLib, OpenSSL and Python, and update python libraries
+#
+# Functions: get_distro, get_sslver, install_devtools, install_zlib, install_openssl,
+#            install_python, install_ssl_and_zlib, update_py_packages
+#
+# install_ssl_and_zlib installs both items.
 
+#Returns distibution in form like "ubuntu22, or "centos9"
 get_distro() {
     if [ -f "/etc/os-release" ]; then
         source /etc/os-release
@@ -21,6 +23,7 @@ get_sslver() {
     return 0
 }
 
+# Installs tools needed to make and install OpenSSL, zLib, and Python
 install_devtools() {
     local my_distro=$(get_distro)
     if [[ "$my_distro" == "debian"* ]] || [[ "$my_distro" == "ubuntu"* ]]; then
@@ -40,7 +43,8 @@ install_devtools() {
     fi
 }
 
-# Can take a zLib version number as arg
+# Installs zLib from source.
+# Requires a zLib version number, e.g. 1.2.13, as arg
 install_zlib() {
     local zLib_new_version="1.2.13"
 
@@ -48,16 +52,11 @@ install_zlib() {
         zLib_new_version=$1
     else
         echo -e "ERROR! install_zlib() - No zLib version provided!"
-        echo -e "********************************************"
-        echo -e " "
-        echo -e " "
+        echo -e "********************************************\n\n"
         return 1
     fi
-    echo -e " "
-    echo -e " "
-    echo -e "********************************************"
-    echo -e "Building zLib $zLib_new_version..."
-    echo -e " "
+    echo -e "\n\n********************************************"
+    echo -e "Building zLib $zLib_new_version...\n"
 
     pushd /usr/src
     wget https://zlib.net/zlib-$zLib_new_version.tar.gz --no-check-certificate
@@ -69,40 +68,32 @@ install_zlib() {
     popd
 
     local libz=$(find "/usr" -name "libz.so*" | grep -v "/src" | grep $zLib_new_version | head -n 1)
-    echo -e " "
-    echo -e " "
-    echo -e "********************************************"
+    echo -e "\n\n********************************************"
 
     if [[ ! -z $libz ]]; then
         rm -rf zlib-$zLib_new_version
         echo -e "SUCCESS! zLib $zLib_new_version is installed @ $libz"
-        echo -e "********************************************"
-        echo -e " "
-        echo -e " "
+        echo -e "********************************************\n\n"
         return 0
     else
         echo -e "ERROR! zLib $zLib_new_version failed to install correctly"
-        echo -e "********************************************"
-        echo -e " "
-        echo -e " "
+        echo -e "********************************************\n\n"
         return 1
     fi
 }
 
-# Can take an OpenSSL version number as arg
+# Installs OpenSSL from source
+# Requires a OpenSSL version number, e.g. 3.0.8, as arg
 install_openssl() {
     local ssl_new_version=""
     local ssl_new_path=""
-    # local ssl_new_base_path="/usr/local"
-    local ssl_new_base_path="/repos/ncpa/build/resources"
+    local ssl_new_base_path="/usr/local"
 
     if [[ ! -z $1 ]]; then
         ssl_new_version=$1
     else
         echo -e "ERROR! install_openssl() - No OpenSSL version provided!"
-        echo -e "********************************************"
-        echo -e " "
-        echo -e " "
+        echo -e "********************************************\n\n"
         return 1
     fi
 
@@ -111,9 +102,7 @@ install_openssl() {
     ssl_new_path="$ssl_new_base_path/openssl"
     SSL_NEW_PATH=$ssl_new_path
 
-    echo -e " "
-    echo -e " "
-    echo -e "********************************************"
+    echo -e "\n\n********************************************"
     echo -e "Building OpenSSL $ssl_new_version at $ssl_new_path..."
     echo -e " "
 
@@ -121,11 +110,9 @@ install_openssl() {
     local ssl_old_lib=$(dirname $(find /usr -name "libssl.so*" | grep -v /src | head -n1))
     local my_distro=$(get_distro)
 
-    echo -e " "
-    echo "ssl_new_path: $ssl_new_path, ssl_old_path: $ssl_old_path, ssl_old_lib: $ssl_old_lib"
-    echo -e " "
+    echo -e "\nssl_new_path: $ssl_new_path, ssl_old_path: $ssl_old_path, ssl_old_lib: $ssl_old_lib\n"
 
-    # pushd /usr/src
+    pushd /usr/src
 
     wget https://www.openssl.org/source/openssl-$ssl_new_version.tar.gz --no-check-certificate
     tar -zxf openssl-$ssl_new_version.tar.gz
@@ -133,7 +120,7 @@ install_openssl() {
     pushd openssl-$ssl_new_version
     ./config --prefix=$ssl_new_path
     make all && make test && make install
-    # popd
+    popd
 
     #If lib path hasn't changed then we don't need to link the new libraries. TODO confirm this.
     if [[ "$ssl_old_lib" != "$ssl_new_path/lib64" ]]; then
@@ -152,19 +139,16 @@ install_openssl() {
         ln -s $ssl_new_path/lib64/libcrypto.so.3 $ssl_old_lib/libcrypto.so.3
     fi
 
-    echo -e " "
-    echo -e "libssl under /usr:"
+    echo -e "\nlibssl under /usr:"
     find "/usr" -name "libssl.so*" | grep -v /src
-    echo -e " "
-    echo -e "old lib ($ssl_old_lib) links :"
+    echo -e "\nold lib ($ssl_old_lib) links :"
     ls -al $ssl_old_lib | grep -E "lib(ssl|crypto)"
 
+    popd
+
     local sslchk=$($ssl_new_path/bin/openssl version | grep $ssl_new_version)
-    echo -e " "
-    echo -e "sslchk: $sslchk"
-    echo -e " "
-    echo -e " "
-    echo -e "********************************************"
+    echo -e "\nsslchk: $sslchk"
+    echo -e "\n\n********************************************"
 
     if [[ ! -z $sslchk ]]; then
         echo -e "Before PATH: $PATH"
@@ -173,15 +157,11 @@ install_openssl() {
 
         rm -rf openssl-$ssl_new_version
         echo -e "SUCCESS! OpenSSL $ssl_new_version is installed"
-        echo -e "********************************************"
-        echo -e " "
-        echo -e " "
+        echo -e "********************************************\n\n"
         return 0
     else
         echo -e "ERROR! OpenSSL $ssl_new_version failed to install correctly"
-        echo -e "********************************************"
-        echo -e " "
-        echo -e " "
+        echo -e "********************************************\n\n"
         return 1
     fi
 }
@@ -199,9 +179,7 @@ install_python() {
             python_new_version=$PYTHONVER
         else
             echo -e "ERROR! install_python() - No Python version provided!"
-            echo -e "********************************************"
-            echo -e " "
-            echo -e " "
+            echo -e "********************************************\n\n"
             return 1
         fi
     fi
@@ -216,11 +194,8 @@ install_python() {
         fi
     fi
 
-    echo -e " "
-    echo -e " "
-    echo -e "********************************************"
-    echo -e "Building Python $python_new_version..."
-    echo -e " "
+    echo -e "\n\n********************************************"
+    echo -e "Building Python $python_new_version...\n"
 
     local pythontar="Python-$python_new_version"
 
@@ -256,9 +231,7 @@ install_ssl_and_zlib() {
             ssl_new_version=$SSLVER
         else
             echo -e "ERROR! install_ssl_and_zlib() - No OpenSSL version provided!"
-            echo -e "********************************************"
-            echo -e " "
-            echo -e " "
+            echo -e "********************************************\n\n"
             return 1
         fi
     fi
@@ -270,9 +243,7 @@ install_ssl_and_zlib() {
             zLib_new_version=$ZLIBVER
         else
             echo -e "ERROR! install_ssl_and_zlib() - No zLib version provided!"
-            echo -e "********************************************"
-            echo -e " "
-            echo -e " "
+            echo -e "********************************************\n\n"
             return 1
         fi
     fi
@@ -296,7 +267,7 @@ install_ssl_and_zlib() {
 
 # Requires globals $PYTHONBIN and $BUILD_DIR
 update_py_packages() {
-    echo -e "***** linux/setup.sh - update_py_packages()"
+    echo -e "***** linux/installers.sh - update_py_packages()"
     $PYTHONBIN -m pip install --upgrade pip
     $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
 }
