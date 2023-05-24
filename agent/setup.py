@@ -111,11 +111,12 @@ setup(name = "NCPA",
 )
 
 if __SYSTEM__ == 'nt':
+    pyver = sys.version_info.major + '.' + sys.version_info.minor
     # Rename to enable NSI to find stuff
     if platform.architecture()[0].lower() == '32bit':
-        os.rename(os.path.join('build', 'exe.win32-3.9'), os.path.join('build', 'NCPA'))
+        os.rename(os.path.join('build', 'exe.win32-'+pyver), os.path.join('build', 'NCPA'))
     elif platform.architecture()[0].lower() == '64bit':
-        os.rename(os.path.join('build', 'exe.win-amd64-3.9'), os.path.join('build', 'NCPA'))
+        os.rename(os.path.join('build', 'exe.win-amd64-'+pyver), os.path.join('build', 'NCPA'))
     else:
         print("unhandled architecture")
         sys.exit(1)
