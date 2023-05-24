@@ -57,7 +57,7 @@ if __SYSTEM__ == 'nt':
                      ('../build/resources/nagios_installer_logo.bmp', 'build_resources/nagios_installer_logo.bmp'),
                      (os.path.join(sys.executable), 'python.exe')]
 
-    binary = Executable("setup_config.py",
+    binary = Executable(script="ncpa.py",
                         base="Win32Service",
                         target_name="ncpa.exe",
                         icon="../build/resources/ncpa.ico")
@@ -111,14 +111,15 @@ setup(name = "NCPA",
 )
 
 if __SYSTEM__ == 'nt':
-    pyver = sys.version_info.major + '.' + sys.version_info.minor
-    # Rename to enable NSI to find stuff
+#     # Rename to enable NSI to find stuff
     if platform.architecture()[0].lower() == '32bit':
-        os.rename(os.path.join('build', 'exe.win32-'+pyver), os.path.join('build', 'NCPA'))
+        os.rename(os.path.join('build', 'exe.win32-3.11'), os.path.join('build', 'NCPA'))
     elif platform.architecture()[0].lower() == '64bit':
-        os.rename(os.path.join('build', 'exe.win-amd64-'+pyver), os.path.join('build', 'NCPA'))
+        os.rename(os.path.join('build', 'exe.win-amd64-3.11'), os.path.join('build', 'NCPA'))
     else:
         print("unhandled architecture")
         sys.exit(1)
 
-    # shutil.copy(u'build_resources/ncpa.nsi', u'build/')
+
+    # shutil.copy(os.path.join('build','NCPA','build_resources','ncpa.nsi'), 'build/')
+
