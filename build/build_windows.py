@@ -9,6 +9,9 @@ buildtype = 'nightly'
 if len(sys.argv) > 1:
     buildtype = sys.argv[1]
 
+# Which python launcher command is available for Windows
+python_launcher = 'python' if shutil.which('python') else 'py'
+
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 nsi_store = os.path.join(basedir, 'build', 'resources', 'ncpa.nsi')
 print("nsi_store:", nsi_store)
@@ -29,7 +32,7 @@ except:
 # Building nightly versions requires a git pull and pip upgrade
 if buildtype == 'nightly':
 	# subprocess.Popen(['git', 'pull']).wait()
-	subprocess.Popen(['pip', 'install', '--upgrade', '-r', os.path.join(basedir, 'build', 'resources', 'require.win.txt')]).wait()
+	subprocess.Popen([python_launcher, '-m', 'pip', 'install', '--upgrade', '-r', os.path.join(basedir, 'build', 'resources', 'require.win.txt')]).wait()
 
 # Remove old build
 subprocess.Popen(['rmdir', os.path.join(basedir, 'agent', 'build'), '/s', '/q'], shell=True).wait()
@@ -43,7 +46,7 @@ if not os.path.exists('plugins'):
     os.mkdir('plugins')
 
 sys.path.append(os.getcwd())
-subprocess.Popen(['python', 'setup.py', 'build_exe']).wait()
+subprocess.Popen([python_launcher, 'setup.py', 'build_exe']).wait()
 
 environ = os.environ.copy()
 environ['NCPA_BUILD_VER'] = version
