@@ -55,6 +55,7 @@ if __SYSTEM__ == 'nt':
                      ('../build/resources/ncpa.ico', 'build_resources/ncpa.ico'),
                      ('../build/resources/nagios_installer.bmp', 'build_resources/nagios_installer.bmp'),
                      ('../build/resources/nagios_installer_logo.bmp', 'build_resources/nagios_installer_logo.bmp'),
+                     ('../build/resources/ncpa.nsi', 'build_resources/ncpa.nsi'),
                      (os.path.join(sys.executable), 'python.exe')]
 
     binary = Executable(script="ncpa.py",
@@ -121,5 +122,5 @@ if __SYSTEM__ == 'nt':
         sys.exit(1)
 
 
-    # shutil.copy(os.path.join('build','NCPA','build_resources','ncpa.nsi'), 'build/')
+    shutil.copy(os.path.join('build','NCPA','build_resources','ncpa.nsi'), 'build/')
 
