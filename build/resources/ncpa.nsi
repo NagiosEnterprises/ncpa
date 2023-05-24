@@ -81,6 +81,7 @@ VIAddVersionKey "LegalCopyright" "2014-2023 ${COMPANY}"
 VIAddVersionKey "FileDescription" "NCPA Setup"
 
 ; Language values for pages
+!define LANG_ENGLISH 1033
 LangString PAGE_TITLE ${LANG_ENGLISH} "Nagios Cross-Platform Agent (${NAME})"
 LangString PAGE_SUBTITLE ${LANG_ENGLISH} "Windows Version - ${NCPA_VERSION}"
 LangString LICENSE_TOP ${LANG_ENGLISH} "License Agreement"
