@@ -207,12 +207,14 @@ install_python() {
     echo -e " "
     if [[ -z $ssl_new_path ]]; then
         echo -e "Configure Python with default OpenSSL path"
-        ./configure  --disable-shared && \
-        make && make altinstall
+        ./configure && \
+        make && \
+        make altinstall
     else
         echo -e "Configure Python with custom OpenSSL path: $ssl_new_path"
-        ./configure  --with-openssl=$ssl_new_path --disable-shared && \
-        make && make altinstall
+        ./configure  --with-openssl=$ssl_new_path && \
+        make && \
+        make altinstall
     fi
     echo -e " "
     cd ..
