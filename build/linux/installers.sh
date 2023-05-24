@@ -270,4 +270,10 @@ update_py_packages() {
     echo -e "***** linux/installers.sh - update_py_packages()"
     $PYTHONBIN -m pip install --upgrade pip
     $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
+
+    # cx freeze doesn't grab the proper _sslxxx.so, so we copy in the real one.
+    pylibpath=$(echo $PYTHONBIN | sed 's/bin/lib/g')
+    ssl_so=$(basename $(ls $pylibpath/lib-dynload/_ssl*.so))
+    echo -e "***** linux/installers.sh - update_py_packages() - copying _SSL so file: $pylibpath/lib-dynload/$ssl_so"
+    # cp $pylibpath/lib-dynload/$ssl_so $pylibpath/site-packages/cx_Freeze/bases/lib-dynload/$ssl_so
 }
