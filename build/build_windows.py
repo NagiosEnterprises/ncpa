@@ -45,6 +45,9 @@ if not os.path.exists('var'):
 if not os.path.exists('plugins'):
     os.mkdir('plugins')
 
+if not os.path.exists('build'):
+    os.mkdir('build')
+
 sys.path.append(os.getcwd())
 subprocess.Popen([python_launcher, 'setup.py', 'build_exe']).wait()
 
