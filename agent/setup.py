@@ -59,7 +59,7 @@ if __SYSTEM__ == 'nt':
 
     binary = Executable("setup_config.py",
                         base="Win32Service",
-                        targetName="ncpa.exe",
+                        target_name="ncpa.exe",
                         icon="../build/resources/ncpa.ico")
 
 # Specific build settings for Linux / Max OS X
