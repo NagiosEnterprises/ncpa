@@ -107,7 +107,11 @@ install_openssl() {
     echo -e " "
 
     local ssl_old_path=$(dirname $(dirname $(which openssl)))
-    local ssl_old_lib=$(dirname $(find /usr -name "libssl.so*" | grep -v /src | head -n1))
+    local oldlib=$(find /usr -name "libssl.so*" | grep -v /src | head -n1)
+    if [[ -z "$oldlib" ]]; then
+        $oldlib=$(find /lib -name "libssl.so*" | grep -v /src | head -n1)
+    fi
+    local ssl_old_lib=$(dirname $oldlib)
     local my_distro=$(get_distro)
 
     echo -e "\nssl_new_path: $ssl_new_path, ssl_old_path: $ssl_old_path, ssl_old_lib: $ssl_old_lib\n"
