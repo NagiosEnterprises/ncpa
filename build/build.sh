@@ -135,7 +135,7 @@ if [ $BUILD_TRAVIS -eq 0 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; 
 elif [ $BUILD_TRAVIS -eq 1 ]; then
 
     # Set up travis environment
-    sudo useradd nagios
+    useradd nagios
     cd $BUILD_DIR
     python -m pip install -r resources/require.txt --upgrade
     exit 0
