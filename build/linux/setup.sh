@@ -46,13 +46,13 @@ install_prereqs() {
 
         # If we are going to build and install SSL from source, no need to install it here
         if [[ "$ssl_maj_ver" -lt 3 ]]; then
-            echo -e "***** linux/setup.sh - apt-get install with excluding SSL"
-            apt-get update
-            apt-get install gcc g++ debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y  --allow-unauthenticated
+            echo -e "***** linux/setup.sh - apt-get install with excluding SSL pkgs"
+            apt-get -y update
+            apt-get -y install gcc g++ debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien  --allow-unauthenticated
         else
-            echo -e "***** linux/setup.sh - apt-get install with SSL"
-            apt-get update
-            apt-get install gcc g++ zlib1g-dev openssl libssl-dev debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y  --allow-unauthenticated
+            echo -e "***** linux/setup.sh - apt-get install with SSL pkgs"
+            apt-get -y update
+            apt-get -y install gcc g++ zlib1g-dev openssl libssl-dev debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien  --allow-unauthenticated
         fi
 
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
@@ -70,16 +70,16 @@ install_prereqs() {
                 sed -i -e s/^#baseurl/baseurl/g -e s/^metalink/#metalink/g /etc/yum.repos.d/epel*
             fi
         else
-            yum install epel-release -y
+            yum -y install epel-release
         fi
 
         # If we are going to build and install SSL from source, no need to install it here
         if [[ "$ssl_maj_ver" -lt 3 ]]; then
-            echo -e "***** linux/setup.sh - yum install excluding SSL"
-            yum install rpm-build libffi-devel sqlite sqlite-devel wget make -y
+            echo -e "***** linux/setup.sh - yum install excluding SSL pkgs"
+            yum -y install gcc gcc-c++ rpm-build libffi-devel sqlite sqlite-devel wget make
         else
-            echo -e "***** linux/setup.sh - yum install with SSL"
-            yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make -y
+            echo -e "***** linux/setup.sh - yum install with SSL pkgs"
+            yum -y install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make
         fi
 
     elif [ "$distro" == "SUSE LINUX" ] || [ "$distro" == "SLES" ] || [ "$distro" == "OpenSUSE" ]; then
@@ -88,7 +88,15 @@ install_prereqs() {
         # available with the OS itself
         if [ "$dist" == "sles15" ] || [ "$dist" == "sles12" ] || [ "$distro" == "OpenSUSE" ]; then
 
-            zypper install gcc gcc-c++ zlib zlib-devel openssl libopenssl-devel sqlite3 sqlite3-devel libffi-devel rpm-build wget
+        if [[ "$ssl_maj_ver" -lt 3 ]]; then
+            echo -e "***** linux/setup.sh - apt-get install with excluding SSL pkgs"
+            zypper -n update
+            zypper -n install gcc gcc-c++ sqlite3 sqlite3-devel libffi-devel rpm-build wget
+        else
+            echo -e "***** linux/setup.sh - apt-get install with SSL pkgs"
+            zypper -n update
+            zypper -n install gcc gcc-c++ zlib zlib-devel openssl libopenssl-devel sqlite3 sqlite3-devel libffi-devel rpm-build wget
+        fi
 
         elif [ "$dist" == "sles11" ]; then
 
