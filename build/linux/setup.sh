@@ -65,12 +65,14 @@ install_prereqs() {
                 sed -i -e s/^#baseurl/baseurl/g -e s/^metalink/#metalink/g /etc/yum.repos.d/epel*
             fi
 
-            yum install epel-release -y
+            yum -y install epel-release
             if [ -f /etc/yum.repos.d/epel.repo ]; then
                 sed -i -e s/^#baseurl/baseurl/g -e s/^metalink/#metalink/g /etc/yum.repos.d/epel*
             fi
         else
-            yum -y install epel-release
+            if [ "$distro" == "CentOS" ]; then
+                yum -y install epel-release
+            fi
         fi
 
         # If we are going to build and install SSL from source, no need to install it here
