@@ -36,10 +36,25 @@
 #       parameters sessionId and eventTypeId.
 #------------------------------------------------------------------------------
 
+# when installing the service with the command
+#   ncpaservice --install ncpa
+# or
+#   sc create ncpa binPath= "path/to/ncpa.exe"
+#
+# then 
+#   sc start ncpa
+#
+# the ncpa from the first command will be used as %s in the following values
+# i.e. the following:
+# NAME = "ncpa"                     -- name of the service
+# DISPLAY_NAME = "Nagios - ncpa"    -- description of the service
+
+from __future__ import annotations
+
 NAME = "%s"
-DISPLAY_NAME = "%s"
+DISPLAY_NAME = "Nagios - %s"
 MODULE_NAME = "ncpa"
 CLASS_NAME = "WinService"
 DESCRIPTION = "Nagios Cross-Platform Agent"
-AUTO_START = False
+AUTO_START = True
 SESSION_CHANGES = False
