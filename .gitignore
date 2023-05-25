@@ -29,5 +29,7 @@ build/lib
 build/ncpa.spec
 build/ncpa
 build/ncpa-3*/
+build/ncpa-3*/
 build/*.deb
+build/*.rpm
 build/share
