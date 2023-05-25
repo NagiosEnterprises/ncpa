@@ -46,7 +46,7 @@ install_prereqs() {
 
         # If we are going to build and install SSL from source, no need to install it here
         if [[ "$ssl_maj_ver" -lt 3 ]]; then
-            echo -e "***** linux/setup.sh - apt-get install with SSL"
+            echo -e "***** linux/setup.sh - apt-get install with excluding SSL"
             apt-get install gcc g++ debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y
         else
             echo -e "***** linux/setup.sh - apt-get install with SSL"
@@ -73,10 +73,10 @@ install_prereqs() {
 
         # If we are going to build and install SSL from source, no need to install it here
         if [[ "$ssl_maj_ver" -lt 3 ]]; then
-            echo -e "***** linux/setup.sh - yum install with SSL"
+            echo -e "***** linux/setup.sh - yum install excluding SSL"
             yum install rpm-build libffi-devel sqlite sqlite-devel wget make -y
         else
-            echo -e "***** linux/setup.sh - yum install with no SSL"
+            echo -e "***** linux/setup.sh - yum install with SSL"
             yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make -y
         fi
 
