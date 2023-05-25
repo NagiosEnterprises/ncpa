@@ -12,6 +12,8 @@ import os
 import platform
 from cx_Freeze import setup, Executable
 
+import cx_Freeze
+print("***** cx_Freeze version: ", cx_Freeze.__version__)
 
 # Defined constants
 __ARCH__ = platform.architecture()[0].lower()
@@ -56,12 +58,13 @@ if __SYSTEM__ == 'nt':
                      ('../build/resources/nagios_installer.bmp', 'build_resources/nagios_installer.bmp'),
                      ('../build/resources/nagios_installer_logo.bmp', 'build_resources/nagios_installer_logo.bmp'),
                      ('../build/resources/ncpa.nsi', 'build_resources/ncpa.nsi'),
-                     (os.path.join(sys.executable), 'python.exe')]
-
-    binary = Executable(script="ncpa.py",
+                     (sys.executable, 'python.exe')]
+    
+    binary = Executable(script="setup_config.py",
                         base="Win32Service",
-                        target_name="ncpa.exe",
+                        target_name="ncpaservice.exe",
                         icon="../build/resources/ncpa.ico")
+
 
 # Specific build settings for Linux / Max OS X
 elif __SYSTEM__ == 'posix':
