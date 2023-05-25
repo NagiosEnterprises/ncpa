@@ -22,6 +22,8 @@ SKIP_PYTHON=0
 # Load some installers and support functions
 . $BUILD_DIR/linux/installers.sh
 
+## Current SSL major version, e.g. 3
+ssl_maj_ver=$(openssl version | grep -e "[1-9].[0-9].[0-9]" -o | head -n1 | sed -e 's/\([0-9]*\)\..*/\1/')
 
 install_prereqs() {
     echo -e "***** linux/setup.sh - install_prereqs()"
@@ -42,8 +44,14 @@ install_prereqs() {
             cat /etc/apt/sources.list
         fi
 
-        echo -e "***** linux/setup.sh - apt-get install with SSL"
-        apt-get install gcc g++ zlib1g-dev openssl libssl-dev debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y
+        # If we are going to build and install SSL from source, no need to install it here
+        if [[ "$ssl_maj_ver" -lt 3 ]]; then
+            echo -e "***** linux/setup.sh - apt-get install with SSL"
+            apt-get install gcc g++ debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y
+        else
+            echo -e "***** linux/setup.sh - apt-get install with SSL"
+            apt-get install gcc g++ zlib1g-dev openssl libssl-dev debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y
+        fi
 
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
         echo -e "***** linux/setup.sh - install_prereqs() - CentOS/RHEL"
@@ -63,8 +71,14 @@ install_prereqs() {
             yum install epel-release -y
         fi
 
-        echo -e "***** linux/setup.sh - yum install with SSL"
-        yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make -y
+        # If we are going to build and install SSL from source, no need to install it here
+        if [[ "$ssl_maj_ver" -lt 3 ]]; then
+            echo -e "***** linux/setup.sh - yum install with SSL"
+            yum install rpm-build libffi-devel sqlite sqlite-devel wget make -y
+        else
+            echo -e "***** linux/setup.sh - yum install with no SSL"
+            yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make -y
+        fi
 
     elif [ "$distro" == "SUSE LINUX" ] || [ "$distro" == "SLES" ] || [ "$distro" == "OpenSUSE" ]; then
 
@@ -134,9 +148,6 @@ install_prereqs() {
     if [ $SKIP_PYTHON -eq 0 ]; then
 
         # First update OpenSSL if necessary
-        ## SSL major version, e.g. 3
-        ssl_maj_ver=$(openssl version | grep -e "[1-9].[0-9].[0-9]" -o | head -n1 | sed -e 's/\([0-9]*\)\..*/\1/')
-
         if [[ "$ssl_maj_ver" -lt 3 ]]; then
             cd $BUILD_DIR/resources
             install_ssl_and_zlib $SSLVER $ZLIBVER
