@@ -43,8 +43,8 @@ install_devtools() {
         yum -y install gcc gcc-c++ make perl-core perl-IPC-Cmd perl-Test-Simple perl-Pod-Html wget
 
     elif [[ "$my_distro" == "suse"* ]] || [[ "$my_distro" == "sles" ]] || [[ "$my_distro" == "opensuse"* ]]; then
-        zypper -y update
-        zypper -y install gcc gcc-c++ make perl-core perl-IPC-Cmd perl-Test-Simple perl-Pod-Html wget
+        zypper -n update
+        zypper -n install gcc gcc-c++ make perl-IPC-Cmd perl-Test-Simple wget
     fi
 }
 
@@ -285,9 +285,8 @@ update_py_packages() {
     # cx freeze doesn't grab the proper _sslxxx.so, so we copy in the real one.
     pylibpath=$(echo $PYTHONBIN | sed 's/bin/lib/g')
     ssl_so=$(basename $(ls $pylibpath/lib-dynload/_ssl*.so))
-    echo -e "***** linux/installers.sh - update_py_packages() - copying _SSL so file: $pylibpath/lib-dynload/$ssl_so"
+    echo -e "***** linux/installers.sh - update_py_packages() - linking cx_freeze lib-dynload to: $pylibpath/lib-dynload"
 
     mv $pylibpath/site-packages/cx_Freeze/bases/lib-dynload $pylibpath/site-packages/cx_Freeze/bases/lib-dynload_Orig
     ln -s $pylibpath/lib-dynload $pylibpath/site-packages/cx_Freeze/bases/lib-dynload
-    # cp $pylibpath/lib-dynload/$ssl_so $pylibpath/site-packages/cx_Freeze/bases/lib-dynload/$ssl_so
 }
