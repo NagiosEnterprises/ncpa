@@ -36,8 +36,7 @@ packages = ['idna', 'passive', 'listener', 'gevent', 'asyncio']
 includes = ['ncpa', 'jinja2.ext']
 excludes = ['Tkinter', 'tkinter', 'unittest']
 bin_includes = []
-bin_path_includes = []
-bin_path_excludes = []
+
 include_files = [('var/log/ncpa.log', 'var/log/ncpa.log'),
                  ('listener/templates', 'listener/templates'),
                  ('listener/static', 'listener/static'),
@@ -72,8 +71,6 @@ elif __SYSTEM__ == 'posix':
 
     # Shared library include overrides
     bin_includes += ['libffi.so', 'libssl.so.3', 'libcrypto.so.3']
-    bin_path_includes = ['/usr/local/lib/python3.11/lib-dynload']
-    bin_path_excludes = ['/usr/local/lib/python3.11/site-packages/cx_Freeze/bases/lib-dynload/']
 
     # Special includes for Mac OS X
     if 'darwin' in sys.platform:
@@ -99,8 +96,6 @@ buildOptions = dict(includes=includes,
                     include_files=include_files,
                     packages=packages,
                     bin_includes=bin_includes,
-                    bin_path_includes=bin_path_includes,
-                    bin_path_excludes=bin_path_excludes,
                     replace_paths=[('*', '')],
                     zip_include_packages=['*'],
                     zip_exclude_packages=[])
