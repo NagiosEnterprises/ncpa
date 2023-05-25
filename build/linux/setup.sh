@@ -47,10 +47,10 @@ install_prereqs() {
         # If we are going to build and install SSL from source, no need to install it here
         if [[ "$ssl_maj_ver" -lt 3 ]]; then
             echo -e "***** linux/setup.sh - apt-get install with excluding SSL"
-            apt-get install gcc g++ debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y
+            apt-get install gcc g++ debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y  --allow-unauthenticated
         else
             echo -e "***** linux/setup.sh - apt-get install with SSL"
-            apt-get install gcc g++ zlib1g-dev openssl libssl-dev debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y
+            apt-get install gcc g++ zlib1g-dev openssl libssl-dev debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien -y  --allow-unauthenticated
         fi
 
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
