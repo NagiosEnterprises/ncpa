@@ -37,9 +37,14 @@ install_devtools() {
         fi
         apt-get -y update
         apt-get -y install build-essential perl libipc-run-perl libtest-simple-perl wget --allow-unauthenticated
-    else
+
+    elif [[ "$my_distro" == "centos"* ]] || [[ "$my_distro" == "rhel"* ]] || [[ "$distro" == "Oracle" ]] || [[ "$distro" == "CloudLinux" ]]; then
         yum -y update
         yum -y install gcc gcc-c++ make perl-core perl-IPC-Cmd perl-Test-Simple perl-Pod-Html wget
+
+    elif [[ "$my_distro" == "suse"* ]] || [[ "$my_distro" == "sles" ]] || [[ "$my_distro" == "opensuse"* ]]; then
+        zypper -y update
+        zypper -y install gcc gcc-c++ make perl-core perl-IPC-Cmd perl-Test-Simple perl-Pod-Html wget
     fi
 }
 
