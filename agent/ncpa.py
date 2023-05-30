@@ -55,6 +55,8 @@ __STARTED__ = datetime.datetime.now()
 
 options = {}
 
+print("***** Starting NCPA version: ", __VERSION__)
+
 # About Logging
 # Asynchronous processes require separate loggers. Additionally, the parent process
 # gets a logger to cover the startup code, global functions and the Daemon or Winservice classes used
@@ -909,7 +911,7 @@ def start_processes(options, config, has_error):
         db.setup()
         l = p = ''
 
-        if not options['listener_only'] or options['passive_only']:
+        if not options.get('listener_only') or options.get('passive_only'):
             # Create the passive process
             parent_logger.info("Spawning process for Passive")
             p = Process(target=Passive, args=(options, config, has_error, True))
@@ -917,7 +919,7 @@ def start_processes(options, config, has_error):
             p.start()
             # p = Passive(options, config, has_error, True)
 
-        if not options['passive_only'] or options['listener_only']:
+        if not options.get('passive_only') or options.get('listener_only'):
             # Create the listener process
             parent_logger.info("Spawning process for Listener")
             l = Process(target=Listener, args=(options, config, has_error, True))
