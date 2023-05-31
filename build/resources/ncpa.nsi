@@ -64,7 +64,7 @@ OutFile "ncpa-${NCPA_VERSION}.exe"
 !define MUI_HEADERIMAGE_UNBITMAP "NCPA\build_resources\nagios_installer_logo.bmp"
 
 ; The default installation directory
-InstallDir $PROGRAMFILES32\Nagios\NCPA
+InstallDir $PROGRAMFILES\Nagios\NCPA
 
 ; Request admin execution
 RequestExecutionLevel admin
@@ -77,7 +77,7 @@ VIProductVersion ${NCPA_VERSION_CLEAN}.0
 VIAddVersionKey "ProductName" "${NAME}"
 VIAddVersionKey "CompanyName" "${COMPANY}"
 VIAddVersionKey "FileVersion" ${NCPA_VERSION}
-VIAddVersionKey "LegalCopyright" "2014-2017 ${COMPANY}"
+VIAddVersionKey "LegalCopyright" "2014-2023 ${COMPANY}"
 VIAddVersionKey "FileDescription" "NCPA Setup"
 
 ; Language values for pages

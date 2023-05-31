@@ -14,6 +14,7 @@ docs/_build
 ncpa.db
 prereqs.installed
 .python-version
+launch.json
 
 agent/build
 agent/plugins/*

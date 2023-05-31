@@ -38,6 +38,8 @@ excludes = ['Tkinter', 'tkinter', 'unittest']
 bin_includes = []
 
 include_files = [('var/log/ncpa.log', 'var/log/ncpa.log'),
+                 ('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
+                 ('var/log/ncpa_passive.log', 'var/log/ncpa_passive.log'),
                  ('listener/templates', 'listener/templates'),
                  ('listener/static', 'listener/static'),
                  ('../build/resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
@@ -109,3 +111,14 @@ setup(name = "NCPA",
       options = dict(build_exe = buildOptions)
 )
 
+if __SYSTEM__ == 'nt':
+    # Rename to enable NSI to find stuff
+    if platform.architecture()[0].lower() == '32bit':
+        os.rename(os.path.join('build', 'exe.win32-3.9'), os.path.join('build', 'NCPA'))
+    elif platform.architecture()[0].lower() == '64bit':
+        os.rename(os.path.join('build', 'exe.win-amd64-3.9'), os.path.join('build', 'NCPA'))
+    else:
+        print("unhandled architecture")
+        sys.exit(1)
+
+    # shutil.copy(u'build_resources/ncpa.nsi', u'build/')

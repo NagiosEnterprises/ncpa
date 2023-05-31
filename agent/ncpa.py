@@ -1,18 +1,25 @@
 #!/usr/bin/env python3
 
+import os
 # Monkey patch for gevent
 from gevent import monkey
-monkey.patch_all()
+
+if os.name == 'posix':
+    monkey.patch_all()
+else:
+    monkey.patch_all(subprocess=True, thread=False)
 
 import threading
 import logging
 import glob
-import os
 import sys
 import ssl
 import time
 import datetime
 import tempfile
+
+import errno
+import signal
 
 from multiprocessing import Process, Value
 from gevent.pywsgi import WSGIServer
@@ -22,6 +29,10 @@ from logging.handlers import RotatingFileHandler
 from argparse import ArgumentParser
 from io import open
 from configparser import ConfigParser
+
+# Create the listener logger instance, now, because it is required by listener.server.
+# It will be configured later via setup_logger(). See note 'About Logging' below.
+listener_logger = logging.getLogger("listener")
 
 # NCPA-specific module imports
 import listener.server
@@ -33,8 +44,6 @@ import listener.database as database
 if os.name == 'posix':
     import grp
     import pwd
-    import signal
-    import errno
 
 
 # Set some global variables for later
@@ -44,10 +53,12 @@ __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
 
-# Logging
+options = {}
+
+# About Logging
 # Asynchronous processes require separate loggers. Additionally, the parent process
-# gets a logger just to make it easy to see what is logging. The parent logger covers the
-# startup code and the Daemon class used to spawn Listener and Passive.
+# gets a logger to cover the startup code, global functions and the Daemon or Winservice classes used
+# to spawn Listener and Passive processes on posix and Windows respectively.
 #
 # The root logger, parent log and listener log share the listener log file. This allows
 # the various components' loggers, which are primarily associated with the listener, to be
@@ -57,8 +68,8 @@ __STARTED__ = datetime.datetime.now()
 # by server.py, and the parent logger to be available to the start up code.
 #
 # Here, we only create the instances. They are configured later via setup_logger().
-listener_logger = logging.getLogger("listener")
 parent_logger = logging.getLogger("parent")
+
 
 # Define config defaults
 # We assign a lot of (but not all) defaults in the code, so let's keep them in one place.
@@ -147,11 +158,11 @@ cfg_defaults = {
 # the other classes
 class Base():
 
-    def __init__(self, options, config, has_error, logger, autostart=False):
+    def __init__(self, options, config, has_error, autostart=False):
         self.options = options
         self.config = config
         self.has_error = has_error
-        self.logging = logger
+        print("Listener/Passive - init()")
 
         if autostart:
             self.run()
@@ -160,6 +171,11 @@ class Base():
     def send_error(self):
         self.has_error.value = True
 
+    def init_logger(self, logger_name):
+        self.logger = logging.getLogger(logger_name)
+        self.logger.propagate = False
+        logfile = get_filename(self.config.get(logger_name, 'logfile'))
+        setup_logger(self.config, self.logger, logfile)
 
 # The listener, which serves the web GUI and API - starting in NCPA 3
 # we will be using a seperate process that is forked off the main process
@@ -167,51 +183,54 @@ class Base():
 class Listener(Base):
 
     def run(self):
-        logging = self.logging
-        logging.info("run()")
+        self.init_logger('listener')
+        logger = self.logger
+
+        logger.info("run()")
+        print("Listener - run()")
 
         try:
             try:
             # Build config
                 delay_start = self.config.getint('listener', 'delay_start')
-                logging.debug("delay_start: %s", delay_start)
+                logger.debug("delay_start: %s", delay_start)
                 if delay_start:
-                    logging.debug('Delayed start in configuration. Waiting %s seconds to start.', delay_start)
+                    logger.debug('Delayed start in configuration. Waiting %s seconds to start.', delay_start)
                     time.sleep(delay_start)
 
                 address = self.config.get('listener', 'ip')
-                logging.debug("address1: %s", address)
+                logger.debug("address1: %s", address)
 
                 port = self.config.getint('listener', 'port')
-                logging.debug("port: %s", port)
+                logger.debug("port: %s", port)
 
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
                 if  (ssl_str_ciphers == 'None'):
                     ssl_str_ciphers = ''
                 else:
-                    logging.debug("run() - ssl_str_ciphers: %s", ssl_str_ciphers)
+                    logger.debug("run() - ssl_str_ciphers: %s", ssl_str_ciphers)
                     ssl_context['ciphers'] = ssl_str_ciphers
-                logging.debug("ssl_str_ciphers: %s", ssl_str_ciphers)
+                logger.debug("ssl_str_ciphers: %s", ssl_str_ciphers)
 
                 ssl_str_version = self.config.get('listener', 'ssl_version')
                 ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
-                logging.debug('Using SSL version %s', ssl_str_version)
+                logger.debug('Using SSL version %s', ssl_str_version)
 
                 max_connections = self.config.getint('listener', 'max_connections')
-                logging.debug("max_connections: %s", max_connections)
+                logger.debug("max_connections: %s", max_connections)
 
                 user_cert = self.config.get('listener', 'certificate')
 
             except Exception as e:
-                logging.exception("run() - config exception: %s", e)
+                logger.exception("run() - config exception: %s", e)
                 self.send_error()
                 return
 
             # Set up certs and start http server
             if user_cert == 'adhoc':
-                logging.debug('Start create cert')
+                logger.debug('Start create cert')
                 cert, key = certificate.create_self_signed_cert(get_filename('var'), 'ncpa.crt', 'ncpa.key')
-                logging.debug('Cert created')
+                logger.debug('Cert created')
             else:
                 cert, key = user_cert.split(',')
 
@@ -226,19 +245,19 @@ class Listener(Base):
 
             # Create connection pool
             listener.server.listener.secret_key = os.urandom(24)
-            logging.debug("run() - define http_server")
+            logger.debug("run() - define http_server")
             http_server = WSGIServer(listener=(address, port),
                                         application=listener.server.listener,
                                         handler_class=WebSocketHandler,
                                         log=listener_logger,
                                         spawn=Pool(max_connections),
                                         **ssl_context)
-            logging.debug("run() - start http_server")
+            logger.debug("run() - start http_server")
             http_server.serve_forever()
-            logging.debug("run() - http_server running")
+            logger.debug("run() - http_server running")
 
         except Exception as e:
-            logging.exception("exception: %s", e)
+            logger.exception("exception: %s", e)
             self.send_error()
             return
 
@@ -256,9 +275,7 @@ class Passive(Base):
         - Abide by the handler API set forth by passive.abstract.NagiosHandler
         - Terminate in a timely fashion
         """
-        logging = self.logging
-        # logging.propagate = False
-
+        logger = self.logger
         handlers = self.config.get('passive', 'handlers').split(',')
         run_time = time.time()
 
@@ -273,21 +290,22 @@ class Passive(Base):
                 __import__(module_name)
                 tmp_handler = sys.modules[module_name]
             except ImportError as e:
-                logging.error('Could not import module passive.%s, skipping. %s' % (handler, str(e)))
-                logging.exception(e)
+                logger.error('Could not import module passive.%s, skipping. %s' % (handler, str(e)))
+                logger.exception(e)
             else:
                 try:
                     ins_handler = tmp_handler.Handler(self.config)
                     ins_handler.run(run_time)
-                    logging.debug('Successfully ran handler %s' % handler)
+                    logger.debug('Successfully ran handler %s' % handler)
                 except Exception as e:
-                    logging.exception(e)
+                    logger.exception(e)
                     self.send_error()
                     return
 
     def run(self):
-        logging = self.logging
-        logging.info("run()")
+        self.init_logger('passive')
+        logger = self.logger
+        logger.info("run()")
 
         # Check if there is a start delay
         try:
@@ -295,7 +313,7 @@ class Passive(Base):
             if delay_start:
                 time.sleep(delay_start)
         except Exception as e:
-            logging.exception("run() - exception: %s", e)
+            logger.exception("run() - exception: %s", e)
             pass
 
         # Set next DB maintenance period to +1 day
@@ -305,18 +323,18 @@ class Passive(Base):
 
         try:
             while not self.has_error.value:
-                logging.debug('run() - loop while true')
+                logger.debug('run() - loop while true')
                 self.run_all_handlers()
 
                 # Do DB maintenance if the time is greater than next DB maintenance run
                 if datetime.datetime.now() > next_db_maintenance:
-                    logging.info("run() - doing DB maintenance")
+                    logger.info("run() - doing DB maintenance")
                     self.db.run_db_maintenance(self.config)
                     next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
 
-                time.sleep(1)
+                time.sleep(5)
         except Exception as e:
-            logging.exception("run() - exception: %s", e)
+            logger.exception("run() - exception: %s", e)
             self.send_error()
             return
 
@@ -327,8 +345,8 @@ class Daemon():
 
     # Set the options
     def __init__(self, options, config, has_error, logger):
-        self.logging = logger
-        self.logging.debug("Daemon __init__() - initializing new Daemon class instance")
+        self.logger = logger
+        self.logger.debug("Daemon __init__() - initializing new Daemon class instance")
 
         self.options = options
         self.config = config
@@ -368,7 +386,7 @@ class Daemon():
         terminal has not been detached and the pid of the long-running
         process is not yet known.
         """
-        self.logging.info("Daemon init - setup_root()")
+        self.logger.info("Daemon init - setup_root()")
 
         # We need to chown any temp files we wrote out as root (or any other user)
         # to the currently set user and group so checks don't error out
@@ -379,7 +397,7 @@ class Daemon():
                     if 'ncpa-' in file:
                         self.chown(os.path.join(tmpdir, file))
         except OSError as e:
-            self.logging.exception(e)
+            self.logger.exception(e)
             pass
 
     def setup_user(self):
@@ -391,7 +409,7 @@ class Daemon():
     def on_sigterm(self, signalnum, frame):
         global has_error
         """Handle segterm by treating as a keyboard interrupt"""
-        self.logging.info("on_sigterm - exit")
+        self.logger.info("on_sigterm - exit")
         sys.exit()
         # raise KeyboardInterrupt('SIGTERM')
 
@@ -403,7 +421,7 @@ class Daemon():
     # the process from exiting during normal operation
     def start(self):
         """Initialize and run the daemon"""
-        self.logging.info("Daemon - start() - Initialize and run the daemon")
+        self.logger.info("Daemon - start() - Initialize and run the daemon")
 
         # Don't proceed if another instance is already running.
         self.check_pid()
@@ -448,7 +466,7 @@ class Daemon():
                 self.daemonize()
 
         except Exception as e:
-            self.logging.exception("Daemon - Failed to start due to an exception: %s", e)
+            self.logger.exception("Daemon - Failed to start due to an exception: %s", e)
             raise
 
         # Function write_pid must come after daemonizing since the pid of the
@@ -456,9 +474,9 @@ class Daemon():
         self.write_pid()
 
         try:
-            self.logging.debug("Daemon - started")
+            self.logger.debug("Daemon - started")
             try:
-                start_processes(self.options, self.config, self.has_error, listener_logger, passive_logger)
+                start_processes(self.options, self.config, self.has_error)
 
                 # ******************************** Main Loop *******************************
                 # **************** Loop forever unless process throws error ****************
@@ -466,25 +484,25 @@ class Daemon():
                 while not self.has_error.value:
                     time.sleep(1)
                 else:
-                    self.logging.debug("Daemon - Exit loop - self.has_error.value: %s", self.has_error.value)
+                    self.logger.debug("Daemon - Exit loop - self.has_error.value: %s", self.has_error.value)
 
             except (KeyboardInterrupt, SystemExit) as e:
-                self.logging.exception("Daemon - Exiting with interrupt: %s", e)
+                self.logger.exception("Daemon - Exiting with interrupt: %s", e)
                 pass
             except Exception as e:
-                self.logging.exception("Daemon - Exception: %s", e)
+                self.logger.exception("Daemon - Exception: %s", e)
                 raise
         finally:
             self.remove_pid()
-            self.logging.debug("Daemon - start() - Done")
+            self.logger.debug("Daemon - start() - Done")
 
     def stop(self):
         """Stop the running process"""
-        self.logging.debug("Daemon - stop() - Stop the running process")
+        self.logger.debug("Daemon - stop() - Stop the running process")
 
         if self.pidfile and os.path.exists(self.pidfile):
             pid = int(open(self.pidfile).read())
-            self.logging.debug("Daemon - stop() - Try killing process: %d", pid)
+            self.logger.debug("Daemon - stop() - Try killing process: %d", pid)
             os.kill(pid, signal.SIGTERM)
             # wait for a moment to see if the process dies
             for n in range(10):
@@ -492,26 +510,26 @@ class Daemon():
                 try:
                     # poll the process state
                     os.kill(pid, 0)
-                    self.logging.debug("Daemon - stop() - Try killing process again: %d", pid)
+                    self.logger.debug("Daemon - stop() - Try killing process again: %d", pid)
 
                 except OSError as err:
                     if err.errno == errno.ESRCH:
                         # process has died
                         self.remove_pid()
-                        self.logging.info("Daemon - stop() - Stopped")
+                        self.logger.info("Daemon - stop() - Stopped")
                         break
                     else:
                         raise
             else:
                 msg = ("Daemon - stop() - pid %d did not die" % pid)
-                self.logging.info(msg)
+                self.logger.info(msg)
                 sys.exit(msg)
         else:
             sys.exit("Daemon - stop() - Not running")
 
     def status(self):
         """Return the process status"""
-        self.logging.debug("Daemon - status() - Return the process status")
+        self.logger.debug("Daemon - status() - Return the process status")
 
         if self.pidfile and os.path.exists(self.pidfile):
             pid = int(open(self.pidfile).read())
@@ -521,21 +539,21 @@ class Daemon():
                 try:
                     os.kill(pid, 0)
                     msg = ("Daemon - status() - Service is running (pid %d)" % pid)
-                    self.logging.info(msg)
+                    self.logger.info(msg)
                     sys.exit(msg)
                 except OSError as err:
                     if err.errno != errno.ESRCH:
                         msg = "Daemon - status() - Service is not running but pid file exists"
-                        self.logging.debug(msg)
+                        self.logger.debug(msg)
                         sys.exit(msg)
         else:
             msg = "Daemon - status() - Service is not running"
-            self.logging.info(msg)
+            self.logger.info(msg)
             sys.exit(msg)
 
     def prepare_dirs(self):
         """Ensure the log and pid file directories exist and are writable"""
-        self.logging.debug("Daemon - prepare_dirs()")
+        self.logger.debug("Daemon - prepare_dirs()")
         for fn in (self.pidfile, self.listener_logfile, self.passive_logfile):
             if not fn:
                 continue
@@ -546,21 +564,21 @@ class Daemon():
 
     def set_uid_gid(self):
         """Drop root privileges"""
-        self.logging.debug("Daemon - set_uid_gid()")
+        self.logger.debug("Daemon - set_uid_gid()")
         if self.gid:
             try:
                 os.setgid(self.gid)
             except OSError as e:
-                logging.exception(e)
+                self.logger.exception(e)
         if self.uid:
             try:
                 os.setuid(self.uid)
             except OSError as e:
-                logging.exception(e)
+                self.logger.exception(e)
 
     def chown(self, fn):
         """Change the ownership of a file to match the daemon uid/gid"""
-        self.logging.debug("Daemon - chown()")
+        self.logger.debug("Daemon - chown()")
         if self.uid or self.gid:
             uid = self.uid
             if not uid:
@@ -582,37 +600,37 @@ class Daemon():
         If the pid file exists but no other instance is running,
         delete the pid file.
         """
-        self.logging.debug("Daemon - check_pid()")
+        self.logger.debug("Daemon - check_pid()")
 
         if not self.pidfile:
-            self.logging.debug("Daemon - check_pid() - Another instance is running. Exit.")
+            self.logger.debug("Daemon - check_pid() - Another instance is running. Exit.")
             return
 
         # based on twisted/scripts/twistd.py
         if os.path.exists(self.pidfile):
             try:
                 pid = int(open(self.pidfile, 'r').read().strip())
-                self.logging.debug("Daemon - check_pid() - PID in file: %s", pid)
+                self.logger.debug("Daemon - check_pid() - PID in file: %s", pid)
 
             except ValueError:
                 msg = 'Pidfile %s contains a non-integer value' % self.pidfile
-                self.logging.debug(msg)
+                self.logger.debug(msg)
                 sys.exit(msg)
             try:
                 os.kill(pid, 0)
             except OSError as err:
                 if err.errno == errno.ESRCH:
                     # The pid doesn't exist, so remove the stale pidfile.
-                    self.logging.debug("Daemon - check_pid() - The pid doesn't exist, so remove the stale pidfile")
+                    self.logger.debug("Daemon - check_pid() - The pid doesn't exist, so remove the stale pidfile")
                     os.remove(self.pidfile)
                 else:
                     msg = ("Daemon - check_pid() - Failed to check status of process %s "
                            "from pidfile %s: %s" % (pid, self.pidfile, err.strerror))
-                    self.logging.debug(msg)
+                    self.logger.debug(msg)
                     sys.exit(msg)
             else:
                 msg = ('Daemon - check_pid() - Another instance is already running (pid %s)' % pid)
-                self.logging.info(msg)
+                self.logger.info(msg)
                 sys.exit(msg)
 
     def check_pid_writable(self):
@@ -621,7 +639,7 @@ class Daemon():
         Note that the eventual process ID isn't known until after
         daemonize(), so it's not possible to write the PID here.
         """
-        self.logging.debug("Daemon - check_pid_writable()")
+        self.logger.debug("Daemon - check_pid_writable()")
 
         if not self.pidfile:
             return
@@ -631,24 +649,24 @@ class Daemon():
             check = os.path.dirname(self.pidfile)
         if not os.access(check, os.W_OK):
             msg = 'Daemon - check_pid_writable() - unable to write to pidfile %s' % self.pidfile
-            self.logging.info(msg)
+            self.logger.info(msg)
             sys.exit(msg)
 
     def write_pid(self):
         u"""Write to the pid file"""
         pid = str(os.getpid())
-        self.logging.debug("Daemon - write_pid(): %s", pid)
+        self.logger.debug("Daemon - write_pid(): %s", pid)
         if self.pidfile:
             open(self.pidfile, 'w').write(pid)
 
     def remove_pid(self):
         u"""Delete the pid file"""
-        self.logging.debug("Daemon - remove_pid()")
+        self.logger.debug("Daemon - remove_pid()")
         if self.pidfile and os.path.exists(self.pidfile):
             os.remove(self.pidfile)
 
     def get_uid_gid(self, cp, section):
-        self.logging.debug("Daemon - get_uid_gid()")
+        self.logger.debug("Daemon - get_uid_gid()")
         user_uid = cp.get(section, 'uid')
         user_gid = cp.get(section, 'gid')
 
@@ -672,7 +690,7 @@ class Daemon():
 
     def daemonize(self):
         """Detach from the terminal and continue as a daemon"""
-        self.logging.info("Daemon - daemonize()")
+        self.logger.info("Daemon - daemonize()")
         # swiped from twisted/scripts/twistd.py
         # See http://www.erlenstar.demon.co.uk/unix/faq_toc.html#TOC16
         if os.fork():   # launch child and...
@@ -691,16 +709,14 @@ class Daemon():
         os.close(null)
 
 
-# Windows service handler, this can be effectively ignored on systems like
+# Windows service handler, this can be ignored on systems like
 # Mac OS X and Linux since they use Daemon instead
 class WinService():
 
     # No parameters here, everything should be set in Initialize()
     def __init__(self):
-        self.options = {}
-        self.config = get_configuration()
-        self.stopEvent = threading.Event()
-        self.stopRequestedEvent = threading.Event()
+        parent_logger.debug("---------------- Winservice.__init__()")
+        self.initialize("")
 
     def setup_plugins(self):
         plugin_path = self.config.get('plugin directives', 'plugin_path')
@@ -734,27 +750,45 @@ class WinService():
         # Set log level
         log_level_str = config.get('loglevel', 'INFO').upper()
         log_level = getattr(logging, log_level_str, logging.INFO)
-        print("loglevel: ", log_level)
+        print("Winservice.loglevel: ", log_level)
         logging.getLogger().setLevel(log_level)
 
     def initialize(self, config_ini):
-        self.setup_logging()
+        self.logger = parent_logger
+        self.logger.debug("---------------- Winservice.initialize()")
+        self.options = get_options()
+        self.config = get_configuration()
+        self.logger.debug("winservice-self.options:", self.options)
+        self.has_error = Value('i', False)
+        self.stopEvent = threading.Event()
+        self.stopRequestedEvent = threading.Event()
+
         self.setup_plugins()
-        logging.debug("Looking for plugins at: %s" % self.abs_plugin_path)
+        self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
     # Called when the service is starting immediately after Initialize()
     # use this to perform the work of the service; don't forget to set or check
     # for the stop event or the service GUI will not respond to requests to
     # stop the service
     def run(self):
-        # start_processes(self.options, self.config)
+        self.logger.debug("---------------- Winservice.run()")
+        start_processes(self.options, self.config, self.has_error)
+        # time.sleep(60)
+        # self.stop()
+
+        self.logger.debug("---------------- Winservice.run BEFORE .RqEvent.wait()")
         self.stopRequestedEvent.wait()
+        self.logger.debug("---------------- Winservice.run AFTER .RqEvent.wait()")
         self.stopEvent.set()
+        self.logger.debug("---------------- Winservice.run.Event.set()")
 
     # called when the service is being stopped by the service manager GUI
     def stop(self):
+        self.logger.debug("---------------- Winservice.stop()")
         self.stopRequestedEvent.set()
+        self.logger.debug("---------------- Winservice.stop.RqEvent.set()")
         self.stopEvent.wait()
+        self.logger.debug("---------------- Winservice.stop.Event.wait()")
 
 
 # --------------------------
@@ -824,6 +858,7 @@ def chown(user_uid, user_gid, fn):
 
 def setup_logger(config, loggerinstance, logfile):
     """Configure the logging module"""
+    print ("setup_logger()")
 
     name = getattr(loggerinstance, 'name')
     if config.get('general', 'loglevel') == 'debug':
@@ -834,7 +869,6 @@ def setup_logger(config, loggerinstance, logfile):
     logbackups = config.getint('general', 'logbackups')
     uid = config.get('general', 'uid')
     gid = config.get('general', 'gid')
-    name = getattr(loggerinstance, 'name')
 
     try:
         level = int(loglevel)
@@ -848,7 +882,9 @@ def setup_logger(config, loggerinstance, logfile):
         else:
             max_log_size_bytes = logmaxmb * 1024 * 1024
             handlers.append(RotatingFileHandler(logfile, maxBytes=max_log_size_bytes, backupCount=logbackups))
-        chown(uid, gid, logfile)
+
+        if __SYSTEM__ == 'posix':
+            chown(uid, gid, logfile)
 
     handlers.append(logging.StreamHandler())
     loggerinstance.setLevel(level)
@@ -863,7 +899,7 @@ def setup_logger(config, loggerinstance, logfile):
 
 
 # Actually starts the processes for the components that will be used
-def start_processes(options, config, has_error, listener_logger, passive_logger):
+def start_processes(options, config, has_error):
     parent_logger.info("start_processes()")
 
     try:
@@ -875,16 +911,18 @@ def start_processes(options, config, has_error, listener_logger, passive_logger)
         if not options['listener_only'] or options['passive_only']:
             # Create the passive process
             parent_logger.info("Spawning process for Passive")
-            p = Process(target=Passive, args=(options, config, has_error, passive_logger, True))
+            p = Process(target=Passive, args=(options, config, has_error, True))
             p.daemon = True
             p.start()
+            # p = Passive(options, config, has_error, True)
 
         if not options['passive_only'] or options['listener_only']:
             # Create the listener process
             parent_logger.info("Spawning process for Listener")
-            l = Process(target=Listener, args=(options, config, has_error, listener_logger, True))
+            l = Process(target=Listener, args=(options, config, has_error, True))
             l.daemon = True
             l.start()
+            # l = Listener(listener, config, has_error, True)
 
         return p, l
 
@@ -892,10 +930,17 @@ def start_processes(options, config, has_error, listener_logger, passive_logger)
         parent_logger.exception(e)
         sys.exit(1)
 
+# Provides global access for options for WinService
+def get_options():
+    global options
+    parent_logger.debug("get_options()")
+    return options
+
 has_error = Value('i', False)
 
 # This handles calls to the main NCPA binary
 def main(has_error):
+    global options
     parser = ArgumentParser(description='''NCPA has multiple options and can
         be used to run Python scripts with the embedded version of Python or
         run the service/daemon in debug mode.''')
@@ -998,7 +1043,10 @@ def main(has_error):
         d = Daemon(options, config, has_error, parent_logger)
         d.main()
     else:
-        start_processes(options, config, has_error, logging, logging)
+        # start_processes(options, config, has_error)
+        w = WinService()
+        w.run()
+        print("Main windows finished start_processes")
 
 if __name__ == '__main__':
     main(has_error)
