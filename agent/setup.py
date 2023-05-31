@@ -38,11 +38,11 @@ packages = ['idna', 'passive', 'listener', 'gevent', 'asyncio']
 includes = ['ncpa', 'jinja2.ext']
 excludes = ['Tkinter', 'tkinter', 'unittest']
 bin_includes = []
-include_files = [('var/log/ncpa.log', 'var/log/ncpa.log'),
-                 ('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
-                 ('var/log/ncpa_passive.log', 'var/log/ncpa_passive.log'),
-                 ('listener/templates', 'listener/templates'),
-                 ('listener/static', 'listener/static'),
+include_files = [('var/log/ncpa.log'            , 'var/log/ncpa.log'),
+                 ('var/log/ncpa_listener.log'   , 'var/log/ncpa_listener.log'),
+                 ('var/log/ncpa_passive.log'    , 'var/log/ncpa_passive.log'),
+                 ('listener/templates'          , 'listener/templates'),
+                 ('listener/static'             , 'listener/static'),
                  ('../build/resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                  'etc',
                  'plugins']
@@ -51,14 +51,14 @@ include_files = [('var/log/ncpa.log', 'var/log/ncpa.log'),
 # Specific build options for Windows
 if __SYSTEM__ == 'nt':
 
-    include_files += [('../build/resources/nsis_listener_options.ini', 'build_resources/nsis_listener_options.ini'),
-                     ('../build/resources/nsis_passive_options.ini', 'build_resources/nsis_passive_options.ini'),
-                     ('../build/resources/nsis_passive_checks.ini', 'build_resources/nsis_passive_checks.ini'),
-                     ('../build/resources/ncpa.ico', 'build_resources/ncpa.ico'),
-                     ('../build/resources/nagios_installer.bmp', 'build_resources/nagios_installer.bmp'),
-                     ('../build/resources/nagios_installer_logo.bmp', 'build_resources/nagios_installer_logo.bmp'),
-                     ('../build/resources/ncpa.nsi', 'build_resources/ncpa.nsi'),
-                     (sys.executable, 'python.exe')]
+    include_files += [('../build/resources/nsis_listener_options.ini'   , 'build_resources/nsis_listener_options.ini'),
+                     ('../build/resources/nsis_passive_options.ini'     , 'build_resources/nsis_passive_options.ini'),
+                     ('../build/resources/nsis_passive_checks.ini'      , 'build_resources/nsis_passive_checks.ini'),
+                     ('../build/resources/ncpa.ico'                     , 'build_resources/ncpa.ico'),
+                     ('../build/resources/nagios_installer.bmp'         , 'build_resources/nagios_installer.bmp'),
+                     ('../build/resources/nagios_installer_logo.bmp'    , 'build_resources/nagios_installer_logo.bmp'),
+                     ('../build/resources/ncpa.nsi'                     , 'build_resources/ncpa.nsi'),
+                     (sys.executable                                    , 'python.exe')]
     
     binary = Executable(script="setup_config.py",
                         base="Win32Service",
@@ -69,28 +69,28 @@ if __SYSTEM__ == 'nt':
 # Specific build settings for Linux / Max OS X
 elif __SYSTEM__ == 'posix':
 
-    include_files += [('../startup/default-plist', 'build_resources/default-plist'),
-                      ('../startup/default-init', 'build_resources/default-init'),
-                      ('../startup/default-service', 'build_resources/default-service'),
-                      (os.path.join(sys.executable), 'python')]
+    include_files += [('../startup/default-plist'   , 'build_resources/default-plist'),
+                      ('../startup/default-init'    , 'build_resources/default-init'),
+                      ('../startup/default-service' , 'build_resources/default-service'),
+                      (os.path.join(sys.executable) , 'python')]
 
     # Shared library include overrides
     bin_includes += ['libffi.so', 'libssl.so', 'libcrypto.so']
 
     # Special includes for Mac OS X
     if 'darwin' in sys.platform:
-       include_files += [('../build/resources/macosinstall.sh', 'build_resources/macosinstall.sh'),
+       include_files += [('../build/resources/macosinstall.sh'  , 'build_resources/macosinstall.sh'),
                          ('../build/resources/macosuninstall.sh', 'build_resources/macosuninstall.sh')]
 
     # Special includes for AIX systems
     if 'aix' in sys.platform:
-        include_files += [('/opt/freeware/lib/libpython3.6.so', 'libpython3.6.so'),
-                          ('/usr/lib/libsqlite3.a', 'libsqlite3.a'),
-                          ('/usr/lib/libssl.so', 'libssl.so'),
-                          ('/usr/lib/libcrypto.so', 'libcrypto.so'),
-                          ('/usr/lib/libcrypto.a', 'libcrypto.a'),
-                          ('/usr/lib/libffi.a', 'libffi.a'),
-                          ('/opt/freeware/lib/libgcc_s.a', 'libgcc_s.a')]
+        include_files += [('/opt/freeware/lib/libpython3.6.so'  , 'libpython3.6.so'),
+                          ('/usr/lib/libsqlite3.a'              , 'libsqlite3.a'),
+                          ('/usr/lib/libssl.so'                 , 'libssl.so'),
+                          ('/usr/lib/libcrypto.so'              , 'libcrypto.so'),
+                          ('/usr/lib/libcrypto.a'               , 'libcrypto.a'),
+                          ('/usr/lib/libffi.a'                  , 'libffi.a'),
+                          ('/opt/freeware/lib/libgcc_s.a'       , 'libgcc_s.a')]
 
     binary = Executable('ncpa.py', base=None)
 
