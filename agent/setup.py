@@ -58,12 +58,19 @@ if __SYSTEM__ == 'nt':
                      ('../build/resources/nagios_installer.bmp'         , 'build_resources/nagios_installer.bmp'),
                      ('../build/resources/nagios_installer_logo.bmp'    , 'build_resources/nagios_installer_logo.bmp'),
                      ('../build/resources/ncpa.nsi'                     , 'build_resources/ncpa.nsi'),
+                     ('../build/windows/launchNCPA.bat'                 , 'build_resources/launchNCPA.bat'),
                      (sys.executable                                    , 'python.exe')]
     
-    binary = Executable(script="setup_config.py",
-                        base="Win32Service",
-                        target_name="ncpaservice.exe",
-                        icon="../build/resources/ncpa.ico")
+    ### build as a windows service -- not working
+    # binary = Executable(script="setup_config.py",
+    #                     base="Win32Service",
+    #                     target_name="ncpaservice.exe",
+    #                     icon="../build/resources/ncpa.ico")
+
+    ### build as a windows executable -- working
+    binary = Executable('ncpa.py', 
+                        base=None,
+                        icon='../build/resources/ncpa.ico')
 
 
 # Specific build settings for Linux / Max OS X
