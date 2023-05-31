@@ -88,7 +88,6 @@ cfg_defaults = {
             'general': {
                 'check_logging': '1',
                 'check_logging_time': '30',
-                'logfile': 'var/log/ncpa.log',
                 'loglevel': logging.DEBUG,
                 'logmaxmb': '5',
                 'logbackups': '5',
@@ -157,7 +156,6 @@ cfg_defaults = {
             }
         }
 
-logging.basicConfig(filename=cfg_defaults['general']['logfile'], level=cfg_defaults['general']['loglevel'])
 logging.info("***** Starting NCPA version: %s", __VERSION__)
 
 # The base class for the Listener and Passive classes, which sets things
@@ -780,7 +778,7 @@ class WinService():
     # stop the service
     def run(self):
         self.logger.info("---------------- Winservice.run()")
-        self.logger.debug("---------------- Winservice.run()")
+        # self.logger.debug("---------------- Winservice.run()")
         try:
             start_processes(self.options, self.config, self.has_error)
         except Exception as e:
