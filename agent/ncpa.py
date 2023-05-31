@@ -72,6 +72,8 @@ print("***** Starting NCPA version: ", __VERSION__)
 # Here, we only create the instances. They are configured later via setup_logger().
 parent_logger = logging.getLogger("parent")
 
+logging.basicConfig(filename=os.path.join("..", "..", "..", "Program Files (x86)", "Nagios", "NCPA", "var", "log", "ncpa.log"), level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(message)s')
+logging.info("***** Starting NCPA version: %s", __VERSION__)
 
 # Define config defaults
 # We assign a lot of (but not all) defaults in the code, so let's keep them in one place.
@@ -161,6 +163,7 @@ cfg_defaults = {
 class Base():
 
     def __init__(self, options, config, has_error, autostart=False):
+        parent_logger.info("init Base class")
         self.options = options
         self.config = config
         self.has_error = has_error
@@ -325,7 +328,6 @@ class Passive(Base):
 
         try:
             while not self.has_error.value:
-                logger.debug('run() - loop while true')
                 self.run_all_handlers()
 
                 # Do DB maintenance if the time is greater than next DB maintenance run
@@ -333,7 +335,7 @@ class Passive(Base):
                     logger.info("run() - doing DB maintenance")
                     self.db.run_db_maintenance(self.config)
                     next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
-
+                logger.info("run() loop - sleeping for 5 seconds")
                 time.sleep(5)
         except Exception as e:
             logger.exception("run() - exception: %s", e)
@@ -775,7 +777,15 @@ class WinService():
     # stop the service
     def run(self):
         self.logger.debug("---------------- Winservice.run()")
-        start_processes(self.options, self.config, self.has_error)
+        try:
+            start_processes(self.options, self.config, self.has_error)
+        except Exception as e:
+            self.logger.debug("Exception in Winservice.run(): %s" % e)
+            self.has_error.value = True
+            self.stopRequestedEvent.set()
+            self.stopEvent.set()
+            raise
+
         # time.sleep(60)
         # self.stop()
 
@@ -784,6 +794,9 @@ class WinService():
         self.logger.debug("---------------- Winservice.run AFTER .RqEvent.wait()")
         self.stopEvent.set()
         self.logger.debug("---------------- Winservice.run.Event.set()")
+
+        self.logger.debug("---------------- Winservice.SvcRun()")
+        self.run()
 
     # called when the service is being stopped by the service manager GUI
     def stop(self):
@@ -912,20 +925,28 @@ def start_processes(options, config, has_error):
         l = p = ''
 
         if not options.get('listener_only') or options.get('passive_only'):
-            # Create the passive process
-            parent_logger.info("Spawning process for Passive")
-            p = Process(target=Passive, args=(options, config, has_error, True))
+            passiveclass = Passive(options, config, has_error, True)
+            
+            p = Process(target=passiveclass.run)
             p.daemon = True
+            parent_logger.info("Spawning process for Passive")
             p.start()
+            parent_logger.info("Passive process started")
             # p = Passive(options, config, has_error, True)
 
+        parent_logger.info("Passive process created")
+
         if not options.get('passive_only') or options.get('listener_only'):
+            listenerclass = Listener(options, config, has_error, True)
+
             # Create the listener process
-            parent_logger.info("Spawning process for Listener")
-            l = Process(target=Listener, args=(options, config, has_error, True))
+            l = Process(target=Listener.run)
             l.daemon = True
+            parent_logger.info("Spawning process for Listener")
             l.start()
             # l = Listener(listener, config, has_error, True)
+
+        parent_logger.info("Listener process created")
 
         return p, l
 
