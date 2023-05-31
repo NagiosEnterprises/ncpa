@@ -168,7 +168,7 @@ class Base():
         self.options = options
         self.config = config
         self.has_error = has_error
-        print("Listener/Passive - init()")
+        print(self.__class__.__name__ + " - init()")
 
         if autostart:
             self.run()
@@ -779,14 +779,7 @@ class WinService():
     def run(self):
         self.logger.info("---------------- Winservice.run()")
         # self.logger.debug("---------------- Winservice.run()")
-        try:
-            start_processes(self.options, self.config, self.has_error)
-        except Exception as e:
-            self.logger.debug("Exception in Winservice.run(): %s" % e)
-            self.has_error.value = True
-            self.stopRequestedEvent.set()
-            self.stopEvent.set()
-            raise
+        start_processes(self.options, self.config, self.has_error)
 
         # time.sleep(60)
         # self.stop()
@@ -918,7 +911,6 @@ def setup_logger(config, loggerinstance, logfile):
 
 # Actually starts the processes for the components that will be used
 def start_processes(options, config, has_error):
-    parent_logger.info("start_processes()")
 
     try:
         # Create the database structure for checks
@@ -927,29 +919,16 @@ def start_processes(options, config, has_error):
         l = p = ''
 
         if not options.get('listener_only') or options.get('passive_only'):
-            passiveclass = Passive(options, config, has_error, True)
-            
-            p = Process(target=passiveclass.run)
-            # p = Process(target=Passive(options, config, has_error, True).run) # this works too?
+            p = Process(target=Passive, args=(options, config, has_error, True)) # old way
             p.daemon = True
-            parent_logger.info("Spawning process for Passive")
             p.start()
-            parent_logger.info("Passive process started")
             # p = Passive(options, config, has_error, True)
 
-        parent_logger.info("Passive process created")
-
         if not options.get('passive_only') or options.get('listener_only'):
-            listenclass = Listener(options, config, has_error, True)
-
-            # Create the listener process
-            l = Process(target=listenclass.run)
+            l = Process(target=Listener, args=(options, config, has_error, True))
             l.daemon = True
-            parent_logger.info("Spawning process for Listener")
             l.start()
             # l = Listener(listener, config, has_error, True)
-
-        parent_logger.info("Listener process created")
 
         return p, l
 
@@ -1014,8 +993,7 @@ def main(has_error):
                         enabled (this option is useful for development)''')
 
     # Add version argument
-    parser.add_argument('-v', '--version', action='version',
-                        version=__VERSION__)
+    parser.add_argument('-v', '--version', action='version', version=__VERSION__)
 
     # Get all options as a dict
     options = vars(parser.parse_args())
@@ -1070,7 +1048,6 @@ def main(has_error):
         # start_processes(options, config, has_error)
         w = WinService()
         w.run()
-        print("Main windows finished start_processes")
 
 if __name__ == '__main__':
     main(has_error)
