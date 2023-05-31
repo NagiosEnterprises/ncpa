@@ -72,8 +72,8 @@ print("***** Starting NCPA version: ", __VERSION__)
 # Here, we only create the instances. They are configured later via setup_logger().
 parent_logger = logging.getLogger("parent")
 
-logging.basicConfig(filename=os.path.join("..", "..", "..", "Program Files (x86)", "Nagios", "NCPA", "var", "log", "ncpa.log"), level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logging.info("***** Starting NCPA version: %s", __VERSION__)
+# logging.basicConfig(filename=os.path.join("..", "..", "..", "Program Files (x86)", "Nagios", "NCPA", "var", "log", "ncpa.log"), level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(message)s')
+
 
 # Define config defaults
 # We assign a lot of (but not all) defaults in the code, so let's keep them in one place.
@@ -88,7 +88,8 @@ cfg_defaults = {
             'general': {
                 'check_logging': '1',
                 'check_logging_time': '30',
-                'loglevel': 'info',
+                'logfile': 'var/log/ncpa.log',
+                'loglevel': logging.DEBUG,
                 'logmaxmb': '5',
                 'logbackups': '5',
                 'pidfile': 'var/run/ncpa.pid',
@@ -156,6 +157,8 @@ cfg_defaults = {
             }
         }
 
+logging.basicConfig(filename=cfg_defaults['general']['logfile'], level=cfg_defaults['general']['loglevel'])
+logging.info("***** Starting NCPA version: %s", __VERSION__)
 
 # The base class for the Listener and Passive classes, which sets things
 # like options, config, autostart, etc so that they can be accesssed inside
@@ -776,6 +779,7 @@ class WinService():
     # for the stop event or the service GUI will not respond to requests to
     # stop the service
     def run(self):
+        self.logger.info("---------------- Winservice.run()")
         self.logger.debug("---------------- Winservice.run()")
         try:
             start_processes(self.options, self.config, self.has_error)
@@ -928,6 +932,7 @@ def start_processes(options, config, has_error):
             passiveclass = Passive(options, config, has_error, True)
             
             p = Process(target=passiveclass.run)
+            # p = Process(target=Passive(options, config, has_error, True).run) # this works too?
             p.daemon = True
             parent_logger.info("Spawning process for Passive")
             p.start()
@@ -937,10 +942,10 @@ def start_processes(options, config, has_error):
         parent_logger.info("Passive process created")
 
         if not options.get('passive_only') or options.get('listener_only'):
-            listenerclass = Listener(options, config, has_error, True)
+            listenclass = Listener(options, config, has_error, True)
 
             # Create the listener process
-            l = Process(target=Listener.run)
+            l = Process(target=listenclass.run)
             l.daemon = True
             parent_logger.info("Spawning process for Listener")
             l.start()
