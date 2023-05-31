@@ -433,20 +433,6 @@ class Daemon():
         self.prepare_dirs()
 
         try:
-            # setup_logger must come after check_pid so that two
-            # processes don't write to the same log file, but before
-            # setup_root so that work done with root privileges can be
-            # logged.
-
-            if not self.options['passive_only'] or self.options['listener_only']:
-                setup_logger(self.config, listener_logger, '')
-
-            passive_logger = ''
-            if not self.options['listener_only'] or self.options['passive_only']:
-                passive_logger = logging.getLogger('passive')
-                passive_logger.propagate = False
-                setup_logger(self.config, passive_logger, self.passive_logfile)
-
             # Setup with root privileges
             self.setup_root()
 
