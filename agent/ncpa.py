@@ -21,7 +21,7 @@ import tempfile
 import errno
 import signal
 
-from multiprocessing import Process, Value
+from multiprocessing import Process, Value, freeze_support
 from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
 from geventwebsocket.handler import WebSocketHandler
@@ -1050,4 +1050,5 @@ def main(has_error):
         w.run()
 
 if __name__ == '__main__':
+    freeze_support()
     main(has_error)
