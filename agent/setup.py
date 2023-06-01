@@ -82,7 +82,7 @@ elif __SYSTEM__ == 'posix':
                       (os.path.join(sys.executable) , 'python')]
 
     # Shared library include overrides
-    bin_includes += ['libffi.so', 'libssl.so', 'libcrypto.so']
+    bin_includes += ['libffi.so', 'libssl.so.3', 'libcrypto.so.3']
 
     # Special includes for Mac OS X
     if 'darwin' in sys.platform:

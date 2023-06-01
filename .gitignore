@@ -22,11 +22,15 @@ agent/var/log/*
 agent/var/run/*.pid
 
 build/resources/*.tgz
+build/resources/Python*/*
+build/resources/openssl/*
 build/bin
 build/include
 build/lib
 build/ncpa.spec
 build/ncpa
 build/ncpa-3*/
+build/ncpa-3*/
 build/*.deb
+build/*.rpm
 build/share

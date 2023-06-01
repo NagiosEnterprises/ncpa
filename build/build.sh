@@ -135,7 +135,7 @@ if [ $BUILD_TRAVIS -eq 0 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; 
 elif [ $BUILD_TRAVIS -eq 1 ]; then
 
     # Set up travis environment
-    sudo useradd nagios
+    useradd nagios
     cd $BUILD_DIR
     python -m pip install -r resources/require.txt --upgrade
     exit 0
@@ -165,8 +165,8 @@ find $AGENT_DIR -name *.pyc -exec rm '{}' \;
 mkdir -p $AGENT_DIR/plugins
 mkdir -p $AGENT_DIR/build
 mkdir -p $AGENT_DIR/var/log
-# cat /dev/null > $AGENT_DIR/var/log/ncpa_passive.log
-# cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
+cat /dev/null > $AGENT_DIR/var/log/ncpa_passive.log
+cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
 
 # Add file with current GIT hash to build
 GIT_LONG="Not built under GIT"

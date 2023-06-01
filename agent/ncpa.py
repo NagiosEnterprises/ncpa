@@ -438,20 +438,6 @@ class Daemon():
         self.prepare_dirs()
 
         try:
-            # setup_logger must come after check_pid so that two
-            # processes don't write to the same log file, but before
-            # setup_root so that work done with root privileges can be
-            # logged.
-
-            if not self.options['passive_only'] or self.options['listener_only']:
-                setup_logger(self.config, listener_logger, '')
-
-            passive_logger = ''
-            if not self.options['listener_only'] or self.options['passive_only']:
-                passive_logger = logging.getLogger('passive')
-                passive_logger.propagate = False
-                setup_logger(self.config, passive_logger, self.passive_logfile)
-
             # Setup with root privileges
             self.setup_root()
 
@@ -552,7 +538,6 @@ class Daemon():
                         self.logger.debug(msg)
                         sys.exit(msg)
         else:
-            self.logger.debug("Daemon - status() - PID in file: %s", pid)
             msg = "Daemon - status() - Service is not running"
             self.logger.info(msg)
             sys.exit(msg)
@@ -1016,6 +1001,9 @@ def main(has_error):
     listener_logfile = get_filename(config.get('listener', 'logfile'))
     log = logging.getLogger()
     setup_logger(config, log, listener_logfile)
+
+    log.info("main - Python version: %s", sys.version)
+    log.info("main - SSL version: %s", ssl.OPENSSL_VERSION)
 
     # If we are running this in debug mode from the command line, we need to
     # wait for the proper output to exit and kill the Passive and Listener

@@ -12,7 +12,8 @@ jobs:
     strategy:
       matrix:
         # os: [ubuntu-latest, macos-latest, windows-latest]
-        os: [ubuntu-latest, macos-latest]
+        # os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-20.04]
 
     steps:
     - uses: actions/checkout@v2
@@ -39,4 +40,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: NCPA-3.0.0-${{ matrix.os }}
-        path: build/ncpa_3.0.0-1*.*
+        path: build/ncpa_3.0.0-*.*
