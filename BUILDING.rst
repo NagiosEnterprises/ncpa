@@ -21,7 +21,7 @@ Prerequisites
 * `Microsoft Visual C++ Compiler Build Tools <https://wiki.python.org/moin/WindowsCompilers>`_ *(Requires admin rights/version used is based on version of python installed)*
 * `NSIS 3 <http://nsis.sourceforge.net/Download>`_ *(Requires admin rights)*
 
-\* : Use 32-bit versions if you need to deploy to 32-bit systems
+\* : Use 32-bit versions if you will deploy to 32-bit systems
 
 Configure the Build Environment
 -------------------------------
@@ -43,6 +43,7 @@ Install Prerequisites
 
   1. Download and run the installer. The easiest way to do this would be to install Visual 
   Studio Community 2022 and follow the instructions from the link found in the `prerequisites <#prerequisites>`_.
+  
   2. Follow the instructions outlined in the article in prerequisite section to
   ensure you install the proper version for your python version
 
