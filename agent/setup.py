@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 
-# This script sets up cx_Freeze and bundles/freezes the entire program. We
-# don't really care what OS we are on anymore, so it's the same no matter
-# what you are working on.
-#
-# Example: python setup.py
+"""
+cx_Freeze setup script for NCPA
+
+This script sets up cx_Freeze and bundles/freezes the entire program. We
+don't really care what OS we are on anymore, so it's the same no matter
+what you are working on.
+
+Example: python setup.py build_exe
+    [python interpreter] [cx_Freeze setup script] [build command]
+"""
 
 import sys
 import shutil
@@ -45,7 +50,7 @@ include_files = [('var/log/ncpa.log'            , 'var/log/ncpa.log'),
                  'plugins']
 
 
-# Specific build options for Windows
+# Build settings - Windows
 if __SYSTEM__ == 'nt':
 
     include_files += [('../build/resources/nsis_listener_options.ini'   , 'build_resources/nsis_listener_options.ini'),
@@ -65,7 +70,7 @@ if __SYSTEM__ == 'nt':
                         icon='../build/resources/ncpa.ico')
 #
 
-# Specific build settings for Linux / Max OS X
+# Build settings - Linux / Max OS X
 elif __SYSTEM__ == 'posix':
 
     include_files += [('../startup/default-plist'   , 'build_resources/default-plist'),
@@ -104,7 +109,6 @@ buildOptions = dict(includes=includes,
                     zip_include_packages=['*'],
                     zip_exclude_packages=[])
 
-
 # Create setup for distutils
 setup(name = "NCPA",
       version = version,
@@ -115,10 +119,12 @@ setup(name = "NCPA",
 
 if __SYSTEM__ == 'nt':
     # Rename to enable NSI to find stuff
+    py_ver = platform.python_version()
+    py_ver = '.'.join(py_ver.split('.')[:2])
     if platform.architecture()[0].lower() == '32bit':
-        os.rename(os.path.join('build', 'exe.win32-3.11'), os.path.join('build', 'NCPA'))
+        os.rename(os.path.join('build', 'exe.win32-'+py_ver), os.path.join('build', 'NCPA'))
     elif platform.architecture()[0].lower() == '64bit':
-        os.rename(os.path.join('build', 'exe.win-amd64-3.11'), os.path.join('build', 'NCPA'))
+        os.rename(os.path.join('build', 'exe.win-amd64-'+py_ver), os.path.join('build', 'NCPA'))
     else:
         print("unhandled architecture")
         sys.exit(1)

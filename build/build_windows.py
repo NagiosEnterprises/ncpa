@@ -1,3 +1,12 @@
+"""
+Builds the Windows installer for NCPA.
+
+Run as Administrator on Windows
+-pip installs prereqs to the python interpreter that is running this script
+-cx_Freeze builds the executable
+-NSIS builds the installer
+"""
+
 import os
 import shutil
 import subprocess

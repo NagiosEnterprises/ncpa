@@ -1,3 +1,7 @@
+;
+; NSIS Windows Installer Script for NCPA
+;
+
 !include "MUI2.nsh"
 !include "nsDialogs.nsh"
 !include "winmessages.nsh"

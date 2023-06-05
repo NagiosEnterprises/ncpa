@@ -1,5 +1,19 @@
 #!/usr/bin/env python3
 
+"""
+Main NCPA python script
+
+This script is the main entry point for the NCPA agent. It handles the
+command line arguments and starts the appropriate processes.
+
+This script will start as a daemon on Linux and a Windows service on Windows.
+It will spawn a listener and passive child processes.
+
+Main entry points:
+Linux/Mac OS X: Daemon class
+Windows:        WinService class
+"""
+
 import os
 # Monkey patch for gevent
 from gevent import monkey
