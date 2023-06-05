@@ -46,14 +46,16 @@ Install Prerequisites
   
   * Pip is installed by default but should be updated before continuing::
 
-      "%pydir%" -m pip install --upgrade pip
+      py -m pip install --upgrade pip
+
+Note: py should be the command to run python 3. If it is not, you may need to use the full path to the python executable.
 
 Install the Last Modules
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Install the full list of python modules
 	
-  "%pydir%\python" -m pip install --upgrade -r build/resources/require.win.txt
+  py -m pip install --upgrade -r build/resources/require.win.txt
 
 Build NCPA
 ~~~~~~~~~~
@@ -75,8 +77,6 @@ In a Command Prompt/Terminal (cmd.exe) terminal with admin rights, run the follo
 Run the build script::
 
   py build\build_windows.py
-
-Note: py should be the command to run python 3. If it is not, you may need to use the full path to the python executable.
 
 This will create a file called ``ncpa-<version>.exe`` in the ``build`` directory.
 This is the installer for NCPA and can be used to install NCPA on a Windows system.
