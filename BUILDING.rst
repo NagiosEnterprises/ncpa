@@ -68,7 +68,7 @@ Clone the repository::
 
   git clone https://github.com/NagiosEnterprises/ncpa.git
 
-In a cmd.exe terminal with admin rights, run the following commands::
+In a Command Prompt/Terminal (cmd.exe) terminal with admin rights, run the following commands::
 
   cd C:\desired\build\directory\ncpa
 
@@ -76,10 +76,10 @@ Run the build script::
 
   py build\build_windows.py
 
-  Note: py should be the command to run python 3. If it is not, you may need to use the full path to the python executable.
+Note: py should be the command to run python 3. If it is not, you may need to use the full path to the python executable.
 
-  This will create a file called ``ncpa-<version>.exe`` in the ``build`` directory.
-  This is the installer for NCPA and can be used to install NCPA on a Windows system.
+This will create a file called ``ncpa-<version>.exe`` in the ``build`` directory.
+This is the installer for NCPA and can be used to install NCPA on a Windows system.
 
 
 Building on Linux
