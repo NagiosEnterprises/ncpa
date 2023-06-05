@@ -49,7 +49,7 @@ if not os.path.exists('build'):
     os.mkdir('build')
 
 sys.path.append(os.getcwd())
-subprocess.Popen([python_launcher, 'setup.py', 'build']).wait()
+subprocess.Popen([python_launcher, 'setup.py', 'build_exe']).wait()
 
 environ = os.environ.copy()
 environ['NCPA_BUILD_VER'] = version
