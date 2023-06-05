@@ -47,9 +47,10 @@ Install Prerequisites
   
   The easiest way to do this would be to install Visual Studio Community 2022 and follow the instructions below (as of June 2023).
     1. Install Microsoft Visual Studio 2022 (or later)
-    2. Install the *Python Development* workload and the optional *Python native development tools*
-    3. Install the *Universal Windows Development Tools* workload and the optional *Windows [your_windows_version] SDK*
-    4. Using your python installation: `"%pydir%\python" -m pip install --upgrade setuptools`
+    2. Select the *Python Development* workload and the optional *Python native development tools*
+    3. Select the *Universal Windows Development Tools* workload and the optional *Windows [your_windows_version] SDK*
+    4. Using your python installation: `"%pydir%" -m pip install --upgrade setuptools`
+    5. Install
 
 * NSIS
 
