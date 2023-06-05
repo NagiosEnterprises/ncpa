@@ -76,8 +76,6 @@ print("***** Starting NCPA version: ", __VERSION__)
 # Here, we only create the instances. They are configured later via setup_logger().
 parent_logger = logging.getLogger("parent")
 
-# logging.basicConfig(filename=os.path.join("..", "..", "..", "Program Files (x86)", "Nagios", "NCPA", "var", "log", "ncpa.log"), level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(message)s')
-
 
 # Define config defaults
 # We assign a lot of (but not all) defaults in the code, so let's keep them in one place.
@@ -160,8 +158,6 @@ cfg_defaults = {
             }
         }
 
-# logging.info("***** Starting NCPA version: %s", __VERSION__)
-
 # The base class for the Listener and Passive classes, which sets things
 # like options, config, autostart, etc so that they can be accesssed inside
 # the other classes
@@ -173,8 +169,6 @@ class Base():
         self.config = config
         self.has_error = has_error
         print(self.__class__.__name__ + " - init()")
-
-        # self.stopEvent = threading.Event() # TODO: Remove this
 
         if autostart:
             self.run()
@@ -188,13 +182,6 @@ class Base():
         self.logger.propagate = False
         logfile = get_filename(self.config.get(logger_name, 'logfile'))
         setup_logger(self.config, self.logger, logfile)
-
-    # def Run(self): # TODO: Remove this
-    #     self.run()
-        # self.stopEvent.wait()
-
-    # def Stop(self): # TODO: Remove this
-    #     self.stopEvent.set()
 
 
 # The listener, which serves the web GUI and API - starting in NCPA 3
