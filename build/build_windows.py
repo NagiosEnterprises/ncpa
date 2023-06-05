@@ -23,7 +23,7 @@ if len(sys.argv) > 1:
     buildtype = sys.argv[1]
 
 # Which python launcher command is available for Windows
-python_launcher = 'python' if shutil.which('python') else 'py'
+python_launcher = 'py' if shutil.which('py') else 'python'
 
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 nsi_store = os.path.join(basedir, 'build', 'resources', 'ncpa.nsi')
