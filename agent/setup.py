@@ -58,7 +58,6 @@ if __SYSTEM__ == 'nt':
                      ('../build/resources/nagios_installer.bmp'         , 'build_resources/nagios_installer.bmp'),
                      ('../build/resources/nagios_installer_logo.bmp'    , 'build_resources/nagios_installer_logo.bmp'),
                      ('../build/resources/ncpa.nsi'                     , 'build_resources/ncpa.nsi'),
-                     ('../build/windows/launchNCPA.bat'                 , 'build_resources/launchNCPA.bat'),
                      (sys.executable                                    , 'python.exe')]
     
     # include pywin32 modules
