@@ -18,7 +18,6 @@ Prerequisites
 * `Git for Windows <https://git-scm.com/download/win>`_
 * \*Python 3.11.x (`Download <https://www.python.org/downloads/>`_)
 * \*OpenSSL for Windows (`Download <https://slproweb.com/products/Win32OpenSSL.html>`_) *(Requires admin rights)*
-* `Microsoft Visual C++ Compiler Build Tools <https://wiki.python.org/moin/WindowsCompilers>`_ *(Requires admin rights/version used is based on version of python installed)*
 * `NSIS 3 <http://nsis.sourceforge.net/Download>`_ *(Requires admin rights)*
 
 \* : Use 32-bit versions if you will deploy to 32-bit systems
@@ -38,18 +37,6 @@ Install Prerequisites
 
   1. Download and install the OpenSSL package. (`see prerequisites <#prerequisites>`_)
   2. Be sure to make a not of the installation directory while installing.
-
-* Microsoft Visual C++ Compiler` Build Tools
-
-  1. Download and run the installer. (`prerequisites <#prerequisites>`_)
-  2. Follow the instructions outlined in the article in prerequisite section to ensure you install the proper version for your python version
-  
-  The easiest way to do this would be to install Visual Studio Community 2022 and follow the instructions below (as of June 2023).
-    1. Install Microsoft Visual Studio 2022 (or later)
-    2. Select the *Python Development* workload and the optional *Python native development tools*
-    3. Select the *Universal Windows Development Tools* workload and the optional *Windows [your_windows_version] SDK*
-    4. Using your python installation: `"%pydir%" -m pip install --upgrade setuptools`
-    5. Install
 
 * NSIS
 
@@ -71,9 +58,25 @@ Install the Last Modules
 Build NCPA
 ~~~~~~~~~~
 
+In your Git Bash terminal (or cmd.exe with `C:\Program Files\Git\usr\bin` added to your PATH), run the following commands:
+
+Navigate to your desired build directory::
+
+  cd C:\desired\build\directory
+
+Clone the repository::
+
+  git clone https://github.com/NagiosEnterprises/ncpa.git
+
+In a cmd.exe terminal with admin rights, run the following commands::
+
+  cd /c/desired/build/directory/ncpa
+
 Run the build script::
 
-  "%pydir%\python" build\build_windows.py
+  py build\build_windows.py
+
+  Note: py should be the command to run python 3. If it is not, you may need to use the full path to the python executable.
 
   This will create a file called ``ncpa-<version>.exe`` in the ``build`` directory.
   This is the installer for NCPA and can be used to install NCPA on a Windows system.
