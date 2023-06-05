@@ -170,7 +170,6 @@ class Base():
     the other classes
     """
     def __init__(self, options, config, has_error, autostart=False):
-        parent_logger.info("init Base class")
         self.options = options
         self.config = config
         self.has_error = has_error
@@ -343,7 +342,7 @@ class Passive(Base):
                     logger.info("run() - doing DB maintenance")
                     self.db.run_db_maintenance(self.config)
                     next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
-                logger.info("run() loop - sleeping for 5 seconds")
+                logger.debug("run() - loop - running")
                 time.sleep(5)
         except Exception as e:
             logger.exception("run() - exception: %s", e)
