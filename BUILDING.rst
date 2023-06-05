@@ -58,7 +58,7 @@ Install the Last Modules
 Build NCPA
 ~~~~~~~~~~
 
-In your Git Bash terminal (or cmd.exe with `C:\Program Files\Git\usr\bin` added to your PATH), run the following commands:
+In your Git Bash terminal (or cmd.exe with ``C:\Program Files\Git\usr\bin`` added to your PATH), run the following commands:
 
 Navigate to your desired build directory::
 
