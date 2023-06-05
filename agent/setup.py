@@ -36,7 +36,7 @@ if not version[-1].isdigit():
 # Files to be included in the package
 packages = ['idna', 'passive', 'listener', 'gevent', 'asyncio']
 includes = ['ncpa', 'jinja2.ext']
-excludes = ['Tkinter', 'tkinter', 'unittest']
+excludes = ['Tkinter', 'tkinter', 'unittest'] # not excluded (but was in 2.4.1): collections.sys, collections._weakref
 bin_includes = []
 include_files = [('var/log/ncpa.log'            , 'var/log/ncpa.log'),
                  ('var/log/ncpa_listener.log'   , 'var/log/ncpa_listener.log'),
@@ -61,6 +61,9 @@ if __SYSTEM__ == 'nt':
                      ('../build/windows/launchNCPA.bat'                 , 'build_resources/launchNCPA.bat'),
                      (sys.executable                                    , 'python.exe')]
     
+    # include pywin32 modules
+    packages += ['win32serviceutil', 'win32service', 'win32event', 'servicemanager', 'win32timezone']
+    
     ### build as a windows service -- not working
     # binary = Executable(script="setup_config.py",
     #                     base="Win32Service",
@@ -68,8 +71,7 @@ if __SYSTEM__ == 'nt':
     #                     icon="../build/resources/ncpa.ico")
 
     ### build as a windows executable -- working
-    binary = Executable('ncpa.py', 
-                        base=None,
+    binary = Executable(script='ncpa.py', 
                         icon='../build/resources/ncpa.ico')
 
 
