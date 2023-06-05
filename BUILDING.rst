@@ -41,11 +41,8 @@ Install Prerequisites
 
 * Microsoft Visual C++ Compiler` Build Tools
 
-  1. Download and run the installer. The easiest way to do this would be to install Visual 
-  Studio Community 2022 and follow the instructions from the link found in the `prerequisites <#prerequisites>`_.
-  
-  2. Follow the instructions outlined in the article in prerequisite section to
-  ensure you install the proper version for your python version
+  1. Download and run the installer. The easiest way to do this would be to install Visual Studio Community 2022 and follow the instructions from the link found in the `prerequisites <#prerequisites>`_.
+  2. Follow the instructions outlined in the article in prerequisite section to ensure you install the proper version for your python version
 
 * NSIS
 
