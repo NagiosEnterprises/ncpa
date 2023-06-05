@@ -56,5 +56,5 @@ DISPLAY_NAME = "Nagios - %s"
 MODULE_NAME = "ncpa"
 CLASS_NAME = "WinService"
 DESCRIPTION = "Nagios Cross-Platform Agent"
-AUTO_START = True
+AUTO_START = False
 SESSION_CHANGES = False
