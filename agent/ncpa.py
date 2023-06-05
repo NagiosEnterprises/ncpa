@@ -17,18 +17,22 @@ import ssl
 import time
 import datetime
 import tempfile
+import servicemanager
+import win32event
+import win32service
+import win32serviceutil
 
 import errno
 import signal
 
-from multiprocessing import Process, Value, freeze_support
-from gevent.pywsgi import WSGIServer
-from gevent.pool import Pool
-from geventwebsocket.handler import WebSocketHandler
-from logging.handlers import RotatingFileHandler
 from argparse import ArgumentParser
-from io import open
 from configparser import ConfigParser
+from gevent.pool import Pool
+from gevent.pywsgi import WSGIServer
+from geventwebsocket.handler import WebSocketHandler
+from io import open
+from logging.handlers import RotatingFileHandler
+from multiprocessing import Process, Value, freeze_support
 
 # Create the listener logger instance, now, because it is required by listener.server.
 # It will be configured later via setup_logger(). See note 'About Logging' below.
@@ -156,7 +160,7 @@ cfg_defaults = {
             }
         }
 
-logging.info("***** Starting NCPA version: %s", __VERSION__)
+# logging.info("***** Starting NCPA version: %s", __VERSION__)
 
 # The base class for the Listener and Passive classes, which sets things
 # like options, config, autostart, etc so that they can be accesssed inside
@@ -170,6 +174,8 @@ class Base():
         self.has_error = has_error
         print(self.__class__.__name__ + " - init()")
 
+        # self.stopEvent = threading.Event() # TODO: Remove this
+
         if autostart:
             self.run()
 
@@ -182,6 +188,14 @@ class Base():
         self.logger.propagate = False
         logfile = get_filename(self.config.get(logger_name, 'logfile'))
         setup_logger(self.config, self.logger, logfile)
+
+    # def Run(self): # TODO: Remove this
+    #     self.run()
+        # self.stopEvent.wait()
+
+    # def Stop(self): # TODO: Remove this
+    #     self.stopEvent.set()
+
 
 # The listener, which serves the web GUI and API - starting in NCPA 3
 # we will be using a seperate process that is forked off the main process
@@ -700,14 +714,31 @@ class Daemon():
         os.close(null)
 
 
-# Windows service handler, this can be ignored on systems like
-# Mac OS X and Linux since they use Daemon instead
-class WinService():
+# Windows service class
+# Mac OS X and Linux use the Daemon class instead
+class WinService(win32serviceutil.ServiceFramework):
+    _svc_name_ = 'NCPA'
+    _svc_display_name_ = 'NCPA Agent'
 
-    # No parameters here, everything should be set in Initialize()
-    def __init__(self):
-        parent_logger.debug("---------------- Winservice.__init__()")
-        self.initialize("")
+    def __init__(self, args):
+        self.logger = parent_logger
+        self.logger.debug("---------------- Winservice.initialize()")
+
+        # pywin32 service initialization
+        win32serviceutil.ServiceFramework.__init__(self, args)
+        # handle WaitStop event tells the SCM to stop the service
+        self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
+        self.running = False
+
+        # child process handles
+        self.p, self.l = None, None
+
+        self.options = get_options()
+        self.config = get_configuration()
+        self.has_error = Value('i', False)
+
+        self.setup_plugins()
+        self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
     def setup_plugins(self):
         plugin_path = self.config.get('plugin directives', 'plugin_path')
@@ -744,47 +775,41 @@ class WinService():
         print("Winservice.loglevel: ", log_level)
         logging.getLogger().setLevel(log_level)
 
-    def initialize(self, config_ini):
-        self.logger = parent_logger
-        self.logger.debug("---------------- Winservice.initialize()")
-        self.options = get_options()
-        self.config = get_configuration()
-        self.logger.debug("winservice-self.options:", self.options)
-        self.has_error = Value('i', False)
-        self.stopEvent = threading.Event()
-        self.stopRequestedEvent = threading.Event()
+    def SvcStop(self):
+        self.running = False
+        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+        win32event.SetEvent(self.hWaitStop) # set stop event for main thread
 
-        self.setup_plugins()
-        self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
+    def SvcDoRun(self):
+        # log starting of service to windows event log
+        servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+                              servicemanager.PYS_SERVICE_STARTED,
+                              (self._svc_name_, ''))
+        self.running = True
+        self.main()
 
-    # Called when the service is starting immediately after Initialize()
-    # use this to perform the work of the service; don't forget to set or check
-    # for the stop event or the service GUI will not respond to requests to
-    # stop the service
-    def run(self):
-        self.logger.info("---------------- Winservice.run()")
-        # self.logger.debug("---------------- Winservice.run()")
-        start_processes(self.options, self.config, self.has_error)
+    def main(self):
+        self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
+        # instantiate child processes
+        self.p, self.l = start_processes(self.options, self.config, self.has_error)
+        self.ReportServiceStatus(win32service.SERVICE_RUNNING)
 
-        # time.sleep(60)
-        # self.stop()
+        # wait for stop event
+        while self.running: # shouldn't loop, but just in case the event triggers without stop being called
+            win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
+            time.sleep(1)
+        
+        # kill/clean up child processes
+        self.p.terminate()
+        self.l.terminate()
+        self.p.join()
+        self.l.join()
 
-        self.logger.debug("---------------- Winservice.run BEFORE .RqEvent.wait()")
-        self.stopRequestedEvent.wait()
-        self.logger.debug("---------------- Winservice.run AFTER .RqEvent.wait()")
-        self.stopEvent.set()
-        self.logger.debug("---------------- Winservice.run.Event.set()")
-
-        self.logger.debug("---------------- Winservice.SvcRun()")
-        self.run()
-
-    # called when the service is being stopped by the service manager GUI
-    def stop(self):
-        self.logger.debug("---------------- Winservice.stop()")
-        self.stopRequestedEvent.set()
-        self.logger.debug("---------------- Winservice.stop.RqEvent.set()")
-        self.stopEvent.wait()
-        self.logger.debug("---------------- Winservice.stop.Event.wait()")
+        # log stopping of service to windows event log
+        servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+                              servicemanager.PYS_SERVICE_STOPPED,
+                              (self._svc_name_, ''))
+        self.ReportServiceStatus(win32service.SERVICE_STOPPED)
 
 
 # --------------------------
@@ -1032,11 +1057,18 @@ def main(has_error):
     if __SYSTEM__ == 'posix':
         d = Daemon(options, config, has_error, parent_logger)
         d.main()
-    else:
-        # start_processes(options, config, has_error)
-        w = WinService()
-        w.run()
 
 if __name__ == '__main__':
-    freeze_support()
-    main(has_error)
+    if __SYSTEM__ == 'posix':
+        main(has_error)
+
+    elif __SYSTEM__ == 'nt':
+        freeze_support() # needed for multiprocessing on Windows
+
+        # using win32serviceutil.ServiceFramework, run WinService as a service
+        if len(sys.argv) == 1:
+            servicemanager.Initialize()
+            servicemanager.PrepareToHostSingle(WinService)
+            servicemanager.StartServiceCtrlDispatcher()
+        else:
+            win32serviceutil.HandleCommandLine(WinService)
