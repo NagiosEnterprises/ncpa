@@ -410,8 +410,6 @@ Section ""
 
     ${If} $installed == "0"
         nsExec::Exec '$9 /c diskperf -Y'
-    ;    nsExec::Exec '$9 /c "$INSTDIR\ncpa.exe" --install ncpa' # old way (cx_Freeze service) TODO: remove once we're sure the new way works
-    ;    nsExec::Exec '$9 /c sc config ncpa start= delayed-auto'
         nsExec::Exec '$9 /c sc create NCPA binPath= "$INSTDIR\ncpa.exe" start= delayed-auto'
         nsExec::Exec '$9 /c netsh advfirewall firewall add rule name="NCPA" dir=in action=allow protocol=TCP localport=${PORT}'
         nsExec::Exec '$9 /c sc start NCPA'
@@ -431,7 +429,6 @@ Section "Uninstall"
     Delete "$INSTDIR\uninstall.exe"
 
     ReadEnvStr $9 COMSPEC
-    ; nsExec::Exec '$9 /c "$INSTDIR\ncpa.exe" --uninstall NCPA' # old way (as cx_Freeze service) -- TODO: remove once we know it's not needed
     nsExec::Exec '$9 /c sc stop NCPA'
     nsExec::Exec '$9 /c sc delete NCPA'
 
