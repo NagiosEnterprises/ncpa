@@ -75,6 +75,9 @@ Run the build script::
 
   "%pydir%\python" build\build_windows.py
 
+  This will create a file called ``ncpa-<version>.exe`` in the ``build`` directory.
+  This is the installer for NCPA and can be used to install NCPA on a Windows system.
+
 
 Building on Linux
 =================
