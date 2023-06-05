@@ -13,4 +13,4 @@ cffi
 appdirs
 kafka
 packaging
-pypiwin32
+pywin32
