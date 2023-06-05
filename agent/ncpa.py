@@ -9,14 +9,15 @@ if os.name == 'posix':
 else:
     monkey.patch_all(subprocess=True, thread=False)
 
-import threading
-import logging
-import glob
-import sys
-import ssl
-import time
 import datetime
+import glob
+import logging
+import ssl
+import sys
 import tempfile
+import time
+
+# pywin32 imports
 import servicemanager
 import win32event
 import win32service
@@ -90,7 +91,7 @@ cfg_defaults = {
             'general': {
                 'check_logging': '1',
                 'check_logging_time': '30',
-                'loglevel': logging.DEBUG,
+                'loglevel': logging.INFO,
                 'logmaxmb': '5',
                 'logbackups': '5',
                 'pidfile': 'var/run/ncpa.pid',
@@ -158,11 +159,16 @@ cfg_defaults = {
             }
         }
 
-# The base class for the Listener and Passive classes, which sets things
-# like options, config, autostart, etc so that they can be accesssed inside
-# the other classes
-class Base():
+# --------------------------
+# Core Classes
+# --------------------------
 
+class Base():
+    """
+    The base class for the Listener and Passive classes, which sets things
+    like options, config, autostart, etc so that they can be accesssed inside
+    the other classes
+    """
     def __init__(self, options, config, has_error, autostart=False):
         parent_logger.info("init Base class")
         self.options = options
@@ -183,12 +189,12 @@ class Base():
         logfile = get_filename(self.config.get(logger_name, 'logfile'))
         setup_logger(self.config, self.logger, logfile)
 
-
-# The listener, which serves the web GUI and API - starting in NCPA 3
-# we will be using a seperate process that is forked off the main process
-# to run the listener so all of NCPA is bundled in a single service
 class Listener(Base):
-
+    """
+    The listener, which serves the web GUI and API - starting in NCPA 3
+    we will be using a seperate process that is forked off the main process
+    to run the listener so all of NCPA is bundled in a single service
+    """
     def run(self):
         self.init_logger('listener')
         logger = self.logger
@@ -268,11 +274,11 @@ class Listener(Base):
             self.send_error()
             return
 
-
-# The passive service that runs in the background - this is run in a
-# separate thread since it is what the main process is used for
 class Passive(Base):
-
+    """
+    The passive service that runs in the background - this is run in a
+    separate thread since it is what the main process is used for
+    """
     def run_all_handlers(self, *args, **kwargs):
         """
         Will run all handlers that exist.
@@ -344,11 +350,12 @@ class Passive(Base):
             self.send_error()
             return
 
-
-# Re-done Daemon class does the startup and control options for the NCPA
-# program on Linux and Mac OS X
+# Main class - Linux/Mac OS X
 class Daemon():
-
+    """
+    Re-done Daemon class does the startup and control options for the NCPA
+    program on Linux and Mac OS X
+    """
     # Set the options
     def __init__(self, options, config, has_error, logger):
         self.logger = logger
@@ -700,10 +707,12 @@ class Daemon():
                     raise
         os.close(null)
 
-
-# Windows service class
-# Mac OS X and Linux use the Daemon class instead
+# Main class - Windows
 class WinService(win32serviceutil.ServiceFramework):
+    """
+    Windows service class
+    Mac OS X and Linux use the Daemon class instead
+    """
     _svc_name_ = 'NCPA'
     _svc_display_name_ = 'NCPA Agent'
 
@@ -717,8 +726,8 @@ class WinService(win32serviceutil.ServiceFramework):
         self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
         self.running = False
 
-        # child process handles
-        self.p, self.l = None, None
+        # child process handles (Passive, Listener)
+        self.p, self.l = None, None 
 
         self.options = get_options()
         self.config = get_configuration()
@@ -733,7 +742,6 @@ class WinService(win32serviceutil.ServiceFramework):
         self.abs_plugin_path = os.path.normpath(abs_plugin_path)
         self.config.set('plugin directives', 'plugin_path', self.abs_plugin_path)
 
-    # Set up the logger
     def setup_logging(self, *args, **kwargs):
         config = dict(self.config.items('general', 1))
 
@@ -803,9 +811,8 @@ class WinService(win32serviceutil.ServiceFramework):
 # Utility Functions
 # --------------------------
 
-
-# Gets the proper file name when the application is frozen
 def get_filename(file):
+    """Get the proper file name when the application is frozen"""
     parent_logger.debug("get_filename(%s)", file)
     if __FROZEN__:
         appdir = os.path.dirname(sys.executable)
@@ -813,9 +820,8 @@ def get_filename(file):
         appdir = os.path.dirname(__file__)
     return os.path.abspath(os.path.join(appdir, file))
 
-
-# Get all the configuration options and return the config parser for them
 def get_configuration(config=None, configdir=None):
+    """Get the configuration options and return the config parser for them"""
     parent_logger.debug("get_configuration()")
 
     # Use default config/directory if none is given to us
@@ -835,7 +841,6 @@ def get_configuration(config=None, configdir=None):
     cp.read_dict(cfg_defaults)
     cp.read(config_filenames)
     return cp
-
 
 def chown(user_uid, user_gid, fn):
     """Change the ownership of a file to match the daemon uid/gid"""
@@ -862,7 +867,6 @@ def chown(user_uid, user_gid, fn):
         except OSError as err:
             sys.exit("can't chown(%s, %d, %d): %s, %s" %
             (repr(fn), uid, gid, err.errno, err.strerror))
-
 
 def setup_logger(config, loggerinstance, logfile):
     """Configure the logging module"""
@@ -905,10 +909,8 @@ def setup_logger(config, loggerinstance, logfile):
     hndlrs = loggerinstance.handlers
     loggerinstance.debug("Started log %s! Handlers: %s", loggerinstance, hndlrs)
 
-
-# Actually starts the processes for the components that will be used
 def start_processes(options, config, has_error):
-
+    """Start the processes for the listener and passive components"""
     try:
         # Create the database structure for checks
         db = database.DB()
@@ -933,16 +935,14 @@ def start_processes(options, config, has_error):
         parent_logger.exception(e)
         sys.exit(1)
 
-# Provides global access for options for WinService
 def get_options():
+    """Get the options for the application (returns options to WinService)"""
     global options
     parent_logger.debug("get_options()")
     return options
 
-has_error = Value('i', False)
-
-# This handles calls to the main NCPA binary
 def main(has_error):
+    """Main function for the application on Linux/Mac OS X"""
     global options
     parser = ArgumentParser(description='''NCPA has multiple options and can
         be used to run Python scripts with the embedded version of Python or
@@ -1045,11 +1045,16 @@ def main(has_error):
         d = Daemon(options, config, has_error, parent_logger)
         d.main()
 
+# --------------------------
+# Launch the application
+# --------------------------
+
+has_error = Value('i', False)
 if __name__ == '__main__':
-    if __SYSTEM__ == 'posix':
+    if __SYSTEM__ == 'posix': # Linux/Mac OS X
         main(has_error)
 
-    elif __SYSTEM__ == 'nt':
+    elif __SYSTEM__ == 'nt': # Windows
         freeze_support() # needed for multiprocessing on Windows
 
         # using win32serviceutil.ServiceFramework, run WinService as a service
