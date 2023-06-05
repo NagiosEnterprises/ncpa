@@ -3,6 +3,10 @@ import shutil
 import subprocess
 import sys
 
+# --------------------------
+# Configuration/Setup
+# --------------------------
+
 # Grab command line arguments
 buildtype = 'release'
 buildtype = 'nightly'
@@ -49,7 +53,16 @@ if not os.path.exists('build'):
     os.mkdir('build')
 
 sys.path.append(os.getcwd())
+
+# --------------------------
+# build with cx_Freeze 
+# --------------------------
+
 subprocess.Popen([python_launcher, 'setup.py', 'build_exe']).wait()
+
+# --------------------------
+# build NSIS installer and copy to build directory
+# --------------------------
 
 environ = os.environ.copy()
 environ['NCPA_BUILD_VER'] = version
