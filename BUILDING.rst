@@ -32,8 +32,7 @@ Install Prerequisites
 * Python
 
   1. Download and install Python 3.x. (`see prerequisites <#prerequisites>`_)
-  2. Execute the installer as usual.
-  3. Be sure to check the box to add Python to your PATH.
+  2. Execute the installer as usual, making sure to check the box to add Python to your PATH (on the first page).
 
 * OpenSSL
 
