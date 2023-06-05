@@ -940,7 +940,7 @@ def get_options():
     parent_logger.debug("get_options()")
     return options
 
-def main(has_error):
+def mainPosix(has_error):
     """Main function for the application on Linux/Mac OS X"""
     global options
     parser = ArgumentParser(description='''NCPA has multiple options and can
@@ -1051,7 +1051,7 @@ def main(has_error):
 has_error = Value('i', False)
 if __name__ == '__main__':
     if __SYSTEM__ == 'posix': # Linux/Mac OS X
-        main(has_error)
+        mainPosix(has_error)
 
     elif __SYSTEM__ == 'nt': # Windows
         freeze_support() # needed for multiprocessing on Windows
