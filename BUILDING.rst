@@ -33,6 +33,7 @@ Install Prerequisites
 
   1. Download and install Python 3.x. (`see prerequisites <#prerequisites>`_)
   2. Execute the installer as usual.
+  3. Be sure to check the box to add Python to your PATH.
 
 * OpenSSL
 
@@ -41,8 +42,14 @@ Install Prerequisites
 
 * Microsoft Visual C++ Compiler` Build Tools
 
-  1. Download and run the installer. The easiest way to do this would be to install Visual Studio Community 2022 and follow the instructions from the link found in the `prerequisites <#prerequisites>`_.
+  1. Download and run the installer. (`prerequisites <#prerequisites>`_)
   2. Follow the instructions outlined in the article in prerequisite section to ensure you install the proper version for your python version
+  
+  The easiest way to do this would be to install Visual Studio Community 2022 and follow the instructions below (as of June 2023).
+    1. Install Microsoft Visual Studio 2022 (or later)
+    2. Install the *Python Development* workload and the optional *Python native development tools*
+    3. Install the *Universal Windows Development Tools* workload and the optional *Windows [your_windows_version] SDK*
+    4. Using your python installation: `"%pydir%\python" -m pip install --upgrade setuptools`
 
 * NSIS
 
