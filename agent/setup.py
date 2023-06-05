@@ -63,7 +63,7 @@ if __SYSTEM__ == 'nt':
     ### build as a windows executable -- NSIS will install it as a service
     binary = Executable(script='ncpa.py', 
                         icon='../build/resources/ncpa.ico')
-
+#
 
 # Specific build settings for Linux / Max OS X
 elif __SYSTEM__ == 'posix':
@@ -92,7 +92,7 @@ elif __SYSTEM__ == 'posix':
                           ('/opt/freeware/lib/libgcc_s.a'       , 'libgcc_s.a')]
 
     binary = Executable('ncpa.py', base=None)
-
+#
 
 # Apply build options
 buildOptions = dict(includes=includes,
