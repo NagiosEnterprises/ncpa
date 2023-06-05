@@ -62,7 +62,7 @@ In your Git Bash terminal (or cmd.exe with `C:\Program Files\Git\usr\bin` added 
 
 Navigate to your desired build directory::
 
-  cd C:\desired\build\directory
+  cd /c/desired/build/directory
 
 Clone the repository::
 
@@ -70,7 +70,7 @@ Clone the repository::
 
 In a cmd.exe terminal with admin rights, run the following commands::
 
-  cd /c/desired/build/directory/ncpa
+  cd C:\desired\build\directory\ncpa
 
 Run the build script::
 
