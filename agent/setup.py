@@ -12,9 +12,6 @@ import os
 import platform
 from cx_Freeze import setup, Executable
 
-import cx_Freeze
-print("***** cx_Freeze version: ", cx_Freeze.__version__)
-
 # Defined constants
 __ARCH__ = platform.architecture()[0].lower()
 __SYSTEM__ = os.name
@@ -36,7 +33,7 @@ if not version[-1].isdigit():
 # Files to be included in the package
 packages = ['idna', 'passive', 'listener', 'gevent', 'asyncio']
 includes = ['ncpa', 'jinja2.ext']
-excludes = ['Tkinter', 'tkinter', 'unittest'] # not excluded (but was in 2.4.1): collections.sys, collections._weakref
+excludes = ['Tkinter', 'tkinter', 'unittest']
 bin_includes = []
 include_files = [('var/log/ncpa.log'            , 'var/log/ncpa.log'),
                  ('var/log/ncpa_listener.log'   , 'var/log/ncpa_listener.log'),
@@ -62,14 +59,8 @@ if __SYSTEM__ == 'nt':
     
     # include pywin32 modules
     packages += ['win32serviceutil', 'win32service', 'win32event', 'servicemanager', 'win32timezone']
-    
-    ### build as a windows service -- not working
-    # binary = Executable(script="setup_config.py",
-    #                     base="Win32Service",
-    #                     target_name="ncpaservice.exe",
-    #                     icon="../build/resources/ncpa.ico")
 
-    ### build as a windows executable -- working
+    ### build as a windows executable -- NSIS will install it as a service
     binary = Executable(script='ncpa.py', 
                         icon='../build/resources/ncpa.ico')
 
@@ -123,7 +114,7 @@ setup(name = "NCPA",
 )
 
 if __SYSTEM__ == 'nt':
-#     # Rename to enable NSI to find stuff
+    # Rename to enable NSI to find stuff
     if platform.architecture()[0].lower() == '32bit':
         os.rename(os.path.join('build', 'exe.win32-3.11'), os.path.join('build', 'NCPA'))
     elif platform.architecture()[0].lower() == '64bit':
@@ -131,7 +122,6 @@ if __SYSTEM__ == 'nt':
     else:
         print("unhandled architecture")
         sys.exit(1)
-
 
     shutil.copy(os.path.join('build','NCPA','build_resources','ncpa.nsi'), 'build/')
 
