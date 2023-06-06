@@ -8,7 +8,7 @@ SSLVER="3.0.8"
 ZLIBVER="1.2.13"
 
 # Make python command, e.g. python3.11
-PYTHONCMD="python$(echo $PYTHONVER | sed -r 's/(3.[1-9]+)\..+/\1/g')"
+PYTHONCMD="python$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')"
 echo -e "***** linux/setup.sh - PYTHONCMD: $PYTHONCMD"
 
 set +e
@@ -23,7 +23,7 @@ SKIP_PYTHON=0
 . $BUILD_DIR/linux/installers.sh
 
 ## Current SSL major version, e.g. 3
-ssl_maj_ver=$(openssl version | grep -e "[1-9].[0-9].[0-9]" -o | head -n1 | sed -e 's/\([0-9]*\)\..*/\1/')
+ssl_maj_ver=$(openssl version | egrep "[1-9].[0-9].[0-9]" | head -n1 | sed -e 's/^.*SSL \([0-9]*\)\..*/\1/')
 
 install_prereqs() {
     echo -e "***** linux/setup.sh - install_prereqs()"
