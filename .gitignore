@@ -18,7 +18,7 @@ launch.json
 
 agent/build
 agent/plugins/*
-agent/var/log/*
+# agent/var/log/*
 agent/var/run/*.pid
 
 build/resources/*.tgz
