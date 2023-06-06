@@ -288,5 +288,10 @@ update_py_packages() {
     echo -e "***** linux/installers.sh - update_py_packages() - linking cx_freeze lib-dynload to: $pylibpath/lib-dynload"
 
     mv $pylibpath/site-packages/cx_Freeze/bases/lib-dynload $pylibpath/site-packages/cx_Freeze/bases/lib-dynload_Orig
+
+    # Copy any libs that cx_freeze has, but Python doesn't
+    cp -n $pylibpath/site-packages/cx_Freeze/bases/lib-dynload $pylibpath/lib-dynload
+
+    # Link cx_freeze lib-dynload to python's lib-dynload to make sure we are using desied OpenSSL, etc.
     ln -s $pylibpath/lib-dynload $pylibpath/site-packages/cx_Freeze/bases/lib-dynload
 }
