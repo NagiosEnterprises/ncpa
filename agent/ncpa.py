@@ -105,7 +105,7 @@ cfg_defaults = {
             'general': {
                 'check_logging': '1',
                 'check_logging_time': '30',
-                'loglevel': logging.INFO,
+                'loglevel': logging.DEBUG,
                 'logmaxmb': '5',
                 'logbackups': '5',
                 'pidfile': 'var/run/ncpa.pid',
@@ -954,7 +954,7 @@ def get_options():
     parent_logger.debug("get_options()")
     return options
 
-def mainPosix(has_error):
+def main(has_error):
     """Main function for the application on Linux/Mac OS X"""
     global options
     parser = ArgumentParser(description='''NCPA has multiple options and can
@@ -1057,19 +1057,7 @@ def mainPosix(has_error):
     if __SYSTEM__ == 'posix':
         d = Daemon(options, config, has_error, parent_logger)
         d.main()
-
-# --------------------------
-# Launch the application
-# --------------------------
-
-has_error = Value('i', False)
-if __name__ == '__main__':
-    if __SYSTEM__ == 'posix': # Linux/Mac OS X
-        mainPosix(has_error)
-
-    elif __SYSTEM__ == 'nt': # Windows
-        freeze_support() # needed for multiprocessing on Windows
-
+    elif __SYSTEM__ == 'nt':
         # using win32serviceutil.ServiceFramework, run WinService as a service
         if len(sys.argv) == 1:
             servicemanager.Initialize()
@@ -1077,3 +1065,13 @@ if __name__ == '__main__':
             servicemanager.StartServiceCtrlDispatcher()
         else:
             win32serviceutil.HandleCommandLine(WinService)
+
+# --------------------------
+# Launch the application
+# --------------------------
+
+has_error = Value('i', False)
+if __name__ == '__main__':
+    if __SYSTEM__ == 'nt': # Windows
+        freeze_support() # needed for multiprocessing on Windows
+    main(has_error)
