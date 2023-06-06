@@ -49,6 +49,11 @@
 # NAME = "ncpa"                     -- name of the service
 # DISPLAY_NAME = "Nagios - ncpa"    -- description of the service
 
+
+# -------
+# This is NOT used anymore. It is only here for reference.
+# -------
+
 from __future__ import annotations
 
 NAME = "%s"
