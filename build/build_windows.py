@@ -1,13 +1,29 @@
+"""
+Builds the Windows installer for NCPA.
+
+Run as Administrator on Windows
+-pip installs prereqs to the python interpreter that is running this script
+-cx_Freeze builds the executable
+-NSIS builds the installer
+"""
+
 import os
 import shutil
 import subprocess
 import sys
+
+# --------------------------
+# Configuration/Setup
+# --------------------------
 
 # Grab command line arguments
 buildtype = 'release'
 buildtype = 'nightly'
 if len(sys.argv) > 1:
     buildtype = sys.argv[1]
+
+# Which python launcher command is available for Windows
+python_launcher = 'py' if shutil.which('py') else 'python'
 
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 nsi_store = os.path.join(basedir, 'build', 'resources', 'ncpa.nsi')
@@ -29,7 +45,7 @@ except:
 # Building nightly versions requires a git pull and pip upgrade
 if buildtype == 'nightly':
 	# subprocess.Popen(['git', 'pull']).wait()
-	subprocess.Popen(['pip', 'install', '--upgrade', '-r', os.path.join(basedir, 'build', 'resources', 'require.win.txt')]).wait()
+	subprocess.Popen([python_launcher, '-m', 'pip', 'install', '--upgrade', '-r', os.path.join(basedir, 'build', 'resources', 'require.win.txt')]).wait()
 
 # Remove old build
 subprocess.Popen(['rmdir', os.path.join(basedir, 'agent', 'build'), '/s', '/q'], shell=True).wait()
@@ -42,8 +58,20 @@ if not os.path.exists('var'):
 if not os.path.exists('plugins'):
     os.mkdir('plugins')
 
+if not os.path.exists('build'):
+    os.mkdir('build')
+
 sys.path.append(os.getcwd())
-subprocess.Popen(['python', 'setup.py', 'build_exe']).wait()
+
+# --------------------------
+# build with cx_Freeze 
+# --------------------------
+
+subprocess.Popen([python_launcher, 'setup.py', 'build_exe']).wait()
+
+# --------------------------
+# build NSIS installer and copy to build directory
+# --------------------------
 
 environ = os.environ.copy()
 environ['NCPA_BUILD_VER'] = version

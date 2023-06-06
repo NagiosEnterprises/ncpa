@@ -1,3 +1,7 @@
+;
+; NSIS Windows Installer Script for NCPA
+;
+
 !include "MUI2.nsh"
 !include "nsDialogs.nsh"
 !include "winmessages.nsh"
@@ -81,6 +85,7 @@ VIAddVersionKey "LegalCopyright" "2014-2023 ${COMPANY}"
 VIAddVersionKey "FileDescription" "NCPA Setup"
 
 ; Language values for pages
+!define LANG_ENGLISH 1033
 LangString PAGE_TITLE ${LANG_ENGLISH} "Nagios Cross-Platform Agent (${NAME})"
 LangString PAGE_SUBTITLE ${LANG_ENGLISH} "Windows Version - ${NCPA_VERSION}"
 LangString LICENSE_TOP ${LANG_ENGLISH} "License Agreement"
@@ -189,7 +194,7 @@ Function CheckInstall
         ExpandEnvStrings $0 COMSPEC
 
         ; Get status of the service
-        nsExec::ExecToStack '"$SYSDIR\cmd.exe" /c "sc QUERY ncpa | FIND /C "RUNNING""'
+        nsExec::ExecToStack '"$SYSDIR\cmd.exe" /c "sc QUERY NCPA | FIND /C "RUNNING""'
         Pop $0  # contains return code
         Pop $1  # contains output
         StrCpy $1 $1 1
@@ -402,25 +407,23 @@ Section ""
     ; Install the service on new install
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c diskperf -Y'
-    nsExec::Exec '$9 /c "$INSTDIR\ncpa.exe" --install NCPA'
-    nsExec::Exec '$9 /c sc config NCPA start= delayed-auto'
+    nsExec::Exec '$9 /c sc create NCPA binPath= "$INSTDIR\ncpa.exe" start= delayed-auto'
 
     ; Start the listener and passive services
     nsExec::Exec '$9 /c sc start NCPA'
 
     ${If} $installed == "0"
         nsExec::Exec '$9 /c diskperf -Y'
-        nsExec::Exec '$9 /c "$INSTDIR\ncpa.exe" --install ncpa'
-        nsExec::Exec '$9 /c sc config ncpa start= delayed-auto'
+        nsExec::Exec '$9 /c sc create NCPA binPath= "$INSTDIR\ncpa.exe" start= delayed-auto'
         nsExec::Exec '$9 /c netsh advfirewall firewall add rule name="NCPA" dir=in action=allow protocol=TCP localport=${PORT}'
-        nsExec::Exec '$9 /c sc start ncpa'
+        nsExec::Exec '$9 /c sc start NCPA'
     ${EndIf}
 
     ; Start the listener and passive services
     ; if they were running before upgrade (or if this is a new install)
 
     ${If} $status_service == "1"
-        nsExec::Exec '$9 /c sc start ncpa'
+       nsExec::Exec '$9 /c sc start NCPA'
     ${EndIf}
 
 SectionEnd
@@ -430,8 +433,19 @@ Section "Uninstall"
     Delete "$INSTDIR\uninstall.exe"
 
     ReadEnvStr $9 COMSPEC
-    nsExec::Exec '$9 /c "$INSTDIR\ncpa.exe" --uninstall NCPA'
+    nsExec::Exec '$9 /c sc stop NCPA'
+    nsExec::Exec '$9 /c sc delete NCPA'
 
+    ; sleep until the service is stopped
+    nsExec::Exec '$9 /c sc query NCPA'
+    Pop $0
+    ${While} $0 != "1060"
+        Sleep 1000
+        nsExec::Exec '$9 /c sc query NCPA'
+        Pop $0
+    ${EndWhile}
+
+    ; not sure why this is double, but I don't want to mess with it if it's needed
     DeleteRegKey SHCTX "${UNINST_KEY}"
     DeleteRegKey SHCTX "${UNINST_KEY}"
 
