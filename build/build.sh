@@ -135,7 +135,7 @@ if [ $BUILD_TRAVIS -eq 0 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; 
 elif [ $BUILD_TRAVIS -eq 1 ]; then
 
     # Set up travis environment
-    useradd nagios
+    sudo useradd nagios
     cd $BUILD_DIR
     python -m pip install -r resources/require.txt --upgrade
     exit 0
@@ -207,7 +207,7 @@ fi
     # Set permissions
     chmod -R g+r $BUILD_DIR/ncpa
     chmod -R a+r $BUILD_DIR/ncpa
-    chown -R nagios:nagios $BUILD_DIR/ncpa/var
+    chown nagios:nagios $BUILD_DIR/ncpa/var
     chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
     chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
     chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
