@@ -722,103 +722,104 @@ class Daemon():
         os.close(null)
 
 # Main class - Windows
-class WinService(win32serviceutil.ServiceFramework):
-    """
-    Windows service class
-    Mac OS X and Linux use the Daemon class instead
-    """
-    _svc_name_ = 'NCPA'
-    _svc_display_name_ = 'NCPA Agent'
+if __SYSTEM__ == 'nt':
+    class WinService(win32serviceutil.ServiceFramework):
+        """
+        Windows service class
+        Mac OS X and Linux use the Daemon class instead
+        """
+        _svc_name_ = 'NCPA'
+        _svc_display_name_ = 'NCPA Agent'
 
-    def __init__(self, args):
-        self.logger = parent_logger
-        self.logger.debug("---------------- Winservice.initialize()")
+        def __init__(self, args):
+            self.logger = parent_logger
+            self.logger.debug("---------------- Winservice.initialize()")
 
-        # pywin32 service initialization
-        win32serviceutil.ServiceFramework.__init__(self, args)
-        # handle WaitStop event tells the SCM to stop the service
-        self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
-        self.running = False
+            # pywin32 service initialization
+            win32serviceutil.ServiceFramework.__init__(self, args)
+            # handle WaitStop event tells the SCM to stop the service
+            self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
+            self.running = False
 
-        # child process handles (Passive, Listener)
-        self.p, self.l = None, None
+            # child process handles (Passive, Listener)
+            self.p, self.l = None, None
 
-        self.options = get_options()
-        self.config = get_configuration()
-        self.has_error = Value('i', False)
+            self.options = get_options()
+            self.config = get_configuration()
+            self.has_error = Value('i', False)
 
-        self.setup_plugins()
-        self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
+            self.setup_plugins()
+            self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
-    def setup_plugins(self):
-        plugin_path = self.config.get('plugin directives', 'plugin_path')
-        abs_plugin_path = get_filename(plugin_path)
-        self.abs_plugin_path = os.path.normpath(abs_plugin_path)
-        self.config.set('plugin directives', 'plugin_path', self.abs_plugin_path)
+        def setup_plugins(self):
+            plugin_path = self.config.get('plugin directives', 'plugin_path')
+            abs_plugin_path = get_filename(plugin_path)
+            self.abs_plugin_path = os.path.normpath(abs_plugin_path)
+            self.config.set('plugin directives', 'plugin_path', self.abs_plugin_path)
 
-    def setup_logging(self, *args, **kwargs):
-        config = dict(self.config.items('general', 1))
+        def setup_logging(self, *args, **kwargs):
+            config = dict(self.config.items('general', 1))
 
-        # Now we grab the logging specific items
-        log_file = os.path.normpath(config['logfile'])
-        if not os.path.isabs(log_file):
-            log_file = get_filename(log_file)
+            # Now we grab the logging specific items
+            log_file = os.path.normpath(config['logfile'])
+            if not os.path.isabs(log_file):
+                log_file = get_filename(log_file)
 
-        logging.getLogger().handlers = []
+            logging.getLogger().handlers = []
 
-        # Max size of log files will be 20MB, and we'll keep one of them as backup
-        max_log_size_bytes = config.getint('logmaxmb', 5)
-        max_log_rollovers = config.getint('logbackups', 5)
-        max_file_size = max_log_size_bytes * 1024 * 1024
-        file_handler = logging.handlers.RotatingFileHandler(log_file,
-                                                            maxBytes=max_file_size,
-                                                            backupCount=max_log_rollovers)
-        file_format = logging.Formatter('%(asctime)s:%(levelname)s:%(module)s:%(message)s')
-        file_handler.setFormatter(file_format)
+            # Max size of log files will be 20MB, and we'll keep one of them as backup
+            max_log_size_bytes = config.getint('logmaxmb', 5)
+            max_log_rollovers = config.getint('logbackups', 5)
+            max_file_size = max_log_size_bytes * 1024 * 1024
+            file_handler = logging.handlers.RotatingFileHandler(log_file,
+                                                                maxBytes=max_file_size,
+                                                                backupCount=max_log_rollovers)
+            file_format = logging.Formatter('%(asctime)s:%(levelname)s:%(module)s:%(message)s')
+            file_handler.setFormatter(file_format)
 
-        logging.getLogger().addHandler(file_handler)
+            logging.getLogger().addHandler(file_handler)
 
-        # Set log level
-        log_level_str = config.get('loglevel', 'INFO').upper()
-        log_level = getattr(logging, log_level_str, logging.INFO)
-        print("Winservice.loglevel: ", log_level)
-        logging.getLogger().setLevel(log_level)
+            # Set log level
+            log_level_str = config.get('loglevel', 'INFO').upper()
+            log_level = getattr(logging, log_level_str, logging.INFO)
+            print("Winservice.loglevel: ", log_level)
+            logging.getLogger().setLevel(log_level)
 
-    def SvcStop(self):
-        self.running = False
-        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
-        win32event.SetEvent(self.hWaitStop) # set stop event for main thread
+        def SvcStop(self):
+            self.running = False
+            self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+            win32event.SetEvent(self.hWaitStop) # set stop event for main thread
 
-    def SvcDoRun(self):
-        # log starting of service to windows event log
-        servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                              servicemanager.PYS_SERVICE_STARTED,
-                              (self._svc_name_, ''))
-        self.running = True
-        self.main()
+        def SvcDoRun(self):
+            # log starting of service to windows event log
+            servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+                                servicemanager.PYS_SERVICE_STARTED,
+                                (self._svc_name_, ''))
+            self.running = True
+            self.main()
 
-    def main(self):
-        self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
-        # instantiate child processes
-        self.p, self.l = start_processes(self.options, self.config, self.has_error)
-        self.ReportServiceStatus(win32service.SERVICE_RUNNING)
+        def main(self):
+            self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
+            # instantiate child processes
+            self.p, self.l = start_processes(self.options, self.config, self.has_error)
+            self.ReportServiceStatus(win32service.SERVICE_RUNNING)
 
-        # wait for stop event
-        while self.running: # shouldn't loop, but just in case the event triggers without stop being called
-            win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
-            time.sleep(1)
+            # wait for stop event
+            while self.running: # shouldn't loop, but just in case the event triggers without stop being called
+                win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
+                time.sleep(1)
 
-        # kill/clean up child processes
-        self.p.terminate()
-        self.l.terminate()
-        self.p.join()
-        self.l.join()
+            # kill/clean up child processes
+            self.p.terminate()
+            self.l.terminate()
+            self.p.join()
+            self.l.join()
 
-        # log stopping of service to windows event log
-        servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                              servicemanager.PYS_SERVICE_STOPPED,
-                              (self._svc_name_, ''))
-        self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+            # log stopping of service to windows event log
+            servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+                                servicemanager.PYS_SERVICE_STOPPED,
+                                (self._svc_name_, ''))
+            self.ReportServiceStatus(win32service.SERVICE_STOPPED)
 
 
 # --------------------------
