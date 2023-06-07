@@ -282,19 +282,16 @@ update_py_packages() {
     $PYTHONBIN -m pip install --upgrade pip
     $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
 
-    # cx freeze doesn't grab the proper _sslxxx.so, so we copy in the real one.
+    # cx freeze doesn't grab the proper _sslxxx.so and other libs, so we copy in the real ones.
     pylibpath=$(echo $PYTHONBIN | sed 's/bin/lib/g')
-    ssl_so=$(basename $(ls $pylibpath/lib-dynload/_ssl*.so))
-    echo -e "***** linux/installers.sh - update_py_packages() - linking cx_freeze lib-dynload to: $pylibpath/lib-dynload"
+    echo -e "***** linux/installers.sh - update_py_packages() - copy $pylibpath/lib-dynload to cx_freeze lib-dynload"
 
-    if [ ! -d "$pylibpath/site-packages/cx_Freeze/bases/lib-dynload_Orig" ]; then
-        mkdir $pylibpath/site-packages/cx_Freeze/bases/lib-dynload_Orig
+    if [ ! -d "$pylibpath/site-packages/cx_Freeze/bases/lib-dynload_orig" ]; then
+        mkdir $pylibpath/site-packages/cx_Freeze/bases/lib-dynload_orig
     fi
-    cp $pylibpath/site-packages/cx_Freeze/bases/lib-dynload/* $pylibpath/site-packages/cx_Freeze/bases/lib-dynload_Orig/
+    cp $pylibpath/site-packages/cx_Freeze/bases/lib-dynload/* $pylibpath/site-packages/cx_Freeze/bases/lib-dynload_orig/
 
-    # Copy any libs that cx_freeze has, but Python doesn't
-    cp -n $pylibpath/site-packages/cx_Freeze/bases/lib-dynload/* $pylibpath/lib-dynload/
+    # Link python's lib-dynload to cx_freeze lib-dynload to make sure we are using desired OpenSSL, etc.
+    cp $pylibpath/lib-dynload/* $pylibpath/site-packages/cx_Freeze/bases/lib-dynload/
 
-    # Link cx_freeze lib-dynload to python's lib-dynload to make sure we are using desied OpenSSL, etc.
-    ln -s $pylibpath/lib-dynload $pylibpath/site-packages/cx_Freeze/bases/lib-dynload
 }
