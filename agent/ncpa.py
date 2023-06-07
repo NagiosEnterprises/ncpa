@@ -460,6 +460,20 @@ class Daemon():
         self.prepare_dirs()
 
         try:
+            # setup_logger must come after check_pid so that two
+            # processes don't write to the same log file, but before
+            # setup_root so that work done with root privileges can be
+            # logged.
+
+            if not self.options['passive_only'] or self.options['listener_only']:
+                setup_logger(self.config, listener_logger, '')
+
+            passive_logger = ''
+            if not self.options['listener_only'] or self.options['passive_only']:
+                passive_logger = logging.getLogger('passive')
+                passive_logger.propagate = False
+                setup_logger(self.config, passive_logger, self.passive_logfile)
+
             # Setup with root privileges
             self.setup_root()
 
@@ -936,13 +950,11 @@ def start_processes(options, config, has_error):
             p = Process(target=Passive, args=(options, config, has_error, True)) # old way
             p.daemon = True
             p.start()
-            # p = Passive(options, config, has_error, True)
 
         if not options.get('passive_only') or options.get('listener_only'):
             l = Process(target=Listener, args=(options, config, has_error, True))
             l.daemon = True
             l.start()
-            # l = Listener(listener, config, has_error, True)
 
         return p, l
 
@@ -1047,7 +1059,7 @@ def main(has_error):
         log.addHandler(logging.StreamHandler())
         log.setLevel('DEBUG')
 
-        p, l = start_processes(options, config, has_error, log, log)
+        p, l = start_processes(options, config, has_error, True)
 
         # Wait for exit
         print("Running in Debug Mode (https://localhost:5700/)\nPress enter to exit...\n", flush = True)
