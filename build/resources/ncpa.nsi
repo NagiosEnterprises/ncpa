@@ -453,14 +453,14 @@ Section "Uninstall"
     DeleteRegKey SHCTX "${UNINST_KEY}"
 
     ; Ask the user if they want to delete the config files
-    MessageBox MB_YESNO|MB_ICONQUESTION "Would you like to delete your NCPA configuration files?" IDYES Deleteall IDNO SaveConfigFiles
-    ; if they don't want to delete the config files, save them
-    Deleteall:
+    ; MessageBox MB_YESNO|MB_ICONQUESTION "Would you like to delete your NCPA configuration files?" IDYES Deleteall IDNO SaveConfigFiles
+    ; ; if they don't want to delete the config files, save them
+    ; Deleteall:
         RMDir /r "$INSTDIR"
-    SaveConfigFiles:
-        ; Save the config files
-        ExecWait "$9 /c move /Y $INSTDIR\etc $TEMP\ncpa_config"
-        RMDir /r "$INSTDIR"
-        CreateDirectory "$INSTDIR"
-        ExecWait "$9 /c move /Y $TEMP\ncpa_config $INSTDIR\etc"
+    ; SaveConfigFiles:
+    ;     ; Save the config files
+    ;     ExecWait "$9 /c move /Y $INSTDIR\etc $TEMP\ncpa_config"
+    ;     RMDir /r "$INSTDIR"
+    ;     CreateDirectory "$INSTDIR"
+    ;     ExecWait "$9 /c move /Y $TEMP\ncpa_config $INSTDIR\etc"
 SectionEnd
