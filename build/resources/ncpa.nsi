@@ -286,6 +286,7 @@ Section # "Create Config.ini"
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c sc stop ncpalistener'
     nsExec::Exec '$9 /c sc stop ncpapassive'
+    nsExec::Exec '$9 /c sc stop ncpa'
 
     ; Remove old log files for services and old passive section
     Delete "$INSTDIR\ncpa_listener.log"
@@ -342,7 +343,7 @@ Section # "Create Config.ini"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "hostname" "$nrdp_hostname"
 
     ; Set log locations for Windows
-    WriteINIStr $INSTDIR\etc\ncpa.cfg general "logfile" " var/log/ncpa.log"
+    ; WriteINIStr $INSTDIR\etc\ncpa.cfg general "logfile" " var/log/ncpa.log"
 
     SkipUpdateConfig:
     ; Don't overwrite the old config file...
