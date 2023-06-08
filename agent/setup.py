@@ -41,10 +41,10 @@ includes = ['ncpa', 'jinja2.ext']
 excludes = ['Tkinter', 'tkinter', 'unittest']
 bin_includes = []
 
-include_files = [('var/log/ncpa_listener.log', 'var/log/ncpa_listener.log'),
-                 ('var/log/ncpa_passive.log', 'var/log/ncpa_passive.log'),
-                 ('listener/templates', 'listener/templates'),
-                 ('listener/static', 'listener/static'),
+include_files = [('var/log/ncpa_listener.log'   , 'var/log/ncpa_listener.log'),
+                 ('var/log/ncpa_passive.log'    , 'var/log/ncpa_passive.log'),
+                 ('listener/templates'          , 'listener/templates'),
+                 ('listener/static'             , 'listener/static'),
                  ('../build/resources/LicenseAgreement.txt', 'build_resources/LicenseAgreement.txt'),
                  'etc',
                  'plugins']

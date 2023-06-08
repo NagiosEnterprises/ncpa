@@ -286,6 +286,9 @@ Section # "Create Config.ini"
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c sc stop ncpalistener'
     nsExec::Exec '$9 /c sc stop ncpapassive'
+    nsExec::Exec '$9 /c sc stop ncpa'
+    ; wait for the service(s) to stop
+    Sleep 2000
 
     ; Remove old log files for services and old passive section
     Delete "$INSTDIR\ncpa_listener.log"
@@ -342,7 +345,7 @@ Section # "Create Config.ini"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "hostname" "$nrdp_hostname"
 
     ; Set log locations for Windows
-    WriteINIStr $INSTDIR\etc\ncpa.cfg general "logfile" " var/log/ncpa.log"
+    ; WriteINIStr $INSTDIR\etc\ncpa.cfg general "logfile" " var/log/ncpa.log"
 
     SkipUpdateConfig:
     ; Don't overwrite the old config file...
@@ -449,6 +452,15 @@ Section "Uninstall"
     DeleteRegKey SHCTX "${UNINST_KEY}"
     DeleteRegKey SHCTX "${UNINST_KEY}"
 
-    RMDir /r "$INSTDIR"
-
+    ; Ask the user if they want to delete the config files
+    ; MessageBox MB_YESNO|MB_ICONQUESTION "Would you like to delete your NCPA configuration files?" IDYES Deleteall IDNO SaveConfigFiles
+    ; ; if they don't want to delete the config files, save them
+    ; Deleteall:
+        RMDir /r "$INSTDIR"
+    ; SaveConfigFiles:
+    ;     ; Save the config files
+    ;     ExecWait "$9 /c move /Y $INSTDIR\etc $TEMP\ncpa_config"
+    ;     RMDir /r "$INSTDIR"
+    ;     CreateDirectory "$INSTDIR"
+    ;     ExecWait "$9 /c move /Y $TEMP\ncpa_config $INSTDIR\etc"
 SectionEnd

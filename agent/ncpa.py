@@ -31,13 +31,6 @@ import sys
 import tempfile
 import time
 
-# pywin32 imports
-if os.name == 'nt':
-    import servicemanager
-    import win32event
-    import win32service
-    import win32serviceutil
-
 import errno
 import signal
 
@@ -65,6 +58,13 @@ if os.name == 'posix':
     import grp
     import pwd
 
+if os.name == 'nt':
+    # pywin32 imports
+    import servicemanager
+    import win32event
+    import win32service
+    import win32serviceutil
+
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
@@ -91,7 +91,6 @@ print("***** Starting NCPA version: ", __VERSION__)
 #
 # Here, we only create the instances. They are configured later via setup_logger().
 parent_logger = logging.getLogger("parent")
-
 
 # Define config defaults
 # We assign a lot of (but not all) defaults in the code, so let's keep them in one place.
