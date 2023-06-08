@@ -287,6 +287,8 @@ Section # "Create Config.ini"
     nsExec::Exec '$9 /c sc stop ncpalistener'
     nsExec::Exec '$9 /c sc stop ncpapassive'
     nsExec::Exec '$9 /c sc stop ncpa'
+    ; wait for the service(s) to stop
+    Sleep 2000
 
     ; Remove old log files for services and old passive section
     Delete "$INSTDIR\ncpa_listener.log"
