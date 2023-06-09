@@ -41,12 +41,24 @@ echo -e "***** Build rpm package"
     find $BUILD_RPM_DIR/RPMS -name "ncpa-$NCPA_VER*" -exec cp {} . \;
 )
 
+dist_ver="notcentos7"
+if [ "$distro" == "CentOS" ] && [ "$dist" == "el7" ]; then
+    dist_ver="centos7"
+fi
+
 # Convert into a deb package for Debian systems
-if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Raspbian" ]; then
+# CentOS 7 builds run on almost all linux variants and versions, so for
+# production purposes, we always generate a .deb when building on CentOS 7, too
+
+if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Raspbian" ] || [ "$dist_ver" == "centos7" ]; then
     echo -e "***** Convert to .deb"
 
     echo -e "***** Convert to .deb - apt install alien"
-    apt install alien
+    if [ "$dist_ver" == "centos7" ]; then
+        yum install alien
+    else
+        apt-get install alien
+    fi
 
     echo -e "***** Convert to .deb - mk debbuild dir"
     cd $BUILD_DIR
@@ -73,8 +85,8 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Ras
     cp debbuild/*.deb .
     cp debbuild/*.rpm .
 
-    # rm -rf *.rpm
+    if [ "$dist_ver" != "centos7" ]; then
+        rm -rf *.rpm
+    fi
     rm -rf debbuild
-    ls -al
-
 fi
