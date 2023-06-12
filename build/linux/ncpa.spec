@@ -116,6 +116,12 @@ fi
 # Only stop on actual uninstall not upgrades
 # TODO: Make upgrades from NCPA 2 -> 3 seemless (stop old services)
 if [ "$1" != "1" ]; then
+    if which chkconfig > /dev/null; then
+        /usr/local/ncpa/ncpa_listener --stop &> /dev/null
+        /usr/local/ncpa/ncpa_passive --stop &> /dev/null
+        chkconfig --del ncpa_lstener
+        chkconfig --del ncpa_passive
+    fi
     if [ `command -v systemctl` ]; then
         systemctl stop ncpa_listener
         systemctl stop ncpa_passive
