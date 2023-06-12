@@ -7,11 +7,11 @@ Changelog
 **Additions**
 
 - The python interpreter has been included as a binary file to run scripts through (some restrictions apply)
-- Configs can be written from inside the ncpa web GUI
+.. - Configs can be written from inside the ncpa web GUI
 
 **Updates**
 
-- Updated the version of Python to 3.9.x
+- Updated the version of Python to 3.11.x
 - The listener and passive services/daemons are now combined into one service/daemon called ncpa
 - Systems with systemd now use a service definition instead of init.d script
 
