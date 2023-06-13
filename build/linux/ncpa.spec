@@ -50,19 +50,34 @@ install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-service %{
 rm -rf %{buildroot}
 
 %pre
-if command -v systemctl > /dev/null
+if which chkconfig &> /dev/null; then
+    echo "Try to stop services with chkconfig"
+    /usr/local/ncpa/ncpa_listener --stop &> /dev/null
+    /usr/local/ncpa/ncpa_passive --stop &> /dev/null
+    chkconfig --del ncpa_listener
+    chkconfig --del ncpa_passive
+fi
+if command -v systemctl &> /dev/null
 then
+    echo "Try to stop services with systemctl"
+    systemctl stop ncpa_listener &> /dev/null || true
+    systemctl stop ncpa_passive &> /dev/null || true
     systemctl stop ncpa &> /dev/null || true
-else
+fi
+if command -v service &> /dev/null
+then
+    echo "Try to stop services with service"
+    service ncpa_listener stop &> /dev/null || true
+    service ncpa_passive stop &> /dev/null || true
     service ncpa stop &> /dev/null || true
 fi
 
-if ! getent group nagios > /dev/null
+if ! getent group nagios &> /dev/null
 then
     groupadd -r nagios
 fi
 
-if ! getent passwd nagios > /dev/null
+if ! getent passwd nagios &> /dev/null
 then
     useradd -r -g nagios nagios
 else
@@ -85,11 +100,11 @@ sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa
 sed -i "s|_BASEDIR_|$dir|" /usr/lib/systemd/system/ncpa.service
 
 
-if command -v systemctl > /dev/null; then
+if command -v systemctl &> /dev/null; then
     systemctl enable ncpa &> /dev/null
-elif which chkconfig > /dev/null; then
+elif which chkconfig &> /dev/null; then
     chkconfig --level 3,5 --add ncpa &> /dev/null
-elif which update-rc.d > /dev/null; then
+elif which update-rc.d &> /dev/null; then
     update-rc.d ncpa defaults &> /dev/null
 fi
 
@@ -104,7 +119,7 @@ then
     rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
 fi
 
-if command -v systemctl > /dev/null
+if command -v systemctl &> /dev/null
 then
     systemctl daemon-reload
     systemctl start ncpa
@@ -116,17 +131,20 @@ fi
 # Only stop on actual uninstall not upgrades
 # TODO: Make upgrades from NCPA 2 -> 3 seemless (stop old services)
 if [ "$1" != "1" ]; then
-    if which chkconfig > /dev/null; then
+    if which chkconfig &> /dev/null; then
         /usr/local/ncpa/ncpa_listener --stop &> /dev/null
         /usr/local/ncpa/ncpa_passive --stop &> /dev/null
         chkconfig --del ncpa_lstener
         chkconfig --del ncpa_passive
     fi
-    if [ `command -v systemctl` ]; then
+    if command -v systemctl &> /dev/null
+    then
         systemctl stop ncpa_listener
         systemctl stop ncpa_passive
         systemctl stop ncpa
-    else
+    fi
+    if command -v service &> /dev/null
+    then
         service ncpa_listener stop
         service ncpa_passive stop
         service ncpa stop
@@ -137,7 +155,7 @@ fi
 # Only do systemctl daemon-reload after uninstall
 if [ "$1" == "0" ]
 then
-    if command -v systemctl > /dev/null
+    if command -v systemctl &> /dev/null
     then
         systemctl daemon-reload
     fi
@@ -152,7 +170,7 @@ fi
 # Only run on upgrades (restart fixes db removal issue)
 if [ ! -f "$RPM_INSTALL_PREFIX/ncpa/var/ncpa.db" ]
 then
-    if command -v systemctl > /dev/null
+    if command -v systemctl &> /dev/null
     then
         systemctl restart ncpa
     else
