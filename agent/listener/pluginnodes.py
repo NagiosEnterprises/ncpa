@@ -14,7 +14,6 @@ import listener.server as server
 import signal
 from threading import Timer
 
-logger = logging.getLogger("listener")
 
 # Windows does not have the pwd and grp module and does not need it since only Unix
 # uses these modules to change permissions.
@@ -105,7 +104,7 @@ class PluginNode(nodes.RunnableNode):
 
         # Make our command line
         cmd = self.get_cmdline(instructions, sudo_plugins)
-        logger.debug("Running process with command line: `%s`", " ".join(cmd))
+        logging.debug("Running process with command line: `%s`", " ".join(cmd))
 
         # Run the command in a new subprocess
         run_time_start = time.time()
@@ -140,7 +139,7 @@ class PluginNode(nodes.RunnableNode):
                 " ".join(cmd), timeout
             )
             returncode = -1
-            logger.error(stdout)
+            logging.error(stdout)
 
         cleaned_stdout = str(
             "".join(stdout.decode("utf-8", "ignore"))
@@ -212,13 +211,10 @@ class PluginNode(nodes.RunnableNode):
 
 class PluginAgentNode(nodes.ParentNode):
     def __init__(self, name, *args, **kwargs):
-        logger.debug("Initializing PluginAgentNode: %s", name)
         self.name = name
 
     def setup_plugin_children(self, config):
-        logger.debug("Setting up plugin children")
         plugin_path = config.get("plugin directives", "plugin_path")
-        logger.debug("Plugin path: %s", plugin_path)
 
         # Get the follow_symlinks value
         try:
@@ -231,27 +227,23 @@ class PluginAgentNode(nodes.ParentNode):
         try:
             for root, dirs, files in os.walk(plugin_path, followlinks=follow_symlinks):
                 for plugin in files:
-                    logger.debug("Found plugin: %s", plugin)
                     if plugin == ".keep":
                         continue
                     plugin_abs_path = os.path.join(root, plugin)
                     if os.path.isfile(plugin_abs_path):
                         self.children[plugin] = PluginNode(plugin, plugin_abs_path)
         except OSError as exc:
-            logger.warning("Unable to access directory %s", plugin_path)
-            logger.warning(
+            logging.warning("Unable to access directory %s", plugin_path)
+            logging.warning(
                 "Unable to assemble plugins. Does the directory exist? - %r", exc
             )
 
     def accessor(self, path, config, full_path, args):
-        logger.debug("Accessing PluginAgentNode")
         self.setup_plugin_children(config)
         return super(PluginAgentNode, self).accessor(path, config, full_path, args)
 
     def walk(self, *args, **kwargs):
-        logger.debug("Walking PluginAgentNode")
         self.setup_plugin_children(kwargs["config"])
         plugins = list(self.children.keys())
-        logger.debug("Plugins: %s", plugins)
         plugins.sort()
         return {self.name: plugins}
