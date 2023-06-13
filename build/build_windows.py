@@ -22,6 +22,8 @@ buildtype = 'nightly'
 if len(sys.argv) > 1:
     buildtype = sys.argv[1]
 
+print("Building NCPA for Windows")
+
 # Which python launcher command is available for Windows
 python_launcher = 'py' if shutil.which('py') else 'python'
 
@@ -64,9 +66,49 @@ if not os.path.exists('build'):
 sys.path.append(os.getcwd())
 
 # --------------------------
+# save git hash to file
+# --------------------------
+
+GIT_LONG = "Not built under GIT"
+GIT_HASH_FILE = "NoGIT.githash"
+
+def run_cmd(cmd):
+     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+     output, error = process.communicate()
+     return output.strip().decode()
+
+print("\033[1;32;40m") # green on black
+
+try:
+    GIT_LONG = run_cmd("git rev-parse HEAD")
+    GIT_SHORT = run_cmd("git rev-parse --short HEAD")
+    GIT_UNCOMMITTED = run_cmd("git status --untracked-files=no --porcelain")
+
+    print("GIT_UNCOMMITED:", GIT_UNCOMMITTED)
+
+    if GIT_UNCOMMITTED:
+         GIT_LONG = f"{GIT_LONG}++ compiled with uncommitted changes"
+         GIT_SHORT = f"{GIT_SHORT}++"
+
+    GIT_HASH_FILE = f"git-{GIT_SHORT}.githash"
+
+    print("GIT_LONG:", GIT_LONG)
+    print("GIT_SHORT:", GIT_SHORT)
+    print("GIT_HASH_FILE:", GIT_HASH_FILE)
+
+except:
+    print("\033[1;31;40m") # red on black
+    print("GIT_LONG:", GIT_LONG)
+    print("GIT_SHORT:", GIT_SHORT)
+
+with open(os.path.join(basedir, 'build', GIT_HASH_FILE), 'w') as f:
+    f.write(GIT_LONG)
+
+# --------------------------
 # build with cx_Freeze
 # --------------------------
 
+print("\033[1;34;40m") # blue on black
 subprocess.Popen([python_launcher, 'setup.py', 'build_exe']).wait()
 
 # --------------------------
@@ -86,3 +128,16 @@ b.wait()
 
 shutil.copyfile(os.path.join(basedir, 'agent', 'build', 'ncpa-%s.exe' % version),
                 os.path.join(basedir, 'build', 'ncpa-%s.exe' % version))
+
+print("\033[1;32;40m") # green on black
+ASCII = """
+███╗   ██╗ ██████╗██████╗  █████╗
+████╗  ██║██╔════╝██╔══██╗██╔══██╗
+██╔██╗ ██║██║     ██████╔╝███████║
+██║╚██╗██║██║     ██╔═══╝ ██╔══██║
+██║ ╚████║╚██████╗██║     ██║  ██║
+╚═╝  ╚═══╝ ╚═════╝╚═╝     ╚═╝  ╚═╝
+"""
+print(ASCII)
+print("Build complete!")
+print("\nYou can find the installer in the build directory.")
