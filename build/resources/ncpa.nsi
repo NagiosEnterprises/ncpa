@@ -286,6 +286,8 @@ Section # "Create Config.ini"
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c sc stop ncpalistener'
     nsExec::Exec '$9 /c sc stop ncpapassive'
+    nsExec::Exec '$9 /c sc delete ncpalistener'
+    nsExec::Exec '$9 /c sc delete ncpapassive'
     nsExec::Exec '$9 /c sc stop ncpa'
     ; wait for the service(s) to stop
     Sleep 2000
