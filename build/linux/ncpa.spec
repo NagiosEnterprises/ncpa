@@ -192,7 +192,7 @@ fi
 %defattr(0644,root,root,0755)
 /usr/local/ncpa/*.githash
 /usr/local/ncpa/frozen_application_license.txt
-/usr/local/ncpa/lib/*.py
+#/usr/local/ncpa/lib/*.py
 /usr/local/ncpa/lib/*.zip
 /usr/local/ncpa/build_resources
 /usr/local/ncpa/listener
