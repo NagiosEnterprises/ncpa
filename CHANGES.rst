@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-3.0.0 - 2022-??-??
+3.0.0 - 06/14/2023
 ==================
 
 **Additions**
@@ -11,15 +11,34 @@ Changelog
 
 **Updates**
 
-- Updated the version of Python to 3.11.x
+- Updated the version of Python to 3.11.3
+- Updated to bundle OpenSSL v3.0.8 in all packages (Windows currently at v1.1.1t, but will use v3+ soon.)
+- Updated to bundle zLib v1.2.13 in all packages
+- Simplified building - building on CentOS 7 provides packages that will run on almost all Linux distributions
 - The listener and passive services/daemons are now combined into one service/daemon called ncpa
+- Can optionally run only Listener or Passive
+- Improved logging and installation output
 - Systems with systemd now use a service definition instead of init.d script
-
+- Updated jQuery to 3.6.4
 **Bug Fixes**
 
 - Fixed errors from different language encodings due to python not being able to encode/decode strings
 
-2.4.0 - 2021-12-16
+
+2.4.1 - 02/27/2023
+==================
+- Note: For the time being, we're stopping 1st-party builds for the following platforms:
+   - 32-bit Macintosh
+   - CentOS 8 on ARM
+   - Solaris 11
+   - SLES 11
+   - AIX 7 (as of NCPA 2.2.2)
+   - Raspbian (as of NCPA 2.3.0)
+- (cont.) You are still welcome to build these packages yourself - see BUILDING.rst for details (Sebastian Wolf)
+- Replaced timing attack vulnerable password/token comparisons with HMAC compare_digest (#902) (PhreditorNG)
+- Made minor modifications to dependencies and build code to maintain Python 2 build process (PhreditorNG)
+
+2.4.0 - 12/16/2021
 ==================
 - Added new disk metrics max_file_length and max_path_length (#760) (ccztux)
 - Added php and perl to the default plugin extensions (#766) (ccztux)
@@ -36,7 +55,7 @@ Changelog
 - Fixed Minor bug. Delta checkbox isn't showing in NCPA interface on Windows (#747) (ccztux)
 - Fixed XSS security vulnerability in tail event log gui page (CVE-2021-43584) (#830)
 
-2.3.1 - 2021-02-11
+2.3.1 - 02/11/2021
 ==================
 - Fixed uninstalling DEB package leaves systemd service active (#651) (ccztux)
 - Fixed error when running a service check using match=search or match=regex searching (#626,#679,#742)
@@ -44,7 +63,7 @@ Changelog
 - Fixed API page output for active/passive checks using windowscounters sleep options (#722)
 - Fixed warning/critical values in perfdata output when values were not actually related to the data (#712,#713)
 
-2.3.0 - 2021-01-28
+2.3.0 - 01/28/2021
 ==================
 - Added option to to use symlinks in the plugin path directory (#577) (infraweavers, ccztux)
 - Added version option to ncpa_listener and ncpa_passive (ccztux)
@@ -64,13 +83,13 @@ Changelog
 - Fixed missing configuration sections in the admin section of the GUI (#725) (ccztux)
 - Fixed Swap Memory issue causing errors for Solaris 10/11 builds
 
-2.2.2 - 2020-06-19
+2.2.2 - 06/19/2020
 ==================
 - Updated jQuery to 3.5.1 to fix security issues in CVE-2020-11022
 - Fixed issue with Windows silent install where not defining /PORT would open firewall for any port (#631)
 - Fixed documentation issue with run_with_sudo (#623)
 
-2.2.1 - 2020-02-24
+2.2.1 - 02/24/2020
 ==================
 - Updated jQuery to 3.4.1 to fix security issues in CVE-2015-9251 and CVE-2019-11358
 - Updated D3.js graphing library from version 4.x to 5.x
@@ -80,7 +99,7 @@ Changelog
 - Fixed GUI API browser active/passive check examples for the logs module missing filters (#595)
 - Fixed issue with Kernel version 5.5+ not working properly on disk checks
 
-2.2.0 - 2019-10-24
+2.2.0 - 10/24/2019
 ==================
 - Added registry ProductID to Windows install registery key for easier lookup (#579)
 - Added proper UNKNOWN output text prefix on checks that return UNKNOWN states (#575)
@@ -94,7 +113,7 @@ Changelog
 - Fixed old uninstall registry key on Windows systems (#551)
 - Fixed random UNKNOWN check_ncpa.py responses from gevent causing socket disconnects (#532)
 
-2.1.9 - 2019-09-04
+2.1.9 - 09/04/2019
 ==================
 - Added option all_partitions to ncpa.cfg to only display what psutil says are physical local disks
 - Fixed issue in Admin section where URLs not working properly
@@ -102,7 +121,7 @@ Changelog
 - Fixed get_root_node() not reading and applying config on initial startup
 - Fixed allowed_hosts config option causing forbidden error messages when using passive checks
 
-2.1.8 - 2019-07-17
+2.1.8 - 07/17/2019
 ==================
 - Fixed issue with HTTP 308 redirection when connecting to API endpoints without forward slash
 - Fixed error when using windowscounters "bad file descriptor"
@@ -112,7 +131,7 @@ Changelog
 - Fixed issue with Solaris installs not properly stopping the ncpa listener service
 - Fixed issue on Windows install where the proper registry key was not being set
 
-2.1.7 - 2019-05-09
+2.1.7 - 05/09/2019
 ==================
 - Updated builds to not use shared python library which causes issues on certain systems
 - Fixed issue with Windows silent installs not having 0.0.0.0 set as default when no IP is defined
@@ -121,7 +140,7 @@ Changelog
 - Fixed uninstall registry key in Windows not selecting the proper location due to missing install page
 - Fixed issue with mountpoints that cannot access filesystem info causing error
 
-2.1.6 - 2018-10-12
+2.1.6 - 10/12/2018
 ==================
 - Added max_connections listener config value to set the amount of concurrent connections
 - Added Solaris support and build process
@@ -130,13 +149,13 @@ Changelog
 - Fixed running checks on processes with float values for AIX and Mac OS X systems
 - Fixed file permissions on Linux systems to increase security
 
-2.1.5 - 2018-06-11
+2.1.5 - 06/11/2018
 ==================
 - Fixed issue with a few Windows counters that required forward slashes in the path name
 - Fixed issue where Windows counters were not clearing the counter/query handler
 - Fixed issues with SLES installs not working properly
 
-2.1.4 - 2018-04-17
+2.1.4 - 04/17/2018
 ==================
 - Added ssl_ciphers config option to only allow specific SSL ciphers
 - Added more filesystems types to ignore
@@ -145,11 +164,11 @@ Changelog
 - Fixed issue with processes not doing proper exact matches for most properties
 - Fixed folder mountpoints not showing on Windows up due to psutil version on build
 
-2.1.3 - 2018-02-28
+2.1.3 - 02/28/2018
 ==================
 - Fixed issue with plugins not executing the plugin return function properly
 
-2.1.2 - 2018-02-27
+2.1.2 - 02/27/2018
 ==================
 - Added more pseudo devices into default list of devices to skip
 - Fixed websockets (live graphs, top, and tail) not displaying data due to encoding changes
@@ -160,11 +179,11 @@ Changelog
 - Fixed service name check on EL6 causing services to show as running when stopped or unknown
 - Fixed python plugins not running properly due to the LD_LIBRARY_PATH environment variable
 
-2.1.1 - 2017-12-21
+2.1.1 - 12/21/2017
 ==================
 - Fixed the return values for checks that do not return int/float values
 
-2.1.0 - 2017-12-19
+2.1.0 - 12/19/2017
 ==================
 - Removed deprecated aliases (service, process, and agent) as stated in 2.0.0 changelog section
 - Added a new config option (allowed_hosts) to the [listener] section to block access except from specified addresses
@@ -192,7 +211,7 @@ Changelog
 - Fixed upgrades on Windows to only start the ncpa services that were running before upgrade
 - Fixed check settings not showing up on system/uptime and added human readable output to check return output
 
-2.0.6 - 2017-11-09
+2.0.6 - 11/09/2017
 ==================
 - Updated Python version to 2.7.14
 - Updated gevent-websocket to version 0.10.1 so we do not need to use patched version
@@ -205,14 +224,14 @@ Changelog
 - Fixed delta time values not working properly due to caching data on websockets
 - Fixed large values showing up on initial check when viewing deltas
 
-2.0.5 - 2017-09-01
+2.0.5 - 09/01/2017
 ==================
 - Fixed the windows event log setting event_id to give the proper ID for some events that has bogus IDs
 - Fixed issue with DB maintenance where DB is not accessible (both processes use it)
 - Fixed non-integer PID file value causing startup issues
 - Fixed issues with NFS errors causing failed starts (such as permission denied)
 
-2.0.4 - 2017-06-24
+2.0.4 - 06/24/2017
 ==================
 - Updated the API browser to grab your current hostname and port from the URL to show better active check output
 - Updated processes API endpoint to properly also show full command with arguments
@@ -228,14 +247,14 @@ Changelog
 - Fixed match argument to be set when showing examples of active or passive check definitions from the GUI
 - Fixed passive check definition for processes, services, and plugins endpoints
 
-2.0.3 - 2017-03-17
+2.0.3 - 03/17/2017
 ==================
 - Fixed some typos in the ncpa.cfg and sample config
 - Fixed issue with Windows silent install setting various values to blank instead of defaults
 - Fixed check for service scripts in init.d folder to ignore OSError exceptions
 - Fixed typo in ncpa.cfg file that meant to say nrdp
 
-2.0.2 - 2017-01-19
+2.0.2 - 01/19/2017
 ==================
 - Updated plugins list to be sorted alphabetically when returning plugin list
 - Updated plugins endpoint to use the debug URL parameter to have check also return the cmd line string
@@ -245,7 +264,7 @@ Changelog
 - Fixed output of check_ncpa.py in the "view alternative format" popup to use proper units argument
 - Fixed service status output to display proper messages when pid file exists but daemon is not running
 
-2.0.1 - 2017-01-03
+2.0.1 - 01/03/2017
 ==================
 - Updated popover info boxes so they auto-hide when no longer in focus (once you click anywhere but the ?)
 - Updated Windows service log file locations to var/log/win32service_ncpa<type>.log (logs for the services not NCPA)
@@ -262,7 +281,7 @@ Changelog
 - Fixed issue with libffi not being included due to it being a shared library on most systems
 - Fixed Windows threading issues with the win32service base
 
-2.0.0 - 2016-12-15
+2.0.0 - 12/15/2016
 ==================
 
 **Additions**
@@ -357,12 +376,12 @@ Changelog
 - Both API endoints api/service/<servicename> and api/process/<processname> will be removed in version 3 and should be replaced by api/services?service=<servicename> and api/processes?name=<processname> instead
 - The API endpoint api/agent/plugin/<pluginname> will be removed in version 3 in favor of api/plugins/<pluginname> which better matches the current API node naming conventions and is a less confusing name
 
-1.8.1 - 2015-04-09
+1.8.1 - 04/09/2015
 ==================
 - Fixed aggregation of CPU percent only working on Windows
 - Fixed system/uptime not working on Windows
 
-1.8.0 - 2015-04-02
+1.8.0 - 04/02/2015
 ==================
 - Added graphing frontend, available via /graph-picker.html
 - Added PID to process information returned by the API
@@ -383,14 +402,14 @@ Changelog
 - Fixed windows installer to now upgrade NCPA when NCPA is installed already
 - Fixed windows installer to not overwrite configuration file
 
-1.7.2 - 2014-08-28
+1.7.2 - 08/28/2014
 ==================
 - Fixed API giving 500 error on windows when filtering processes
 - Fixed services filtering by single service name
 - Fixed NCPA Passive init.d script on Debian systems
 - Fixed issue where warning/critical values were truncated
 
-1.7.1 - 2014-08-19
+1.7.1 - 08/19/2014
 ==================
 - Added backwards compatability with the api/service(s) call to work with old plugins/checks
 - Added log rotation to all clients, logs rotate at 20MB and will rotate once before overwriting old logs
@@ -409,7 +428,7 @@ Changelog
 - Fixed Windows logging issue where logs were not at var/\*.log
 - Fixed process count checks returning wrong number of processes
 
-1.7.0 - 2014-07-29
+1.7.0 - 07/29/2014
 ==================
 - Added full tests for NRDP
 - Added realtime graphs
