@@ -382,6 +382,9 @@ class Daemon():
         self.logmaxmb = self.config.getint('general', 'logmaxmb')
         self.logbackups = self.config.getint('general', 'logbackups')
 
+        self.setup_plugins()
+        self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
+
     def main(self):
         action = self.options['action']
 
@@ -423,6 +426,12 @@ class Daemon():
 
     def user_setup_tasks(self):
         pass
+
+    def setup_plugins(self):
+        plugin_path = self.config.get('plugin directives', 'plugin_path')
+        abs_plugin_path = get_filename(plugin_path)
+        self.abs_plugin_path = os.path.normpath(abs_plugin_path)
+        self.config.set('plugin directives', 'plugin_path', self.abs_plugin_path)
 
     # This (ongoing NCPA) process is normally terminated by a different instance of this code launched with the '--stop' option.
     # The 'stop' instance reads the PID of the parent NCPA process and kills it by sending it SIGTERM. When SIGTERM is received, this

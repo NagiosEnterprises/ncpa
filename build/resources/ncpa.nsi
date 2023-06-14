@@ -68,7 +68,8 @@ OutFile "ncpa-${NCPA_VERSION}.exe"
 !define MUI_HEADERIMAGE_UNBITMAP "NCPA\build_resources\nagios_installer_logo.bmp"
 
 ; The default installation directory
-InstallDir $PROGRAMFILES\Nagios\NCPA
+; InstallDir $PROGRAMFILES\Nagios\NCPA ; Installer is 32-bit so even tough the binary is 64-bit, this will be Program Files (x86)
+InstallDir $PROGRAMFILES64\Nagios\NCPA ; NCPA is 64-bit so we are going to install to Program Files
 
 ; Request admin execution
 RequestExecutionLevel admin
@@ -286,6 +287,8 @@ Section # "Create Config.ini"
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c sc stop ncpalistener'
     nsExec::Exec '$9 /c sc stop ncpapassive'
+    nsExec::Exec '$9 /c sc delete ncpalistener'
+    nsExec::Exec '$9 /c sc delete ncpapassive'
     nsExec::Exec '$9 /c sc stop ncpa'
     ; wait for the service(s) to stop
     Sleep 2000
@@ -417,7 +420,7 @@ Section ""
 
     ${If} $installed == "0"
         nsExec::Exec '$9 /c diskperf -Y'
-        nsExec::Exec '$9 /c sc create NCPA binPath= "$INSTDIR\ncpa.exe" start= delayed-auto'
+        nsExec::Exec '$9 /c sc create NCPA binPath= "$INSTDIR\ncpa.exe" start= auto'
         nsExec::Exec '$9 /c netsh advfirewall firewall add rule name="NCPA" dir=in action=allow protocol=TCP localport=${PORT}'
         nsExec::Exec '$9 /c sc start NCPA'
     ${EndIf}
