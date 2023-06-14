@@ -620,17 +620,12 @@ def admin():
 @listener.route('/gui/admin/global', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_global():
-    exclude_fs_types = 'aufs,autofs,binfmt_misc,cifs,cgroup,configfs,\
-                        debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,\
-                        fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,\
-                        rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs'
-
-    tmp_args = { 'no_nav': True,
-                 'check_logging': int(get_config_value('general', 'check_logging', 1)),
-                 'check_logging_time': get_config_value('general', 'check_logging_time', 30),
-                 'all_partitions': int(get_config_value('general', 'all_partitions', 1)),
-                 'exclude_fs_types': get_config_value('general', 'exclude_fs_types', exclude_fs_types),
-                 'default_units': get_config_value('general', 'default_units', 'Gi') }
+    section = 'general'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    print("sectioncfg: ", sectioncfg)
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
 
     # Check session for flash message
     flash_msg_text = session.get('flash_msg_text', '')
@@ -647,24 +642,11 @@ def admin_global():
 @listener.route('/gui/admin/listener', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_listener_config():
-    tmp_args = { 'no_nav': True,
-                 'ip': get_config_value('listener', 'ip', '0.0.0.0'),
-                 'port': get_config_value('listener', 'port', '5693'),
-                 'uid': get_config_value('listener', 'uid', 'nagios'),
-                 'gid': get_config_value('listener', 'gid', 'nagios'),
-                 'ssl_version': get_config_value('listener', 'ssl_version', 'TLSv1_2'),
-                 'certificate': get_config_value('listener', 'certificate', 'adhoc'),
-                 'pidfile': get_config_value('listener', 'pidfile', 'var/run/ncpa_listener.pid'),
-                 'loglevel': get_config_value('listener', 'loglevel', 'info'),
-                 'logfile': get_config_value('listener', 'logfile', 'var/log/ncpa_listener.log'),
-                 'logmaxmb': get_config_value('listener', 'logmaxmb', '5'),
-                 'logbackups': get_config_value('listener', 'logbackups', '5'),
-                 'admin_gui_access': int(get_config_value('listener', 'admin_gui_access', 1)),
-                 'admin_auth_only': int(get_config_value('listener', 'admin_auth_only', 0)),
-                 'delay_start': get_config_value('listener', 'delay_start', '0'),
-                 'allowed_hosts': get_config_value('listener', 'allowed_hosts', 'All'),
-                 'allowed_sources': get_config_value('listener', 'allowed_sources', 'None'),
-                 'max_connections': get_config_value('listener', 'max_connections', '200') }
+    section = 'listener'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
 
     # Todo: add form actions when submitted
 
@@ -674,8 +656,13 @@ def admin_listener_config():
 @listener.route('/gui/admin/api', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_api_config():
-    tmp_args = { 'no_nav': True,
-                 'community_string': get_config_value('api', 'community_string', 'mytoken') }
+    section = 'api'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
+    # tmp_args = { 'no_nav': True,
+    #              'community_string': get_config_value('api', 'community_string', 'mytoken') }
 
     return render_template('admin/api.html', **tmp_args)
 
@@ -683,20 +670,14 @@ def admin_api_config():
 @listener.route('/gui/admin/passive', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_passive_config():
-    handlers = get_config_value('passive', 'handlers', None)
-    if handlers is None:
-        handlers = []
-    tmp_args = { 'no_nav': True,
-                 'handlers': handlers,
-                 'uid': get_config_value('passive', 'uid', 'nagios'),
-                 'gid': get_config_value('passive', 'gid', 'nagios'),
-                 'sleep': get_config_value('passive', 'sleep', '300'),
-                 'pidfile': get_config_value('passive', 'pidfile', 'var/run/ncpa_listener.pid'),
-                 'loglevel': get_config_value('passive', 'loglevel', 'info'),
-                 'logfile': get_config_value('passive', 'logfile', 'var/log/ncpa_listener.log'),
-                 'logmaxmb': get_config_value('passive', 'logmaxmb', '5'),
-                 'logbackups': get_config_value('passive', 'logbackups', '5'),
-                 'delay_start': get_config_value('passive', 'delay_start', '0') }
+    section = 'passive'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
+
+    if tmp_args['sectioncfg']['handlers'] is None:
+        tmp_args['sectioncfg']['handlers'] = []
 
     # Todo: add form actions when submitted
 
@@ -706,54 +687,52 @@ def admin_passive_config():
 @listener.route('/gui/admin/nrdp', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_nrdp_config():
+    section = 'nrdp'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
+
     handlers = get_config_value('passive', 'handlers', None)
     if handlers is None:
         handlers = []
-    tmp_args = { 'no_nav': True,
-                 'handlers': handlers,
-                 'nrdp_url': get_config_value('nrdp', 'parent', ''),
-                 'nrdp_token': get_config_value('nrdp', 'token', ''),
-                 'hostname': get_config_value('nrdp', 'hostname', 'NCPA') }
+    tmp_args['handlers'] = handlers
+
     return render_template('admin/nrdp.html', **tmp_args)
-
-
-@listener.route('/gui/admin/nrds', methods=['GET', 'POST'])
-@requires_admin_auth
-def admin_nrds_config():
-    tmp_args = { 'no_nav': True,
-                 'nrds_url': get_config_value('nrds', 'url', ''),
-                 'nrds_token': get_config_value('nrds', 'token', ''),
-                 'config_name': get_config_value('nrds', 'config_name', ''),
-                 'config_version': get_config_value('nrds', 'config_version', ''),
-                 'update_config': int(get_config_value('nrds', 'update_config', '1')),
-                 'update_plugins': int(get_config_value('nrds', 'update_plugins', '1')) }
-    return render_template('admin/nrds.html', **tmp_args)
 
 
 @listener.route('/gui/admin/kafkaproducer', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_kafkaproducer_config():
-    tmp_args = { 'no_nav': True,
-                 'hostname': get_config_value('kafkaproducer', 'hostname', ''),
-                 'servers': get_config_value('kafkaproducer', 'servers', ''),
-                 'client_name': get_config_value('kafkaproducer', 'client_name', 'NCPA-Kafka'),
-                 'topic': get_config_value('kafkaproducer', 'topic', 'ncpa') }
+    section = 'kafkaproducer'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
+    handlers = get_config_value('passive', 'handlers', None)
+
+    if handlers is None:
+        handlers = []
+    tmp_args['handlers'] = handlers
+
     return render_template('admin/kafkaproducer.html', **tmp_args)
 
 
 @listener.route('/gui/admin/plugin-directives', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_plugin_config():
+    section = 'plugin directives'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = {}
+    tmp_args['sectioncfg'] = sectioncfg
+
     try:
         directives = [x for x in get_config_items('plugin directives') if x[0] not in listener.config['iconfig'].defaults()]
     except Exception as e:
         directives = []
-    tmp_args = { 'no_nav': True,
-                 'plugin_path': get_config_value('plugin directives', 'plugin_path', 'plugins/'),
-                 'plugin_timeout': get_config_value('plugin directives', 'plugin_timeout', '60'),
-                 'follow_symlinks': int(get_config_value('plugin directives', 'follow_symlinks', '0')),
-                 'run_with_sudo': get_config_value('plugin directives', 'run_with_sudo', ''),
-                 'directives': directives }
+    tmp_args['directives'] = directives
+
     return render_template('admin/plugins.html', **tmp_args)
 
 
