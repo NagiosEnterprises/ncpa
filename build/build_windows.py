@@ -66,6 +66,13 @@ if not os.path.exists('build'):
 sys.path.append(os.getcwd())
 
 # --------------------------
+# build with cx_Freeze
+# --------------------------
+
+print("\033[1;34;40m") # blue on black
+subprocess.Popen([python_launcher, 'setup.py', 'build_exe']).wait()
+
+# --------------------------
 # save git hash to file
 # --------------------------
 
@@ -101,20 +108,14 @@ except:
     print("GIT_LONG:", GIT_LONG)
     print("GIT_SHORT:", GIT_SHORT)
 
-with open(os.path.join(basedir, 'build', GIT_HASH_FILE), 'w') as f:
+with open(os.path.join(basedir, 'agent', 'build', 'NCPA', GIT_HASH_FILE), 'w') as f:
     f.write(GIT_LONG)
-
-# --------------------------
-# build with cx_Freeze
-# --------------------------
-
-print("\033[1;34;40m") # blue on black
-subprocess.Popen([python_launcher, 'setup.py', 'build_exe']).wait()
 
 # --------------------------
 # build NSIS installer and copy to build directory
 # --------------------------
 
+print("\033[1;34;40m") # blue on black
 environ = os.environ.copy()
 environ['NCPA_BUILD_VER'] = version
 if not version[-1].isdigit():
