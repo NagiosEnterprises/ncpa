@@ -68,7 +68,8 @@ OutFile "ncpa-${NCPA_VERSION}.exe"
 !define MUI_HEADERIMAGE_UNBITMAP "NCPA\build_resources\nagios_installer_logo.bmp"
 
 ; The default installation directory
-InstallDir $PROGRAMFILES\Nagios\NCPA
+; InstallDir $PROGRAMFILES\Nagios\NCPA ; Installer is 32-bit so even tough the binary is 64-bit, this will be Program Files (x86)
+InstallDir $PROGRAMFILES64\Nagios\NCPA ; NCPA is 64-bit so we are going to install to Program Files
 
 ; Request admin execution
 RequestExecutionLevel admin
