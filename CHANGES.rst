@@ -4,11 +4,6 @@ Changelog
 3.0.0 - 06/14/2023
 ==================
 
-**Additions**
-
-- The python interpreter has been included as a binary file to run scripts through (some restrictions apply)
-.. - Configs can be written from inside the ncpa web GUI
-
 **Updates**
 
 - Updated the version of Python to 3.11.3
@@ -19,6 +14,7 @@ Changelog
 - Can optionally run only Listener or Passive
 - Improved logging and installation output
 - Systems with systemd now use a service definition instead of init.d script
+- Listener web UI Admin sectin now accurately reflects current configuration
 - Updated jQuery to 3.6.4
 **Bug Fixes**
 
