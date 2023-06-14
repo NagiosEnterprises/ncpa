@@ -31,12 +31,12 @@ $(document).ready(function() {
     <p>These are the NRDP settings for where to send your passive checks.</p>
 
     <div class="container-fluid" style="margin-top: 3rem; padding: 0;">
-        
+
         {% if 'nrdp' not in handlers %}
         <div class="row">
             <div class="col-lg-12">
                 <div class="alert alert-danger col-sm-12 col-xl-6" style="margin: -1rem 0 3rem 0;">
-                    The <em><b>nrdp</b></em> handler is not currently set in the handlers config option.
+                    The <em><b>nrdp</b></em> handler is not currently set in the passive config handlers option.
                 </div>
             </div>
         </div>
@@ -49,21 +49,28 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">NRDP URL</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3">
-                            <input type="text" class="form-control" name="nrdp_url" value="{{ nrdp_url }}" readonly>
+                            <input type="text" class="form-control" name="nrdp_url" value="{{ sectioncfg['parent'] }}" readonly>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">NRDP Token</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3">
-                            <input type="password" class="form-control" name="nrdp_token" value="{{ nrdp_token }}" readonly>
+                            <input type="password" class="form-control" name="nrdp_token" value="{{ sectioncfg['token'] }}" readonly>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Hostname</label>
                         <div class="col-sm-6 col-md-4 col-lg-2 col-xl-3">
-                            <input type="text" class="form-control" name="hostname" value="{{ hostname }}" readonly>
+                            <input type="text" class="form-control" name="hostname" value="{{ sectioncfg['hostname'] }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Connection Timeout</label>
+                        <div class="col-sm-6 col-md-4 col-lg-2 col-xl-3">
+                            <input type="text" class="form-control" name="hostname" value="{{ sectioncfg['connection_timeout'] }}" readonly>
                         </div>
                     </div>
 
