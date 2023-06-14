@@ -86,15 +86,22 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 itemlist.append(item)
 
         if len(itemlist) > 0:
+            producer = None
             try:
                 logging.info('Connect to Kafka Server')
                 producer = KafkaProducer(bootstrap_servers=['{}'.format(self.str_kafakhosts)], client_id=self.str_client_id)
             except KafkaError:
-                logging.warn(
+                logging.warning(
                     'Problem to connect Kafka Server: {} with Topic: {} and Clientname {} '.format(self.str_kafakhosts,
                                                                                                    self.str_topic,
                                                                                                    self.str_client_id))
-            for item in itemlist:
-                producer.send(self.str_topic, key=str(item.hostname), value=json.dumps(self.format_for_kafka(self, item)))
+            if producer is None:
+                logging.warning(
+                    'No connection to Kafka Server: {} with Topic: {} and Clientname {} '.format(self.str_kafakhosts,
+                                                                                                    self.str_topic,
+                                                                                                    self.str_client_id))
+            else:
+                for item in itemlist:
+                    producer.send(self.str_topic, key=str(item.hostname), value=json.dumps(self.format_for_kafka(self, item)))
 
-            producer.flush()
+                producer.flush()

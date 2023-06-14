@@ -7,6 +7,9 @@ Building NCPA
 Building on Windows
 ===================
 
+*WARNING: DO THIS ON A VM OR A NON-PRODUCTION SYSTEM*
+*THE BUILD SCRIPT WILL MAKE CHANGES TO YOUR SYSTEM THAT MAY BREAK EXISTING SOFTWARE*
+
 *Note: The current Windows pre-build script is written in batch and
 must be executed by cmd.exe. For this reason, any Windows commands
 listed in this document will be written with cmd.exe compatibility
@@ -43,7 +46,7 @@ Install Prerequisites
   1. Download and run the installer. (`see prerequisites <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#prerequisites>`_)
 
 * pip
-  
+
   * Pip is installed by default but should be updated before continuing::
 
       py -m pip install --upgrade pip
@@ -54,7 +57,7 @@ Install the Last Modules
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Install the full list of python modules
-	
+
   py -m pip install --upgrade -r build/resources/require.win.txt
 
 Build NCPA
@@ -88,7 +91,8 @@ Building on Linux
 Building from most Linux distros is much less complicated than Windows. We have a
 couple helpful scripts that make it much easier. *We will assume you have wget and git installed*
 
-*WARNING: DO THIS ON A VM OR NOT A PRODUCTION SYSTEM*
+*WARNING: DO THIS ON A VM OR A NON-PRODUCTION SYSTEM*
+*THE BUILD SCRIPT WILL MAKE CHANGES TO YOUR SYSTEM THAT MAY BREAK EXISTING SOFTWARE*
 
 To start, clone the repository in your directory::
 
@@ -97,7 +101,7 @@ To start, clone the repository in your directory::
 
 Now run the setup scripts to install the requirements::
 
-  cd ncpa/build/scripts
+  cd ncpa/build
   ./build.sh
 
 Follow the prompts to setup the system. When running the build.sh script it will setup
@@ -112,5 +116,5 @@ install the libraries and python differently, due to it being macOS. You must ha
 python3 installed prior to running it. You'll also have to use the following command
 to build the dmg::
 
-  cd ncpa/build/scripts
+  cd ncpa/build
   ./build.sh
