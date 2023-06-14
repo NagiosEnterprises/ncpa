@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response, abort
 import os
 import sys
+import ssl
 import platform
 import requests
 import functools
@@ -87,6 +88,8 @@ def make_info_dict():
 
     return { 'agent_version': ncpa.__VERSION__,
              'uptime': uptime,
+             'python_version': sys.version,
+             'ssl_version': ssl.OPENSSL_VERSION,
              'processor': proc_type,
              'node': uname[1],
              'system': uname[0],
