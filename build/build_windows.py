@@ -140,4 +140,5 @@ ASCII = """
 """
 print(ASCII)
 print("Build complete!")
-print("\nYou can find the installer in the build directory.")
+print("\033[1;33;40m") # yellow on black
+print("You can find the installer in the build directory.")
