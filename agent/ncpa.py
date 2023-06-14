@@ -109,8 +109,6 @@ cfg_defaults = {
                 'logmaxmb': '5',
                 'logbackups': '5',
                 'pidfile': 'var/run/ncpa.pid',
-                'logmaxmb': '5',
-                'logbackups': '5',
                 'uid': 'nagios',
                 'gid': 'nagios',
                 'all_partitions': '1',
@@ -118,8 +116,6 @@ cfg_defaults = {
                 'default_units': 'Gi',
             },
             'listener': {
-                'uid': 'nagios',
-                'gid': 'nagios',
                 'ip': address,
                 'port': '5693',
                 'ssl_version': 'TLSv1_2',
@@ -139,8 +135,6 @@ cfg_defaults = {
             },
             'passive': {
                 'handlers': 'None',
-                'uid': 'nagios',
-                'gid': 'nagios',
                 'sleep': '300',
                 'logfile': 'var/log/ncpa_passive.log',
                 'delay_start': '0',
@@ -170,7 +164,8 @@ cfg_defaults = {
                 '.vbs': 'cscript $plugin_name $plugin_args //NoLogo',
                 '.wsf': 'cscript $plugin_name $plugin_args //NoLogo',
                 '.bat': 'cmd /c $plugin_name $plugin_args',
-            }
+            },
+            'passive checks' : {}
         }
 
 # --------------------------
