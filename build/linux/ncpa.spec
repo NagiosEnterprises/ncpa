@@ -134,7 +134,7 @@ if [ "$1" != "1" ]; then
     if which chkconfig &> /dev/null; then
         /usr/local/ncpa/ncpa_listener --stop &> /dev/null
         /usr/local/ncpa/ncpa_passive --stop &> /dev/null
-        chkconfig --del ncpa_lstener
+        chkconfig --del ncpa_listener
         chkconfig --del ncpa_passive
     fi
     if command -v systemctl &> /dev/null
