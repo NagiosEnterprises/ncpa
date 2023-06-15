@@ -1,7 +1,7 @@
 Changelog
 +++++++++
 
-?.?.= - 2023-??-??
+?.?.? - 2023-??-??
 ==================
 - OpenSCAP PCI-DSS report fails (#951) (ccztux)
 
