@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+?.?.= - 2023-??-??
+==================
+- OpenSCAP PCI-DSS report fails (#951) (ccztux)
+
 2.4.1 - 2022-09-13
 ==================
 - Changed the date format in the changelog (#838) (ccztux)

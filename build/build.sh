@@ -192,6 +192,11 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     chmod 755 $BUILD_DIR/ncpa/var
     chmod 755 $BUILD_DIR/ncpa
 
+    # Remove logfiles because they should not be packaged
+    # https://github.com/NagiosEnterprises/ncpa/issues/951
+    rm "$BUILD_DIR/ncpa/var/log/ncpa_listener.log"
+    rm "$BUILD_DIR/ncpa/var/log/ncpa_passive.log"
+
     # Build tarball
     cp -rf ncpa ncpa-$NCPA_VER
     if [ "$UNAME" == "AIX" ]; then
