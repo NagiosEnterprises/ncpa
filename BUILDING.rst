@@ -29,6 +29,10 @@ Configure the Windows Build Environment
 Install Prerequisites
 ~~~~~~~~~~~~~~~~~~~~~
 
+* Git
+
+  1. Download and install Git for Windows. (`see prerequisites <#prerequisites>`_)
+
 * Python
 
   1. Download and install Python 3.x. (`see prerequisites <#prerequisites>`_)
