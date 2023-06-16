@@ -118,7 +118,7 @@ Building on MacOS
 *Not updated for v3, yet.*
 It's basically the same as Linux, however you may need to
 install the libraries and python differently, due to it being macOS. You must have
-python3, wget and git installed prior to building NCPA v3.x.::
+python3, wget and git installed prior to building NCPA v3.x.:
 
 
 **Clone the repository into your directory**::
