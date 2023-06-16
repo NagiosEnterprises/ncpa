@@ -3,7 +3,8 @@ Changelog
 
 3.0.0 - 06/14/2023
 ==================
-**Platforms**
+**Operating Systems**
+
 - CentOS 7+
 - RHEL 7+
 - Debian 9+
