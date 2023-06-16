@@ -10,16 +10,11 @@ This document contains instructions for:
 
 * `Building on MacOS <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-macos>`_
 
-* WARNING: DO THIS ON A DEDICATED VM OR A NON-PRODUCTION SYSTEM!*
-* THE BUILD SCRIPT WILL MAKE CHANGES TO THE SYSTEM THAT MAY BE INCOMPATIBLE WITH OTHER SOFTWARE*
+*WARNING: DO THIS ON A DEDICATED VM OR A NON-PRODUCTION SYSTEM!*
+*THE BUILD SCRIPT WILL MAKE CHANGES TO THE SYSTEM THAT MAY BE INCOMPATIBLE WITH OTHER SOFTWARE*
 
 Building on Windows
 ===================
-
-*Note: The current Windows pre-build script is written in batch and
-must be executed by cmd.exe. For this reason, any Windows commands
-listed in this document will be written with cmd.exe compatibility
-in mind.*
 
 **Prerequisites for Windows** (Installing some of these prerequisites requires admin rights)
 -------------------------
