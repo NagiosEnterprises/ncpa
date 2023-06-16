@@ -3,19 +3,34 @@ Changelog
 
 3.0.0 - 06/14/2023
 ==================
+**Platforms**
+- CentOS 7+
+- RHEL 7+
+- Debian 9+
+- Ubuntu 16+
+- OpenSuSE 15+
+- SLES 15+
+- Oracle Linux 7+
+- Amazon Linux 2
+- Windows 8+
+- Windows Server 2012 R2+
+- MacOS 10.7+
+
+- *Note: As of NCPA v3.0.0, 32-bit platforms are no longer supported.*
 
 **Updates**
 
-- Updated the version of Python to 3.11.3
-- Updated to bundle OpenSSL v3.0.8 in all packages (Windows currently at v1.1.1t, but will use v3+ soon.)
-- Updated to bundle zLib v1.2.13 in all packages
-- Simplified building - building on CentOS 7 provides packages that will run on almost all Linux distributions
+- Updated the version of Python to 3.11.3 (PhreditorNG)
+- Updated to bundle OpenSSL v3.0.8 in all packages (Windows currently at v1.1.1t, but will use v3+ soon.) (PhreditorNG)
+- Updated to bundle zLib v1.2.13 in all packages (PhreditorNG)
+- Simplified building - building on CentOS 7 provides packages that will run on almost all Linux distributions (PhreditorNG)
 - The listener and passive services/daemons are now combined into one service/daemon called ncpa
-- Can optionally run only Listener or Passive
-- Improved logging and installation output
-- Systems with systemd now use a service definition instead of init.d script
-- Listener web UI Admin sectin now accurately reflects current configuration
+- Can optionally run only Listener or Passive (PhreditorNG)
+- Improved logging and installation output (PhreditorNG)
+- Systems with systemd now use a service definition instead of init.d script (PhreditorNG)
+- Listener web UI Admin section now accurately reflects current configuration (PhreditorNG)
 - Updated jQuery to 3.6.4
+
 **Bug Fixes**
 
 - Fixed errors from different language encodings due to python not being able to encode/decode strings
