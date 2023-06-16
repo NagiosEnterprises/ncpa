@@ -10,23 +10,18 @@ This document contains instructions for:
 
 * `Building on MacOS <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-macos>`_
 
-* WARNING: DO THIS ON A DEDICATED VM OR A NON-PRODUCTION SYSTEM!*
-* THE BUILD SCRIPT WILL MAKE CHANGES TO THE SYSTEM THAT MAY BE INCOMPATIBLE WITH OTHER SOFTWARE*
+*WARNING*: DO THIS ON A DEDICATED VM OR A NON-PRODUCTION SYSTEM!
+
+THE BUILD SCRIPT WILL MAKE CHANGES TO THE SYSTEM THAT MAY BE INCOMPATIBLE WITH OTHER SOFTWARE
 
 Building on Windows
 ===================
-
-*Note: The current Windows pre-build script is written in batch and
-must be executed by cmd.exe. For this reason, any Windows commands
-listed in this document will be written with cmd.exe compatibility
-in mind.*
 
 **Prerequisites for Windows** (Installing some of these prerequisites requires admin rights)
 -------------------------
 
 * `Git for Windows <https://git-scm.com/download/win>`_
-* \*Python 3.11.x (`Download <https://www.python.org/downloads/>`_)
-* \*OpenSSL for Windows (`Download <https://slproweb.com/products/Win32OpenSSL.html>`_)
+* `Python 3.11.x <https://www.python.org/downloads/>`_
 * `NSIS 3 <http://nsis.sourceforge.net/Download>`_
 
 Configure the Windows Build Environment
@@ -35,15 +30,14 @@ Configure the Windows Build Environment
 Install Prerequisites
 ~~~~~~~~~~~~~~~~~~~~~
 
+* Git
+
+  1. Download and install Git for Windows. (`see prerequisites <#prerequisites>`_)
+
 * Python
 
   1. Download and install Python 3.x. (`see prerequisites <#prerequisites>`_)
   2. Execute the installer as usual, making sure to check the box to add Python to your PATH (on the first page).
-
-* OpenSSL
-
-  1. Download and install the OpenSSL package. (`see prerequisites <#prerequisites>`_)
-  2. Be sure to make a not of the installation directory while installing.
 
 * NSIS
 
@@ -51,38 +45,25 @@ Install Prerequisites
 
 * pip
 
-  * Pip is installed by default but should be updated before continuing::
+  * Pip is installed alongside python by default but should be updated before continuing::
 
       py -m pip install --upgrade pip
 
 Note: py should be the command to run python 3. If it is not, you may need to use the full path to the python executable.
 
-Install the Last Modules
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-* Install the full list of python modules
-
-  py -m pip install --upgrade -r build/resources/require.win.txt
-
 Build NCPA
-~~~~~~~~~~
+----------
 
 In your Git Bash terminal (or cmd.exe with ``C:\Program Files\Git\usr\bin`` added to your PATH), run the following commands:
 
-Navigate to your desired build directory::
+Navigate to your desired build directory and clone the repository::
 
   cd /c/desired/build/directory
-
-Clone the repository::
-
   git clone https://github.com/NagiosEnterprises/ncpa.git
 
 In a Command Prompt/Terminal (cmd.exe) terminal with admin rights, run the following commands::
 
   cd C:\desired\build\directory\ncpa
-
-Run the build script::
-
   py build\build_windows.py
 
 This will create a file called ``ncpa-<version>.exe`` in the ``build`` directory.
@@ -138,7 +119,7 @@ Building on MacOS
 *Not updated for v3, yet.*
 It's basically the same as Linux, however you may need to
 install the libraries and python differently, due to it being macOS. You must have
-python3, wget and git installed prior to building NCPA v3.x.::
+python3, wget and git installed prior to building NCPA v3.x.:
 
 
 **Clone the repository into your directory**::
