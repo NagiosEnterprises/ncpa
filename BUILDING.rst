@@ -10,7 +10,8 @@ This document contains instructions for:
 
 * `Building on MacOS <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-macos>`_
 
-WARNING: DO THIS ON A DEDICATED VM OR A NON-PRODUCTION SYSTEM!
+*WARNING*: DO THIS ON A DEDICATED VM OR A NON-PRODUCTION SYSTEM!
+
 THE BUILD SCRIPT WILL MAKE CHANGES TO THE SYSTEM THAT MAY BE INCOMPATIBLE WITH OTHER SOFTWARE
 
 Building on Windows
