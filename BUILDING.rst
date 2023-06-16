@@ -44,7 +44,7 @@ Install Prerequisites
 
 * pip
 
-  * Pip is installed by default but should be updated before continuing::
+  * Pip is installed alongside python by default but should be updated before continuing::
 
       py -m pip install --upgrade pip
 
