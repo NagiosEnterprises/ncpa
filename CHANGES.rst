@@ -3,7 +3,7 @@ Changelog
 
 3.0.0 - 06/14/2023
 ==================
-**Operating Systems**
+**Operating Systems (64-bit)**
 
 - CentOS 7+
 - RHEL 7+
@@ -17,7 +17,7 @@ Changelog
 - Windows Server 2012 R2+
 - MacOS 10.7+
 
-- *Note: As of NCPA v3.0.0, 32-bit platforms are no longer supported.*
+*Note: As of NCPA v3.0.0, 32-bit platforms are no longer supported.*
 
 **Updates**
 
