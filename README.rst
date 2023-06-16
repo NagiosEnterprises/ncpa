@@ -12,7 +12,7 @@ Downloads
 Current versions:
 
 +---------+-------------+-------------------------------------------------------+
-| Current | **2.4.0**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
+| Current | **2.4.1**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
 `Older Versions <https://www.nagios.org/ncpa/archive.php>`_
@@ -20,33 +20,37 @@ Current versions:
 We currently build for the following operating systems:
 
 - Windows (7+)
-- Mac OS X (10.7+)
-- CentOS / RHEL 7, 8
-- CentOS Stream
-- Debian 9, 10
-- Ubuntu 16.04, 18.04, 20.04
-- OpenSUSE Leap 15, Tumbleweed
-- SLES 11, 12, 15
+- Mac OS X (10.11+)
+- RHEL 7, 8, 9
+- CentOS 7
+- CentOS Stream 8, 9
 - Oracle 7, 8
 - Amazon Linux 2
-- Solaris 11
-- AIX 7
-- Raspbian 10 (Buster)
+- Debian 8 (32 & 64 bit), 9 (32 & 64 bit), 10, 11
+- Ubuntu 16.04 (32 & 64 bit), 18.04 (32 & 64 bit), 20.04, 22.04
+- OpenSUSE Leap 15, Tumbleweed
+- SLES 12, 15
 
 Older systems that have been supported by NCPA in the past:
 
+- Mac OS X (10.7-10.10) using NCPA 2.4.0
+- Raspbian 10 (Buster) using NCPA 2.2.2
 - Ubuntu 12.04 using NCPA 2.1.4
 - Ubuntu 14.04 using NCPA 2.2.2
 - Debian 7 using NCPA 2.1.4
 - Debian 8 using NCPA  2.2.2
 - OpenSUSE 11, 12, 13 using NCPA 2.1.4
+- SLES 11 using v2.4.0
 - AIX 6 with NCPA 2.1.1
+- AIX 7 using NCPA 2.2.1
 - CentOS / RHEL 5 using NCPA 2.0.6
-- CentOS / RHEL 6 using 2.2.2
+- CentOS / RHEL 6 using NCPA 2.2.2
+- CentOS Stream 8 ARM using NCPA 2.4.0
 - Oracle 5 using NCPA 2.0.6
 - Oracle 6 using NCPA 2.2.2
 - Windows XP/Vista using NCPA 1.8.1
 - Solaris 10
+- Solaris 11 using NCPA 2.4.0
 
 If you're looking for older builds you can find them `in the archives <https://www.nagios.org/ncpa/archive.php>`_.
 
