@@ -69,7 +69,6 @@ sys.path.append(os.getcwd())
 # build with cx_Freeze
 # --------------------------
 
-print("\033[1;34;40m") # blue on black
 subprocess.Popen([python_launcher, 'setup.py', 'build_exe']).wait()
 
 # --------------------------
@@ -83,8 +82,6 @@ def run_cmd(cmd):
      process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
      output, error = process.communicate()
      return output.strip().decode()
-
-print("\033[1;32;40m") # green on black
 
 try:
     GIT_LONG = run_cmd("git rev-parse HEAD")
@@ -104,7 +101,6 @@ try:
     print("GIT_HASH_FILE:", GIT_HASH_FILE)
 
 except:
-    print("\033[1;31;40m") # red on black
     print("GIT_LONG:", GIT_LONG)
     print("GIT_SHORT:", GIT_SHORT)
 
@@ -115,7 +111,6 @@ with open(os.path.join(basedir, 'agent', 'build', 'NCPA', GIT_HASH_FILE), 'w') a
 # build NSIS installer and copy to build directory
 # --------------------------
 
-print("\033[1;34;40m") # blue on black
 environ = os.environ.copy()
 environ['NCPA_BUILD_VER'] = version
 if not version[-1].isdigit():
@@ -130,7 +125,6 @@ b.wait()
 shutil.copyfile(os.path.join(basedir, 'agent', 'build', 'ncpa-%s.exe' % version),
                 os.path.join(basedir, 'build', 'ncpa-%s.exe' % version))
 
-print("\033[1;32;40m") # green on black
 ASCII = """
 ███╗   ██╗ ██████╗██████╗  █████╗
 ████╗  ██║██╔════╝██╔══██╗██╔══██╗
@@ -141,5 +135,4 @@ ASCII = """
 """
 print(ASCII)
 print("Build complete!")
-print("\033[1;33;40m") # yellow on black
 print("You can find the installer in the build directory.")
