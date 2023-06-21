@@ -106,7 +106,8 @@ buildOptions = dict(includes=includes,
                     bin_includes=bin_includes,
                     replace_paths=[('*', '')],
                     zip_include_packages=['*'],
-                    zip_exclude_packages=[])
+                    zip_exclude_packages=[],
+                    include_msvcr=True)
 
 # Create setup for distutils
 setup(name = "NCPA",
