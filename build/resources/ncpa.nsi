@@ -219,11 +219,11 @@ Function ConfigListener
     !insertmacro INSTALLOPTIONS_DISPLAY "nsis_listener_options.ini"
 
     ; Grab listener options
-    !insertmacro INSTALLOPTIONS_READ $token "nsis_listener_options.ini" "Field 4" "State"
-    !insertmacro INSTALLOPTIONS_READ $bind_ip "nsis_listener_options.ini" "Field 12" "State"
-    !insertmacro INSTALLOPTIONS_READ $bind_port "nsis_listener_options.ini" "Field 13" "State"
-    !insertmacro INSTALLOPTIONS_READ $ssl_version "nsis_listener_options.ini" "Field 7" "State"
-    !insertmacro INSTALLOPTIONS_READ $log_level_active "nsis_listener_options.ini" "Field 10" "State"
+    !insertmacro INSTALLOPTIONS_READ $token "nsis_listener_options.ini" "Field 10" "State"
+    !insertmacro INSTALLOPTIONS_READ $bind_ip "nsis_listener_options.ini" "Field 18" "State"
+    !insertmacro INSTALLOPTIONS_READ $bind_port "nsis_listener_options.ini" "Field 19" "State"
+    !insertmacro INSTALLOPTIONS_READ $ssl_version "nsis_listener_options.ini" "Field 13" "State"
+    !insertmacro INSTALLOPTIONS_READ $log_level_active "nsis_listener_options.ini" "Field 15" "State"
 
 FunctionEnd
 
@@ -243,7 +243,7 @@ Function ConfigPassive
     !insertmacro INSTALLOPTIONS_READ $nrdp_token "nsis_passive_options.ini" "Field 4" "State"
     !insertmacro INSTALLOPTIONS_READ $nrdp_hostname "nsis_passive_options.ini" "Field 5" "State"
     !insertmacro INSTALLOPTIONS_READ $check_interval "nsis_passive_options.ini" "Field 6" "State"
-    !insertmacro INSTALLOPTIONS_READ $log_level_passive "nsis_passive_options.ini" "Field 12" "State"
+    ; !insertmacro INSTALLOPTIONS_READ $log_level_passive "nsis_passive_options.ini" "Field 12" "State"
 
 FunctionEnd
 
@@ -314,12 +314,12 @@ Section # "Create Config.ini"
     File /oname=$INSTDIR\etc\ncpa.cfg .\NCPA\etc\ncpa.cfg
 
     WriteINIStr $INSTDIR\etc\ncpa.cfg api "community_string" "$token"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg general "loglevel" "$log_level_active"
 
     ; Listener settings
     WriteINIStr $INSTDIR\etc\ncpa.cfg listener "ip" "$bind_ip"
     WriteINIStr $INSTDIR\etc\ncpa.cfg listener "port" "$bind_port"
     WriteINIStr $INSTDIR\etc\ncpa.cfg listener "ssl_version" "$ssl_version"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg listener "loglevel" "$log_level_active"
 
     ; If send via NRDP was selected, set nrdp handler
     ${If} $nrdp == 1
@@ -340,7 +340,7 @@ Section # "Create Config.ini"
 
     ; Passive settings
     WriteINIStr $INSTDIR\etc\ncpa.cfg passive "sleep" "$check_interval"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg passive "loglevel" "$log_level_passive"
+    ; WriteINIStr $INSTDIR\etc\ncpa.cfg passive "loglevel" "$log_level_passive"
 
     ; NRDP settings
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "parent" "$nrdp_url"
