@@ -142,7 +142,7 @@ cfg_defaults = {
             'nrdp': {
                 'parent': '',
                 'token': '',
-                'hostname': 'NCPA 2',
+                'hostname': 'NCPA',
                 'connection_timeout': '10',
             },
             'kafkaproducer': {
