@@ -70,7 +70,7 @@
                     <pre>&lt;hostname&gt;|&lt;servicename&gt;<b>|&lt;checkinterval&gt;</b> = &lt;api endpoint&gt;?parameter=value&amp;parameter2=value</pre>
 
                     <h6>Check Intervals</h6>
-                    <p>In NCPA 2, there is now the option to set per-check intervals. The check interval is determined by the value given after the second <code>|</code> character. If no check interval is defined, then the <code>sleep</code> value from the <a href="configuration.html#passive">[passive]</a> configuration section is used as the default. This value is set to 300 seconds (5 minutes) in a default installation.</p>
+                    <p>Since NCPA 2, there has been the option to set per-check intervals. The check interval is determined by the value given after the second <code>|</code> character. If no check interval is defined, then the <code>sleep</code> value from the <a href="configuration.html#passive">[passive]</a> configuration section is used as the default. This value is set to 300 seconds (5 minutes) in a default installation.</p>
                     <p>An example of a <em>CPU Usage</em> check that is performed every 30 seconds would look like this:</p>
                     <pre>%HOSTNAME%|CPU Usage<b>|30</b> = cpu/percent --warning 60 --critical 80 --aggregate avg</pre>
                     <p>The bold portion represents the amount of seconds between checks.</p>

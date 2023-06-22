@@ -21,33 +21,34 @@
 
                 <h1>Overview</h1>
 
-                <p>While NCPA has many features, configuring your initial NCPA install can be tricky. This help documentation is here to explain the inner workings of NCPA as well as a reference when configuring and setting up NCPA instances. If you've never used NCPA before, and have not yet installed it on a machine - you can take a look at the <a target="_new" href="https://nagios.org/ncpa/getting-started.php">getting started guide</a> <i class="fa fa-external-link"></i> available on the NCPA website. This guide will go through the initial installation, setup, and show you how start monitoring with passive or active checks using either Nagios XI or Nagios Core.</p>
+                <p>This help documentation explains the inner workings of NCPA as well as providing a reference for configuring and setting up NCPA instances. If you've never used NCPA before, and have not yet installed it on a machine - you can take a look at the <a target="_new" href="https://nagios.org/ncpa/getting-started.php">getting started guide</a> <i class="fa fa-external-link"></i> available on the NCPA website, which will go through the initial installation admin setup, and show you how start monitoring with passive or active checks using either Nagios XI or Nagios Core.</p>
                 <p>This help documentation is geared towards those who have already installed NCPA and are looking at more advanced configuration and setup using this help as a reference. To start off, below is a brief overview of the parts of NCPA and what they are responsible for. More guides and documentation can be found on the <a target="_new" href="https://nagios.org/ncpa/">NCPA website</a> <i class="fa fa-external-link"></i>.</p>
 
                 <a name="two-parts-of-ncpa"></a>
                 <div class="section">
 
                     <h2>The Two Parts of NCPA</h2>
-                    <p>NCPA is actually two separate services that make up a single monitoring agent. This separation allows the ability for the agent to run passive checks without needing to allow connections to the web GUI or allow external calls to the API. It also allows the passive portion of the agent to be disabled if it's not in use to save resources even though the passive portion requires very few resources while running in the background.</p>
-                    <p>By default in NCPA 2, both services run as the <b>nagios</b> user and <b>nagios</b> group. The user and group can be changed in the <em>ncpa.cfg</em>.</p>
+                    <p>NCPA is a service that runs two separate processes that make up a single monitoring agent. This separation allows the agent to run passive checks without needing to allow connections to the web GUI or allow external calls to the API. It also allows the passive portion of the agent to be disabled if it's not in use to save resources even though the passive portion requires very few resources while running in the background.</p>
+                    <p>By default, NCPA runs both the Listener and Passive processes, but by adding the -l or -p option to the start command, the service will run only the Listener or Passive process, respectively.</p>
+                    <p>By default the NCPA service runs as the <b>nagios</b> user and <b>nagios</b> group. The user and group can be changed in the <em>ncpa.cfg</em>.</p>
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-sm-6 col-lg-5">
                                 <h3>NCPA Listener</h3>
                                 <p>
-                                    The <em>NCPA Listener</em> service does the following:
+                                    The <em>NCPA Listener</em> process does the following:
                                     <ul>
                                         <li>Serves and handles connections to the web GUI</li>
                                         <li>Handles external API requests (including those for active checks)</li>
                                         <li>Provides API for live graphing and top processes</li>
-                                        <li>Provides and "offline" internal API for the <em>NCPA Passive</em> service</li>
+                                        <li>Provides an "offline" internal API for the <em>NCPA Passive</em> process</li>
                                     </ul>
                                 </p>
                             </div>
                             <div class="col-sm-6 col-lg-5">
                                 <h3>NCPA Passive</h3>
                                 <p>
-                                    The <em>NCPA Passive</em> service does the following:
+                                    The <em>NCPA Passive</em> process does the following:
                                     <ul>
                                         <li>Runs passive checks defined in the [passive checks] configuration section</li>
                                         <li>Connects and sends passive check results to the defined NRDP URL</li>
@@ -62,7 +63,7 @@
                 <a name="restarting-ncpa"></a>
                 <div class="section">
 
-                    <h2>Restarting the NCPA Services</h2>
+                    <h2>Restarting the NCPA Service</h2>
                     <p>Because NCPA is made up of these two separate services, you will need to restart both of them if you are using both the active and passive capabilities. Below is the naming conventions and the command line way of restarting both services. In the configuration section you'll find that you will need to restart the services each time configuration changes are made.</p>
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#windows" role="tab" data-toggle="tab"><i class="fa fa-windows fa-l fa-14"></i> Windows</a></li>
@@ -72,22 +73,16 @@
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane active" id="windows">
                             <p>You can also view the services in the windows services administration panel, but you can also do it easily from the command line.</p>
-<pre>net stop ncpalistener
-net start ncpalistener</pre>
-<pre>net stop ncpapassive
-net stop ncpapassive</pre>
+<pre>net stop ncpa
+net start ncpa</pre>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="linux">
-                            <p>This is an example for <em>CentOS 6</em>. However, the services are named the same in all Linux distros we build for.</p>
-<pre>service ncpa_listener restart</pre>
-<pre>service ncpa_passive restart</pre>
+                            <p>This example should work for all supported Linux distros. If you are running v3+ on an older distro (it may run, even if not supported), you may need to use chkconfig or service commands vs. systemctl.</p>
+<pre>systemctl restart ncpa</pre>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="mac">
-                            <p>Unfortunately there is not a <b>restart</b> command for <code>launchctl</code> at this time.</p>
-<pre>sudo launchctl stop com.nagios.ncpa.listener
-sudo launchctl start com.nagios.ncpa.listener</pre>
-<pre>sudo launchctl stop com.nagios.ncpa.passive
-sudo launchctl start com.nagios.ncpa.passive</pre>
+<pre>sudo launchctl stop com.nagios.ncpa
+sudo launchctl start com.nagios.ncpa</pre>
                         </div>
                     </div>
 

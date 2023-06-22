@@ -84,6 +84,48 @@
                                 <td>The amount of time to retain log data for, if you have logging enabled. THe value is in days. The default is 30 days.</td>
                             </tr>
                             <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>loglevel</th>
+                                <td>info</td>
+                                <td>The level of message that will be logged to the log file. Valid loglevels are <em>info</em>, <em>error</em>, <em>warning</em>, and <em>debug</em>.</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>logfile</th>
+                                <td>var/log/ncpa_listener.log</td>
+                                <td>The named file location where the log file for the <em>NCPA Listener</em> will be stored.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>logmaxmb</th>
+                                <td>5</td>
+                                <td>The max size allowed for a log file in MB. When the log becomes larger than this size, the log will be rolled over and a new log will be started.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>logbackups</th>
+                                <td>5</td>
+                                <td>The max number of log rollovers that will be kept.</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>uid</th>
+                                <td>nagios</td>
+                                <td>Determines which user the service will run as. <em>Linux and Mac OS X only.</em></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>gid</th>
+                                <td>nagios</td>
+                                <td>Determines which group the service will run as. <em>Linux and Mac OS X only.</em></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-asterisk"></i></td>
+                                <th>pidfile</th>
+                                <td>var/run/ncpa_listener.pid</td>
+                                <td>The name and location of where to place the <em>NCPA Listener</em> PID file. <em>Linux and Mac OS X only.</em></td>
+                            </tr>
+                            <tr>
                                 <td></td>
                                 <th>exclude_fs_types</th>
                                 <td>aufs, autofs, binfmt_misc, cifs, cgroup, configfs, debugfs, devpts, devtmpfs, encryptfs efivarfs, fuse, fusectl, hugetlbfs, mqueue, nfs, overlayfs, proc, pstore, rpc_pipefs, securityfs, selinuxfs, smb, sysfs, tmpfs, tracefs</td>
@@ -127,40 +169,12 @@
                             </tr>
                             <tr>
                                 <td><i class="fa fa-asterisk"></i></td>
-                                <th>uid</th>
-                                <td>nagios</td>
-                                <td>Determines which user the service will run as. <em>Linux and Mac OS X only.</em></td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-asterisk"></i></td>
-                                <th>gid</th>
-                                <td>nagios</td>
-                                <td>Determines which group the service will run as. <em>Linux and Mac OS X only.</em></td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-asterisk"></i></td>
                                 <th>ssl_version</th>
                                 <td>TLSv1_2</td>
                                 <td>
                                     Set the SSL protocol version to allow for connecting to the HTTPS server.
                                     <div><b>Options:</b> <em>TLSv1</em>, <em>TLSv1_1</em>, or <em>TLSv1_2</em></div>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <th>ssl_ciphers</th>
-                                <td></td>
-                                <td>
-                                    Set the list of accepted SSL ciphers. List should be separated with colons (<code>:</code>).
-                                    <br>
-                                    Example: <code>AES256-GCM-SHA384:AES256-SHA256:AES256-SHA:CAMELLIA256-SHA</code>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <th>ssl_ciphers</th>
-                                <td></td>
-                                <td>A list of SSL ciphers to allow using the format <code>&lt;cipher&gt;:&lt;cipher&gt;:&lt;cipher&gt;</code></td>
                             </tr>
                             <tr>
                                 <td><i class="fa fa-asterisk"></i></td>
@@ -172,34 +186,20 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><i class="fa fa-asterisk"></i></td>
-                                <th>pidfile</th>
-                                <td>var/run/ncpa_listener.pid</td>
-                                <td>The name and location of where to place the <em>NCPA Listener</em> PID file. <em>Linux and Mac OS X only.</em></td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-asterisk"></i></td>
-                                <th>loglevel</th>
-                                <td>info</td>
-                                <td>The level of message that will be logged to the log file. Valid loglevels are <em>info</em>, <em>error</em>, <em>warning</em>, and <em>debug</em>.</td>
+                                <td></td>
+                                <th>ssl_ciphers</th>
+                                <td></td>
+                                <td>
+                                    Set the list of accepted SSL ciphers in  theformat <code>&lt;cipher&gt;:&lt;cipher&gt;:&lt;cipher&gt;</code>.
+                                    <br>
+                                    Example: <code>AES256-GCM-SHA384:AES256-SHA256:AES256-SHA:CAMELLIA256-SHA</code>
+                                </td>
                             </tr>
                             <tr>
                                 <td><i class="fa fa-asterisk"></i></td>
                                 <th>logfile</th>
                                 <td>var/log/ncpa_listener.log</td>
                                 <td>The named file location where the log file for the <em>NCPA Listener</em> will be stored.</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <th>logmaxmb</th>
-                                <td>5</td>
-                                <td>The max size allowed for a log file in MB. When the log becomes larger than this size, the log will be rolled over and a new log will be started.</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <th>logbackups</th>
-                                <td>5</td>
-                                <td>The max number of log rollovers that will be kept.</td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -295,51 +295,15 @@
                             </tr>
                             <tr>
                                 <td><i class="fa fa-asterisk"></i></td>
-                                <th>uid</th>
-                                <td>nagios</td>
-                                <td>Determines which user the service will run as. <em>Linux and Mac OS X only.</em></td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-asterisk"></i></td>
-                                <th>gid</th>
-                                <td>nagios</td>
-                                <td>Determines which group the service will run as. <em>Linux and Mac OS X only.</em></td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-asterisk"></i></td>
                                 <th>sleep</th>
                                 <td>300</td>
                                 <td>The time in seconds which the service will wait until running again. Upon waking up, the service will check to see if it has anything to do. If it has nothing to do it will sleep again for the specified time.</td>
                             </tr>
                             <tr>
                                 <td><i class="fa fa-asterisk"></i></td>
-                                <th>pidfile</th>
-                                <td>var/run/ncpa_passive.pid</td>
-                                <td>The named file location where the PID file for the NCPA passive service will be stored and maintained. <em>Linux and Mac OS X only.</em></td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-asterisk"></i></td>
-                                <th>loglevel</th>
-                                <td>info</td>
-                                <td>The level of message that will be deemed important enough to be logged to the log file. Valid loglevels are <em>info</em>, <em>error</em>, <em>warning</em>, and <em>debug</em>.</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-asterisk"></i></td>
                                 <th>logfile</th>
                                 <td>var/log/ncpa_passive.log</td>
                                 <td>The named file location where the log file for the NCPA passive service will be stored.</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <th>logmaxmb</th>
-                                <td>5</td>
-                                <td>The max size allowed for a log file in megabytes. When the log becomes larger than this, the log will be rolled over and a new log will be started.</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <th>logbackups</th>
-                                <td>5</td>
-                                <td>The max number of log rollovers that will be kept.</td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -432,37 +396,6 @@
                         </tbody>
                     </table>
                 </div>
-
-                <!--
-                <div class="section">
-                    <h3>[nrds]</h3>
-                    <p>The value <em>nrds</em> must be present in the passive handler declaration (above) in order to pull down any new configuration. <a class="reference external" href="https://exchange.nagios.org/directory/Addons/Components/Nagios-Remote-Data-Sender-(NRDS)/details">NRDS</a> is a slick way to manage your configuration files. Many of these directives are boilerplate. The interesting directives are identified in the following. For more information on NRDS see the above link for further definitions of these terms.</p>
-                    <table class="table table-striped">
-                        <tbody>
-                            <tr>
-                                <th style="width: 10%;">config_name</th>
-                                <td>This is the name that the NCPA passive service will query for updates and is set up in Nagios XI.</td>
-                            </tr>
-                            <tr>
-                                <th>token</th>
-                                <td>The token the NCPA passive service will use when connecting to the NRDS server.</td>
-                            </tr>
-                            <tr>
-                                <th>url</th>
-                                <td>The URL to be queried for NRDS information.</td>
-                            </tr>
-                            <tr>
-                                <th>update_config</th>
-                                <td>If this is set to 1, then the config will be updated automatically when a new config becomes available. If anything else, it will not be updated.</td>
-                            </tr>
-                            <tr>
-                                <th>update_plugins</th>
-                                <td>If this is set to 1, then the plugins in the plugins/ directory will be automatically maintained using NRDS.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                -->
 
                 <a name="plugin-directives"></a>
                 <div class="section">
