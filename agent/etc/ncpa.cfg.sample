@@ -25,18 +25,35 @@ check_logging = 1
 #
 check_logging_time = 30
 
-# Logging level, and the PID location. For log files, see the
+# Logging level. To specify log file names/locatoins, see the
 # listener and passive sections.
 # Default: loglevel = info (debug, info, warning, error)
-# Default: pidfile = var/run/ncpa.pid
 #
 loglevel = info
-pidfile = var/run/ncpa.pid
 
-# This is for Unix only (Linux, Mac OS X, etc)
+#
+# The max size allowed for a log file in megabytes.
+# When the log becomes larger than this, the log will be rolled over
+# and a new log will be started.
+# Default: 5
+#
+# logmaxmb =
+
+#
+# The max number of log rollovers that will be kept.
+# Default: 5
+#
+# logbackups =
+
+# The user and group. This is for Unix only (Linux, Mac OS X, etc)
 #
 uid = nagios
 gid = nagios
+
+# LThe PID file location.
+# Default: pidfile = var/run/ncpa.pid
+#
+pidfile = var/run/ncpa.pid
 
 #
 # Display all mounted disk partitions
@@ -69,20 +86,6 @@ default_units = Gi
 [listener]
 
 #
-# User and group to run plugins as (recommended to use nagios:nagios)
-# Default: uid = nagios
-# Default: gid = nagios
-#
-# ** Note - The daemon runs as root, but forks a child process when running a plugin
-#    that is defined by the user, for security reasons. However, without the main daemon
-#    running as root, much of the system information would be missing. This is typical behavior. **
-#
-# This is for Unix only (Linux, Mac OS X, etc)
-#
-uid = nagios
-gid = nagios
-
-#
 # IP address and port number for the Listener to use for the web GUI and API
 #
 # :: allows for dual stack (IPv4 and IPv6 on most linux systems) but will only allow
@@ -97,14 +100,18 @@ gid = nagios
 # port =
 
 #
-# SSL connection and certificate config (if an SSL option is not available on some older
+# SSL connection, certificate and cyphers config (if an SSL option is not available on some older
 # operating systems it will default back to TLSv1)
 # ssl_version options: TLSv1, TLSv1_1, TLSv1_2
-#
-# ssl_ciphers = <list of ciphers>
+# Default: ssl_version = TLSv1_2
+# Default: certificate = adhoc
 #
 ssl_version = TLSv1_2
 certificate = adhoc
+
+# ssl_cyphers: sets a list of accepted SSL ciphers using the format <cipher>:<cipher>:<cipher>, e.g., AES256-GCM-SHA384:AES256-SHA256:AES256-SHA:CAMELLIA256-SHA
+# Default: ssl_ciphers =
+#
 
 #
 # Listener logging file level, location, and the PID location
@@ -173,20 +180,6 @@ admin_auth_only = 0
 # allowed_sources =
 
 #
-# The max size allowed for a log file in megabytes.
-# When the log becomes larger than this, the log will be rolled over
-# and a new log will be started.
-# Default: 5
-#
-# logmaxmb =
-
-#
-# The max number of log rollovers that will be kept.
-# Default: 5
-#
-# logbackups =
-
-#
 # -------------------------------
 # Listener Configuration (API)
 # -------------------------------
@@ -220,16 +213,6 @@ community_string = mytoken
 handlers = None
 
 #
-# User and group to run passive checks as (Recommended to use nagios:nagios)
-# Default: uid = nagios
-# Default: gid = nagios
-#
-# This is for Unix only (Linux, Mac OS X, etc)
-#
-uid = nagios
-gid = nagios
-
-#
 # Passive check interval - the amount in seconds to wait between each passive check by default,
 # this can be overwritten by adding on a "|<duration>" in seconds to the passive check config
 # Default: 300 (5 minutes)
@@ -249,18 +232,9 @@ logfile = var/log/ncpa_passive.log
 # delay_start = 30
 
 #
-# The max size allowed for a log file in megabytes.
-# When the log becomes larger than this, the log will be rolled over
-# and a new log will be started.
-# Default: 5
-#
-# logmaxmb =
-
-#
-# The max number of log rollovers that will be kept.
-# Default: 5
-#
-# logbackups =
+# Passive checks: see ncpa.cfg.d/example.cfg to see how to specify passive checks.
+# Simply uncommenting the lines in that fiel will make those passive checks available.
+# Default: none
 
 #
 # -------------------------------
@@ -312,7 +286,7 @@ topic = ncpa
 [plugin directives]
 
 #
-# Plugin path where all plugins will be ran from.
+# Plugin path where all plugins will be run from.
 #
 plugin_path = plugins/
 
