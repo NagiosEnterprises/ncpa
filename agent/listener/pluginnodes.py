@@ -94,7 +94,7 @@ class PluginNode(nodes.RunnableNode):
         except Exception as e:
             check_logging = 1
 
-        # Create a list of plugin names that should be ran as sudo
+        # Create a list of plugin names that should be run as sudo
         sudo_plugins = []
         try:
             run_with_sudo = config.get("plugin directives", "run_with_sudo")

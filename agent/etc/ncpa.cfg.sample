@@ -348,7 +348,7 @@ follow_symlinks = 0
 # The extension for the plugin denotes how NCPA will try to run the plugin. Use this
 # for setting how you want to run the plugin in the command line.
 #
-# NOTE: Plugins without an extension will be ran in the cmdline as follows:
+# NOTE: Plugins without an extension will be run in the cmdline as follows:
 #       $plugin_name $plugin_args
 #
 # Defaults:

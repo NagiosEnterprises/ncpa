@@ -131,7 +131,7 @@ class NCPACheck(object):
 
     def needs_to_run(self):
         """
-        Check if we need to run the check again, or if it was ran within it's duration
+        Check if we need to run the check again, or if it was run within it's duration
         """
         key = hashlib.sha256((self.hostname + self.servicename).encode('utf-8')).hexdigest()
         nrun = NEXT_RUN[key]

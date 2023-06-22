@@ -377,7 +377,7 @@ Changelog
 - Fixed perfdata output for windows log checks
 - Fixed issue on Mac OS X where running as nagios (default) would cause process data not to show
 - Fixed issue where global config parser defaults caused issues with sections in separate files
-- Fixed issue where services in Unix systems ran as root no matter what the uid/gid specified in ncpa.cfg
+- Fixed issue where services in Unix systems run as root no matter what the uid/gid specified in ncpa.cfg
 - Fixed delta value returning 0 the first time it's called even if there should be 1 second of data
 - Fixed Mac OS X plist to no longer set user/group (bug fix for Unix systems running as specified uid/gid is related)
 - Fixed processor type not showing up on all Linux distros on GUI dashboard
