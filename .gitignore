@@ -9,6 +9,7 @@
 .coverage
 .cover
 .cache/
+.vscode/
 docs/_build
 *.exe
 ncpa.db
