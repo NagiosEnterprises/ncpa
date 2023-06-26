@@ -22,8 +22,12 @@ class TestCertificate(unittest.TestCase):
         key = "%s/%s" % (self.testing_dir, self.testing_key)
         crt = "%s/%s" % (self.testing_dir, self.testing_crt)
 
-        key_file = open(key, 'w').write("test key")
-        crt_file = open(crt, 'w').write("test cert")
+        key_file = open(key, 'w')
+        key_file.write("test key")
+        key_file.close()
+        crt_file = open(crt, 'w')
+        crt_file.write("test cert")
+        crt_file.close()
 
         kc, cc = os.path.getmtime(key), os.path.getmtime(crt)
 
