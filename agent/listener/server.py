@@ -38,7 +38,7 @@ else:
 tmpl_dir = os.path.join(appdir, 'listener', 'templates')
 stat_dir = os.path.join(appdir, 'listener', 'static')
 
-listener = Flask('__name__', template_folder=tmpl_dir, static_folder=stat_dir)
+listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
 
 
 # Set some settings for Flask
