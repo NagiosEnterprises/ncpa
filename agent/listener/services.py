@@ -49,7 +49,7 @@ def filter_services(m):
                     else:
                         if service in services:
                             accepted[service] = services[service]
-            
+
             # Match statuses
             if filter_statuses:
                 for service in services:
@@ -95,7 +95,7 @@ class ServiceNode(listener.nodes.LazyNode):
                     is_upstart = True
             except:
                 pass
-        
+
             if is_systemctl:
                 return self.get_services_via_systemctl
             elif is_upstart:
@@ -142,6 +142,7 @@ class ServiceNode(listener.nodes.LazyNode):
         status.seek(0)
 
         for line in status.readlines():
+            line = line.decode()
             line.rstrip()
             unit, load, active, sub, description = re.split(r'\s+', line, 4)
             if unit.endswith('.service'):
@@ -156,7 +157,7 @@ class ServiceNode(listener.nodes.LazyNode):
     @filter_services
     def get_services_via_initctl(self, *args, **kwargs):
         services = {}
-        
+
         # Ubuntu & CentOS/RHEL 6 supports both sysv init and upstart
         services = self.get_services_via_initd(args, kwargs)
 
@@ -238,7 +239,7 @@ class ServiceNode(listener.nodes.LazyNode):
                     status = 'running'
 
             # Verify with 'service' if status is still stopped
-            if status == 'unknown': 
+            if status == 'unknown':
                 status = self.get_initd_service_status(service)
 
             services[service] = status
@@ -287,7 +288,7 @@ class ServiceNode(listener.nodes.LazyNode):
 
             # Skip lrc items
             if 'lrc:/' in ls[1]:
-                continue 
+                continue
 
             sub = ls[1].replace('svc:/', '').replace('/', '|')
             status = ls[0]
@@ -390,7 +391,7 @@ class ServiceNode(listener.nodes.LazyNode):
 
             stdout = self.make_stdout(returncode, stdout_builder)
         else:
-            returncode = 3   
+            returncode = 3
             stdout = "UNKNOWN: No services found for service names: %s" % ', '.join(filtered_services)
 
         # Get the check logging value

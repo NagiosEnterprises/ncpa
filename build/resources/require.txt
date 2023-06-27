@@ -12,4 +12,4 @@ gevent-websocket
 cffi
 appdirs
 packaging
-kafka
+kafka-python

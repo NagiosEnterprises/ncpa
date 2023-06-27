@@ -7,7 +7,7 @@ import listener.server
 import listener.database as database
 
 
-# Constants to keep track of the passive check runs 
+# Constants to keep track of the passive check runs
 NEXT_RUN = { }
 
 
@@ -131,9 +131,9 @@ class NCPACheck(object):
 
     def needs_to_run(self):
         """
-        Check if we need to run the check again, or if it was ran within it's duration
+        Check if we need to run the check again, or if it was run within it's duration
         """
-        key = hashlib.sha256(self.hostname + self.servicename).hexdigest()
+        key = hashlib.sha256((self.hostname + self.servicename).encode('utf-8')).hexdigest()
         nrun = NEXT_RUN[key]
 
         logging.debug('Next run set to be at %s', nrun)
@@ -145,7 +145,7 @@ class NCPACheck(object):
         """
         Set next run time to the duration given or the default duration set in ncpa.cfg
         """
-        key = hashlib.sha256(self.hostname + self.servicename).hexdigest()
+        key = hashlib.sha256((self.hostname + self.servicename).encode('utf-8')).hexdigest()
 
         NEXT_RUN[key] = run_time + self.duration
         logging.debug('Next run is %s', NEXT_RUN[key])

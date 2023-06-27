@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+echo -e "***** build/build.sh"
+
 # Global variables
 UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
@@ -114,7 +116,7 @@ elif [ "$UNAME" == "AIX" ]; then
     . $BUILD_DIR/aix/setup.sh
 elif [ "$UNAME" == "Darwin" ]; then
     . $BUILD_DIR/osx/setup.sh
-else 
+else
     echo "Not a supported system for our build script."
     echo "If you're sure all pre-reqs are installed, try running the"
     echo "build without setup: ./build.sh --build-only"
@@ -141,7 +143,7 @@ elif [ $BUILD_TRAVIS -eq 1 ]; then
 fi
 
 
-# Update the required python modules
+# Update the required python modules !!! update_py_packages() Already run in install_prereqs()
 cd $BUILD_DIR
 echo "Updating python modules..."
 update_py_packages >> $BUILD_DIR/build.log
@@ -163,17 +165,37 @@ find $AGENT_DIR -name *.pyc -exec rm '{}' \;
 mkdir -p $AGENT_DIR/plugins
 mkdir -p $AGENT_DIR/build
 mkdir -p $AGENT_DIR/var/log
-cat /dev/null > $AGENT_DIR/var/log/ncpa_passive.log
-cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
+# cat /dev/null > $AGENT_DIR/var/log/ncpa_passive.log
+# cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
+
+# Add file with current GIT hash to build
+GIT_LONG="Not built under GIT"
+GIT_HASH_FILE="NoGIT.githash"
+
+if command -v git > /dev/null; then
+    GIT_LONG=$(git rev-parse HEAD)
+    GIT_SHORT=$(git rev-parse --short HEAD)
+    GIT_UNCOMMITTED=$(git status --untracked-files=no --porcelain)
+    echo "GIT_UNCOMMITTED: $GIT_UNCOMMITTED"
+    if [ "$GIT_UNCOMMITTED" ]; then
+        GIT_LONG="$GIT_LONG++  compiled with uncommitted changes"
+        GIT_SHORT="$GIT_SHORT++"
+    fi
+    GIT_HASH_FILE="git-$GIT_SHORT.githash"
+    echo "GIT_LONG: $GIT_LONG"
+    echo "GIT_SHORT: $GIT_SHORT"
+    echo "GIT_HASH_FILE: $GIT_HASH_FILE"
+fi
 
 (
     cd $AGENT_DIR
-    $PYTHONBIN setup_posix.py build_exe > $BUILD_DIR/build.log
+    $PYTHONBIN setup.py build_exe > $BUILD_DIR/build.log
 
     # Move the ncpa binary data
     cd $BUILD_DIR
     rm -rf $BUILD_DIR/ncpa
     cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
+    echo $GIT_LONG >  $BUILD_DIR/ncpa/$GIT_HASH_FILE
 
     # REMOVE LIBFFI COPY - PLEASE CHANGE THIS LATER
     # It should be in .libs_cffi_backend for proper linking and
@@ -185,19 +207,21 @@ cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
     # Set permissions
     chmod -R g+r $BUILD_DIR/ncpa
     chmod -R a+r $BUILD_DIR/ncpa
-    chown nagios:nagios $BUILD_DIR/ncpa/var
+    chown -R nagios:nagios $BUILD_DIR/ncpa/var
     chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
     chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
     chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
-    chmod 755 $BUILD_DIR/ncpa/var
+    chmod -R 755 $BUILD_DIR/ncpa/var
     chmod 755 $BUILD_DIR/ncpa
 
     # Build tarball
     cp -rf ncpa ncpa-$NCPA_VER
     if [ "$UNAME" == "AIX" ]; then
+        echo -e "***** Build tarball"
         tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER >> $BUILD_DIR/build.log
         gzip -f ncpa-$NCPA_VER.tar >> $BUILD_DIR/build.log
     elif [ "$UNAME" == "Linux" ]; then
+        echo -e "***** Build tarball"
         tar -czvf ncpa-$NCPA_VER.tar.gz ncpa-$NCPA_VER >> $BUILD_DIR/build.log
     fi
 )

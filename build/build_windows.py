@@ -1,15 +1,36 @@
+"""
+Builds the Windows installer for NCPA.
+
+Run as Administrator on Windows
+-pip installs prereqs to the python interpreter that is running this script
+-cx_Freeze builds the executable
+-NSIS builds the installer
+"""
+
 import os
 import shutil
 import subprocess
 import sys
 
+# --------------------------
+# Configuration/Setup
+# --------------------------
+
 # Grab command line arguments
 buildtype = 'release'
+buildtype = 'nightly'
 if len(sys.argv) > 1:
     buildtype = sys.argv[1]
 
+print("Building NCPA for Windows")
+
+# Which python launcher command is available for Windows
+python_launcher = 'py' if shutil.which('py') else 'python'
+
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 nsi_store = os.path.join(basedir, 'build', 'resources', 'ncpa.nsi')
+print("nsi_store:", nsi_store)
+
 nsi = os.path.join(basedir, 'agent', 'build', 'ncpa.nsi')
 nsis = os.path.join(os.environ['PROGRAMFILES(X86)'] if 'PROGRAMFILES(X86)' in os.environ else os.environ['PROGRAMFILES'], 'NSIS', 'makensis.exe')
 
@@ -25,8 +46,8 @@ except:
 
 # Building nightly versions requires a git pull and pip upgrade
 if buildtype == 'nightly':
-	subprocess.Popen(['git', 'pull']).wait()
-	subprocess.Popen(['pip', 'install', '--upgrade', '-r', os.path.join(basedir, 'build', 'resources', 'require.txt')]).wait()
+	# subprocess.Popen(['git', 'pull']).wait()
+	subprocess.Popen([python_launcher, '-m', 'pip', 'install', '--upgrade', '-r', os.path.join(basedir, 'build', 'resources', 'require.win.txt')]).wait()
 
 # Remove old build
 subprocess.Popen(['rmdir', os.path.join(basedir, 'agent', 'build'), '/s', '/q'], shell=True).wait()
@@ -39,8 +60,56 @@ if not os.path.exists('var'):
 if not os.path.exists('plugins'):
     os.mkdir('plugins')
 
+if not os.path.exists('build'):
+    os.mkdir('build')
+
 sys.path.append(os.getcwd())
-subprocess.Popen(['python', 'setup.py', 'build_exe']).wait()
+
+# --------------------------
+# build with cx_Freeze
+# --------------------------
+
+subprocess.Popen([python_launcher, 'setup.py', 'build_exe']).wait()
+
+# --------------------------
+# save git hash to file
+# --------------------------
+
+GIT_LONG = "Not built under GIT"
+GIT_HASH_FILE = "NoGIT.githash"
+
+def run_cmd(cmd):
+     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+     output, error = process.communicate()
+     return output.strip().decode()
+
+try:
+    GIT_LONG = run_cmd("git rev-parse HEAD")
+    GIT_SHORT = run_cmd("git rev-parse --short HEAD")
+    GIT_UNCOMMITTED = run_cmd("git status --untracked-files=no --porcelain")
+
+    print("GIT_UNCOMMITED:", GIT_UNCOMMITTED)
+
+    if GIT_UNCOMMITTED:
+         GIT_LONG = f"{GIT_LONG}++ compiled with uncommitted changes"
+         GIT_SHORT = f"{GIT_SHORT}++"
+
+    GIT_HASH_FILE = f"git-{GIT_SHORT}.githash"
+
+    print("GIT_LONG:", GIT_LONG)
+    print("GIT_SHORT:", GIT_SHORT)
+    print("GIT_HASH_FILE:", GIT_HASH_FILE)
+
+except:
+    print("GIT_LONG:", GIT_LONG)
+    print("GIT_SHORT:", GIT_SHORT)
+
+with open(os.path.join(basedir, 'agent', 'build', 'NCPA', GIT_HASH_FILE), 'w') as f:
+    f.write(GIT_LONG)
+
+# --------------------------
+# build NSIS installer and copy to build directory
+# --------------------------
 
 environ = os.environ.copy()
 environ['NCPA_BUILD_VER'] = version
@@ -55,3 +124,15 @@ b.wait()
 
 shutil.copyfile(os.path.join(basedir, 'agent', 'build', 'ncpa-%s.exe' % version),
                 os.path.join(basedir, 'build', 'ncpa-%s.exe' % version))
+
+ASCII = """
+███╗   ██╗ ██████╗██████╗  █████╗
+████╗  ██║██╔════╝██╔══██╗██╔══██╗
+██╔██╗ ██║██║     ██████╔╝███████║
+██║╚██╗██║██║     ██╔═══╝ ██╔══██║
+██║ ╚████║╚██████╗██║     ██║  ██║
+╚═╝  ╚═══╝ ╚═════╝╚═╝     ╚═╝  ╚═╝
+"""
+print(ASCII)
+print("Build complete!")
+print("You can find the installer in the build directory.")

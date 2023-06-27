@@ -39,7 +39,7 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">Plugin Path</label>
                         <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3">
-                            <input type="text" class="form-control" name="plugin_path" value="{{ plugin_path }}" readonly>
+                            <input type="text" class="form-control" name="plugin_path" value="{{ sectioncfg['plugin_path'] }}" readonly>
                         </div>
                     </div>
 
@@ -47,7 +47,7 @@ $(document).ready(function() {
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">Plugin Timeout</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="plugin_timeout" value="{{ plugin_timeout }}" readonly>
+                                <input type="text" class="form-control" name="plugin_timeout" value="{{ sectioncfg['plugin_timeout'] }}" readonly>
                                 <div class="input-group-addon">Secs</div>
                             </div>
                         </div>
@@ -70,7 +70,7 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">Run With Sudo</label>
                         <div class="col-sm-6 col-md-4 col-lg-4 col-xl-5">
-                            <input type="text" class="form-control" name="run_with_sudo" value="{{ run_with_sudo }}" readonly>
+                            <input type="text" class="form-control" name="run_with_sudo" value="{{ sectioncfg['run_with_sudo'] }}" readonly>
                         </div>
                     </div>
 
