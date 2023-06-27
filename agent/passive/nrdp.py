@@ -37,7 +37,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
             for k, v in zip(list(tag_attr.keys()), list(tag_attr.values())):
                 element.setAttribute(k, v)
         if text:
-            text_node = doc.createTextNode(text.strip())
+            text_node = doc.createTextNode(str(text).strip())
             element.appendChild(text_node)
         return element
 
@@ -64,10 +64,10 @@ class Handler(passive.nagioshandler.NagiosHandler):
         else:
             check_type = 'service'
 
-        check_result = Handler.make_tag(u'checkresult', tag_attr={'type': check_type})
-        hostname = Handler.make_tag(u'hostname', check.hostname)
-        state = Handler.make_tag(u'state', returncode)
-        output = Handler.make_tag(u'output', stdout)
+        check_result = Handler.make_tag('checkresult', tag_attr={'type': check_type})
+        hostname = Handler.make_tag('hostname', check.hostname)
+        state = Handler.make_tag('state', returncode)
+        output = Handler.make_tag('output', stdout)
 
         if not check_type == 'host':
             servicename = Handler.make_tag(u'servicename', check.servicename)
@@ -196,7 +196,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 server += '/'
 
             logging.debug('XML to be submitted: %s', checkresults)
-            ret_xml = utils.send_request(url=server, connection_timeout=timeout, token=token, XMLDATA=checkresults, cmd='submitcheck')
+            ret_xml = passive.utils.send_request(url=server, connection_timeout=timeout, token=token, XMLDATA=checkresults, cmd='submitcheck')
 
             if ret_xml is not None:
                 try:

@@ -11,7 +11,7 @@ def send_request(url, connection_timeout, **kwargs):
     :param kwargs: Extra keywords to be passed to requests.post
     :rtype: requests.models.Response
     """
-    
+
     try:
         r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=False, allow_redirects=True)
     except requests.exceptions.HTTPError as e:
@@ -23,7 +23,7 @@ def send_request(url, connection_timeout, **kwargs):
     except Exception as ex:
         logging.exception(ex)
     else:
-        logging.debug('Content response from URL: %s' % unicode(r.content))
+        logging.debug('Content response from URL: %s' % str(r.content))
         return r.content
 
     return None

@@ -4,7 +4,7 @@ Documentation=https://www.nagios.org/ncpa
 After=network.target local-fs.target
 
 [Service]
-ExecStart=${DIR}/ncpa
+ExecStart=_BASEDIR_/ncpa -n
 
 [Install]
 WantedBy=multi-user.target

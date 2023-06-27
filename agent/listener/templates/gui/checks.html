@@ -90,7 +90,7 @@ $(document).ready(function() {
                         </span>
                         {% if filters %}
                         <span>
-                            <i class="fa fa-filter fa-14 fa-l"></i> Filtering by 
+                            <i class="fa fa-filter fa-14 fa-l"></i> Filtering by
                             {% if search != '' %}"<b>{{ search }}</b>"{% endif %}{% if status != '' %}{% if search != '' %}, {% endif %}status = <b>{{ status|human_check_result }}</b>{% endif %}
                             {% if check_senders %}{% if status != '' or search != '' %}and{% endif %} executed by <b>{{ ', '.join(check_senders) }}</b>{% endif %}
                             <a href="checks" class="tt-bind" title="Clear filters"><i class="fa fa-times fa-r" style="font-size: 14px;"></i></a>
@@ -111,7 +111,7 @@ $(document).ready(function() {
                     <div class="clear"></div>
                 </div>
                 <table class="table table-bordered table-striped table-condensed">
-                    <thead> 
+                    <thead>
                         <tr>
                             <th style="min-width: 10%;">Node Endpoint</th>
                             <th style="width: 160px;">Check Time</th>
@@ -146,7 +146,7 @@ $(document).ready(function() {
                             {% if filters %}
                             <td colspan="6">No check records found with current filters applied.</td>
                             {% else %}
-                            <td colspan="6">No checks have been ran yet. Run them through the API, using check_ncpa.py, or send passive checks to NRDP.</td>
+                            <td colspan="6">No checks have been run yet. Run them through the API, using check_ncpa.py, or send passive checks to NRDP.</td>
                             {% endif %}
                         </tr>
                         {% endif %}

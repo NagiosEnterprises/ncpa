@@ -39,28 +39,14 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">IP Address</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                            <input type="text" class="form-control" name="ip" value="{{ ip }}" readonly>
+                            <input type="text" class="form-control" name="ip" value="{{ sectioncfg['ip'] }}" readonly>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Port</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <input type="text" class="form-control" name="port" value="{{ port }}" readonly>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">User</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <input type="text" class="form-control" name="uid" value="{{ uid }}" readonly>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Group</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <input type="text" class="form-control" name="gid" value="{{ gid }}" readonly>
+                            <input type="text" class="form-control" name="port" value="{{ sectioncfg['port'] }}" readonly>
                         </div>
                     </div>
 
@@ -68,9 +54,9 @@ $(document).ready(function() {
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">SSL Version</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <select class="form-control" name="ssl_version">
-                                <option value="TLSv1"{% if ssl_version == 'TLSv1' %} selected{% endif %}>TLSv1.0</option>
-                                <option value="TLSv1_1"{% if ssl_version == 'TLSv1_1' %} selected{% endif %}>TLSv1.1</option>
-                                <option value="TLSv1_2"{% if ssl_version == 'TLSv1_2' %} selected{% endif %}>TLSv1.2</option>
+                                <option value="TLSv1"{% if sectioncfg['ssl_version'] == 'TLSv1' %} selected{% endif %}>TLSv1.0</option>
+                                <option value="TLSv1_1"{% if sectioncfg['ssl_version'] == 'TLSv1_1' %} selected{% endif %}>TLSv1.1</option>
+                                <option value="TLSv1_2"{% if sectioncfg['ssl_version'] == 'TLSv1_2' %} selected{% endif %}>TLSv1.2</option>
                             </select>
                         </div>
                     </div>
@@ -79,27 +65,8 @@ $(document).ready(function() {
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Certificate</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <select class="form-control" name="certificate">
-                                <option value="adhoc"{% if certificate == 'adhoc' %} selected{% endif %}>Adhoc</option>
-                                <!--<option value="custom"{% if certificate != 'adhoc' %} selected{% endif %}>Custom</option>-->
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">PID File</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                            <input type="text" class="form-control" name="pidfile" value="{{ pidfile }}" readonly>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Level</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <select class="form-control" name="loglevel">
-                                <option value="error"{% if loglevel == 'error' %} selected{% endif %}>Error</option>
-                                <option value="warning"{% if loglevel == 'warning' %} selected{% endif %}>Warning</option>
-                                <option value="info"{% if loglevel == 'info' %} selected{% endif %}>Info</option>
-                                <option value="debug"{% if loglevel == 'debug' %} selected{% endif %}>Debug</option>
+                                <option value="adhoc"{% if sectioncfg['certificate'] == 'adhoc' %} selected{% endif %}>Adhoc</option>
+                                <!--<option value="custom"{% if sectioncfg['certificate'] != 'adhoc' %} selected{% endif %}>Custom</option>-->
                             </select>
                         </div>
                     </div>
@@ -107,27 +74,7 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log File</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                            <input type="text" class="form-control" name="logfile" value="{{ logfile }}" readonly>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Max MB</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="logmaxmb" value="{{ logmaxmb }}" readonly>
-                                <div class="input-group-addon">MB</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Backups</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="logbackups" value="{{ logbackups }}" readonly>
-                                <div class="input-group-addon">Days</div>
-                            </div>
+                            <input type="text" class="form-control" name="logfile" value="{{ sectioncfg['logfile'] }}" readonly>
                         </div>
                     </div>
 
@@ -135,11 +82,11 @@ $(document).ready(function() {
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Admin GUI Access</label>
                         <div class="col-sm-6">
                             <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if admin_gui_access %} active{% endif %}">
-                                    <input type="radio" name="admin_gui_access" value="1" autocomplete="off"{% if admin_gui_access %} checked{% endif %}> Enabled
+                                <label class="btn btn-sm btn-default{% if sectioncfg['admin_gui_access'] %} active{% endif %}">
+                                    <input type="radio" name="admin_gui_access" value="1" autocomplete="off"{% if sectioncfg['admin_gui_access'] %} checked{% endif %}> Enabled
                                 </label>
-                                <label class="btn btn-sm btn-default{% if not admin_gui_access %} active{% endif %}">
-                                    <input type="radio" name="admin_gui_access" value="0" autocomplete="off"{% if not admin_gui_access %} checked{% endif %}> Disabled
+                                <label class="btn btn-sm btn-default{% if not sectioncfg['admin_gui_access'] %} active{% endif %}">
+                                    <input type="radio" name="admin_gui_access" value="0" autocomplete="off"{% if not sectioncfg['admin_gui_access'] %} checked{% endif %}> Disabled
                                 </label>
                             </div>
                         </div>
@@ -149,11 +96,11 @@ $(document).ready(function() {
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Admin Auth Only</label>
                         <div class="col-sm-6">
                             <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if admin_auth_only %} active{% endif %}">
-                                    <input type="radio" name="admin_auth_only" value="1" autocomplete="off"{% if admin_auth_only %} checked{% endif %}> Enabled
+                                <label class="btn btn-sm btn-default{% if sectioncfg['admin_auth_only'] %} active{% endif %}">
+                                    <input type="radio" name="admin_auth_only" value="1" autocomplete="off"{% if sectioncfg['admin_auth_only'] %} checked{% endif %}> Enabled
                                 </label>
-                                <label class="btn btn-sm btn-default{% if not admin_auth_only %} active{% endif %}">
-                                    <input type="radio" name="admin_auth_only" value="0" autocomplete="off"{% if not admin_auth_only %} checked{% endif %}> Disabled
+                                <label class="btn btn-sm btn-default{% if not sectioncfg['admin_auth_only'] %} active{% endif %}">
+                                    <input type="radio" name="admin_auth_only" value="0" autocomplete="off"{% if not sectioncfg['admin_auth_only'] %} checked{% endif %}> Disabled
                                 </label>
                             </div>
                         </div>
@@ -163,7 +110,7 @@ $(document).ready(function() {
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Delayed Start</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="delay_start" value="{{ delay_start }}" readonly>
+                                <input type="text" class="form-control" name="delay_start" value="{{ sectioncfg['delay_start'] }}" readonly>
                                 <div class="input-group-addon">Secs</div>
                             </div>
                         </div>
@@ -172,21 +119,21 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Allowed Hosts</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                            <input type="text" class="form-control" name="allowed_hosts" value="{{ allowed_hosts }}" readonly>
+                            <input type="text" class="form-control" name="allowed_hosts" value="{{ sectioncfg['allowed_hosts'] }}" readonly>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Allowed Sources</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                            <input type="text" class="form-control" name="allowed_sources" value="{{ allowed_sources }}" readonly>
+                            <input type="text" class="form-control" name="allowed_sources" value="{{ sectioncfg['allowed_sources'] }}" readonly>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Max Connections</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <input type="text" class="form-control" name="max_connections" value="{{ max_connections }}" readonly>
+                            <input type="text" class="form-control" name="max_connections" value="{{ sectioncfg['max_connections'] }}" readonly>
                         </div>
                     </div>
 

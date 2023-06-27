@@ -9,7 +9,8 @@ import copy
 import queue
 import listener.nodes as nodes
 import listener.database as database
-import listener.server
+import listener.environment as environment
+import listener.server as server
 import signal
 from threading import Timer
 
@@ -93,7 +94,7 @@ class PluginNode(nodes.RunnableNode):
         except Exception as e:
             check_logging = 1
 
-        # Create a list of plugin names that should be ran as sudo
+        # Create a list of plugin names that should be run as sudo
         sudo_plugins = []
         try:
             run_with_sudo = config.get("plugin directives", "run_with_sudo")
@@ -140,7 +141,7 @@ class PluginNode(nodes.RunnableNode):
             returncode = -1
             logging.error(stdout)
 
-        cleaned_stdout = unicode(
+        cleaned_stdout = str(
             "".join(stdout.decode("utf-8", "ignore"))
             .replace("\r\n", "\n")
             .replace("\r", "\n")

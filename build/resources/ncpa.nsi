@@ -1,3 +1,7 @@
+;
+; NSIS Windows Installer Script for NCPA
+;
+
 !include "MUI2.nsh"
 !include "nsDialogs.nsh"
 !include "winmessages.nsh"
@@ -55,7 +59,7 @@ Var status_service
 OutFile "ncpa-${NCPA_VERSION}.exe"
 
 ; The installer styling
-!define MUI_ICON "NCPA\build_resources\ncpa.ico"
+; !define MUI_ICON "NCPA\build_resources\ncpa.ico"
 !define MUI_WELCOMEFINISHPAGE_BITMAP "NCPA\build_resources\nagios_installer.bmp"
 !define MUI_UNWELCOMEFINISHPAGE_BITMAP "NCPA\build_resources\nagios_installer.bmp"
 !define MUI_HEADERIMAGE
@@ -64,7 +68,8 @@ OutFile "ncpa-${NCPA_VERSION}.exe"
 !define MUI_HEADERIMAGE_UNBITMAP "NCPA\build_resources\nagios_installer_logo.bmp"
 
 ; The default installation directory
-InstallDir $PROGRAMFILES32\Nagios\NCPA
+; InstallDir $PROGRAMFILES\Nagios\NCPA ; Installer is 32-bit so even tough the binary is 64-bit, this will be Program Files (x86)
+InstallDir $PROGRAMFILES64\Nagios\NCPA ; NCPA is 64-bit so we are going to install to Program Files
 
 ; Request admin execution
 RequestExecutionLevel admin
@@ -77,10 +82,11 @@ VIProductVersion ${NCPA_VERSION_CLEAN}.0
 VIAddVersionKey "ProductName" "${NAME}"
 VIAddVersionKey "CompanyName" "${COMPANY}"
 VIAddVersionKey "FileVersion" ${NCPA_VERSION}
-VIAddVersionKey "LegalCopyright" "2014-2017 ${COMPANY}"
+VIAddVersionKey "LegalCopyright" "2014-2023 ${COMPANY}"
 VIAddVersionKey "FileDescription" "NCPA Setup"
 
 ; Language values for pages
+!define LANG_ENGLISH 1033
 LangString PAGE_TITLE ${LANG_ENGLISH} "Nagios Cross-Platform Agent (${NAME})"
 LangString PAGE_SUBTITLE ${LANG_ENGLISH} "Windows Version - ${NCPA_VERSION}"
 LangString LICENSE_TOP ${LANG_ENGLISH} "License Agreement"
@@ -167,7 +173,7 @@ Function .onInit
 FunctionEnd
 
 Function un.onInit
-    
+
     !insertmacro MULTIUSER_UNINIT
 
 FunctionEnd
@@ -189,7 +195,7 @@ Function CheckInstall
         ExpandEnvStrings $0 COMSPEC
 
         ; Get status of the service
-        nsExec::ExecToStack '"$SYSDIR\cmd.exe" /c "sc QUERY ncpa | FIND /C "RUNNING""'
+        nsExec::ExecToStack '"$SYSDIR\cmd.exe" /c "sc QUERY NCPA | FIND /C "RUNNING""'
         Pop $0  # contains return code
         Pop $1  # contains output
         StrCpy $1 $1 1
@@ -213,11 +219,11 @@ Function ConfigListener
     !insertmacro INSTALLOPTIONS_DISPLAY "nsis_listener_options.ini"
 
     ; Grab listener options
-    !insertmacro INSTALLOPTIONS_READ $token "nsis_listener_options.ini" "Field 4" "State"
-    !insertmacro INSTALLOPTIONS_READ $bind_ip "nsis_listener_options.ini" "Field 12" "State"
-    !insertmacro INSTALLOPTIONS_READ $bind_port "nsis_listener_options.ini" "Field 13" "State"
-    !insertmacro INSTALLOPTIONS_READ $ssl_version "nsis_listener_options.ini" "Field 7" "State"
-    !insertmacro INSTALLOPTIONS_READ $log_level_active "nsis_listener_options.ini" "Field 10" "State"
+    !insertmacro INSTALLOPTIONS_READ $token "nsis_listener_options.ini" "Field 10" "State"
+    !insertmacro INSTALLOPTIONS_READ $bind_ip "nsis_listener_options.ini" "Field 18" "State"
+    !insertmacro INSTALLOPTIONS_READ $bind_port "nsis_listener_options.ini" "Field 19" "State"
+    !insertmacro INSTALLOPTIONS_READ $ssl_version "nsis_listener_options.ini" "Field 13" "State"
+    !insertmacro INSTALLOPTIONS_READ $log_level_active "nsis_listener_options.ini" "Field 15" "State"
 
 FunctionEnd
 
@@ -227,7 +233,7 @@ Function ConfigPassive
 
     IfFileExists $INSTDIR\etc\ncpa.cfg 0 +2
     Abort
-    
+
     ; Display the passive setup options
     !insertmacro INSTALLOPTIONS_DISPLAY "nsis_passive_options.ini"
 
@@ -237,7 +243,7 @@ Function ConfigPassive
     !insertmacro INSTALLOPTIONS_READ $nrdp_token "nsis_passive_options.ini" "Field 4" "State"
     !insertmacro INSTALLOPTIONS_READ $nrdp_hostname "nsis_passive_options.ini" "Field 5" "State"
     !insertmacro INSTALLOPTIONS_READ $check_interval "nsis_passive_options.ini" "Field 6" "State"
-    !insertmacro INSTALLOPTIONS_READ $log_level_passive "nsis_passive_options.ini" "Field 12" "State"
+    ; !insertmacro INSTALLOPTIONS_READ $log_level_passive "nsis_passive_options.ini" "Field 12" "State"
 
 FunctionEnd
 
@@ -247,11 +253,11 @@ Function ConfigPassiveChecks
 
     IfFileExists $INSTDIR\etc\ncpa.cfg 0 +2
     Abort
-    
+
     ; Skip this step unless 'send passive checks over NRDP' is checked
     ${If} $nrdp == 0
         Abort
-    ${EndIf} 
+    ${EndIf}
 
     ; Display the passive setup options
     !insertmacro INSTALLOPTIONS_DISPLAY "nsis_passive_checks.ini"
@@ -281,6 +287,11 @@ Section # "Create Config.ini"
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c sc stop ncpalistener'
     nsExec::Exec '$9 /c sc stop ncpapassive'
+    nsExec::Exec '$9 /c sc delete ncpalistener'
+    nsExec::Exec '$9 /c sc delete ncpapassive'
+    nsExec::Exec '$9 /c sc stop ncpa'
+    ; wait for the service(s) to stop
+    Sleep 2000
 
     ; Remove old log files for services and old passive section
     Delete "$INSTDIR\ncpa_listener.log"
@@ -292,23 +303,23 @@ Section # "Create Config.ini"
     ; --------------
     ; ncpa.cfg Setup
     ; --------------
-    
+
     CreateDirectory $INSTDIR\etc
     CreateDirectory $INSTDIR\etc\ncpa.cfg.d
 
     IfFileExists $INSTDIR\etc\ncpa.cfg SkipUpdateConfig UpdateConfig
-    
+
     ; If it's a fresh install, set the config options
     UpdateConfig:
     File /oname=$INSTDIR\etc\ncpa.cfg .\NCPA\etc\ncpa.cfg
-    
+
     WriteINIStr $INSTDIR\etc\ncpa.cfg api "community_string" "$token"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg general "loglevel" "$log_level_active"
 
     ; Listener settings
     WriteINIStr $INSTDIR\etc\ncpa.cfg listener "ip" "$bind_ip"
     WriteINIStr $INSTDIR\etc\ncpa.cfg listener "port" "$bind_port"
     WriteINIStr $INSTDIR\etc\ncpa.cfg listener "ssl_version" "$ssl_version"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg listener "loglevel" "$log_level_active"
 
     ; If send via NRDP was selected, set nrdp handler
     ${If} $nrdp == 1
@@ -329,7 +340,7 @@ Section # "Create Config.ini"
 
     ; Passive settings
     WriteINIStr $INSTDIR\etc\ncpa.cfg passive "sleep" "$check_interval"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg passive "loglevel" "$log_level_passive"
+    ; WriteINIStr $INSTDIR\etc\ncpa.cfg passive "loglevel" "$log_level_passive"
 
     ; NRDP settings
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "parent" "$nrdp_url"
@@ -337,8 +348,8 @@ Section # "Create Config.ini"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "hostname" "$nrdp_hostname"
 
     ; Set log locations for Windows
-    WriteINIStr $INSTDIR\etc\ncpa.cfg general "logfile" " var/log/ncpa.log"
-    
+    ; WriteINIStr $INSTDIR\etc\ncpa.cfg general "logfile" " var/log/ncpa.log"
+
     SkipUpdateConfig:
     ; Don't overwrite the old config file...
     SetOverwrite off
@@ -348,7 +359,7 @@ Section # "Create Config.ini"
     ; ---------
     ; Directory
     ; ---------
-    
+
     ; Copy over everything we need for NCPA
     File /r .\NCPA\listener
     File /r .\NCPA\var
@@ -394,33 +405,31 @@ Section ""
 
     WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode"
     WriteRegStr SHCTX "${UNINST_KEY}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
- 
+
     WriteUninstaller $INSTDIR\uninstall.exe
-	
+
     !define PORT $bind_port
-  
+
     ; Install the service on new install
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c diskperf -Y'
-    nsExec::Exec '$9 /c "$INSTDIR\ncpa.exe" --install NCPA'
-    nsExec::Exec '$9 /c sc config NCPA start= delayed-auto'
+    nsExec::Exec '$9 /c sc create NCPA binPath= "$INSTDIR\ncpa.exe" start= delayed-auto'
 
     ; Start the listener and passive services
     nsExec::Exec '$9 /c sc start NCPA'
 
     ${If} $installed == "0"
         nsExec::Exec '$9 /c diskperf -Y'
-        nsExec::Exec '$9 /c "$INSTDIR\ncpa.exe" --install ncpa'
-        nsExec::Exec '$9 /c sc config ncpa start= delayed-auto'
+        nsExec::Exec '$9 /c sc create NCPA binPath= "$INSTDIR\ncpa.exe" start= auto'
         nsExec::Exec '$9 /c netsh advfirewall firewall add rule name="NCPA" dir=in action=allow protocol=TCP localport=${PORT}'
-        nsExec::Exec '$9 /c sc start ncpa'
+        nsExec::Exec '$9 /c sc start NCPA'
     ${EndIf}
 
     ; Start the listener and passive services
     ; if they were running before upgrade (or if this is a new install)
 
     ${If} $status_service == "1"
-        nsExec::Exec '$9 /c sc start ncpa'
+       nsExec::Exec '$9 /c sc start NCPA'
     ${EndIf}
 
 SectionEnd
@@ -428,13 +437,33 @@ SectionEnd
 Section "Uninstall"
 
     Delete "$INSTDIR\uninstall.exe"
-    
-    ReadEnvStr $9 COMSPEC
-    nsExec::Exec '$9 /c "$INSTDIR\ncpa.exe" --uninstall NCPA'
-    
-    DeleteRegKey SHCTX "${UNINST_KEY}"
-    DeleteRegKey SHCTX "${UNINST_KEY}"
-    
-    RMDir /r "$INSTDIR"
 
+    ReadEnvStr $9 COMSPEC
+    nsExec::Exec '$9 /c sc stop NCPA'
+    nsExec::Exec '$9 /c sc delete NCPA'
+
+    ; sleep until the service is stopped
+    nsExec::Exec '$9 /c sc query NCPA'
+    Pop $0
+    ${While} $0 != "1060"
+        Sleep 1000
+        nsExec::Exec '$9 /c sc query NCPA'
+        Pop $0
+    ${EndWhile}
+
+    ; not sure why this is double, but I don't want to mess with it if it's needed
+    DeleteRegKey SHCTX "${UNINST_KEY}"
+    DeleteRegKey SHCTX "${UNINST_KEY}"
+
+    ; Ask the user if they want to delete the config files
+    ; MessageBox MB_YESNO|MB_ICONQUESTION "Would you like to delete your NCPA configuration files?" IDYES Deleteall IDNO SaveConfigFiles
+    ; ; if they don't want to delete the config files, save them
+    ; Deleteall:
+        RMDir /r "$INSTDIR"
+    ; SaveConfigFiles:
+    ;     ; Save the config files
+    ;     ExecWait "$9 /c move /Y $INSTDIR\etc $TEMP\ncpa_config"
+    ;     RMDir /r "$INSTDIR"
+    ;     CreateDirectory "$INSTDIR"
+    ;     ExecWait "$9 /c move /Y $TEMP\ncpa_config $INSTDIR\etc"
 SectionEnd

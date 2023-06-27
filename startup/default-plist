@@ -11,8 +11,7 @@
         <key>Program</key>
         <string>/usr/local/ncpa/ncpa</string>
         <key>ProgramArguments</key>
-        <key>Label</key>
-        <string>com.nagios.ncpa</string>
+        <array>
             <string>/usr/local/ncpa/ncpa</string>
             <string>-n</string>
         </array>

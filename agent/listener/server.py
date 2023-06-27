@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response, abort
-import logging
 import os
 import sys
+import ssl
 import platform
 import requests
 import functools
@@ -16,16 +16,16 @@ import ipaddress
 import urllib.parse
 import gevent
 import ncpa
+from ncpa import listener_logger as logging
+#import inspect
 
 
 # Set whether or not a request is internal or not
 import socket
 
-
 __VERSION__ = '3.0.0'
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
-
 
 # The following if statement is a workaround that is allowing us to run this
 # in debug mode, rather than a hard coded location.
@@ -88,6 +88,8 @@ def make_info_dict():
 
     return { 'agent_version': ncpa.__VERSION__,
              'uptime': uptime,
+             'python_version': sys.version,
+             'ssl_version': ssl.OPENSSL_VERSION,
              'processor': proc_type,
              'node': uname[1],
              'system': uname[0],
@@ -104,20 +106,19 @@ def get_unmapped_ip(ip):
     It returns the given ip, but in case ip is an IPv4-mapped IPv6 address,
     it returns ip as ordinary IPv4.
     """
-
     try:
         # check if ip is IPv6
-        if ipaddress.ip_address(unicode(ip)).version == 6:
+        if ipaddress.ip_address(str(ip)).version == 6:
             # check if ip is a IPv4-mapped IPv6 address
-            if ipaddress.IPv6Address(unicode(ip)).ipv4_mapped is not None:
+            if ipaddress.IPv6Address(str(ip)).ipv4_mapped is not None:
                 # return the ordinary IPv4 address
-                return str(ipaddress.IPv6Address(unicode(ip)).ipv4_mapped)
+                return str(ipaddress.IPv6Address(str(ip)).ipv4_mapped)
             else:
                 # return the IPv6 address
-                return str(ipaddress.IPv6Address(unicode(ip)))
+                return str(ipaddress.IPv6Address(str(ip)))
         else:
             # return the IPv4 address
-            return str(ipaddress.ip_address(unicode(ip)))
+            return str(ipaddress.ip_address(str(ip)))
     # Needed for passive checks, in this case ip is 'Internal'
     except ValueError as e:
         logging.debug(e)
@@ -128,7 +129,6 @@ def lookup_hostname(ip):
     """
     This function gets an ip and returns the hostname lookuped by DNS.
     """
-
     try:
         hostname = socket.gethostbyaddr(str(ip))
         return hostname[0]
@@ -141,9 +141,8 @@ def is_ip(ip):
     """
     Checks if ip is a valid ip address.
     """
-
     try:
-        ipaddress.ip_address(unicode(ip)).version
+        ipaddress.ip_address(str(ip)).version
         return True
     except ValueError as e:
         logging.debug(e)
@@ -154,16 +153,12 @@ def is_network(ip):
     """
     Checks if ip is a valid ip network.
     """
-
     try:
-        ipaddress.ip_network(unicode(ip))
+        ipaddress.ip_network(str(ip))
         return True
     except ValueError as e:
         logging.debug(e)
         return False
-    
-
-
 
 
 # ------------------------------
@@ -176,6 +171,15 @@ def before_request():
     # allowed is set to False by default
     allowed = False
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
+    logging.debug("    before_request() - type(request.view_args): %s", type(request.view_args))
+
+    # For logging some debug info for actual page requests
+    if isinstance(request.view_args, dict) and ('filename' not in request.view_args):
+        logging.info("before_request() - request.url: %s", request.url)
+        logging.debug("    before_request() - request.path: %s", request.path)
+        logging.debug("    before_request() - request.url_rule: %s", request.url_rule)
+        logging.debug("    before_request() - request.view_args: %s", request.view_args)
+        logging.debug("    before_request() - request.routing_exception: %s", request.routing_exception)
 
     if allowed_hosts and __INTERNAL__ is False:
         if request.remote_addr:
@@ -195,7 +199,7 @@ def before_request():
                     else:
                         # host is written as CIDR suffix notation
                         # get all ip's from the given subnet
-                        allowed_network = ipaddress.ip_network(unicode(host))
+                        allowed_network = ipaddress.ip_network(str(host))
 
                         for ip in allowed_network:
                             ip = str(ip)
@@ -222,12 +226,14 @@ def before_request():
 @listener.after_request
 def apply_headers(response):
     allowed_sources = get_config_value('listener', 'allowed_sources')
+
     if allowed_sources:
         response.headers["X-Frame-Options"] = "ALLOW-FROM %s" % allowed_sources
         response.headers["Content-Security-Policy"] = "frame-ancestors %s" % allowed_sources
     else:
         response.headers["X-Frame-Options"] = "SAMEORIGIN"
         response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
+
     return response
 
 
@@ -339,7 +345,6 @@ def requires_admin_auth(f):
 
 @listener.route('/login', methods=['GET', 'POST'])
 def login():
-
     # Verify authentication and redirect if we are authenticated
     if session.get('logged', False):
         return redirect(url_for('index'))
@@ -380,7 +385,7 @@ def login():
             return redirect(url)
         else:
             return redirect(url_for('index'))
-    
+
     # Display error messages depending on what was given
     if token is not None:
         if not admin_auth_only:
@@ -398,7 +403,6 @@ def login():
 @listener.route('/gui/admin/login', methods=['GET', 'POST'])
 @requires_auth
 def admin_login():
-
     # Verify authentication and redirect if we are authenticated
     if session.get('admin_logged', False):
         return redirect(url_for('admin'))
@@ -549,7 +553,7 @@ def checks():
         data['start_record'] = format(start_record + 1, ",d")
         end_record = start_record + size
         if end_record > total:
-            end_record = total 
+            end_record = total
         data['end_record'] = format(end_record, ",d")
 
     # Switch if we have any filters applied
@@ -616,17 +620,12 @@ def admin():
 @listener.route('/gui/admin/global', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_global():
-    exclude_fs_types = 'aufs,autofs,binfmt_misc,cifs,cgroup,configfs,\
-                        debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,\
-                        fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,\
-                        rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs'
-
-    tmp_args = { 'no_nav': True,
-                 'check_logging': int(get_config_value('general', 'check_logging', 1)),
-                 'check_logging_time': get_config_value('general', 'check_logging_time', 30),
-                 'all_partitions': int(get_config_value('general', 'all_partitions', 1)),
-                 'exclude_fs_types': get_config_value('general', 'exclude_fs_types', exclude_fs_types),
-                 'default_units': get_config_value('general', 'default_units', 'Gi') }
+    section = 'general'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    print("sectioncfg: ", sectioncfg)
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
 
     # Check session for flash message
     flash_msg_text = session.get('flash_msg_text', '')
@@ -643,24 +642,11 @@ def admin_global():
 @listener.route('/gui/admin/listener', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_listener_config():
-    tmp_args = { 'no_nav': True,
-                 'ip': get_config_value('listener', 'ip', '0.0.0.0'),
-                 'port': get_config_value('listener', 'port', '5693'),
-                 'uid': get_config_value('listener', 'uid', 'nagios'),
-                 'gid': get_config_value('listener', 'gid', 'nagios'),
-                 'ssl_version': get_config_value('listener', 'ssl_version', 'TLSv1_2'),
-                 'certificate': get_config_value('listener', 'certificate', 'adhoc'),
-                 'pidfile': get_config_value('listener', 'pidfile', 'var/run/ncpa_listener.pid'),
-                 'loglevel': get_config_value('listener', 'loglevel', 'info'),
-                 'logfile': get_config_value('listener', 'logfile', 'var/log/ncpa_listener.log'),
-                 'logmaxmb': get_config_value('listener', 'logmaxmb', '5'),
-                 'logbackups': get_config_value('listener', 'logbackups', '5'),
-                 'admin_gui_access': int(get_config_value('listener', 'admin_gui_access', 1)),
-                 'admin_auth_only': int(get_config_value('listener', 'admin_auth_only', 0)),
-                 'delay_start': get_config_value('listener', 'delay_start', '0'),
-                 'allowed_hosts': get_config_value('listener', 'allowed_hosts', 'All'),
-                 'allowed_sources': get_config_value('listener', 'allowed_sources', 'None'),
-                 'max_connections': get_config_value('listener', 'max_connections', '200') }
+    section = 'listener'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
 
     # Todo: add form actions when submitted
 
@@ -670,8 +656,13 @@ def admin_listener_config():
 @listener.route('/gui/admin/api', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_api_config():
-    tmp_args = { 'no_nav': True,
-                 'community_string': get_config_value('api', 'community_string', 'mytoken') }
+    section = 'api'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
+    # tmp_args = { 'no_nav': True,
+    #              'community_string': get_config_value('api', 'community_string', 'mytoken') }
 
     return render_template('admin/api.html', **tmp_args)
 
@@ -679,20 +670,14 @@ def admin_api_config():
 @listener.route('/gui/admin/passive', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_passive_config():
-    handlers = get_config_value('passive', 'handlers', None)
-    if handlers is None:
-        handlers = []
-    tmp_args = { 'no_nav': True,
-                 'handlers': handlers,
-                 'uid': get_config_value('passive', 'uid', 'nagios'),
-                 'gid': get_config_value('passive', 'gid', 'nagios'),
-                 'sleep': get_config_value('passive', 'sleep', '300'),
-                 'pidfile': get_config_value('passive', 'pidfile', 'var/run/ncpa_listener.pid'),
-                 'loglevel': get_config_value('passive', 'loglevel', 'info'),
-                 'logfile': get_config_value('passive', 'logfile', 'var/log/ncpa_listener.log'),
-                 'logmaxmb': get_config_value('passive', 'logmaxmb', '5'),
-                 'logbackups': get_config_value('passive', 'logbackups', '5'),
-                 'delay_start': get_config_value('passive', 'delay_start', '0') }
+    section = 'passive'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
+
+    if tmp_args['sectioncfg']['handlers'] is None:
+        tmp_args['sectioncfg']['handlers'] = []
 
     # Todo: add form actions when submitted
 
@@ -702,54 +687,52 @@ def admin_passive_config():
 @listener.route('/gui/admin/nrdp', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_nrdp_config():
+    section = 'nrdp'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
+
     handlers = get_config_value('passive', 'handlers', None)
     if handlers is None:
         handlers = []
-    tmp_args = { 'no_nav': True,
-                 'handlers': handlers,
-                 'nrdp_url': get_config_value('nrdp', 'parent', ''),
-                 'nrdp_token': get_config_value('nrdp', 'token', ''),
-                 'hostname': get_config_value('nrdp', 'hostname', 'NCPA') }
+    tmp_args['handlers'] = handlers
+
     return render_template('admin/nrdp.html', **tmp_args)
-
-
-@listener.route('/gui/admin/nrds', methods=['GET', 'POST'])
-@requires_admin_auth
-def admin_nrds_config():
-    tmp_args = { 'no_nav': True,
-                 'nrds_url': get_config_value('nrds', 'url', ''),
-                 'nrds_token': get_config_value('nrds', 'token', ''),
-                 'config_name': get_config_value('nrds', 'config_name', ''),
-                 'config_version': get_config_value('nrds', 'config_version', ''),
-                 'update_config': int(get_config_value('nrds', 'update_config', '1')),
-                 'update_plugins': int(get_config_value('nrds', 'update_plugins', '1')) }
-    return render_template('admin/nrds.html', **tmp_args)
 
 
 @listener.route('/gui/admin/kafkaproducer', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_kafkaproducer_config():
-    tmp_args = { 'no_nav': True,
-                 'hostname': get_config_value('kafkaproducer', 'hostname', ''),
-                 'servers': get_config_value('kafkaproducer', 'servers', ''),
-                 'client_name': get_config_value('kafkaproducer', 'client_name', 'NCPA-Kafka'),
-                 'topic': get_config_value('kafkaproducer', 'topic', 'ncpa') }
+    section = 'kafkaproducer'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
+    handlers = get_config_value('passive', 'handlers', None)
+
+    if handlers is None:
+        handlers = []
+    tmp_args['handlers'] = handlers
+
     return render_template('admin/kafkaproducer.html', **tmp_args)
 
 
 @listener.route('/gui/admin/plugin-directives', methods=['GET', 'POST'])
 @requires_admin_auth
 def admin_plugin_config():
+    section = 'plugin directives'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = {}
+    tmp_args['sectioncfg'] = sectioncfg
+
     try:
         directives = [x for x in get_config_items('plugin directives') if x[0] not in listener.config['iconfig'].defaults()]
     except Exception as e:
         directives = []
-    tmp_args = { 'no_nav': True,
-                 'plugin_path': get_config_value('plugin directives', 'plugin_path', 'plugins/'),
-                 'plugin_timeout': get_config_value('plugin directives', 'plugin_timeout', '60'),
-                 'follow_symlinks': int(get_config_value('plugin directives', 'follow_symlinks', '0')),
-                 'run_with_sudo': get_config_value('plugin directives', 'run_with_sudo', ''),
-                 'directives': directives }
+    tmp_args['directives'] = directives
+
     return render_template('admin/plugins.html', **tmp_args)
 
 
@@ -781,9 +764,10 @@ def admin_clear_check_log():
 # ------------------------------
 
 
-@listener.route('/ws/api/<path:accessor>')
+@listener.route('/ws/api/<path:accessor>', websocket=True)
 @requires_token_or_auth
 def api_websocket(accessor=None):
+    logging.debug("api_websocket()")
     """Meant for use with the websocket and API.
 
     Make a connection to this function, and then pass it the API
@@ -793,6 +777,7 @@ def api_websocket(accessor=None):
     """
     sane_args = dict(request.args)
     sane_args['accessor'] = accessor
+    logging.debug("api_websocket() - sane_args: %s: ", sane_args)
 
     config = listener.config['iconfig']
 
@@ -805,29 +790,46 @@ def api_websocket(accessor=None):
 
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
-        while True:
+        logging.info("===== api_websocket() - websocket for %s listening...", accessor)
+
+        while not ws.closed:
+            logging.debug("    **** api_websocket() - while open...")
             try:
                 message = ws.receive()
-                node = psapi.getter(message, config, request.path, request.args)
-                prop = node.name
-                val = node.walk(first=True, **sane_args)
-                jval = json.dumps(val[prop])
-                ws.send(jval)
+                if message:
+                    logging.debug("        api_websocket - message: %s", message)
+                    node = psapi.getter(message, config, request.path, request.args)
+                    logging.debug("        api_websocket - node: %s", node)
+                    prop = node.name
+                    logging.debug("        api_websocket - prop: %s", prop)
+                    val = node.walk(first=True, **sane_args)
+                    logging.debug("        api_websocket - val: %s", val)
+                    jval = json.dumps(val[prop])
+                    logging.debug("        api_websocket - jval: %s", jval)
+                    ws.send(jval)
             except Exception as e:
                 # Socket was probably closed by the browser changing pages
-                logging.debug(e)
+                logging.warning("api_websocket() Exception: %s", e)
                 ws.close()
                 break
+        else:
+            logging.info("===== api_websocket() - websocket for %s closed.", accessor)
+
+    else:
+        logging.warning("api_websocket() - NO request.environ.wsgi.websocket")
+
     return ''
 
 
-@listener.route('/ws/top')
+@listener.route('/ws/top', websocket=True)
 @requires_token_or_auth
 def top_websocket():
-
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
-        while True:
+        logging.info("===== top_websocket() - websocket listening...")
+
+        while not ws.closed:
+            logging.debug("    **** top_websocket() - while open...")
             load = psutil.cpu_percent()
             vir_mem = psutil.virtual_memory().percent
             swap_mem = psutil.swap_memory().percent
@@ -841,7 +843,7 @@ def top_websocket():
                     continue
                 process_list.append(process)
 
-            
+
             json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
 
             try:
@@ -849,22 +851,27 @@ def top_websocket():
                 gevent.sleep(1)
             except Exception as e:
                 # Socket was probably closed by the browser changing pages
-                logging.debug(e)
+                logging.warning("top_websocket Exception: %s", e)
                 ws.close()
                 break
+        else:
+            logging.info("===== top_websocket() - websocket closed.")
+
     return ''
 
 
-@listener.route('/ws/tail')
+@listener.route('/ws/tail', websocket=True)
 @requires_token_or_auth
 def tail_websocket():
-
     import listener.windowslogs
 
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
+        logging.info("===== top_websocket() - websocket listening...")
+
         last_ts = datetime.datetime.now()
-        while True:
+        while not ws.closed:
+            logging.debug("    **** tail_websocket() - while open...")
             try:
                 last_ts, logs = listener.windowslogs.tail_method(last_ts=last_ts, **request.args)
 
@@ -873,9 +880,12 @@ def tail_websocket():
 
                 gevent.sleep(5)
             except Exception as e:
-                logging.debug(e)
+                logging.warning("tail_websocket Exception: %s", e)
                 ws.close()
                 break
+        else:
+            logging.info("===== tail_websocket() - websocket closed.")
+
     return ''
 
 
@@ -1049,7 +1059,7 @@ def api(accessor=''):
     full_path = request.path
 
     # Set the accessor and variables
-    sane_args['debug'] = request.args.get('debug', False)
+    sane_args['debug'] = request.args.get('debug', True)
     sane_args['remote_addr'] = request.remote_addr
     sane_args['accessor'] = accessor
 
