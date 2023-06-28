@@ -1,8 +1,8 @@
 import xml.dom.minidom
-import logging
 import passive.utils
 import passive.nagioshandler
 import listener.server
+from ncpa import passive_logger as logging
 
 
 class Handler(passive.nagioshandler.NagiosHandler):
