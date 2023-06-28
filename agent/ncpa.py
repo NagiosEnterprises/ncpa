@@ -500,7 +500,11 @@ class Daemon():
 
             # Daemonize
             if not self.options['non_daemon']:
-                self.daemonize()
+                try:
+                    self.daemonize()
+                except Exception as e:
+                    self.logger.exception("Daemon - Failed to Daemonize: %s", e)
+                    raise
 
         except Exception as e:
             self.logger.exception("Daemon - Failed to start due to an exception: %s", e)
