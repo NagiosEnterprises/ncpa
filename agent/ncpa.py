@@ -509,29 +509,30 @@ class Daemon():
         # Function write_pid must come after daemonizing since the pid of the
         # long running process is known only after daemonizing
         self.write_pid()
+        self.logger.debug("Daemon - started")
 
         try:
-            self.logger.debug("Daemon - started")
-            try:
-                start_processes(self.options, self.config, self.has_error)
+            start_processes(self.options, self.config, self.has_error)
 
-                # ******************************** Main Loop *******************************
-                # **************** Loop forever unless process throws error ****************
-                # **************************************************************************
-                while not self.has_error.value:
-                    time.sleep(1)
-                else:
-                    self.logger.debug("Daemon - Exit loop - self.has_error.value: %s", self.has_error.value)
+        except Exception as e:
+            self.logger.exception("Daemon - Couldn't start processes: %s", e)
+            raise
 
-            except (KeyboardInterrupt, SystemExit) as e:
-                self.logger.exception("Daemon - Exiting with interrupt: %s", e)
-                pass
-            except Exception as e:
-                self.logger.exception("Daemon - Exception: %s", e)
-                raise
-        finally:
-            self.remove_pid()
-            self.logger.debug("Daemon - start() - Done")
+        self.logger.debug("Daemon - start forever loop")
+
+                # ******************************** Main Loop ********************************
+                # **************** Loop forever unless process throws error *****************
+                # **************** Interrupt sets has_error True ending loop ****************
+                # ***************************************************************************
+
+        while not self.has_error.value:
+            time.sleep(1)
+        else:
+            self.logger.debug("Daemon - Exit forever loop - self.has_error.value: %s", self.has_error.value)
+
+        self.remove_pid()
+        self.logger.debug("Daemon - start() - Done")
+        sys.exit()
 
     def stop(self):
         """Stop the running process"""
