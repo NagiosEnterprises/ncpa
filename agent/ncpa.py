@@ -543,12 +543,12 @@ class Daemon():
             self.logger.debug("Daemon - stop() - Try killing process: %d", pid)
             os.kill(pid, signal.SIGTERM)
             # wait for a moment to see if the process dies
+            time.sleep(0.5)
             for n in range(10):
-                time.sleep(0.25)
+                time.sleep(0.5)
                 try:
                     # poll the process state
                     os.kill(pid, 0)
-                    self.logger.debug("Daemon - stop() - Try killing process again: %d", pid)
 
                 except OSError as err:
                     if err.errno == errno.ESRCH:
@@ -558,6 +558,9 @@ class Daemon():
                         break
                     else:
                         raise
+
+                self.logger.debug("Daemon - stop() - Try killing process again: %d", pid)
+
             else:
                 msg = ("Daemon - stop() - pid %d did not die" % pid)
                 self.logger.info(msg)
