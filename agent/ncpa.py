@@ -182,7 +182,10 @@ class Base():
         self.options = options
         self.config = config
         self.has_error = has_error
-        print(self.__class__.__name__ + " - init()")
+        self.loglevel = self.config.get('general', 'loglevel')
+
+        if self.loglevel == 'debug':
+            print(self.__class__.__name__ + " - init()")
 
         if autostart:
             self.run()
@@ -206,9 +209,7 @@ class Listener(Base):
     def run(self):
         self.init_logger('listener')
         logger = self.logger
-
         logger.info("run()")
-        print("Listener - run()")
 
         try:
             try:
@@ -351,8 +352,10 @@ class Passive(Base):
                     logger.info("run() - doing DB maintenance")
                     self.db.run_db_maintenance(self.config)
                     next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
+
                 logger.debug("run() - loop - running")
                 time.sleep(1)
+
         except Exception as e:
             logger.exception("run() - exception: %s", e)
             self.send_error()
@@ -410,7 +413,7 @@ class Daemon():
         terminal has not been detached and the pid of the long-running
         process is not yet known.
         """
-        self.logger.info("Daemon init - setup_root()")
+        self.logger.debug("Daemon init - setup_root()")
 
         # We need to chown any temp files we wrote out as root (or any other user)
         # to the currently set user and group so checks don't error out
@@ -439,13 +442,13 @@ class Daemon():
     def on_sigterm(self, signalnum, frame):
         global has_error
         """Handle sigterm and sigint"""
-        self.logger.info("on_sigterm(%s)", signalnum)
+        self.logger.debug("on_sigterm(%s)", signalnum)
 
         # Forcing exit while in loop's sleep, doesn't always exit cleanly, so
         # on first occurence (system always sends multiples for sigint), set has_error=True to break main loop
         if not self.has_error.value:
             self.has_error.value = True
-            self.logger.info("on_sigterm - set has_error = True")
+            self.logger.debug("on_sigterm - set has_error = True")
 
         # Now, main loop is ended, so we can exit at will
         else:
@@ -567,7 +570,7 @@ class Daemon():
 
             else:
                 msg = ("Daemon - stop() - pid %d did not die" % pid)
-                self.logger.info(msg)
+                self.logger.warning(msg)
                 sys.exit(msg)
         else:
             sys.exit("Daemon - stop() - Not running")
@@ -589,7 +592,7 @@ class Daemon():
                 except OSError as err:
                     if err.errno != errno.ESRCH:
                         msg = "Daemon - status() - Service is not running but pid file exists"
-                        self.logger.debug(msg)
+                        self.logger.warning(msg)
                         sys.exit(msg)
         else:
             msg = "Daemon - status() - Service is not running"
@@ -675,7 +678,7 @@ class Daemon():
                     sys.exit(msg)
             else:
                 msg = ('Daemon - check_pid() - Another instance is already running (pid %s)' % pid)
-                self.logger.info(msg)
+                self.logger.warning(msg)
                 sys.exit(msg)
 
     def check_pid_writable(self):
@@ -694,7 +697,7 @@ class Daemon():
             check = os.path.dirname(self.pidfile)
         if not os.access(check, os.W_OK):
             msg = 'Daemon - check_pid_writable() - unable to write to pidfile %s' % self.pidfile
-            self.logger.info(msg)
+            self.logger.warning(msg)
             sys.exit(msg)
 
     def write_pid(self):
@@ -917,8 +920,6 @@ def chown(user_uid, user_gid, fn):
 
 def setup_logger(config, loggerinstance, logfile):
     """Configure the logging module"""
-    print ("setup_logger()")
-
     name = getattr(loggerinstance, 'name')
     if config.get('general', 'loglevel') == 'debug':
         print ("setup_logger() - Name:", name, "File: ", logfile)
