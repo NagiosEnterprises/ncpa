@@ -23,7 +23,7 @@ from ncpa import listener_logger as logging
 # Set whether or not a request is internal or not
 import socket
 
-__VERSION__ = '3.0.0'
+__VERSION__ = ncpa.__VERSION__
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
@@ -73,7 +73,7 @@ def get_config_items(section):
 # Misc function for making information for main page
 def make_info_dict():
     now = datetime.datetime.now()
-    uptime = str(now - ncpa.__STARTED__)
+    uptime = str(now - __STARTED__)
     uptime = uptime.split('.', 1)[0]
 
     # Get check status
@@ -86,7 +86,7 @@ def make_info_dict():
     if proc_type == '':
         proc_type = uname[4];
 
-    return { 'agent_version': ncpa.__VERSION__,
+    return { 'agent_version': __VERSION__,
              'uptime': uptime,
              'python_version': sys.version,
              'ssl_version': ssl.OPENSSL_VERSION,
