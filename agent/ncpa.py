@@ -438,16 +438,31 @@ class Daemon():
     # function handels it by exiting, which also closes the subordinate processes.
     def on_sigterm(self, signalnum, frame):
         global has_error
-        """Handle segterm by treating as a keyboard interrupt"""
-        self.logger.info("on_sigterm - exit")
-        sys.exit()
-        # raise KeyboardInterrupt('SIGTERM')
+        """Handle sigterm and sigint"""
+        self.logger.info("on_sigterm(%s)", signalnum)
+
+        # Forcing exit while in loop's sleep, doesn't always exit cleanly, so
+        # on first occurence (system always sends multiples for sigint), set has_error=True to break main loop
+        if not self.has_error.value:
+            self.has_error.value = True
+            self.logger.info("on_sigterm - set has_error = True")
+
+        # Now, main loop is ended, so we can exit at will
+        else:
+            self.logger.info("on_sigterm - sys.exit")
+
+            # If SIGINT (CTL-C), make sure to remove PID file
+            if signalnum == 2:
+                self.remove_pid()
+
+            sys.exit()
 
     def add_signal_handlers(self):
         """Register the sigterm handler"""
         signal.signal(signal.SIGTERM, self.on_sigterm)
+        signal.signal(signal.SIGINT, self.on_sigterm)
 
-    # ATTENTION - This function contians the infinite while loop that prevents
+    # ATTENTION - This function contains the infinite while loop that prevents
     # the process from exiting during normal operation
     def start(self):
         """Initialize and run the daemon"""
