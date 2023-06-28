@@ -91,6 +91,7 @@ print("***** Starting NCPA version: ", __VERSION__)
 #
 # Here, we only create the instances. They are configured later via setup_logger().
 parent_logger = logging.getLogger("parent")
+passive_logger = logging.getLogger("passive")
 
 # Define config defaults
 # We assign a lot of (but not all) defaults in the code, so let's keep them in one place.

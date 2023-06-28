@@ -1,10 +1,10 @@
-import logging
 import json
 import urllib
 import time
 import hashlib
 import listener.server
 import listener.database as database
+from ncpa import passive_logger as logging
 
 
 # Constants to keep track of the passive check runs
