@@ -35,6 +35,7 @@ Changelog
 **Bug Fixes**
 
 - Fixed errors from different language encodings due to python not being able to encode/decode strings
+- Fixed HSTS Missing from HTTPS Server (RFC 6797) (#953) (ccztux)
 
 
 2.4.1 - 02/27/2023

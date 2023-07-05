@@ -230,9 +230,11 @@ def apply_headers(response):
     if allowed_sources:
         response.headers["X-Frame-Options"] = "ALLOW-FROM %s" % allowed_sources
         response.headers["Content-Security-Policy"] = "frame-ancestors %s" % allowed_sources
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     else:
         response.headers["X-Frame-Options"] = "SAMEORIGIN"
         response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
 
     return response
 
