@@ -165,6 +165,6 @@ ASCII = """
 """
 print(ASCII)
 print("Build complete!")
-print("You can find the installer in the build directory.")
+print("You can find the installer in the ncpa\\build directory.")
 
 console_colors.reset_colors()
