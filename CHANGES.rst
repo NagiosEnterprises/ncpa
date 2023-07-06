@@ -35,6 +35,7 @@ Changelog
 **Bug Fixes**
 
 - Fixed errors from different language encodings due to python not being able to encode/decode strings
+- OpenSCAP PCI-DSS report fails (#951) (ccztux)
 
 
 2.4.1 - 02/27/2023
