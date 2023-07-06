@@ -126,8 +126,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
             hostname = self.config.get('nrdp', 'hostname')
             assert hostname
         except Exception:
-            logging.debug("No hostname given in the config, falling back to parent class.")
             hostname = super(Handler, self).guess_hostname()
+            logging.debug("No hostname given in the config. Assuming hostname is: %s.", hostname)
         return hostname
 
     @staticmethod
