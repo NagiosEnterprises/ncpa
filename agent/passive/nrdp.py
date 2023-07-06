@@ -139,8 +139,12 @@ class Handler(passive.nagioshandler.NagiosHandler):
         :type ret_xml: unicode
         :rtype : None
         """
-
-        tree = xml.dom.minidom.parseString(ret_xml)
+        try:
+            tree = xml.dom.minidom.parseString(ret_xml)
+        except:
+            logging.warning('XML returned from NRDP server (%s) was malformed. Check your server address.', server)
+            logging.warning('Your NRDP Address should be formatted: http://[ip address]/nrdp')
+            return
 
         try:
             message = tree.getElementsByTagName("message")[0].firstChild.nodeValue

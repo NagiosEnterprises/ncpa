@@ -12,6 +12,30 @@ import shutil
 import subprocess
 import sys
 
+import ctypes, struct
+
+class ConsoleColors:
+    STD_OUTPUT_HANDLE = -11
+
+    def __init__(self):
+        self.kernel32 = ctypes.windll.kernel32
+        self.hstdout = self.kernel32.GetStdHandle(self.STD_OUTPUT_HANDLE)
+        self.get_console_screen_buffer_info()
+
+    def get_console_screen_buffer_info(self):
+        csbi = ctypes.create_string_buffer(22)
+        self.kernel32.GetConsoleScreenBufferInfo(self.hstdout, csbi)
+        (bufx, bufy, curx, cury, wattr, left, top, right, bottom, maxx, maxy) = struct.unpack("hhhhHhhhhhh", csbi.raw)
+        self.original_colors = wattr
+
+    def set_colors(self, color_attributes):
+        self.kernel32.SetConsoleTextAttribute(self.hstdout, color_attributes)
+
+    def reset_colors(self):
+        self.set_colors(self.original_colors)
+
+console_colors = ConsoleColors()
+
 # --------------------------
 # Configuration/Setup
 # --------------------------
@@ -22,6 +46,7 @@ buildtype = 'nightly'
 if len(sys.argv) > 1:
     buildtype = sys.argv[1]
 
+console_colors.set_colors(0x0F) # White on Black
 print("Building NCPA for Windows")
 
 # Which python launcher command is available for Windows
@@ -69,6 +94,7 @@ sys.path.append(os.getcwd())
 # build with cx_Freeze
 # --------------------------
 
+console_colors.set_colors(0x09) # Blue on Black
 subprocess.Popen([python_launcher, 'setup.py', 'build_exe']).wait()
 
 # --------------------------
@@ -83,6 +109,7 @@ def run_cmd(cmd):
      output, error = process.communicate()
      return output.strip().decode()
 
+console_colors.set_colors(0x0A) # Green on Black
 try:
     GIT_LONG = run_cmd("git rev-parse HEAD")
     GIT_SHORT = run_cmd("git rev-parse --short HEAD")
@@ -101,6 +128,7 @@ try:
     print("GIT_HASH_FILE:", GIT_HASH_FILE)
 
 except:
+    console_colors.set_colors(0x0C) # Red on Black
     print("GIT_LONG:", GIT_LONG)
     print("GIT_SHORT:", GIT_SHORT)
 
@@ -111,6 +139,7 @@ with open(os.path.join(basedir, 'agent', 'build', 'NCPA', GIT_HASH_FILE), 'w') a
 # build NSIS installer and copy to build directory
 # --------------------------
 
+console_colors.set_colors(0x0F) # White on Black
 environ = os.environ.copy()
 environ['NCPA_BUILD_VER'] = version
 if not version[-1].isdigit():
@@ -125,6 +154,7 @@ b.wait()
 shutil.copyfile(os.path.join(basedir, 'agent', 'build', 'ncpa-%s.exe' % version),
                 os.path.join(basedir, 'build', 'ncpa-%s.exe' % version))
 
+console_colors.set_colors(0x0A) # Green on Black
 ASCII = """
 ███╗   ██╗ ██████╗██████╗  █████╗
 ████╗  ██║██╔════╝██╔══██╗██╔══██╗
@@ -135,4 +165,6 @@ ASCII = """
 """
 print(ASCII)
 print("Build complete!")
-print("You can find the installer in the build directory.")
+print("You can find the installer in the ncpa\\build directory.")
+
+console_colors.reset_colors()
