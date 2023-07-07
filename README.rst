@@ -8,7 +8,7 @@ The *Nagios Cross-Platform Agent*; a single monitoring agent that installs on al
 
 NCPA 3 Beta
 ---------
-The NCPA 3 beta has been released! You can download the beta via the source code in the `dev-v3-beta-01 branch <https://github.com/NagiosEnterprises/ncpa/tree/dev-v3-beta01>`_ or by visiting the `downloads page <https://www.nagios.org/ncpa/#betaDownloads>`_ for installable packages.
+The NCPA 3 beta has been released! You can download the beta via the source code in the `dev-v3-beta-01 branch <https://github.com/NagiosEnterprises/ncpa/tree/dev-v3-beta01>`_ or by visiting the `downloads page <https://www.nagios.org/ncpa/#beta-downloads>`_ for installable packages.
 
 Downloads
 ---------
