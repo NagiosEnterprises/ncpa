@@ -3,9 +3,17 @@
 echo -e "***** macos/setup.sh"
 
 # Globals
-PYTHONVER="3.9.13"
+PYTHONVER="3.11.3"
 PYTHONTAR="Python-$PYTHONVER"
-PYTHONBIN=$(which python3.9)
+
+# Make python command, e.g. python3.11
+PYTHONCMD="python$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')"
+echo -e "***** macos/setup.sh - PYTHONCMD: $PYTHONCMD"
+
+set +e
+PYTHONBIN=$(which $PYTHONCMD)
+set -e
+
 SKIP_PYTHON=0
 
 update_py_packages() {
@@ -24,7 +32,7 @@ install_prereqs() {
         ./configure && make && make altinstall
         cd ..
         rm -rf $PYTHONTAR
-        PYTHONBIN=$(which python3.9)
+        PYTHONBIN=$(which $PYTHONCMD)
     fi
 
     # Install modules
