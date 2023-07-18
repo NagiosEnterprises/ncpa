@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo -e "***** osx/package.sh"
+echo -e "***** macos/package.sh"
 
 # Get version
 DIR=$( cd "$(dirname "$0")" ; pwd -P )
@@ -15,6 +15,7 @@ ARCH=$(arch)
     mkdir NCPA-INSTALL-$NCPA_VER
     mv ncpa-$NCPA_VER NCPA-INSTALL-$NCPA_VER/ncpa
     cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosuninstall.sh NCPA-INSTALL-$NCPA_VER/ncpa/uninstall.sh
+    cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosreadme.txt NCPA-INSTALL-$NCPA_VER/readme.txt
     mv NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$NCPA_VER/install.sh
 
     # Create MacOS disk image file

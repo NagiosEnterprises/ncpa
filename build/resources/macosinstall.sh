@@ -153,7 +153,7 @@ listNCPAcomponents() {
     echo "---------------------------------------"
     echo "Listing NCPA components... "
     echo "\nProcesses?:"
-    ps aux | grep -v grep | grep ncpa_
+    ps aux | grep -v grep | grep "/ncpa"
 
     echo "\nLaunchDaemons?:"
     launchctl list | grep nagios

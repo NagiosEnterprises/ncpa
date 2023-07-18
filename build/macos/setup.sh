@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-echo -e "***** osx/setup.sh"
+echo -e "***** macos/setup.sh"
 
 # Globals
 PYTHONVER="3.9.13"
