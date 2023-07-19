@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ 'dev-v3-beta02-mac' ]
+    branches: [ 'dev-v3-beta02' ]
 
 jobs:
 
