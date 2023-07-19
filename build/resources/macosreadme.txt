@@ -10,5 +10,14 @@ Installing NCPA:
 
 Note: if you already have NCPA installed, the installer will upgrade the NCPA software, and retain your configuration.
 
+Restarting NCPA:
+After making configuration changes, you will need to restart NCPA for changes to take effect.
+This is accomplished by stopping then starting the service.
+
+    1. On the command line, enter:
+         sudo launchctl stop com.nagios.ncpa
+         sudo launchctl start com.nagios.ncpa
+
 Uninstalling  NCPA
-    1. On the command line, enter: sudo zsh /usr/local/ncpa/uninstall.sh
+    1. On the command line, enter:
+         sudo zsh /usr/local/ncpa/uninstall.sh

@@ -152,9 +152,6 @@ echo "Done."
 listNCPAcomponents() {
     echo "---------------------------------------"
     echo "Listing NCPA components... "
-    echo "\nProcesses?:"
-    ps aux | grep -v grep | grep "/ncpa"
-
     echo "\nLaunchDaemons?:"
     launchctl list | grep nagios
 
@@ -169,6 +166,10 @@ listNCPAcomponents() {
 
     echo "\nHome dir?:"
     ls -al /usr/local | grep ncpa
+
+    echo "\nProcesses?:"
+    sleep 3
+    ps aux | grep -v grep | grep "/ncpa"
 }
 
 listNCPAcomponents
