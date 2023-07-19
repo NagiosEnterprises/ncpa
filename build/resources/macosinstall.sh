@@ -168,7 +168,6 @@ listNCPAcomponents() {
     ls -al /usr/local | grep ncpa
 
     echo "\nProcesses?:"
-    sleep 3
     ps aux | grep -v grep | grep "/ncpa"
 }
 
