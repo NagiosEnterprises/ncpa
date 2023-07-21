@@ -34,5 +34,6 @@ build/ncpa-3*/
 build/ncpa-3*/
 build/*.deb
 build/*.rpm
+build/*.dmg
 build/share
 build/NCPA-INSTALL-*/*
