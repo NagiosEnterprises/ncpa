@@ -56,14 +56,14 @@ usage() {
 
 clean_build_dir() {
     echo "Cleaning up build directory..."
-    rm -rf $BUILD_DIR/ncpa-*
-    rm -rf $AGENT_DIR/build
-    rm -rf $BUILD_DIR/NCPA-INSTALL-*
-    rm -f $BUILD_DIR/*.rpm $BUILD_DIR/*.dmg $BUILD_DIR/*.deb
-    rm -f $BUILD_DIR/ncpa.spec
-    rm -f $BUILD_DIR/*.tar.gz
-    rm -rf $BUILD_ROOT
-    rm -rf $BUILD_DIR/debbuild
+    sudo rm -rf $BUILD_DIR/ncpa-*
+    sudo rm -rf $AGENT_DIR/build
+    sudo rm -rf $BUILD_DIR/NCPA-INSTALL-*
+    sudo rm -f $BUILD_DIR/*.rpm $BUILD_DIR/*.dmg $BUILD_DIR/*.deb
+    sudo rm -f $BUILD_DIR/ncpa.spec
+    sudo rm -f $BUILD_DIR/*.tar.gz
+    sudo rm -rf $BUILD_ROOT
+    sudo rm -rf $BUILD_DIR/debbuild
 }
 
 
@@ -193,7 +193,7 @@ fi
 
     # Move the ncpa binary data
     cd $BUILD_DIR
-    rm -rf $BUILD_DIR/ncpa
+    sudo rm -rf $BUILD_DIR/ncpa
     cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
     echo $GIT_LONG >  $BUILD_DIR/ncpa/$GIT_HASH_FILE
 
@@ -205,14 +205,14 @@ fi
     rm -f $BUILD_DIR/ncpa/libffi-*.so.*
 
     # Set permissions
-    chmod -R g+r $BUILD_DIR/ncpa
-    chmod -R a+r $BUILD_DIR/ncpa
-    chown -R nagios:nagios $BUILD_DIR/ncpa/var
-    chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
-    chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
-    chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
-    chmod -R 755 $BUILD_DIR/ncpa/var
-    chmod 755 $BUILD_DIR/ncpa
+    sudo chmod -R g+r $BUILD_DIR/ncpa
+    sudo chmod -R a+r $BUILD_DIR/ncpa
+    sudo chown -R nagios:nagios $BUILD_DIR/ncpa/var
+    sudo chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
+    sudo chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
+    sudo chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
+    sudo chmod -R 755 $BUILD_DIR/ncpa/var
+    sudo chmod 755 $BUILD_DIR/ncpa
 
     # Build tarball
     cp -rf ncpa ncpa-$NCPA_VER
@@ -252,7 +252,7 @@ if [ $BUILD_ONLY -eq 0 ]; then
 
     # Remove the build directory and tar.gz
     cd $BUILD_DIR
-    rm -rf *.tar.gz
-    rm -rf ncpa-$NCPA_VER
+    sudo rm -rf *.tar.gz
+    sudo rm -rf ncpa-$NCPA_VER
 
 fi
