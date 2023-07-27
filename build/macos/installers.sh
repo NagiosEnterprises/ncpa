@@ -2,6 +2,17 @@
 
 # Scripts to install homebrew, OpenSSL and Python, and update python libraries
 
+# Utility scripts
+has_openssl() {
+    local installchk=$(openssl version | grep $1)
+    echo $installchk
+}
+
+has_python() {
+    local installchk=$($PYTHONCMD -c "import sys; print(sys.version)" | grep $1)
+    echo $installchk
+}
+
 # Installs tools needed to make and install OpenSSL, zLib, and Python
 install_devtools() {
     echo -e "Installing xcode commmand line tools..."
@@ -45,7 +56,7 @@ install_openssl() {
     # Install additional dev tools requiring openssl (Do I need this?)
     $BREWBIN tcl-tk
 
-    local installchk=$(openssl version | grep $ssl_new_version)
+    local installchk=$(has_openssl $ssl_new_version)
     echo -e "\installchk: $installchk"
     echo -e "\n\n********************************************"
 
@@ -59,7 +70,6 @@ install_openssl() {
         return 1
     fi
 }
-
 
 install_python() {
     local python_new_version=""
@@ -84,7 +94,7 @@ install_python() {
 
     $BREWBIN install python@$python_new_version
 
-    local installchk=$($PYTHONCMD -c "import sys; print(sys.version)" | grep $python_new_version)
+    local installchk=$(has_python $python_new_version)
     echo -e "\installchk: $installchk"
     echo -e "\n\n********************************************"
 
