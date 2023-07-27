@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 echo -e "***** macos/package.sh"
 
@@ -10,6 +10,7 @@ RELEASE="beta02"
 ARCH=$(arch)
 
 (
+    echo -e "***** macos/package.sh - fix dylib dependencies"
     # Make some dylib dependency paths relative so they will work on target machine
     install_name_tool -change /usr/local/Cellar/openssl@3/3.1.1_1/lib/libcrypto.3.dylib @loader_path/libcrypto.3.dylib ncpa-$NCPA_VER/lib/libssl.3.dylib
     install_name_tool -change /usr/local/opt/openssl@3/lib/libssl.3.dylib @loader_path/libssl.3.dylib ncpa-$NCPA_VER/lib/_ssl.cpython-311-darwin.so
@@ -22,6 +23,7 @@ ARCH=$(arch)
     mv NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$NCPA_VER/install.sh
 
     # Create MacOS disk image file
+    echo -e "***** macos/package.sh - create .dmg file"
     RELEASE=$RELEASE"_"
     hdiutil create -volname NCPA-$NCPA_VER -srcfolder NCPA-INSTALL-$NCPA_VER -ov -format UDZO ncpa_$NCPA_VER-$RELEASE$ARCH.dmg
 )
