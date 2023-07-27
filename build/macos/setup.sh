@@ -24,16 +24,31 @@ install_prereqs() {
 
     # Install proper version of python
     if [ $SKIP_PYTHON -eq 0 ]; then
-        cd $BUILD_DIR/resources
-        echo -e "***** macos/setup.sh - Building OpenSSL..."
-        install_devtools && \
-        install_openssl $SSLVER
+        echo -e "***** macos/setup.sh - OpenSSL..."
+        has_ssl=$(has_openssl $SSLVER)
+        if [[ ! -z $($installchk) ]]; then
+            echo -e "OpenSSL $SSLVER already installed."
 
-        echo -e "***** macos/setup.sh - Building python..."
-        cd $BUILD_DIR/resources
-        install_python $PYTHONVER
-        PYTHONBIN=$(which $PYTHONCMD)
-        echo -e "***** linux/setup.sh - after Py install PYTHONBIN: $PYTHONBIN"
+        else
+            echo -e "Installing OpenSSL $SSLVER ..."
+            cd $BUILD_DIR/resources
+            install_devtools && \
+            install_openssl $SSLVER
+        fi
+
+        echo -e "***** macos/setup.sh - Python..."
+        has_python=$(has_python $PYTHONVER)
+        if [[ ! -z $($installchk) ]]; then
+            echo -e "Python $PYTHONVER already installed."
+
+        else
+            echo -e "Installing Python $PYTHONVER ..."
+            cd $BUILD_DIR/resources
+            install_python $PYTHONVER
+            PYTHONBIN=$(which $PYTHONCMD)
+            echo -e "***** macos/setup.sh - after Py install PYTHONBIN: $PYTHONBIN"
+        fi
+
         export PATH=$PATH:$BUILD_DIR/bin
     fi
 
