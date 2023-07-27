@@ -111,7 +111,7 @@ done
 
 
 # Load required things for different systems
-echo "Running build for: $UNAME"
+echo -e "\nRunning build for: $UNAME"
 if [ "$UNAME" == "Linux" ]; then
     . $BUILD_DIR/linux/setup.sh
 elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
@@ -136,14 +136,13 @@ if [ $BUILD_TRAVIS -eq 0 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; 
             touch $BUILD_DIR/prereqs.installed
         fi
     fi
-elif [ $BUILD_TRAVIS -eq 1 ]; then
 
+elif [ $BUILD_TRAVIS -eq 1 ]; then
     # Set up travis environment
     sudo useradd nagios
     cd $BUILD_DIR
     python -m pip install -r resources/require.txt --upgrade
     exit 0
-
 fi
 
 
@@ -163,7 +162,6 @@ clean_build_dir
 
 
 # Build the python with cx_Freeze
-echo "Building NCPA binaries..."
 cd $BUILD_DIR
 find $AGENT_DIR -name *.pyc -exec rm '{}' \;
 mkdir -p $AGENT_DIR/plugins
@@ -180,18 +178,19 @@ if command -v git > /dev/null; then
     GIT_LONG=$(git rev-parse HEAD)
     GIT_SHORT=$(git rev-parse --short HEAD)
     GIT_UNCOMMITTED=$(git status --untracked-files=no --porcelain)
-    echo "GIT_UNCOMMITTED: $GIT_UNCOMMITTED"
+    # echo "GIT_UNCOMMITTED: $GIT_UNCOMMITTED"
     if [ "$GIT_UNCOMMITTED" ]; then
         GIT_LONG="$GIT_LONG++  compiled with uncommitted changes"
         GIT_SHORT="$GIT_SHORT++"
     fi
     GIT_HASH_FILE="git-$GIT_SHORT.githash"
-    echo "GIT_LONG: $GIT_LONG"
-    echo "GIT_SHORT: $GIT_SHORT"
+    # echo "GIT_LONG: $GIT_LONG"
+    # echo "GIT_SHORT: $GIT_SHORT"
     echo "GIT_HASH_FILE: $GIT_HASH_FILE"
 fi
 
 (
+    echo -e "\nBuilding NCPA binaries..."
     cd $AGENT_DIR
     $PYTHONBIN setup.py build_exe > $BUILD_DIR/build.log
 
@@ -239,7 +238,7 @@ fi
 if [ $BUILD_ONLY -eq 0 ]; then
 
     # Build package based on system
-    echo "Packaging for system type..."
+    echo -e "\nPackaging for system type..."
 
     if [ "$UNAME" == "Linux" ]; then
         linux/package.sh

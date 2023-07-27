@@ -6,7 +6,8 @@ echo -e "***** macos/setup.sh"
 #     PYTHONVER, SSLVER, ZLIBVER
 
 # Make python command, e.g. python3.11
-PYTHONCMD="python$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')"
+PYTHONSHORTVER=$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')
+PYTHONCMD="python$PYTHONSHORTVER"
 echo -e "***** macos/setup.sh - PYTHONCMD: $PYTHONCMD"
 
 set +e
@@ -18,6 +19,7 @@ SKIP_PYTHON=0
 . $BUILD_DIR/macos/installers.sh
 
 install_prereqs() {
+    echo -e "***** macos/setup.sh - install_prereqs()..."
     # ---------------------
     #  INSTALL SYSTEM REQS
     # ---------------------
@@ -26,8 +28,8 @@ install_prereqs() {
     if [ $SKIP_PYTHON -eq 0 ]; then
         echo -e "***** macos/setup.sh - OpenSSL..."
         has_ssl=$(has_openssl $SSLVER)
-        if [[ ! -z $($installchk) ]]; then
-            echo -e "OpenSSL $SSLVER already installed."
+        if [[ ! -z $has_ssl ]]; then
+            echo -e "OpenSSL $SSLVER already installed.\n"
 
         else
             echo -e "Installing OpenSSL $SSLVER ..."
@@ -37,16 +39,15 @@ install_prereqs() {
         fi
 
         echo -e "***** macos/setup.sh - Python..."
-        has_python=$(has_python $PYTHONVER)
-        if [[ ! -z $($installchk) ]]; then
-            echo -e "Python $PYTHONVER already installed."
+        has_python=$(has_python $PYTHONSHORTVER)
+        if [[ ! -z $has_python ]]; then
+            echo -e "Python $PYTHONSHORTVER already installed.\n"
 
         else
             echo -e "Installing Python $PYTHONVER ..."
             cd $BUILD_DIR/resources
             install_python $PYTHONVER
             PYTHONBIN=$(which $PYTHONCMD)
-            echo -e "***** macos/setup.sh - after Py install PYTHONBIN: $PYTHONBIN"
         fi
 
         export PATH=$PATH:$BUILD_DIR/bin
@@ -56,7 +57,7 @@ install_prereqs() {
     #  INSTALL PYTHON MODULES
     # --------------------------
 
-    update_py_packages
+    update_py_packages >> $BUILD_DIR/build.log
 
     # --------------------------
     #  MISC ADDITIONS
@@ -65,9 +66,10 @@ install_prereqs() {
 }
 
 # Add users/groups
-set +e
-sudo sysadminctl -addUser nagios
-sudo dseditgroup -o create nagios
-sudo dseditgroup -o edit -a nagios -t user nagios
-set -e
-
+if ! dscl . -read /Users/nagios > /dev/null 2>&1; then
+    set +e
+    sudo sysadminctl -addUser nagios
+    sudo dseditgroup -o create nagios
+    sudo dseditgroup -o edit -a nagios -t user nagios
+    set -e
+fi
