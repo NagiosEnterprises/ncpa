@@ -15,7 +15,7 @@ has_python() {
 
 # Installs tools needed to make and install OpenSSL, zLib, and Python
 install_devtools() {
-    echo -e "Installing xcode commmand line tools..."
+    echo -e "\nInstalling xcode commmand line tools..."
     xcode-select --install
 
     if [ -z $( which brew 2>/dev/null ) ]; then
@@ -54,7 +54,7 @@ install_openssl() {
     $BREWBIN install openssl@$ssl_new_version
 
     # Install additional dev tools requiring openssl (Do I need this?)
-    $BREWBIN tcl-tk
+    $BREWBIN install tcl-tk
 
     local installchk=$(has_openssl $ssl_new_version)
     echo -e "\installchk: $installchk"
@@ -109,64 +109,21 @@ install_python() {
     fi
 }
 
-# Can take an OpenSSL version and a zLib verions number number as args
-install_ssl_and_zlib() {
-    local ssl_new_version=""
-    local zLib_new_version=""
-
-    if [[ ! -z $1 ]]; then
-        ssl_new_version=$1
-    else
-        if [[ ! -z $SSLVER ]]; then
-            ssl_new_version=$SSLVER
-        else
-            echo -e "ERROR! install_ssl_and_zlib() - No OpenSSL version provided!"
-            echo -e "********************************************\n\n"
-            return 1
-        fi
-    fi
-
-    if [[ ! -z $2 ]]; then
-        zLib_new_version=$2
-    else
-        if [[ ! -z $ZLIBVER ]]; then
-            zLib_new_version=$ZLIBVER
-        else
-            echo -e "ERROR! install_ssl_and_zlib() - No zLib version provided!"
-            echo -e "********************************************\n\n"
-            return 1
-        fi
-    fi
-
-    curr_ver_int=$(get_sslver)
-    new_ver_int=$(echo "$ssl_new_version"  | sed 's/\.//g')
-
-    if (( "$new_ver_int" > "$curr_ver_int" )); then
-        echo -e "Updating zLib and OpenSSL..."
-
-        install_devtools && \
-        install_zlib $zLib_new_version && \
-        install_openssl $ssl_new_version
-
-        return 0
-    else
-        echo "Current OpenSSL is as good or better. Nothing changed."
-        return 0
-    fi
-}
-
-# Requires globals $PYTHONBIN, $PYTHONCMD and $BUILD_DIR
+# Requires globals $PYTHONBIN, $PYTHONVER, $PYTHONCMD and $BUILD_DIR
 update_py_packages() {
-    echo -e "***** macos/installers.sh - update_py_packages()"
+    echo -e "\n***** macos/installers.sh - update_py_packages()"
     $PYTHONBIN -m pip install --upgrade pip
     $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
 
     # cx freeze doesn't grab the proper _sslxxx.so and other dynamic libs, so we copy in the real ones.
-    echo -e "***** macos/installers.sh - update_py_packages()"
     echo -e "    cx_freeze doesn't grab the proper _sslxxx.so and other dynamic libs, so we copy in the real ones..."
 
+    python_at_seg=python@$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')
+
     cxlibpath="/usr/local/lib/$PYTHONCMD/site-packages/cx_Freeze/bases"
-    pylibpath=find $HOMEBREW_CELLAR/$PYTHONCMD -name *.so | grep "lib-dynload" | head -n1 | sed 's~/lib-dynload/.*~~g'
+    echo "cxlibpath: $cxlibpath"
+    pylibpath=$(find $HOMEBREW_CELLAR/$python_at_seg -name *.so | grep "lib-dynload" | head -n1 | sed 's~/lib-dynload/.*~~g')
+    echo "pylibpath: $pylibpath"
 
     echo -e "***** macos/installers.sh - update_py_packages() - copy $pylibpath/lib-dynload to cx_freeze lib-dynload"
 
