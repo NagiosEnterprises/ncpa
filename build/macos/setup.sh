@@ -2,9 +2,8 @@
 
 echo -e "***** macos/setup.sh"
 
-# Globals
-PYTHONVER="3.11.3"
-PYTHONTAR="Python-$PYTHONVER"
+# Globals - defined in build.sh
+#     PYTHONVER, SSLVER, ZLIBVER
 
 # Make python command, e.g. python3.11
 PYTHONCMD="python$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')"

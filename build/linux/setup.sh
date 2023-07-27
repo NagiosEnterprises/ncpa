@@ -2,10 +2,8 @@
 
 echo -e "***** linux/setup.sh"
 
-# Globals
-PYTHONVER="3.11.3"
-SSLVER="3.0.8"
-ZLIBVER="1.2.13"
+# Globals - defined in build.sh
+#     PYTHONVER, SSLVER, ZLIBVER
 
 # Make python command, e.g. python3.11
 PYTHONCMD="python$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')"
