@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 
 echo -e "***** macos/setup.sh"
 
@@ -12,8 +12,10 @@ echo -e "***** macos/setup.sh - PYTHONCMD: $PYTHONCMD"
 set +e
 PYTHONBIN=$(which $PYTHONCMD)
 set -e
-
 SKIP_PYTHON=0
+
+# Load some installers and support functions
+. $BUILD_DIR/macos/installers.sh
 
 update_py_packages() {
     $PYTHONBIN -m pip install --upgrade pip
@@ -21,21 +23,34 @@ update_py_packages() {
 }
 
 install_prereqs() {
+    # ---------------------
+    #  INSTALL SYSTEM REQS
+    # ---------------------
 
-    cd $BUILD_DIR/resources
-
-    # Install bundled Python version from source
+    # Install proper version of python
     if [ $SKIP_PYTHON -eq 0 ]; then
-        tar xf $PYTHONTAR.tgz
-        cd $PYTHONTAR
-        ./configure && make && make altinstall
-        cd ..
-        rm -rf $PYTHONTAR
+        cd $BUILD_DIR/resources
+        echo -e "***** macos/setup.sh - Building OpenSSL..."
+        install_devtools && \
+        install_openssl $SSLVER
+
+        echo -e "***** macos/setup.sh - Building python..."
+        cd $BUILD_DIR/resources
+        install_python $PYTHONVER
         PYTHONBIN=$(which $PYTHONCMD)
+        echo -e "***** linux/setup.sh - after Py install PYTHONBIN: $PYTHONBIN"
+        export PATH=$PATH:$BUILD_DIR/bin
     fi
 
-    # Install modules
-#     update_py_packages
+    # --------------------------
+    #  INSTALL PYTHON MODULES
+    # --------------------------
+
+    update_py_packages
+
+    # --------------------------
+    #  MISC ADDITIONS
+    # --------------------------
 
 }
 
