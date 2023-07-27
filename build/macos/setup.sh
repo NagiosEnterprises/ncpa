@@ -17,11 +17,6 @@ SKIP_PYTHON=0
 # Load some installers and support functions
 . $BUILD_DIR/macos/installers.sh
 
-update_py_packages() {
-    $PYTHONBIN -m pip install --upgrade pip
-    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
-}
-
 install_prereqs() {
     # ---------------------
     #  INSTALL SYSTEM REQS
