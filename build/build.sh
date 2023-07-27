@@ -3,6 +3,10 @@
 echo -e "***** build/build.sh"
 
 # Global variables
+PYTHONVER="3.11.3"
+SSLVER="3.0.8"
+ZLIBVER="1.2.13"
+
 UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
     BUILD_DIR=$( cd "$(dirname "$0")" ; pwd -P )
