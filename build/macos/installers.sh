@@ -11,27 +11,35 @@ has_python() {
 
 # Installs tools needed to make and install OpenSSL, zLib, and Python
 install_devtools() {
-    if [[ $(xcode-select --version 2>/dev/null) ]]; then
-        echo -e "\nInstalling xcode commmand line tools..."
+    echo -e "\n***** macos/installers.sh - install_devtools()"
+    echo -e "    - Installing Homebrew and dev tools ..."
+
+    if [[ -z $(xcode-select --version 2>/dev/null) ]]; then
+        echo -e "\n    - Installing xcode commmand line tools..."
         xcode-select --install
+    else
+        echo -e "\n    - Xcode commmand line tools already installed"
     fi
 
-    if [ -z $( which brew 2>/dev/null ) ]; then
-        echo -e "Installing Homebrew package manager..."
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    fi
     BREWBIN="/usr/local/bin/brew"
+    if [ -z $( which brew 2>/dev/null ) ]; then
+        echo -e "    - Installing Homebrew package manager..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+        echo -e "    - Installing misc brew packages: pkg-config xz gdbm ..."
+        $BREWBIN update
+        $BREWBIN install pkg-config xz gdbm
+    else
+        echo -e "\n    - Homebrew already installed"
+    fi
 
     # Add brew env vars to your environment
     (echo; echo 'eval "$($BREWBIN shellenv)"') >> ~/.bash_profile
     eval "$($BREWBIN shellenv)"
-
-    echo -e "Installing misc brew packages: pkg-config xz gdbm ..."
-    $BREWBIN update
-    $BREWBIN install pkg-config xz gdbm
 }
 
 install_python() {
+    echo -e "\n***** macos/installers.sh - iinstall_python()"
     # Note Python 3.11+ requires OpenSSL 3+ as a dependency, so there is no need to install it separately.
     local python_new_version=""
 
@@ -82,16 +90,19 @@ update_py_packages() {
     python_at_seg=python@$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')
 
     cxlibpath="/usr/local/lib/$PYTHONCMD/site-packages/cx_Freeze/bases"
-    echo "cxlibpath: $cxlibpath"
-    pylibpath=$(find $HOMEBREW_CELLAR/$python_at_seg -name *.so | grep "lib-dynload" | head -n1 | sed 's~/lib-dynload/.*~~g')
-    echo "pylibpath: $pylibpath"
+    echo "    cxlibpath: $cxlibpath"
 
-    echo -e "***** macos/installers.sh - update_py_packages() - copy $pylibpath/lib-dynload to cx_freeze lib-dynload"
+    eval "$($BREWBIN shellenv)"
+
+    pylibpath=$(find $HOMEBREW_CELLAR/$python_at_seg -name *.so | grep "lib-dynload" | head -n1 | sed 's~/lib-dynload/.*~~g')
+    echo "    pylibpath: $pylibpath"
+
+    echo -e "    - copy $pylibpath/lib-dynload to cx_freeze lib-dynload"
 
     if [ ! -d "$cxlibpath/lib-dynload_orig" ]; then
         mkdir $cxlibpath/lib-dynload_orig
+        cp $cxlibpath/lib-dynload/* $cxlibpath/lib-dynload_orig/
     fi
-    cp $cxlibpath/lib-dynload/* $cxlibpath/lib-dynload_orig/
 
     # Link python's lib-dynload to cx_freeze lib-dynload to make sure we are using desired OpenSSL, etc.
     cp $pylibpath/lib-dynload/* $cxlibpath/lib-dynload/

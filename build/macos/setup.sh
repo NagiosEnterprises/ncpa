@@ -8,7 +8,7 @@ echo -e "***** macos/setup.sh"
 # Make python command, e.g. python3.11
 PYTHONSHORTVER=$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')
 PYTHONCMD="python$PYTHONSHORTVER"
-echo -e "***** macos/setup.sh - PYTHONCMD: $PYTHONCMD"
+echo -e "    - PYTHONCMD: $PYTHONCMD"
 
 set +e
 PYTHONBIN=$(which $PYTHONCMD)
@@ -26,23 +26,22 @@ install_prereqs() {
 
     # Install proper version of python
     if [ $SKIP_PYTHON -eq 0 ]; then
-        echo -e "***** macos/setup.sh - dev tools..."
-        if [[ -z $( which brew 2>/dev/null ) ]]; then
-            echo -e "Installing Homebrew and dev tools ..."
+        echo -e "    - Install dev tools..."
+        # if [[ -z $( which brew 2>/dev/null ) ]]; then
             cd $BUILD_DIR/resources
             install_devtools
 
-        else
-            echo -e "Homebrew and dev tools already installed.\n"
-        fi
+        # else
+        #     echo -e "Homebrew and dev tools already installed.\n"
+        # fi
 
-        echo -e "***** macos/setup.sh - Python..."
+        echo -e "    - Install Python..."
         has_python=$(has_python $PYTHONSHORTVER)
         if [[ ! -z $has_python ]]; then
-            echo -e "Python $PYTHONSHORTVER already installed.\n"
+            echo -e "      Python $PYTHONSHORTVER already installed.\n"
 
         else
-            echo -e "Installing Python $PYTHONVER with OpenSSL 3 ..."
+            echo -e "    - Installing Python $PYTHONVER with OpenSSL 3 ..."
             cd $BUILD_DIR/resources
             install_python $PYTHONVER
             PYTHONBIN=$(which $PYTHONCMD)

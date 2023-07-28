@@ -59,7 +59,7 @@ usage() {
 
 
 clean_build_dir() {
-    echo "Cleaning up build directory..."
+    echo -e "\n***** build/build.sh - Cleaning up build directory..."
     sudo rm -rf $BUILD_DIR/ncpa-*
     sudo rm -rf $AGENT_DIR/build
     sudo rm -rf $BUILD_DIR/NCPA-INSTALL-*
