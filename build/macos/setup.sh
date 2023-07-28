@@ -26,16 +26,14 @@ install_prereqs() {
 
     # Install proper version of python
     if [ $SKIP_PYTHON -eq 0 ]; then
-        echo -e "***** macos/setup.sh - OpenSSL..."
-        has_ssl=$(has_openssl $SSLVER)
-        if [[ ! -z $has_ssl ]]; then
-            echo -e "OpenSSL $SSLVER already installed.\n"
+        echo -e "***** macos/setup.sh - dev tools..."
+        if [[ -z $( which brew 2>/dev/null ) ]]; then
+            echo -e "Installing Homebrew and dev tools ..."
+            cd $BUILD_DIR/resources
+            install_devtools
 
         else
-            echo -e "Installing OpenSSL $SSLVER ..."
-            cd $BUILD_DIR/resources
-            install_devtools && \
-            install_openssl $SSLVER
+            echo -e "Homebrew and dev tools already installed.\n"
         fi
 
         echo -e "***** macos/setup.sh - Python..."
@@ -44,7 +42,7 @@ install_prereqs() {
             echo -e "Python $PYTHONSHORTVER already installed.\n"
 
         else
-            echo -e "Installing Python $PYTHONVER ..."
+            echo -e "Installing Python $PYTHONVER with OpenSSL 3 ..."
             cd $BUILD_DIR/resources
             install_python $PYTHONVER
             PYTHONBIN=$(which $PYTHONCMD)

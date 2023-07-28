@@ -3,10 +3,6 @@
 # Scripts to install homebrew, OpenSSL and Python, and update python libraries
 
 # Utility scripts
-has_openssl() {
-    local installchk=$(openssl version | grep $1)
-    echo $installchk
-}
 
 has_python() {
     local installchk=$($PYTHONCMD -c "import sys; print(sys.version)" | grep $1)
@@ -15,8 +11,10 @@ has_python() {
 
 # Installs tools needed to make and install OpenSSL, zLib, and Python
 install_devtools() {
-    echo -e "\nInstalling xcode commmand line tools..."
-    xcode-select --install
+    if [[ $(xcode-select --version 2>/dev/null) ]]; then
+        echo -e "\nInstalling xcode commmand line tools..."
+        xcode-select --install
+    fi
 
     if [ -z $( which brew 2>/dev/null ) ]; then
         echo -e "Installing Homebrew package manager..."
@@ -33,45 +31,8 @@ install_devtools() {
     $BREWBIN install pkg-config xz gdbm
 }
 
-install_openssl() {
-    local ssl_new_version=""
-
-    if [[ ! -z $1 ]]; then
-        ssl_new_version=$1
-    else
-        echo -e "ERROR! install_openssl() - No OpenSSL version provided!"
-        echo -e "********************************************\n\n"
-        return 1
-    fi
-
-    # Make version shorter for homebrew, e.g. 3.1
-    ssl_new_version=$(echo $ssl_new_version | sed 's|\.[0-9]\{1,2\}$||g')
-
-    echo -e "\n\n********************************************"
-    echo -e "Installing OpenSSL $ssl_new_version..."
-    echo -e " "
-
-    $BREWBIN install openssl@$ssl_new_version
-
-    # Install additional dev tools requiring openssl (Do I need this?)
-    $BREWBIN install tcl-tk
-
-    local installchk=$(has_openssl $ssl_new_version)
-    echo -e "\installchk: $installchk"
-    echo -e "\n\n********************************************"
-
-    if [[ ! -z $installchk ]]; then
-        echo -e "SUCCESS! OpenSSL $ssl_new_version is installed"
-        echo -e "********************************************\n\n"
-        return 0
-    else
-        echo -e "ERROR! OpenSSL $ssl_new_version failed to install correctly"
-        echo -e "********************************************\n\n"
-        return 1
-    fi
-}
-
 install_python() {
+    # Note Python 3.11+ requires OpenSSL 3+ as a dependency, so there is no need to install it separately.
     local python_new_version=""
 
     if [[ ! -z $1 ]]; then
@@ -90,7 +51,7 @@ install_python() {
     python_new_version=$(echo $python_new_version | sed 's|\.[0-9]\{1,2\}$||g')
 
     echo -e "\n\n********************************************"
-    echo -e "Installing Python $python_new_version...\n"
+    echo -e "Installing Python $python_new_version with OpenSSL...\n"
 
     $BREWBIN install python@$python_new_version
 
@@ -99,11 +60,11 @@ install_python() {
     echo -e "\n\n********************************************"
 
     if [[ ! -z $installchk ]]; then
-        echo -e "SUCCESS! Python $ssl_new_version is installed"
+        echo -e "SUCCESS! Python $python_new_version is installed"
         echo -e "********************************************\n\n"
         return 0
     else
-        echo -e "ERROR! Python $ssl_new_version failed to install correctly"
+        echo -e "ERROR! Python $python_new_version failed to install correctly"
         echo -e "********************************************\n\n"
         return 1
     fi
