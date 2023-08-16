@@ -1,3 +1,4 @@
+import includes_for_tests
 import os
 import sys
 import tempfile
@@ -6,12 +7,11 @@ import unittest
 
 # Load NCPA
 sys.path.append(os.path.join(os.path.dirname(__file__), '../agent/'))
-import ncpa # import this first to monkey patch properly
 import listener.certificate
 
 
 class TestCertificate(unittest.TestCase):
-    
+
     def setUp(self):
         self.setup_key_crt()
         self.delete_key_crt()
@@ -22,8 +22,12 @@ class TestCertificate(unittest.TestCase):
         key = "%s/%s" % (self.testing_dir, self.testing_key)
         crt = "%s/%s" % (self.testing_dir, self.testing_crt)
 
-        key_file = open(key, 'w').write("test key")
-        crt_file = open(crt, 'w').write("test cert")
+        key_file = open(key, 'w')
+        key_file.write("test key")
+        key_file.close()
+        crt_file = open(crt, 'w')
+        crt_file.write("test cert")
+        crt_file.close()
 
         kc, cc = os.path.getmtime(key), os.path.getmtime(crt)
 

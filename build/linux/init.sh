@@ -47,7 +47,7 @@ if [ $unixtype == "Linux" ]; then
         version=`lsb_release -sr`
     fi
 elif [ $unixtype == "Darwin" ]; then
-    distro="MacOSX"
+    distro="MacOS"
     version=`sw_vers -productVersion`
 fi
 
@@ -94,8 +94,8 @@ case "$distro" in
     "OpenSUSE" )
         dist="os$ver"
         ;;
-    "MacOSX" )
-        dist="osx$ver"
+    "MacOS" )
+        dist="macos$ver"
         ;;
     "SLES" )
         dist="sles$ver"

@@ -3,6 +3,10 @@
 echo -e "***** build/build.sh"
 
 # Global variables
+PYTHONVER="3.11.3"
+SSLVER="3.0.8"
+ZLIBVER="1.2.13"
+
 UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
     BUILD_DIR=$( cd "$(dirname "$0")" ; pwd -P )
@@ -55,15 +59,15 @@ usage() {
 
 
 clean_build_dir() {
-    echo "Cleaning up build directory..."
-    rm -rf $BUILD_DIR/ncpa-*
-    rm -rf $AGENT_DIR/build
-    rm -rf $BUILD_DIR/NCPA-INSTALL-*
-    rm -f $BUILD_DIR/*.rpm $BUILD_DIR/*.dmg $BUILD_DIR/*.deb
-    rm -f $BUILD_DIR/ncpa.spec
-    rm -f $BUILD_DIR/*.tar.gz
-    rm -rf $BUILD_ROOT
-    rm -rf $BUILD_DIR/debbuild
+    echo -e "\n***** build/build.sh - Cleaning up build directory..."
+    sudo rm -rf $BUILD_DIR/ncpa-*
+    sudo rm -rf $AGENT_DIR/build
+    sudo rm -rf $BUILD_DIR/NCPA-INSTALL-*
+    sudo rm -f $BUILD_DIR/*.rpm $BUILD_DIR/*.dmg $BUILD_DIR/*.deb
+    sudo rm -f $BUILD_DIR/ncpa.spec
+    sudo rm -f $BUILD_DIR/*.tar.gz
+    sudo rm -rf $BUILD_ROOT
+    sudo rm -rf $BUILD_DIR/debbuild
 }
 
 
@@ -107,7 +111,7 @@ done
 
 
 # Load required things for different systems
-echo "Running build for: $UNAME"
+echo -e "\nRunning build for: $UNAME"
 if [ "$UNAME" == "Linux" ]; then
     . $BUILD_DIR/linux/setup.sh
 elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
@@ -115,7 +119,7 @@ elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
 elif [ "$UNAME" == "AIX" ]; then
     . $BUILD_DIR/aix/setup.sh
 elif [ "$UNAME" == "Darwin" ]; then
-    . $BUILD_DIR/osx/setup.sh
+    . $BUILD_DIR/macos/setup.sh
 else
     echo "Not a supported system for our build script."
     echo "If you're sure all pre-reqs are installed, try running the"
@@ -132,21 +136,20 @@ if [ $BUILD_TRAVIS -eq 0 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; 
             touch $BUILD_DIR/prereqs.installed
         fi
     fi
-elif [ $BUILD_TRAVIS -eq 1 ]; then
 
+elif [ $BUILD_TRAVIS -eq 1 ]; then
     # Set up travis environment
     sudo useradd nagios
     cd $BUILD_DIR
     python -m pip install -r resources/require.txt --upgrade
     exit 0
-
 fi
 
 
 # Update the required python modules !!! update_py_packages() Already run in install_prereqs()
 cd $BUILD_DIR
-echo "Updating python modules..."
-update_py_packages >> $BUILD_DIR/build.log
+# echo "Updating python modules..."
+# update_py_packages >> $BUILD_DIR/build.log
 
 
 # --------------------------
@@ -159,7 +162,6 @@ clean_build_dir
 
 
 # Build the python with cx_Freeze
-echo "Building NCPA binaries..."
 cd $BUILD_DIR
 find $AGENT_DIR -name *.pyc -exec rm '{}' \;
 mkdir -p $AGENT_DIR/plugins
@@ -176,24 +178,25 @@ if command -v git > /dev/null; then
     GIT_LONG=$(git rev-parse HEAD)
     GIT_SHORT=$(git rev-parse --short HEAD)
     GIT_UNCOMMITTED=$(git status --untracked-files=no --porcelain)
-    echo "GIT_UNCOMMITTED: $GIT_UNCOMMITTED"
+    # echo "GIT_UNCOMMITTED: $GIT_UNCOMMITTED"
     if [ "$GIT_UNCOMMITTED" ]; then
         GIT_LONG="$GIT_LONG++  compiled with uncommitted changes"
         GIT_SHORT="$GIT_SHORT++"
     fi
     GIT_HASH_FILE="git-$GIT_SHORT.githash"
-    echo "GIT_LONG: $GIT_LONG"
-    echo "GIT_SHORT: $GIT_SHORT"
+    # echo "GIT_LONG: $GIT_LONG"
+    # echo "GIT_SHORT: $GIT_SHORT"
     echo "GIT_HASH_FILE: $GIT_HASH_FILE"
 fi
 
 (
+    echo -e "\nBuilding NCPA binaries..."
     cd $AGENT_DIR
     $PYTHONBIN setup.py build_exe > $BUILD_DIR/build.log
 
     # Move the ncpa binary data
     cd $BUILD_DIR
-    rm -rf $BUILD_DIR/ncpa
+    sudo rm -rf $BUILD_DIR/ncpa
     cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
     echo $GIT_LONG >  $BUILD_DIR/ncpa/$GIT_HASH_FILE
 
@@ -205,14 +208,14 @@ fi
     rm -f $BUILD_DIR/ncpa/libffi-*.so.*
 
     # Set permissions
-    chmod -R g+r $BUILD_DIR/ncpa
-    chmod -R a+r $BUILD_DIR/ncpa
-    chown -R nagios:nagios $BUILD_DIR/ncpa/var
-    chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
-    chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
-    chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
-    chmod -R 755 $BUILD_DIR/ncpa/var
-    chmod 755 $BUILD_DIR/ncpa
+    sudo chmod -R g+r $BUILD_DIR/ncpa
+    sudo chmod -R a+r $BUILD_DIR/ncpa
+    sudo chown -R nagios:nagios $BUILD_DIR/ncpa/var
+    sudo chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
+    sudo chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
+    sudo chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
+    sudo chmod -R 755 $BUILD_DIR/ncpa/var
+    sudo chmod 755 $BUILD_DIR/ncpa
 
     # Build tarball
     cp -rf ncpa ncpa-$NCPA_VER
@@ -235,7 +238,7 @@ fi
 if [ $BUILD_ONLY -eq 0 ]; then
 
     # Build package based on system
-    echo "Packaging for system type..."
+    echo -e "\nPackaging for system type..."
 
     if [ "$UNAME" == "Linux" ]; then
         linux/package.sh
@@ -244,7 +247,7 @@ if [ $BUILD_ONLY -eq 0 ]; then
     elif [ "$UNAME" == "AIX" ]; then
         aix/package.sh
     elif [ "$UNAME" == "Darwin" ]; then
-        osx/package.sh
+        macos/package.sh
     else
         echo "No packaging method exists. You can locate binaries here:"
         echo "$BUILD_DIR/ncpa"
@@ -252,7 +255,7 @@ if [ $BUILD_ONLY -eq 0 ]; then
 
     # Remove the build directory and tar.gz
     cd $BUILD_DIR
-    rm -rf *.tar.gz
-    rm -rf ncpa-$NCPA_VER
+    sudo rm -rf *.tar.gz
+    sudo rm -rf ncpa-$NCPA_VER
 
 fi
