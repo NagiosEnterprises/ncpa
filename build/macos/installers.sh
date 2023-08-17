@@ -4,6 +4,9 @@
 
 # Load utilities to fix dynamic libs
 . $BUILD_DIR/macos/linkdynlibs.sh
+os_version=sw_vers -productVersion
+os_major_version=$(echo os_version | cut -f1 -d.)
+os_minor_version=$(echo os_version | cut -f2 -d.)
 
 # Utility scripts
 
@@ -15,7 +18,7 @@ has_python() {
 # Installs tools needed to make and install OpenSSL, zLib, and Python
 install_devtools() {
     echo -e "\n***** macos/installers.sh - install_devtools()"
-    echo -e "    - Installing Homebrew and dev tools ..."
+    echo -e "    - Installing Homebrew and dev tools on MacOS $os_version..."
 
     if [[ -z $(xcode-select --version 2>/dev/null) ]]; then
         echo -e "\n    - Installing xcode commmand line tools..."
@@ -27,11 +30,19 @@ install_devtools() {
     BREWBIN="/usr/local/bin/brew"
     if [ -z $( which brew 2>/dev/null ) ]; then
         echo -e "    - Installing Homebrew package manager..."
+        if [[ "$os_major_version" == "10" ]]; then
+            export HOMEBREW_NO_INSTALL_FROM_API=1
+        fi
+
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-        echo -e "    - Installing misc brew packages: pkg-config xz gdbm ..."
+        echo -e "    - Installing misc brew packages: pkg-config xz gdbm libffi..."
         $BREWBIN update
         $BREWBIN install pkg-config xz gdbm
+        if [[ "$os_major_version" == "10" ]]; then
+            $BREWBIN install libffi
+        fi
+
     else
         echo -e "\n    - Homebrew already installed"
     fi
@@ -102,9 +113,17 @@ update_py_packages() {
 
     echo -e "    - copy $pylibpath/lib-dynload to cx_freeze lib-dynload"
 
-    if [ ! -d "$pylibpath/lib-dynload_orig" ]; then
-        mkdir $pylibpath/lib-dynload_orig
-        cp $pylibpath/lib-dynload/* $pylibpath/lib-dynload_orig/
+    # For MacOS 11+ libraries need special treatment
+    if [[ "$os_major_version" != "10" ]]; then
+        if [ ! -d "$pylibpath/lib-dynload_orig" ]; then
+            mkdir $pylibpath/lib-dynload_orig
+            cp $pylibpath/lib-dynload/* $pylibpath/lib-dynload_orig/
+        fi
+        # Define paths for dependency link fixer
+        setPaths
+
+        #Convert relative dependency paths to absolute
+        fixLibs
     fi
 
     if [ ! -d "$cxlibpath/lib-dynload_orig" ]; then
@@ -112,11 +131,6 @@ update_py_packages() {
         cp $cxlibpath/lib-dynload/* $cxlibpath/lib-dynload_orig/
     fi
 
-    # Define paths for dependency link fixer
-    setPaths
-
-    #Convert relative dependency paths to absolute
-    fixLibs
 
     # Link python's lib-dynload to cx_freeze lib-dynload to make sure we are using desired OpenSSL, etc.
     cp $pylibpath/lib-dynload/* $cxlibpath/lib-dynload/
