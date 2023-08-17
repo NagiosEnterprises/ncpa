@@ -87,6 +87,7 @@ elif __SYSTEM__ == 'posix':
                          ('../build/resources/macosreadme.txt', 'build_resources/macosreadme.txt'),
                          ('/usr/local/opt/mpdecimal/lib/libmpdec.3.dylib', 'lib/libmpdec.3.dylib'),
                          ('/usr/local/opt/openssl@3/lib/libcrypto.3.dylib', 'lib/libcrypto.3.dylib'),
+                         ('/usr/local/opt/libffi/lib/libffi.8.dylib', 'lib/libffi.8.dylib'),
                          ('/usr/local/opt/openssl@3/lib/libssl.3.dylib', 'lib/libssl.3.dylib'),
                          ('/usr/local/opt/sqlite/lib/libsqlite3.0.dylib', 'lib/libsqlite3.0.dylib'),
                          ('/usr/local/opt/xz/lib/liblzma.5.dylib', 'lib/liblzma.5.dylib')]

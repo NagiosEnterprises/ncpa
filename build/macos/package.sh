@@ -19,6 +19,7 @@ ARCH=$(arch)
 
     fixlibs=(\
     "/usr/local/Cellar/openssl@3/$sslver/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/libssl.3.dylib" \
+    "/usr/local/opt/libffi/lib/libffi.8.dylib~@loader_path/libffi.8.dylib~$NCPAdir/lib/_ctypes.cpython-311-darwin.so" \
     "/usr/local/opt/openssl@3/lib/libssl.3.dylib~@loader_path/libssl.3.dylib~$NCPAdir/lib/_ssl.cpython-311-darwin.so" \
     "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/_ssl.cpython-311-darwin.so" \
     "/usr/lib/libsqlite3.dylib~@loader_path/libsqlite3.dylib~$NCPAdir/lib/_sqlite3.cpython-311-darwin.so" \
