@@ -12,10 +12,10 @@ ARCH=$(arch)
 (
     echo -e "    - fix dylib dependencies"
     # Make some dylib dependency paths relative so they will work on target machine
-    otool -L $NCPAdir/*
-
     NCPAdir="ncpa-$NCPA_VER"
+    echo "NCPAdir: $NCPAdir"
     sslver="3.1.2"
+    otool -L $NCPAdir/lib/*
 
     fixlibs=(\
     "/usr/local/Cellar/openssl@3/$sslver/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/libssl.3.dylib" \
@@ -27,17 +27,20 @@ ARCH=$(arch)
     "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/_hashlib.cpython-311-darwin.so" \
     )
 
+    echo -e "\n\nFixing NCPA libs..."
     for fixlib in "${fixlibs[@]}"
     do
         oldlib=$(echo ${fixlib} | cut -f1 -d~)
         newlib=$(echo ${fixlib} | cut -f2 -d~)
         parentlib=$(echo ${fixlib} | cut -f3 -d~)
-        # echo "$oldlib $newlib $parentlib"
+        echo -e "\nFixing: $parentlib"
+        echo "    $oldlib -> $newlib"
         sudo install_name_tool -change $oldlib $newlib $parentlib
     done
+    echo -e "\nDone\n\n"
 
     # Uncomment otool comands to have updated dynamic lib dependencies dispayed
-    otool -L $NCPAdir/*
+    otool -L $NCPAdir/lib/* | grep -B1 "loader"
     # otool -L ncpa-$NCPA_VER/lib/_ssl.cpython-311-darwin.so
 
     echo -e "    - copy other resources"
