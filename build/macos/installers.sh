@@ -2,6 +2,9 @@
 
 # Scripts to install homebrew, OpenSSL and Python, and update python libraries
 
+# Load utilities to fix dynamic libs
+. $BUILD_DIR/macos/linkdynlibs.sh
+
 # Utility scripts
 
 has_python() {
@@ -39,7 +42,7 @@ install_devtools() {
 }
 
 install_python() {
-    echo -e "\n***** macos/installers.sh - iinstall_python()"
+    echo -e "\n***** macos/installers.sh - install_python()"
     # Note Python 3.11+ requires OpenSSL 3+ as a dependency, so there is no need to install it separately.
     local python_new_version=""
 
@@ -99,10 +102,21 @@ update_py_packages() {
 
     echo -e "    - copy $pylibpath/lib-dynload to cx_freeze lib-dynload"
 
+    if [ ! -d "$pylibpath/lib-dynload_orig" ]; then
+        mkdir $pylibpath/lib-dynload_orig
+        cp $pylibpath/lib-dynload/* $pylibpath/lib-dynload_orig/
+    fi
+
     if [ ! -d "$cxlibpath/lib-dynload_orig" ]; then
         mkdir $cxlibpath/lib-dynload_orig
         cp $cxlibpath/lib-dynload/* $cxlibpath/lib-dynload_orig/
     fi
+
+    # Define paths for dependency link fixer
+    setPaths
+
+    #Convert relative dependency paths to absolute
+    fixLibs
 
     # Link python's lib-dynload to cx_freeze lib-dynload to make sure we are using desired OpenSSL, etc.
     cp $pylibpath/lib-dynload/* $cxlibpath/lib-dynload/
