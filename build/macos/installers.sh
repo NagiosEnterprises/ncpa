@@ -4,7 +4,7 @@
 
 # Load utilities to fix dynamic libs
 . $BUILD_DIR/macos/linkdynlibs.sh
-os_version=sw_vers -productVersion
+os_version=$(sw_vers -productVersion)
 os_major_version=$(echo os_version | cut -f1 -d.)
 os_minor_version=$(echo os_version | cut -f2 -d.)
 
