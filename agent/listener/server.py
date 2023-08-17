@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request, url_for, jsonify, R
 import os
 import sys
 import ssl
+from zlib import ZLIB_VERSION as zlib_version
 import platform
 import requests
 import functools
@@ -90,6 +91,7 @@ def make_info_dict():
              'uptime': uptime,
              'python_version': sys.version,
              'ssl_version': ssl.OPENSSL_VERSION,
+             'zlib_version': zlib_version,
              'processor': proc_type,
              'node': uname[1],
              'system': uname[0],

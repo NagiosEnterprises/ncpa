@@ -27,6 +27,7 @@ import datetime
 import glob
 import logging
 import ssl
+from zlib import ZLIB_VERSION as zlib_version
 import sys
 import tempfile
 import time
@@ -1061,6 +1062,7 @@ def main(has_error):
 
     log.info("main - Python version: %s", sys.version)
     log.info("main - SSL version: %s", ssl.OPENSSL_VERSION)
+    log.info("main - ZLIB version: %s", zlib_version)
 
     # If we are running this in debug mode from the command line, we need to
     # wait for the proper output to exit and kill the Passive and Listener
