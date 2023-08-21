@@ -12,12 +12,32 @@ ARCH=$(arch)
 (
     echo -e "    - fix dylib dependencies"
     # Make some dylib dependency paths relative so they will work on target machine
-    install_name_tool -change /usr/local/Cellar/openssl@3/3.1.1_1/lib/libcrypto.3.dylib @loader_path/libcrypto.3.dylib ncpa-$NCPA_VER/lib/libssl.3.dylib
-    install_name_tool -change /usr/local/opt/openssl@3/lib/libssl.3.dylib @loader_path/libssl.3.dylib ncpa-$NCPA_VER/lib/_ssl.cpython-311-darwin.so
-    install_name_tool -change /usr/local/opt/openssl@3/lib/libcrypto.3.dylib @loader_path/libcrypto.3.dylib ncpa-$NCPA_VER/lib/_ssl.cpython-311-darwin.so
+    otool -L $NCPAdir/*
+
+    NCPAdir="ncpa-$NCPA_VER"
+    sslver="3.1.2"
+
+    fixlibs=(\
+    "/usr/local/Cellar/openssl@3/$sslver/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/libssl.3.dylib" \
+    "/usr/local/opt/openssl@3/lib/libssl.3.dylib~@loader_path/libssl.3.dylib~$NCPAdir/lib/_ssl.cpython-311-darwin.so" \
+    "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/_ssl.cpython-311-darwin.so" \
+    "/usr/lib/libsqlite3.dylib~@loader_path/libsqlite3.dylib~$NCPAdir/lib/_sqlite3.cpython-311-darwin.so" \
+    "/usr/local/opt/sqlite/lib/libsqlite3.0.dylib~@loader_path/libsqlite3.0.dylib~$NCPAdir/lib/_sqlite3.cpython-311-darwin.so" \
+    "/usr/local/opt/mpdecimal/lib/libmpdec.3.dylib~@loader_path/libmpdec.dylib~$NCPAdir//lib/_decimal.cpython-311-darwin.so" \
+    "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/_hashlib.cpython-311-darwin.so" \
+    )
+
+    for fixlib in "${fixlibs[@]}"
+    do
+        oldlib=$(echo ${fixlib} | cut -f1 -d~)
+        newlib=$(echo ${fixlib} | cut -f2 -d~)
+        parentlib=$(echo ${fixlib} | cut -f3 -d~)
+        # echo "$oldlib $newlib $parentlib"
+        sudo install_name_tool -change $oldlib $newlib $parentlib
+    done
 
     # Uncomment otool comands to have updated dynamic lib dependencies dispayed
-    # otool -L ncpa-$NCPA_VER/lib/libssl.3.dylib
+    otool -L $NCPAdir/*
     # otool -L ncpa-$NCPA_VER/lib/_ssl.cpython-311-darwin.so
 
     echo -e "    - copy other resources"
