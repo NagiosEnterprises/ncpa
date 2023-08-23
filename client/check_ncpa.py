@@ -261,7 +261,7 @@ def get_json(options):
     if options.verbose:
         print('File returned contained:\n' + ret.decode('utf-8'))
 
-    arr = json.loads(ret)
+    arr = json.loads(ret.decode('latin-1'))
 
     if options.list:
         return arr
