@@ -192,8 +192,11 @@ fi
 (
     echo -e "\nBuilding NCPA binaries..."
     cd $AGENT_DIR
+
+    echo -e "\nFreezing app (may take a minute)..."
     $PYTHONBIN setup.py build_exe > $BUILD_DIR/build.log
 
+    echo -e "\nSet up packaging dirs..."
     # Move the ncpa binary data
     cd $BUILD_DIR
     sudo rm -rf $BUILD_DIR/ncpa
@@ -218,6 +221,7 @@ fi
     sudo chmod 755 $BUILD_DIR/ncpa
 
     # Build tarball
+    echo -e "\nBuilding tarball..."
     cp -rf ncpa ncpa-$NCPA_VER
     if [ "$UNAME" == "AIX" ]; then
         echo -e "***** Build tarball"
@@ -254,6 +258,7 @@ if [ $BUILD_ONLY -eq 0 ]; then
     fi
 
     # Remove the build directory and tar.gz
+    echo -e "\nClean up packaging dirs..."
     cd $BUILD_DIR
     sudo rm -rf *.tar.gz
     sudo rm -rf ncpa-$NCPA_VER
