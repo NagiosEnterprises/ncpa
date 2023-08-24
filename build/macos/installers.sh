@@ -36,10 +36,11 @@ install_devtools() {
 
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-        echo -e "    - Installing misc brew packages: pkg-config xz gdbm libffi..."
+        echo -e "    - Installing misc brew packages: pkg-config xz gdbm..."
         $BREWBIN update
         $BREWBIN install pkg-config xz gdbm
         if [[ "$os_major_version" == "10" ]]; then
+            echo -e "    - Installing misc libffi (MacOS v10.x only)..."
             $BREWBIN install libffi
         fi
 
