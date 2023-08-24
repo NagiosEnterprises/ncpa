@@ -41,17 +41,17 @@ ARCH=$(arch)
         oldlib=$(echo ${fixlib} | cut -f1 -d~)
         newlib=$(echo ${fixlib} | cut -f2 -d~)
         parentlib=$(echo ${fixlib} | cut -f3 -d~)
-        echo -e "\nFixing: $parentlib"
+        echo -e "\n    Fixing: $parentlib"
         echo "    $oldlib -> $newlib"
-        sudo install_name_tool -change $oldlib $newlib $parentlib
+        install_name_tool -change $oldlib $newlib $parentlib
     done
-    echo -e "\nDone\n\n"
 
     # Uncomment otool comands to have updated dynamic lib dependencies dispayed
-    otool -L $NCPAdir/lib/* | grep -B1 "loader"
-    # otool -L ncpa-$NCPA_VER/lib/_ssl.cpython-311-darwin.so
+    echo -e "\n\n    Dependencies updated to use @loader_path:"
+    otool -L $NCPAdir/lib/* | grep "loader"
+    echo -e "\nDone"
 
-    echo -e "    - copy other resources"
+    echo -e "\nCopy other resources..."
     mkdir NCPA-INSTALL-$NCPA_VER
     mv ncpa-$NCPA_VER NCPA-INSTALL-$NCPA_VER/ncpa
     cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosuninstall.sh NCPA-INSTALL-$NCPA_VER/ncpa/uninstall.sh
@@ -59,7 +59,7 @@ ARCH=$(arch)
     mv NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$NCPA_VER/install.sh
 
     # Create MacOS disk image file
-    echo -e "    - creating .dmg file ..."
+    echo -e "\nCreate .dmg file ..."
     RELEASE=$RELEASE"_"
     hdiutil create -volname NCPA-$NCPA_VER -srcfolder NCPA-INSTALL-$NCPA_VER -ov -format UDZO ncpa_$NCPA_VER-$RELEASE$ARCH.dmg
 )
