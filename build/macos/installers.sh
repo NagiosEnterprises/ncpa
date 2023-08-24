@@ -47,7 +47,7 @@ install_devtools() {
     $BREWBIN update
     $BREWBIN install pkg-config xz gdbm
     if [[ "$os_major_version" == "10" ]]; then
-        echo -e "    - Installing misc libffi (MacOS v10.x only)..."
+        echo -e "    - Installing libffi (MacOS v10.x only)..."
         $BREWBIN install libffi
     fi
 
