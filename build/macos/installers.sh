@@ -5,8 +5,8 @@
 # Load utilities to fix dynamic libs
 . $BUILD_DIR/macos/linkdynlibs.sh
 os_version=$(sw_vers -productVersion)
-os_major_version=$(echo os_version | cut -f1 -d.)
-os_minor_version=$(echo os_version | cut -f2 -d.)
+os_major_version=$(echo $os_version | cut -f1 -d.)
+os_minor_version=$(echo $os_version | cut -f2 -d.)
 
 # Utility scripts
 
@@ -33,16 +33,7 @@ install_devtools() {
         if [[ "$os_major_version" == "10" ]]; then
             export HOMEBREW_NO_INSTALL_FROM_API=1
         fi
-
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-        echo -e "    - Installing misc brew packages: pkg-config xz gdbm..."
-        $BREWBIN update
-        $BREWBIN install pkg-config xz gdbm
-        if [[ "$os_major_version" == "10" ]]; then
-            echo -e "    - Installing misc libffi (MacOS v10.x only)..."
-            $BREWBIN install libffi
-        fi
 
     else
         echo -e "\n    - Homebrew already installed"
@@ -51,6 +42,15 @@ install_devtools() {
     # Add brew env vars to your environment
     (echo; echo 'eval "$($BREWBIN shellenv)"') >> ~/.bash_profile
     eval "$($BREWBIN shellenv)"
+
+    echo -e "    - Installing misc brew packages: pkg-config xz gdbm..."
+    $BREWBIN update
+    $BREWBIN install pkg-config xz gdbm
+    if [[ "$os_major_version" == "10" ]]; then
+        echo -e "    - Installing misc libffi (MacOS v10.x only)..."
+        $BREWBIN install libffi
+    fi
+
 }
 
 install_python() {
