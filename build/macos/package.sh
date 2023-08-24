@@ -10,25 +10,32 @@ RELEASE="beta02"
 ARCH=$(arch)
 
 (
-    echo -e "    - fix dylib dependencies"
+    echo -e "    Fixing dylib dependencies..."
     # Make some dylib dependency paths relative so they will work on target machine
     NCPAdir="ncpa-$NCPA_VER"
-    echo "NCPAdir: $NCPAdir"
     sslver="3.1.2"
-    otool -L $NCPAdir/lib/*
+    # otool -L $NCPAdir/lib/*
 
-    fixlibs=(\
-    "/usr/local/Cellar/openssl@3/$sslver/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/libssl.3.dylib" \
-    "/usr/local/opt/libffi/lib/libffi.8.dylib~@loader_path/libffi.8.dylib~$NCPAdir/lib/_ctypes.cpython-311-darwin.so" \
-    "/usr/local/opt/openssl@3/lib/libssl.3.dylib~@loader_path/libssl.3.dylib~$NCPAdir/lib/_ssl.cpython-311-darwin.so" \
-    "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/_ssl.cpython-311-darwin.so" \
-    "/usr/lib/libsqlite3.dylib~@loader_path/libsqlite3.dylib~$NCPAdir/lib/_sqlite3.cpython-311-darwin.so" \
-    "/usr/local/opt/sqlite/lib/libsqlite3.0.dylib~@loader_path/libsqlite3.0.dylib~$NCPAdir/lib/_sqlite3.cpython-311-darwin.so" \
-    "/usr/local/opt/mpdecimal/lib/libmpdec.3.dylib~@loader_path/libmpdec.dylib~$NCPAdir/lib/_decimal.cpython-311-darwin.so" \
-    "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/_hashlib.cpython-311-darwin.so" \
-    )
+    # Add args for install_name_tool() in format:
+    #     "oldlib1~newlib1~parentlib1 oldlib2~newlib2~parentlib2 etc....""
+    fixlibs="\
+    /usr/local/Cellar/openssl@3/$sslver/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/libssl.3.dylib \
+    /usr/local/opt/openssl@3/lib/libssl.3.dylib~@loader_path/libssl.3.dylib~$NCPAdir/lib/_ssl.cpython-311-darwin.so \
+    /usr/local/opt/openssl@3/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/_ssl.cpython-311-darwin.so \
+    /usr/lib/libsqlite3.dylib~@loader_path/libsqlite3.dylib~$NCPAdir/lib/_sqlite3.cpython-311-darwin.so \
+    /usr/local/opt/sqlite/lib/libsqlite3.0.dylib~@loader_path/libsqlite3.0.dylib~$NCPAdir/lib/_sqlite3.cpython-311-darwin.so \
+    /usr/local/opt/mpdecimal/lib/libmpdec.3.dylib~@loader_path/libmpdec.dylib~$NCPAdir/lib/_decimal.cpython-311-darwin.so \
+    /usr/local/opt/openssl@3/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/_hashlib.cpython-311-darwin.so \
+    "
 
-    echo -e "\n\nFixing NCPA libs..."
+    if [[ "$os_major_version" == "10" ]]; then
+        echo "    Fix libffi (MacOS v10.x only)"
+        fixlibs="$fixlibs /usr/local/opt/libffi/lib/libffi.8.dylib~@loader_path/libffi.8.dylib~$NCPAdir/lib/_ctypes.cpython-311-darwin.so "
+    fi
+
+    # Convert string to array
+    fixlibs=($fixlibs)
+
     for fixlib in "${fixlibs[@]}"
     do
         oldlib=$(echo ${fixlib} | cut -f1 -d~)
