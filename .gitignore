@@ -32,6 +32,9 @@ build/ncpa.spec
 build/ncpa
 build/ncpa-3*/
 build/ncpa-3*/
+build/NCPA-INSTALL-*/
 build/*.deb
 build/*.rpm
+build/*.dmg
 build/share
+build/NCPA-INSTALL-*/*

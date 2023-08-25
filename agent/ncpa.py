@@ -27,6 +27,7 @@ import datetime
 import glob
 import logging
 import ssl
+from zlib import ZLIB_VERSION as zlib_version
 import sys
 import tempfile
 import time
@@ -91,6 +92,7 @@ print("***** Starting NCPA version: ", __VERSION__)
 #
 # Here, we only create the instances. They are configured later via setup_logger().
 parent_logger = logging.getLogger("parent")
+passive_logger = logging.getLogger("passive")
 
 # Define config defaults
 # We assign a lot of (but not all) defaults in the code, so let's keep them in one place.
@@ -182,7 +184,10 @@ class Base():
         self.options = options
         self.config = config
         self.has_error = has_error
-        print(self.__class__.__name__ + " - init()")
+        self.loglevel = self.config.get('general', 'loglevel')
+
+        if self.loglevel == 'debug':
+            print(self.__class__.__name__ + " - init()")
 
         if autostart:
             self.run()
@@ -206,9 +211,7 @@ class Listener(Base):
     def run(self):
         self.init_logger('listener')
         logger = self.logger
-
         logger.info("run()")
-        print("Listener - run()")
 
         try:
             try:
@@ -351,8 +354,10 @@ class Passive(Base):
                     logger.info("run() - doing DB maintenance")
                     self.db.run_db_maintenance(self.config)
                     next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
+
                 logger.debug("run() - loop - running")
                 time.sleep(1)
+
         except Exception as e:
             logger.exception("run() - exception: %s", e)
             self.send_error()
@@ -410,7 +415,7 @@ class Daemon():
         terminal has not been detached and the pid of the long-running
         process is not yet known.
         """
-        self.logger.info("Daemon init - setup_root()")
+        self.logger.debug("Daemon init - setup_root()")
 
         # We need to chown any temp files we wrote out as root (or any other user)
         # to the currently set user and group so checks don't error out
@@ -438,16 +443,31 @@ class Daemon():
     # function handels it by exiting, which also closes the subordinate processes.
     def on_sigterm(self, signalnum, frame):
         global has_error
-        """Handle segterm by treating as a keyboard interrupt"""
-        self.logger.info("on_sigterm - exit")
-        sys.exit()
-        # raise KeyboardInterrupt('SIGTERM')
+        """Handle sigterm and sigint"""
+        self.logger.debug("on_sigterm(%s)", signalnum)
+
+        # Forcing exit while in loop's sleep, doesn't always exit cleanly, so
+        # on first occurence (system always sends multiples for sigint), set has_error=True to break main loop
+        if not self.has_error.value:
+            self.has_error.value = True
+            self.logger.debug("on_sigterm - set has_error = True")
+
+        # Now, main loop is ended, so we can exit at will
+        else:
+            self.logger.info("on_sigterm - sys.exit")
+
+            # If SIGINT (CTL-C), make sure to remove PID file
+            if signalnum == 2:
+                self.remove_pid()
+
+            sys.exit()
 
     def add_signal_handlers(self):
         """Register the sigterm handler"""
         signal.signal(signal.SIGTERM, self.on_sigterm)
+        signal.signal(signal.SIGINT, self.on_sigterm)
 
-    # ATTENTION - This function contians the infinite while loop that prevents
+    # ATTENTION - This function contains the infinite while loop that prevents
     # the process from exiting during normal operation
     def start(self):
         """Initialize and run the daemon"""
@@ -485,7 +505,11 @@ class Daemon():
 
             # Daemonize
             if not self.options['non_daemon']:
-                self.daemonize()
+                try:
+                    self.daemonize()
+                except Exception as e:
+                    self.logger.exception("Daemon - Failed to Daemonize: %s", e)
+                    raise
 
         except Exception as e:
             self.logger.exception("Daemon - Failed to start due to an exception: %s", e)
@@ -494,29 +518,30 @@ class Daemon():
         # Function write_pid must come after daemonizing since the pid of the
         # long running process is known only after daemonizing
         self.write_pid()
+        self.logger.debug("Daemon - started")
 
         try:
-            self.logger.debug("Daemon - started")
-            try:
-                start_processes(self.options, self.config, self.has_error)
+            start_processes(self.options, self.config, self.has_error)
 
-                # ******************************** Main Loop *******************************
-                # **************** Loop forever unless process throws error ****************
-                # **************************************************************************
-                while not self.has_error.value:
-                    time.sleep(1)
-                else:
-                    self.logger.debug("Daemon - Exit loop - self.has_error.value: %s", self.has_error.value)
+        except Exception as e:
+            self.logger.exception("Daemon - Couldn't start processes: %s", e)
+            raise
 
-            except (KeyboardInterrupt, SystemExit) as e:
-                self.logger.exception("Daemon - Exiting with interrupt: %s", e)
-                pass
-            except Exception as e:
-                self.logger.exception("Daemon - Exception: %s", e)
-                raise
-        finally:
-            self.remove_pid()
-            self.logger.debug("Daemon - start() - Done")
+        self.logger.debug("Daemon - start forever loop")
+
+                # ******************************** Main Loop ********************************
+                # **************** Loop forever unless process throws error *****************
+                # **************** Interrupt sets has_error True ending loop ****************
+                # ***************************************************************************
+
+        while not self.has_error.value:
+            time.sleep(1)
+        else:
+            self.logger.debug("Daemon - Exit forever loop - self.has_error.value: %s", self.has_error.value)
+
+        self.remove_pid()
+        self.logger.debug("Daemon - start() - Done")
+        sys.exit()
 
     def stop(self):
         """Stop the running process"""
@@ -527,12 +552,12 @@ class Daemon():
             self.logger.debug("Daemon - stop() - Try killing process: %d", pid)
             os.kill(pid, signal.SIGTERM)
             # wait for a moment to see if the process dies
+            time.sleep(0.5)
             for n in range(10):
-                time.sleep(0.25)
+                time.sleep(0.5)
                 try:
                     # poll the process state
                     os.kill(pid, 0)
-                    self.logger.debug("Daemon - stop() - Try killing process again: %d", pid)
 
                 except OSError as err:
                     if err.errno == errno.ESRCH:
@@ -542,9 +567,12 @@ class Daemon():
                         break
                     else:
                         raise
+
+                self.logger.debug("Daemon - stop() - Try killing process again: %d", pid)
+
             else:
                 msg = ("Daemon - stop() - pid %d did not die" % pid)
-                self.logger.info(msg)
+                self.logger.warning(msg)
                 sys.exit(msg)
         else:
             sys.exit("Daemon - stop() - Not running")
@@ -566,7 +594,7 @@ class Daemon():
                 except OSError as err:
                     if err.errno != errno.ESRCH:
                         msg = "Daemon - status() - Service is not running but pid file exists"
-                        self.logger.debug(msg)
+                        self.logger.warning(msg)
                         sys.exit(msg)
         else:
             msg = "Daemon - status() - Service is not running"
@@ -652,7 +680,7 @@ class Daemon():
                     sys.exit(msg)
             else:
                 msg = ('Daemon - check_pid() - Another instance is already running (pid %s)' % pid)
-                self.logger.info(msg)
+                self.logger.warning(msg)
                 sys.exit(msg)
 
     def check_pid_writable(self):
@@ -671,7 +699,7 @@ class Daemon():
             check = os.path.dirname(self.pidfile)
         if not os.access(check, os.W_OK):
             msg = 'Daemon - check_pid_writable() - unable to write to pidfile %s' % self.pidfile
-            self.logger.info(msg)
+            self.logger.warning(msg)
             sys.exit(msg)
 
     def write_pid(self):
@@ -894,8 +922,6 @@ def chown(user_uid, user_gid, fn):
 
 def setup_logger(config, loggerinstance, logfile):
     """Configure the logging module"""
-    print ("setup_logger()")
-
     name = getattr(loggerinstance, 'name')
     if config.get('general', 'loglevel') == 'debug':
         print ("setup_logger() - Name:", name, "File: ", logfile)
@@ -1036,6 +1062,7 @@ def main(has_error):
 
     log.info("main - Python version: %s", sys.version)
     log.info("main - SSL version: %s", ssl.OPENSSL_VERSION)
+    log.info("main - ZLIB version: %s", zlib_version)
 
     # If we are running this in debug mode from the command line, we need to
     # wait for the proper output to exit and kill the Passive and Listener

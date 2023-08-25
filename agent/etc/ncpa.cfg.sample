@@ -254,9 +254,11 @@ token =
 
 #
 # The hostname that will replace %HOSTNAME% in the check definitions and will be
-# sent to NRDP with the check name as the service description (service name)
+# sent to NRDP with the check name as the service description (service name).
+# If none is provided, NCPA will assume it is the node name defined for the server.
+# E.g. what is returned by linux hostname command, or by python platform.node().
 #
-hostname = NCPA
+hostname =
 
 #
 # Connection timeout in seconds that will be used for transmitting the

@@ -12,7 +12,7 @@ def remove_empty_file(file):
     return False
 
 def create_self_signed_cert(cert_dir, cert_file, key_file):
-    
+
     # Cert files
     target_cert = os.path.join(cert_dir, cert_file)
     target_key = os.path.join(cert_dir, key_file)
@@ -36,17 +36,24 @@ def create_self_signed_cert(cert_dir, cert_file, key_file):
         cert.get_subject().O = "Nagios Enterprises, LLC"
         cert.get_subject().OU = "Development"
         cert.get_subject().CN = socket.gethostname()
-        
+
         sn = int(time.time())
         cert.set_serial_number(sn)
-        
+
         cert.gmtime_adj_notBefore(0)
         cert.gmtime_adj_notAfter(10 * 365 * 24 * 60 * 60)
         cert.set_issuer(cert.get_subject())
         cert.set_pubkey(k)
         cert.sign(k, 'sha256')
 
-        open(target_cert, "wb").write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert))
-        open(target_key, "wb").write(crypto.dump_privatekey(crypto.FILETYPE_PEM, k))
+        # open(target_cert, "wb").write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert))
+        cfh = open(target_cert, "wb")
+        cfh.write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert))
+        cfh.close()
+
+        # open(target_key, "wb").write(crypto.dump_privatekey(crypto.FILETYPE_PEM, k))
+        kfh = open(target_key, "wb")
+        kfh.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, k))
+        kfh.close()
 
     return target_cert, target_key

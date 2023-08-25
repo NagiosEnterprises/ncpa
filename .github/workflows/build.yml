@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ 'dev-v3-app-changes' ]
+    branches: [ 'dev-v3' ]
 
 jobs:
 
@@ -13,14 +13,15 @@ jobs:
       matrix:
         # os: [ubuntu-latest, macos-latest, windows-latest]
         # os: [ubuntu-latest, macos-latest]
-        os: [ubuntu-20.04]
+        # os: [ubuntu-20.04]
+        os: [macos-latest]
 
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'
+        python-version: '3.11'
     - name: Check system platform
       run: python -c "import sys; print(sys.platform)"
     - name: Install Python dependencies

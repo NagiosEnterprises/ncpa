@@ -23,7 +23,7 @@ elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
 elif [ "$UNAME" == "AIX" ]; then
     . $BUILD_DIR/aix/setup.sh
 elif [ "$UNAME" == "Darwin" ]; then
-    . $BUILD_DIR/osx/setup.sh
+    . $BUILD_DIR/macos/setup.sh
 else
     echo "Not a supported system for our build script."
     echo "If you're sure all pre-reqs are installed, try running the"
@@ -110,7 +110,7 @@ elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
 elif [ "$UNAME" == "AIX" ]; then
     aix/package.sh
 elif [ "$UNAME" == "Darwin" ]; then
-    osx/package.sh
+    macos/package.sh
 else
     echo "No packaging method exists. You can locate binaries here:"
     echo "$BUILD_DIR/ncpa"

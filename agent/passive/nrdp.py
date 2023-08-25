@@ -1,8 +1,8 @@
 import xml.dom.minidom
-import logging
 import passive.utils
 import passive.nagioshandler
 import listener.server
+from ncpa import passive_logger as logging
 
 
 class Handler(passive.nagioshandler.NagiosHandler):
@@ -126,8 +126,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
             hostname = self.config.get('nrdp', 'hostname')
             assert hostname
         except Exception:
-            logging.debug("No hostname given in the config, falling back to parent class.")
             hostname = super(Handler, self).guess_hostname()
+            logging.debug("No hostname given in the config. Assuming hostname is: %s.", hostname)
         return hostname
 
     @staticmethod
@@ -139,8 +139,12 @@ class Handler(passive.nagioshandler.NagiosHandler):
         :type ret_xml: unicode
         :rtype : None
         """
-
-        tree = xml.dom.minidom.parseString(ret_xml)
+        try:
+            tree = xml.dom.minidom.parseString(ret_xml)
+        except:
+            logging.warning('XML returned from NRDP server (%s) was malformed. Check your server address.', server)
+            logging.warning('Your NRDP Address should be formatted: http://[ip address]/nrdp')
+            return
 
         try:
             message = tree.getElementsByTagName("message")[0].firstChild.nodeValue

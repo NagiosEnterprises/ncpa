@@ -80,10 +80,20 @@ elif __SYSTEM__ == 'posix':
     # Shared library include overrides
     bin_includes += ['libffi.so', 'libssl.so.3', 'libcrypto.so.3']
 
-    # Special includes for Mac OS X
+    # Special includes for Mac OS
     if 'darwin' in sys.platform:
-       include_files += [('../build/resources/macosinstall.sh'  , 'build_resources/macosinstall.sh'),
-                         ('../build/resources/macosuninstall.sh', 'build_resources/macosuninstall.sh')]
+        include_files += [('../build/resources/macosinstall.sh'  , 'build_resources/macosinstall.sh'),
+                         ('../build/resources/macosuninstall.sh', 'build_resources/macosuninstall.sh'),
+                         ('../build/resources/macosreadme.txt', 'build_resources/macosreadme.txt'),
+                         ('/usr/local/opt/mpdecimal/lib/libmpdec.3.dylib', 'lib/libmpdec.3.dylib'),
+                         ('/usr/local/opt/openssl@3/lib/libcrypto.3.dylib', 'lib/libcrypto.3.dylib'),
+                         ('/usr/local/opt/openssl@3/lib/libssl.3.dylib', 'lib/libssl.3.dylib'),
+                         ('/usr/local/opt/sqlite/lib/libsqlite3.0.dylib', 'lib/libsqlite3.0.dylib'),
+                         ('/usr/local/opt/xz/lib/liblzma.5.dylib', 'lib/liblzma.5.dylib')]
+
+        os_major_version = platform.mac_ver()[0].split('.')[:1][0]
+        if os_major_version == '10':
+            include_files += [('/usr/local/opt/libffi/lib/libffi.8.dylib', 'lib/libffi.8.dylib')]
 
     # Special includes for AIX systems
     if 'aix' in sys.platform:
@@ -96,7 +106,6 @@ elif __SYSTEM__ == 'posix':
                           ('/opt/freeware/lib/libgcc_s.a'       , 'libgcc_s.a')]
 
     binary = Executable('ncpa.py', base=None)
-#
 
 # Apply build options
 buildOptions = dict(includes=includes,

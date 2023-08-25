@@ -19,6 +19,10 @@ cat linux/ncpa.spec | sed "s/__VERSION__/$NCPA_VER/g" | sed "s|__BUILDROOT__|$BU
 # Build rpm package (also used on Debian systems)
 echo -e "***** Build rpm package"
 (
+    if [[ -d $BUILD_RPM_DIR ]]; then
+        echo -e "***** Remove old rpm package directories"
+        rm -r $BUILD_RPM_DIR
+    fi
     echo -e "***** Build rpm package - make directories"
     mkdir -p $BUILD_RPM_DIR/SPECS
     mkdir -p $BUILD_RPM_DIR/SRPMS

@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request, url_for, jsonify, R
 import os
 import sys
 import ssl
+from zlib import ZLIB_VERSION as zlib_version
 import platform
 import requests
 import functools
@@ -23,7 +24,7 @@ from ncpa import listener_logger as logging
 # Set whether or not a request is internal or not
 import socket
 
-__VERSION__ = '3.0.0'
+__VERSION__ = ncpa.__VERSION__
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
@@ -73,7 +74,7 @@ def get_config_items(section):
 # Misc function for making information for main page
 def make_info_dict():
     now = datetime.datetime.now()
-    uptime = str(now - ncpa.__STARTED__)
+    uptime = str(now - __STARTED__)
     uptime = uptime.split('.', 1)[0]
 
     # Get check status
@@ -86,10 +87,11 @@ def make_info_dict():
     if proc_type == '':
         proc_type = uname[4];
 
-    return { 'agent_version': ncpa.__VERSION__,
+    return { 'agent_version': __VERSION__,
              'uptime': uptime,
              'python_version': sys.version,
              'ssl_version': ssl.OPENSSL_VERSION,
+             'zlib_version': zlib_version,
              'processor': proc_type,
              'node': uname[1],
              'system': uname[0],
@@ -234,6 +236,9 @@ def apply_headers(response):
         response.headers["X-Frame-Options"] = "SAMEORIGIN"
         response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
 
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+
     return response
 
 
@@ -343,7 +348,7 @@ def requires_admin_auth(f):
 # ------------------------------
 
 
-@listener.route('/login', methods=['GET', 'POST'])
+@listener.route('/login', methods=['GET', 'POST'], provide_automatic_options = False)
 def login():
     # Verify authentication and redirect if we are authenticated
     if session.get('logged', False):
@@ -400,7 +405,7 @@ def login():
     return render_template('login.html', **template_args)
 
 
-@listener.route('/gui/admin/login', methods=['GET', 'POST'])
+@listener.route('/gui/admin/login', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
 def admin_login():
     # Verify authentication and redirect if we are authenticated
@@ -426,7 +431,7 @@ def admin_login():
     return render_template('admin/login.html', **template_args)
 
 
-@listener.route('/logout', methods=['GET', 'POST'])
+@listener.route('/logout', methods=['GET', 'POST'], provide_automatic_options = False)
 def logout():
     session.clear()
     session['message'] = 'Successfully logged out.'
@@ -459,13 +464,13 @@ def error_page_not_found(e):
 # ------------------------------
 
 
-@listener.route('/')
+@listener.route('/', provide_automatic_options = False)
 @requires_auth
 def index():
     return redirect(url_for('gui_index'))
 
 
-@listener.route('/gui/')
+@listener.route('/gui/', provide_automatic_options = False)
 @requires_auth
 def gui_index():
     info = make_info_dict()
@@ -475,7 +480,7 @@ def gui_index():
         logging.exception(e)
 
 
-@listener.route('/gui/checks')
+@listener.route('/gui/checks', provide_automatic_options = False)
 @requires_auth
 def checks():
     data = { 'filters': False, 'show_fp': False, 'show_lp': False }
@@ -563,19 +568,19 @@ def checks():
     return render_template('gui/checks.html', **data)
 
 
-@listener.route('/gui/stats', methods=['GET', 'POST'])
+@listener.route('/gui/stats', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
 def live_stats():
     return render_template('gui/stats.html')
 
 
-@listener.route('/gui/top', methods=['GET', 'POST'])
+@listener.route('/gui/top', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
 def top_base():
     return render_template('gui/top.html')
 
 
-@listener.route('/gui/tail', methods=['GET', 'POST'])
+@listener.route('/gui/tail', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
 def tail_base():
     return render_template('gui/tail.html')
@@ -583,13 +588,13 @@ def tail_base():
 
 # This function renders the graph picker page, which can be though of
 # the explorer for the graphs.
-@listener.route('/gui/graphs', methods=['GET', 'POST'])
+@listener.route('/gui/graphs', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
 def graph_picker():
     return render_template('gui/graphs.html')
 
 
-@listener.route('/gui/api', methods=['GET', 'POST'])
+@listener.route('/gui/api', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
 def view_api():
     info = make_info_dict()
@@ -597,7 +602,7 @@ def view_api():
 
 
 # Help section (just a frame for the actual help)
-@listener.route('/gui/help')
+@listener.route('/gui/help', provide_automatic_options = False)
 @requires_auth
 def help_section():
     return render_template('gui/help.html')
@@ -608,8 +613,8 @@ def help_section():
 # ------------------------------
 
 
-@listener.route('/gui/admin', methods=['GET', 'POST'])
-@listener.route('/gui/admin/', methods=['GET', 'POST'])
+@listener.route('/gui/admin', methods=['GET', 'POST'], provide_automatic_options = False)
+@listener.route('/gui/admin/', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin():
     tmp_args = {}
@@ -617,7 +622,7 @@ def admin():
     return render_template('admin/index.html', **tmp_args)
 
 
-@listener.route('/gui/admin/global', methods=['GET', 'POST'])
+@listener.route('/gui/admin/global', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_global():
     section = 'general'
@@ -639,7 +644,7 @@ def admin_global():
     return render_template('admin/global.html', **tmp_args)
 
 
-@listener.route('/gui/admin/listener', methods=['GET', 'POST'])
+@listener.route('/gui/admin/listener', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_listener_config():
     section = 'listener'
@@ -653,7 +658,7 @@ def admin_listener_config():
     return render_template('admin/listener.html', **tmp_args)
 
 
-@listener.route('/gui/admin/api', methods=['GET', 'POST'])
+@listener.route('/gui/admin/api', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_api_config():
     section = 'api'
@@ -667,7 +672,7 @@ def admin_api_config():
     return render_template('admin/api.html', **tmp_args)
 
 
-@listener.route('/gui/admin/passive', methods=['GET', 'POST'])
+@listener.route('/gui/admin/passive', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_passive_config():
     section = 'passive'
@@ -684,7 +689,7 @@ def admin_passive_config():
     return render_template('admin/passive.html', **tmp_args)
 
 
-@listener.route('/gui/admin/nrdp', methods=['GET', 'POST'])
+@listener.route('/gui/admin/nrdp', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_nrdp_config():
     section = 'nrdp'
@@ -701,7 +706,7 @@ def admin_nrdp_config():
     return render_template('admin/nrdp.html', **tmp_args)
 
 
-@listener.route('/gui/admin/kafkaproducer', methods=['GET', 'POST'])
+@listener.route('/gui/admin/kafkaproducer', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_kafkaproducer_config():
     section = 'kafkaproducer'
@@ -718,7 +723,7 @@ def admin_kafkaproducer_config():
     return render_template('admin/kafkaproducer.html', **tmp_args)
 
 
-@listener.route('/gui/admin/plugin-directives', methods=['GET', 'POST'])
+@listener.route('/gui/admin/plugin-directives', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_plugin_config():
     section = 'plugin directives'
@@ -736,7 +741,7 @@ def admin_plugin_config():
     return render_template('admin/plugins.html', **tmp_args)
 
 
-@listener.route('/gui/admin/passive-checks', methods=['GET', 'POST'])
+@listener.route('/gui/admin/passive-checks', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_checks_config():
     try:
@@ -749,7 +754,7 @@ def admin_checks_config():
 
 
 # Page that removes all checks from the DB
-@listener.route('/gui/admin/clear-check-log', methods=['GET', 'POST'])
+@listener.route('/gui/admin/clear-check-log', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_clear_check_log():
     db = database.DB()
@@ -894,7 +899,7 @@ def tail_websocket():
 # ------------------------------
 
 
-@listener.route('/top')
+@listener.route('/top', provide_automatic_options = False)
 @requires_auth
 def top():
     display = request.values.get('display', 0)
@@ -926,7 +931,7 @@ def top():
     return render_template('top.html', **info)
 
 
-@listener.route('/tail')
+@listener.route('/tail', provide_automatic_options = False)
 @requires_token_or_auth
 def tail(accessor=None):
     info = { }
@@ -937,7 +942,7 @@ def tail(accessor=None):
     return render_template('tail.html', **info)
 
 
-@listener.route('/graph/<path:accessor>', methods=['GET', 'POST'])
+@listener.route('/graph/<path:accessor>', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_token_or_auth
 def graph(accessor=None):
     """
@@ -983,15 +988,15 @@ def graph(accessor=None):
 # ------------------------------
 
 
-@listener.route('/error/')
-@listener.route('/error/<msg>')
+@listener.route('/error/', provide_automatic_options = False)
+@listener.route('/error/<msg>', provide_automatic_options = False)
 def error(msg=None):
     if not msg:
         msg = 'Error occurred during processing request.'
     return jsonify(error=msg)
 
 
-@listener.route('/testconnect/', methods=['GET', 'POST'])
+@listener.route('/testconnect/', methods=['GET', 'POST'], provide_automatic_options = False)
 def testconnect():
     """
     Method meant for testing connecting with monitoring applications and wizards.
@@ -1006,7 +1011,7 @@ def testconnect():
         return jsonify({'value': 'Success.'})
 
 
-@listener.route('/nrdp/', methods=['GET', 'POST'])
+@listener.route('/nrdp/', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_token_or_auth
 def nrdp():
     """
@@ -1036,8 +1041,8 @@ def nrdp():
 # ------------------------------
 
 
-@listener.route('/api/', methods=['GET', 'POST'])
-@listener.route('/api/<path:accessor>', methods=['GET', 'POST'])
+@listener.route('/api/', methods=['GET', 'POST'], provide_automatic_options = False)
+@listener.route('/api/<path:accessor>', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_token_or_auth
 def api(accessor=''):
     """

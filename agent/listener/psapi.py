@@ -14,6 +14,8 @@ import math
 
 importables = ("windowscounters", "windowslogs")
 
+__SYSTEM__ = os.name
+__VERSION__ = ncpa.__VERSION__
 
 def get_uptime():
     current_time = time.time()
@@ -94,7 +96,7 @@ def make_mountpoint_nodes(partition_name):
     ]
 
     # Unix specific inode counter ~ sorry Windows! :'(
-    if ncpa.__SYSTEM__ != "nt":
+    if __SYSTEM__ != "nt":
         try:
             st = os.statvfs(mountpoint)
             iu = st.f_files - st.f_ffree
@@ -171,7 +173,7 @@ def make_if_nodes(if_name):
 
 def get_timezone():
     zones = time.tzname
-    if ncpa.__SYSTEM__ == "nt":
+    if __SYSTEM__ == "nt":
         zones = [x for x in zones]
     return zones, ""
 
@@ -184,7 +186,7 @@ def get_system_node():
     sys_machine = RunnableNode("machine", method=lambda: (platform.uname()[4], ""))
     sys_processor = RunnableNode("processor", method=lambda: (platform.uname()[5], ""))
     sys_uptime = RunnableNode("uptime", method=get_uptime)
-    sys_agent = RunnableNode("agent_version", method=lambda: (ncpa.__VERSION__, ""))
+    sys_agent = RunnableNode("agent_version", method=lambda: (__VERSION__, ""))
     sys_time = RunnableNode("time", method=lambda: (time.time(), ""))
     sys_timezone = RunnableNode("timezone", method=get_timezone)
     return ParentNode(
@@ -421,7 +423,7 @@ def get_root_node(config):
 
     children = [cpu, memory, disk, interface, plugins, user, system, service, process]
 
-    if ncpa.__SYSTEM__ == "nt":
+    if __SYSTEM__ == "nt":
         for importable in importables:
             try:
                 relative_name = "listener." + importable
