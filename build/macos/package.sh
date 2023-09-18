@@ -7,7 +7,7 @@ DIR=$( cd "$(dirname "$0")" ; pwd -P )
 BUILD_DIR="$DIR/.."
 NCPA_VER=$(cat $BUILD_DIR/../VERSION)
 RELEASE="beta02"
-ARCH=$(arch)
+ARCH=$(uname -m)
 
 (
     echo -e "    Fixing dylib dependencies..."
