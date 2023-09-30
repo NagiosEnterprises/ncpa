@@ -89,7 +89,7 @@
                                 </tr>
                                 <tr>
                                     <td><b>unit</b></td>
-                                    <td>Unlike the units parameter, this value overwrites the unit name. If an endpoint returns no unit but you want it to return 'ms' then you can set this value.</td>
+                                    <td>Unlike the <code>units</code> parameter, this value overwrites the unit name. If an endpoint returns no unit but you want it to return 'ms' then you can set this value.</td>
                                 </tr>
                                 <tr>
                                     <td><b>delta</b></td>
@@ -216,7 +216,7 @@
                     <p>The NCPA API is flexible enough to let you run your own Nagios plugins. In order to do so, you'll need to place them in your plugins directory defined in the <a href="configuration.html#plugin-directives">[plugin directives]</a> section of the config.</p>
                     <p>
                         <div class="alert alert-info">
-                            <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> Make sure that your plugins have the proper permissions on Linux and Mac OS X systems. They need to be able to be executed by the user and group you have specified the NCPA services to run as. <em>The default user and group is <b>nagios:nagios</b>. No permissions settings need to be edited for Windows.</em>
+                            <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> Make sure that your plugins have the proper permissions on Linux and Mac OS X systems. They need to be able to be executed by the user and group you have specified the NCPA service to run as. <em>The default user and group is <b>nagios:nagios</b>. No permissions settings need to be edited for Windows.</em>
                         </div>
                     </p>
                     <p>You can see a list of all available plugins by going to the <code>plugins</code> API node:</p>
