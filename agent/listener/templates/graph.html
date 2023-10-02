@@ -42,8 +42,6 @@
                     return getJSON();
                 }
                 var title = '{{ graph_path }}';
-
-
                 graph_title.text(title);
                 if (response_object[1] != '%') {
                     delete default_smoothie.maxValue;
@@ -52,7 +50,6 @@
 
             var smoothie = new SmoothieChart(default_smoothie);
             var ws_loc = get_ws_address();
-
             var ws = new WebSocket(ws_loc);
             var lines = [];
             var min = undefined;
@@ -63,7 +60,6 @@
             var td_max = $('#data-{{ graph_hash }}-units td.max');
             var td_cur = $('#data-{{ graph_hash }}-units td.current');
             var td_avg = $('#data-{{ graph_hash }}-units td.average');
-
 
             for(var i=0; i<ts_length; i++) {
                 lines.push(new TimeSeries());
@@ -78,11 +74,9 @@
                 if(ts instanceof Array != true) {
                     ts = [ts]
                 }
-
                 $.each(ts, function(i) {
                     var val = ts[i];
                     val = Math.abs(val);
-
                     lsum += val;
                     lines[i].append(new Date().getTime(), val);
                     if(min == undefined || val < min) min = val;
@@ -100,7 +94,6 @@
             };
 
             var websocket_thread;
-
             ws.onopen = function() {
                 websocket_thread = setInterval(function() {
                     ws.send('{{ graph_path }}');
