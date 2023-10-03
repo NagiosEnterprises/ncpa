@@ -1,6 +1,10 @@
 Changelog
 +++++++++
 
+3.0.0 - XX/XX/2023
+==================
+- Converted NCPA to Python 3
+
 2.4.1 - 02/27/2023
 ==================
 - Note: For the time being, we're stopping 1st-party builds for the following platforms:
