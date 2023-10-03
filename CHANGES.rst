@@ -4,6 +4,7 @@ Changelog
 3.0.0 - XX/XX/2023
 ==================
 - Converted NCPA to Python 3
+- Fixed an issue where delta graphs wouldn't load properly if the pickle hadn't been initialized yet (#980) (ne_bbahn)
 
 2.4.1 - 02/27/2023
 ==================
