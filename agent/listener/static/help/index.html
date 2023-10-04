@@ -27,29 +27,29 @@
                 <a name="two-parts-of-ncpa"></a>
                 <div class="section">
 
-                    <h2>The Two Parts of NCPA</h2>
-                    <p>NCPA is a service that runs two separate processes that make up a single monitoring agent. This separation allows the agent to run passive checks without needing to allow connections to the web GUI or allow external calls to the API. It also allows the passive portion of the agent to be disabled if it's not in use to save resources even though the passive portion requires very few resources while running in the background.</p>
-                    <p>By default, NCPA runs both the Listener and Passive processes, but by adding the -l or -p option to the start command, the service will run only the Listener or Passive process, respectively.</p>
-                    <p>By default the NCPA service runs as the <b>nagios</b> user and <b>nagios</b> group. The user and group can be changed in the <em>ncpa.cfg</em>.</p>
+                    <h2>NCPA 3.x Single Service</h2>
+                    <p>In previous versions, NCPA ran as two separate services:
+                        <ul>
+                            <li>NCPA Listener</li>
+                            <li>NCPA Passive</li>
+                        </ul>
+
+                        The <b>NCPA Listener</b> service would listen for active checks coming from a Nagios Core or Nagios XI system.<br />
+                        The <b>NCPA Passive</b> service would send service check results back to a Nagios Core or Nagios XI system.<br />
+                        <br />
+                        With the relase of NCPA 3.0, the passive functionality has been rolled into a single <b>NCPA</b> service. By default, the service will run as the <b>nagios</b> user and group. This can be changed by modifying the <b>uid</b> and <b>gid</b> (for user and group, respectively) settings in the <i>ncpa.cfg</i> file.
+                    </p>
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-sm-6 col-lg-5">
-                                <h3>NCPA Listener</h3>
+                                <h3>NCPA Service</h3>
                                 <p>
-                                    The <em>NCPA Listener</em> process does the following:
+                                    The <em>NCPA</em> service does the following:
                                     <ul>
                                         <li>Serves and handles connections to the web GUI</li>
                                         <li>Handles external API requests (including those for active checks)</li>
                                         <li>Provides API for live graphing and top processes</li>
                                         <li>Provides an "offline" internal API for the <em>NCPA Passive</em> process</li>
-                                    </ul>
-                                </p>
-                            </div>
-                            <div class="col-sm-6 col-lg-5">
-                                <h3>NCPA Passive</h3>
-                                <p>
-                                    The <em>NCPA Passive</em> process does the following:
-                                    <ul>
                                         <li>Runs passive checks defined in the [passive checks] configuration section</li>
                                         <li>Connects and sends passive check results to the defined NRDP URL</li>
                                     </ul>
@@ -64,7 +64,7 @@
                 <div class="section">
 
                     <h2>Restarting the NCPA Service</h2>
-                    <p>Because NCPA is made up of these two separate services, you will need to restart both of them if you are using both the active and passive capabilities. Below is the naming conventions and the command line way of restarting both services. In the configuration section you'll find that you will need to restart the services each time configuration changes are made.</p>
+                    <p>You will need to restart the NCPA service whenever a configuration change is made.</p>
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#windows" role="tab" data-toggle="tab"><i class="fa fa-windows fa-l fa-14"></i> Windows</a></li>
                         <li role="presentation"><a href="#linux" role="tab" data-toggle="tab"><i class="fa fa-linux fa-l fa-14"></i> Linux</a></li>
@@ -72,9 +72,15 @@
                     </ul>
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane active" id="windows">
-                            <p>You can also view the services in the windows services administration panel, but you can also do it easily from the command line.</p>
+                            <p>You can also view the services in the Windows services administration panel, but you can also do it easily from CMD.</p>
 <pre>net stop ncpa
 net start ncpa</pre>
+                            <p>You can also affect services through Powershell. The verbs will be <b>Start</b>, <b>Stop</b>, and <b>Restart</b>. <b>Start</b> will start a service that is not running. <b>Stop</b> will stop a service that is not running. <b>Restart</b> will stop and then start a service if it is running, or just start a service if it is not running. The Powershell cmdlets can be found below.</p>
+<pre>
+Start-Service ncpa
+Stop-Service ncpa
+Restart-Service ncpa
+</pre>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="linux">
                             <p>This example should work for all supported Linux distros. If you are running v3+ on an older distro (it may run, even if not supported), you may need to use chkconfig or service commands vs. systemctl.</p>
