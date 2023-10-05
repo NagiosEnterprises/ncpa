@@ -8,6 +8,7 @@ from listener.nodes import ParentNode, RunnableNode, RunnableParentNode, LazyNod
 from listener.pluginnodes import PluginAgentNode
 import listener.services as services
 import listener.processes as processes
+import listener.smartmon as smartmon_info
 import ncpa
 import listener.environment as environment
 import math
@@ -421,7 +422,13 @@ def get_root_node(config):
         process = ParentNode("N/A")
         logging.exception(e)
 
-    children = [cpu, memory, disk, interface, plugins, user, system, service, process]
+    try:
+        smartmon = smartmon_info.get_node()
+    except Exception as e:
+        smartmon = ParentNode("N/A")
+        logging.exception(e)
+
+    children = [cpu, memory, disk, interface, plugins, user, system, service, process, smartmon]
 
     if __SYSTEM__ == "nt":
         for importable in importables:
@@ -446,7 +453,6 @@ def get_root_node(config):
                 )
 
     return ParentNode("root", children=children)
-
 
 def refresh(config):
     global root
