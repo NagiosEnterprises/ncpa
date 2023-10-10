@@ -12,6 +12,13 @@
 # Force PowerShell to use TLS 1.2
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
+$sysBGColor = [System.Console]::BackgroundColor
+$sysFGColor = [System.Console]::ForegroundColor
+$colorBGmain = "Black"
+$colorFGmain = "Yellow"
+$colorBGsub = "Black"
+$colorFGsub = "White"
+
 [System.Console]::BackgroundColor = $colorBGmain
 [System.Console]::ForegroundColor = $colorFGmain
 Write-Host "Running Chocolatey install script..."
@@ -68,5 +75,8 @@ $env:Path += ";C:\Program Files (x86)\NSIS"
 # $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin"
 $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin"
 
-Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
-refreshenv
+# Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+# refreshenv
+
+[System.Console]::BackgroundColor = $sysBGColor
+[System.Console]::ForegroundColor = $sysFGColor
