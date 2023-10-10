@@ -68,7 +68,7 @@ setlocal
 for /f "tokens=*" %%a in ('powershell.exe -Command "if((Get-ExecutionPolicy -Scope CurrentUser) -ne $null) { Get-ExecutionPolicy -Scope CurrentUser } else { echo 'Undefined' }"') do set ORIGINAL_POLICY=%%a
 echo Current policy: %ORIGINAL_POLICY%
 powershell.exe -Command "Set-ExecutionPolicy Unrestricted -Scope CurrentUser -Force"
-echo Execution policy set to Unrestricted
+echo Setting execution policy to Unrestricted
 if ERRORLEVEL 1 goto :restore_policy
 
 @REM :::::::::::::::::::::::
