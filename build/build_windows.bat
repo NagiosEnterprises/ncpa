@@ -96,6 +96,7 @@ if ERRORLEVEL 1 goto :restore_policy
 :::: 3. Install Prereqs
 :::::::::::::::::::::::
 powershell -File %~dp0\windows\choco_prereqs.ps1
+if ERRORLEVEL 1 goto :restore_policy
 
 @REM :::::::::::::::::::::::
 @REM :::: 4. Build NCPA with Built Python:
