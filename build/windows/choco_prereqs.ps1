@@ -77,23 +77,26 @@ $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MS
 
 # Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
 # refreshenv
-function Test-PendingReboot {
-    if (Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending" -EA Ignore) { return $true }
-    if (Get-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" -EA Ignore) { return $true }
-    if (Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -Name PendingFileRenameOperations -EA Ignore) { return $true }
-    try { 
-        $util = [wmiclass]"\\.\root\ccm\clientsdk:CCM_ClientUtilities"
-        $status = $util.DetermineIfRebootPending()
-        if (($status -ne $null) -and $status.RebootPending) {
-            return $true
-        }
-    }
-    catch { }
+$rebootRequired = $false
 
+# Check for Component-Based Servicing registry key
+if (Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending") {
+    $rebootRequired = $true
+}
+# Check for Windows Update registry key
+if (Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired") {
+    $rebootRequired = $true
+}
+# Check for PendingFileRenameOperations registry key
+$pendingFileRename = Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -Name PendingFileRenameOperations -ErrorAction SilentlyContinue
+if ($pendingFileRename) {
+    $rebootRequired = $true
+}
+if ($rebootRequired) {
+    Write-Host "A system reboot is pending. Exiting..."
     exit 1
 }
 
-Test-PendingReboot
 
 [System.Console]::BackgroundColor = $sysBGColor
 [System.Console]::ForegroundColor = $sysFGColor
