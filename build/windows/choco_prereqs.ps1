@@ -46,6 +46,7 @@ try {
 
 ### 2. Install Git, Perl and Visual Studio Build Tools
 Write-Host "Chocolatey installing prerequisites"
+choco feature enable -name=exitOnRebootDetected
 if(-not (Get-Command git    -ErrorAction SilentlyContinue)){ choco install git -y }
 if(-not (Get-Command perl   -ErrorAction SilentlyContinue)){ choco install strawberryperl -y }
 if(-not (Get-Command nasm   -ErrorAction SilentlyContinue)){ choco install nasm -y }
