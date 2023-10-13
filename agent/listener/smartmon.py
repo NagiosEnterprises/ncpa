@@ -2,12 +2,24 @@ import listener.nodes as nodes
 import logging
 import subprocess
 from listener.nodes import ParentNode, RunnableNode, RunnableParentNode, LazyNode
+import os.path
 
 def get_smart_data(drive):
+    smartctlExists = os.path.isfile("/sbin/smartctl")
+    if not smartctlExists:
+        return False
+
     try:
         output = subprocess.check_output("/usr/sbin/smartctl -a " + drive, shell=True, universal_newlines=True).split('\n')
+        retcode = 0
     except subprocess.CalledProcessError as e:
+        if "Permission denied" in e.output:
+                return True
+
         output = e.output.split('\n');
+        retcode = e.returncode
+        if retcode == 127:
+            return True
 
     hasSeenFirstAttr = False
     data={}
@@ -22,7 +34,6 @@ def get_smart_data(drive):
         if len(lineItems) > 0:
             if not lineItems[0].isnumeric():
                 break
-            #dataItem['ID'] = lineItems[0]
             dataItem['Name'] = lineItems[1]
             dataItem['Flag'] = lineItems[2]
             dataItem['Value'] = lineItems[3]
@@ -70,6 +81,10 @@ def make_disk_node(physdev, devid):
     children.append(RunnableNode("devid", method=lambda: (devid, "")))
 
     data = get_smart_data("/dev/disk/by-id/" + physdev)
+    if (data == False):
+        return False
+    if (data == True):
+        return True
     for attribute in data:
         children.append(make_attribute_node(attribute, data[attribute]))
 
@@ -80,7 +95,12 @@ def get_disk_info_node():
 
     nodes = []
     for disk in disks:
-        nodes.append(make_disk_node(disks[disk], disk))
+        node = make_disk_node(disks[disk], disk)
+        if node == False:
+            return ParentNode("Smartctl must be installed", [])
+        if node == True:
+            return ParentNode("Smartctl must be runnable as the Nagios user and setuid root", [])
+        nodes.append(node)
 
     return ParentNode("disk", children=nodes)
 
@@ -98,4 +118,3 @@ def get_node():
     disk_node = get_disk_info_node()
 
     return ParentNode("smartmon", children=[disks_node, disk_node])
-
