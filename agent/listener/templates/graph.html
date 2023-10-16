@@ -31,105 +31,101 @@
         if (query_string) {
             API_URL += '?' + decodeURIComponent(query_string);
         }
-        console.log("graph/html - API_URL: " + API_URL);
-        console.log(API_URL);
 
-        $.getJSON(API_URL, function(d) {
-            var ts_length = 0;
-            $.each(d, function(i, api_response_object) {
-                var response_object = api_response_object;
-                ts_length = response_object[0].length || 1;
-                var title = '{{ graph_path }}';
+        function getJSON() {
+            var retry = false;
+            $.getJSON(API_URL, function(d) {
+                var ts_length = 0;
+                $.each(d, function(i, api_response_object) {
+                    var response_object = api_response_object;
+                    ts_length = response_object[0].length || 1;
+                    if(ts_length == 1) {
+                        retry = true;
+                        setTimeout(getJSON, 1000);
+                        return;
+                    } else {
+                        var title = '{{ graph_path }}';
 
-                console.log("getJSON.each - response_object:");
-                console.log(response_object);
-
-                graph_title.text(title);
-                if (response_object[1] != '%') {
-                    delete default_smoothie.maxValue;
-                }
-            });
-
-            var smoothie = new SmoothieChart(default_smoothie);
-            var ws_loc = get_ws_address();
-            console.log("getJSON - ws_loc: " + ws_loc);
-
-            var ws = new WebSocket(ws_loc);
-            var lines = [];
-            var min = undefined;
-            var max = undefined;
-            var all = [];
-
-            var td_min = $('#data-{{ graph_hash }}-units td.min');
-            var td_max = $('#data-{{ graph_hash }}-units td.max');
-            var td_cur = $('#data-{{ graph_hash }}-units td.current');
-            var td_avg = $('#data-{{ graph_hash }}-units td.average');
-
-
-            for(var i=0; i<ts_length; i++) {
-                lines.push(new TimeSeries());
-            }
-
-            ws.onmessage = function(e) {
-                var d = $.parseJSON(e.data);
-                var ts = d[0];
-                var units = d[1];
-                var lsum = 0;
-                console.log("getJSON/onmessage - data:");
-                console.log(d);
-
-                if(ts instanceof Array != true) {
-                    ts = [ts]
-                }
-
-                $.each(ts, function(i) {
-                    var val = ts[i];
-                    val = Math.abs(val);
-                    console.log("getJSON/onmessage - val: " + val);
-
-                    lsum += val;
-                    lines[i].append(new Date().getTime(), val);
-                    if(min == undefined || val < min) min = val;
-                    if(max == undefined || val > max) max = val;
+                        graph_title.text(title);
+                        if (response_object[1] != '%') {
+                            delete default_smoothie.maxValue;
+                        }
+                    }
                 });
 
-                lmean = lsum / ts.length;
-                all.push(lmean);
-                asum = all.reduce(function(a, b) {return a+b});
-                amean = asum / all.length;
+                if(retry == false) {
+                    var smoothie = new SmoothieChart(default_smoothie);
+                    var ws_loc = get_ws_address();
 
-                td_min.text(min.toFixed(2) + ' ' + units);
-                td_max.text(max.toFixed(2) + ' ' + units);
-                td_cur.text(lmean.toFixed(2) + ' ' + units);
-                td_avg.text(amean.toFixed(2) + ' ' + units);
-            };
+                    var ws = new WebSocket(ws_loc);
+                    var lines = [];
+                    var min = undefined;
+                    var max = undefined;
+                    var all = [];
 
-            var websocket_thread;
+                    var td_min = $('#data-{{ graph_hash }}-units td.min');
+                    var td_max = $('#data-{{ graph_hash }}-units td.max');
+                    var td_cur = $('#data-{{ graph_hash }}-units td.current');
+                    var td_avg = $('#data-{{ graph_hash }}-units td.average');
 
-            ws.onopen = function() {
-                websocket_thread = setInterval(function() {
-                    ws.send('{{ graph_path }}');
-                }, interval);
-                console.log("getJSON/onopen - " + '{{ graph_path }}' + " - websocket_thread: " + websocket_thread);
-            };
 
-            $('#graph-{{ graph_hash }}').on('doUnload', function() {
-                console.log("getJSON/doUnload - close");
+                    for(var i=0; i<ts_length; i++) {
+                        lines.push(new TimeSeries());
+                    }
 
-                ws.close();
-                delete ws;
-                clearInterval(websocket_thread);
-            });
+                    ws.onmessage = function(e) {
+                        var d = $.parseJSON(e.data);
+                        var ts = d[0];
+                        var units = d[1];
+                        var lsum = 0;
 
-            console.log("getJSON - lines:");
-            console.log(lines);
+                        if(ts instanceof Array != true) {
+                            ts = [ts]
+                        }
 
-            $.each(lines, function(i) {
-                smoothie.addTimeSeries(lines[i], { lineWidth: 1, strokeStyle: '#4d89f9', fillStyle: 'rgba(77,137,249,0.15)' });
-            });
-            smoothie.streamTo(document.getElementById('canvas-{{ graph_hash }}'), 1000);
-        });
+                        $.each(ts, function(i) {
+                            var val = ts[i];
+                            val = Math.abs(val);
 
+                            lsum += val;
+                            lines[i].append(new Date().getTime(), val);
+                            if(min == undefined || val < min) min = val;
+                            if(max == undefined || val > max) max = val;
+                        });
+
+                        lmean = lsum / ts.length;
+                        all.push(lmean);
+                        asum = all.reduce(function(a, b) {return a+b});
+                        amean = asum / all.length;
+                        
+                        td_min.text(min.toFixed(2) + ' ' + units);
+                        td_max.text(max.toFixed(2) + ' ' + units);
+                        td_cur.text(lmean.toFixed(2) + ' ' + units);
+                        td_avg.text(amean.toFixed(2) + ' ' + units);
+                    };
+
+                    var websocket_thread;
+
+                    ws.onopen = function() {
+                        websocket_thread = setInterval(function() {
+                            ws.send('{{ graph_path }}');
+                        }, interval);
+                    };
+
+                    $('#graph-{{ graph_hash }}').on('doUnload', function() {
+                        ws.close();
+                        delete ws;
+                        clearInterval(websocket_thread);
+                    });
+
+                    $.each(lines, function(i) {
+                        smoothie.addTimeSeries(lines[i], { lineWidth: 1, strokeStyle: '#4d89f9', fillStyle: 'rgba(77,137,249,0.15)' });
+                    });
+                    smoothie.streamTo(document.getElementById('canvas-{{ graph_hash }}'), 1000);
+                }
+            }).fail(getJSON, 5000);
+        }
+        getJSON();
 
     });
     </script>
