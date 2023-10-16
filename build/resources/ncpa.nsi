@@ -420,7 +420,7 @@ Section ""
 
     ${If} $installed == "0"
         nsExec::Exec '$9 /c diskperf -Y'
-        nsExec::Exec '$9 /c sc create NCPA binPath= "$INSTDIR\ncpa.exe" start= auto'
+        nsExec::Exec '$9 /c sc create NCPA binPath= "$INSTDIR\ncpa.exe" DisplayName= "Nagios Cross-Platform Agent" start= auto'
         nsExec::Exec '$9 /c netsh advfirewall firewall add rule name="NCPA" dir=in action=allow protocol=TCP localport=${PORT}'
         nsExec::Exec '$9 /c sc start NCPA'
     ${EndIf}
