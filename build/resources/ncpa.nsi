@@ -413,7 +413,7 @@ Section ""
     ; Install the service on new install
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c diskperf -Y'
-    nsExec::Exec '$9 /c sc create NCPA binPath= "\"$INSTDIR\ncpa.exe\"" start= delayed-auto'
+    nsExec::Exec '$9 /c sc create NCPA binPath= "\"$INSTDIR\ncpa.exe\"" DisplayName= "Nagios Cross-Platform Agent" start= auto'
 
     ; Start the listener and passive services
     nsExec::Exec '$9 /c sc start NCPA'
