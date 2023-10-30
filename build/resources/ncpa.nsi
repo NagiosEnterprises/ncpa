@@ -415,7 +415,7 @@ Section ""
     nsExec::Exec '$9 /c diskperf -Y'
     nsExec::Exec '$9 /c sc create NCPA binPath= "\"$INSTDIR\ncpa.exe\"" DisplayName= "Nagios Cross-Platform Agent" start= auto'
 
-    ; Start the listener and passive services
+    ; Start the NCPA service
     nsExec::Exec '$9 /c sc start NCPA'
 
     ${If} $installed == "0"
@@ -425,7 +425,7 @@ Section ""
         nsExec::Exec '$9 /c sc start NCPA'
     ${EndIf}
 
-    ; Start the listener and passive services
+    ; Start the NCPA service
     ; if they were running before upgrade (or if this is a new install)
 
     ${If} $status_service == "1"
