@@ -61,5 +61,5 @@ ARCH=$(uname -m)
     # Create MacOS disk image file
     echo -e "\nCreate .dmg file ..."
     RELEASE=$RELEASE"_"
-    hdiutil create -volname NCPA-$NCPA_VER -srcfolder NCPA-INSTALL-$NCPA_VER -ov -format UDZO ncpa_$NCPA_VER-$RELEASE$ARCH.dmg
+    sudo hdiutil create -volname NCPA-$NCPA_VER -srcfolder NCPA-INSTALL-$NCPA_VER -ov -format UDZO ncpa_$NCPA_VER-$RELEASE$ARCH.dmg
 )
