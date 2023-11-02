@@ -133,7 +133,7 @@ if [ $BUILD_TRAVIS -eq 0 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; 
         read -r -p "Automatically install system pre-reqs? [Y/n] " resp
         if [[ $resp =~ ^(yes|y|Y| ) ]] || [[ -z $resp ]]; then
             install_prereqs
-            touch $BUILD_DIR/prereqs.installed
+            sudo touch $BUILD_DIR/prereqs.installed
         fi
     fi
 
