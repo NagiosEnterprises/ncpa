@@ -114,7 +114,7 @@ fixLib() {
         echo "    Changing: $badpath/$dylibname"
         echo "    To:       $gdpath/$dylibname"
 
-        install_name_tool -change "$badpath/$dylibname" "$gdpath/$dylibname" "$dynlibpath/$soname"
+        sudo install_name_tool -change "$badpath/$dylibname" "$gdpath/$dylibname" "$dynlibpath/$soname"
     fi
 }
 
