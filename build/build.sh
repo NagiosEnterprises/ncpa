@@ -194,7 +194,7 @@ fi
     cd $AGENT_DIR
 
     echo -e "\nFreezing app (may take a minute)..."
-    $PYTHONBIN setup.py build_exe > $BUILD_DIR/build.log
+    sudo $PYTHONBIN setup.py build_exe > $BUILD_DIR/build.log
 
     echo -e "\nSet up packaging dirs..."
     # Move the ncpa binary data
