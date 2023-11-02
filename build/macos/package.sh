@@ -43,7 +43,7 @@ ARCH=$(uname -m)
         parentlib=$(echo ${fixlib} | cut -f3 -d~)
         echo -e "\n    Fixing: $parentlib"
         echo "    $oldlib -> $newlib"
-        install_name_tool -change $oldlib $newlib $parentlib
+        sudo install_name_tool -change $oldlib $newlib $parentlib
     done
 
     # Uncomment otool comands to have updated dynamic lib dependencies dispayed
