@@ -200,7 +200,7 @@ fi
     # Move the ncpa binary data
     cd $BUILD_DIR
     sudo rm -rf $BUILD_DIR/ncpa
-    cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
+    sudo cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
     sudo echo $GIT_LONG >  $BUILD_DIR/ncpa/$GIT_HASH_FILE
 
     # REMOVE LIBFFI COPY - PLEASE CHANGE THIS LATER
