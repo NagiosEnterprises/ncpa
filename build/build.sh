@@ -164,9 +164,9 @@ clean_build_dir
 # Build the python with cx_Freeze
 cd $BUILD_DIR
 find $AGENT_DIR -name *.pyc -exec rm '{}' \;
-mkdir -p $AGENT_DIR/plugins
-mkdir -p $AGENT_DIR/build
-mkdir -p $AGENT_DIR/var/log
+sudo mkdir -p $AGENT_DIR/plugins
+sudo mkdir -p $AGENT_DIR/build
+sudo mkdir -p $AGENT_DIR/var/log
 # cat /dev/null > $AGENT_DIR/var/log/ncpa_passive.log
 # cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
 
