@@ -52,11 +52,11 @@ ARCH=$(uname -m)
     echo -e "\nDone"
 
     echo -e "\nCopy other resources..."
-    mkdir NCPA-INSTALL-$NCPA_VER
-    mv ncpa-$NCPA_VER NCPA-INSTALL-$NCPA_VER/ncpa
-    cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosuninstall.sh NCPA-INSTALL-$NCPA_VER/ncpa/uninstall.sh
-    cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosreadme.txt NCPA-INSTALL-$NCPA_VER/readme.txt
-    mv NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$NCPA_VER/install.sh
+    sudo mkdir NCPA-INSTALL-$NCPA_VER
+    sudo mv ncpa-$NCPA_VER NCPA-INSTALL-$NCPA_VER/ncpa
+    sudo cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosuninstall.sh NCPA-INSTALL-$NCPA_VER/ncpa/uninstall.sh
+    sudo cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosreadme.txt NCPA-INSTALL-$NCPA_VER/readme.txt
+    sudo mv NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$NCPA_VER/install.sh
 
     # Create MacOS disk image file
     echo -e "\nCreate .dmg file ..."
