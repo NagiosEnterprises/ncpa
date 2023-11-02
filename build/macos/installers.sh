@@ -40,7 +40,7 @@ install_devtools() {
     fi
 
     # Add brew env vars to your environment
-    (echo; echo 'eval "$($BREWBIN shellenv)"') >> ~/.bash_profile
+    echo -e "\n$(eval "$($BREWBIN shellenv)")" | sudo tee -a ~/.bash_profile > /dev/null
     eval "$($BREWBIN shellenv)"
 
     echo -e "    - Installing misc brew packages: pkg-config xz gdbm..."
