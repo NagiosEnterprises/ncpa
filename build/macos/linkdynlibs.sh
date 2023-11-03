@@ -22,7 +22,7 @@ setPaths() {
         dynlibpath=$1
     else
         if [[ -z $PYTHONVER ]]; then
-            PYTHONVER="3.11.4"
+            PYTHONVER="3.11.3"
         fi
         python_at_seg=python@$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')
 
