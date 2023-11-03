@@ -194,14 +194,15 @@ fi
     cd $AGENT_DIR
 
     echo -e "\nFreezing app (may take a minute)..."
-    sudo $PYTHONBIN setup.py build_exe > $BUILD_DIR/build.log
+    sudo $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
+
 
     echo -e "\nSet up packaging dirs..."
     # Move the ncpa binary data
     cd $BUILD_DIR
     sudo rm -rf $BUILD_DIR/ncpa
     sudo cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
-    sudo sh -c "echo $GIT_LONG > $BUILD_DIR/ncpa/$GIT_HASH_FILE"
+    echo $GIT_LONG | sudo tee $BUILD_DIR/ncpa/$GIT_HASH_FILE
 
     # REMOVE LIBFFI COPY - PLEASE CHANGE THIS LATER
     # It should be in .libs_cffi_backend for proper linking and
@@ -225,11 +226,11 @@ fi
     sudo cp -rf ncpa ncpa-$NCPA_VER
     if [ "$UNAME" == "AIX" ]; then
         echo -e "***** Build tarball"
-        sudo tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER >> $BUILD_DIR/build.log
-        sudo gzip -f ncpa-$NCPA_VER.tar >> $BUILD_DIR/build.log
+        sudo tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER | sudo tee -a $BUILD_DIR/build.log
+        sudo gzip -f ncpa-$NCPA_VER.tar | sudo tee -a $BUILD_DIR/build.log
     elif [ "$UNAME" == "Linux" ]; then
         echo -e "***** Build tarball"
-        sudo tar -czvf ncpa-$NCPA_VER.tar.gz ncpa-$NCPA_VER >> $BUILD_DIR/build.log
+        sudo tar -czvf ncpa-$NCPA_VER.tar.gz ncpa-$NCPA_VER | sudo tee -a $BUILD_DIR/build.log
     fi
 )
 
