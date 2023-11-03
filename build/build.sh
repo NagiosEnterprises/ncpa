@@ -113,6 +113,7 @@ done
 # Load required things for different systems
 echo -e "\nRunning build for: $UNAME"
 if [ "$UNAME" == "Linux" ]; then
+    export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin:$PATH
     . $BUILD_DIR/linux/setup.sh
 elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
     . $BUILD_DIR/solaris/setup.sh
