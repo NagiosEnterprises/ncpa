@@ -195,7 +195,7 @@ fi
     cd $AGENT_DIR
 
     echo -e "\nFreezing app (may take a minute)..."
-    sudo $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
+    $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
 
 
     echo -e "\nSet up packaging dirs..."
