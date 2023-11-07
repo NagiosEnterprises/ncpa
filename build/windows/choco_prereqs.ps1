@@ -48,7 +48,7 @@ choco feature enable -name=exitOnRebootDetected
 if(-not (Get-Command git    -ErrorAction SilentlyContinue)){ choco install git -y }
 if(-not (Get-Command perl   -ErrorAction SilentlyContinue)){ choco install strawberryperl -y }
 if(-not (Get-Command nasm   -ErrorAction SilentlyContinue)){ choco install nasm -y }
-if(-not (Get-Command python -ErrorAction SilentlyContinue)){ choco install python -y }
+if(-not (Get-Command python -ErrorAction SilentlyContinue)){ choco install python --version=3.11.4 -y }
 if(-not (Get-Command nsis   -ErrorAction SilentlyContinue)){ choco install nsis -y }
 
 #choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools;includeRecommended" -y
