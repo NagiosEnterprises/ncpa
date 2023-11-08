@@ -205,6 +205,9 @@ class RunnableNode(ParentNode):
             values, unit = self.method(*args, **kwargs)
         except TypeError:
             values, unit = self.method()
+        except AttributeError:
+            logging.error("Error running check for %s... likely timed out..." % self.name)
+            values, unit = None, None
 
         self.set_unit(unit, kwargs)
         values = self.get_adjusted_scale(values, kwargs)
