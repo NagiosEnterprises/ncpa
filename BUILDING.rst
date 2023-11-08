@@ -33,7 +33,7 @@ From a command prompt with Administrative priveleges run::
   cd /path/to/ncpa/build/
   build_windows.bat
 
-This will use Chocolatey to install various prerequisites for building NCPA and then build NCPA. You will likely need to restart your computer if you have not yet built NCPA on your machine. If you do, just rerun the script and it will continue the installation/build processes.
+This will use Chocolatey to install various prerequisites for building NCPA and then build NCPA. You will likely need to restart your computer if you have not yet built NCPA 3 on your machine. If you need to restart your machine, just rerun the script and it will continue the installation/build processes.
 
 This will create a file called ``ncpa-<version>.exe`` in the ``build`` directory.
 This is the installer for NCPA and can be used to install NCPA on a Windows system.
