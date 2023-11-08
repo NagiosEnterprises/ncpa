@@ -4,7 +4,7 @@ import passive.nagioshandler
 import passive.utils
 import tempfile
 import re
-import logging
+from ncpa import passive_logger as logging
 import os
 import configparser as cp
 

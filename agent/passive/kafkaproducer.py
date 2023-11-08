@@ -1,4 +1,4 @@
-import logging
+from ncpa import passive_logger as logging
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
 import passive.nagioshandler
