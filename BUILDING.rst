@@ -23,7 +23,7 @@ must be executed by cmd.exe. For this reason, any Windows commands
 listed in this document will be written with cmd.exe compatibility
 in mind.*
 
-*Note: The current Windows build should be run from a Windows machine without Python installed.*
+*Note: The current Windows build should be run on a Windows machine without Python installed.*
 
 Install the Prerequisites/Build NCPA
 ------------------------------------
