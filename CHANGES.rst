@@ -25,6 +25,7 @@ Changelog
 - Updated to bundle OpenSSL v3.0.8 in all packages (Windows currently at v1.1.1t, but will use v3+ soon.) (PhreditorNG)
 - Updated to bundle zLib v1.2.13 in all packages (PhreditorNG)
 - Simplified building - building on CentOS 7 provides packages that will run on almost all Linux distributions (PhreditorNG)
+- One-script environment setup and build process (PhreditorNG/ne-bbahn)
 - The listener and passive services/daemons are now combined into one service/daemon called ncpa
 - Can optionally run only Listener or Passive (PhreditorNG)
 - Improved logging and installation output (PhreditorNG)

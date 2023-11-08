@@ -40,7 +40,7 @@ install_devtools() {
     fi
 
     # Add brew env vars to your environment
-    (echo; echo 'eval "$($BREWBIN shellenv)"') >> ~/.bash_profile
+    echo -e "\n$(eval "$($BREWBIN shellenv)")" | sudo tee -a ~/.bash_profile > /dev/null
     eval "$($BREWBIN shellenv)"
 
     echo -e "    - Installing misc brew packages: pkg-config xz gdbm..."
@@ -117,8 +117,8 @@ update_py_packages() {
     # For MacOS 11+ libraries need special treatment
     if [[ "$os_major_version" != "10" ]]; then
         if [ ! -d "$pylibpath/lib-dynload_orig" ]; then
-            mkdir $pylibpath/lib-dynload_orig
-            cp $pylibpath/lib-dynload/* $pylibpath/lib-dynload_orig/
+            sudo mkdir $pylibpath/lib-dynload_orig
+            sudo cp $pylibpath/lib-dynload/* $pylibpath/lib-dynload_orig/
         fi
         # Define paths for dependency link fixer
         setPaths
@@ -128,11 +128,11 @@ update_py_packages() {
     fi
 
     if [ ! -d "$cxlibpath/lib-dynload_orig" ]; then
-        mkdir $cxlibpath/lib-dynload_orig
-        cp $cxlibpath/lib-dynload/* $cxlibpath/lib-dynload_orig/
+        sudo mkdir $cxlibpath/lib-dynload_orig
+        sudo cp $cxlibpath/lib-dynload/* $cxlibpath/lib-dynload_orig/
     fi
 
 
     # Link python's lib-dynload to cx_freeze lib-dynload to make sure we are using desired OpenSSL, etc.
-    cp $pylibpath/lib-dynload/* $cxlibpath/lib-dynload/
+    sudo cp $pylibpath/lib-dynload/* $cxlibpath/lib-dynload/
 }

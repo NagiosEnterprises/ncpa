@@ -54,7 +54,7 @@ install_prereqs() {
     #  INSTALL PYTHON MODULES
     # --------------------------
 
-    update_py_packages >> $BUILD_DIR/build.log
+    update_py_packages | sudo tee -a $BUILD_DIR/build.log
 
     # --------------------------
     #  MISC ADDITIONS
