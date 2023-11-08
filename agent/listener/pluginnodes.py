@@ -141,8 +141,13 @@ class PluginNode(nodes.RunnableNode):
             returncode = -1
             logging.error(stdout)
 
+        if isinstance(stdout, bytes):
+            str_stdout = stdout.decode("utf-8", "ignore")
+        else:
+            str_stdout = stdout
+
         cleaned_stdout = str(
-            "".join(stdout.decode("utf-8", "ignore"))
+            str_stdout
             .replace("\r\n", "\n")
             .replace("\r", "\n")
             .strip()
