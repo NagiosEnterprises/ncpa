@@ -14,57 +14,26 @@ This document contains instructions for:
 
 THE BUILD SCRIPT WILL MAKE CHANGES TO THE SYSTEM THAT MAY BE INCOMPATIBLE WITH OTHER SOFTWARE
 
+
 Building on Windows
 ===================
 
-**Prerequisites for Windows** (Installing some of these prerequisites requires admin rights)
--------------------------
+*Note: The current Windows pre-build script is written in batch and
+must be executed by cmd.exe. For this reason, any Windows commands
+listed in this document will be written with cmd.exe compatibility
+in mind.*
 
-* `Git for Windows <https://git-scm.com/download/win>`_
-* `Python 3.11.x <https://www.python.org/downloads/>`_
-* `NSIS 3 <http://nsis.sourceforge.net/Download>`_
+*Note: The current Windows build should be run from a Windows machine without Python installed.*
 
-Configure the Windows Build Environment
--------------------------------
+Install the Prerequisites/Build NCPA
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Install Prerequisites
-~~~~~~~~~~~~~~~~~~~~~
+From a command prompt with Administrative priveleges run::
 
-* Git
+  cd /path/to/ncpa/build/
+  build_windows.bat
 
-  1. Download and install Git for Windows. (`see prerequisites <#prerequisites>`_)
-
-* Python
-
-  1. Download and install Python 3.x. (`see prerequisites <#prerequisites>`_)
-  2. Execute the installer as usual, making sure to check the box to add Python to your PATH (on the first page).
-
-* NSIS
-
-  1. Download and run the installer. (`see prerequisites <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#prerequisites>`_)
-
-* pip
-
-  * Pip is installed alongside python by default but should be updated before continuing::
-
-      py -m pip install --upgrade pip
-
-Note: py should be the command to run python 3. If it is not, you may need to use the full path to the python executable.
-
-Build NCPA
-----------
-
-In your Git Bash terminal (or cmd.exe with ``C:\Program Files\Git\usr\bin`` added to your PATH), run the following commands:
-
-Navigate to your desired build directory and clone the repository::
-
-  cd /c/desired/build/directory
-  git clone https://github.com/NagiosEnterprises/ncpa.git
-
-In a Command Prompt/Terminal (cmd.exe) terminal with admin rights, run the following commands::
-
-  cd C:\desired\build\directory\ncpa
-  py build\build_windows.py
+This will use Chocolatey to install various prerequisites for building NCPA and then build NCPA. You will likely need to restart your computer if you have not yet built NCPA on your machine. If you do, just rerun the script and it will continue the installation/build processes.
 
 This will create a file called ``ncpa-<version>.exe`` in the ``build`` directory.
 This is the installer for NCPA and can be used to install NCPA on a Windows system.
