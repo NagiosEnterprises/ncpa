@@ -26,7 +26,7 @@ in mind.*
 *Note: The current Windows build should be run from a Windows machine without Python installed.*
 
 Install the Prerequisites/Build NCPA
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------
 
 From a command prompt with Administrative priveleges run::
 
