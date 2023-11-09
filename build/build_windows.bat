@@ -133,10 +133,11 @@ if ERRORLEVEL 1 goto :restore_policy
 :::: 4. Build NCPA
 :::::::::::::::::::::::
 echo Building NCPA
-FOR /F "tokens=* USEBACKQ" %%F IN (`where python`) DO (
-    echo Pydir: %%F
-  set pydir=%%F
-)
+@REM FOR /F "tokens=* USEBACKQ" %%F IN (`where python`) DO (
+@REM     echo Pydir: %%F
+@REM   set pydir=%%F
+@REM )
+set pydir="C:\Python311\python.exe"
 Call "%pydir%" %~dp0\windows\build_ncpa.py %pydir%
 
 :::::::::::::::::::::::
