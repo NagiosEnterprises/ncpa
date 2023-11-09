@@ -63,8 +63,12 @@ class PluginNode(nodes.RunnableNode):
         """
         _, extension = os.path.splitext(self.name)
         try:
+            if extension.strip() == "":
+                return "$plugin_name $plugin_args"
             return config.get("plugin directives", extension)
         except ConfigParser.NoOptionError:
+            return "$plugin_name $plugin_args"
+        else:
             return "$plugin_name $plugin_args"
 
     def kill_proc(self, p, t):
