@@ -133,10 +133,13 @@ if ERRORLEVEL 1 goto :restore_policy
 :::: 4. Build NCPA
 :::::::::::::::::::::::
 echo Building NCPA
-FOR /F "tokens=* USEBACKQ" %%F IN (`where python`) DO (
-    echo Pydir: %%F
-  set pydir=%%F
-)
+@REM FOR /F "tokens=* USEBACKQ" %%F IN (`where python`) DO (
+@REM     echo Pydir: %%F
+@REM   set pydir=%%F
+@REM )
+:: Set manually because of Windows 10 Pro
+:: It already has a python.exe (that links to the windows store for installing Python 3.7) that breaks the dynamic linking
+set pydir="C:\Python311\python.exe"
 Call "%pydir%" %~dp0\windows\build_ncpa.py %pydir%
 
 :::::::::::::::::::::::

@@ -48,9 +48,9 @@ choco feature enable -name=exitOnRebootDetected
 if(-not (Get-Command git    -ErrorAction SilentlyContinue)){ choco install git -y }
 if(-not (Get-Command perl   -ErrorAction SilentlyContinue)){ choco install strawberryperl -y }
 if(-not (Get-Command nasm   -ErrorAction SilentlyContinue)){ choco install nasm -y }
-if(-not (Get-Command python -ErrorAction SilentlyContinue)){ choco install python --version=3.11.6 -y }
 if(-not (Get-Command nsis   -ErrorAction SilentlyContinue)){ choco install nsis -y }
 
+choco install python --version=3.11.6 -y
 #choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools;includeRecommended" -y
 choco install visualstudio2022buildtools -y --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK.19041 --add Microsoft.VisualStudio.Component.Windows10SDK.18362"
 choco install visualstudio2022community -y --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK.19041 --add Microsoft.VisualStudio.Component.Windows10SDK.18362"
