@@ -14,7 +14,6 @@ This document contains instructions for:
 
 THE BUILD SCRIPT WILL MAKE CHANGES TO THE SYSTEM THAT MAY BE INCOMPATIBLE WITH OTHER SOFTWARE
 
-
 Building on Windows
 ===================
 
@@ -46,15 +45,15 @@ Building on CentOS 7 is the easiest way to get a working package for all Linux d
 
 In most cases, building on the distribution that is targeted, e.g. building on Ubuntu 20.04 to deploy on Ubuntu 20.04, will work, but the resulting package will not be as portable.
 
-To start, clone the repository in your directory::
+To start, clone the repository in your directory:
 
-  cd ~
-  git clone https://github.com/NagiosEnterprises/ncpa
+   cd ~
+   git clone https://github.com/NagiosEnterprises/ncpa<<<<<<< HEAD
 
 Now run the setup scripts to install the requirements::
 
-  cd ncpa/build
-  ./build.sh
+   cd ncpa/build
+   ./build.sh
 
 Follow the prompts to setup the system. When running the build.sh script it will setup
 the system and build the ncpa binary.
@@ -63,23 +62,19 @@ the system and build the ncpa binary.
 **Install on the target Linux server**
 --------------------------------
 
-  Copy the resulting ~/ncpa/build/ncpa-3.x.x-x.x86_64.rpm or ncpa_3.x.x-x_amd64.deb to the desired server and install using the appropriate package system:
+Copy the resulting ~/ncpa/build/ncpa-3.x.x-x.x86_64.rpm or ncpa_3.x.x-x_amd64.deb to the desired server and install using the appropriate package system:
 
-  On CentOS/RHEL/Oracle/Amazon/Rocky::
+  On CentOs/RHEL::
 
-    yum install ./ncpa-3.x.x-1.x86_64.rpm
+    yum install ./ncpa-3.x.x-1.elx.x86_64.rpm
 
-  On Ubuntu 16+/Debian 9+::
+  On Ubuntu/Debian::
 
     apt install ./ncpa_3.0.0-1._amd64.deb
 
-  On Ubuntu 14/Debian 8 (not supported, but may work)::
-
-    dpkg --force-depends -i ./ncpa_3.0.0-1._amd64.deb
-
   On OpenSuSE/SLES::
 
-    zypper install ./ncpa-3.x.x-1.x86_64.rpm
+    zypper install ./ncpa_3.0.0-1.x86_64.deb
 
 
 Building on MacOS

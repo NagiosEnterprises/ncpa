@@ -6,14 +6,20 @@ NCPA
 
 The *Nagios Cross-Platform Agent*; a single monitoring agent that installs on all major operating systems. NCPA allows both active checks via check_ncpa.py and passive checks via NRDP. NCPA comes with a built-in web GUI, documentation, websocket graphing, and is secured with SSL by default.
 
+NCPA 3 Beta
+---------
+The NCPA 3 beta has been released! You can download the beta via the source code in the `dev-v3-beta-01 branch <https://github.com/NagiosEnterprises/ncpa/tree/dev-v3-beta01>`_ or by visiting the `downloads page <https://www.nagios.org/ncpa/#beta-downloads>`_ for installable packages.
+
 Downloads
 ---------
 
 Current versions:
 
-+---------+-------------+-------------------------------------------------------+
-| Current | **3.0.0**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
-+---------+-------------+-------------------------------------------------------+
++---------+-------------+------------------------------------------------------------+
+| Current | **2.4.1**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_      |
++---------+-------------+------------------------------------------------------------+
+| Beta    | **3.0.0**   | `Downloads <https://www.nagios.org/ncpa/#beta-downloads>`_ |
++---------+-------------+------------------------------------------------------------+
 
 `Older Versions <https://www.nagios.org/ncpa/archive.php>`_
 
@@ -78,3 +84,4 @@ While we recommend using the pre-built version above, sometimes you may find the
 +------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
 | `Building for Windows <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-windows>`_ | `Building for Linux <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-linux>`_ | `Building for Mac OS X <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-mac-os-x>`_ |
 +------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+
