@@ -23,7 +23,6 @@ from ncpa import listener_logger as logging
 
 # Set whether or not a request is internal or not
 import socket
-from hmac import compare_digest
 
 __VERSION__ = ncpa.__VERSION__
 __STARTED__ = datetime.datetime.now()
@@ -163,26 +162,6 @@ def is_network(ip):
         logging.debug(e)
         return False
 
-# Securely compares strings - byte string or unicode
-# Comparison is done via compare_digest() to prevent timing attacks
-# If both items evaluate to false, they match. This makes it easier to handle
-# empty strings or variables which may have "NoneType"
-def secure_compare(item1, item2):
-    is_match = False
-
-    # In Python 3, strings are unicode by default
-    if item1:
-        item1 = str(item1)
-    if item2:
-        item2 = str(item2)
-
-    if item1 and item2 and compare_digest(item1, item2):
-        is_match = True
-    elif not item1 and not item2:
-        is_match = True
-
-    return is_match
-
 
 # ------------------------------
 # Authentication Wrappers
@@ -301,17 +280,16 @@ def requires_token_or_auth(f):
     def token_auth_decoration(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
         token = request.values.get('token', None)
-        token_valid = secure_compare(token, ncpa_token)
 
         # This is an internal call, we don't check
         if __INTERNAL__ is True:
             pass
-        elif session.get('logged', False) or token_valid:
+        elif session.get('logged', False) or token == ncpa_token:
             pass
         elif token is None:
             session['redirect'] = request.url
             return redirect(url_for('login'))
-        elif not token_valid:
+        elif token != ncpa_token:
             return error(msg='Incorrect credentials given.')
         return f(*args, **kwargs)
 
@@ -391,9 +369,6 @@ def login():
     url = session.get('redirect', None)
     token = request.values.get('token', None)
 
-    token_valid = secure_compare(token, ncpa_token)
-    token_is_admin = secure_compare(token, admin_password)
-
     template_args = { 'hide_page_links': True,
                       'message': message,
                       'url': url,
@@ -403,9 +378,9 @@ def login():
     session['message'] = None
 
     # Do actual authentication check
-    if not admin_auth_only and token_valid:
+    if token == ncpa_token and not admin_auth_only:
         session['logged'] = True
-    elif admin_password is not None and token_is_admin:
+    elif token == admin_password and admin_password is not None:
         session['logged'] = True
         session['admin_logged'] = True
 
@@ -419,10 +394,10 @@ def login():
     # Display error messages depending on what was given
     if token is not None:
         if not admin_auth_only:
-            if not token_valid and not token_is_admin:
+            if token != ncpa_token or token != admin_password:
                 template_args['error'] = 'Invalid token or password.'
         else:
-            if token_valid:
+            if token == ncpa_token:
                 template_args['error'] = 'Admin authentication only.'
             else:
                 template_args['error'] = 'Invalid password.'
@@ -439,8 +414,6 @@ def admin_login():
 
     # Admin password
     admin_password = get_config_value('listener', 'admin_password', None)
-    password = request.values.get('password', None)
-    password_valid = secure_compare(password, admin_password)
 
     message = session.get('message', None)
     template_args = { 'hide_page_links': False,
@@ -448,7 +421,7 @@ def admin_login():
 
     session['message'] = None
 
-    if admin_password is not None and password_valid:
+    if password == admin_password and admin_password is not None:
         session['admin_logged'] = True
         return redirect(url_for('admin'))
     elif password is not None:
