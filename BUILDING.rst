@@ -45,7 +45,7 @@ Building on CentOS 7 is the easiest way to get a working package for all Linux d
 
 In most cases, building on the distribution that is targeted, e.g. building on Ubuntu 20.04 to deploy on Ubuntu 20.04, will work, but the resulting package will not be as portable.
 
-To start, clone the repository in your directory:
+To start, clone the repository in your directory::
 
    cd ~
    git clone https://github.com/NagiosEnterprises/ncpa
