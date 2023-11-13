@@ -62,23 +62,23 @@ the system and build the ncpa binary.
 **Install on the target Linux server**
 --------------------------------
 
-Copy the resulting ~/ncpa/build/ncpa-3.0.0-release.x86_64.rpm or ncpa_3.0.0-release_amd64.deb to the desired server and install using the appropriate package system:
+Copy the resulting ~/ncpa/build/ncpa-3.0.0-latest.x86_64.rpm or ncpa_3.0.0-latest_amd64.deb to the desired server and install using the appropriate package system:
 
   On CentOS/RHEL/Oracle/Amazon/Rocky::
 
-    yum install ./ncpa-3.0.0-release.x86_64.rpm
+    yum install ./ncpa-3.0.0-latest.x86_64.rpm
 
   On Ubuntu 16+/Debian 9+::
 
-    apt install ./ncpa_3.0.0-release._amd64.deb
+    apt install ./ncpa_3.0.0-latest._amd64.deb
 
   On Ubuntu 14/Debian 8 (not supported, but may work)::
 
-    dpkg --force-depends -i ./ncpa_3.0.0-release._amd64.deb
+    dpkg --force-depends -i ./ncpa_3.0.0-latest._amd64.deb
 
   On OpenSuSE/SLES::
 
-    zypper install ./ncpa-3.0.0-release.x86_64.rpm
+    zypper install ./ncpa-3.0.0-latest.x86_64.rpm
 
 
 Building on MacOS
