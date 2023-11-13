@@ -6,7 +6,7 @@ echo -e "\n***** macos/package.sh"
 DIR=$( cd "$(dirname "$0")" ; pwd -P )
 BUILD_DIR="$DIR/.."
 NCPA_VER=$(cat $BUILD_DIR/../VERSION)
-RELEASE="beta02"
+RELEASE="release"
 ARCH=$(uname -m)
 
 (
