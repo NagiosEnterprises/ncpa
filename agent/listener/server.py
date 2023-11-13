@@ -170,11 +170,11 @@ def is_network(ip):
 def secure_compare(item1, item2):
     is_match = False
 
-    # Convert to unicode, if necessary, both items must have the same encoding
-    if item1 and not isinstance(item1, unicode):
-        item1 = item1.decode('utf-8')
-    if item2 and not isinstance(item2, unicode):
-        item2 = item2.decode('utf-8')
+    # In Python 3, strings are unicode by default
+    if item1:
+        item1 = str(item1)
+    if item2:
+        item2 = str(item2)
 
     if item1 and item2 and compare_digest(item1, item2):
         is_match = True
