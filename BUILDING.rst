@@ -48,7 +48,7 @@ In most cases, building on the distribution that is targeted, e.g. building on U
 To start, clone the repository in your directory:
 
    cd ~
-   git clone https://github.com/NagiosEnterprises/ncpa<<<<<<< HEAD
+   git clone https://github.com/NagiosEnterprises/ncpa
 
 Now run the setup scripts to install the requirements::
 
@@ -64,17 +64,21 @@ the system and build the ncpa binary.
 
 Copy the resulting ~/ncpa/build/ncpa-3.x.x-x.x86_64.rpm or ncpa_3.x.x-x_amd64.deb to the desired server and install using the appropriate package system:
 
-  On CentOs/RHEL::
+  On CentOS/RHEL/Oracle/Amazon/Rocky::
 
-    yum install ./ncpa-3.x.x-1.elx.x86_64.rpm
+    yum install ./ncpa-3.x.x-1.x86_64.rpm
 
-  On Ubuntu/Debian::
+  On Ubuntu 16+/Debian 9+::
 
     apt install ./ncpa_3.0.0-1._amd64.deb
 
+  On Ubuntu 14/Debian 8 (not supported, but may work)::
+
+    dpkg --force-depends -i ./ncpa_3.0.0-1._amd64.deb
+
   On OpenSuSE/SLES::
 
-    zypper install ./ncpa_3.0.0-1.x86_64.deb
+    zypper install ./ncpa-3.x.x-1.x86_64.rpm
 
 
 Building on MacOS
