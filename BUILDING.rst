@@ -70,7 +70,7 @@ Copy the resulting ~/ncpa/build/ncpa-3.0.0-latest.x86_64.rpm or ncpa_3.0.0-lates
 
   On Ubuntu 16+/Debian 9+::
 
-    apt install ./ncpa_3.0.0-latest._amd64.deb
+    dpkg -i ./ncpa_3.0.0-latest._amd64.deb
 
   On Ubuntu 14/Debian 8 (not supported, but may work)::
 
