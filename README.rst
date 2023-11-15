@@ -29,7 +29,7 @@ We currently build for the following operating systems on x86-64 architectures:
 - Amazon Linux 2
 - Windows 8.1+
 - Windows Server 2016+
-- MacOS 13+
+- MacOS Ventura+ (13+)
 
 Older systems that have been supported by NCPA in the past:
 
