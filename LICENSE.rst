@@ -1,6 +1,6 @@
 Nagios Community Software License Version 1.3
 
-Copyright (c) 2010-2017 Nagios Enterprises, LLC
+Copyright (c) 2010-2023 Nagios Enterprises, LLC
 
 Nagios Enterprises, LLC (the "Company") hereby grants, free of charge, to any person, company, or legal entity (each a "User") obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software (each a "Use"), and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
