@@ -827,6 +827,9 @@ if __SYSTEM__ == 'nt':
             self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
             win32event.SetEvent(self.hWaitStop) # set stop event for main thread
 
+        def SvcRun(self):
+            self.SvcDoRun(self)
+
         def SvcDoRun(self):
             # log starting of service to windows event log
             servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
