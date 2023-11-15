@@ -1,57 +1,50 @@
-# -*- coding: utf-8 -*-
-
 from flask import Flask, render_template, redirect, request, url_for, jsonify, Response, session, make_response, abort
-import logging
-import urllib
-import urlparse
 import os
 import sys
+import ssl
+from zlib import ZLIB_VERSION as zlib_version
 import platform
 import requests
-import psapi
 import functools
-import jinja2
 import datetime
 import json
-import re
 import psutil
-import gevent
-import geventwebsocket
-import processes
-import database
+import listener.psapi as psapi
+import listener.processes as processes
+import listener.database as database
 import math
 import ipaddress
+import urllib.parse
+import gevent
+import ncpa
+from ncpa import listener_logger as logging
+#import inspect
+
+
+# Set whether or not a request is internal or not
 import socket
 from hmac import compare_digest
 
-__VERSION__ = '2.4.1'
+__VERSION__ = ncpa.__VERSION__
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
-
-base_dir = os.path.dirname(sys.path[0])
-
 
 # The following if statement is a workaround that is allowing us to run this
 # in debug mode, rather than a hard coded location.
 
-tmpl_dir = os.path.join(base_dir, 'listener', 'templates')
-if not os.path.isdir(tmpl_dir):
-    tmpl_dir = os.path.join(base_dir, 'agent', 'listener', 'templates')
-
-stat_dir = os.path.join(base_dir, 'listener', 'static')
-if not os.path.isdir(stat_dir):
-    stat_dir = os.path.join(base_dir, 'agent', 'listener', 'static')
-
-if os.name == 'nt':
-    logging.info(u"Looking for templates at: %s", tmpl_dir)
-    listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
-    listener.jinja_loader = jinja2.FileSystemLoader(tmpl_dir)
+if getattr(sys, 'frozen', False):
+    appdir = os.path.dirname(sys.executable)
 else:
-    listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
+    appdir = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
+
+tmpl_dir = os.path.join(appdir, 'listener', 'templates')
+stat_dir = os.path.join(appdir, 'listener', 'static')
+
+listener = Flask(__name__, template_folder=tmpl_dir, static_folder=stat_dir)
 
 
 # Set some settings for Flask
-listener.jinja_env.line_statement_prefix = '#'
+listener.config.update(SECRET_KEY=os.urandom(24))
 listener.url_map.strict_slashes = False
 listener.config.update(
     SESSION_COOKIE_SECURE = True
@@ -82,7 +75,7 @@ def get_config_items(section):
 # Misc function for making information for main page
 def make_info_dict():
     now = datetime.datetime.now()
-    uptime = unicode(now - __STARTED__)
+    uptime = str(now - __STARTED__)
     uptime = uptime.split('.', 1)[0]
 
     # Get check status
@@ -97,6 +90,9 @@ def make_info_dict():
 
     return { 'agent_version': __VERSION__,
              'uptime': uptime,
+             'python_version': sys.version,
+             'ssl_version': ssl.OPENSSL_VERSION,
+             'zlib_version': zlib_version,
              'processor': proc_type,
              'node': uname[1],
              'system': uname[0],
@@ -113,20 +109,19 @@ def get_unmapped_ip(ip):
     It returns the given ip, but in case ip is an IPv4-mapped IPv6 address,
     it returns ip as ordinary IPv4.
     """
-
     try:
         # check if ip is IPv6
-        if ipaddress.ip_address(unicode(ip)).version == 6:
+        if ipaddress.ip_address(str(ip)).version == 6:
             # check if ip is a IPv4-mapped IPv6 address
-            if ipaddress.IPv6Address(unicode(ip)).ipv4_mapped is not None:
+            if ipaddress.IPv6Address(str(ip)).ipv4_mapped is not None:
                 # return the ordinary IPv4 address
-                return str(ipaddress.IPv6Address(unicode(ip)).ipv4_mapped)
+                return str(ipaddress.IPv6Address(str(ip)).ipv4_mapped)
             else:
                 # return the IPv6 address
-                return str(ipaddress.IPv6Address(unicode(ip)))
+                return str(ipaddress.IPv6Address(str(ip)))
         else:
             # return the IPv4 address
-            return str(ipaddress.ip_address(unicode(ip)))
+            return str(ipaddress.ip_address(str(ip)))
     # Needed for passive checks, in this case ip is 'Internal'
     except ValueError as e:
         logging.debug(e)
@@ -137,7 +132,6 @@ def lookup_hostname(ip):
     """
     This function gets an ip and returns the hostname lookuped by DNS.
     """
-
     try:
         hostname = socket.gethostbyaddr(str(ip))
         return hostname[0]
@@ -150,9 +144,8 @@ def is_ip(ip):
     """
     Checks if ip is a valid ip address.
     """
-
     try:
-        ipaddress.ip_address(unicode(ip)).version
+        ipaddress.ip_address(str(ip)).version
         return True
     except ValueError as e:
         logging.debug(e)
@@ -163,9 +156,8 @@ def is_network(ip):
     """
     Checks if ip is a valid ip network.
     """
-
     try:
-        ipaddress.ip_network(unicode(ip))
+        ipaddress.ip_network(str(ip))
         return True
     except ValueError as e:
         logging.debug(e)
@@ -176,20 +168,9 @@ def is_network(ip):
 # If both items evaluate to false, they match. This makes it easier to handle
 # empty strings or variables which may have "NoneType"
 def secure_compare(item1, item2):
-    is_match = False
-
-    # Convert to unicode, if necessary, both items must have the same encoding
-    if item1 and not isinstance(item1, unicode):
-        item1 = item1.decode('utf-8')
-    if item2 and not isinstance(item2, unicode):
-        item2 = item2.decode('utf-8')
-
-    if item1 and item2 and compare_digest(item1, item2):
-        is_match = True
-    elif not item1 and not item2:
-        is_match = True
-
-    return is_match
+    item1 = '' if item1 is None else str(item1)
+    item2 = '' if item2 is None else str(item2)
+    return compare_digest(item1, item2)
 
 
 # ------------------------------
@@ -202,6 +183,15 @@ def before_request():
     # allowed is set to False by default
     allowed = False
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
+    logging.debug("    before_request() - type(request.view_args): %s", type(request.view_args))
+
+    # For logging some debug info for actual page requests
+    if isinstance(request.view_args, dict) and ('filename' not in request.view_args):
+        logging.info("before_request() - request.url: %s", request.url)
+        logging.debug("    before_request() - request.path: %s", request.path)
+        logging.debug("    before_request() - request.url_rule: %s", request.url_rule)
+        logging.debug("    before_request() - request.view_args: %s", request.view_args)
+        logging.debug("    before_request() - request.routing_exception: %s", request.routing_exception)
 
     if allowed_hosts and __INTERNAL__ is False:
         if request.remote_addr:
@@ -221,7 +211,7 @@ def before_request():
                     else:
                         # host is written as CIDR suffix notation
                         # get all ip's from the given subnet
-                        allowed_network = ipaddress.ip_network(unicode(host))
+                        allowed_network = ipaddress.ip_network(str(host))
 
                         for ip in allowed_network:
                             ip = str(ip)
@@ -248,12 +238,17 @@ def before_request():
 @listener.after_request
 def apply_headers(response):
     allowed_sources = get_config_value('listener', 'allowed_sources')
+
     if allowed_sources:
         response.headers["X-Frame-Options"] = "ALLOW-FROM %s" % allowed_sources
         response.headers["Content-Security-Policy"] = "frame-ancestors %s" % allowed_sources
     else:
         response.headers["X-Frame-Options"] = "SAMEORIGIN"
         response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
+
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+
     return response
 
 
@@ -364,9 +359,8 @@ def requires_admin_auth(f):
 # ------------------------------
 
 
-@listener.route('/login', methods=['GET', 'POST'])
+@listener.route('/login', methods=['GET', 'POST'], provide_automatic_options = False)
 def login():
-
     # Verify authentication and redirect if we are authenticated
     if session.get('logged', False):
         return redirect(url_for('index'))
@@ -425,10 +419,9 @@ def login():
     return render_template('login.html', **template_args)
 
 
-@listener.route('/gui/admin/login', methods=['GET', 'POST'])
+@listener.route('/gui/admin/login', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
 def admin_login():
-
     # Verify authentication and redirect if we are authenticated
     if session.get('admin_logged', False):
         return redirect(url_for('admin'))
@@ -453,7 +446,7 @@ def admin_login():
     return render_template('admin/login.html', **template_args)
 
 
-@listener.route('/logout', methods=['GET', 'POST'])
+@listener.route('/logout', methods=['GET', 'POST'], provide_automatic_options = False)
 def logout():
     session.clear()
     session['message'] = 'Successfully logged out.'
@@ -486,13 +479,13 @@ def error_page_not_found(e):
 # ------------------------------
 
 
-@listener.route('/')
+@listener.route('/', provide_automatic_options = False)
 @requires_auth
 def index():
     return redirect(url_for('gui_index'))
 
 
-@listener.route('/gui/')
+@listener.route('/gui/', provide_automatic_options = False)
 @requires_auth
 def gui_index():
     info = make_info_dict()
@@ -502,7 +495,7 @@ def gui_index():
         logging.exception(e)
 
 
-@listener.route('/gui/checks')
+@listener.route('/gui/checks', provide_automatic_options = False)
 @requires_auth
 def checks():
     data = { 'filters': False, 'show_fp': False, 'show_lp': False }
@@ -590,19 +583,19 @@ def checks():
     return render_template('gui/checks.html', **data)
 
 
-@listener.route('/gui/stats', methods=['GET', 'POST'])
+@listener.route('/gui/stats', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
 def live_stats():
     return render_template('gui/stats.html')
 
 
-@listener.route('/gui/top', methods=['GET', 'POST'])
+@listener.route('/gui/top', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
 def top_base():
     return render_template('gui/top.html')
 
 
-@listener.route('/gui/tail', methods=['GET', 'POST'])
+@listener.route('/gui/tail', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
 def tail_base():
     return render_template('gui/tail.html')
@@ -610,13 +603,13 @@ def tail_base():
 
 # This function renders the graph picker page, which can be though of
 # the explorer for the graphs.
-@listener.route('/gui/graphs', methods=['GET', 'POST'])
+@listener.route('/gui/graphs', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
 def graph_picker():
     return render_template('gui/graphs.html')
 
 
-@listener.route('/gui/api', methods=['GET', 'POST'])
+@listener.route('/gui/api', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
 def view_api():
     info = make_info_dict()
@@ -624,7 +617,7 @@ def view_api():
 
 
 # Help section (just a frame for the actual help)
-@listener.route('/gui/help')
+@listener.route('/gui/help', provide_automatic_options = False)
 @requires_auth
 def help_section():
     return render_template('gui/help.html')
@@ -635,8 +628,8 @@ def help_section():
 # ------------------------------
 
 
-@listener.route('/gui/admin', methods=['GET', 'POST'])
-@listener.route('/gui/admin/', methods=['GET', 'POST'])
+@listener.route('/gui/admin', methods=['GET', 'POST'], provide_automatic_options = False)
+@listener.route('/gui/admin/', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin():
     tmp_args = {}
@@ -644,24 +637,19 @@ def admin():
     return render_template('admin/index.html', **tmp_args)
 
 
-@listener.route('/gui/admin/global', methods=['GET', 'POST'])
+@listener.route('/gui/admin/global', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_global():
-    exclude_fs_types = 'aufs,autofs,binfmt_misc,cifs,cgroup,configfs,\
-                        debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,\
-                        fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,\
-                        rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs'
-
-    tmp_args = { 'no_nav': True,
-                 'check_logging': int(get_config_value('general', 'check_logging', 1)),
-                 'check_logging_time': get_config_value('general', 'check_logging_time', 30),
-                 'all_partitions': int(get_config_value('general', 'all_partitions', 1)),
-                 'exclude_fs_types': get_config_value('general', 'exclude_fs_types', exclude_fs_types),
-                 'default_units': get_config_value('general', 'default_units', 'Gi') }
+    section = 'general'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    print("sectioncfg: ", sectioncfg)
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
 
     # Check session for flash message
     flash_msg_text = session.get('flash_msg_text', '')
-    if flash_msg_text is not '':
+    if flash_msg_text != '':
         flash_msg_type = session.get('flash_msg_type', 'info')
         tmp_args['flash_msg_text'] = flash_msg_text
         tmp_args['flash_msg_type'] = flash_msg_type
@@ -671,120 +659,104 @@ def admin_global():
     return render_template('admin/global.html', **tmp_args)
 
 
-@listener.route('/gui/admin/listener', methods=['GET', 'POST'])
+@listener.route('/gui/admin/listener', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_listener_config():
-    tmp_args = { 'no_nav': True,
-                 'ip': get_config_value('listener', 'ip', '::'),
-                 'port': get_config_value('listener', 'port', '5693'),
-                 'uid': get_config_value('listener', 'uid', 'nagios'),
-                 'gid': get_config_value('listener', 'gid', 'nagios'),
-                 'ssl_version': get_config_value('listener', 'ssl_version', 'TLSv1_2'),
-                 'certificate': get_config_value('listener', 'certificate', 'adhoc'),
-                 'pidfile': get_config_value('listener', 'pidfile', 'var/run/ncpa_listener.pid'),
-                 'loglevel': get_config_value('listener', 'loglevel', 'info'),
-                 'logfile': get_config_value('listener', 'logfile', 'var/log/ncpa_listener.log'),
-                 'logmaxmb': get_config_value('listener', 'logmaxmb', '5'),
-                 'logbackups': get_config_value('listener', 'logbackups', '5'),
-                 'admin_gui_access': int(get_config_value('listener', 'admin_gui_access', 1)),
-                 'admin_auth_only': int(get_config_value('listener', 'admin_auth_only', 0)),
-                 'delay_start': get_config_value('listener', 'delay_start', '0'),
-                 'allowed_hosts': get_config_value('listener', 'allowed_hosts', 'All'),
-                 'allowed_sources': get_config_value('listener', 'allowed_sources', 'None'),
-                 'max_connections': get_config_value('listener', 'max_connections', '200') }
+    section = 'listener'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
 
     # Todo: add form actions when submitted
 
     return render_template('admin/listener.html', **tmp_args)
 
 
-@listener.route('/gui/admin/api', methods=['GET', 'POST'])
+@listener.route('/gui/admin/api', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_api_config():
-    tmp_args = { 'no_nav': True,
-                 'community_string': get_config_value('api', 'community_string', 'mytoken') }
+    section = 'api'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
+    # tmp_args = { 'no_nav': True,
+    #              'community_string': get_config_value('api', 'community_string', 'mytoken') }
 
     return render_template('admin/api.html', **tmp_args)
 
 
-@listener.route('/gui/admin/passive', methods=['GET', 'POST'])
+@listener.route('/gui/admin/passive', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_passive_config():
-    handlers = get_config_value('passive', 'handlers', None)
-    if handlers is None:
-        handlers = []
-    tmp_args = { 'no_nav': True,
-                 'handlers': handlers,
-                 'uid': get_config_value('passive', 'uid', 'nagios'),
-                 'gid': get_config_value('passive', 'gid', 'nagios'),
-                 'sleep': get_config_value('passive', 'sleep', '300'),
-                 'pidfile': get_config_value('passive', 'pidfile', 'var/run/ncpa_listener.pid'),
-                 'loglevel': get_config_value('passive', 'loglevel', 'info'),
-                 'logfile': get_config_value('passive', 'logfile', 'var/log/ncpa_listener.log'),
-                 'logmaxmb': get_config_value('passive', 'logmaxmb', '5'),
-                 'logbackups': get_config_value('passive', 'logbackups', '5'),
-                 'delay_start': get_config_value('passive', 'delay_start', '0') }
+    section = 'passive'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
+
+    if tmp_args['sectioncfg']['handlers'] is None:
+        tmp_args['sectioncfg']['handlers'] = []
 
     # Todo: add form actions when submitted
 
     return render_template('admin/passive.html', **tmp_args)
 
 
-@listener.route('/gui/admin/nrdp', methods=['GET', 'POST'])
+@listener.route('/gui/admin/nrdp', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_nrdp_config():
+    section = 'nrdp'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
+
     handlers = get_config_value('passive', 'handlers', None)
     if handlers is None:
         handlers = []
-    tmp_args = { 'no_nav': True,
-                 'handlers': handlers,
-                 'nrdp_url': get_config_value('nrdp', 'parent', ''),
-                 'nrdp_token': get_config_value('nrdp', 'token', ''),
-                 'hostname': get_config_value('nrdp', 'hostname', 'NCPA') }
+    tmp_args['handlers'] = handlers
+
     return render_template('admin/nrdp.html', **tmp_args)
 
 
-@listener.route('/gui/admin/nrds', methods=['GET', 'POST'])
-@requires_admin_auth
-def admin_nrds_config():
-    tmp_args = { 'no_nav': True,
-                 'nrds_url': get_config_value('nrds', 'url', ''),
-                 'nrds_token': get_config_value('nrds', 'token', ''),
-                 'config_name': get_config_value('nrds', 'config_name', ''),
-                 'config_version': get_config_value('nrds', 'config_version', ''),
-                 'update_config': int(get_config_value('nrds', 'update_config', '1')),
-                 'update_plugins': int(get_config_value('nrds', 'update_plugins', '1')) }
-    return render_template('admin/nrds.html', **tmp_args)
-
-
-@listener.route('/gui/admin/kafkaproducer', methods=['GET', 'POST'])
+@listener.route('/gui/admin/kafkaproducer', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_kafkaproducer_config():
-    tmp_args = { 'no_nav': True,
-                 'hostname': get_config_value('kafkaproducer', 'hostname', ''),
-                 'servers': get_config_value('kafkaproducer', 'servers', ''),
-                 'client_name': get_config_value('kafkaproducer', 'client_name', 'NCPA-Kafka'),
-                 'topic': get_config_value('kafkaproducer', 'topic', 'ncpa') }
+    section = 'kafkaproducer'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = { 'no_nav': True }
+    tmp_args['sectioncfg'] = sectioncfg
+    handlers = get_config_value('passive', 'handlers', None)
+
+    if handlers is None:
+        handlers = []
+    tmp_args['handlers'] = handlers
+
     return render_template('admin/kafkaproducer.html', **tmp_args)
 
 
-@listener.route('/gui/admin/plugin-directives', methods=['GET', 'POST'])
+@listener.route('/gui/admin/plugin-directives', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_plugin_config():
+    section = 'plugin directives'
+    config = listener.config['iconfig']
+    sectioncfg = dict(config.items(section, 1))
+    tmp_args = {}
+    tmp_args['sectioncfg'] = sectioncfg
+
     try:
         directives = [x for x in get_config_items('plugin directives') if x[0] not in listener.config['iconfig'].defaults()]
     except Exception as e:
         directives = []
-    tmp_args = { 'no_nav': True,
-                 'plugin_path': get_config_value('plugin directives', 'plugin_path', 'plugins/'),
-                 'plugin_timeout': get_config_value('plugin directives', 'plugin_timeout', '60'),
-                 'follow_symlinks': int(get_config_value('plugin directives', 'follow_symlinks', '0')),
-                 'run_with_sudo': get_config_value('plugin directives', 'run_with_sudo', ''),
-                 'directives': directives }
+    tmp_args['directives'] = directives
+
     return render_template('admin/plugins.html', **tmp_args)
 
 
-@listener.route('/gui/admin/passive-checks', methods=['GET', 'POST'])
+@listener.route('/gui/admin/passive-checks', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_checks_config():
     try:
@@ -797,7 +769,7 @@ def admin_checks_config():
 
 
 # Page that removes all checks from the DB
-@listener.route('/gui/admin/clear-check-log', methods=['GET', 'POST'])
+@listener.route('/gui/admin/clear-check-log', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 def admin_clear_check_log():
     db = database.DB()
@@ -812,9 +784,10 @@ def admin_clear_check_log():
 # ------------------------------
 
 
-@listener.route('/ws/api/<path:accessor>')
+@listener.route('/ws/api/<path:accessor>', websocket=True)
 @requires_token_or_auth
 def api_websocket(accessor=None):
+    logging.debug("api_websocket()")
     """Meant for use with the websocket and API.
 
     Make a connection to this function, and then pass it the API
@@ -824,6 +797,7 @@ def api_websocket(accessor=None):
     """
     sane_args = dict(request.args)
     sane_args['accessor'] = accessor
+    logging.debug("api_websocket() - sane_args: %s: ", sane_args)
 
     config = listener.config['iconfig']
 
@@ -836,33 +810,46 @@ def api_websocket(accessor=None):
 
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
-        while True:
+        logging.info("===== api_websocket() - websocket for %s listening...", accessor)
+
+        while not ws.closed:
+            logging.debug("    **** api_websocket() - while open...")
             try:
                 message = ws.receive()
-                node = psapi.getter(message, config, request.path, request.args)
-                prop = node.name
-                val = node.walk(first=True, **sane_args)
-                jval = json.dumps(val[prop], encoding=encoding)
-                ws.send(jval)
+                if message:
+                    logging.debug("        api_websocket - message: %s", message)
+                    node = psapi.getter(message, config, request.path, request.args)
+                    logging.debug("        api_websocket - node: %s", node)
+                    prop = node.name
+                    logging.debug("        api_websocket - prop: %s", prop)
+                    val = node.walk(first=True, **sane_args)
+                    logging.debug("        api_websocket - val: %s", val)
+                    jval = json.dumps(val[prop])
+                    logging.debug("        api_websocket - jval: %s", jval)
+                    ws.send(jval)
             except Exception as e:
                 # Socket was probably closed by the browser changing pages
-                logging.debug(e)
+                logging.warning("api_websocket() Exception: %s", e)
                 ws.close()
                 break
+        else:
+            logging.info("===== api_websocket() - websocket for %s closed.", accessor)
+
+    else:
+        logging.warning("api_websocket() - NO request.environ.wsgi.websocket")
+
     return ''
 
 
-@listener.route('/ws/top')
+@listener.route('/ws/top', websocket=True)
 @requires_token_or_auth
 def top_websocket():
-
-    encoding = sys.stdin.encoding
-    if encoding is None:
-        encoding = sys.getdefaultencoding()
-
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
-        while True:
+        logging.info("===== top_websocket() - websocket listening...")
+
+        while not ws.closed:
+            logging.debug("    **** top_websocket() - while open...")
             load = psutil.cpu_percent()
             vir_mem = psutil.virtual_memory().percent
             swap_mem = psutil.swap_memory().percent
@@ -877,44 +864,48 @@ def top_websocket():
                 process_list.append(process)
 
 
-            json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list},
-                                  encoding=encoding)
+            json_val = json.dumps({'load': load, 'vir': vir_mem, 'swap': swap_mem, 'process': process_list})
 
             try:
                 ws.send(json_val)
                 gevent.sleep(1)
             except Exception as e:
                 # Socket was probably closed by the browser changing pages
-                logging.debug(e)
+                logging.warning("top_websocket Exception: %s", e)
                 ws.close()
                 break
+        else:
+            logging.info("===== top_websocket() - websocket closed.")
+
     return ''
 
 
-@listener.route('/ws/tail')
+@listener.route('/ws/tail', websocket=True)
 @requires_token_or_auth
 def tail_websocket():
-
-    encoding = sys.stdin.encoding
-    if encoding is None:
-        encoding = sys.getdefaultencoding()
+    import listener.windowslogs
 
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
-        last_ts = datetime.datetime.now()
-        while True:
-            try:
-                last_ts, logs = listener.tail_method(last_ts=last_ts, **request.args)
+        logging.info("===== top_websocket() - websocket listening...")
 
-                if logs:
-                    json_log = json.dumps(logs, encoding=encoding)
-                    ws.send(json_log)
+        last_ts = datetime.datetime.now()
+        while not ws.closed:
+            logging.debug("    **** tail_websocket() - while open...")
+            try:
+                last_ts, logs = listener.windowslogs.tail_method(last_ts=last_ts, **request.args)
+
+                json_val = json.dumps(logs)
+                ws.send(json_val)
 
                 gevent.sleep(5)
             except Exception as e:
-                logging.debug(e)
+                logging.warning("tail_websocket Exception: %s", e)
                 ws.close()
                 break
+        else:
+            logging.info("===== tail_websocket() - websocket closed.")
+
     return ''
 
 
@@ -923,7 +914,7 @@ def tail_websocket():
 # ------------------------------
 
 
-@listener.route('/top')
+@listener.route('/top', provide_automatic_options = False)
 @requires_auth
 def top():
     display = request.values.get('display', 0)
@@ -955,18 +946,18 @@ def top():
     return render_template('top.html', **info)
 
 
-@listener.route('/tail')
+@listener.route('/tail', provide_automatic_options = False)
 @requires_token_or_auth
 def tail(accessor=None):
     info = { }
 
     query_string = request.query_string
-    info['query_string'] = urllib.quote(query_string)
+    info['query_string'] = urllib.parse.quote(query_string)
 
     return render_template('tail.html', **info)
 
 
-@listener.route('/graph/<path:accessor>', methods=['GET', 'POST'])
+@listener.route('/graph/<path:accessor>', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_token_or_auth
 def graph(accessor=None):
     """
@@ -994,9 +985,9 @@ def graph(accessor=None):
 
     info['graph_prop'] = prop
     query_string = request.query_string
-    info['query_string'] = urllib.quote(query_string)
+    info['query_string'] = urllib.parse.quote(query_string)
 
-    url = urlparse.urlparse(request.url)
+    url = urllib.parse.urlparse(request.url)
     info['load_from'] = url.scheme + '://' + url.netloc
     info['load_websocket'] = url.netloc
 
@@ -1012,15 +1003,15 @@ def graph(accessor=None):
 # ------------------------------
 
 
-@listener.route('/error/')
-@listener.route('/error/<msg>')
+@listener.route('/error/', provide_automatic_options = False)
+@listener.route('/error/<msg>', provide_automatic_options = False)
 def error(msg=None):
     if not msg:
         msg = 'Error occurred during processing request.'
     return jsonify(error=msg)
 
 
-@listener.route('/testconnect/', methods=['GET', 'POST'])
+@listener.route('/testconnect/', methods=['GET', 'POST'], provide_automatic_options = False)
 def testconnect():
     """
     Method meant for testing connecting with monitoring applications and wizards.
@@ -1035,7 +1026,7 @@ def testconnect():
         return jsonify({'value': 'Success.'})
 
 
-@listener.route('/nrdp/', methods=['GET', 'POST'])
+@listener.route('/nrdp/', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_token_or_auth
 def nrdp():
     """
@@ -1057,7 +1048,7 @@ def nrdp():
         return resp
     except Exception as exc:
         logging.exception(exc)
-        return error(msg=unicode(exc))
+        return error(msg=exc)
 
 
 # ------------------------------
@@ -1065,8 +1056,8 @@ def nrdp():
 # ------------------------------
 
 
-@listener.route('/api/', methods=['GET', 'POST'])
-@listener.route('/api/<path:accessor>', methods=['GET', 'POST'])
+@listener.route('/api/', methods=['GET', 'POST'], provide_automatic_options = False)
+@listener.route('/api/<path:accessor>', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_token_or_auth
 def api(accessor=''):
     """
@@ -1074,7 +1065,6 @@ def api(accessor=''):
     retrieve the metric and do the necessary walking of the tree.
 
     :param accessor: The path/to/the/desired/metric
-    :type accessor: unicode
     :rtype: flask.Response
     """
 
@@ -1089,7 +1079,7 @@ def api(accessor=''):
     full_path = request.path
 
     # Set the accessor and variables
-    sane_args['debug'] = request.args.get('debug', False)
+    sane_args['debug'] = request.args.get('debug', True)
     sane_args['remote_addr'] = request.remote_addr
     sane_args['accessor'] = accessor
 
@@ -1123,7 +1113,6 @@ def api(accessor=''):
         value = node.walk(**sane_args)
 
     # Generate page and add cross-domain loading
-    json_data = json.dumps(dict(value), ensure_ascii=False, indent=None if request.is_xhr else 4)
-    response = Response(json_data, mimetype='application/json')
+    response = Response(json.dumps(dict(value), ensure_ascii=False), mimetype='application/json')
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response

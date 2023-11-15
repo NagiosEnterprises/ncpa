@@ -1,10 +1,7 @@
-
-from __future__ import with_statement
-
-import logging
-import nagioshandler
+from ncpa import passive_logger as logging
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
+import passive.nagioshandler
 import listener.server
 import json
 
@@ -19,7 +16,7 @@ class KafkaTopicItem:
         self.output = ""
 
 
-class Handler(nagioshandler.NagiosHandler):
+class Handler(passive.nagioshandler.NagiosHandler):
     """
     Class for handling the passive KAFKA component.
     """
@@ -44,9 +41,9 @@ class Handler(nagioshandler.NagiosHandler):
         else:
             check_type = 'service'
         item = KafkaTopicItem()
-        item.hostname = unicode(check.hostname)
-        item.state = unicode(returncode)
-        item.output = unicode(stdout)
+        item.hostname = check.hostname
+        item.state = returncode
+        item.output = stdout
         item.check_type = check_type
         if not check_type == 'host':
             item.servicename = check.servicename;
@@ -89,15 +86,22 @@ class Handler(nagioshandler.NagiosHandler):
                 itemlist.append(item)
 
         if len(itemlist) > 0:
+            producer = None
             try:
                 logging.info('Connect to Kafka Server')
                 producer = KafkaProducer(bootstrap_servers=['{}'.format(self.str_kafakhosts)], client_id=self.str_client_id)
             except KafkaError:
-                logging.warn(
+                logging.warning(
                     'Problem to connect Kafka Server: {} with Topic: {} and Clientname {} '.format(self.str_kafakhosts,
                                                                                                    self.str_topic,
                                                                                                    self.str_client_id))
-            for item in itemlist:
-                producer.send(self.str_topic, key=str(item.hostname), value=json.dumps(self.format_for_kafka(self, item)))
+            if producer is None:
+                logging.warning(
+                    'No connection to Kafka Server: {} with Topic: {} and Clientname {} '.format(self.str_kafakhosts,
+                                                                                                    self.str_topic,
+                                                                                                    self.str_client_id))
+            else:
+                for item in itemlist:
+                    producer.send(self.str_topic, key=str(item.hostname), value=json.dumps(self.format_for_kafka(self, item)))
 
-            producer.flush()
+                producer.flush()

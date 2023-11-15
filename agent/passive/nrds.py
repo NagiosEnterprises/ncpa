@@ -1,17 +1,15 @@
-from __future__ import with_statement
 import sys
 import xml.etree.ElementTree as ET
-import listener.server
-import nagioshandler
-import utils
+import passive.nagioshandler
+import passive.utils
 import tempfile
 import re
-import logging
+from ncpa import passive_logger as logging
 import os
-import ConfigParser
+import configparser as cp
 
 
-class Handler(nagioshandler.NagiosHandler):
+class Handler(passive.nagioshandler.NagiosHandler):
     """
     Class for handling the passive NRDS component.
     """
@@ -30,7 +28,7 @@ class Handler(nagioshandler.NagiosHandler):
             nrds_config = self.config.get('nrds', 'config_name')
             nrds_config_version = self.config.get('nrds', 'config_version')
             nrds_token = self.config.get('nrds', 'token')
-        except (ConfigParser.NoOptionError, ConfigParser.NoSectionError) as exc:
+        except (cp.NoOptionError, cp.NoSectionError) as exc:
             logging.error("Encountered error while getting NRDS config values: %r", exc)
 
         # Make sure valid input was stated in the config, if not, error out and log it.
@@ -63,7 +61,7 @@ class Handler(nagioshandler.NagiosHandler):
         }
 
         # This plugin_abs_path should be absolute, as it is adjusted when the daemon runs.
-        url_request = utils.send_request(nrds_url, **getargs)
+        url_request = passive.utils.send_request(nrds_url, **getargs)
         plugin_abs_path = os.path.join(plugin_path, plugin)
 
         if plugin_abs_path != os.path.abspath(plugin_abs_path):
@@ -72,9 +70,10 @@ class Handler(nagioshandler.NagiosHandler):
         logging.debug("Downloading plugin to location: %s", plugin_abs_path)
 
         try:
-            with open(plugin_abs_path, 'wb') as plugin_file:
+            with open(plugin_abs_path, 'w') as plugin_file:
                 plugin_file.write(url_request)
-                os.chmod(plugin_abs_path, 0775)
+                if os.name != 'nt':
+                    os.chmod(plugin_abs_path, 775)
         except Exception as exc:
             logging.error('Could not write the plugin to %s: %r', plugin_abs_path, exc)
 
@@ -91,16 +90,15 @@ class Handler(nagioshandler.NagiosHandler):
             'token': nrds_token
         }
 
-        nrds_response = utils.send_request(nrds_url, **get_args)
+        nrds_response = passive.utils.send_request(nrds_url, **get_args)
 
         try:
-            with tempfile.TemporaryFile() as temp_config:
-                temp_config = tempfile.TemporaryFile()
+            with tempfile.TemporaryFile("w+") as temp_config:
                 temp_config.write(nrds_response)
                 temp_config.seek(0)
 
-                test_config = ConfigParser.ConfigParser()
-                test_config.readfp(temp_config)
+                test_config = cp.ConfigParser()
+                test_config.read_file(temp_config)
 
                 if not test_config.sections():
                     raise Exception('Config contained no NCPA directives, not writing.')
@@ -110,7 +108,7 @@ class Handler(nagioshandler.NagiosHandler):
 
         if nrds_response:
             try:
-                with open(self.config.file_path, 'wb') as new_config:
+                with open(self.config.file_path, 'w') as new_config:
                     new_config.write(nrds_response)
             except Exception as exc:
                 logging.error('Could not rewrite the config: %r', exc)
@@ -138,7 +136,7 @@ class Handler(nagioshandler.NagiosHandler):
 
         logging.debug('Connecting to NRDS server (%s)...', nrds_url)
 
-        url_request = utils.send_request(nrds_url, **get_args)
+        url_request = passive.utils.send_request(nrds_url, **get_args)
 
         response_xml = ET.fromstring(url_request)
         status_xml = response_xml.findall('./status')

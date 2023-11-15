@@ -1,0 +1,17 @@
+cx_Freeze
+cx_Logging
+psutil
+requests
+Jinja2
+flask
+werkzeug
+docutils
+pyOpenSSL
+gevent
+gevent-websocket
+cffi
+appdirs
+kafka-python
+packaging
+pywin32
+msvc-runtime

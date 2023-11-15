@@ -41,13 +41,25 @@ $(document).ready(function() {
                 <table class="table table-striped table-border" style="margin-bottom: 2rem;">
                     <thead>
                         <tr>
-                            <th class="description" colspan="2">Agent Information</th>
+                            <th class="description" colspan="2">NCPA Agent Information</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="width: 120px;">Version</td>
+                            <td style="width: 130px;">NCPA Version</td>
                             <td>{{ agent_version }}</td>
+                        </tr>
+                        <tr>
+                            <td>Bundled Python</td>
+                            <td>{{ python_version }}</td>
+                        </tr>
+                        <tr>
+                            <td>Bundled OpenSSL</td>
+                            <td>{{ ssl_version }}</td>
+                        </tr>
+                        <tr>
+                            <td>Bundled zlib</td>
+                            <td>{{ zlib_version }}</td>
                         </tr>
                         <tr>
                             <td>Agent Uptime</td>
@@ -63,7 +75,7 @@ $(document).ready(function() {
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="width: 120px;">Node Name</td>
+                            <td style="width: 130px;">Node Name</td>
                             <td>{{ node }}</td>
                         </tr>
                         <tr>

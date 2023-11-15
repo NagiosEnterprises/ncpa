@@ -49,11 +49,11 @@ $(document).ready(function() {
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Logging</label>
                         <div class="col-sm-6">
                             <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if check_logging %} active{% endif %}">
-                                    <input type="radio" name="check_logging" value="1" autocomplete="off"{% if check_logging %} checked{% endif %}> Enabled
+                                <label class="btn btn-sm btn-default{% if sectioncfg['check_logging'] %} active{% endif %}">
+                                    <input type="radio" name="check_logging" value="1" autocomplete="off"{% if sectioncfg['check_logging'] %} checked{% endif %}> Enabled
                                 </label>
-                                <label class="btn btn-sm btn-default{% if not check_logging %} active{% endif %}">
-                                    <input type="radio" name="check_logging" value="0" autocomplete="off"{% if not check_logging %} checked{% endif %}> Disabled
+                                <label class="btn btn-sm btn-default{% if not sectioncfg['check_logging'] %} active{% endif %}">
+                                    <input type="radio" name="check_logging" value="0" autocomplete="off"{% if not sectioncfg['check_logging'] %} checked{% endif %}> Disabled
                                 </label>
                             </div>
                             <span style="margin-left: 1.5rem;">
@@ -66,21 +66,78 @@ $(document).ready(function() {
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Log Retention</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="log_checks" value="{{ check_logging_time }}" readonly>
+                                <input type="text" class="form-control" name="log_checks" value="{{ sectioncfg['check_logging_time'] }}" readonly>
                                 <div class="input-group-addon">Days</div>
                             </div>
                         </div>
                     </div>
 
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Level</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <select class="form-control" name="loglevel">
+                                <option value="error"{% if sectioncfg['loglevel'] == 'error' %} selected{% endif %}>Error</option>
+                                <option value="warning"{% if sectioncfg['loglevel'] == 'warning' %} selected{% endif %}>Warning</option>
+                                <option value="info"{% if sectioncfg['loglevel'] == 'info' %} selected{% endif %}>Info</option>
+                                <option value="debug"{% if sectioncfg['loglevel'] == 'debug' %} selected{% endif %}>Debug</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Max MB</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="logmaxmb" value="{{ sectioncfg['logmaxmb'] }}" readonly>
+                                <div class="input-group-addon">MB</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Backups</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="logbackups" value="{{ sectioncfg['logbackups'] }}" readonly>
+                                <div class="input-group-addon">Days</div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">PID File</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                            <input type="text" class="form-control" name="pidfile" value="{{ sectioncfg['pidfile'] }}" readonly>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">User</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <input type="text" class="form-control" name="uid" value="{{ sectioncfg['uid'] }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Group</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <input type="text" class="form-control" name="gid" value="{{ sectioncfg['gid'] }}" readonly>
+                        </div>
+                    </div>
+
+
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">All Partitions</label>
                         <div class="col-sm-6">
                             <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if all_partitions %} active{% endif %}">
-                                    <input type="radio" name="all_partitions" value="1" autocomplete="off"{% if all_partitions %} checked{% endif %}> Enabled
+                                <label class="btn btn-sm btn-default{% if sectioncfg['all_partitions'] %} active{% endif %}">
+                                    <input type="radio" name="all_partitions" value="1" autocomplete="off"{% if sectioncfg['all_partitions'] %} checked{% endif %}> Enabled
                                 </label>
-                                <label class="btn btn-sm btn-default{% if not all_partitions %} active{% endif %}">
-                                    <input type="radio" name="all_partitions" value="0" autocomplete="off"{% if not all_partitions %} checked{% endif %}> Disabled
+                                <label class="btn btn-sm btn-default{% if not sectioncfg['all_partitions'] %} active{% endif %}">
+                                    <input type="radio" name="all_partitions" value="0" autocomplete="off"{% if not sectioncfg['all_partitions'] %} checked{% endif %}> Disabled
                                 </label>
                             </div>
                         </div>
@@ -90,14 +147,14 @@ $(document).ready(function() {
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Default Units</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <select class="form-control" name="default_units">
-                                <option value="k"{% if default_units == 'K' %} selected{% endif %}>k</option>
-                                <option value="Ki"{% if default_units == 'Ki' %} selected{% endif %}>Ki</option>
-                                <option value="M"{% if default_units == 'M' %} selected{% endif %}>M</option>
-                                <option value="Mi"{% if default_units == 'Mi' %} selected{% endif %}>Mi</option>
-                                <option value="G"{% if default_units == 'G' %} selected{% endif %}>G</option>
-                                <option value="Gi"{% if default_units == 'Gi' %} selected{% endif %}>Gi</option>
-                                <option value="T"{% if default_units == 'T' %} selected{% endif %}>T</option>
-                                <option value="Ti"{% if default_units == 'Ti' %} selected{% endif %}>Ti</option>
+                                <option value="k"{% if sectioncfg['default_units'] == 'K' %} selected{% endif %}>k</option>
+                                <option value="Ki"{% if sectioncfg['default_units'] == 'Ki' %} selected{% endif %}>Ki</option>
+                                <option value="M"{% if sectioncfg['default_units'] == 'M' %} selected{% endif %}>M</option>
+                                <option value="Mi"{% if sectioncfg['default_units'] == 'Mi' %} selected{% endif %}>Mi</option>
+                                <option value="G"{% if sectioncfg['default_units'] == 'G' %} selected{% endif %}>G</option>
+                                <option value="Gi"{% if sectioncfg['default_units'] == 'Gi' %} selected{% endif %}>Gi</option>
+                                <option value="T"{% if sectioncfg['default_units'] == 'T' %} selected{% endif %}>T</option>
+                                <option value="Ti"{% if sectioncfg['default_units'] == 'Ti' %} selected{% endif %}>Ti</option>
                             </select>
                         </div>
                     </div>
@@ -105,7 +162,7 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Exclude FS Types</label>
                         <div class="col-sm-6 col-md-4 col-lg-6 col-xl-9">
-                            <input type="text" class="form-control" style="display: inline-block; width: 100%;" name="exclude_fs_types" value="{{ exclude_fs_types }}" readonly>
+                            <input type="text" class="form-control" style="display: inline-block; width: 100%;" name="exclude_fs_types" value="{{ sectioncfg['exclude_fs_types'] }}" readonly>
                         </div>
                     </div>
 

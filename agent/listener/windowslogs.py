@@ -47,20 +47,22 @@ adaptation of the input Logged After specification.
 """
 
 import logging
-import nodes
 import datetime
 import win32evtlog
 import re
 import win32evtlogutil
 import win32con
 import pywintypes
-import database
+import listener.database as database
+import listener.server
 import time
-import server
-import ConfigParser
+import platform
 
 
-class WindowsLogsNode(nodes.LazyNode):
+class WindowsLogsNode(listener.nodes.LazyNode):
+
+    global stdLogs
+    stdLogs = ['Application','System','Security','Setup','Forwarded Events']
 
     def walk(self, *args, **kwargs):
         logtypes = get_logtypes(kwargs)
@@ -138,10 +140,11 @@ class WindowsLogsNode(nodes.LazyNode):
         for n in log_names:
             if n == 'Total Count':
                 continue
-            stdout += '\n%s Logs\nTime: Computer: Severity: Event ID: Source: Message\n-----------------------------------\n' % n
+            stdout += '\n%s Logs\nTime: Computer: Severity: Event ID: Source: Category: Message\n-------------------------------------------------------------\n' % n
             for log in logs[n]:
-                stdout += '%s: %s: %s: %s: %s: %s\n' % (log['time_generated'], log['computer_name'], log['severity'],
-                    log['event_id'], log['application'], log['message'].replace('\r\n', ''))
+                stdout += '%s: %s: %s: %s: %s: %s: %s\n' % (log['time_generated'], log['computer_name'], log['severity'],
+                    log['event_id'], log['application'], log['category'], log['message'].replace('\r\n', ''))
+
 
         # Get the check logging value
         try:
@@ -150,7 +153,7 @@ class WindowsLogsNode(nodes.LazyNode):
             check_logging = 1
 
         # Put check results in the check database
-        if not server.__INTERNAL__ and check_logging == 1:
+        if not listener.server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
             current_time = time.time()
             db.add_check(kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,
@@ -241,9 +244,13 @@ def get_filter_dict(request_args):
         elif key == 'message':
             fdict['Message'] = value
         elif key == 'severity':
-            fdict['EventType'] = [EVENT_TYPE.get(x, 'UNKNOWN') for x in value]
+            if str(request_args['name'][0]) in stdLogs:
+                #oldStyle severity"
+                fdict['EventType'] = [EVENT_TYPE.get(x, 'UNKNOWN') for x in value]
+            else:
+                fdict['EventType'] = [EVENT_TYPE_NEW.get(x, 'UNKNOWN') for x in value]
         elif key == 'logged_after':
-            if isinstance(value, (str, unicode)):
+            if isinstance(value, (str)):
                 logged_after = value
             else:
                 logged_after = value[0]
@@ -266,6 +273,21 @@ EVENT_TYPE = {win32con.EVENTLOG_AUDIT_FAILURE: 'AUDIT_FAILURE',
               'INFORMATION': win32con.EVENTLOG_INFORMATION_TYPE,
               'AUDIT_FAILURE': win32con.EVENTLOG_AUDIT_FAILURE,
               'AUDIT_SUCCESS': win32con.EVENTLOG_AUDIT_SUCCESS}
+
+
+EVENT_TYPE_NEW = {0: 'INFORMATION',
+              1: 'CRITICAL',
+              2: 'ERROR',
+              3: 'WARNING',
+              4: 'INFORMATION',
+              5: 'VERBOSE',
+              'INFORMATION': 0,
+              'CRITICAL': 1,
+              'ERROR': 2,
+              'WARNING': 3,
+              'INFORMATION': 4,
+              'VERBOSE': 5}
+
 
 
 def get_timedelta(offset, time_frame):
@@ -306,9 +328,127 @@ def datetime_from_event_date(evt_date):
     doesn't take care of this, but alas, here we are.
     """
     date_string = str(evt_date)
-    time_generated = datetime.datetime.strptime(date_string, '%m/%d/%y %H:%M:%S')
+    time_generated = datetime.datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
     return time_generated
 
+
+def parseEvt(result,event):
+    row = {}
+
+    time_value, time_variant = result[win32evtlog.EvtSystemTimeCreated]
+    if time_variant != win32evtlog.EvtVarTypeNull:
+        row['TimeCreated SystemTime'] = str(time_value)
+
+    computer_value, computer_variant = result[win32evtlog.EvtSystemComputer]
+    if computer_variant != win32evtlog.EvtVarTypeNull:
+        row['ComputerName'] = str(computer_value)
+
+    level_value, level_variant = result[win32evtlog.EvtSystemLevel]
+    if level_variant != win32evtlog.EvtVarTypeNull:
+        if level_value == 1:
+            lev="CRITICAL"
+        elif level_value == 2:
+            lev="ERROR"
+        elif level_value == 3:
+            lev="WARNING"
+        elif level_value == 4:
+            lev="INFORMATION"
+        elif level_value == 5:
+            lev="VERBOSE"
+        elif level_value == 0: #For Security Log
+            lev="INFORMATION"
+            level_value = 4
+        else:
+            lev="UNKNOWN"
+        row['EventType'] = level_value
+
+    task_value, task_variant = result[win32evtlog.EvtSystemTask]
+    if task_variant != win32evtlog.EvtVarTypeNull:
+        row['EventCategory'] = str(task_value)
+
+    evid_value,evid_variant = result[win32evtlog.EvtSystemEventID]
+    if evid_variant != win32evtlog.EvtVarTypeNull:
+        row['EventID'] = str(evid_value)
+
+    row['Message']=''
+    providername_value, providername_variant = result[win32evtlog.EvtSystemProviderName]
+    if providername_variant != win32evtlog.EvtVarTypeNull:
+        row['SourceName'] = str(providername_value)
+        message=''
+        try:
+            metadata = win32evtlog.EvtOpenPublisherMetadata(providername_value)
+        except Exception:
+            pass
+        else:
+            try:
+                message = win32evtlog.EvtFormatMessage(
+                    metadata, event, win32evtlog.EvtFormatMessageEvent
+                )
+            except Exception:
+                row['Message']=''
+                pass
+            else:
+                try:
+                    row['Message']=str(message)
+                except UnicodeEncodeError:
+                    # Obscure error when run under subprocess.Popen(), presumably due to
+                    # not knowing the correct encoding for the console.
+                    # > UnicodeEncodeError: \'charmap\' codec can\'t encode character \'\\u200e\' in position 57: character maps to <undefined>\r\n'
+                    # Can't reproduce when running manually, so it seems more a subprocess.Popen()
+                    # than ours:
+                    row['Message']=''
+                    logging.error(" Failed to decode:", repr(message))
+            try:
+                taskCategory = win32evtlog.EvtFormatMessage(
+                    metadata, event, win32evtlog.EvtFormatMessageTask
+                )
+            except Exception:
+                row['EventCategory']=str(task_value)
+                pass
+            else:
+                try:
+                    row['EventCategory']=str(taskCategory)
+                except UnicodeEncodeError:
+                    row['EventCategory']=str(task_value)
+                    logging.error(" Failed to decode:", repr(taskCategory))
+
+    return row
+
+
+def is_interestingAppSvc_event(row, filters):
+        for log_property in filters:
+            if log_property == 'logged_after':
+                continue
+            restrictions = filters[log_property]
+            for restriction in restrictions:
+                try:
+                    value = row[log_property]
+                except:
+                    value = None
+
+                # Special for Event ID
+                if log_property == 'EventID':
+                    value = str(value)
+                    list1 = str(restriction).split()
+                    if value not in list1:
+                        return False
+
+                # Look in message
+                if value is not None and log_property == 'Message':
+                    safe = row['Message']
+                    list1 = str(restriction).split('_')
+                    match = False
+                    for element in list1:
+                        if re.search(element, safe):
+                            match = True
+                    if not match:
+                        return False
+
+                # Do normal ==
+                if not value is None and log_property != 'EventID' and log_property != 'Message':
+                    if str(restriction) != str(value):
+                        return False
+        return True
 
 def is_interesting_event(event, name, filters):
     for log_property in filters:
@@ -319,22 +459,29 @@ def is_interesting_event(event, name, filters):
             value = getattr(event, log_property, None)
 
             # Special for Event ID
-            if log_property == "EventID":
+            if log_property == 'EventID':
                 value = str(value & 0x1FFFFFFF)
-                if str(restriction) != value:
+                list1 = str(restriction).split()
+                if value not in list1:
                     return False
 
             # Look in message
             if value is None and log_property == 'Message':
                 safe = win32evtlogutil.SafeFormatMessage(event, name)
-                if not re.search(restriction, safe):
+                list1 = str(restriction).split('_')
+                match = False
+                for element in list1:
+                    if re.search(element, safe):
+                        match = True
+                if not match:
                     return False
 
             # Do normal ==
-            if not value is None:
+            if not value is None and log_property != 'EventID':
                 if str(restriction) != str(value):
                     return False
     return True
+
 
 
 def normalize_event(event, name):
@@ -348,39 +495,110 @@ def normalize_event(event, name):
     safe_log['time_generated'] = str(event.TimeGenerated)
     return safe_log
 
+def normalize_xml_event(row, name):
+    safe_log = {}
+    safe_log['message'] = row['Message']
+    safe_log['event_id'] = row['EventID']
+    safe_log['computer_name'] = row['ComputerName']
+    if row['EventCategory'] != '':
+        safe_log['category'] = row['EventCategory']
+    else:
+        safe_log['category'] = 'None'
+    safe_log['severity'] = str(EVENT_TYPE_NEW.get(int(row['EventType']), 'UNKNOWN'))
+    safe_log['application'] = row['SourceName']
+    safe_log['utc_time_generated'] = row['TimeCreated SystemTime']
+
+    rDate=datetime.datetime.strptime(str(row['TimeCreated SystemTime']),'%m/%d/%y %H:%M:%S')
+    timeDiffSec=(datetime.datetime.utcnow() - datetime.datetime.now()).total_seconds()
+    timeLocal = str(rDate+datetime.timedelta(seconds=-timeDiffSec))
+    safe_log['time_generated'] = timeLocal
+    return safe_log
 
 def get_event_logs(server, name, filters):
-    handle = win32evtlog.OpenEventLog(server, name)
-    flags = win32evtlog.EVENTLOG_BACKWARDS_READ | win32evtlog.EVENTLOG_SEQUENTIAL_READ
-    logs = []
+    if name in stdLogs:
+        handle = win32evtlog.OpenEventLog(server, name)
+        flags = win32evtlog.EVENTLOG_BACKWARDS_READ | win32evtlog.EVENTLOG_SEQUENTIAL_READ
+        logs = []
 
-    try:
-        logged_after = filters['logged_after']
-        logged_after = datetime.datetime.now() - logged_after
-    except KeyError:
-        logged_after = datetime.datetime.now() - datetime.timedelta(days=1)
+        try:
+            logged_after = filters['logged_after']
+            logged_after = datetime.datetime.now() - logged_after
+        except KeyError:
+            logged_after = datetime.datetime.now() - datetime.timedelta(days=1)
 
-    try:
-        while True:
-            events = win32evtlog.ReadEventLog(handle, flags, 0)
-            if events:
-                for event in events:
-                    time_generated = datetime_from_event_date(event.TimeGenerated)
-                    if time_generated < logged_after:
-                        raise StopIteration
-                    elif is_interesting_event(event, name, filters):
-                        safe_log = normalize_event(event, name)
-                        logs.append(safe_log)
-            else:
-                raise StopIteration
-    except StopIteration:
-        pass
-    finally:
-        win32evtlog.CloseEventLog(handle)
+        try:
+            while True:
+                events = win32evtlog.ReadEventLog(handle, flags, 0)
+                if events:
+                    for event in events:
+                        time_generated = datetime_from_event_date(event.TimeGenerated)
+                        if time_generated < logged_after:
+                            raise StopIteration
+                        elif is_interesting_event(event, name, filters):
+                            safe_log = normalize_event(event, name)
+                            logs.append(safe_log)
+                else:
+                    raise StopIteration
+        except StopIteration:
+            pass
+        finally:
+            win32evtlog.CloseEventLog(handle)
+    else:
+        if not checkPlatform('6.1.7601'):
+            raise versionError('OS is too old for log:'+name) #system too old for non standard logs
+        pathLogs = 'C:\Windows\System32\winevt\Logs\\'
+        flags = win32evtlog.EvtQueryReverseDirection | win32evtlog.EvtQueryFilePath | win32evtlog.EvtQueryTolerateQueryErrors
+        handle = win32evtlog.EvtQuery(pathLogs + name +'.evtx',flags)
+        logs = []
+        try:
+            logged_after = filters['logged_after']
+            logged_after = datetime.datetime.utcnow() - logged_after
+        except KeyError:
+            logged_after = datetime.datetime.utcnow() - datetime.timedelta(days=1)
+        try:
+            while True:
+                events = win32evtlog.EvtNext(handle, 100)
+                context = win32evtlog.EvtCreateRenderContext(win32evtlog.EvtRenderContextSystem)
+                if events:
+                    for i, event in enumerate(events, 1):
+                        result = win32evtlog.EvtRender(
+                            event, win32evtlog.EvtRenderEventValues, Context=context
+                        )
+                        time_created_value, time_created_variant = result[
+                            win32evtlog.EvtSystemTimeCreated
+                        ]
+                        if time_created_variant == win32evtlog.EvtVarTypeNull:
+                            raise StopIteration
+                        temp_date=datetime.datetime.strptime(str(time_created_value),'%m/%d/%y %H:%M:%S')
+                        time_from_event=temp_date.strftime('%m/%d/%y %H:%M:%S')
+                        time_generated = datetime_from_event_date(time_from_event)
+                        if time_generated < logged_after:
+                            raise StopIteration
+                        else:
+                            row = parseEvt(result,event) #parse only if in timeframe
+                            if is_interestingAppSvc_event(row, filters):
+                                safe_log = normalize_xml_event(row, name)
+                                logs.append(safe_log)
+                else:
+                    raise StopIteration
+        except StopIteration:
+            pass
     return logs
 
 
+def checkPlatform(minRelease):
+    #minRelease = '6.1.7601'
+    minVersion = tuple(map(int,str(minRelease).split('.')))
+    sysVersion =tuple(map(int, str(platform.version()).split('.')))
+    if sysVersion < minVersion:
+        return False
+    return True
+
+class versionError(Exception):
+       pass
+
 def tail_method(last_ts, server=None, *args, **kwargs):
+
     filters = get_filter_dict(kwargs)
     filters['logged_after'] = datetime.timedelta(seconds=10)
     log_names = kwargs.get('name', None)
@@ -393,9 +611,13 @@ def tail_method(last_ts, server=None, *args, **kwargs):
     logs = get_event_logs(server, name, filters)
     newest_ts = last_ts
     non_dup_logs = []
+    timeDiffSec=(datetime.datetime.utcnow() - datetime.datetime.now()).total_seconds()
 
     for log in logs:
-        date_ts = datetime_from_event_date(log['time_generated'])
+        if name in stdLogs:
+            date_ts = datetime_from_event_date(log['time_generated'])
+        else:
+            date_ts = datetime_from_event_date(log['utc_time_generated'])+datetime.timedelta(seconds=-timeDiffSec)
         if date_ts > newest_ts:
             newest_ts = date_ts
         if date_ts > last_ts:

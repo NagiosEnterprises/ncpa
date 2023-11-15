@@ -1,44 +1,86 @@
 #!/bin/bash
 
-# Globals
-PYTHONVERSION="2.7.18"
-PYTHONTAR="Python-$PYTHONVERSION"
-PYTHONVER="python2.7"
-CXFREEZEVER="cx_Freeze-4.3.4"
+echo -e "***** linux/setup.sh"
+
+# Globals - defined in build.sh
+#     PYTHONVER, SSLVER, ZLIBVER
+
+# Make python command, e.g. python3.11
+PYTHONCMD="python$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')"
+echo -e "***** linux/setup.sh - PYTHONCMD: $PYTHONCMD"
+
+set +e
+PYTHONBIN=$(which $PYTHONCMD)
+set -e
 SKIP_PYTHON=0
 
 # Get information about system
 . $BUILD_DIR/linux/init.sh
 
-update_py_packages() {
-    PYTHONBIN=$(which python2.7)
-    resources="require.txt"
-    if [ "$dist" == "el6" ] || [ "$dist" == "el7" ] || [ "$dist" == "debian8" ]; then
-        resources="require.dep.txt"
-    fi
+# Load some installers and support functions
+. $BUILD_DIR/linux/installers.sh
 
-    LDFLAGS='-Wl,-rpath,\${ORIGIN} -Wl,-rpath,\${ORIGIN}/lib' $PYTHONBIN -m pip install -r $BUILD_DIR/resources/$resources --upgrade --no-binary :all:
-}
+## Current SSL major version, e.g. 3
+ssl_maj_ver=$(openssl version | egrep "[1-9].[0-9].[0-9]" | head -n1 | sed -e 's/^.*SSL \([0-9]*\)\..*/\1/')
 
 install_prereqs() {
-
+    echo -e "***** linux/setup.sh - install_prereqs()"
+    echo -e "***** linux/setup.sh - dist: $dist"
 
     # --------------------------
-    #  INSTALL SYSTEM REQS
+    #  INSTALL SYSTEM REQS - PACKAGES
     # --------------------------
-
 
     if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
+        echo -e "***** linux/setup.sh - install_prereqs() - Debian/Ubuntu"
 
-        apt-get install debian-builder rpm gcc g++ wget openssl libssl-dev libffi-dev sqlite3 libsqlite3-dev zlib1g-dev alien -y
+        # deb9 apt sources are no longer valid. This is solved by deb8 installer, but not deb9.
+        if [[ "$dist" == "debian9" ]]; then
+            mv /etc/apt/sources.list /etc/apt/sources.list.orig
+            echo "deb http://archive.debian.org/debian/ stretch  main contrib non-free" >> /etc/apt/sources.list
+            echo "deb http://security.debian.org/ stretch/updates main contrib non-free" >> /etc/apt/sources.list
+            cat /etc/apt/sources.list
+        fi
+
+        # If we are going to build and install SSL from source, no need to install it here
+        if [[ "$ssl_maj_ver" -lt 3 ]]; then
+            echo -e "***** linux/setup.sh - apt-get install with excluding SSL pkgs"
+            apt-get -y update
+            apt-get -y install gcc g++ debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien  --allow-unauthenticated
+        else
+            echo -e "***** linux/setup.sh - apt-get install with SSL pkgs"
+            apt-get -y update
+            apt-get -y install gcc g++ zlib1g-dev openssl libssl-dev debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien  --allow-unauthenticated
+        fi
 
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
+        echo -e "***** linux/setup.sh - install_prereqs() - CentOS/RHEL"
 
-        # epel not available for 32-bit
-        if [ "$arch" != "i686" ]; then
-            yum install epel-release -y
+        if [ "$dist" == "el7" ]; then
+            if [ -f /etc/yum.repos.d/epel.repo ]; then
+                echo -e "***** linux/setup.sh - fix yum.repos.d"
+                # epel repo metalinks aren't valid for early distros, so we use baseurls instead.
+                sed -i -e s/^#baseurl/baseurl/g -e s/^metalink/#metalink/g /etc/yum.repos.d/epel*
+            fi
+
+            yum -y install epel-release
+            if [ -f /etc/yum.repos.d/epel.repo ]; then
+                sed -i -e s/^#baseurl/baseurl/g -e s/^metalink/#metalink/g /etc/yum.repos.d/epel*
+            fi
+        else
+            if [ "$distro" == "CentOS" ]; then
+                yum -y install epel-release
+            fi
         fi
-        yum install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make -y
+
+        # If we are going to build and install SSL from source, no need to install it here
+        if [[ "$ssl_maj_ver" -lt 3 ]]; then
+            echo -e "***** linux/setup.sh - yum install excluding SSL pkgs"
+            yum -y install gcc gcc-c++ rpm-build libffi-devel sqlite sqlite-devel wget make
+        else
+            echo -e "***** linux/setup.sh - yum install with SSL pkgs"
+            yum -y install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make
+        fi
 
     elif [ "$distro" == "SUSE LINUX" ] || [ "$distro" == "SLES" ] || [ "$distro" == "OpenSUSE" ]; then
 
@@ -46,7 +88,15 @@ install_prereqs() {
         # available with the OS itself
         if [ "$dist" == "sles15" ] || [ "$dist" == "sles12" ] || [ "$distro" == "OpenSUSE" ]; then
 
-            zypper install gcc gcc-c++ zlib zlib-devel openssl libopenssl-devel sqlite3 sqlite3-devel libffi-devel rpm-build wget
+        if [[ "$ssl_maj_ver" -lt 3 ]]; then
+            echo -e "***** linux/setup.sh - apt-get install with excluding SSL pkgs"
+            zypper -n update
+            zypper -n install gcc gcc-c++ sqlite3 sqlite3-devel libffi-devel rpm-build wget
+        else
+            echo -e "***** linux/setup.sh - apt-get install with SSL pkgs"
+            zypper -n update
+            zypper -n install gcc gcc-c++ zlib zlib-devel openssl libopenssl-devel sqlite3 sqlite3-devel libffi-devel rpm-build wget
+        fi
 
         elif [ "$dist" == "sles11" ]; then
 
@@ -100,46 +150,32 @@ install_prereqs() {
     fi
 
 
-    # --------------------------
-    #  INSTALL SOURCE FILES
-    # --------------------------
+    # -----------------------------------------
+    #  INSTALL SYSTEM REQS - BUILD FROM SOURCE
+    # -----------------------------------------
 
-
-    cd $BUILD_DIR/resources
-
-    # Install bundled Python version from source
+    # Install Python version from source
     if [ $SKIP_PYTHON -eq 0 ]; then
-        if [ ! -f $PYTHONTAR.tgz ]; then
-            wget https://www.python.org/ftp/python/$PYTHONVERSION/$PYTHONTAR.tgz
-        fi
-        tar xf $PYTHONTAR.tgz
-        cd $PYTHONTAR
-        ./configure LDFLAGS='-Wl,-rpath,\$${ORIGIN} -Wl,-rpath,\$${ORIGIN}/lib' && make && make altinstall
-        cd ..
-        rm -rf $PYTHONTAR
-        PYTHONBIN=$(which python2.7)
 
-        # Link lib-dynload from lib64 to lib due to arch issues for Python 2.7
-        if [ "$dist" == "os15" ]; then
-            ln -s /usr/local/lib64/python2.7/lib-dynload/ /usr/local/lib/python2.7/lib-dynload
+        # First update OpenSSL if necessary
+        if [[ "$ssl_maj_ver" -lt 3 ]]; then
+            cd $BUILD_DIR/resources
+            install_ssl_and_zlib $SSLVER $ZLIBVER
+        else
+            echo -e "***** linux/setup.sh - OpenSSL version already greater than 3. Not changed."
         fi
+
+        echo -e "***** linux/setup.sh - Building python..."
+        cd $BUILD_DIR/resources
+        install_python $PYTHONVER
+        PYTHONBIN=$(which $PYTHONCMD)
+        echo -e "***** linux/setup.sh - after Py install PYTHONBIN: $PYTHONBIN"
+        export PATH=$PATH:$BUILD_DIR/bin
     fi
 
-    # Install the patched version of cx_Freeze
-    tar xf $CXFREEZEVER.tar.gz
-    cd $CXFREEZEVER
-    $PYTHONBIN setup.py install
-    cd ..
-    rm -rf $CXFREEZEVER
-
-
     # --------------------------
-    #  INSTALL PIP & PIP MODULES
+    #  INSTALL MODULES
     # --------------------------
-
-
-    # Install pip
-    cd /tmp && wget --no-check-certificate https://bootstrap.pypa.io/pip/2.7/get-pip.py && $PYTHONBIN /tmp/get-pip.py
 
     # Install modules
     update_py_packages
@@ -149,12 +185,12 @@ install_prereqs() {
     #  MISC ADDITIONS
     # --------------------------
 
-
-    set +e
-    useradd nagios
-    groupadd nagios
-    usermod -g nagios nagios
-    set -e
-
-
 }
+
+# This must be outside of install_prereqs(), so it will be executed during workflow build.
+echo -e "***** linux/setup.sh - add users/groups"
+set +e
+useradd nagios
+groupadd nagios
+usermod -g nagios nagios
+set -e

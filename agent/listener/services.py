@@ -1,19 +1,17 @@
-# -*- coding: utf-8 -*-
-
-import nodes
+import listener.nodes
 import platform
 import re
 import subprocess
 import tempfile
 import os
 import psutil
-import server
-import database
+import listener.server
+import listener.database as database
 import time
 import logging
-import Queue
 from stat import ST_MODE,S_IXUSR,S_IXGRP,S_IXOTH
 from threading import Timer
+
 
 def filter_services(m):
     def wrapper(*args, **kwargs):
@@ -51,7 +49,7 @@ def filter_services(m):
                     else:
                         if service in services:
                             accepted[service] = services[service]
-            
+
             # Match statuses
             if filter_statuses:
                 for service in services:
@@ -63,7 +61,7 @@ def filter_services(m):
     return wrapper
 
 
-class ServiceNode(nodes.LazyNode):
+class ServiceNode(listener.nodes.LazyNode):
 
     def get_service_method(self, *args, **kwargs):
         uname = platform.uname()[0]
@@ -97,7 +95,7 @@ class ServiceNode(nodes.LazyNode):
                     is_upstart = True
             except:
                 pass
-        
+
             if is_systemctl:
                 return self.get_services_via_systemctl
             elif is_upstart:
@@ -144,8 +142,9 @@ class ServiceNode(nodes.LazyNode):
         status.seek(0)
 
         for line in status.readlines():
+            line = line.decode()
             line.rstrip()
-            unit, load, active, sub, description = re.split('\s+', line, 4)
+            unit, load, active, sub, description = re.split(r'\s+', line, 4)
             if unit.endswith('.service'):
                 unit = unit[:-8]
             if 'not-found' not in load:
@@ -158,7 +157,7 @@ class ServiceNode(nodes.LazyNode):
     @filter_services
     def get_services_via_initctl(self, *args, **kwargs):
         services = {}
-        
+
         # Ubuntu & CentOS/RHEL 6 supports both sysv init and upstart
         services = self.get_services_via_initd(args, kwargs)
 
@@ -171,7 +170,7 @@ class ServiceNode(nodes.LazyNode):
         # Check to see if there are any services we need to add that
         # weren't already caught by the initd script check
         for line in status.readlines():
-            m = re.match("(.*) (?:\w*)/(\w*)(?:, .*)?", line)
+            m = re.match(r"(.*) (?:\w*)/(\w*)(?:, .*)?", line)
             try:
                 if m.group(1) not in services:
                     if m.group(2) == 'running':
@@ -240,7 +239,7 @@ class ServiceNode(nodes.LazyNode):
                     status = 'running'
 
             # Verify with 'service' if status is still stopped
-            if status == 'unknown': 
+            if status == 'unknown':
                 status = self.get_initd_service_status(service)
 
             services[service] = status
@@ -289,7 +288,7 @@ class ServiceNode(nodes.LazyNode):
 
             # Skip lrc items
             if 'lrc:/' in ls[1]:
-                continue 
+                continue
 
             sub = ls[1].replace('svc:/', '').replace('/', '|')
             status = ls[0]
@@ -392,7 +391,7 @@ class ServiceNode(nodes.LazyNode):
 
             stdout = self.make_stdout(returncode, stdout_builder)
         else:
-            returncode = 3   
+            returncode = 3
             stdout = "UNKNOWN: No services found for service names: %s" % ', '.join(filtered_services)
 
         # Get the check logging value
@@ -402,7 +401,7 @@ class ServiceNode(nodes.LazyNode):
             check_logging = 1
 
         # Put check results in the check database
-        if not server.__INTERNAL__ and check_logging == 1:
+        if not listener.server.__INTERNAL__ and check_logging == 1:
             db = database.DB()
             current_time = time.time()
             db.add_check(kwargs['accessor'].rstrip('/'), current_time, current_time, returncode,

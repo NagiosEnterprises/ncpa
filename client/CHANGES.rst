@@ -1,6 +1,11 @@
 Changelog
 +++++++++
 
+2.0.0
+-----
+- Added compatability for NCPA 1.x, 2.x, and 3.x
+- Added --sleep or -S variable for setting the sleep value for counters and certain endpoints 
+
 1.2.5
 -----
 - Changed the default timeout value from 60s to 58s (#761) (ccztux)

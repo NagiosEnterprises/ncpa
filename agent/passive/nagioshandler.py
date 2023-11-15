@@ -1,7 +1,6 @@
-import logging
 import platform
-import ncpacheck
-import ConfigParser
+import passive.ncpacheck
+from ncpa import passive_logger as logging
 
 
 class NagiosHandler(object):
@@ -17,7 +16,7 @@ class NagiosHandler(object):
     def __init__(self, config):
         """
         :param config: The config that will reaped for checks.
-        :type config: ConfigParser.ConfigParser
+        :type config: configparser.ConfigParser
         :rtype: None
         """
         self.config = config
@@ -54,7 +53,7 @@ class NagiosHandler(object):
             except ValueError:
                 logging.error("Cannot parse passive directive for %s, name malformed, skipping.", name_blob)
                 continue
-            ncpa_commands.append(ncpacheck.NCPACheck(self.config, instruction, hostname, servicename, duration))
+            ncpa_commands.append(passive.ncpacheck.NCPACheck(self.config, instruction, hostname, servicename, duration))
 
         return ncpa_commands
 

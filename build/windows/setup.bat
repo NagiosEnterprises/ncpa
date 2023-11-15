@@ -24,19 +24,13 @@ if ERRORLEVEL 1 (
   exit /B 1
 )
 
-for /f "delims=" %%F in ('where python') do set pydir=%%~dpF
-if not exist %PYDIR%\Lib\site-packages\cx_Freeze (
-  echo cx_Freeze isn't in your python install, install cx_Freeze 4.3.4
-  exit /B 1
-)
-
 where pip > nul:
 if ERRORLEVEL 1 (
   echo pip isn't in your path, fix your path or install pip from https://bootstrap.pypa.io/get-pip.py
   exit /B 1
 )
 
-pip install pypiwin32 psutil requests Jinja2 flask werkzeug docutils pyOpenSSL gevent cffi appdirs packaging kafka
+pip install pypiwin32 cx_Freeze psutil requests flask pyOpenSSL gevent gevent-websocket
 
 echo to build ncpa:
 echo python build\build_windows.py

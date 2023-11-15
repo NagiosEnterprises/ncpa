@@ -2,16 +2,16 @@ import platform
 
 puname = platform.uname()[0]
 
-if puname == u'Windows':
-    SYSTEM = u'Windows'
-elif puname == u'Darwin':
-    SYSTEM = u'Darwin'
+if puname == 'Windows':
+    SYSTEM = 'Windows'
+elif puname == 'Darwin':
+    SYSTEM = 'Darwin'
 else:
-    SYSTEM = u'Linux'
+    SYSTEM = 'Linux'
 
-if puname == u'Windows':
-    SERVICE_TYPE = u'Windows'
-elif puname == u'Darwin':
-    SERVICE_TYPE = u'Darwin'
+if puname == 'Windows':
+    SERVICE_TYPE = 'Windows'
+elif puname == 'Darwin':
+    SERVICE_TYPE = 'Darwin'
 else:
-    SERVICE_TYPE = u'Initd'
+    SERVICE_TYPE = 'Initd'

@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
-
-import logging
 import json
 import urllib
-import urlparse
 import time
 import hashlib
 import listener.server
-import listener.database
+import listener.database as database
+from ncpa import passive_logger as logging
 
-# Constants to keep track of the passive check runs 
+
+# Constants to keep track of the passive check runs
 NEXT_RUN = { }
+
 
 class NCPACheck(object):
     """
@@ -34,7 +33,8 @@ class NCPACheck(object):
         self.duration = float(duration)
 
         # Set the next run for this specific check
-        key = hashlib.sha256(self.hostname + self.servicename).hexdigest()
+        obj = (self.hostname + self.servicename).encode('utf-8')
+        key = hashlib.sha256(obj).hexdigest()
         if not key in NEXT_RUN:
             NEXT_RUN[key] = 0
 
@@ -84,6 +84,10 @@ class NCPACheck(object):
             raise ValueError("Stdout or returncode was None, cannot return "
                              "meaningfully.")
 
+        # Save returned check results to the DB if we don't error out
+        db = database.DB()
+        dbc = db.get_cursor()
+
         # Get some info about the check
         current_time = time.time()
         accessor = api_url.replace('/api/', '').rstrip('/')
@@ -108,7 +112,7 @@ class NCPACheck(object):
                  check
         :rtype: str
         """
-        query = urllib.urlencode(api_args)
+        query = urllib.parse.urlencode(api_args)
         complete_api_url = "{}?{}".format(api_url, query)
 
         logging.debug("Access the API with %s", complete_api_url)
@@ -127,9 +131,9 @@ class NCPACheck(object):
 
     def needs_to_run(self):
         """
-        Check if we need to run the check again, or if it was ran within it's duration
+        Check if we need to run the check again, or if it was run within it's duration
         """
-        key = hashlib.sha256(self.hostname + self.servicename).hexdigest()
+        key = hashlib.sha256((self.hostname + self.servicename).encode('utf-8')).hexdigest()
         nrun = NEXT_RUN[key]
 
         logging.debug('Next run set to be at %s', nrun)
@@ -141,7 +145,7 @@ class NCPACheck(object):
         """
         Set next run time to the duration given or the default duration set in ncpa.cfg
         """
-        key = hashlib.sha256(self.hostname + self.servicename).hexdigest()
+        key = hashlib.sha256((self.hostname + self.servicename).encode('utf-8')).hexdigest()
 
         NEXT_RUN[key] = run_time + self.duration
         logging.debug('Next run is %s', NEXT_RUN[key])
@@ -163,7 +167,7 @@ class NCPACheck(object):
         try:
             response_dict = json.loads(response)
             stdout = response_dict['stdout']
-            returncode = unicode(response_dict['returncode'])
+            returncode = response_dict['returncode']
         except ValueError as exc:
             logging.error("Error with JSON: %s. JSON was: %s", str(exc), response)
         except TypeError as exc:
@@ -256,13 +260,13 @@ class NCPACheck(object):
 
     @staticmethod
     def parse_api_url_style_instruction(instruction):
-        parse = urlparse.urlparse(instruction)
+        parse = urllib.parse.urlparse(instruction)
 
         api_url = parse.path
         api_args = []
 
         # Parse arguments for URL
-        args = urlparse.parse_qs(parse.query).items()
+        args = urllib.parse.parse_qs(parse.query).items()
         for x, v in args:
             if len(v) == 1:
                 api_args.append((x, v[0]))

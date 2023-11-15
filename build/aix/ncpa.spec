@@ -45,8 +45,7 @@ if [ "$1" == "1" ]; then
     fi
 elif [ "$1" = "2" ]; then
     # Upgrades require the daemons to be stopped
-    stopsrc -s ncpa_listener -f >/dev/null 2>&1
-    stopsrc -s ncpa_passive -f >/dev/null 2>&1
+    stopsrc -s ncpa -f >/dev/null 2>&1
     sleep 2
 fi
 
@@ -57,20 +56,16 @@ fi
 
 # Install/update SRC and add entries into inittab and remove blank files on install
 if [ "$1" == "1" ]; then
-    mkssys -s ncpa_listener -p $RPM_INSTALL_PREFIX/ncpa/ncpa_listener -u 0 -S -n 15 -f 9 >/dev/null 2>&1
-    mkssys -s ncpa_passive -p $RPM_INSTALL_PREFIX/ncpa/ncpa_passive -u 0 -S -n 15 -f 9 >/dev/null 2>&1
+    mkssys -s ncpa -p $RPM_INSTALL_PREFIX/ncpa/ncpa -u 0 -S -n 15 -f 9 >/dev/null 2>&1
 
-    mkitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
-    mkitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
+    mkitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
     rm -rf $RPM_INSTALL_PREFIX/ncpa/var/ncpa.*
 elif [ "$1" == "2" ]; then
-    chitab "ncpa_listener:2:once:/usr/bin/startsrc -s ncpa_listener >/dev/null 2>&1"
-    chitab "ncpa_passive:2:once:/usr/bin/startsrc -s ncpa_passive >/dev/null 2>&1"
+    chitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
 fi
 
 # Start the daemons using SRC
-startsrc -s ncpa_listener >/dev/null 2>&1
-startsrc -s ncpa_passive >/dev/null 2>&1
+startsrc -s ncpa >/dev/null 2>&1
 
 %preun
 if [ -z $RPM_INSTALL_PREFIX ]; then
@@ -79,36 +74,23 @@ fi
 
 # Only stop on actual uninstall not upgrades
 if [ "$1" != "1" ]; then
-    stopsrc -s ncpa_listener >/dev/null 2>&1
-    stopsrc -s ncpa_passive >/dev/null 2>&1
+    stopsrc -s ncpa >/dev/null 2>&1
 
     # Make sure listener is stopped
-    stopped=`lssrc -s ncpa_listener | sed -n '$p' | awk '{print $NF}'`
+    stopped=`lssrc -s ncpa | sed -n '$p' | awk '{print $NF}'`
     while [[ "$stopped" != "inoperative" ]]; do
         sleep 3
-        stopped=`lssrc -s ncpa_listener | sed -n '$p' | awk '{print $NF}'`
-        if [ "$stopped" == "file." ]; then
-            break
-        fi
-    done
-
-    # Make sure passive is stopped
-    stopped=`lssrc -s ncpa_passive | sed -n '$p' | awk '{print $NF}'`
-    while [[ "$stopped" != "inoperative" ]]; do
-        sleep 3
-        stopped=`lssrc -s ncpa_passive | sed -n '$p' | awk '{print $NF}'`
+        stopped=`lssrc -s ncpa | sed -n '$p' | awk '{print $NF}'`
         if [ "$stopped" == "file." ]; then
             break
         fi
     done
     
     # Remove from inittab
-    rmitab "ncpa_listener"
-    rmitab "ncpa_passive"
+    rmitab "ncpa"
 
     # Remove from SRC
-    rmssys -s ncpa_listener >/dev/null 2>&1
-    rmssys -s ncpa_passive >/dev/null 2>&1
+    rmssys -s ncpa >/dev/null 2>&1
     
     # Remove key, certs, and db
     rm -f $RPM_INSTALL_PREFIX/ncpa/var/ncpa.key
@@ -119,8 +101,7 @@ fi
 %files
 %defattr(0755,root,root,0755)
 %dir /usr/local/ncpa
-/usr/local/ncpa/ncpa_listener
-/usr/local/ncpa/ncpa_passive
+/usr/local/ncpa/ncpa
 
 %defattr(0755,root,root,0755)
 /usr/local/ncpa/*.so*

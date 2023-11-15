@@ -8,12 +8,12 @@ $(document).ready(function() {
 
     var get_ws_address = function() {
         var loc = window.location;
-        if(loc.protocol === 'https:') {
+        if (loc.protocol === 'https:') {
             var ws_proto = 'wss';
         } else {
             var ws_proto = 'ws';
         }
-        var ws_loc = ws_proto + '://' + loc.hostname + ':5693/ws/tail';
+        var ws_loc = ws_proto + '://' + loc.hostname + ':' + loc.port + '/ws/tail';
         return ws_loc;
     }
 
@@ -23,7 +23,12 @@ $(document).ready(function() {
     }
 
     var get_ws_total = function() {
-        return get_ws_address() + '?' + get_ws_args();
+        var ws_address = get_ws_address();
+        var ws_args = get_ws_args();
+        if (ws_args) {
+            ws_address += '?' + ws_args;
+        }
+        return ws_address;
     }
 
     var add_log = function(log) {

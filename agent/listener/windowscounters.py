@@ -1,15 +1,13 @@
 #!/usr/bin/env python
 
-import nodes
+import listener.nodes
 import win32pdh
 import time
 import logging
 import copy
 import re
-from urllib import unquote
 
-
-class WindowsCountersNode(nodes.LazyNode):
+class WindowsCountersNode(listener.nodes.LazyNode):
 
     def accessor(self, path, config, full_path, args):
         new_node = copy.deepcopy(self)
@@ -113,7 +111,7 @@ class WindowsCountersNode(nodes.LazyNode):
 
         unit = info[-1]
 
-        if not isinstance(value, (int, long)):
+        if not isinstance(value, int):
             value = round(value, 2)
 
         return [value, unit]

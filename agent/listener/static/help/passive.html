@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
         <link rel="stylesheet" href="../css/ncpa.css" type="text/css" />
-        <script src='../js/jquery.3.5.1.min.js'></script>
+        <script src='../js/jquery.3.6.4.min.js'></script>
         <script src='../js/bootstrap.min.js'></script>
         <script src='../js/help.js'></script>
     </head>
@@ -18,21 +18,16 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12 col-lg-10">
-      
+
                 <h1>Passive Checks</h1>
-                <p>Telling NCPA to run passive checks in the <em>NCPA Passive</em> service is done by editing the <b>[passive checks]</b> section in the configuration. By default, your NCPA install will have an example <b>[passive checks]</b> section in <code>etc/ncpa.cfg.d/example.cfg</code>. If you installed on Windows, you may have some checks already defined and running if you set them up during the install process.</p>
+                <p>Telling NCPA to run passive checks is done by editing the <b>[passive checks]</b> section in the configuration. By default, your NCPA install will have an example <b>[passive checks]</b> section in <code>etc/ncpa.cfg.d/example.cfg</code>. If you installed on Windows, you may have some checks already defined and running if you set them up during the install process.</p>
                 <p>To set up passive checks, you'll use the API endpoint just like we do with active checks and the <code>check_ncpa.py</code> plugin. If you are not that familiar with the API endpoints, you can read the <a href="api.html">API reference</a> section or you can use it live in the GUI under the API tab.</p>
-                <p>
-                    <div class="alert alert-info">
-                        <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> If you are only using active checks and don't want the GUI to be available, you can turn off the <em>NCPA Listener</em> service since it does not need to be running for the passive checks to be ran. The <em>NCPA Passive</em> service accesses the API endpoints internally to get the check results.
-                    </div>
-                </p>
 
                 <a name="configuring"></a>
                 <div class="section">
 
                     <h2>Configuring Passive Checks</h2>
-                    <p>The first step is to configure your <em>NCPA Passive</em> service to send passive checks to NRDP. Once you've configured your NRDP server you can define the checks that you'd like to send. This can be accomplished by updating the <a href="configuration.html#nrdp">[nrdp]</a> section with the proper values. You should set the <code>parent</code> to the target NRDP URL and set the <code>token</code> to the value of a token you've set up on the NRDP server side.</p>
+                    <p>The first step is to configure the <em>NCPA</em> service to send passive checks to NRDP. Once you've configured your NRDP server you can define the checks that you'd like to send. This can be accomplished by updating the <a href="configuration.html#nrdp">[nrdp]</a> section with the proper values. You should set the <code>parent</code> to the target NRDP URL and set the <code>token</code> to the value of a token you've set up on the NRDP server side.</p>
                     <p>
                         <div class="alert alert-success">
                             <i class="fa fa-lightbulb-o fa-14 fa-l"></i> <b>Tip:</b> If you are using <b>Nagios XI</b>, then NRDP is already installed. You can find the NRDP URL and the available tokens in the <em>Admin > Inbound Transfers</em> and use these values for your NCPA configuration.
@@ -49,7 +44,7 @@
 %HOSTNAME%|Memory Usage = memory/virtual --warning 80 --critical 90 --units Gi
 %HOSTNAME%|Process Count = processes --warning 300 --critical 400</pre>
 
-                    <p>When the <em>NCPA Passive</em> service starts, it parses any definitions that it finds defined. For each entry, NCPA takes the string of text before the equals, and splits it on <code>|</code>. The result is the hostname, servicename, and sometimes a check interval in seconds.</p>
+                    <p>When the <em>NCPA</em> service starts, it parses any definitions that it finds defined. For each entry, NCPA takes the string of text before the equals, and splits it on <code>|</code>. The result is the hostname, servicename, and sometimes a check interval in seconds.</p>
                     <p>The <code>%HOSTNAME%</code> macro is populated when running the check with the hostname defined in the config file. The <code>__HOST__</code> is a special service name, which represents the host check in Nagios.</p>
                     <p>
                         <div class="alert alert-info">
@@ -70,7 +65,7 @@
                     <pre>&lt;hostname&gt;|&lt;servicename&gt;<b>|&lt;checkinterval&gt;</b> = &lt;api endpoint&gt;?parameter=value&amp;parameter2=value</pre>
 
                     <h6>Check Intervals</h6>
-                    <p>In NCPA 2, there is now the option to set per-check intervals. The check interval is determined by the value given after the second <code>|</code> character. If no check interval is defined, then the <code>sleep</code> value from the <a href="configuration.html#passive">[passive]</a> configuration section is used as the default. This value is set to 300 seconds (5 minutes) in a default installation.</p>
+                    <p>Since NCPA 2, there has been the option to set per-check intervals. The check interval is determined by the value given after the second <code>|</code> character. If no check interval is defined, then the <code>sleep</code> value from the <a href="configuration.html#passive">[passive]</a> configuration section is used as the default. This value is set to 300 seconds (5 minutes) in a default installation.</p>
                     <p>An example of a <em>CPU Usage</em> check that is performed every 30 seconds would look like this:</p>
                     <pre>%HOSTNAME%|CPU Usage<b>|30</b> = cpu/percent --warning 60 --critical 80 --aggregate avg</pre>
                     <p>The bold portion represents the amount of seconds between checks.</p>

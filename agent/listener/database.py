@@ -2,7 +2,7 @@ import os
 import time
 import sqlite3
 import sys
-import server
+import listener.server
 import logging
 
 # A module to wrap sqlite3 for use with a small database to store things
@@ -11,7 +11,7 @@ import logging
 class DB(object):
 
     def __init__(self):
-        if getattr(sys, u'frozen', False):
+        if getattr(sys, 'frozen', False):
             self.dbfile = os.path.abspath(os.path.dirname(sys.executable) + '/var/ncpa.db')
         else:
             self.dbfile = os.path.abspath(os.path.dirname(__file__) + '/../var/ncpa.db')

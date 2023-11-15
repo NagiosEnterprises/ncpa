@@ -1,10 +1,31 @@
 Changelog
 +++++++++
 
+3.0.0 - 11/17/2023
+==================
+**Updates**
+
+- Updated the bundled Python version to 3.11.3 (PhreditorNG)
+- Updated to bundle OpenSSLv3 in all packages (PhreditorNG/Blake Bahner)
+- Updated to bundle zLib in all packages (PhreditorNG)
+- Simplified environment setup and build process to use only one script (PhreditorNG/Blake Bahner)
+- The listener and passive services/daemons are now combined into one service/daemon called ncpa
+- Added configuration option to allow only "Listener" or "Passive" functionality to be used (PhreditorNG)
+- Improved logging and installation output (PhreditorNG)
+- Added systemd service file (PhreditorNG)
+- Listener web UI Admin section provides additional system information (PhreditorNG)
+- Updated jQuery to 3.6.4
+- Removed support for 32-bit systems.
+
+**Bug Fixes**
+
+- Fixed errors from different language encodings due to python not being able to encode/decode strings
+
+
 2.4.1 - 02/27/2023
 ==================
 - Note: For the time being, we're stopping 1st-party builds for the following platforms:
-   - 32-bit Macintosh 
+   - 32-bit Macintosh
    - CentOS 8 on ARM
    - Solaris 11
    - SLES 11
@@ -341,7 +362,7 @@ Changelog
 - Fixed perfdata output for windows log checks
 - Fixed issue on Mac OS X where running as nagios (default) would cause process data not to show
 - Fixed issue where global config parser defaults caused issues with sections in separate files
-- Fixed issue where services in Unix systems ran as root no matter what the uid/gid specified in ncpa.cfg
+- Fixed issue where services in Unix systems run as root no matter what the uid/gid specified in ncpa.cfg
 - Fixed delta value returning 0 the first time it's called even if there should be 1 second of data
 - Fixed Mac OS X plist to no longer set user/group (bug fix for Unix systems running as specified uid/gid is related)
 - Fixed processor type not showing up on all Linux distros on GUI dashboard

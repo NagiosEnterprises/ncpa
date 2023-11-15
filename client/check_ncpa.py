@@ -118,6 +118,8 @@ def parse_args():
                       help='Extra query arguments to pass in the NCPA URL.')
     parser.add_option("-s", "--secure", action='store_true', default=False,
                       help='Require successful certificate verification. Does not work on Python < 2.7.9.')
+    parser.add_option("-S", "--sleep", default=None, type="int",
+                      help='Amount of seconds to sleep for counters or API endpoints that support sleep (such as cpu/percent)')
     parser.add_option("-p", "--performance", action='store_true', default=False,
                       help='Print performance data even when there is none. '
                            'Will print data matching the return code of this script')
@@ -210,6 +212,7 @@ def get_arguments_from_options(options, **kwargs):
         arguments['delta'] = options.delta
         arguments['check'] = 1
         arguments['unit'] = options.unit
+        arguments['sleep'] = options.sleep
 
     args = list((k, v) for k, v in list(arguments.items()) if v is not None)
 

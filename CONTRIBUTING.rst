@@ -24,14 +24,13 @@ been installed and working.
 **Set Up Windows Environment**
 
 You will need to install git for windows. Then, download and install:
-
-* `Python 2.7.14 on Windows <https://www.python.org/downloads/release/python-2714/>`_
-* OpenSSL for Windows (`Download <https://slproweb.com/download/Win32OpenSSL-1_1_0c.exe>`_)
+i
+* `Python 3.9.x on Windows (32bit) <https://www.python.org/downloads/>`_
+* OpenSSL 3 for Windows (32bit) (`Download <https://slproweb.com/download/Win32OpenSSL-3_0_0.exe>`_)
 
 To set up the python requirements, in `cmd.exe` clone the NCPA repo and run::
 
 	python -m pip install -r resources/requires.txt
-
 
 **Set Up Linux / Mac OS X Environment**
 
@@ -39,36 +38,18 @@ You will need `git` installed in order to clone the repo to do the following.
 
 Once cloned, to install the prereqs::
 
-    cd ncpa
-    ./build/scripts/linux_build_prereqs.sh
-    ./build/scripts/linux_build_setup.sh
+    cd build
+    ./build.sh
 
 Running NCPA in Development
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The below examples assume you are inside the NCPA git working directory.
 
-*Note: You can run both the listener and passive service at the same time.*
+	cd agent
+	python3.9 ncpa.py -d
 
-**On Windows**
-
-NCPA Listener::
-
-	python agent/windows_debug.py listener
-
-NCPA Passive::
-
-	python agent/windows_debug.py passive
-
-**On Linux / Mac OS X**
-
-NCPA Listener::
-
-	python2.7 agent/ncpa_listener.py -n
-
-NCPA Passive::
-
-	python2.7 agent/ncpa_passive.py -n
+This command will run a development version of NCPA on the machine at https://localhost:5700/
 
 Code Readability
 ~~~~~~~~~~~~~~~~

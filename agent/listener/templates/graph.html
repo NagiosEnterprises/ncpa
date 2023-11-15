@@ -31,6 +31,7 @@
         if (query_string) {
             API_URL += '?' + decodeURIComponent(query_string);
         }
+// console.log("graph/html - AP);
 
         $.getJSON(API_URL, function(d) {
             var ts_length = 0;
@@ -38,6 +39,9 @@
                 var response_object = api_response_object;
                 ts_length = response_object[0].length || 1;
                 var title = '{{ graph_path }}';
+
+                // console.log("getJSON.each - response_object:");
+                // console.log(response_object);
 
                 graph_title.text(title);
                 if (response_object[1] != '%') {
@@ -47,6 +51,7 @@
 
             var smoothie = new SmoothieChart(default_smoothie);
             var ws_loc = get_ws_address();
+            // console.log("getJSON - ws_loc: " + ws_loc);
 
             var ws = new WebSocket(ws_loc);
             var lines = [];
@@ -69,6 +74,8 @@
                 var ts = d[0];
                 var units = d[1];
                 var lsum = 0;
+                // console.log("getJSON/onmessage - data:");
+                // console.log(d);
 
                 if(ts instanceof Array != true) {
                     ts = [ts]
@@ -77,6 +84,7 @@
                 $.each(ts, function(i) {
                     var val = ts[i];
                     val = Math.abs(val);
+                    // console.log("getJSON/onmessage - val: " + val);
 
                     lsum += val;
                     lines[i].append(new Date().getTime(), val);
@@ -88,7 +96,7 @@
                 all.push(lmean);
                 asum = all.reduce(function(a, b) {return a+b});
                 amean = asum / all.length;
-                
+
                 td_min.text(min.toFixed(2) + ' ' + units);
                 td_max.text(max.toFixed(2) + ' ' + units);
                 td_cur.text(lmean.toFixed(2) + ' ' + units);
@@ -101,13 +109,19 @@
                 websocket_thread = setInterval(function() {
                     ws.send('{{ graph_path }}');
                 }, interval);
+                // console.log("getJSON/onopen - " + '{{ graph_path }}' + " - websocket_thread: " + websocket_thread);
             };
 
             $('#graph-{{ graph_hash }}').on('doUnload', function() {
+                // console.log("getJSON/doUnload - close");
+
                 ws.close();
                 delete ws;
                 clearInterval(websocket_thread);
             });
+
+            // console.log("getJSON - lines:");
+            // console.log(lines);
 
             $.each(lines, function(i) {
                 smoothie.addTimeSeries(lines[i], { lineWidth: 1, strokeStyle: '#4d89f9', fillStyle: 'rgba(77,137,249,0.15)' });

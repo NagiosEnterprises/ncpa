@@ -23,7 +23,7 @@ def send_request(url, connection_timeout, **kwargs):
     except Exception as ex:
         logging.exception(ex)
     else:
-        logging.debug('Content response from URL: %s' % unicode(r.content))
+        logging.debug('Content response from URL: %s' % str(r.content))
         return r.content
 
     return None

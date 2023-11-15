@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
         <link rel="stylesheet" href="../css/ncpa.css" type="text/css" />
-        <script src='../js/jquery.3.5.1.min.js'></script>
+        <script src='../js/jquery.3.6.4.min.js'></script>
         <script src='../js/bootstrap.min.js'></script>
         <script src='../js/help.js'></script>
         <script type="text/javascript">
@@ -33,7 +33,7 @@
             <div class="col-md-12 col-lg-10">
 
                 <h1>API Reference</h1>
-                
+
                 <p>The core of NCPA is the API, which works the same across all platforms. It was designed to make it easy for administrators to set-up checks, troubleshoot problems, test checks, while still being flexible. This section covers how the API works with individual references for each module. Some of the extended nodes are specific to an operating system, but the standard nodes are available on any platform.</p>
 
                 <a name="api-overview"></a>
@@ -58,12 +58,12 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
 
                 <a name="standard-parameters"></a>
                 <div class="section">
-                
+
                     <h2>Standard Parameters</h2>
                     <p>Accessing the API is just the starting point, there are set parameters that can be used on all modules and nodes. There are also some parameters, such as <code>delta</code> that are only available on certain nodes. The API reference at the end of this document explains the parameters that are available for use.</p>
 
@@ -89,7 +89,7 @@
                                 </tr>
                                 <tr>
                                     <td><b>unit</b></td>
-                                    <td>Unlike the units parameter, this value overwrites the unit name. If an endpoint returns no unit but you want it to return 'ms' then you can set this value.</td>
+                                    <td>Unlike the <code>units</code> parameter, this value overwrites the unit name. If an endpoint returns no unit but you want it to return 'ms' then you can set this value.</td>
                                 </tr>
                                 <tr>
                                     <td><b>delta</b></td>
@@ -119,7 +119,7 @@
 
                             </div>
                             <div class="col-sm-12 col-lg-4">
-                                
+
                                 <h6 style="margin-top: 1rem;">Example: Using <code>units</code> Parameter</h6>
                                 <p>This example shows how the value and unit change when passing the <code>units</code> parameter to an endpoint that returns <b>B</b>.</p>
                                 <pre>https://localhost:5693/api/disk/logical/C:|/used?token=mytoken&units=Gi</pre>
@@ -155,7 +155,7 @@
                 <div class="section">
 
                     <h2>Returning Nagios Check Results</h2>
-                    <p>Most of the endpoints in NCPA can be ran as a check, and return Nagios plugin-style check results. This is helpful for testing, and production. This style of API call is what the <code>check_ncpa.py</code> plugin uses to get the check results for things like the CPU, interface, memory, and disk.</p>
+                    <p>Most of the endpoints in NCPA can be run as a check, and return Nagios plugin-style check results. This is helpful for testing, and production. This style of API call is what the <code>check_ncpa.py</code> plugin uses to get the check results for things like the CPU, interface, memory, and disk.</p>
                     <p>The parameters (via GET or POST) available for running an API endpoint as a check:</p>
                     <p>
                     <table class="table table-striped table-bordered">
@@ -187,7 +187,7 @@
                     <pre>https://localhost:5693/api/memory/virtual/percent?token=mytoken&warning=50&critical=60&check=1</pre>
                     <p>This would return the following result:</p>
                     <pre>{
-    "returncode": 2, 
+    "returncode": 2,
     "stdout": "CRITICAL: Percent was 76.80 % | 'percent'=76.80%;50;60;"
 }</pre>
                     <p>If you are familiar with how a Nagios check works, this data should look familiar. The API will return the returncode and stdout for the check just like it would if it was running it from the command line. The <code>check_ncpa.py</code> plugin passes this data to Nagios by being a sort of proxy, printing the stdout and exiting with the return code given.</p>
@@ -202,7 +202,7 @@
                     <pre>https://localhost:5693/api/memory/virtual?token=mytoken&units=G&check=1</pre>
                     <p>Since we are using <code>memory/virtual</code> instead of <code>memory/virtual/&lt;option&gt;</code> we will get:</p>
                     <pre>{
-    "returncode": 0, 
+    "returncode": 0,
     "stdout": "OK: Used memory was 76.80 % (Available: 3.98 GB, Total: 17.13 GB, Free: 3.98 GB, Used: 13.15 GB) | 'percent'=76.80%;;;"
 }</pre>
                     <p>You can see that it returns the value as a percentage, but also gives you values for available, total, free, and used.</p>
@@ -216,7 +216,7 @@
                     <p>The NCPA API is flexible enough to let you run your own Nagios plugins. In order to do so, you'll need to place them in your plugins directory defined in the <a href="configuration.html#plugin-directives">[plugin directives]</a> section of the config.</p>
                     <p>
                         <div class="alert alert-info">
-                            <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> Make sure that your plugins have the proper permissions on Linux and Mac OS X systems. They need to be able to be executed by the user and group you have specified the NCPA services to run as. <em>The default user and group is <b>nagios:nagios</b>. No permissions settings need to be edited for Windows.</em>
+                            <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note:</b> Make sure that your plugins have the proper permissions on Linux and Mac OS X systems. They need to be able to be executed by the user and group you have specified the NCPA service to run as. <em>The default user and group is <b>nagios:nagios</b>. No permissions settings need to be edited for Windows.</em>
                         </div>
                     </p>
                     <p>You can see a list of all available plugins by going to the <code>plugins</code> API node:</p>
@@ -276,15 +276,15 @@
                                 <pre>{
     "percent": [
         [
-            18.8, 
-            0.0, 
-            1.5, 
-            0.0, 
-            13.8, 
-            0.0, 
-            3.2, 
+            18.8,
+            0.0,
+            1.5,
+            0.0,
+            13.8,
+            0.0,
+            3.2,
             0.0
-        ], 
+        ],
         "%"
     ]
 }</pre>
@@ -299,7 +299,7 @@
         "%"
     ]
 }</pre>
-                                
+
 
                             </div>
                             <div class="col-sm-6">
@@ -474,13 +474,13 @@
         ...
     }
 }</pre>
-                            
+
                                 <h6>Example of Bytes Received/Second</h6>
                                 <p>This example shows the average of bytes received per second <em>since the last check</em>.</p>
                                 <pre>https://localhost:5693/api/interface/Local%20Area%20Connection/bytes_recv?token=mytoken&delta=1&units=k</pre>
                                 <pre>{
     "bytes_recv": [
-        3.56, 
+        3.56,
         "kB/s"
     ]
 }</pre>
@@ -627,11 +627,11 @@
                         </div>
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-6">
-                                
+
                                 <h6 style="margin-top: 1rem;">Example of Total Process Count Check</h6>
                                 <pre>https://localhost:5693/api/processes?token=mytoken&check=1</pre>
                                 <pre>{
-    "returncode": 0, 
+    "returncode": 0,
     "stdout": "OK: Process count was 119 | 'process_count'=119;;;"
 }</pre>
 
@@ -642,7 +642,7 @@
     "returncode": 0,
     "stdout": "OK: Process count for processes named steam was 5 | 'process_count'=5;;;"
 }</pre>
-    
+
                                 <h6>Example Search for Processes Check with Multiple Names</h6>
                                 <p>An example that displays searching with multiple process names and how it adds them with <b>or</b>.</p>
                                 <pre>https://localhost:5693/api/processes?token=mytoken&name=steam&name=chrome&combiner=or&match=search&check=true</pre>
@@ -754,7 +754,7 @@
                             <div class="col-sm-12">
                                 <p>
                                     <div class="alert alert-warning">
-                                        <i class="fa fa-exclamation-triangle fa-14 fa-l"></i> <b>Warning!</b> In NCPA 2 the API endpoint for checking services was <em><b>deprecated</b></em> and will be removed in NCPA 3 and above. Example deprecated version: <b>service/&lt;servicename&gt;/&lt;status&gt;</b> 
+                                        <i class="fa fa-exclamation-triangle fa-14 fa-l"></i> <b>Warning!</b> In NCPA 2 the API endpoint for checking services was <em><b>deprecated</b></em> and will be removed in NCPA 3 and above. Example deprecated version: <b>service/&lt;servicename&gt;/&lt;status&gt;</b>
                                     </div>
                                 </p>
                                 <p>This node is different than most of the standard nodes. When using just the <code>services</code> endpoint you will see a list of all services NCPA can find and their current state. You can select a single service by adding the <code>service=&lt;servicename&gt;</code> parameter. You can also turn the <code>service</code> parameter into a search by adding the <code>match=search</code> parameter to the query.</p>
@@ -774,7 +774,7 @@
                                 <h6>Example of Service Check</h6>
                                 <pre>https://localhost:5693/api/services?token=mytoken&service=sshd&status=running&check=1</pre>
                                 <pre>{
-    "returncode": 0, 
+    "returncode": 0,
     "stdout": "OK: Service sshd is running"
 }</pre>
 
@@ -842,13 +842,13 @@
                     <h4>plugins</h4>
                     <p>
                         <div class="alert alert-warning">
-                            <i class="fa fa-exclamation-triangle fa-14 fa-l"></i> <b>Warning!</b> In NCPA 2 the API endpoint for <b>agent/plugin</b> was <em><b>deprecated</b></em> in favor of <b>plugins</b> and will be removed in NCPA 3 and above. Example deprecated version: <b>agent/plugin/&lt;plugin name&gt;</b> 
+                            <i class="fa fa-exclamation-triangle fa-14 fa-l"></i> <b>Warning!</b> In NCPA 2 the API endpoint for <b>agent/plugin</b> was <em><b>deprecated</b></em> in favor of <b>plugins</b> and will be removed in NCPA 3 and above. Example deprecated version: <b>agent/plugin/&lt;plugin name&gt;</b>
                         </div>
                     </p>
                     <p>This module will show you a list of all available plugins (that are in the directory defined <code>plugin_path</code>) and let's you run them.</p>
                     <p>You can run a custom plugin by following this format in the URL:</p>
                     <pre>https://localhost:5693/api/plugins/&lt;plugin name&gt;/&lt;arg1&gt;/&lt;arg2&gt;/?token=mytoken</pre>
-                    <p>Some examples of the kinds of arguments you would be passing this way are <code>"/usr/local/program/test.log"</code>, <code>-c 'test.sh'</code>, and <code>--critical=20</code>. Each argument is specified by another <code>/</code> after the plugin name. The built-in parameters for <code>warning</code> and <code>critical</code> do not work with custom plugins and must be passed as arguments. <em>Read more about <a href="#running-plugins">how to run plugins from the API</a>.</em></p> 
+                    <p>Some examples of the kinds of arguments you would be passing this way are <code>"/usr/local/program/test.log"</code>, <code>-c 'test.sh'</code>, and <code>--critical=20</code>. Each argument is specified by another <code>/</code> after the plugin name. The built-in parameters for <code>warning</code> and <code>critical</code> do not work with custom plugins and must be passed as arguments. <em>Read more about <a href="#running-plugins">how to run plugins from the API</a>.</em></p>
                     <p>Custom plugins should conform to the <a target="_new" href="https://nagios-plugins.org/doc/guidelines.html">Nagios plugin guidelines</a> <i class="fa fa-external-link"></i> for exit code and text output or NCPA may not accurately return the proper exit code and output.</p>
 
                     <a name="api-modules-user"></a>
