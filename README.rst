@@ -29,12 +29,12 @@ We currently build for the following operating systems on x86-64 architectures:
 - Amazon Linux 2
 - Windows 8.1+
 - Windows Server 2016+
-- MacOS 12+
+- MacOS 13+
 
 Older systems that have been supported by NCPA in the past:
 
 - Mac OS X 10.7-10.10           - v2.4.0
-- Mac OS X 10.11-11             - v2.4.1
+- Mac OS X 10.11-12             - v2.4.1
 - Raspbian 10 - Buster          - v2.2.2
 - Ubuntu 12.04                  - v2.1.4
 - Ubuntu 14.04                  - v2.2.2
