@@ -21,11 +21,11 @@ We currently build for the following operating systems on x86-64 architectures:
 
 - CentOS 7+
 - RHEL 7+
+- Oracle 7+
 - Debian 10+
 - Ubuntu 18+
 - OpenSuSE 15+
 - SLES 15+
-- Oracle 7+
 - Amazon Linux 2
 - Windows 8.1+
 - Windows Server 2016+
