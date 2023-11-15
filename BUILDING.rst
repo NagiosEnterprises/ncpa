@@ -68,11 +68,11 @@ Copy the resulting ~/ncpa/build/ncpa-3.0.0-latest.x86_64.rpm or ncpa_3.0.0-lates
 
     yum install ./ncpa-3.0.0-latest.x86_64.rpm
 
-  On Ubuntu 16+/Debian 9+::
+  On Ubuntu 18+/Debian 10+::
 
     dpkg -i ./ncpa_3.0.0-latest._amd64.deb
 
-  On Ubuntu 14/Debian 8 (not supported, but may work)::
+  On Ubuntu 14-16/Debian 8-9 (not supported, but may work)::
 
     dpkg --force-depends -i ./ncpa_3.0.0-latest._amd64.deb
 
