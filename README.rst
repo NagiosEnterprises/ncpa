@@ -25,19 +25,20 @@ We currently build for the following operating systems on x86-64 architectures:
 
 - CentOS 7+
 - RHEL 7+
-- Debian 9+
-- Ubuntu 16+
+- Debian 10+
+- Ubuntu 18+
 - OpenSuSE 15+
 - SLES 15+
 - Oracle 7+
 - Amazon Linux 2
-- Windows 8+
-- Windows Server 2012 R2+
-- MacOS 10.11+
+- Windows 8.1+
+- Windows Server 2016+
+- MacOS 12+
 
 Older systems that have been supported by NCPA in the past:
 
 - Mac OS X 10.7-10.10           - v2.4.0
+- Mac OS X 10-11                - v2.4.1
 - Raspbian 10 - Buster          - v2.2.2
 - Ubuntu 12.04                  - v2.1.4
 - Ubuntu 14.04                  - v2.2.2
