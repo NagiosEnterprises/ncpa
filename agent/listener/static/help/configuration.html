@@ -42,7 +42,7 @@
                         <div role="tabpanel" class="tab-pane" id="linux"><pre>/usr/local/ncpa/etc/</pre></div>
                         <div role="tabpanel" class="tab-pane" id="mac"><pre>/usr/local/ncpa/etc/</pre></div>
                     </div>
-                    <p>As of NCPA 2, there is also an <code>ncpa.cfg.d</code> folder which includes all <b>.cfg</b> files inside of it into the main <code>nagios.cfg</code> when parsing the configuration. Another change to the way configuration works in NCPA 2 is that changing the passive check configuration <em>requires a restart of the NCPA Passive service</em>. By default NCPA 2 will have an <code>ncpa.cfg.d/example.cfg</code> file in the config directory on all operating systems. On Windows, you are able to select whether or not you are going to enable NRDP during the install - including setting up your basic default checks - placed in <code>nrdp.cfg.d/nrdp.cfg</code>.</p>
+                    <p>As of NCPA 2, there is also an <code>ncpa.cfg.d</code> folder which includes all <b>.cfg</b> files inside of it into the main <code>ncpa.cfg</code> when parsing the configuration. After any changes you make to either <code>nagios.cfg</code>, or any other files in <code>ncpa.cfg.d</code>, you will need to restart the NCPA service.</p>
                 </div>
 
                 <a name="config-option-reference"></a>
