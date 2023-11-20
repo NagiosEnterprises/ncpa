@@ -43,6 +43,18 @@ touch %{buildroot}/usr/local/ncpa/var/ncpa.db
 chown nagios:nagios %{buildroot}/usr/local/ncpa -R
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-init %{buildroot}/etc/init.d/ncpa
 
+if [ -x `which update-rc.d` ]; then
+    update-rc.d -f ncpa_listener remove
+    update-rc.d -f ncpa_passive remove
+fi
+
+if [ -e %{buildroot}/etc/init.d/ncpa_listener ]; then
+    rm -f %{buildroot}/etc/init.d/ncpa_listener
+fi
+if [ -e %{buildroot}/etc/init.d/ncpa_passive ]; then
+    rm -f %{buildroot}/etc/init.d/ncpa_passive
+fi
+
 mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-service %{buildroot}/usr/lib/systemd/system/ncpa.service
 
