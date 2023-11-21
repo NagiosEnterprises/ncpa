@@ -43,6 +43,18 @@ touch %{buildroot}/usr/local/ncpa/var/ncpa.db
 chown nagios:nagios %{buildroot}/usr/local/ncpa -R
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-init %{buildroot}/etc/init.d/ncpa
 
+if which update-rc.d >/dev/null 2>&1; then
+    update-rc.d -f ncpa_listener remove
+    update-rc.d -f ncpa_passive remove
+fi
+
+if [ -e %{buildroot}/etc/init.d/ncpa_listener ]; then
+    rm -f %{buildroot}/etc/init.d/ncpa_listener
+fi
+if [ -e %{buildroot}/etc/init.d/ncpa_passive ]; then
+    rm -f %{buildroot}/etc/init.d/ncpa_passive
+fi
+
 mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-service %{buildroot}/usr/lib/systemd/system/ncpa.service
 
@@ -54,8 +66,8 @@ if which chkconfig &> /dev/null; then
     echo "Try to stop services with chkconfig"
     [ -f /usr/local/ncpa/ncpa_listener ] && /usr/local/ncpa/ncpa_listener --stop &> /dev/null
     [ -f /usr/local/ncpa/ncpa_passive ] && /usr/local/ncpa/ncpa_passive --stop &> /dev/null
-    chkconfig --del ncpa_listener
-    chkconfig --del ncpa_passive
+    chkconfig ncpa_listener && chkconfig --del ncpa_listener &> /dev/null
+    chkconfig ncpa_passive && chkconfig --del ncpa_passive &> /dev/null
 fi
 if command -v systemctl &> /dev/null
 then
