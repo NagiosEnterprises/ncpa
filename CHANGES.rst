@@ -5,9 +5,10 @@ Changelog
 ==================
 **Bug Fixes**
 
-- Fixed removing of NCPA 2 files when upgrading on Debian (Blake Bahner, Jason Michaelson)
-- Fixed some errors that showed up on Linux installs when the installation worked (Blake Bahner)
-- Updated build compatibility to build on Oracle Linux 8 & 9 (Blake Bahner)
+- Corrected an issue with NCPA 2 file removal during Debian system upgrades. (Blake Bahner, Jason Michaelson)
+- Resolved errors appearing in Linux installs where the installation was actually successful. (Blake Bahner)
+- Enhanced build process to support Oracle Linux 8 & 9. (Blake Bahner)
+- Added a check for NCPA 2 processes in Linux builds on distributions utilizing chkconfig. (Jason Michaelson)
 
 3.0.0 - 11/17/2023
 ==================
