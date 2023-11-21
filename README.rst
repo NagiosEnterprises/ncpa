@@ -15,6 +15,19 @@ Current versions:
 | Current | **3.0.0**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
+Note: When upgrading from 2.4.1 to 3.0.0 using the official Nagios NCPA build, you must first update your GPG keys using the following:
+
+CentOS/RHEL/Oracle::
+
+    yum clean all
+    rpm --import https://repo.nagios.com/GPG-KEY-NAGIOS-V3
+
+Ubuntu/Debian::
+
+    wget -qO - https://repo.nagios.com/GPG-KEY-NAGIOS-V3 | apt-key add -
+
+NOTE: If you're using Debian 11 or one of the other newer OSes and you see an "E: gnupg, gnuph2 and gnupg1 do not seem to be installed..." error when adding the public key you can either install gnupg (apt-get install gnupg) or you can read `how to add the GPG key the new, more secure way <https://stackoverflow.com/questions/68992799/warning-apt-key-is-deprecated-manage-keyring-files-in-trusted-gpg-d-instead>`_.
+
 `Older Versions <https://www.nagios.org/ncpa/archive.php>`_
 
 We currently build for the following operating systems on x86-64 architectures:
