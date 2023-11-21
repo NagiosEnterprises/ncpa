@@ -1,6 +1,14 @@
 Changelog
 +++++++++
 
+3.0.1 - 11/XX/2023
+==================
+**Bug Fixes**
+
+- Fixed removing of NCPA 2 files when upgrading on Debian (Blake Bahner, Jason Michaelson)
+- Fixed some errors that showed up on Linux installs when the installation worked (Blake Bahner)
+- Updated build compatibility to build on Oracle Linux 8 & 9 (Blake Bahner)
+
 3.0.0 - 11/17/2023
 ==================
 **Updates**
