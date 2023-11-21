@@ -66,8 +66,8 @@ if which chkconfig &> /dev/null; then
     echo "Try to stop services with chkconfig"
     /usr/local/ncpa/ncpa_listener --stop &> /dev/null
     /usr/local/ncpa/ncpa_passive --stop &> /dev/null
-    chkconfig --del ncpa_listener
-    chkconfig --del ncpa_passive
+    chkconfig ncpa_listener && chkconfig --del ncpa_listener &> /dev/null
+    chkconfig ncpa_passive && chkconfig --del ncpa_passive &> /dev/null
 fi
 if command -v systemctl &> /dev/null
 then
