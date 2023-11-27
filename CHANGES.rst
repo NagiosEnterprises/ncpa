@@ -9,6 +9,7 @@ Changelog
 - Resolved errors appearing in Linux installs where the installation was actually successful. (Blake Bahner)
 - Enhanced build process to support Oracle Linux 8 & 9. (Blake Bahner)
 - Added a check for NCPA 2 processes in Linux builds on distributions utilizing chkconfig. (Jason Michaelson)
+- Removed extraneous certs that were being generated on restart of the NCPA service. (Blake Bahner)
 
 3.0.0 - 11/17/2023
 ==================
