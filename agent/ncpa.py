@@ -76,6 +76,11 @@ __STARTED__ = datetime.datetime.now()
 
 options = {}
 
+if os.name == 'posix':
+    # remove extraneous certs from /tmp
+    for filepath in glob.glob(os.path.join("/tmp", "tmp*cacert.pem")):
+        os.remove(filepath)
+
 print("***** Starting NCPA version: ", __VERSION__)
 
 # About Logging
