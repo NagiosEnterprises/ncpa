@@ -15,7 +15,7 @@ Current versions:
 | Current | **3.0.0**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
-Note: When upgrading from 2.4.1 to 3.0.0 using the official Nagios NCPA build, you must first update your GPG keys using the following:
+Note: When installing NCPA, if your nagios repo is outdated, you must first update your GPG key using the following:
 
 CentOS/RHEL/Oracle::
 
