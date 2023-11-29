@@ -1,23 +1,23 @@
 #!/bin/bash
 
 # Get version
-realpath=$(which realpath)
+realpath="$(which realpath)"
 if [ ! -f $realpath ]; then
-    realpath=$(which grealpath)
+    realpath="$(which grealpath)"
 fi
-DIR=$(dirname "$(readlink -f "$0")")
-BUILD_DIR=$($realpath "$DIR/..")
-VERSION=$(cat $BUILD_DIR/../VERSION)
-ARCH=$(arch)
+DIR="$(dirname "$(readlink -f "$0")")"
+BUILD_DIR="$($realpath "$DIR/..")"
+VERSION="$(cat "$BUILD_DIR"/../VERSION)"
+ARCH="$(arch)"
 
 # Set up package info
-sed "s/VERSION=.*/ARCH=$VERSION/" $DIR/pkginfo > $DIR/pkginfo.tmp
-sed "s/ARCH=.*/ARCH=$ARCH/" $DIR/pkginfo.tmp > $BUILD_DIR/pkginfo
-rm -rf $DIR/pkginfo.tmp
+sed "s/VERSION=.*/ARCH="$VERSION"/" "$DIR"/pkginfo > "$DIR"/pkginfo.tmp
+sed "s/ARCH=.*/ARCH="$ARCH"/" "$DIR"/pkginfo.tmp > "$BUILD_DIR"/pkginfo
+rm -rf "$DIR"/pkginfo.tmp
 
 # Make the package and cleanup
 (
-    cd $BUILD_DIR
+    cd "$BUILD_DIR"
 
     # Clean up old package
     rm -f ncpa*.pkg
@@ -37,8 +37,8 @@ rm -rf $DIR/pkginfo.tmp
 
     # Build package and create the .pkg file
     pkgmk -b $(pwd) -o
-    pkgtrans -s /var/spool/pkg ncpa-$VERSION.$ARCH.pkg ncpa
-    mv -f /var/spool/pkg/ncpa-$VERSION.$ARCH.pkg .
+    pkgtrans -s /var/spool/pkg ncpa-"$VERSION"."$ARCH".pkg ncpa
+    mv -f /var/spool/pkg/ncpa-"$VERSION"."$ARCH".pkg .
 
     # Remove build leftovers
     rm -rf /var/spool/pkg/ncpa
