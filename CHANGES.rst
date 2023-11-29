@@ -3,6 +3,9 @@ Changelog
 
 3.0.1 - 11/XX/2023
 ==================
+**Updates**
+- Updated bash scripts addressing various code quality issues. (Blake Bahner)
+
 **Bug Fixes**
 
 - Corrected an issue with NCPA 2 file removal during Debian system upgrades. (Blake Bahner, Jason Michaelson)
