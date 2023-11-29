@@ -3,7 +3,7 @@
 # MacOS UnInstaller v3.0
 # Removes versions v2.x, and v3.x
 
-scriptUser=$(whoami)
+scriptUser="$(whoami)"
 if ! id -Gn "${scriptUser}" | grep -q -w admin; then
     echo -e "\n\n        ERROR!!!: You must have admin privileges to run this script!\n\n"
     exit 1
@@ -32,19 +32,19 @@ removeNCPAdaemons() {
     echo -n "    Stopping NCPA services... "
     stopped=''
     hasListener=$(launchctl list | grep ncpa_listener)
-    if [[ $hasListener ]]; then
+    if [[ "$hasListener" ]]; then
         launchctl stop com.nagios.ncpa.listener
         echo -n "listener stopped... "
         stopped=1
     fi
     hasPassive=$(launchctl list | grep ncpa_passive)
-    if [[ $hasPassive ]]; then
+    if [[ "$hasPassive" ]]; then
         launchctl stop com.nagios.ncpa.passive
         echo -n "passive stopped... "
         stopped=1
     fi
     hasCombined=$(launchctl list | grep ncpa)
-    if [[ $hasCombined ]]; then
+    if [[ "$hasCombined" ]]; then
         launchctl stop com.nagios.ncpa.passive
         echo -n "ncpa stopped... "
         stopped=1
@@ -86,21 +86,21 @@ removeNCPAplists() {
 killNCPAprocesses() {
     echo -n "    Kill NCPA processes... "
     pid=`ps aux | grep -v grep | grep ncpa_listener  | awk '{print $2}'`
-    if [[ $pid ]]; then
-        kill $pid
+    if [[ "$pid" ]]; then
+        kill "$pid"
         echo -n "Killed $pid ncpa_listener, "
     fi
 
     pid=`ps aux | grep -v grep | grep ncpa_passive  | awk '{print $2}'`
-    if [[ $pid ]]; then
-        kill $pid
+    if [[ "$pid" ]]; then
+        kill "$pid"
         echo -n "Killed $pid ncpa_passive, "
     fi
 
     pid=`ps aux | grep /ncpa | grep -v grep | grep -v uninstall | awk '{print $2}'`
-    if [[ $pid ]]; then
-        echo $pid
-        echo $pid | xargs kill
+    if [[ "$pid" ]]; then
+        echo "$pid"
+        echo "$pid" | xargs kill
         echo -n "Killed $pid ncpa and sub-processes, "
     fi
     echo "Done."
@@ -124,7 +124,7 @@ removeNCPAuser() {
 removeNCPAcode() {
     if [[ -d "${homedir}" ]]; then
         echo -n "    Removing $homedir... "
-        rm -rf $homedir
+        rm -rf "$homedir"
         echo "Done."
     else
         echo "No ${homedir} to remove"
