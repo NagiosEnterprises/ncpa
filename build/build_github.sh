@@ -51,8 +51,8 @@ fi
 
 # Move the ncpa binary data
 cd $BUILD_DIR
-rm -rf $BUILD_DIR/ncpa
-cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
+rm -rf "$BUILD_DIR/ncpa"
+cp -rf "$AGENT_DIR/build/exe.*" "$BUILD_DIR/ncpa"
 echo $GIT_LONG >  $BUILD_DIR/ncpa/$GIT_HASH_FILE
 
 # REMOVE LIBFFI COPY - PLEASE CHANGE THIS LATER
@@ -60,7 +60,7 @@ echo $GIT_LONG >  $BUILD_DIR/ncpa/$GIT_HASH_FILE
 # possibly in the future we will fix this but we have to include
 # the exact version ... this will delete the duplicate which should
 # have a special name like libffi-6322464e.so.6.0.4
-rm -f $BUILD_DIR/ncpa/libffi-*.so.*
+rm -f "$BUILD_DIR/ncpa/libffi-*.so.*"
 
 # Set permissions
 sudo chmod -R g+r $BUILD_DIR/ncpa
@@ -120,6 +120,6 @@ ls -al
 
 # Remove the build directory and tar.gz
 # cd $BUILD_DIR
-# rm -rf *.tar.gz
-# rm -rf ncpa-$NCPA_VER
+# rm -rf "*.tar.gz"
+# rm -rf "ncpa-$NCPA_VER"
 
