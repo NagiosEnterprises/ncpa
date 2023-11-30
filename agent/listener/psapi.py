@@ -206,16 +206,16 @@ def get_system_node():
     return ParentNode(
         "system",
         children=[
-            sys_system,
             sys_node,
-            sys_release,
-            sys_version,
             sys_machine,
-            sys_processor,
             sys_uptime,
-            sys_agent,
-            sys_timezone,
+            sys_version,
             sys_time,
+            sys_release,
+            sys_timezone,
+            sys_agent,
+            sys_system,
+            sys_processor,
         ],
     )
 
