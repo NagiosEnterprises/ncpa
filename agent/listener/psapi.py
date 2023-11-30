@@ -52,11 +52,11 @@ def make_disk_nodes(disk_name):
         disk_name,
         children=[
             read_time,
-            write_time,
-            read_count,
-            write_count,
             read_bytes,
+            write_count,
+            write_time,
             write_bytes,
+            read_count,
         ],
     )
 
@@ -83,17 +83,6 @@ def make_mountpoint_nodes(partition_name):
     )
     safe_mountpoint = re.sub(r"[\\/]+", "|", mountpoint)
 
-    node_children = [
-        total,
-        used,
-        free,
-        used_percent,
-        device_name,
-        fstype,
-        opts,
-        maxfile,
-        maxpath,
-    ]
 
     # Unix specific inode counter ~ sorry Windows! :'(
     if __SYSTEM__ != "nt":
@@ -111,14 +100,39 @@ def make_mountpoint_nodes(partition_name):
             inodes_used_percent = RunnableNode(
                 "inodes_used_percent", method=lambda: (iup, "%")
             )
-            node_children.append(inodes)
-            node_children.append(inodes_used)
-            node_children.append(inodes_free)
-            node_children.append(inodes_used_percent)
+
+            node_children = [
+                used_percent,
+                used,
+                maxfile,
+                inodes_used,
+                free,
+                device_name,
+                inodes_free,
+                inodes,
+                fstype,
+                total,
+                maxpath,
+                opts,
+                inodes_used_percent
+            ]
         except OSError as ex:
             # Log this error as debug only, normally means could not count inodes because
             # of some permissions or access related issues
             logging.exception(ex)
+
+    else:
+        node_children = [
+            used_percent,
+            used,
+            maxfile,
+            free,
+            device_name,
+            fstype,
+            total,
+            maxpath,
+            opts,
+        ]
 
     # Make and return the full parent node
     return RunnableParentNode(
@@ -340,7 +354,7 @@ def get_disk_node(config):
     disk_physical = ParentNode("physical", children=disk_counters)
     disk_mount = ParentNode("mount", children=disk_parts)
 
-    return ParentNode("disk", children=[disk_physical, disk_logical, disk_mount])
+    return ParentNode("disk", children=[disk_mount, disk_logical, disk_physical])
 
 
 def get_interface_node():
