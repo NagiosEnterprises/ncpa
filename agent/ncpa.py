@@ -69,7 +69,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.0.0'
+__VERSION__ = '3.0.1'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -876,22 +876,17 @@ def get_configuration(config=None, configdir=None):
     """Get the configuration options and return the config parser for them"""
     parent_logger.debug("get_configuration()")
 
-    # Use default config/directory if none is given to us
-    if config is None:
-        config = os.path.join('etc', 'ncpa.cfg')
-        configdir = os.path.join('etc', 'ncpa.cfg.d', '*.cfg')
+    config = os.path.join('etc', 'ncpa.cfg')
+    configdir = os.path.join('etc', 'ncpa.cfg.d', '*.cfg')
 
-    # Get the configuration
-    config_filenames = [get_filename(config)]
-
-    # Add config directory if it is defined
-    if configdir is not None:
-        config_filenames.extend(sorted(glob.glob(get_filename(configdir))))
-
-    cp = ConfigParser()
+    cp = ConfigParser(interpolation=None)
     cp.optionxform = str
     cp.read_dict(cfg_defaults)
-    cp.read(config_filenames)
+    cp.read(get_filename(config))
+
+    if configdir is not None:
+        for config_file in sorted(glob.glob(get_filename(configdir))):
+            cp.read(config_file)
     return cp
 
 def chown(user_uid, user_gid, fn):
