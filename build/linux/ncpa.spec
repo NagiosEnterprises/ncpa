@@ -64,23 +64,23 @@ rm -rf %{buildroot}
 %pre
 if which chkconfig &> /dev/null; then
     echo "Try to stop services with chkconfig"
-    /usr/local/ncpa/ncpa_listener --stop &> /dev/null
-    /usr/local/ncpa/ncpa_passive --stop &> /dev/null
+    [ -f /usr/local/ncpa/ncpa_listener ] && /usr/local/ncpa/ncpa_listener --stop &> /dev/null
+    [ -f /usr/local/ncpa/ncpa_passive ] && /usr/local/ncpa/ncpa_passive --stop &> /dev/null
     chkconfig ncpa_listener && chkconfig --del ncpa_listener &> /dev/null
     chkconfig ncpa_passive && chkconfig --del ncpa_passive &> /dev/null
 fi
 if command -v systemctl &> /dev/null
 then
     echo "Try to stop services with systemctl"
-    systemctl stop ncpa_listener &> /dev/null || true
-    systemctl stop ncpa_passive &> /dev/null || true
+    systemctl list-units --full -all | grep -Fq 'ncpa_listener.service' && systemctl stop ncpa_listener &> /dev/null || true
+    systemctl list-units --full -all | grep -Fq 'ncpa_passive.service' && systemctl stop ncpa_passive &> /dev/null || true
     systemctl stop ncpa &> /dev/null || true
 fi
 if command -v service &> /dev/null
 then
     echo "Try to stop services with service"
-    service ncpa_listener stop &> /dev/null || true
-    service ncpa_passive stop &> /dev/null || true
+    service --status-all 2>&1 | grep -Fq 'ncpa_listener' && service ncpa_listener stop &> /dev/null || true
+    service --status-all 2>&1 | grep -Fq 'ncpa_passive' && service ncpa_passive stop &> /dev/null || true
     service ncpa stop &> /dev/null || true
 fi
 
