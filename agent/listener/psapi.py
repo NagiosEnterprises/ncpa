@@ -173,14 +173,14 @@ def make_if_nodes(if_name):
         if_name,
         primary="bytes_sent",
         children=[
-            bytes_sent,
-            bytes_recv,
             packets_sent,
+            dropin,
+            bytes_recv,
             packets_recv,
             errin,
-            errout,
-            dropin,
             dropout,
+            bytes_sent,
+            errout,
         ],
     )
 
