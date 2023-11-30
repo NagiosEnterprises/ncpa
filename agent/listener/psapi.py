@@ -223,7 +223,7 @@ def get_cpu_node():
         "idle", method=lambda: ([x.idle for x in ps.cpu_times(percpu=True)], "ms")
     )
     return ParentNode(
-        "cpu", children=[cpu_count, cpu_system, cpu_percent, cpu_user, cpu_idle]
+        "cpu", children=[cpu_count, cpu_idle, cpu_percent, cpu_system, cpu_user]
     )
 
 
