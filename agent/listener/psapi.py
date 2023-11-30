@@ -244,10 +244,10 @@ def get_memory_node():
         primary="percent",
         primary_unit="%",
         children=(
-            mem_virt_total,
             mem_virt_available,
-            mem_virt_free,
+            mem_virt_total,
             mem_virt_percent,
+            mem_virt_free,
             mem_virt_used,
         ),
         custom_output="Memory usage was",
@@ -260,7 +260,6 @@ def get_memory_node():
     )
     mem_swap_used = RunnableNode("used", method=lambda: (ps.swap_memory().used, "B"))
     mem_swap_free = RunnableNode("free", method=lambda: (ps.swap_memory().free, "B"))
-    node_children = [mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used]
 
     # sin and sout on Windows are always set to 0 ~ sorry Windows! :'(
     if environment.SYSTEM != "Windows":
@@ -270,8 +269,11 @@ def get_memory_node():
         mem_swap_out = RunnableNode(
             "swapped_out", method=lambda: (ps.swap_memory().sout, "B")
         )
-        node_children.append(mem_swap_in)
-        node_children.append(mem_swap_out)
+
+        node_children = [mem_swap_used, mem_swap_out, mem_swap_in, mem_swap_total, mem_swap_percent, mem_swap_free]
+    else:
+        node_children = [mem_swap_used, mem_swap_total, mem_swap_percent, mem_swap_free]
+
 
     mem_swap = RunnableParentNode(
         "swap",
