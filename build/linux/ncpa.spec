@@ -115,12 +115,12 @@ sed -i "s|_BASEDIR_|$dir|" /usr/lib/systemd/system/ncpa.service
 mkdir -p /usr/local/ncpa/etc
 mkdir -p /usr/local/ncpa/etc/ncpa.cfg.d
 
-# Copy default config file if it doesn't exist
+# Copy default main config file if it doesn't exist
 if [ ! -f "/usr/local/ncpa/etc/ncpa.cfg" ]; then
-    cp -p %{_datadir}/ncpa/ncpa.cfg.sample /usr/local/ncpa/etc/ncpa.cfg
+    cp -p /usr/local/ncpa/etc/ncpa.cfg.sample /usr/local/ncpa/etc/ncpa.cfg
 fi
 if [ ! -f "/usr/local/ncpa/etc/ncpa.cfg.d/example.cfg" ]; then
-    cp -p %{_datadir}/ncpa/ncpa.cfg.d/example.cfg.sample /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
+    cp -p /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg.sample /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 fi
 
 
@@ -231,8 +231,8 @@ fi
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
-/usr/local/ncpa/etc/ncpa.cfg.d/example.cfg.sample
 /usr/local/ncpa/etc/ncpa.cfg.d/README.txt
+/usr/local/ncpa/etc/ncpa.cfg.d/example.cfg.sample
 
 %defattr(0640,root,nagios,0755)
 /usr/lib/systemd/system/ncpa.service
