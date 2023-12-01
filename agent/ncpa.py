@@ -281,6 +281,7 @@ class Listener(Base):
             http_server.serve_forever()
             logger.debug("run() - http_server running")
 
+        # If we fail to start in dual stack mode, try IPv4 only
         except SocketError as e:
             if address == '::':
                 logging.info("Failed to start in dual stack mode: %s", e)
