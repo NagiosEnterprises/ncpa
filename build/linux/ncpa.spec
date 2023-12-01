@@ -119,6 +119,9 @@ mkdir -p /usr/local/ncpa/etc/ncpa.cfg.d
 if [ ! -f "/usr/local/ncpa/etc/ncpa.cfg" ]; then
     cp -p %{_datadir}/ncpa/ncpa.cfg.sample /usr/local/ncpa/etc/ncpa.cfg
 fi
+if [ ! -f "/usr/local/ncpa/etc/ncpa.cfg.d/example.cfg" ]; then
+    cp -p %{_datadir}/ncpa/ncpa.cfg.d/example.cfg /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
+fi
 
 
 if command -v systemctl &> /dev/null; then
