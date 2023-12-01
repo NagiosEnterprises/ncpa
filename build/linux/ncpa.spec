@@ -231,6 +231,7 @@ fi
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
+/usr/local/ncpa/etc/ncpa.cfg.d/example.cfg.sample
 /usr/local/ncpa/etc/ncpa.cfg.d/README.txt
 
 %defattr(0640,root,nagios,0755)
