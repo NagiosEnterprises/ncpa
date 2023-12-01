@@ -40,6 +40,7 @@ from configparser import ConfigParser
 from gevent.pool import Pool
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
+from socket import error as SocketError
 from io import open
 from logging.handlers import RotatingFileHandler
 from multiprocessing import Process, Value, freeze_support
@@ -279,6 +280,21 @@ class Listener(Base):
             logger.debug("run() - start http_server")
             http_server.serve_forever()
             logger.debug("run() - http_server running")
+
+        except SocketError as e:
+            if address == '::':
+                logging.info("Failed to start in dual stack mode: %s", e)
+                logging.info("Trying IPv4 only")
+            else: 
+                logging.exception("run() - exception: %s", e)
+            address = '0.0.0.0'
+            http_server = WSGIServer(listener=(address, port),
+                                        application=listener.server.listener,
+                                        handler_class=WebSocketHandler,
+                                        log=listener_logger,
+                                        spawn=Pool(max_connections),
+                                        **ssl_context)
+            http_server.serve_forever()
 
         except Exception as e:
             logger.exception("exception: %s", e)
