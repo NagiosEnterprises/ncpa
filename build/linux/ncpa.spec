@@ -111,6 +111,15 @@ dir=$RPM_INSTALL_PREFIX/ncpa
 sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa
 sed -i "s|_BASEDIR_|$dir|" /usr/lib/systemd/system/ncpa.service
 
+# Create directories if they don't exist (Debian install issue if they removed them manually)
+mkdir -p /usr/local/ncpa/etc
+mkdir -p /usr/local/ncpa/etc/ncpa.cfg.d
+
+# Copy default config file if it doesn't exist
+if [ ! -f "/usr/local/ncpa/etc/ncpa.cfg" ]; then
+    cp -p %{_datadir}/ncpa/ncpa.cfg.sample /usr/local/ncpa/etc/ncpa.cfg
+fi
+
 
 if command -v systemctl &> /dev/null; then
     systemctl enable ncpa &> /dev/null
