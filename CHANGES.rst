@@ -3,6 +3,10 @@ Changelog
 
 3.0.1 - 11/XX/2023
 ==================
+**Updates**
+
+- Updated more documentation to reflect changes in NCPA 3.0.0 (Michael Bellerue)
+
 **Bug Fixes**
 
 - Fixed an issue where the API ordering varied from NCPA 2, breaking historical data. (Blake Bahner)
