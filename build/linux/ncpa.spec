@@ -144,22 +144,38 @@ fi
 # TODO: Make upgrades from NCPA 2 -> 3 seemless (stop old services)
 if [ "$1" != "1" ]; then
     if which chkconfig &> /dev/null; then
-        /usr/local/ncpa/ncpa_listener --stop &> /dev/null
-        /usr/local/ncpa/ncpa_passive --stop &> /dev/null
-        chkconfig --del ncpa_listener
-        chkconfig --del ncpa_passive
+        if [ -f /usr/local/ncpa/ncpa_listener ]; then
+            /usr/local/ncpa/ncpa_listener --stop &> /dev/null
+        fi
+        if [ -f /usr/local/ncpa/ncpa_passive ]; then
+            /usr/local/ncpa/ncpa_passive --stop &> /dev/null
+        fi
+        chkconfig ncpa_listener && chkconfig --del ncpa_listener &> /dev/null
+        chkconfig ncpa_passive && chkconfig --del ncpa_passive &> /dev/null
     fi
     if command -v systemctl &> /dev/null
     then
-        systemctl stop ncpa_listener
-        systemctl stop ncpa_passive
-        systemctl stop ncpa
+        if systemctl is-active --quiet ncpa_listener; then
+            systemctl stop ncpa_listener
+        fi
+        if systemctl is-active --quiet ncpa_passive; then
+            systemctl stop ncpa_passive
+        fi
+        if systemctl is-active --quiet ncpa; then
+            systemctl stop ncpa
+        fi
     fi
     if command -v service &> /dev/null
     then
-        service ncpa_listener stop
-        service ncpa_passive stop
-        service ncpa stop
+        if service ncpa_listener status &> /dev/null; then
+            service ncpa_listener stop
+        fi
+        if service ncpa_passive status &> /dev/null; then
+            service ncpa_passive stop
+        fi
+        if service ncpa status &> /dev/null; then
+            service ncpa stop
+        fi
     fi
 fi
 

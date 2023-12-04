@@ -45,9 +45,15 @@ if [ ${upgrade} -eq "1" ]; then
     echo "Done."
 
     echo -n "    Stopping old NCPA services... "
-    launchctl stop com.nagios.ncpa.listener
-    launchctl stop com.nagios.ncpa.passive
-    launchctl stop com.nagios.ncpa
+    if launchctl list | grep -q "com.nagios.ncpa.listener"; then
+        launchctl stop com.nagios.ncpa.listener
+    fi
+    if launchctl list | grep -q "com.nagios.ncpa.passive"; then
+        launchctl stop com.nagios.ncpa.passive
+    fi
+    if launchctl list | grep -q "com.nagios.ncpa"; then
+        launchctl stop com.nagios.ncpa
+    fi
 
     # Give launchctl time to stop services before continuing
     sleep 5
