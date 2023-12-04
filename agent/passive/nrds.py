@@ -4,7 +4,7 @@ import passive.nagioshandler
 import passive.utils
 import tempfile
 import re
-import logging
+from ncpa import passive_logger as logging
 import os
 import configparser as cp
 
@@ -97,7 +97,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 temp_config.write(nrds_response)
                 temp_config.seek(0)
 
-                test_config = cp.ConfigParser()
+                test_config = cp.ConfigParser(interpolation=None)
                 test_config.read_file(temp_config)
 
                 if not test_config.sections():

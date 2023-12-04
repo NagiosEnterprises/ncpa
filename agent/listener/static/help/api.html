@@ -751,16 +751,6 @@
                     <h4>services</h4>
                     <div class="container-fluid">
                         <div class="row" style="margin: 0 -30px;">
-                            <div class="col-sm-12">
-                                <p>
-                                    <div class="alert alert-warning">
-                                        <i class="fa fa-exclamation-triangle fa-14 fa-l"></i> <b>Warning!</b> In NCPA 2 the API endpoint for checking services was <em><b>deprecated</b></em> and will be removed in NCPA 3 and above. Example deprecated version: <b>service/&lt;servicename&gt;/&lt;status&gt;</b>
-                                    </div>
-                                </p>
-                                <p>This node is different than most of the standard nodes. When using just the <code>services</code> endpoint you will see a list of all services NCPA can find and their current state. You can select a single service by adding the <code>service=&lt;servicename&gt;</code> parameter. You can also turn the <code>service</code> parameter into a search by adding the <code>match=search</code> parameter to the query.</p>
-                            </div>
-                        </div>
-                        <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-6">
                                 <h6 style="margin-top: 1rem;">Example of Service Filtering</h6>
                                 <pre>https://localhost:5693/api/services?token=mytoken&service=sshd&service=httpd</pre>
@@ -840,11 +830,6 @@
 
                     <a name="api-modules-plugins"></a>
                     <h4>plugins</h4>
-                    <p>
-                        <div class="alert alert-warning">
-                            <i class="fa fa-exclamation-triangle fa-14 fa-l"></i> <b>Warning!</b> In NCPA 2 the API endpoint for <b>agent/plugin</b> was <em><b>deprecated</b></em> in favor of <b>plugins</b> and will be removed in NCPA 3 and above. Example deprecated version: <b>agent/plugin/&lt;plugin name&gt;</b>
-                        </div>
-                    </p>
                     <p>This module will show you a list of all available plugins (that are in the directory defined <code>plugin_path</code>) and let's you run them.</p>
                     <p>You can run a custom plugin by following this format in the URL:</p>
                     <pre>https://localhost:5693/api/plugins/&lt;plugin name&gt;/&lt;arg1&gt;/&lt;arg2&gt;/?token=mytoken</pre>

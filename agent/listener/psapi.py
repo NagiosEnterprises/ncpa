@@ -52,11 +52,11 @@ def make_disk_nodes(disk_name):
         disk_name,
         children=[
             read_time,
-            write_time,
-            read_count,
-            write_count,
             read_bytes,
+            write_count,
+            write_time,
             write_bytes,
+            read_count,
         ],
     )
 
@@ -83,17 +83,6 @@ def make_mountpoint_nodes(partition_name):
     )
     safe_mountpoint = re.sub(r"[\\/]+", "|", mountpoint)
 
-    node_children = [
-        total,
-        used,
-        free,
-        used_percent,
-        device_name,
-        fstype,
-        opts,
-        maxfile,
-        maxpath,
-    ]
 
     # Unix specific inode counter ~ sorry Windows! :'(
     if __SYSTEM__ != "nt":
@@ -111,14 +100,39 @@ def make_mountpoint_nodes(partition_name):
             inodes_used_percent = RunnableNode(
                 "inodes_used_percent", method=lambda: (iup, "%")
             )
-            node_children.append(inodes)
-            node_children.append(inodes_used)
-            node_children.append(inodes_free)
-            node_children.append(inodes_used_percent)
+
+            node_children = [
+                used_percent,
+                used,
+                maxfile,
+                inodes_used,
+                free,
+                device_name,
+                inodes_free,
+                inodes,
+                fstype,
+                total,
+                maxpath,
+                opts,
+                inodes_used_percent
+            ]
         except OSError as ex:
             # Log this error as debug only, normally means could not count inodes because
             # of some permissions or access related issues
             logging.exception(ex)
+
+    else:
+        node_children = [
+            used_percent,
+            used,
+            maxfile,
+            free,
+            device_name,
+            fstype,
+            total,
+            maxpath,
+            opts,
+        ]
 
     # Make and return the full parent node
     return RunnableParentNode(
@@ -159,14 +173,14 @@ def make_if_nodes(if_name):
         if_name,
         primary="bytes_sent",
         children=[
-            bytes_sent,
-            bytes_recv,
             packets_sent,
+            dropin,
+            bytes_recv,
             packets_recv,
             errin,
-            errout,
-            dropin,
             dropout,
+            bytes_sent,
+            errout,
         ],
     )
 
@@ -192,16 +206,16 @@ def get_system_node():
     return ParentNode(
         "system",
         children=[
-            sys_system,
             sys_node,
-            sys_release,
-            sys_version,
             sys_machine,
-            sys_processor,
             sys_uptime,
-            sys_agent,
-            sys_timezone,
+            sys_version,
             sys_time,
+            sys_release,
+            sys_timezone,
+            sys_agent,
+            sys_system,
+            sys_processor,
         ],
     )
 
@@ -223,7 +237,7 @@ def get_cpu_node():
         "idle", method=lambda: ([x.idle for x in ps.cpu_times(percpu=True)], "ms")
     )
     return ParentNode(
-        "cpu", children=[cpu_count, cpu_system, cpu_percent, cpu_user, cpu_idle]
+        "cpu", children=[cpu_count, cpu_idle, cpu_percent, cpu_system, cpu_user]
     )
 
 
@@ -244,10 +258,10 @@ def get_memory_node():
         primary="percent",
         primary_unit="%",
         children=(
-            mem_virt_total,
             mem_virt_available,
-            mem_virt_free,
+            mem_virt_total,
             mem_virt_percent,
+            mem_virt_free,
             mem_virt_used,
         ),
         custom_output="Memory usage was",
@@ -260,7 +274,6 @@ def get_memory_node():
     )
     mem_swap_used = RunnableNode("used", method=lambda: (ps.swap_memory().used, "B"))
     mem_swap_free = RunnableNode("free", method=lambda: (ps.swap_memory().free, "B"))
-    node_children = [mem_swap_total, mem_swap_free, mem_swap_percent, mem_swap_used]
 
     # sin and sout on Windows are always set to 0 ~ sorry Windows! :'(
     if environment.SYSTEM != "Windows":
@@ -270,8 +283,11 @@ def get_memory_node():
         mem_swap_out = RunnableNode(
             "swapped_out", method=lambda: (ps.swap_memory().sout, "B")
         )
-        node_children.append(mem_swap_in)
-        node_children.append(mem_swap_out)
+
+        node_children = [mem_swap_used, mem_swap_out, mem_swap_in, mem_swap_total, mem_swap_percent, mem_swap_free]
+    else:
+        node_children = [mem_swap_used, mem_swap_total, mem_swap_percent, mem_swap_free]
+
 
     mem_swap = RunnableParentNode(
         "swap",
@@ -338,7 +354,7 @@ def get_disk_node(config):
     disk_physical = ParentNode("physical", children=disk_counters)
     disk_mount = ParentNode("mount", children=disk_parts)
 
-    return ParentNode("disk", children=[disk_physical, disk_logical, disk_mount])
+    return ParentNode("disk", children=[disk_mount, disk_logical, disk_physical])
 
 
 def get_interface_node():

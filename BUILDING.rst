@@ -17,54 +17,22 @@ THE BUILD SCRIPT WILL MAKE CHANGES TO THE SYSTEM THAT MAY BE INCOMPATIBLE WITH O
 Building on Windows
 ===================
 
-**Prerequisites for Windows** (Installing some of these prerequisites requires admin rights)
--------------------------
+*Note: The current Windows pre-build script is written in batch and
+must be executed by cmd.exe. For this reason, any Windows commands
+listed in this document will be written with cmd.exe compatibility
+in mind.*
 
-* `Git for Windows <https://git-scm.com/download/win>`_
-* `Python 3.11.x <https://www.python.org/downloads/>`_
-* `NSIS 3 <http://nsis.sourceforge.net/Download>`_
+*Note: The current Windows build should be run on a Windows machine without Python installed.*
 
-Configure the Windows Build Environment
--------------------------------
+Install the Prerequisites/Build NCPA
+------------------------------------
 
-Install Prerequisites
-~~~~~~~~~~~~~~~~~~~~~
+From a command prompt with Administrative priveleges run::
 
-* Git
+  cd /path/to/ncpa/build/
+  build_windows.bat
 
-  1. Download and install Git for Windows. (`see prerequisites <#prerequisites>`_)
-
-* Python
-
-  1. Download and install Python 3.x. (`see prerequisites <#prerequisites>`_)
-  2. Execute the installer as usual, making sure to check the box to add Python to your PATH (on the first page).
-
-* NSIS
-
-  1. Download and run the installer. (`see prerequisites <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#prerequisites>`_)
-
-* pip
-
-  * Pip is installed alongside python by default but should be updated before continuing::
-
-      py -m pip install --upgrade pip
-
-Note: py should be the command to run python 3. If it is not, you may need to use the full path to the python executable.
-
-Build NCPA
-----------
-
-In your Git Bash terminal (or cmd.exe with ``C:\Program Files\Git\usr\bin`` added to your PATH), run the following commands:
-
-Navigate to your desired build directory and clone the repository::
-
-  cd /c/desired/build/directory
-  git clone https://github.com/NagiosEnterprises/ncpa.git
-
-In a Command Prompt/Terminal (cmd.exe) terminal with admin rights, run the following commands::
-
-  cd C:\desired\build\directory\ncpa
-  py build\build_windows.py
+This will use Chocolatey to install various prerequisites for building NCPA and then build NCPA. If you have not yet built NCPA 3 on your machine, the script will likely tell you that a reboot is required/pending. This means that you need to restart your machine and then rerun the script and it will continue the installation/build processes. This may happen several times during the installation process.
 
 This will create a file called ``ncpa-<version>.exe`` in the ``build`` directory.
 This is the installer for NCPA and can be used to install NCPA on a Windows system.
@@ -79,13 +47,13 @@ In most cases, building on the distribution that is targeted, e.g. building on U
 
 To start, clone the repository in your directory::
 
-  cd ~
-  git clone https://github.com/NagiosEnterprises/ncpa
+   cd ~
+   git clone https://github.com/NagiosEnterprises/ncpa
 
 Now run the setup scripts to install the requirements::
 
-  cd ncpa/build
-  ./build.sh
+   cd ncpa/build
+   ./build.sh
 
 Follow the prompts to setup the system. When running the build.sh script it will setup
 the system and build the ncpa binary.
@@ -94,23 +62,23 @@ the system and build the ncpa binary.
 **Install on the target Linux server**
 --------------------------------
 
-  Copy the resulting ~/ncpa/build/ncpa-3.x.x-x.x86_64.rpm or ncpa_3.x.x-x_amd64.deb to the desired server and install using the appropriate package system:
+Copy the resulting ~/ncpa/build/ncpa-3.X.X-latest.x86_64.rpm or ncpa_3.X.X-latest_amd64.deb to the desired server and install using the appropriate package system:
 
   On CentOS/RHEL/Oracle/Amazon/Rocky::
 
-    yum install ./ncpa-3.x.x-1.x86_64.rpm
+    yum install ./ncpa-3.X.X-latest.x86_64.rpm
 
-  On Ubuntu 16+/Debian 9+::
+  On Ubuntu 18+/Debian 10+::
 
-    apt install ./ncpa_3.0.0-1._amd64.deb
+    dpkg -i ./ncpa_3.X.X-latest._amd64.deb
 
-  On Ubuntu 14/Debian 8 (not supported, but may work)::
+  On Ubuntu 14-16/Debian 8-9 (not supported, but may work)::
 
-    dpkg --force-depends -i ./ncpa_3.0.0-1._amd64.deb
+    dpkg --force-depends -i ./ncpa_3.X.X-latest._amd64.deb
 
   On OpenSuSE/SLES::
 
-    zypper install ./ncpa-3.x.x-1.x86_64.rpm
+    zypper install ./ncpa-3.X.X-latest.x86_64.rpm
 
 
 Building on MacOS

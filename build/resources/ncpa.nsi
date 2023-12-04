@@ -59,7 +59,7 @@ Var status_service
 OutFile "ncpa-${NCPA_VERSION}.exe"
 
 ; The installer styling
-; !define MUI_ICON "NCPA\build_resources\ncpa.ico"
+!define MUI_ICON "NCPA\build_resources\ncpa.ico"
 !define MUI_WELCOMEFINISHPAGE_BITMAP "NCPA\build_resources\nagios_installer.bmp"
 !define MUI_UNWELCOMEFINISHPAGE_BITMAP "NCPA\build_resources\nagios_installer.bmp"
 !define MUI_HEADERIMAGE
@@ -413,19 +413,19 @@ Section ""
     ; Install the service on new install
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c diskperf -Y'
-    nsExec::Exec '$9 /c sc create NCPA binPath= "$INSTDIR\ncpa.exe" start= delayed-auto'
+    nsExec::Exec '$9 /c sc create NCPA binPath= "\"$INSTDIR\ncpa.exe\"" DisplayName= "Nagios Cross-Platform Agent" start= auto'
 
-    ; Start the listener and passive services
+    ; Start the NCPA service
     nsExec::Exec '$9 /c sc start NCPA'
 
     ${If} $installed == "0"
         nsExec::Exec '$9 /c diskperf -Y'
-        nsExec::Exec '$9 /c sc create NCPA binPath= "$INSTDIR\ncpa.exe" start= auto'
+        nsExec::Exec '$9 /c sc create NCPA binPath= "\"$INSTDIR\ncpa.exe\"" DisplayName= "Nagios Cross-Platform Agent" start= auto'
         nsExec::Exec '$9 /c netsh advfirewall firewall add rule name="NCPA" dir=in action=allow protocol=TCP localport=${PORT}'
         nsExec::Exec '$9 /c sc start NCPA'
     ${EndIf}
 
-    ; Start the listener and passive services
+    ; Start the NCPA service
     ; if they were running before upgrade (or if this is a new install)
 
     ${If} $status_service == "1"

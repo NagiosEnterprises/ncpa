@@ -6,7 +6,7 @@ echo -e "\n***** macos/package.sh"
 DIR=$( cd "$(dirname "$0")" ; pwd -P )
 BUILD_DIR="$DIR/.."
 NCPA_VER=$(cat $BUILD_DIR/../VERSION)
-RELEASE="beta02"
+RELEASE="latest"
 ARCH=$(uname -m)
 
 (
@@ -43,7 +43,7 @@ ARCH=$(uname -m)
         parentlib=$(echo ${fixlib} | cut -f3 -d~)
         echo -e "\n    Fixing: $parentlib"
         echo "    $oldlib -> $newlib"
-        install_name_tool -change $oldlib $newlib $parentlib
+        sudo install_name_tool -change $oldlib $newlib $parentlib
     done
 
     # Uncomment otool comands to have updated dynamic lib dependencies dispayed
@@ -52,14 +52,14 @@ ARCH=$(uname -m)
     echo -e "\nDone"
 
     echo -e "\nCopy other resources..."
-    mkdir NCPA-INSTALL-$NCPA_VER
-    mv ncpa-$NCPA_VER NCPA-INSTALL-$NCPA_VER/ncpa
-    cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosuninstall.sh NCPA-INSTALL-$NCPA_VER/ncpa/uninstall.sh
-    cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosreadme.txt NCPA-INSTALL-$NCPA_VER/readme.txt
-    mv NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$NCPA_VER/install.sh
+    sudo mkdir NCPA-INSTALL-$NCPA_VER
+    sudo mv ncpa-$NCPA_VER NCPA-INSTALL-$NCPA_VER/ncpa
+    sudo cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosuninstall.sh NCPA-INSTALL-$NCPA_VER/ncpa/uninstall.sh
+    sudo cp NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosreadme.txt NCPA-INSTALL-$NCPA_VER/readme.txt
+    sudo mv NCPA-INSTALL-$NCPA_VER/ncpa/build_resources/macosinstall.sh NCPA-INSTALL-$NCPA_VER/install.sh
 
     # Create MacOS disk image file
     echo -e "\nCreate .dmg file ..."
     RELEASE=$RELEASE"_"
-    hdiutil create -volname NCPA-$NCPA_VER -srcfolder NCPA-INSTALL-$NCPA_VER -ov -format UDZO ncpa_$NCPA_VER-$RELEASE$ARCH.dmg
+    sudo hdiutil create -volname NCPA-$NCPA_VER -srcfolder NCPA-INSTALL-$NCPA_VER -ov -format UDZO ncpa_$NCPA_VER-$RELEASE$ARCH.dmg
 )

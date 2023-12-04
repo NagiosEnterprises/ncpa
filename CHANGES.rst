@@ -1,36 +1,34 @@
 Changelog
 +++++++++
 
-3.0.0 - 06/14/2023
+3.0.1 - 11/XX/2023
 ==================
-**Operating Systems (64-bit)**
+**Bug Fixes**
 
-- CentOS 7+
-- RHEL 7+
-- Debian 9+
-- Ubuntu 16+
-- OpenSuSE 15+
-- SLES 15+
-- Oracle Linux 7+
-- Amazon Linux 2
-- Windows 8+
-- Windows Server 2012 R2+
-- MacOS 10.7+
+- Fixed an issue where the API ordering varied from NCPA 2, breaking historical data. (Blake Bahner)
+- Fixed an issue where NCPA would fail to start if IPv6 was disabled. (Blake Bahner)
+- Corrected several issues with NCPA 2 file removal during Debian system upgrades. (Blake Bahner, Jason Michaelson)
+- Disabled config interpolation to match the behavior of NCPA 2 and allow the `%` character to be unescaped in configuration files. (Blake Bahner)
+- Resolved errors appearing in Linux installs where the installation was actually successful. (Blake Bahner, Jason Michaelson)
+- Enhanced build process to support building on Oracle Linux 8 & 9. (Blake Bahner)
+- Added a check for NCPA 2 processes in Linux builds on distributions utilizing chkconfig. (Jason Michaelson)
+- Added various checks for NCPA services before attempting to interact with them. (Blake Bahner)
 
-*Note: As of NCPA v3.0.0, 32-bit platforms are no longer supported.*
-
+3.0.0 - 11/17/2023
+==================
 **Updates**
 
-- Updated the version of Python to 3.11.3 (PhreditorNG)
-- Updated to bundle OpenSSL v3.0.8 in all packages (Windows currently at v1.1.1t, but will use v3+ soon.) (PhreditorNG)
-- Updated to bundle zLib v1.2.13 in all packages (PhreditorNG)
-- Simplified building - building on CentOS 7 provides packages that will run on almost all Linux distributions (PhreditorNG)
+- Updated the bundled Python version to 3.11.3 (PhreditorNG)
+- Updated to bundle OpenSSLv3 in all packages (PhreditorNG/Blake Bahner)
+- Updated to bundle zLib in all packages (PhreditorNG)
+- Simplified environment setup and build process to use only one script (PhreditorNG/Blake Bahner)
 - The listener and passive services/daemons are now combined into one service/daemon called ncpa
-- Can optionally run only Listener or Passive (PhreditorNG)
+- Added configuration option to allow only "Listener" or "Passive" functionality to be used (PhreditorNG)
 - Improved logging and installation output (PhreditorNG)
-- Systems with systemd now use a service definition instead of init.d script (PhreditorNG)
-- Listener web UI Admin section now accurately reflects current configuration (PhreditorNG)
+- Added systemd service file (PhreditorNG)
+- Listener web UI Admin section provides additional system information (PhreditorNG)
 - Updated jQuery to 3.6.4
+- Removed support for 32-bit systems.
 
 **Bug Fixes**
 

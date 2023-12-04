@@ -12,7 +12,7 @@ Downloads
 Current versions:
 
 +---------+-------------+-------------------------------------------------------+
-| Current | **3.0.0**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
+| Current | **3.0.1**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
 `Older Versions <https://www.nagios.org/ncpa/archive.php>`_
@@ -21,19 +21,20 @@ We currently build for the following operating systems on x86-64 architectures:
 
 - CentOS 7+
 - RHEL 7+
-- Debian 9+
-- Ubuntu 16+
+- Oracle 7+
+- Debian 10+
+- Ubuntu 18+
 - OpenSuSE 15+
 - SLES 15+
-- Oracle 7+
 - Amazon Linux 2
-- Windows 8+
-- Windows Server 2012 R2+
-- MacOS 10.11+
+- Windows 8.1+
+- Windows Server 2016+
+- MacOS Ventura+ (13+)
 
 Older systems that have been supported by NCPA in the past:
 
 - Mac OS X 10.7-10.10           - v2.4.0
+- Mac OS X 10.11-12             - v2.4.1
 - Raspbian 10 - Buster          - v2.2.2
 - Ubuntu 12.04                  - v2.1.4
 - Ubuntu 14.04                  - v2.2.2
@@ -78,3 +79,4 @@ While we recommend using the pre-built version above, sometimes you may find the
 +------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
 | `Building for Windows <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-windows>`_ | `Building for Linux <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-linux>`_ | `Building for Mac OS X <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-mac-os-x>`_ |
 +------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+

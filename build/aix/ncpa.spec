@@ -45,7 +45,9 @@ if [ "$1" == "1" ]; then
     fi
 elif [ "$1" = "2" ]; then
     # Upgrades require the daemons to be stopped
-    stopsrc -s ncpa -f >/dev/null 2>&1
+    if lssrc -s ncpa | grep -q "active"; then
+        stopsrc -s ncpa -f >/dev/null 2>&1
+    fi
     sleep 2
 fi
 
@@ -74,7 +76,10 @@ fi
 
 # Only stop on actual uninstall not upgrades
 if [ "$1" != "1" ]; then
-    stopsrc -s ncpa >/dev/null 2>&1
+
+    if lssrc -s ncpa | grep -q "active"; then
+        stopsrc -s ncpa >/dev/null 2>&1
+    fi
 
     # Make sure listener is stopped
     stopped=`lssrc -s ncpa | sed -n '$p' | awk '{print $NF}'`

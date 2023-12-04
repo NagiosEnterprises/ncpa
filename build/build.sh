@@ -5,7 +5,7 @@ echo -e "***** build/build.sh"
 # Global variables
 PYTHONVER="3.11.3"
 SSLVER="3.0.8"
-ZLIBVER="1.2.13"
+ZLIBVER="1.3"
 
 UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
@@ -113,6 +113,7 @@ done
 # Load required things for different systems
 echo -e "\nRunning build for: $UNAME"
 if [ "$UNAME" == "Linux" ]; then
+    export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin:$PATH
     . $BUILD_DIR/linux/setup.sh
 elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
     . $BUILD_DIR/solaris/setup.sh
@@ -133,7 +134,7 @@ if [ $BUILD_TRAVIS -eq 0 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; 
         read -r -p "Automatically install system pre-reqs? [Y/n] " resp
         if [[ $resp =~ ^(yes|y|Y| ) ]] || [[ -z $resp ]]; then
             install_prereqs
-            touch $BUILD_DIR/prereqs.installed
+            sudo touch $BUILD_DIR/prereqs.installed
         fi
     fi
 
@@ -164,9 +165,9 @@ clean_build_dir
 # Build the python with cx_Freeze
 cd $BUILD_DIR
 find $AGENT_DIR -name *.pyc -exec rm '{}' \;
-mkdir -p $AGENT_DIR/plugins
-mkdir -p $AGENT_DIR/build
-mkdir -p $AGENT_DIR/var/log
+sudo mkdir -p $AGENT_DIR/plugins
+sudo mkdir -p $AGENT_DIR/build
+sudo mkdir -p $AGENT_DIR/var/log
 # cat /dev/null > $AGENT_DIR/var/log/ncpa_passive.log
 # cat /dev/null > $AGENT_DIR/var/log/ncpa_listener.log
 
@@ -194,21 +195,22 @@ fi
     cd $AGENT_DIR
 
     echo -e "\nFreezing app (may take a minute)..."
-    $PYTHONBIN setup.py build_exe > $BUILD_DIR/build.log
+    $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
+
 
     echo -e "\nSet up packaging dirs..."
     # Move the ncpa binary data
     cd $BUILD_DIR
     sudo rm -rf $BUILD_DIR/ncpa
-    cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
-    echo $GIT_LONG >  $BUILD_DIR/ncpa/$GIT_HASH_FILE
+    sudo cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
+    echo $GIT_LONG | sudo tee $BUILD_DIR/ncpa/$GIT_HASH_FILE
 
     # REMOVE LIBFFI COPY - PLEASE CHANGE THIS LATER
     # It should be in .libs_cffi_backend for proper linking and
     # possibly in the future we will fix this but we have to include
     # the exact version ... this will delete the duplicate which should
     # have a special name like libffi-6322464e.so.6.0.4
-    rm -f $BUILD_DIR/ncpa/libffi-*.so.*
+    sudo rm -f $BUILD_DIR/ncpa/libffi-*.so.*
 
     # Set permissions
     sudo chmod -R g+r $BUILD_DIR/ncpa
@@ -222,14 +224,14 @@ fi
 
     # Build tarball
     echo -e "\nBuilding tarball..."
-    cp -rf ncpa ncpa-$NCPA_VER
+    sudo cp -rf ncpa ncpa-$NCPA_VER
     if [ "$UNAME" == "AIX" ]; then
         echo -e "***** Build tarball"
-        tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER >> $BUILD_DIR/build.log
-        gzip -f ncpa-$NCPA_VER.tar >> $BUILD_DIR/build.log
+        sudo tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER | sudo tee -a $BUILD_DIR/build.log
+        sudo gzip -f ncpa-$NCPA_VER.tar | sudo tee -a $BUILD_DIR/build.log
     elif [ "$UNAME" == "Linux" ]; then
         echo -e "***** Build tarball"
-        tar -czvf ncpa-$NCPA_VER.tar.gz ncpa-$NCPA_VER >> $BUILD_DIR/build.log
+        sudo tar -czvf ncpa-$NCPA_VER.tar.gz ncpa-$NCPA_VER | sudo tee -a $BUILD_DIR/build.log
     fi
 )
 
