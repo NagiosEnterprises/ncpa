@@ -83,8 +83,6 @@ fi
 if [ -e /etc/init.d/ncpa_passive ]; then
     rm -f /etc/init.d/ncpa_passive
 fi
-rm /etc/rc*.d/*ncpa_listener
-rm /etc/rc*.d/*ncpa_passive
 
 if ! getent group nagios &> /dev/null
 then
