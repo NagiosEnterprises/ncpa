@@ -43,20 +43,6 @@ touch %{buildroot}/usr/local/ncpa/var/ncpa.db
 chown nagios:nagios %{buildroot}/usr/local/ncpa -R
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-init %{buildroot}/etc/init.d/ncpa
 
-if which update-rc.d >/dev/null 2>&1; then
-    update-rc.d -f ncpa_listener remove
-    update-rc.d -f ncpa_passive remove
-fi
-
-if [ -e /etc/init.d/ncpa_listener ]; then
-    rm -f /etc/init.d/ncpa_listener
-fi
-if [ -e /etc/init.d/ncpa_passive ]; then
-    rm -f /etc/init.d/ncpa_passive
-fi
-rm /etc/rc*.d/*ncpa_listener
-rm /etc/rc*.d/*ncpa_passive
-
 mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-service %{buildroot}/usr/lib/systemd/system/ncpa.service
 
@@ -85,6 +71,20 @@ then
     service --status-all 2>&1 | grep -Fq 'ncpa_passive' && service ncpa_passive stop &> /dev/null || true
     service ncpa stop &> /dev/null || true
 fi
+
+
+if which update-rc.d >/dev/null 2>&1; then
+    update-rc.d -f ncpa_listener remove
+    update-rc.d -f ncpa_passive remove
+fi
+if [ -e /etc/init.d/ncpa_listener ]; then
+    rm -f /etc/init.d/ncpa_listener
+fi
+if [ -e /etc/init.d/ncpa_passive ]; then
+    rm -f /etc/init.d/ncpa_passive
+fi
+rm /etc/rc*.d/*ncpa_listener
+rm /etc/rc*.d/*ncpa_passive
 
 if ! getent group nagios &> /dev/null
 then
