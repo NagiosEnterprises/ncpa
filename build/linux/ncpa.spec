@@ -48,12 +48,14 @@ if which update-rc.d >/dev/null 2>&1; then
     update-rc.d -f ncpa_passive remove
 fi
 
-if [ -e %{buildroot}/etc/init.d/ncpa_listener ]; then
-    rm -f %{buildroot}/etc/init.d/ncpa_listener
+if [ -e /etc/init.d/ncpa_listener ]; then
+    rm -f /etc/init.d/ncpa_listener
 fi
-if [ -e %{buildroot}/etc/init.d/ncpa_passive ]; then
-    rm -f %{buildroot}/etc/init.d/ncpa_passive
+if [ -e /etc/init.d/ncpa_passive ]; then
+    rm -f /etc/init.d/ncpa_passive
 fi
+rm /etc/rc*.d/*ncpa_listener
+rm /etc/rc*.d/*ncpa_passive
 
 mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-service %{buildroot}/usr/lib/systemd/system/ncpa.service
