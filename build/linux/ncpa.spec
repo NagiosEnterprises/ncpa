@@ -77,12 +77,6 @@ if which update-rc.d >/dev/null 2>&1; then
     update-rc.d -f ncpa_listener remove
     update-rc.d -f ncpa_passive remove
 fi
-if [ -e /etc/init.d/ncpa_listener ]; then
-    rm -f /etc/init.d/ncpa_listener
-fi
-if [ -e /etc/init.d/ncpa_passive ]; then
-    rm -f /etc/init.d/ncpa_passive
-fi
 
 if ! getent group nagios &> /dev/null
 then
@@ -101,6 +95,13 @@ else
 fi
 
 %post
+if [ -e /etc/init.d/ncpa_listener ]; then
+    rm -f /etc/init.d/ncpa_listener
+fi
+if [ -e /etc/init.d/ncpa_passive ]; then
+    rm -f /etc/init.d/ncpa_passive
+fi
+
 if [ -z $RPM_INSTALL_PREFIX ]
 then
     RPM_INSTALL_PREFIX="/usr/local"
