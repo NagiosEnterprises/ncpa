@@ -1,6 +1,23 @@
 Changelog
 +++++++++
 
+3.0.1 - 12/13/2023
+==================
+**Updates**
+
+- Updated more documentation to reflect changes in NCPA 3.0.0 (Michael Bellerue)
+
+**Bug Fixes**
+
+- Fixed an issue where the API ordering varied from NCPA 2, breaking historical data. (Blake Bahner)
+- Fixed an issue where NCPA would fail to start if IPv6 was disabled. (Blake Bahner)
+- Corrected several issues with NCPA 2 file removal during Debian system upgrades. (Blake Bahner, Jason Michaelson)
+- Disabled config interpolation to match the behavior of NCPA 2 and allow the `%` character to be unescaped in configuration files. (Blake Bahner)
+- Resolved errors appearing in Linux installs where the installation was actually successful. (Blake Bahner, Jason Michaelson)
+- Enhanced build process to support building on Oracle Linux 8 & 9. (Blake Bahner)
+- Added a check for NCPA 2 processes in Linux builds on distributions utilizing chkconfig. (Jason Michaelson)
+- Added various checks for NCPA services before attempting to interact with them. (Blake Bahner)
+
 3.0.0 - 11/17/2023
 ==================
 **Updates**

@@ -56,6 +56,15 @@ install_prereqs() {
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
         echo -e "***** linux/setup.sh - install_prereqs() - CentOS/RHEL"
 
+        if [ "$distro" == "Oracle" ]; then
+            if [ "$dist" == "ol8" ] || [ "$dist" == "ol9" ]; then
+                dnf -y install sudo
+                if [ "$dist" == "ol9" ]; then
+                    dnf -y install zlib-devel openssl-devel
+                fi
+            fi
+        fi
+
         if [ "$dist" == "el7" ]; then
             if [ -f /etc/yum.repos.d/epel.repo ]; then
                 echo -e "***** linux/setup.sh - fix yum.repos.d"

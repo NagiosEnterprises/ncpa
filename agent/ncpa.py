@@ -40,6 +40,7 @@ from configparser import ConfigParser
 from gevent.pool import Pool
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
+from socket import error as SocketError
 from io import open
 from logging.handlers import RotatingFileHandler
 from multiprocessing import Process, Value, freeze_support
@@ -69,7 +70,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.0.0'
+__VERSION__ = '3.0.1'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -279,6 +280,22 @@ class Listener(Base):
             logger.debug("run() - start http_server")
             http_server.serve_forever()
             logger.debug("run() - http_server running")
+
+        # If we fail to start in dual stack mode, try IPv4 only
+        except SocketError as e:
+            if address == '::':
+                logging.info("Failed to start in dual stack mode: %s", e)
+                logging.info("Trying IPv4 only")
+            else: 
+                logging.exception("run() - exception: %s", e)
+            address = '0.0.0.0'
+            http_server = WSGIServer(listener=(address, port),
+                                        application=listener.server.listener,
+                                        handler_class=WebSocketHandler,
+                                        log=listener_logger,
+                                        spawn=Pool(max_connections),
+                                        **ssl_context)
+            http_server.serve_forever()
 
         except Exception as e:
             logger.exception("exception: %s", e)
@@ -876,22 +893,17 @@ def get_configuration(config=None, configdir=None):
     """Get the configuration options and return the config parser for them"""
     parent_logger.debug("get_configuration()")
 
-    # Use default config/directory if none is given to us
-    if config is None:
-        config = os.path.join('etc', 'ncpa.cfg')
-        configdir = os.path.join('etc', 'ncpa.cfg.d', '*.cfg')
+    config = os.path.join('etc', 'ncpa.cfg')
+    configdir = os.path.join('etc', 'ncpa.cfg.d', '*.cfg')
 
-    # Get the configuration
-    config_filenames = [get_filename(config)]
-
-    # Add config directory if it is defined
-    if configdir is not None:
-        config_filenames.extend(sorted(glob.glob(get_filename(configdir))))
-
-    cp = ConfigParser()
+    cp = ConfigParser(interpolation=None)
     cp.optionxform = str
     cp.read_dict(cfg_defaults)
-    cp.read(config_filenames)
+    cp.read(get_filename(config))
+
+    if configdir is not None:
+        for config_file in sorted(glob.glob(get_filename(configdir))):
+            cp.read(config_file)
     return cp
 
 def chown(user_uid, user_gid, fn):

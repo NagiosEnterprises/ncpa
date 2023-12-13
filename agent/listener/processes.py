@@ -269,15 +269,15 @@ class ProcessNode(nodes.LazyNode):
             mem_rss, mem_vms = (0, "B"), (0, "B")
 
         return {
-            "pid": int(pid),
-            "name": name,
-            "exe": exe,
-            "cmd": cmd,
             "username": username,
-            "cpu_percent": (cpu_percent, "%"),
             "mem_percent": (mem_percent, "%"),
-            "mem_rss": mem_rss,
+            "exe": exe,
+            "name": name,
+            "cpu_percent": (cpu_percent, "%"),
             "mem_vms": mem_vms,
+            "cmd": cmd,
+            "pid": int(pid),
+            "mem_rss": mem_rss,
         }
 
     def get_process_dict(self, *args, **kwargs):
