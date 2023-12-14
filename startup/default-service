@@ -5,6 +5,7 @@ After=network.target local-fs.target
 
 [Service]
 ExecStart=_BASEDIR_/ncpa -n
+ExecStopPost=/usr/bin/rm -f /usr/local/ncpa/var/run/ncpa.pid
 
 [Install]
 WantedBy=multi-user.target
