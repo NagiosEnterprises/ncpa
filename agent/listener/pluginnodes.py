@@ -1,7 +1,7 @@
 import os
 import time
 import logging
-from configparser import ConfigParser
+from configparser import NoOptionError
 import subprocess
 import shlex
 import re
@@ -66,9 +66,10 @@ class PluginNode(nodes.RunnableNode):
             if extension.strip() == "":
                 return "$plugin_name $plugin_args"
             return config.get("plugin directives", extension)
-        except ConfigParser.NoOptionError:
+        except NoOptionError:
             return "$plugin_name $plugin_args"
-        else:
+        except Exception as e:
+            logging.error("Error processing plugin instructions: %r\nAttempting to run: %r", e, self.name)
             return "$plugin_name $plugin_args"
 
     def kill_proc(self, p, t):
