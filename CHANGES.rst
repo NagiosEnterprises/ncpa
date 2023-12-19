@@ -1,6 +1,12 @@
 Changelog
 +++++++++
 
+3.0.2 - 01/XX/2024
+==================
+**Bug Fixes**
+
+- Fixed an issue where plugins with unrecognized file extensions would not be executed. (Blake Bahner)
+
 3.0.1 - 12/13/2023
 ==================
 **Updates**
