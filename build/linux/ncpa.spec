@@ -1,6 +1,6 @@
 Name:           ncpa
 Version:        __VERSION__
-Release:        latest
+Release:        1
 Vendor:         Nagios Enterprises, LLC
 Summary:        A cross-platform active and passive monitoring agent
 BuildRoot:      __BUILDROOT__/BUILDROOT/
