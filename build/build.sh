@@ -3,7 +3,7 @@
 echo -e "***** build/build.sh"
 
 # Global variables
-PYTHONVER="3.11.6"
+PYTHONVER="3.12.1"
 SSLVER="3.2.0"
 ZLIBVER="1.3"
 
