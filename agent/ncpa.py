@@ -31,6 +31,7 @@ from zlib import ZLIB_VERSION as zlib_version
 import sys
 import tempfile
 import time
+import psutil
 
 import errno
 import signal
@@ -666,22 +667,26 @@ class Daemon():
                 msg = 'Pidfile %s contains a non-integer value' % self.pidfile
                 self.logger.debug(msg)
                 sys.exit(msg)
-            try:
-                os.kill(pid, 0)
-            except OSError as err:
-                if err.errno == errno.ESRCH:
-                    # The pid doesn't exist, so remove the stale pidfile.
-                    self.logger.debug("Daemon - check_pid() - The pid doesn't exist, so remove the stale pidfile")
-                    os.remove(self.pidfile)
+
+            # Check that the process ID corresponds to NCPA
+            process = psutil.Process(pid)
+            if process.name().lower() in ['ncpa', 'ncpa.exe']:
+                try:
+                    os.kill(pid, 0)
+                except OSError as err:
+                    if err.errno == errno.ESRCH:
+                        # The pid doesn't exist, so remove the stale pidfile.
+                        self.logger.debug("Daemon - check_pid() - The pid doesn't exist, so remove the stale pidfile")
+                        os.remove(self.pidfile)
+                    else:
+                        msg = ("Daemon - check_pid() - Failed to check status of process %s "
+                               "from pidfile %s: %s" % (pid, self.pidfile, err.strerror))
+                        self.logger.debug(msg)
+                        sys.exit(msg)
                 else:
-                    msg = ("Daemon - check_pid() - Failed to check status of process %s "
-                           "from pidfile %s: %s" % (pid, self.pidfile, err.strerror))
-                    self.logger.debug(msg)
+                    msg = ('Daemon - check_pid() - Another instance is already running (pid %s)' % pid)
+                    self.logger.warning(msg)
                     sys.exit(msg)
-            else:
-                msg = ('Daemon - check_pid() - Another instance is already running (pid %s)' % pid)
-                self.logger.warning(msg)
-                sys.exit(msg)
 
     def check_pid_writable(self):
         u"""Verify the user has access to write to the pid file.
