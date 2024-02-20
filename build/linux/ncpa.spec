@@ -1,6 +1,6 @@
 Name:           ncpa
 Version:        __VERSION__
-Release:        latest
+Release:        1
 Vendor:         Nagios Enterprises, LLC
 Summary:        A cross-platform active and passive monitoring agent
 BuildRoot:      __BUILDROOT__/BUILDROOT/
@@ -52,24 +52,30 @@ rm -rf %{buildroot}
 %pre
 if which chkconfig &> /dev/null; then
     echo "Try to stop services with chkconfig"
-    /usr/local/ncpa/ncpa_listener --stop &> /dev/null
-    /usr/local/ncpa/ncpa_passive --stop &> /dev/null
-    chkconfig --del ncpa_listener
-    chkconfig --del ncpa_passive
+    [ -f /usr/local/ncpa/ncpa_listener ] && /usr/local/ncpa/ncpa_listener --stop &> /dev/null
+    [ -f /usr/local/ncpa/ncpa_passive ] && /usr/local/ncpa/ncpa_passive --stop &> /dev/null
+    chkconfig ncpa_listener && chkconfig --del ncpa_listener &> /dev/null
+    chkconfig ncpa_passive && chkconfig --del ncpa_passive &> /dev/null
 fi
 if command -v systemctl &> /dev/null
 then
     echo "Try to stop services with systemctl"
-    systemctl stop ncpa_listener &> /dev/null || true
-    systemctl stop ncpa_passive &> /dev/null || true
+    systemctl list-units --full -all | grep -Fq 'ncpa_listener.service' && systemctl stop ncpa_listener &> /dev/null || true
+    systemctl list-units --full -all | grep -Fq 'ncpa_passive.service' && systemctl stop ncpa_passive &> /dev/null || true
     systemctl stop ncpa &> /dev/null || true
 fi
 if command -v service &> /dev/null
 then
     echo "Try to stop services with service"
-    service ncpa_listener stop &> /dev/null || true
-    service ncpa_passive stop &> /dev/null || true
+    service --status-all 2>&1 | grep -Fq 'ncpa_listener' && service ncpa_listener stop &> /dev/null || true
+    service --status-all 2>&1 | grep -Fq 'ncpa_passive' && service ncpa_passive stop &> /dev/null || true
     service ncpa stop &> /dev/null || true
+fi
+
+
+if which update-rc.d >/dev/null 2>&1; then
+    update-rc.d -f ncpa_listener remove
+    update-rc.d -f ncpa_passive remove
 fi
 
 if ! getent group nagios &> /dev/null
@@ -89,6 +95,13 @@ else
 fi
 
 %post
+if [ -e /etc/init.d/ncpa_listener ]; then
+    rm -f /etc/init.d/ncpa_listener
+fi
+if [ -e /etc/init.d/ncpa_passive ]; then
+    rm -f /etc/init.d/ncpa_passive
+fi
+
 if [ -z $RPM_INSTALL_PREFIX ]
 then
     RPM_INSTALL_PREFIX="/usr/local"
@@ -132,22 +145,38 @@ fi
 # TODO: Make upgrades from NCPA 2 -> 3 seemless (stop old services)
 if [ "$1" != "1" ]; then
     if which chkconfig &> /dev/null; then
-        /usr/local/ncpa/ncpa_listener --stop &> /dev/null
-        /usr/local/ncpa/ncpa_passive --stop &> /dev/null
-        chkconfig --del ncpa_listener
-        chkconfig --del ncpa_passive
+        if [ -f /usr/local/ncpa/ncpa_listener ]; then
+            /usr/local/ncpa/ncpa_listener --stop &> /dev/null
+        fi
+        if [ -f /usr/local/ncpa/ncpa_passive ]; then
+            /usr/local/ncpa/ncpa_passive --stop &> /dev/null
+        fi
+        chkconfig ncpa_listener && chkconfig --del ncpa_listener &> /dev/null
+        chkconfig ncpa_passive && chkconfig --del ncpa_passive &> /dev/null
     fi
     if command -v systemctl &> /dev/null
     then
-        systemctl stop ncpa_listener
-        systemctl stop ncpa_passive
-        systemctl stop ncpa
+        if systemctl is-active --quiet ncpa_listener; then
+            systemctl stop ncpa_listener
+        fi
+        if systemctl is-active --quiet ncpa_passive; then
+            systemctl stop ncpa_passive
+        fi
+        if systemctl is-active --quiet ncpa; then
+            systemctl stop ncpa
+        fi
     fi
     if command -v service &> /dev/null
     then
-        service ncpa_listener stop
-        service ncpa_passive stop
-        service ncpa stop
+        if service ncpa_listener status &> /dev/null; then
+            service ncpa_listener stop
+        fi
+        if service ncpa_passive status &> /dev/null; then
+            service ncpa_passive stop
+        fi
+        if service ncpa status &> /dev/null; then
+            service ncpa stop
+        fi
     fi
 fi
 
