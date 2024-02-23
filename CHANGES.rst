@@ -3,6 +3,12 @@ Changelog
 
 3.0.2 - 01/XX/2024
 ==================
+**Updates**
+
+- Updated the bundled Python version to 3.12.1 (Blake Bahner)
+- Added a filter to log output to remove tokens from the WSGI Server's log output. (Blake Bahner)
+
+
 **Bug Fixes**
 
 - Fixed an issue where plugins with unrecognized file extensions would not be executed. (Blake Bahner)
