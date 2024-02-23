@@ -48,6 +48,11 @@ from multiprocessing import Process, Value, freeze_support
 # Create the listener logger instance, now, because it is required by listener.server.
 # It will be configured later via setup_logger(). See note 'About Logging' below.
 listener_logger = logging.getLogger("listener")
+def tokenFilter(record):
+    if 'token' in record.msg:
+        record.msg = record.msg.replace(record.msg.split('=')[1], '********')
+    return True
+
 
 # NCPA-specific module imports
 import listener.server
@@ -833,6 +838,9 @@ if __SYSTEM__ == 'nt':
 
             logging.getLogger().addHandler(file_handler)
 
+            # Set Filter
+            logging.getLogger().addFilter(tokenFilter)
+
             # Set log level
             log_level_str = config.get('loglevel', 'INFO').upper()
             log_level = getattr(logging, log_level_str, logging.INFO)
@@ -963,6 +971,7 @@ def setup_logger(config, loggerinstance, logfile):
 
     for h in handlers:
         h.setFormatter(logging.Formatter("%(asctime)s %(name)s %(levelname)s %(message)s"))
+        h.addFilter(tokenFilter)
         h.setLevel(level)
         loggerinstance.addHandler(h)
 
