@@ -643,7 +643,7 @@ class Daemon():
             os.setgroups(gids)
             os.setuid(self.uid)
         except Exception as err:
-            logging.exception(err)
+            self.logger.exception(err)
 
     def chown(self, fn):
         """Change the ownership of a file to match the daemon uid/gid"""
