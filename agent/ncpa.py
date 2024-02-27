@@ -412,7 +412,7 @@ class Daemon():
 
         # Set the uid and gid
         try:
-            self.uid, self.gid = list(map(int, self.get_uid_gid(self.config, 'general')))
+            self.uid, self.gid, self.username = self.get_uid_gid(self.config, 'general')
         except ValueError as e:
             sys.exit(e)
 
@@ -632,16 +632,18 @@ class Daemon():
     def set_uid_gid(self):
         """Drop root privileges"""
         self.logger.debug("Daemon - set_uid_gid()")
-        if self.gid:
-            try:
-                os.setgid(self.gid)
-            except OSError as e:
-                self.logger.exception(e)
-        if self.uid:
-            try:
-                os.setuid(self.uid)
-            except OSError as e:
-                self.logger.exception(e)
+        # Get set of gids to set for OS groups
+        gids = [ self.gid ]
+        if self.username:
+            gids = [ g.gr_gid for g in grp.getgrall() if self.username in g.gr_mem ]
+
+        # Set the group, alt groups, and user
+        try:
+            os.setgid(self.gid)
+            os.setgroups(gids)
+            os.setuid(self.uid)
+        except Exception as err:
+            self.logger.exception(err)
 
     def chown(self, fn):
         """Change the ownership of a file to match the daemon uid/gid"""
@@ -753,7 +755,7 @@ class Daemon():
             else:
                 gid = int(user_gid)
 
-        return uid, gid
+        return uid, gid, username
 
     def daemonize(self):
         """Detach from the terminal and continue as a daemon"""
