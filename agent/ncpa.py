@@ -229,6 +229,7 @@ class Listener(Base):
                 port = self.config.getint('listener', 'port')
                 logger.debug("port: %s", port)
 
+                ssl_context = dict()
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
                 if  (ssl_str_ciphers == 'None'):
                     ssl_str_ciphers = ''
@@ -259,11 +260,9 @@ class Listener(Base):
             else:
                 cert, key = user_cert.split(',')
 
-            ssl_context = {
-                'certfile': cert,
-                'keyfile': key,
-                'ssl_version': ssl_version
-            }
+            ssl_context['certfile'] = cert
+            ssl_context['keyfile'] = key
+            ssl_context['ssl_version'] = ssl_version
 
             # Pass config to Flask instance
             listener.server.listener.config['iconfig'] = self.config
