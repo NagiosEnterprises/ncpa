@@ -501,9 +501,9 @@ class Daemon():
 
         try:
             # Chown the installed passive log file while root still has control
-            # Since the listner file is used for the root and parent loggers, it is chowned
+            # Since the listener file is used for the root and parent loggers, it is chowned
             # during the setup_logger process
-            if __SYSTEM__ == 'posix':
+            if __SYSTEM__ == 'posix' and os.path.isfile(self.passive_logfile):
                 chown(self.config.get('general', 'uid'), self.config.get('general', 'gid'), self.passive_logfile)
 
             # Setup with root privileges
