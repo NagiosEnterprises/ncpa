@@ -241,6 +241,7 @@ class Listener(Base):
                 port = self.config.getint('listener', 'port')
                 logger.debug("port: %s", port)
 
+                ssl_context = dict()
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
                 if  (ssl_str_ciphers == 'None'):
                     ssl_str_ciphers = ''
@@ -271,11 +272,9 @@ class Listener(Base):
             else:
                 cert, key = user_cert.split(',')
 
-            ssl_context = {
-                'certfile': cert,
-                'keyfile': key,
-                'ssl_version': ssl_version
-            }
+            ssl_context['certfile'] = cert
+            ssl_context['keyfile'] = key
+            ssl_context['ssl_version'] = ssl_version
 
             # Pass config to Flask instance
             listener.server.listener.config['iconfig'] = self.config
@@ -424,7 +423,7 @@ class Daemon():
 
         # Set the uid and gid
         try:
-            self.uid, self.gid = list(map(int, self.get_uid_gid(self.config, 'general')))
+            self.uid, self.gid, self.username = self.get_uid_gid(self.config, 'general')
         except ValueError as e:
             sys.exit(e)
 
@@ -513,9 +512,9 @@ class Daemon():
 
         try:
             # Chown the installed passive log file while root still has control
-            # Since the listner file is used for the root and parent loggers, it is chowned
+            # Since the listener file is used for the root and parent loggers, it is chowned
             # during the setup_logger process
-            if __SYSTEM__ == 'posix':
+            if __SYSTEM__ == 'posix' and os.path.isfile(self.passive_logfile):
                 chown(self.config.get('general', 'uid'), self.config.get('general', 'gid'), self.passive_logfile)
 
             # Setup with root privileges
@@ -644,16 +643,18 @@ class Daemon():
     def set_uid_gid(self):
         """Drop root privileges"""
         self.logger.debug("Daemon - set_uid_gid()")
-        if self.gid:
-            try:
-                os.setgid(self.gid)
-            except OSError as e:
-                self.logger.exception(e)
-        if self.uid:
-            try:
-                os.setuid(self.uid)
-            except OSError as e:
-                self.logger.exception(e)
+        # Get set of gids to set for OS groups
+        gids = [ self.gid ]
+        if self.username:
+            gids = [ g.gr_gid for g in grp.getgrall() if self.username in g.gr_mem ]
+
+        # Set the group, alt groups, and user
+        try:
+            os.setgid(self.gid)
+            os.setgroups(gids)
+            os.setuid(self.uid)
+        except Exception as err:
+            self.logger.exception(err)
 
     def chown(self, fn):
         """Change the ownership of a file to match the daemon uid/gid"""
@@ -765,7 +766,7 @@ class Daemon():
             else:
                 gid = int(user_gid)
 
-        return uid, gid
+        return uid, gid, username
 
     def daemonize(self):
         """Detach from the terminal and continue as a daemon"""
