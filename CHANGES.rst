@@ -5,7 +5,6 @@ Changelog
 ==================
 **Updates**
 
-- Updated the bundled Python version to 3.12.1 (Blake Bahner)
 - Added a filter to log output to remove tokens from the WSGI Server's log output. (Blake Bahner)
 
 
