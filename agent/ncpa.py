@@ -687,8 +687,18 @@ class Daemon():
                 sys.exit(msg)
 
             # Check that the process ID corresponds to NCPA
-            process = psutil.Process(pid)
-            if process.name().lower() in ['ncpa', 'ncpa.exe']:
+            process_exists = False
+            try:
+                process = psutil.Process(pid)
+                if process.name().lower() in ['ncpa', 'ncpa.exe']:
+                    process_exists = True
+            except psutil.NoSuchProcess:
+                pass
+
+            if not process_exists:
+                self.logger.debug("Daemon - check_pid() - The process with PID %s is not running. Removing the stale pidfile.", pid)
+                os.remove(self.pidfile)
+            if process_exists:
                 try:
                     os.kill(pid, 0)
                 except OSError as err:
@@ -698,7 +708,7 @@ class Daemon():
                         os.remove(self.pidfile)
                     else:
                         msg = ("Daemon - check_pid() - Failed to check status of process %s "
-                               "from pidfile %s: %s" % (pid, self.pidfile, err.strerror))
+                            "from pidfile %s: %s" % (pid, self.pidfile, err.strerror))
                         self.logger.debug(msg)
                         sys.exit(msg)
                 else:
