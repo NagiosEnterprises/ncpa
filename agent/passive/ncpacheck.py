@@ -82,10 +82,10 @@ class NCPACheck(object):
 
         errors = {}
 
-        if stdout is None:
+        if not stdout:
             errors["output"] = "No output from check."
             stdout = "No output from check."
-        if returncode is None:
+        if not returncode:
             errors["returnCode"] = "No return code from check."
             returncode = 3
         if errors:
