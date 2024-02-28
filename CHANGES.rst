@@ -6,7 +6,7 @@ Changelog
 **Updates**
 
 - Added a filter to log output to remove tokens from the WSGI Server's log output. (Blake Bahner)
-- Updated the bundled Python version to 3.11.8 and OpenSSL versions to 3.0.13 to resolve CVEs. (Blake Bahner)
+- Updated the bundled Python version to 3.11.8 and OpenSSL version to 3.0.13 to resolve CVEs. (Blake Bahner)
 
 **Bug Fixes**
 
