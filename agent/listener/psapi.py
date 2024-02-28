@@ -48,6 +48,23 @@ def make_disk_nodes(disk_name):
         "write_bytes",
         method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_bytes, "B"),
     )
+    if __SYSTEM__ == "posix":
+        busy_time = RunnableNode(
+            "busy_time",
+            method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].busy_time, "ms"),
+        )
+        return ParentNode(
+            disk_name,
+            children=[
+                read_time,
+                read_bytes,
+                write_count,
+                write_time,
+                write_bytes,
+                read_count,
+                busy_time,
+            ],
+        )
     return ParentNode(
         disk_name,
         children=[
