@@ -15,7 +15,7 @@ loglevel = info
 gid = nagios
 sleep = 300
 logfile = var/log/ncpa_passive.log
-pidfile = var/ncpa_passive.pid
+pidfile = var/ncpa.pid
 
 [nrdp]
 token ={token}
