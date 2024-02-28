@@ -3,6 +3,10 @@ Changelog
 
 3.0.2 - ??/??/2024
 ==================
+**Updates**
+
+- Updated the bundled Python version to 3.11.8 and OpenSSL versions to 3.0.13 to resolve CVEs. (Blake Bahner)
+
 **Bug Fixes**
 
 - Fixed an issue where plugins with unrecognized file extensions would not be executed. (Blake Bahner)
