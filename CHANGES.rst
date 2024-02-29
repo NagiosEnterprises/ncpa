@@ -19,6 +19,7 @@ Changelog
 - Fixed a documentation issue where the pid file name was not updated to reflect the NCPA 3 changes. (Blake Bahner)
 - Fixed an issue where NCPA would crash if a plugin had no output. (Blake Bahner)
 - Fixed an issue where Windows logs with a different date format would fail to parse. (gittethis)
+- Fixed an issue where certain RHEL systems would fail to start NCPA on reboot. (Blake Bahner)
 
 3.0.1 - 12/13/2023
 ==================
