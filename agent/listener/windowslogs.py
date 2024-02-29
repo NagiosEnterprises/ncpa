@@ -593,7 +593,7 @@ def get_event_logs(server, name, filters):
                             raise StopIteration
                         s1 = str(time_created_value)
                         date_part, offset_part = s1.rsplit('+', 1)
-                        temp_date=datetime.datetime.strptime(str(date_part),formatted_string)
+                        temp_date=datetime.datetime.strptime(str(date_part),date_format1)
 						
                         # Parse and adjust the timezone offset
                         hours_offset = int(offset_part[:2])
@@ -602,7 +602,7 @@ def get_event_logs(server, name, filters):
                         if offset_part[0] == '-':
                             timezone_offset = -timezone_offset
                         temp_date -=timezone_offset
-                        time_from_event=temp_date.strftime(formatted_string)
+                        time_from_event=temp_date.strftime(date_format1)
                         time_generated = datetime_from_event_date(time_from_event)          
                         if time_generated < logged_after:
                             raise StopIteration
