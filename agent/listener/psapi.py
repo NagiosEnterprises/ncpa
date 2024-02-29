@@ -132,7 +132,7 @@ def make_mountpoint_nodes(partition_name):
                 total,
                 maxpath,
                 opts,
-                inodes_used_percent
+                inodes_used_percent,
             ]
         except OSError as ex:
             # Log this error as debug only, normally means could not count inodes because
