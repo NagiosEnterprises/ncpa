@@ -50,7 +50,7 @@ from multiprocessing import Process, Value, freeze_support
 # It will be configured later via setup_logger(). See note 'About Logging' below.
 listener_logger = logging.getLogger("listener")
 def tokenFilter(record):
-    if 'token' in record.msg:
+    if record.msg and 'token' in record.msg:
         parts = record.msg.split('token=')
         new_parts = [parts[0]]
         for part in parts[1:]:

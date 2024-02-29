@@ -90,7 +90,7 @@ class NCPACheck(object):
             returncode = 3
         if errors:
             error_messages = ', '.join(f"{key}: {value}" for key, value in errors.items())
-            self.logger.error(f"Errors: {error_messages}")
+            logging.error(f"Errors: {error_messages}")
 
         # Save returned check results to the DB if we don't error out
         db = database.DB()
