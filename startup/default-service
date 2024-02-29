@@ -5,6 +5,7 @@ After=network.target local-fs.target
 
 [Service]
 ExecStart=_BASEDIR_/ncpa -n
+ExecStop=_BASEDIR_/ncpa --stop
 
 [Install]
 WantedBy=multi-user.target
