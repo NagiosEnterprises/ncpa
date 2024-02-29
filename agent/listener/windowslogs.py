@@ -64,8 +64,8 @@ class WindowsLogsNode(listener.nodes.LazyNode):
     global stdLogs
     global date_format1, date_format2
     stdLogs = ['Application','System','Security','Setup','Forwarded Events']
-    formatted_string = '%Y-%m-%d %H:%M:%S.%f'
-    formatted_string2 = '%Y-%m-%d %H:%M:%S'								   
+    date_format1 = '%Y-%m-%d %H:%M:%S.%f'
+    date_format2 = '%Y-%m-%d %H:%M:%S'								   
     def walk(self, *args, **kwargs):
         logtypes = get_logtypes(kwargs)
         filters = get_filter_dict(kwargs)
