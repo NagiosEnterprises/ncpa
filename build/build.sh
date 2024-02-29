@@ -5,7 +5,7 @@ echo -e "***** build/build.sh"
 # Global variables
 PYTHONVER="3.11.8"
 SSLVER="3.0.13"
-ZLIBVER="1.3"
+ZLIBVER="1.3.1"
 
 UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then

@@ -64,7 +64,7 @@ install_zlib() {
     echo -e "Building zLib $zLib_new_version...\n"
 
     pushd /usr/src
-    wget https://zlib.net/zlib-$zLib_new_version.tar.gz --no-check-certificate
+    wget https://zlib.net/fossils/zlib-$zLib_new_version.tar.gz --no-check-certificate
     tar -zxf zlib-$zLib_new_version.tar.gz
 
     pushd zlib-$zLib_new_version
