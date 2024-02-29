@@ -62,7 +62,7 @@ import platform
 class WindowsLogsNode(listener.nodes.LazyNode):
 
     global stdLogs
-    global formatted_string, formatted_string2		  
+    global date_format1, date_format2
     stdLogs = ['Application','System','Security','Setup','Forwarded Events']
     formatted_string = '%Y-%m-%d %H:%M:%S.%f'
     formatted_string2 = '%Y-%m-%d %H:%M:%S'								   
