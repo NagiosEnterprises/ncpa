@@ -523,7 +523,7 @@ def normalize_xml_event(row, name):
     safe_log['utc_time_generated'] = row['TimeCreated SystemTime']
     s1 = str(row['TimeCreated SystemTime'])
     date_part, offset_part = s1.rsplit('+', 1)
-    rDate=datetime.datetime.strptime(str(date_part),formatted_string)
+    rDate=datetime.datetime.strptime(str(date_part),date_format1)
   
     hours_offset = int(offset_part[:2])
     minutes_offset = int(offset_part[3:])
