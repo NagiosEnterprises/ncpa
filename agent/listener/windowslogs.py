@@ -339,10 +339,10 @@ def datetime_from_event_date(evt_date):
     """
     date_string = str(evt_date)
 
-    if check_date_format(date_string,formatted_string):
-         time_generated = datetime.datetime.strptime(date_string, formatted_string)    
+    if check_date_format(date_string,date_format1):
+         time_generated = datetime.datetime.strptime(date_string, date_format1)    
     else:
-         time_generated = datetime.datetime.strptime(date_string, formatted_string2)
+         time_generated = datetime.datetime.strptime(date_string, date_format2)
     return time_generated
 
 
