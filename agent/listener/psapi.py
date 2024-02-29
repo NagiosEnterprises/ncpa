@@ -101,6 +101,7 @@ def make_mountpoint_nodes(partition_name):
     safe_mountpoint = re.sub(r"[\\/]+", "|", mountpoint)
 
 
+    node_children = []
     # Unix specific inode counter ~ sorry Windows! :'(
     if __SYSTEM__ != "nt":
         try:
