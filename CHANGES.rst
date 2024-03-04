@@ -6,7 +6,7 @@ Changelog
 **Updates**
 
 - Added a filter to log output to remove tokens from the WSGI Server's log output. (Blake Bahner)
-- Added busy_time to the disk endpoint on posix systems to provide the percentage of time the disk is busy. (Blake Bahner)
+- Added busy_time to the disk/physical endpoint on posix systems to provide the percentage of time the disk is busy. (Blake Bahner)
 - Updated the bundled Python version to 3.11.8 and OpenSSL version to 3.0.13 to resolve CVEs. (Blake Bahner)
 - Updated the bundled zLib version and link so the build won't break when zLib is updated. (Blake Bahner)
 
