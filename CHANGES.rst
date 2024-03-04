@@ -15,7 +15,7 @@ Changelog
 - Fixed an issue where plugins with unrecognized file extensions would not be executed. (Blake Bahner)
 - Fixed an issue where NCPA would fail to restart after rebooting the host server (Sebastian Wolf, Blake Bahner)
 - Fixed an issue where NCPA would crash if the passive log file was not present. (Ivan-Roger)
-- Fixed an issue where plugins would fail to execute if the group had permission, but the user did not. (graham-collinson)
+- Fixed an issue where plugins would fail to execute if the user's group had permission, but the user did not. (graham-collinson)
 - Fixed an issue where NCPA would crash if ssl_ciphers was set for the listener. (Ivan-Roger)
 - Fixed a documentation issue where the pid file name was not updated to reflect the NCPA 3 changes. (Blake Bahner)
 - Fixed an issue where NCPA would crash if a plugin had no output. (Blake Bahner)
