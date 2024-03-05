@@ -586,6 +586,7 @@ class Daemon():
                 time.sleep(0.5)
                 try:
                     # poll the process state
+                    self.logger.debug("Daemon - stop() - Try killing process again: %d", pid)
                     os.kill(pid, 0)
 
                 except OSError as err:
@@ -616,6 +617,7 @@ class Daemon():
             # Check if the value is in ps aux
             if pid > 0:
                 try:
+                    self.logger.info("Daemon - status() - Try killing process: %d", pid)
                     os.kill(pid, 0)
                     msg = ("Daemon - status() - Service is running (pid %d)" % pid)
                     self.logger.info(msg)
@@ -712,6 +714,7 @@ class Daemon():
                 os.remove(self.pidfile)
             if process_exists:
                 try:
+                    self.logger.debug("Daemon - check_pid() - Try killing process: %d", pid)
                     os.kill(pid, 0)
                 except OSError as err:
                     if err.errno == errno.ESRCH:
