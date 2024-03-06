@@ -80,12 +80,14 @@ class NCPACheck(object):
         response = self.run_check(api_url, api_args)
         stdout, returncode = self.handle_agent_response(response)
 
+        logging.debug("Check returned with return code %s and output: %s", returncode, stdout)
+
         errors = {}
 
         if not stdout:
             errors["output"] = "No output from check."
             stdout = "No output from check."
-        if not returncode:
+        if not returncode and returncode != 0:
             errors["returnCode"] = "No return code from check."
             returncode = 3
         if errors:
