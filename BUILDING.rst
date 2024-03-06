@@ -50,7 +50,7 @@ To start, clone the repository in your directory::
    cd ~
    git clone https://github.com/NagiosEnterprises/ncpa
 
-Now run the setup scripts to install the requirements::
+Now run the setup scripts as root to install the requirements::
 
    cd ncpa/build
    ./build.sh
