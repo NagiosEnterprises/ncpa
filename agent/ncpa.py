@@ -586,6 +586,7 @@ class Daemon():
                 time.sleep(0.5)
                 try:
                     # poll the process state
+                    self.logger.debug("Daemon - stop() - Try killing process again: %d", pid)
                     os.kill(pid, 0)
 
                 except OSError as err:
@@ -616,6 +617,7 @@ class Daemon():
             # Check if the value is in ps aux
             if pid > 0:
                 try:
+                    self.logger.info("Daemon - status() - Try killing process: %d", pid)
                     os.kill(pid, 0)
                     msg = ("Daemon - status() - Service is running (pid %d)" % pid)
                     self.logger.info(msg)
@@ -704,6 +706,7 @@ class Daemon():
                 process = psutil.Process(pid)
                 if process.name().lower() in ['ncpa', 'ncpa.exe']:
                     process_exists = True
+                self.logger.debug(f"Daemon - check_pid() - Process {pid} is {process.name()} and is {process.status()}")
             except psutil.NoSuchProcess:
                 pass
 
@@ -712,7 +715,9 @@ class Daemon():
                 os.remove(self.pidfile)
             if process_exists:
                 try:
+                    self.logger.debug("Daemon - check_pid() - Try killing process: %d", pid)
                     os.kill(pid, 0)
+                    time.sleep(3)
                 except OSError as err:
                     if err.errno == errno.ESRCH:
                         # The pid doesn't exist, so remove the stale pidfile.
@@ -726,7 +731,26 @@ class Daemon():
                 else:
                     msg = ('Daemon - check_pid() - Another instance is already running (pid %s)' % pid)
                     self.logger.warning(msg)
-                    sys.exit(msg)
+                    try:
+                        self.logger.debug("Daemon - check_pid() - Trying to kill process: %d", pid)
+                        if psutil.Process(pid).name().lower() in ['ncpa', 'ncpa.exe']:
+                            os.kill(pid, signal.SIGTERM)
+                        else:
+                            self.logger.debug("Daemon - check_pid() - Process %s is not NCPA or NCPA.exe or is not running", pid)
+                    except OSError as err:
+                        msg = ("Daemon - check_pid() - Failed to kill process %s: %s" % (pid, err.strerror))
+                        self.logger.debug(msg)
+                        sys.exit(msg)
+                    try:
+                        self.logger.debug("Daemon - check_pid() - Trying to remove pidfile: %d", pid)
+                        os.remove(self.pidfile)
+                    except OSError as err:
+                        msg = ("Daemon - check_pid() - Failed to remove pidfile %s: %s" % (self.pidfile, err.strerror))
+                        self.logger.debug(msg)
+                        sys.exit(msg)
+                    else:
+                        self.logger.debug("Daemon - check_pid() - Removed pidfile %s", self.pidfile)
+                        sys.exit(msg)
 
     def check_pid_writable(self):
         u"""Verify the user has access to write to the pid file.
