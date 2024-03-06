@@ -87,7 +87,7 @@ class NCPACheck(object):
         if not stdout:
             errors["output"] = "No output from check."
             stdout = "No output from check."
-        if not returncode:
+        if not returncode and returncode != 0:
             errors["returnCode"] = "No return code from check."
             returncode = 3
         if errors:
