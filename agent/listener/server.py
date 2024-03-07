@@ -197,6 +197,10 @@ def before_request():
         logging.debug("    before_request() - handler: %s", handler)
         handler.addFilter(tokenFilter)
 
+    for logger_name in ['werkzeug', 'flask.app']:
+        for handler in get_logger(logger_name).handlers:
+            handler.addFilter(tokenFilter)
+
     # allowed is set to False by default
     allowed = False
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
