@@ -840,6 +840,9 @@ if __SYSTEM__ == 'nt':
         def __init__(self, args):
             self.logger = parent_logger
             self.logger.debug("---------------- Winservice.initialize()")
+            getLogger = logging.getLogger()
+            for handler in getLogger.handlers:
+                handler.addFilter(tokenFilter)
 
             # pywin32 service initialization
             win32serviceutil.ServiceFramework.__init__(self, args)
@@ -853,8 +856,6 @@ if __SYSTEM__ == 'nt':
             self.options = get_options()
             self.config = get_configuration()
             self.has_error = Value('i', False)
-
-            self.setup_logging()
 
             self.setup_plugins()
             self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
