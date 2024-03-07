@@ -865,6 +865,9 @@ if __SYSTEM__ == 'nt':
             self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
             self.init_logger('listener')
+            for handler in self.logger.handlers:
+                self.logger.debug("Winservice - handler: %s", handler)
+                handler.addFilter(tokenFilter)
 
 
         def init_logger(self, logger_name):
