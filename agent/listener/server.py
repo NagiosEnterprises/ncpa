@@ -18,6 +18,7 @@ import urllib.parse
 import gevent
 import ncpa
 from ncpa import listener_logger as logging
+from logging import getLogger as get_logger
 #import inspect
 
 
@@ -192,7 +193,7 @@ def tokenFilter(record):
 def before_request():
     logging.debug("logging.handlers: %s", logging.handlers)
         
-    for handler in logging.handlers:
+    for handler in get_logger().handlers:
         logging.debug("    before_request() - handler: %s", handler)
         handler.addFilter(tokenFilter)
 
