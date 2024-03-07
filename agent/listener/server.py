@@ -178,7 +178,9 @@ def secure_compare(item1, item2):
 # Authentication Wrappers
 # ------------------------------
 def tokenFilter(record):
+    logging.debug("tokenFilter() - record: %s", record)
     if record.msg and 'token' in record.msg:
+        logging.debug("tokenFilter() - record.msg: %s", record.msg)
         parts = record.msg.split('token=')
         new_parts = [parts[0]]
         for part in parts[1:]:
