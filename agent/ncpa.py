@@ -841,6 +841,8 @@ if __SYSTEM__ == 'nt':
             self.logger = parent_logger
             self.logger.debug("---------------- Winservice.initialize()")
             getLogger = logging.getLogger()
+            if not getLogger.handlers:
+                getLogger.addHandler(logging.NullHandler())
             for handler in getLogger.handlers:
                 handler.addFilter(tokenFilter)
 
