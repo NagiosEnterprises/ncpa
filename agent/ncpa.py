@@ -840,13 +840,13 @@ if __SYSTEM__ == 'nt':
         def __init__(self, args):
             self.logger = parent_logger
             self.logger.debug("---------------- Winservice.initialize()")
-            getLogger = logging.getLogger()
-            if not getLogger.handlers:
-                handler = logging.StreamHandler()
-                handler.setLevel(logging.DEBUG)
-                getLogger.addHandler(handler)
-            for handler in getLogger.handlers:
-                handler.addFilter(tokenFilter)
+            # getLogger = logging.getLogger()
+            # if not getLogger.handlers:
+            #     handler = logging.StreamHandler()
+            #     handler.setLevel(logging.DEBUG)
+            #     getLogger.addHandler(handler)
+            # for handler in getLogger.handlers:
+            #     handler.addFilter(tokenFilter)
 
             # pywin32 service initialization
             win32serviceutil.ServiceFramework.__init__(self, args)
@@ -863,6 +863,15 @@ if __SYSTEM__ == 'nt':
 
             self.setup_plugins()
             self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
+
+            self.init_logger('listener')
+
+
+        def init_logger(self, logger_name):
+            self.logger = logging.getLogger(logger_name)
+            self.logger.propagate = False
+            logfile = get_filename(self.config.get(logger_name, 'logfile'))
+            setup_logger(self.config, self.logger, logfile)
 
         def setup_plugins(self):
             plugin_path = self.config.get('plugin directives', 'plugin_path')
