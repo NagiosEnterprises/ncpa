@@ -190,15 +190,9 @@ def tokenFilter(record):
 
 @listener.before_request
 def before_request():
-    logging.debug("logging.root.handlers: %s", logging.root.handlers)
     logging.debug("logging.handlers: %s", logging.handlers)
-
-    if not logging.handlers:
-        logging.debug("    before_request() - No logging handlers, adding one and adding tokenFilter...")
-        logging.basicConfig(level=logging.DEBUG)
-        logging.root.handlers[0].addFilter(tokenFilter)
         
-    for handler in logging.root.handlers:
+    for handler in logging.handlers:
         logging.debug("    before_request() - handler: %s", handler)
         handler.addFilter(tokenFilter)
 
