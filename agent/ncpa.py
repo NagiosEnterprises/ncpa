@@ -854,7 +854,7 @@ if __SYSTEM__ == 'nt':
             self.config = get_configuration()
             self.has_error = Value('i', False)
 
-
+            self.setup_logging()
 
             self.setup_plugins()
             self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
