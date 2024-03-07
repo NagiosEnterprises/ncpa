@@ -854,6 +854,8 @@ if __SYSTEM__ == 'nt':
             self.config = get_configuration()
             self.has_error = Value('i', False)
 
+
+
             self.setup_plugins()
             self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
@@ -882,11 +884,9 @@ if __SYSTEM__ == 'nt':
                                                                 backupCount=max_log_rollovers)
             file_format = logging.Formatter('%(asctime)s:%(levelname)s:%(module)s:%(message)s')
             file_handler.setFormatter(file_format)
+            file_handler.addFilter(tokenFilter)
 
             logging.getLogger().addHandler(file_handler)
-
-            # Set Filter
-            logging.getLogger().addFilter(tokenFilter)
 
             # Set log level
             log_level_str = config.get('loglevel', 'INFO').upper()
