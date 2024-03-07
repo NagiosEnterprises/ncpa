@@ -180,6 +180,11 @@ def secure_compare(item1, item2):
 
 @listener.before_request
 def before_request():
+    logging.debug(f"ncpa.tokenFilter: {ncpa.tokenFilter}")
+    logging.debug(f"logging.Filter('listener'): {logging.Filter('listener')}")
+    for handler in logging.root.handlers:
+        handler.addFilter(logging.Filter('listener'))
+
     # allowed is set to False by default
     allowed = False
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
