@@ -872,8 +872,8 @@ if __SYSTEM__ == 'nt':
 
         def init_logger(self, logger_name):
             self.logger = logging.getLogger(logger_name)
-            self.logger.propagate = False
             logfile = get_filename(self.config.get(logger_name, 'logfile'))
+            self.logger.debug("Winservice.init_logger() - Name: %s, File: %s", logger_name, logfile)
             setup_logger(self.config, self.logger, logfile)
 
         def setup_plugins(self):
