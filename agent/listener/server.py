@@ -176,14 +176,23 @@ def secure_compare(item1, item2):
 # ------------------------------
 # Authentication Wrappers
 # ------------------------------
+def tokenFilter(record):
+    if record.msg and 'token' in record.msg:
+        parts = record.msg.split('token=')
+        new_parts = [parts[0]]
+        for part in parts[1:]:
+            sub_parts = part.split('&', 1)
+            sub_parts[0] = '********'
+            new_parts.append('&'.join(sub_parts))
+        record.msg = 'token='.join(new_parts)
+    return True
 
 
 @listener.before_request
 def before_request():
-    logging.debug(f"ncpa.tokenFilter: {ncpa.tokenFilter}")
-    logging.debug(f"logging.Filter('listener'): {logging.Filter('listener')}")
     for handler in logging.root.handlers:
-        handler.addFilter(logging.Filter('listener'))
+        logging.debug("    before_request() - handler: %s", handler)
+        handler.addFilter(tokenFilter)
 
     # allowed is set to False by default
     allowed = False
