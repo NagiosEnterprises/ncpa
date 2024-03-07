@@ -917,6 +917,7 @@ if __SYSTEM__ == 'nt':
             win32event.SetEvent(self.hWaitStop) # set stop event for main thread
 
         def SvcDoRun(self):
+            self.init_logger('listener')
             # log starting of service to windows event log
             servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
                                 servicemanager.PYS_SERVICE_STARTED,
