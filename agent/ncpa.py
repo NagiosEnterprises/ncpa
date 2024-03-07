@@ -842,7 +842,9 @@ if __SYSTEM__ == 'nt':
             self.logger.debug("---------------- Winservice.initialize()")
             getLogger = logging.getLogger()
             if not getLogger.handlers:
-                getLogger.addHandler(logging.NullHandler())
+                handler = logging.StreamHandler()
+                handler.setLevel(logging.DEBUG)
+                getLogger.addHandler(handler)
             for handler in getLogger.handlers:
                 handler.addFilter(tokenFilter)
 
