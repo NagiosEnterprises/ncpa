@@ -199,7 +199,7 @@ def before_request():
         logging.debug("    before_request() - handler: %s", handler)
         handler.addFilter(tokenFilter)
 
-    for logger_name in ['werkzeug', 'flask.app']:
+    for logger_name in ['werkzeug', 'flask.app', 'listener', 'passive', 'parent']:
         for handler in get_logger(logger_name).handlers:
             handler.addFilter(tokenFilter)
 
