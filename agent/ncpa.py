@@ -50,15 +50,21 @@ from multiprocessing import Process, Value, freeze_support
 # It will be configured later via setup_logger(). See note 'About Logging' below.
 listener_logger = logging.getLogger("listener")
 def tokenFilter(record):
-    if record.msg and 'token' in record.msg:
-        parts = record.msg.split('token=')
-        new_parts = [parts[0]]
-        for part in parts[1:]:
-            sub_parts = part.split('&', 1)
-            sub_parts[0] = '********'
-            new_parts.append('&'.join(sub_parts))
-        record.msg = 'token='.join(new_parts)
-    return True
+    if not hasattr(record, 'msg'):
+        return record
+    try:
+        if record.msg and 'token' in record.msg:
+            parts = record.msg.split('token=')
+            new_parts = [parts[0]]
+            for part in parts[1:]:
+                sub_parts = part.split('&', 1)
+                sub_parts[0] = '********'
+                new_parts.append('&'.join(sub_parts))
+            record.msg = 'token='.join(new_parts)
+        return True
+    except AttributeError:
+        pass
+    return record
 
 
 
