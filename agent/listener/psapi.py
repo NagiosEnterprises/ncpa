@@ -48,7 +48,7 @@ def make_disk_nodes(disk_name):
         "write_bytes",
         method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_bytes, "B"),
     )
-    if __SYSTEM__ == "posix":
+    if __SYSTEM__ == "posix" and platform.system() != "Darwin":
         busy_time = RunnableNode(
             "busy_time",
             method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].busy_time, "ms"),
