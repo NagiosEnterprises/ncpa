@@ -85,7 +85,7 @@ elif __SYSTEM__ == 'posix':
         include_files += [('../build/resources/macosinstall.sh'  , 'build_resources/macosinstall.sh'),
                          ('../build/resources/macosuninstall.sh', 'build_resources/macosuninstall.sh'),
                          ('../build/resources/macosreadme.txt', 'build_resources/macosreadme.txt'),
-                         ('/usr/local/opt/mpdecimal/lib/libmpdec.3.dylib', 'lib/libmpdec.3.dylib'),
+                         ('/usr/local/opt/mpdecimal/lib/libmpdec.4.0.0.dylib', 'lib/libmpdec.4.0.0.dylib'),
                          ('/usr/local/opt/openssl@3/lib/libcrypto.3.dylib', 'lib/libcrypto.3.dylib'),
                          ('/usr/local/opt/openssl@3/lib/libssl.3.dylib', 'lib/libssl.3.dylib'),
                          ('/usr/local/opt/sqlite/lib/libsqlite3.0.dylib', 'lib/libsqlite3.0.dylib'),

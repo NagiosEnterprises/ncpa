@@ -21,6 +21,7 @@ Changelog
 - Fixed an issue where NCPA would crash if a plugin had no output. (Blake Bahner)
 - Fixed an issue where Windows logs with a different date format would fail to parse. (gittethis)
 - Fixed an issue where certain RHEL systems would fail to start NCPA on reboot. (Blake Bahner)
+- Fixed an issue where Mac builds would fail due to a change in a dependency library. (Blake Bahner)
 
 3.0.1 - 12/13/2023
 ==================
