@@ -18,7 +18,6 @@ import urllib.parse
 import gevent
 import ncpa
 from ncpa import listener_logger as logging
-from logging import getLogger as get_logger
 #import inspect
 
 
@@ -29,6 +28,8 @@ from hmac import compare_digest
 __VERSION__ = ncpa.__VERSION__
 __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
+
+
 
 # The following if statement is a workaround that is allowing us to run this
 # in debug mode, rather than a hard coded location.
@@ -177,10 +178,9 @@ def secure_compare(item1, item2):
 # ------------------------------
 # Authentication Wrappers
 # ------------------------------
+
 def tokenFilter(record):
-    logging.debug("tokenFilter() - record: %s", record)
     if record.msg and 'token' in record.msg:
-        logging.debug("tokenFilter() - record.msg: %s", record.msg)
         parts = record.msg.split('token=')
         new_parts = [parts[0]]
         for part in parts[1:]:
@@ -190,19 +190,8 @@ def tokenFilter(record):
         record.msg = 'token='.join(new_parts)
     return True
 
-
 @listener.before_request
 def before_request():
-    logging.debug("logging.handlers: %s", logging.handlers)
-        
-    for handler in get_logger().handlers:
-        logging.debug("    before_request() - handler: %s", handler)
-        handler.addFilter(tokenFilter)
-
-    for logger_name in ['werkzeug', 'flask.app', 'listener', 'passive']:
-        for handler in get_logger(logger_name).handlers:
-            handler.addFilter(tokenFilter)
-
     # allowed is set to False by default
     allowed = False
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
@@ -210,7 +199,15 @@ def before_request():
 
     # For logging some debug info for actual page requests
     if isinstance(request.view_args, dict) and ('filename' not in request.view_args):
-        logging.info("before_request() - request.url: %s", request.url)
+        logurl = request.url.deepcopy()
+        parts = logurl.split('token=')
+        new_parts = [parts[0]]
+        for part in parts[1:]:
+            sub_parts = part.split('&', 1)
+            sub_parts[0] = '********'
+            new_parts.append('&'.join(sub_parts))
+        logurl = 'token='.join(new_parts)
+        logging.info("before_request() - request.url: %s", logurl)
         logging.debug("    before_request() - request.path: %s", request.path)
         logging.debug("    before_request() - request.url_rule: %s", request.url_rule)
         logging.debug("    before_request() - request.view_args: %s", request.view_args)
