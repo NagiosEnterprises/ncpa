@@ -30,7 +30,6 @@ __STARTED__ = datetime.datetime.now()
 __INTERNAL__ = False
 
 
-
 # The following if statement is a workaround that is allowing us to run this
 # in debug mode, rather than a hard coded location.
 
@@ -178,17 +177,6 @@ def secure_compare(item1, item2):
 # ------------------------------
 # Authentication Wrappers
 # ------------------------------
-
-def tokenFilter(record):
-    if record.msg and 'token' in record.msg:
-        parts = record.msg.split('token=')
-        new_parts = [parts[0]]
-        for part in parts[1:]:
-            sub_parts = part.split('&', 1)
-            sub_parts[0] = '********'
-            new_parts.append('&'.join(sub_parts))
-        record.msg = 'token='.join(new_parts)
-    return True
 
 @listener.before_request
 def before_request():
