@@ -840,13 +840,6 @@ if __SYSTEM__ == 'nt':
         def __init__(self, args):
             self.logger = parent_logger
             self.logger.debug("---------------- Winservice.initialize()")
-            # getLogger = logging.getLogger()
-            # if not getLogger.handlers:
-            #     handler = logging.StreamHandler()
-            #     handler.setLevel(logging.DEBUG)
-            #     getLogger.addHandler(handler)
-            # for handler in getLogger.handlers:
-            #     handler.addFilter(tokenFilter)
 
             # pywin32 service initialization
             win32serviceutil.ServiceFramework.__init__(self, args)
@@ -866,7 +859,6 @@ if __SYSTEM__ == 'nt':
 
             self.init_logger('listener')
             for handler in self.logger.handlers:
-                self.logger.debug("Winservice - handler: %s", handler)
                 handler.addFilter(tokenFilter)
 
 
@@ -917,7 +909,6 @@ if __SYSTEM__ == 'nt':
             win32event.SetEvent(self.hWaitStop) # set stop event for main thread
 
         def SvcDoRun(self):
-            self.init_logger('listener')
             # log starting of service to windows event log
             servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
                                 servicemanager.PYS_SERVICE_STARTED,
