@@ -199,7 +199,7 @@ def before_request():
 
     # For logging some debug info for actual page requests
     if isinstance(request.view_args, dict) and ('filename' not in request.view_args):
-        logurl = request.url.deepcopy()
+        logurl = request.url
         parts = logurl.split('token=')
         new_parts = [parts[0]]
         for part in parts[1:]:
