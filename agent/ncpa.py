@@ -31,6 +31,7 @@ from zlib import ZLIB_VERSION as zlib_version
 import sys
 import tempfile
 import time
+import psutil
 
 import errno
 import signal
@@ -48,6 +49,24 @@ from multiprocessing import Process, Value, freeze_support
 # Create the listener logger instance, now, because it is required by listener.server.
 # It will be configured later via setup_logger(). See note 'About Logging' below.
 listener_logger = logging.getLogger("listener")
+def tokenFilter(record):
+    if not hasattr(record, 'msg'):
+        return record
+    try:
+        if record.msg and 'token' in record.msg:
+            parts = record.msg.split('token=')
+            new_parts = [parts[0]]
+            for part in parts[1:]:
+                sub_parts = part.split('&', 1)
+                sub_parts[0] = '********'
+                new_parts.append('&'.join(sub_parts))
+            record.msg = 'token='.join(new_parts)
+        return True
+    except AttributeError:
+        pass
+    return record
+
+
 
 # NCPA-specific module imports
 import listener.server
@@ -70,7 +89,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.0.1'
+__VERSION__ = '3.0.2'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -229,6 +248,7 @@ class Listener(Base):
                 port = self.config.getint('listener', 'port')
                 logger.debug("port: %s", port)
 
+                ssl_context = dict()
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
                 if  (ssl_str_ciphers == 'None'):
                     ssl_str_ciphers = ''
@@ -259,11 +279,9 @@ class Listener(Base):
             else:
                 cert, key = user_cert.split(',')
 
-            ssl_context = {
-                'certfile': cert,
-                'keyfile': key,
-                'ssl_version': ssl_version
-            }
+            ssl_context['certfile'] = cert
+            ssl_context['keyfile'] = key
+            ssl_context['ssl_version'] = ssl_version
 
             # Pass config to Flask instance
             listener.server.listener.config['iconfig'] = self.config
@@ -412,7 +430,7 @@ class Daemon():
 
         # Set the uid and gid
         try:
-            self.uid, self.gid = list(map(int, self.get_uid_gid(self.config, 'general')))
+            self.uid, self.gid, self.username = self.get_uid_gid(self.config, 'general')
         except ValueError as e:
             sys.exit(e)
 
@@ -501,9 +519,9 @@ class Daemon():
 
         try:
             # Chown the installed passive log file while root still has control
-            # Since the listner file is used for the root and parent loggers, it is chowned
+            # Since the listener file is used for the root and parent loggers, it is chowned
             # during the setup_logger process
-            if __SYSTEM__ == 'posix':
+            if __SYSTEM__ == 'posix' and os.path.isfile(self.passive_logfile):
                 chown(self.config.get('general', 'uid'), self.config.get('general', 'gid'), self.passive_logfile)
 
             # Setup with root privileges
@@ -574,6 +592,7 @@ class Daemon():
                 time.sleep(0.5)
                 try:
                     # poll the process state
+                    self.logger.debug("Daemon - stop() - Try killing process again: %d", pid)
                     os.kill(pid, 0)
 
                 except OSError as err:
@@ -604,6 +623,7 @@ class Daemon():
             # Check if the value is in ps aux
             if pid > 0:
                 try:
+                    self.logger.info("Daemon - status() - Try killing process: %d", pid)
                     os.kill(pid, 0)
                     msg = ("Daemon - status() - Service is running (pid %d)" % pid)
                     self.logger.info(msg)
@@ -632,16 +652,18 @@ class Daemon():
     def set_uid_gid(self):
         """Drop root privileges"""
         self.logger.debug("Daemon - set_uid_gid()")
-        if self.gid:
-            try:
-                os.setgid(self.gid)
-            except OSError as e:
-                self.logger.exception(e)
-        if self.uid:
-            try:
-                os.setuid(self.uid)
-            except OSError as e:
-                self.logger.exception(e)
+        # Get set of gids to set for OS groups
+        gids = [ self.gid ]
+        if self.username:
+            gids = [ g.gr_gid for g in grp.getgrall() if self.username in g.gr_mem ]
+
+        # Set the group, alt groups, and user
+        try:
+            os.setgid(self.gid)
+            os.setgroups(gids)
+            os.setuid(self.uid)
+        except Exception as err:
+            self.logger.exception(err)
 
     def chown(self, fn):
         """Change the ownership of a file to match the daemon uid/gid"""
@@ -683,22 +705,58 @@ class Daemon():
                 msg = 'Pidfile %s contains a non-integer value' % self.pidfile
                 self.logger.debug(msg)
                 sys.exit(msg)
+
+            # Check that the process ID corresponds to NCPA
+            process_exists = False
             try:
-                os.kill(pid, 0)
-            except OSError as err:
-                if err.errno == errno.ESRCH:
-                    # The pid doesn't exist, so remove the stale pidfile.
-                    self.logger.debug("Daemon - check_pid() - The pid doesn't exist, so remove the stale pidfile")
-                    os.remove(self.pidfile)
+                process = psutil.Process(pid)
+                if process.name().lower() in ['ncpa', 'ncpa.exe']:
+                    process_exists = True
+                self.logger.debug(f"Daemon - check_pid() - Process {pid} is {process.name()} and is {process.status()}")
+            except psutil.NoSuchProcess:
+                pass
+
+            if not process_exists:
+                self.logger.debug("Daemon - check_pid() - The process with PID %s is not running. Removing the stale pidfile.", pid)
+                os.remove(self.pidfile)
+            if process_exists:
+                try:
+                    self.logger.debug("Daemon - check_pid() - Try killing process: %d", pid)
+                    os.kill(pid, 0)
+                    time.sleep(3)
+                except OSError as err:
+                    if err.errno == errno.ESRCH:
+                        # The pid doesn't exist, so remove the stale pidfile.
+                        self.logger.debug("Daemon - check_pid() - The pid doesn't exist, so remove the stale pidfile")
+                        os.remove(self.pidfile)
+                    else:
+                        msg = ("Daemon - check_pid() - Failed to check status of process %s "
+                            "from pidfile %s: %s" % (pid, self.pidfile, err.strerror))
+                        self.logger.debug(msg)
+                        sys.exit(msg)
                 else:
-                    msg = ("Daemon - check_pid() - Failed to check status of process %s "
-                           "from pidfile %s: %s" % (pid, self.pidfile, err.strerror))
-                    self.logger.debug(msg)
-                    sys.exit(msg)
-            else:
-                msg = ('Daemon - check_pid() - Another instance is already running (pid %s)' % pid)
-                self.logger.warning(msg)
-                sys.exit(msg)
+                    msg = ('Daemon - check_pid() - Another instance is already running (pid %s)' % pid)
+                    self.logger.warning(msg)
+                    try:
+                        self.logger.debug("Daemon - check_pid() - Trying to kill process: %d", pid)
+                        if psutil.Process(pid).name().lower() in ['ncpa', 'ncpa.exe']:
+                            os.kill(pid, signal.SIGTERM)
+                        else:
+                            self.logger.debug("Daemon - check_pid() - Process %s is not NCPA or NCPA.exe or is not running", pid)
+                    except OSError as err:
+                        msg = ("Daemon - check_pid() - Failed to kill process %s: %s" % (pid, err.strerror))
+                        self.logger.debug(msg)
+                        sys.exit(msg)
+                    try:
+                        self.logger.debug("Daemon - check_pid() - Trying to remove pidfile: %d", pid)
+                        os.remove(self.pidfile)
+                    except OSError as err:
+                        msg = ("Daemon - check_pid() - Failed to remove pidfile %s: %s" % (self.pidfile, err.strerror))
+                        self.logger.debug(msg)
+                        sys.exit(msg)
+                    else:
+                        self.logger.debug("Daemon - check_pid() - Removed pidfile %s", self.pidfile)
+                        sys.exit(msg)
 
     def check_pid_writable(self):
         u"""Verify the user has access to write to the pid file.
@@ -753,7 +811,7 @@ class Daemon():
             else:
                 gid = int(user_gid)
 
-        return uid, gid
+        return uid, gid, username
 
     def daemonize(self):
         """Detach from the terminal and continue as a daemon"""
@@ -805,6 +863,17 @@ if __SYSTEM__ == 'nt':
             self.setup_plugins()
             self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
+            self.init_logger('listener')
+            for handler in self.logger.handlers:
+                handler.addFilter(tokenFilter)
+
+
+        def init_logger(self, logger_name):
+            self.logger = logging.getLogger(logger_name)
+            logfile = get_filename(self.config.get(logger_name, 'logfile'))
+            self.logger.debug("Winservice.init_logger() - Name: %s, File: %s", logger_name, logfile)
+            setup_logger(self.config, self.logger, logfile)
+
         def setup_plugins(self):
             plugin_path = self.config.get('plugin directives', 'plugin_path')
             abs_plugin_path = get_filename(plugin_path)
@@ -830,6 +899,7 @@ if __SYSTEM__ == 'nt':
                                                                 backupCount=max_log_rollovers)
             file_format = logging.Formatter('%(asctime)s:%(levelname)s:%(module)s:%(message)s')
             file_handler.setFormatter(file_format)
+            file_handler.addFilter(tokenFilter)
 
             logging.getLogger().addHandler(file_handler)
 
@@ -963,6 +1033,7 @@ def setup_logger(config, loggerinstance, logfile):
 
     for h in handlers:
         h.setFormatter(logging.Formatter("%(asctime)s %(name)s %(levelname)s %(message)s"))
+        h.addFilter(tokenFilter)
         h.setLevel(level)
         loggerinstance.addHandler(h)
 

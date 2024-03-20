@@ -1,4 +1,4 @@
-# !/usr/bin/env python
+#!/usr/bin/env python
 
 """A plugin checking event logs on Windows is expected to take the following inputs:
 
@@ -62,8 +62,10 @@ import platform
 class WindowsLogsNode(listener.nodes.LazyNode):
 
     global stdLogs
+    global date_format1, date_format2
     stdLogs = ['Application','System','Security','Setup','Forwarded Events']
-
+    date_format1 = '%Y-%m-%d %H:%M:%S.%f'
+    date_format2 = '%Y-%m-%d %H:%M:%S'								   
     def walk(self, *args, **kwargs):
         logtypes = get_logtypes(kwargs)
         filters = get_filter_dict(kwargs)
@@ -317,7 +319,15 @@ def get_datetime_from_date_input(date_input):
         logging.error('Date input was invalid, Given: %r, %r', date_input, exc)
         t_delta = datetime.timedelta(days=1)
     return t_delta
+def check_date_format(date_string, date_format):
+    #formats_to_check = ["%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M:%S"]
+    try:
+        datetime.datetime.strptime(date_string, date_format)
+        return True 
+    except ValueError:
+        pass 
 
+    return False 														 
 
 def datetime_from_event_date(evt_date):
     """
@@ -328,7 +338,11 @@ def datetime_from_event_date(evt_date):
     doesn't take care of this, but alas, here we are.
     """
     date_string = str(evt_date)
-    time_generated = datetime.datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
+
+    if check_date_format(date_string,date_format1):
+         time_generated = datetime.datetime.strptime(date_string, date_format1)    
+    else:
+         time_generated = datetime.datetime.strptime(date_string, date_format2)
     return time_generated
 
 
@@ -507,8 +521,16 @@ def normalize_xml_event(row, name):
     safe_log['severity'] = str(EVENT_TYPE_NEW.get(int(row['EventType']), 'UNKNOWN'))
     safe_log['application'] = row['SourceName']
     safe_log['utc_time_generated'] = row['TimeCreated SystemTime']
-
-    rDate=datetime.datetime.strptime(str(row['TimeCreated SystemTime']),'%m/%d/%y %H:%M:%S')
+    s1 = str(row['TimeCreated SystemTime'])
+    date_part, offset_part = s1.rsplit('+', 1)
+    rDate=datetime.datetime.strptime(str(date_part),date_format1)
+  
+    hours_offset = int(offset_part[:2])
+    minutes_offset = int(offset_part[3:])
+    timezone_offset = datetime.timedelta(hours=hours_offset, minutes=minutes_offset)
+    if offset_part[0] == '-':
+	    timezone_offset = -timezone_offset
+    rDate -=timezone_offset
     timeDiffSec=(datetime.datetime.utcnow() - datetime.datetime.now()).total_seconds()
     timeLocal = str(rDate+datetime.timedelta(seconds=-timeDiffSec))
     safe_log['time_generated'] = timeLocal
@@ -569,9 +591,19 @@ def get_event_logs(server, name, filters):
                         ]
                         if time_created_variant == win32evtlog.EvtVarTypeNull:
                             raise StopIteration
-                        temp_date=datetime.datetime.strptime(str(time_created_value),'%m/%d/%y %H:%M:%S')
-                        time_from_event=temp_date.strftime('%m/%d/%y %H:%M:%S')
-                        time_generated = datetime_from_event_date(time_from_event)
+                        s1 = str(time_created_value)
+                        date_part, offset_part = s1.rsplit('+', 1)
+                        temp_date=datetime.datetime.strptime(str(date_part),date_format1)
+						
+                        # Parse and adjust the timezone offset
+                        hours_offset = int(offset_part[:2])
+                        minutes_offset = int(offset_part[3:])
+                        timezone_offset = datetime.timedelta(hours=hours_offset, minutes=minutes_offset)
+                        if offset_part[0] == '-':
+                            timezone_offset = -timezone_offset
+                        temp_date -=timezone_offset
+                        time_from_event=temp_date.strftime(date_format1)
+                        time_generated = datetime_from_event_date(time_from_event)          
                         if time_generated < logged_after:
                             raise StopIteration
                         else:

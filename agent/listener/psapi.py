@@ -48,6 +48,23 @@ def make_disk_nodes(disk_name):
         "write_bytes",
         method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_bytes, "B"),
     )
+    if __SYSTEM__ == "posix" and platform.system() != "Darwin":
+        busy_time = RunnableNode(
+            "busy_time",
+            method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].busy_time, "ms"),
+        )
+        return ParentNode(
+            disk_name,
+            children=[
+                read_time,
+                read_bytes,
+                write_count,
+                write_time,
+                write_bytes,
+                read_count,
+                busy_time,
+            ],
+        )
     return ParentNode(
         disk_name,
         children=[
@@ -84,6 +101,7 @@ def make_mountpoint_nodes(partition_name):
     safe_mountpoint = re.sub(r"[\\/]+", "|", mountpoint)
 
 
+    node_children = []
     # Unix specific inode counter ~ sorry Windows! :'(
     if __SYSTEM__ != "nt":
         try:
@@ -114,7 +132,7 @@ def make_mountpoint_nodes(partition_name):
                 total,
                 maxpath,
                 opts,
-                inodes_used_percent
+                inodes_used_percent,
             ]
         except OSError as ex:
             # Log this error as debug only, normally means could not count inodes because

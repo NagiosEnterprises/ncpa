@@ -80,9 +80,19 @@ class NCPACheck(object):
         response = self.run_check(api_url, api_args)
         stdout, returncode = self.handle_agent_response(response)
 
-        if stdout is None or returncode is None:
-            raise ValueError("Stdout or returncode was None, cannot return "
-                             "meaningfully.")
+        logging.debug("Check returned with return code %s and output: %s", returncode, stdout)
+
+        errors = {}
+
+        if not stdout:
+            errors["output"] = "No output from check."
+            stdout = "No output from check."
+        if not returncode and returncode != 0:
+            errors["returnCode"] = "No return code from check."
+            returncode = 3
+        if errors:
+            error_messages = ', '.join(f"{key}: {value}" for key, value in errors.items())
+            logging.error(f"Errors: {error_messages}")
 
         # Save returned check results to the DB if we don't error out
         db = database.DB()

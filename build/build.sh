@@ -3,9 +3,9 @@
 echo -e "***** build/build.sh"
 
 # Global variables
-PYTHONVER="3.11.3"
-SSLVER="3.0.8"
-ZLIBVER="1.3"
+PYTHONVER="3.11.8"
+SSLVER="3.0.13"
+ZLIBVER="1.3.1"
 
 UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
@@ -129,7 +129,7 @@ fi
 
 # Check that pre-reqs have been installed
 if [ $BUILD_TRAVIS -eq 0 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; then
-    if [ ! -f $BUILD_DIR/prereqs.installed ] && [ $SKIP_SETUP -eq 0 ]; then
+    if [ ! -f $BUILD_DIR/prereqs.installed ] && [ $SKIP_SETUP -eq 0 ] || ! which $PYTHONBIN > /dev/null; then
         echo "** WARNING: This should not be done on a production system. **"
         read -r -p "Automatically install system pre-reqs? [Y/n] " resp
         if [[ $resp =~ ^(yes|y|Y| ) ]] || [[ -z $resp ]]; then

@@ -1,6 +1,28 @@
 Changelog
 +++++++++
 
+3.0.2 - 03/20/2024
+==================
+**Updates**
+
+- Added a filter to log output to remove tokens from the WSGI Server's log output. (Blake Bahner)
+- Added busy_time to the disk/physical endpoint on posix systems to provide the percentage of time the disk is busy. (Blake Bahner)
+- Updated the bundled Python version to 3.11.8 and OpenSSL version to 3.0.13 to resolve CVEs. (Blake Bahner)
+- Updated the bundled zLib version and link so the build won't break when zLib is updated. (Blake Bahner)
+
+**Bug Fixes**
+
+- Fixed an issue where plugins with unrecognized file extensions would not be executed. (Blake Bahner)
+- Fixed an issue where NCPA would fail to restart after rebooting the host server (Sebastian Wolf, Blake Bahner)
+- Fixed an issue where NCPA would crash if the passive log file was not present. (Ivan-Roger)
+- Fixed an issue where plugins would fail to execute if the user's group had permission, but the user did not. (graham-collinson)
+- Fixed an issue where NCPA would crash if ssl_ciphers was set for the listener. (Ivan-Roger)
+- Fixed a documentation issue where the pid file name was not updated to reflect the NCPA 3 changes. (Blake Bahner)
+- Fixed an issue where NCPA would crash if a plugin had no output. (Blake Bahner)
+- Fixed an issue where Windows logs with a different date format would fail to parse. (gittethis)
+- Fixed an issue where certain RHEL systems would fail to start NCPA on reboot. (Blake Bahner)
+- Fixed an issue where Mac builds would fail due to a change in a dependency library. (Blake Bahner)
+
 3.0.1 - 12/13/2023
 ==================
 **Updates**

@@ -6,7 +6,7 @@ echo -e "\n***** macos/package.sh"
 DIR=$( cd "$(dirname "$0")" ; pwd -P )
 BUILD_DIR="$DIR/.."
 NCPA_VER=$(cat $BUILD_DIR/../VERSION)
-RELEASE="latest"
+RELEASE="1"
 ARCH=$(uname -m)
 
 (
@@ -24,7 +24,7 @@ ARCH=$(uname -m)
     /usr/local/opt/openssl@3/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/_ssl.cpython-311-darwin.so \
     /usr/lib/libsqlite3.dylib~@loader_path/libsqlite3.dylib~$NCPAdir/lib/_sqlite3.cpython-311-darwin.so \
     /usr/local/opt/sqlite/lib/libsqlite3.0.dylib~@loader_path/libsqlite3.0.dylib~$NCPAdir/lib/_sqlite3.cpython-311-darwin.so \
-    /usr/local/opt/mpdecimal/lib/libmpdec.3.dylib~@loader_path/libmpdec.dylib~$NCPAdir/lib/_decimal.cpython-311-darwin.so \
+    /usr/local/opt/mpdecimal/lib/libmpdec.4.0.0.dylib~@loader_path/libmpdec.dylib~$NCPAdir/lib/_decimal.cpython-311-darwin.so \
     /usr/local/opt/openssl@3/lib/libcrypto.3.dylib~@loader_path/libcrypto.3.dylib~$NCPAdir/lib/_hashlib.cpython-311-darwin.so \
     "
 
