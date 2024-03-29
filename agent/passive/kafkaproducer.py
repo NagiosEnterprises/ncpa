@@ -102,6 +102,16 @@ class Handler(passive.nagioshandler.NagiosHandler):
                                                                                                     self.str_client_id))
             else:
                 for item in itemlist:
-                    producer.send(self.str_topic, key=str(item.hostname), value=json.dumps(self.format_for_kafka(self, item)))
+                    try:
+                        producer.send(self.str_topic, key=str(item.hostname), value=json.dumps(self.format_for_kafka(self, item)))
+                    except KafkaError:
+                        logging.warning(
+                            'Problem to send data to Kafka Server: {} with Topic: {} and Clientname {} '.format(
+                                self.str_kafakhosts,
+                                self.str_topic,
+                                self.str_client_id))
+                    except Exception as e:
+                        logging.warning('Error: {}'.format(e))
+                    
 
                 producer.flush()
