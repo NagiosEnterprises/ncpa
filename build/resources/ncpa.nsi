@@ -132,15 +132,22 @@ Page custom ConfigPassiveChecks
 !insertmacro MUI_LANGUAGE "English"
 
 Var OLD_INSTALL_DIR
-Var FILE_TO_COPY
 Function CheckAndMigrateOldInstallation
     StrCpy $OLD_INSTALL_DIR "$PROGRAMFILES32\Nagios\NCPA"
+    IfFileExists "$OLD_INSTALL_DIR" 0 endMigration
 
-    ; Copy .../etc, .../plugins to the new location if they exist
-    StrCpy $FILE_TO_COPY "$OLD_INSTALL_DIR\etc"
-    IfFileExists "$FILE_TO_COPY\*.*" CopyFiles /SILENT "$FILE_TO_COPY\*" "$INSTDIR\etc"
-    StrCpy $FILE_TO_COPY "$OLD_INSTALL_DIR\plugins"
-    IfFileExists "$FILE_TO_COPY\*.*" CopyFiles /SILENT "$FILE_TO_COPY\*" "$INSTDIR\plugins"
+    IfFileExists "$INSTDIR\etc" 0 +2 ; if files exist in NCPA 3 /etc, don't migrate
+    Goto migratePlugins
+    IfFileExists "$OLD_INSTALL_DIR\etc" +2 0 ; if files exist in NCPA 2 /etc, migrate
+    Goto migratePlugins
+    CopyFiles /SILENT "$OLD_INSTALL_DIR\etc\*" "$INSTDIR\etc"
+
+    migratePlugins:
+    IfFileExists "$INSTDIR/plugins" 0 +2 ; if files exist in NCPA 3 /plugins, don't migrate
+    Goto endMigration
+    IfFileExists "$OLD_INSTALL_DIR\plugins" +2 0 ; if files exist in NCPA 2 /plugins, migrate
+    Goto endMigration
+    CopyFiles /SILENT "$OLD_INSTALL_DIR\plugins\*" "$INSTDIR\plugins"
 
     endMigration:
 FunctionEnd
