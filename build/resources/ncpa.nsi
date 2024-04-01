@@ -132,26 +132,16 @@ Page custom ConfigPassiveChecks
 !insertmacro MUI_LANGUAGE "English"
 
 Function CheckAndMigrateOldInstallation
-    ; Define the old installation path (32-bit Program Files, usually under Program Files (x86) for 64-bit OS)
-    SetRegView 32 ; Ensure we are looking at the correct registry view for 32-bit installations
-    ReadRegStr $R0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NCPA" "InstallLocation"
-    SetRegView 64 ; Reset registry view back to default
+    Var OLD_INSTALL_DIR
+    Var FILE_TO_COPY
 
-    IfFileExists "$INSTDIR\*.*" alreadyInstalled 
-    IfFileExists "$R0" startMigration noOldInstallation
+    StrCpy $OLD_INSTALL_DIR "$PROGRAMFILES32\Nagios\NCPA"
 
-    noOldInstallation:
-    DetailPrint "No old NCPA installation found. Proceeding with new installation."
-    Goto endMigration
-
-    alreadyInstalled:
-    DetailPrint "NCPA is already installed in the new location. Migration skipped."
-    Goto endMigration
-
-    startMigration:
-    StrCmp $R0 $INSTDIR endMigration 0
-    DetailPrint "Migrating NCPA from $R0 to $INSTDIR"
-    CopyFiles /SILENT "$R0\*" "$INSTDIR"
+    ; Copy .../etc, .../plugins to the new location if they exist
+    StrCpy $FILE_TO_COPY "$OLD_INSTALL_DIR\etc"
+    IfFileExists "$FILE_TO_COPY\*.*" CopyFiles /SILENT "$FILE_TO_COPY\*" "$INSTDIR\etc"
+    StrCpy $FILE_TO_COPY "$OLD_INSTALL_DIR\plugins"
+    IfFileExists "$FILE_TO_COPY\*.*" CopyFiles /SILENT "$FILE_TO_COPY\*" "$INSTDIR\plugins"
 
     endMigration:
 FunctionEnd
