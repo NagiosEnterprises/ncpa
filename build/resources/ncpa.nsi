@@ -131,7 +131,38 @@ Page custom ConfigPassiveChecks
 ; Language
 !insertmacro MUI_LANGUAGE "English"
 
+Function CheckAndMigrateOldInstallation
+    ; Define the old installation path (32-bit Program Files, usually under Program Files (x86) for 64-bit OS)
+    SetRegView 32 ; Ensure we are looking at the correct registry view for 32-bit installations
+    ReadRegStr $R0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NCPA" "InstallLocation"
+    SetRegView 64 ; Reset registry view back to default
+
+    IfFileExists "$INSTDIR\*.*" alreadyInstalled 
+    IfFileExists "$R0" startMigration noOldInstallation
+
+    noOldInstallation:
+    DetailPrint "No old NCPA installation found. Proceeding with new installation."
+    Goto endMigration
+
+    alreadyInstalled:
+    DetailPrint "NCPA is already installed in the new location. Migration skipped."
+    Goto endMigration
+
+    startMigration:
+    StrCmp $R0 $INSTDIR endMigration 0
+    DetailPrint "Migrating NCPA from $R0 to $INSTDIR"
+    CopyFiles /SILENT "$R0\*" "$INSTDIR"
+
+    Goto endMigration
+
+    noMigrationNeeded:
+        DetailPrint "No migration needed. Installing NCPA to $INSTDIR"
+
+    endMigration:
+FunctionEnd
+
 Function .onInit
+    Call CheckAndMigrateOldInstallation
 
     !insertmacro MULTIUSER_INIT
 
