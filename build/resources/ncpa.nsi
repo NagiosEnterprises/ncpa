@@ -131,10 +131,9 @@ Page custom ConfigPassiveChecks
 ; Language
 !insertmacro MUI_LANGUAGE "English"
 
+Var OLD_INSTALL_DIR
+Var FILE_TO_COPY
 Function CheckAndMigrateOldInstallation
-    Var OLD_INSTALL_DIR
-    Var FILE_TO_COPY
-
     StrCpy $OLD_INSTALL_DIR "$PROGRAMFILES32\Nagios\NCPA"
 
     ; Copy .../etc, .../plugins to the new location if they exist
