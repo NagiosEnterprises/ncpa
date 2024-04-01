@@ -149,6 +149,14 @@ Function CheckAndMigrateOldInstallation
     Goto endMigration
     CopyFiles /SILENT "$OLD_INSTALL_DIR\plugins\*" "$INSTDIR\plugins"
 
+    ; Option to remove nothing, just binaries or everything
+    MessageBox MB_YESNOCANCEL|MB_ICONQUESTION "Would you like to remove the old installation of NCPA?" IDYES removeAll IDNO removeBinaries IDCANCEL endMigration
+    
+    removeAll:
+    RMDir /r "$OLD_INSTALL_DIR"
+    Goto endMigration
+
+    removeBinaries:
     RMDir /r "$OLD_INSTALL_DIR\listener"
     Delete "$OLD_INSTALL_DIR\*.*"
 
