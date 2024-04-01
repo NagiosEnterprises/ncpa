@@ -153,11 +153,6 @@ Function CheckAndMigrateOldInstallation
     DetailPrint "Migrating NCPA from $R0 to $INSTDIR"
     CopyFiles /SILENT "$R0\*" "$INSTDIR"
 
-    Goto endMigration
-
-    noMigrationNeeded:
-        DetailPrint "No migration needed. Installing NCPA to $INSTDIR"
-
     endMigration:
 FunctionEnd
 
