@@ -396,6 +396,7 @@ Section # "Create Config.ini"
 
     ; Copy over example configs
     File /oname=$INSTDIR\etc\ncpa.cfg.sample .\NCPA\etc\ncpa.cfg.sample
+    IfFileExists $PROGRAMFILES32\Nagios\NCPA\etc\ncpa.cfg.d\example.cfg +2 0
     File /oname=$INSTDIR\etc\ncpa.cfg.d\example.cfg .\NCPA\etc\ncpa.cfg.d\example.cfg
     File /oname=$INSTDIR\etc\ncpa.cfg.d\README.txt .\NCPA\etc\ncpa.cfg.d\README.txt
 
