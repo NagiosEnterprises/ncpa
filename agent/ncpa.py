@@ -46,8 +46,6 @@ from io import open
 from logging.handlers import RotatingFileHandler
 from multiprocessing import Process, Value, freeze_support
 
-# disable root logger
-logging.getLogger().addHandler(logging.NullHandler())
 # Create the listener logger instance, now, because it is required by listener.server.
 # It will be configured later via setup_logger(). See note 'About Logging' below.
 listener_logger = logging.getLogger("listener")
@@ -1163,7 +1161,7 @@ def main(has_error):
 
         # Temporary set up logging
         log = logging.getLogger()
-        log.addHandler(logging.StreamHandler())
+        # log.addHandler(logging.StreamHandler())
         log.setLevel('DEBUG')
 
         p, l = start_processes(options, config, has_error, True)
