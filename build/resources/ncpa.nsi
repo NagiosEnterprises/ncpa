@@ -149,21 +149,8 @@ Function CheckAndMigrateOldInstallation
     Goto endMigration
     CopyFiles /SILENT "$OLD_INSTALL_DIR\plugins\*" "$INSTDIR\plugins"
 
-    FindFirst $0 $1 "$OLD_INSTALL_DIR\*"
-    loop:
-        StrCmp $1 "" done
-        StrCmp $1 "etc" skip
-        StrCmp $1 "plugins" skip
-        StrCmp $1 "var" skip
-    
-        RMDir /r "$OLD_INSTALL_DIR\$1"
-
-        skip:
-            FindNext $0 $1
-            Goto loop
-
-    done:
-        FindClose $0
+    RMDir /r "$OLD_INSTALL_DIR\listener"
+    Goto endMigration
 
     endMigration:
 FunctionEnd
@@ -335,6 +322,7 @@ Section # "Create Config.ini"
     Delete "$INSTDIR\ncpa_listener.log"
     Delete "$INSTDIR\ncpa_passive.log"
     RMDir /r "$INSTDIR\passive"
+    Delete "$INSTDIR\/*.*"
 
     SetOutPath $INSTDIR
 
