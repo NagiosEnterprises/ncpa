@@ -24,7 +24,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
         super(Handler, self).__init__(config, *args, **kwargs)
         listener.server.listener.config['iconfig'] = config
         self.str_topic = self.config.get('kafkaproducer', 'topic')
-        self.str_kafakhosts = self.config.get('kafkaproducer', 'servers')
+        self.str_kafkahosts = self.config.get('kafkaproducer', 'servers')
         self.str_client_id = self.config.get('kafkaproducer', 'clientname')
 
 
@@ -89,15 +89,15 @@ class Handler(passive.nagioshandler.NagiosHandler):
             producer = None
             try:
                 logging.info('Connect to Kafka Server')
-                producer = KafkaProducer(bootstrap_servers=['{}'.format(self.str_kafakhosts)], client_id=self.str_client_id)
+                producer = KafkaProducer(bootstrap_servers=['{}'.format(self.str_kafkahosts)], client_id=self.str_client_id)
             except KafkaError:
                 logging.warning(
-                    'Problem to connect Kafka Server: {} with Topic: {} and Clientname {} '.format(self.str_kafakhosts,
+                    'Problem to connect Kafka Server: {} with Topic: {} and Clientname {} '.format(self.str_kafkahosts,
                                                                                                    self.str_topic,
                                                                                                    self.str_client_id))
             if producer is None:
                 logging.warning(
-                    'No connection to Kafka Server: {} with Topic: {} and Clientname {} '.format(self.str_kafakhosts,
+                    'No connection to Kafka Server: {} with Topic: {} and Clientname {} '.format(self.str_kafkahosts,
                                                                                                     self.str_topic,
                                                                                                     self.str_client_id))
             else:
@@ -108,7 +108,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
                     except KafkaError:
                         logging.warning(
                             'Problem to send data to Kafka Server: {} with Topic: {} and Clientname {} '.format(
-                                self.str_kafakhosts,
+                                self.str_kafkahosts,
                                 self.str_topic,
                                 self.str_client_id))
                     except Exception as e:
