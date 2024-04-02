@@ -140,14 +140,15 @@ Function CheckAndMigrateOldInstallation
     Goto migratePlugins
     IfFileExists "$OLD_INSTALL_DIR\etc" +2 0 ; if files exist in NCPA 2 /etc, migrate
     Goto migratePlugins
-    CopyFiles /SILENT /r "$OLD_INSTALL_DIR\etc\*" "$INSTDIR\etc"
+    CopyFiles /SILENT "$OLD_INSTALL_DIR\etc\*" "$INSTDIR\etc"
+    CopyFiles /SILENT "$OLD_INSTALL_DIR\etc\ncpa.cfg.d\*" "$INSTDIR\etc\ncpa.cfg.d"
 
     migratePlugins:
     IfFileExists "$INSTDIR/plugins" 0 +2 ; if files exist in NCPA 3 /plugins, don't migrate
     Goto endMigration
     IfFileExists "$OLD_INSTALL_DIR\plugins" +2 0 ; if files exist in NCPA 2 /plugins, migrate
     Goto endMigration
-    CopyFiles /SILENT /r "$OLD_INSTALL_DIR\plugins\*" "$INSTDIR\plugins"
+    CopyFiles /SILENT "$OLD_INSTALL_DIR\plugins\*" "$INSTDIR\plugins"
 
     RMDir /r "$OLD_INSTALL_DIR\listener"
     Goto endMigration
