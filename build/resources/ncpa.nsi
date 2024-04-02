@@ -322,7 +322,7 @@ Section # "Create Config.ini"
     Delete "$INSTDIR\ncpa_listener.log"
     Delete "$INSTDIR\ncpa_passive.log"
     RMDir /r "$INSTDIR\passive"
-    Delete "$INSTDIR\/*.*"
+    Delete "$PROGRAMFILES32\Nagios\NCPA\*.*"
 
     SetOutPath $INSTDIR
 
