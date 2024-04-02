@@ -149,9 +149,21 @@ Function CheckAndMigrateOldInstallation
     Goto endMigration
     CopyFiles /SILENT "$OLD_INSTALL_DIR\plugins\*" "$INSTDIR\plugins"
 
-    RMDir /r "$OLD_INSTALL_DIR\listener"
-    Delete "$OLD_INSTALL_DIR\/*.*"
-    Goto endMigration
+    FindFirst $0 $1 "$OLD_INSTALL_DIR\*"
+    loop:
+        StrCmp $1 "" done
+        StrCmp $1 "etc" skip
+        StrCmp $1 "plugins" skip
+        StrCmp $1 "var" skip
+    
+        RMDir /r "$OLD_INSTALL_DIR\$1"
+
+        skip:
+            FindNext $0 $1
+            Goto loop
+
+    done:
+        FindClose $0
 
     endMigration:
 FunctionEnd
