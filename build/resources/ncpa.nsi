@@ -131,7 +131,33 @@ Page custom ConfigPassiveChecks
 ; Language
 !insertmacro MUI_LANGUAGE "English"
 
+Var OLD_INSTALL_DIR
+Function CheckAndMigrateOldInstallation
+    StrCpy $OLD_INSTALL_DIR "$PROGRAMFILES32\Nagios\NCPA"
+    IfFileExists "$OLD_INSTALL_DIR" 0 endMigration
+
+    IfFileExists "$INSTDIR\etc" 0 +2 ; if files exist in NCPA 3 /etc, don't migrate
+    Goto migratePlugins
+    IfFileExists "$OLD_INSTALL_DIR\etc" +2 0 ; if files exist in NCPA 2 /etc, migrate
+    Goto migratePlugins
+    CopyFiles /SILENT "$OLD_INSTALL_DIR\etc\*" "$INSTDIR\etc"
+    CopyFiles /SILENT "$OLD_INSTALL_DIR\etc\ncpa.cfg.d\*" "$INSTDIR\etc\ncpa.cfg.d"
+
+    migratePlugins:
+    IfFileExists "$INSTDIR/plugins" 0 +2 ; if files exist in NCPA 3 /plugins, don't migrate
+    Goto endMigration
+    IfFileExists "$OLD_INSTALL_DIR\plugins" +2 0 ; if files exist in NCPA 2 /plugins, migrate
+    Goto endMigration
+    CopyFiles /SILENT "$OLD_INSTALL_DIR\plugins\*" "$INSTDIR\plugins"
+
+    RMDir /r "$OLD_INSTALL_DIR\listener"
+    Goto endMigration
+
+    endMigration:
+FunctionEnd
+
 Function .onInit
+    Call CheckAndMigrateOldInstallation
 
     !insertmacro MULTIUSER_INIT
 
@@ -297,6 +323,7 @@ Section # "Create Config.ini"
     Delete "$INSTDIR\ncpa_listener.log"
     Delete "$INSTDIR\ncpa_passive.log"
     RMDir /r "$INSTDIR\passive"
+    Delete "$PROGRAMFILES32\Nagios\NCPA\*.*"
 
     SetOutPath $INSTDIR
 
@@ -369,6 +396,7 @@ Section # "Create Config.ini"
 
     ; Copy over example configs
     File /oname=$INSTDIR\etc\ncpa.cfg.sample .\NCPA\etc\ncpa.cfg.sample
+    IfFileExists $PROGRAMFILES32\Nagios\NCPA\etc\ncpa.cfg.d\example.cfg +2 0
     File /oname=$INSTDIR\etc\ncpa.cfg.d\example.cfg .\NCPA\etc\ncpa.cfg.d\example.cfg
     File /oname=$INSTDIR\etc\ncpa.cfg.d\README.txt .\NCPA\etc\ncpa.cfg.d\README.txt
 

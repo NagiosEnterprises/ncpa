@@ -1,6 +1,12 @@
 Changelog
 +++++++++
 
+3.1.0 - ??/??/2024
+==================
+**Updates**
+
+- Added migration of NCPA 2 configuration files to NCPA 3. (Blake Bahner)
+
 3.0.2 - 03/20/2024
 ==================
 **Updates**
