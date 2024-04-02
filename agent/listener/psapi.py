@@ -327,6 +327,9 @@ def get_disk_node(config):
     except IOError as ex:
         logging.exception(ex)
         disk_counters = []
+    except Exception as e:
+        logging.exception(e)
+        disk_counters = []
 
     # Get exclude values from the config
     try:
@@ -367,6 +370,8 @@ def get_disk_node(config):
                     disk_parts.append(tmp)
     except IOError as ex:
         logging.exception(ex)
+    except Exception as e:
+        logging.exception(e)
 
     disk_logical = ParentNode("logical", children=disk_mountpoints)
     disk_physical = ParentNode("physical", children=disk_counters)
