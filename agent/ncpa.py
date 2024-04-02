@@ -46,6 +46,8 @@ from io import open
 from logging.handlers import RotatingFileHandler
 from multiprocessing import Process, Value, freeze_support
 
+# disable root logger
+logging.getLogger().addHandler(logging.NullHandler())
 # Create the listener logger instance, now, because it is required by listener.server.
 # It will be configured later via setup_logger(). See note 'About Logging' below.
 listener_logger = logging.getLogger("listener")
@@ -64,6 +66,8 @@ def tokenFilter(record):
         return True
     except AttributeError:
         pass
+    except Exception as e:
+        print("Error in tokenFilter: ", e)
     return record
 
 
@@ -1028,7 +1032,7 @@ def setup_logger(config, loggerinstance, logfile):
         if __SYSTEM__ == 'posix':
             chown(config.get('general', 'uid'), config.get('general', 'gid'), logfile)
 
-    handlers.append(logging.StreamHandler())
+    # handlers.append(logging.StreamHandler())
     loggerinstance.setLevel(level)
 
     for h in handlers:
