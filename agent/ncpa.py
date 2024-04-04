@@ -1149,7 +1149,7 @@ def main(has_error):
     log.info("main - ZLIB version: %s", zlib_version)
 
     log.info("main - config: %s", config)
-    for extension, directive in config.items():
+    for extension, directive in config.items()['plugin directives']:
         log.info("main - Loading plugins with extension: %s", extension)
         log.info("main - Loading plugins with directive: %s", directive)
 
