@@ -1130,9 +1130,6 @@ def main(has_error):
     if config.get('general', 'loglevel') == 'debug':
         print("main - options: ", options)
 
-    for extension, directive in config.items():
-        logging.info("main - Loading plugins with extension: %s", extension)
-        logging.info("main - Loading plugins with directive: %s", directive)
 
     # We set up the root logger here. It uses the listener log file, because the web components,
     # which are part of the listener system, need to propagate up to this log. We don't assign a file
@@ -1150,6 +1147,11 @@ def main(has_error):
     log.info("main - Python version: %s", sys.version)
     log.info("main - SSL version: %s", ssl.OPENSSL_VERSION)
     log.info("main - ZLIB version: %s", zlib_version)
+
+    log.info("main - config: %s", config)
+    for extension, directive in config.items():
+        log.info("main - Loading plugins with extension: %s", extension)
+        log.info("main - Loading plugins with directive: %s", directive)
 
     # If we are running this in debug mode from the command line, we need to
     # wait for the proper output to exit and kill the Passive and Listener
