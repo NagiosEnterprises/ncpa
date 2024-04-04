@@ -759,7 +759,7 @@ def admin_plugin_config():
         directives = [x for x in get_config_items('plugin directives') if x[0] not in listener.config['iconfig'].defaults()]
     except Exception as e:
         directives = []
-    logging.info(logging.DEBUG, "admin_plugin_config() - directives: %s", directives)
+    logging.info("admin_plugin_config() - directives: %s", directives)
     tmp_args['directives'] = directives
 
     return render_template('admin/plugins.html', **tmp_args)
