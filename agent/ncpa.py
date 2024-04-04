@@ -1130,7 +1130,7 @@ def main(has_error):
     if config.get('general', 'loglevel') == 'debug':
         print("main - options: ", options)
 
-    for extension in config.get('plugin directives', 'plugin_extensions').split(','):
+    for extension in config.get('plugin directives'):
         logging.info("main - Loading plugins with extension: %s", extension)
 
     # We set up the root logger here. It uses the listener log file, because the web components,
