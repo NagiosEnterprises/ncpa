@@ -62,9 +62,11 @@ class PluginNode(nodes.RunnableNode):
 
         """
         _, extension = os.path.splitext(self.name)
+        extension = extension.lower().strip()
         try:
             if extension.strip() == "":
                 return "$plugin_name $plugin_args"
+            logging.info(config.get("plugin directives", extension))
             return config.get("plugin directives", extension)
         except NoOptionError:
             return "$plugin_name $plugin_args"
