@@ -1149,9 +1149,9 @@ def main(has_error):
     log.info("main - ZLIB version: %s", zlib_version)
 
     log.info("main - config: %s", config)
-    for _, configSection in config.items():
+    for sectionName, configSection in config.items():
         log.info("main - configSection: %s", configSection)
-        if configSection == 'plugin directives':
+        if sectionName == 'plugin directives':
             log.info("main - Found plugin directives: %s", configSection)
             for extension in configSection:
                 log.info("main - Found plugin extension: %s", extension)
