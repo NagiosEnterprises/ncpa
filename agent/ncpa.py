@@ -1150,15 +1150,13 @@ def main(has_error):
 
     log.info("main - config: %s", config)
     for sectionName, configSection in config.items():
-        log.info("main - configSection: %s", configSection)
         if sectionName == 'plugin directives':
-            log.info("main - Found plugin directives: %s", configSection)
-            for extension in configSection:
-                log.info("main - Found plugin extension: %s", extension)
-                log.info("main - Plugin[0] = %s", extension[0])
-                if extension[0] == '.':
-                    log.debug("main - Found plugin extension: %s", extension)
-                    extension = extension.lower()
+            for pluginExtension in list(configSection.keys()):
+                if pluginExtension[0] == '.':
+                    config[sectionName][pluginExtension] = configSection[pluginExtension].lower()
+                    log.info("main - plugin directive: %s = %s", pluginExtension, configSection[pluginExtension])
+                    log.info("main - plugin directive: %s = %s", pluginExtension, config[sectionName][pluginExtension])
+
 
     # If we are running this in debug mode from the command line, we need to
     # wait for the proper output to exit and kill the Passive and Listener
