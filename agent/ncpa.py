@@ -1152,6 +1152,8 @@ def main(has_error):
     for _, configSection in config.items():
         if configSection == 'plugin directives':
             for extension in configSection:
+                log.info("main - Found plugin extension: %s", extension)
+                log.info("main - Plugin[0] = %s", extension[0])
                 if extension[0] == '.':
                     log.debug("main - Found plugin extension: %s", extension)
                     extension = extension.lower()
