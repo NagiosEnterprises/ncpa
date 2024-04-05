@@ -1149,11 +1149,12 @@ def main(has_error):
     log.info("main - ZLIB version: %s", zlib_version)
 
     log.info("main - config: %s", config)
-    for extension, directive in config.items():
-        log.info("main - Loading plugins with extension: %s", extension)
-        log.info("main - Loading plugins with directive: %s", directive)
-        for plugin in directive:
-            log.info("main - Loading plugin: %s", plugin)
+    for _, configSection in config.items():
+        if configSection == 'plugin directives':
+            for extension in configSection:
+                if extension[0] == '.':
+                    log.debug("main - Found plugin extension: %s", extension)
+                    extension = extension.lower()
 
     # If we are running this in debug mode from the command line, we need to
     # wait for the proper output to exit and kill the Passive and Listener
