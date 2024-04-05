@@ -1130,6 +1130,7 @@ def main(has_error):
     if config.get('general', 'loglevel') == 'debug':
         print("main - options: ", options)
 
+
     # We set up the root logger here. It uses the listener log file, because the web components,
     # which are part of the listener system, need to propagate up to this log. We don't assign a file
     # handler to the listener_log, since it, too, will propagate up to the root logger and into the
@@ -1146,6 +1147,14 @@ def main(has_error):
     log.info("main - Python version: %s", sys.version)
     log.info("main - SSL version: %s", ssl.OPENSSL_VERSION)
     log.info("main - ZLIB version: %s", zlib_version)
+
+    log.info("main - config: %s", config)
+    for sectionName, configSection in config.items():
+        if sectionName == 'plugin directives':
+            for pluginExtension in list(configSection.keys()):
+                if pluginExtension[0] == '.':
+                    config[sectionName][pluginExtension.lower()] = configSection[pluginExtension]
+
 
     # If we are running this in debug mode from the command line, we need to
     # wait for the proper output to exit and kill the Passive and Listener
