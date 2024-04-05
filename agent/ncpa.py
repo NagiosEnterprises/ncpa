@@ -1153,7 +1153,7 @@ def main(has_error):
         if sectionName == 'plugin directives':
             for pluginExtension in list(configSection.keys()):
                 if pluginExtension[0] == '.':
-                    config[sectionName][pluginExtension] = configSection[pluginExtension].lower()
+                    config[sectionName][pluginExtension.lower()] = configSection[pluginExtension]
 
 
     # If we are running this in debug mode from the command line, we need to
