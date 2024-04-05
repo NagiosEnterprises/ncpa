@@ -1150,7 +1150,9 @@ def main(has_error):
 
     log.info("main - config: %s", config)
     for _, configSection in config.items():
+        log.info("main - configSection: %s", configSection)
         if configSection == 'plugin directives':
+            log.info("main - Found plugin directives: %s", configSection)
             for extension in configSection:
                 log.info("main - Found plugin extension: %s", extension)
                 log.info("main - Plugin[0] = %s", extension[0])
