@@ -930,6 +930,7 @@ if __SYSTEM__ == 'nt':
 
             # wait for stop event
             while self.running: # shouldn't loop, but just in case the event triggers without stop being called
+                self.logger.debug("Winservice.main() - passive: %s, listener: %s", self.p.is_alive(), self.l.is_alive())
                 win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
                 time.sleep(1)
 
