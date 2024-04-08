@@ -15,6 +15,17 @@ $(document).ready(function() {
             return false;
         }
     });
+
+    $('form').submit(function(e) {
+        e.preventDefault();
+        alert('This section is currently in read only mode and any setting changes will not be saved. This will be updated in future versions.');
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/update-config/', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(new URLSearchParams(new FormData(this)).toString());
+
+        return false;
+    });
 });
 </script>
 {% endblock %}
@@ -26,7 +37,7 @@ $(document).ready(function() {
 </div>
 
 <div style="padding: 3rem;">
-    <form action="/update-config/" method="POST" class="form-horizontal">
+    <form>
 
         <h3>API</h3>
         <p>These are the API settings.</p>
