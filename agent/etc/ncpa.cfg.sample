@@ -180,6 +180,13 @@ admin_auth_only = 0
 # allowed_sources =
 
 #
+# Allow the user to set up passive monitoring via the web GUI
+# 0 = Do not allow user modification
+# 1 = Allow user modification
+#
+allow_passive_gui_setup = 1
+
+#
 # -------------------------------
 # Listener Configuration (API)
 # -------------------------------
