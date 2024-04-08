@@ -1101,7 +1101,7 @@ def set_config(section=None):
     
     logging.debug("config: %s", config)
     logging.debug("set_config() - request.values: %s", request.values)
-    
+    return jsonify({'error': 'Not implemented yet.'})
 
 
 # ------------------------------
