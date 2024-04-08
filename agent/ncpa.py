@@ -425,6 +425,8 @@ class Daemon():
         self.setup_plugins()
         self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
+        self.p, self.l = None, None
+
     def main(self):
         action = self.options['action']
 
@@ -556,7 +558,7 @@ class Daemon():
         self.logger.debug("Daemon - started")
 
         try:
-            start_processes(self.options, self.config, self.has_error)
+            self.p, self.l = start_processes(self.options, self.config, self.has_error)
 
         except Exception as e:
             self.logger.exception("Daemon - Couldn't start processes: %s", e)
@@ -570,6 +572,7 @@ class Daemon():
                 # ***************************************************************************
 
         while not self.has_error.value:
+            self.logger.debug("Winservice.main() - passive: %s, listener: %s", self.p.is_alive(), self.l.is_alive())
             time.sleep(1)
         else:
             self.logger.debug("Daemon - Exit forever loop - self.has_error.value: %s", self.has_error.value)
