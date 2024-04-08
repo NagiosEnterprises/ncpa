@@ -43,66 +43,74 @@ $(document).ready(function() {
         <div class="row">
             <div class="col-lg-12">
                 <div class="form-horizontal">
+                    <form>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Logging</label>
-                        <div class="col-sm-6">
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if sectioncfg['check_logging'] %} active{% endif %}">
-                                    <input type="radio" name="check_logging" value="1" autocomplete="off"{% if sectioncfg['check_logging'] %} checked{% endif %}> Enabled
-                                </label>
-                                <label class="btn btn-sm btn-default{% if not sectioncfg['check_logging'] %} active{% endif %}">
-                                    <input type="radio" name="check_logging" value="0" autocomplete="off"{% if not sectioncfg['check_logging'] %} checked{% endif %}> Disabled
-                                </label>
-                            </div>
-                            <span style="margin-left: 1.5rem;">
-                                <i class="fa fa-trash-o fa-14"></i> <a href="clear-check-log">Clear Check Log</a>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Log Retention</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="log_checks" value="{{ sectioncfg['check_logging_time'] }}" readonly>
-                                <div class="input-group-addon">Days</div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Logging</label>
+                            <div class="col-sm-6">
+                                <div class="btn-group" data-toggle="buttons">
+                                    <label class="btn btn-sm btn-default{% if sectioncfg['check_logging'] %} active{% endif %}">
+                                        <input type="radio" name="check_logging" value="1" autocomplete="off"{% if sectioncfg['check_logging'] %} checked{% endif %}> Enabled
+                                    </label>
+                                    <label class="btn btn-sm btn-default{% if not sectioncfg['check_logging'] %} active{% endif %}">
+                                        <input type="radio" name="check_logging" value="0" autocomplete="off"{% if not sectioncfg['check_logging'] %} checked{% endif %}> Disabled
+                                    </label>
+                                </div>
+                                <span style="margin-left: 1.5rem;">
+                                    <i class="fa fa-trash-o fa-14"></i> <a href="clear-check-log">Clear Check Log</a>
+                                </span>
                             </div>
                         </div>
-                    </div>
 
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Level</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <select class="form-control" name="loglevel">
-                                <option value="error"{% if sectioncfg['loglevel'] == 'error' %} selected{% endif %}>Error</option>
-                                <option value="warning"{% if sectioncfg['loglevel'] == 'warning' %} selected{% endif %}>Warning</option>
-                                <option value="info"{% if sectioncfg['loglevel'] == 'info' %} selected{% endif %}>Info</option>
-                                <option value="debug"{% if sectioncfg['loglevel'] == 'debug' %} selected{% endif %}>Debug</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Max MB</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="logmaxmb" value="{{ sectioncfg['logmaxmb'] }}" readonly>
-                                <div class="input-group-addon">MB</div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Log Retention</label>
+                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="log_checks" value="{{ sectioncfg['check_logging_time'] }}" readonly>
+                                    <div class="input-group-addon">Days</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Backups</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="logbackups" value="{{ sectioncfg['logbackups'] }}" readonly>
-                                <div class="input-group-addon">Days</div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Level</label>
+                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                                <select class="form-control" name="loglevel">
+                                    <option value="error"{% if sectioncfg['loglevel'] == 'error' %} selected{% endif %}>Error</option>
+                                    <option value="warning"{% if sectioncfg['loglevel'] == 'warning' %} selected{% endif %}>Warning</option>
+                                    <option value="info"{% if sectioncfg['loglevel'] == 'info' %} selected{% endif %}>Info</option>
+                                    <option value="debug"{% if sectioncfg['loglevel'] == 'debug' %} selected{% endif %}>Debug</option>
+                                </select>
                             </div>
                         </div>
-                    </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Max MB</label>
+                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="logmaxmb" value="{{ sectioncfg['logmaxmb'] }}" readonly>
+                                    <div class="input-group-addon">MB</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Backups</label>
+                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="logbackups" value="{{ sectioncfg['logbackups'] }}" readonly>
+                                    <div class="input-group-addon">Days</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
 
 
                     <div class="form-group">

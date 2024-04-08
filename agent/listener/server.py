@@ -1060,6 +1060,23 @@ def nrdp():
 
 
 # ------------------------------
+# Configuration Endpoints
+# ------------------------------
+@listener.route('/update-config/', methods=['POST'], provide_automatic_options = False)
+@requires_admin_auth
+def set_config(section=None):
+    config = listener.config['iconfig']
+
+    real_token = config.get('api', 'community_string')
+    test_token = request.values.get('token', None)
+    if real_token != test_token:
+        return jsonify({'error': 'Unauthorized.'}), 401
+    
+    logging.debug("set_config() - request.values: %s", request.values)
+    
+
+
+# ------------------------------
 # API Endpoint
 # ------------------------------
 
