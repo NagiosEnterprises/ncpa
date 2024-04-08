@@ -7,6 +7,7 @@ Changelog
 
 - Added migration of NCPA 2 configuration files to NCPA 3. (Blake Bahner)
 - Made the NCPA 3 plugin extensions case-insensitive. (Blake Bahner)
+- Removed misleading information from the NCPA 3 configuration file. (Blake Bahner)
 
 **Bug Fixes**
 
