@@ -1100,7 +1100,7 @@ def set_config(section=None):
     config = listener.config['iconfig']
     
     logging.debug("set_config() - request.values: %s", request.values)
-    logging.info("set_config() - ncpa.d: %s", ncpa.d)
+    logging.info("set_config() - request.form: %s", request.form)
 
     return jsonify({'error': 'Not implemented yet.'})
 
