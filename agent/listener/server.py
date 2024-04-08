@@ -1095,7 +1095,7 @@ def nrdp():
 #       - ??? (should be fine as it can only access the api, which the user already has access to)
 
 @listener.route('/update-config/', methods=['POST'], provide_automatic_options = False)
-@requires_admin_auth
+@requires_token_or_auth
 def set_config(section=None):
     config = listener.config['iconfig']
 
