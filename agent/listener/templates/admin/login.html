@@ -8,6 +8,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="well" style="width: 300px; margin: 0 auto;">
+
                 <form class="form-signin" action="login" method="post">
                     <h4 style="margin: 0 0 20px 0; font-weight: bold;">Admin Log In</h4>
                     {% if message %}
@@ -19,6 +20,7 @@
                     <input {% if error %}id="inputError"{% endif %} type="password" class="form-control" name="password" placeholder="Admin password" autofocus autocomplete="off">
                     <button class="btn btn-sm btn-primary" type="submit" style="margin-top: 20px;">Log In</button>
                 </form>
+                
             </div>
         </div>
     </div>
