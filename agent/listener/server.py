@@ -1099,8 +1099,9 @@ def nrdp():
 def set_config(section=None):
     config = listener.config['iconfig']
     
-    logging.debug("config: %s", config)
     logging.debug("set_config() - request.values: %s", request.values)
+    logging.info("set_config() - ncpa.d: %s", ncpa.d)
+
     return jsonify({'error': 'Not implemented yet.'})
 
 
