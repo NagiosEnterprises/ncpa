@@ -1099,8 +1099,17 @@ def nrdp():
 def set_config(section=None):
     config = listener.config['iconfig']
     
-    logging.debug("set_config() - request.values: %s", request.values)
     logging.info("set_config() - request.form: %s", request.form)
+
+    passive_editable_options = ['handlers']
+    nrdp_editable_options = ['nrdp_url', 'nrdp_token', 'nrdp_hostname', 'nrdp_timeout']
+    kafkaproducer_editable_options = ['kafkaproducer_hostname', 'kafkaproducer_servers', 'kafkaproducer_clientname', 'kafkaproducer_topic']
+
+    for i in [].append(passive_editable_options).append(nrdp_editable_options).append(kafkaproducer_editable_options):
+        if i in request.form:
+            # sanitize the input
+                
+                config.set(section, i, request.form[i])
 
     return jsonify({'error': 'Not implemented yet.'})
 
