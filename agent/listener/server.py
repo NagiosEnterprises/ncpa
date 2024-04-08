@@ -1062,6 +1062,38 @@ def nrdp():
 # ------------------------------
 # Configuration Endpoints
 # ------------------------------
+
+# DO NOT ALLOW MODIFICATION OF OTHER CONFIG SETTINGS, RESTRICT TO SPECIFIC SECTIONS
+#
+# ALLOWED SECTIONS:
+#   Global
+#      - Check Logging?
+#      - Check Log Retention?
+#      - Log Level
+#      - Log Max MB?
+#      - Log Backups Days?
+#      - Default Units
+#   Listener
+#       NONE, DO NOT ALLOW
+#   API
+#       NONE, DO NOT ALLOW
+#   Passive
+#       - Handlers (None, NRDP, Kafka Producer)
+#   NRDP
+#       - NRDP URL
+#       - NRDP Token
+#       - Hostname
+#       - Connection Timeout
+#   Kafka Producer
+#       - Hostname
+#       - Servers
+#       - Client Name
+#       - Topic
+#   Plugin Directives
+#       - NONE, DO NOT ALLOW
+#   Passive Checks
+#       - ??? (should be fine as it can only access the api, which the user already has access to)
+
 @listener.route('/update-config/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
 def set_config(section=None):
