@@ -1101,9 +1101,9 @@ def sanitize_for_configparser(input_value):
     if len(input_value) > max_length:
         return False
     
+    sanitized = input_value.replace('=', '\\=').replace(':', '\\:').replace('[', '\\[').replace(']', '\\]')
     # Remove all control characters, including newlines
     sanitized = re_sub(r'[\x00-\x1f\x7f-\x9f]', '', sanitized)
-    sanitized = input_value.replace('=', '\\=').replace(':', '\\:').replace('[', '\\[').replace(']', '\\]')
     
     return sanitized
 
@@ -1139,6 +1139,9 @@ def write_to_configFile(section, option, value):
                 if section == target_section and line.startswith(option_in_file + " ="):
                     lines[i] = f"{option_in_file} = {value}\n"
                     break
+
+    with open(listener.config['config_file'], 'w') as configfile:
+        configfile.writelines(lines)
         
 
 @listener.route('/update-config/', methods=['POST'], provide_automatic_options = False)
@@ -1158,7 +1161,7 @@ def set_config(section=None):
             config.set(section, editable_option, sanitized_input)
 
 
-    return jsonify({'error': 'Not implemented yet.'})
+    return jsonify({'error': 'Not fully implemented yet.'})
 
 
 # ------------------------------
