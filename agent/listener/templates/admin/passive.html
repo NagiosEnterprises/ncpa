@@ -17,6 +17,9 @@ $(document).ready(function() {
     });
 
     $('#start-passive').click(function() {
+        $.post('/update-config/', $('form').serialize(), function(data) {
+            alert(data);
+        });
         $.post('/start-passive/', function(data) {
             alert(data);
         });
