@@ -1156,7 +1156,9 @@ def set_config(section=None):
     kafkaproducer_editable_options = ['kafkaproducer_hostname', 'kafkaproducer_servers', 'kafkaproducer_clientname', 'kafkaproducer_topic']
 
     for editable_option in passive_editable_options + nrdp_editable_options + kafkaproducer_editable_options:
+        logging.info("set_config() - editable_option: %s", editable_option)
         if editable_option in request.form:
+            logging.info("set_config() - editable_option in form: %s", editable_option)
             sanitized_input = sanitize_for_configparser(request.form[editable_option])
             config.set(section, editable_option, sanitized_input)
             write_to_configFile(section, editable_option, sanitized_input)
