@@ -1154,14 +1154,15 @@ def set_config(section=None):
     passive_editable_options = ['handlers']
     nrdp_editable_options = ['nrdp_url', 'nrdp_token', 'nrdp_hostname', 'nrdp_timeout']
     kafkaproducer_editable_options = ['kafkaproducer_hostname', 'kafkaproducer_servers', 'kafkaproducer_clientname', 'kafkaproducer_topic']
+    editable_options = passive_editable_options + nrdp_editable_options + kafkaproducer_editable_options
 
-    for editable_option in passive_editable_options + nrdp_editable_options + kafkaproducer_editable_options:
-        logging.info("set_config() - editable_option: %s", editable_option)
-        if editable_option in request.form:
-            logging.info("set_config() - editable_option in form: %s", editable_option)
-            sanitized_input = sanitize_for_configparser(request.form[editable_option])
-            config.set(section, editable_option, sanitized_input)
-            write_to_configFile(section, editable_option, sanitized_input)
+    for (option, value) in request.form.items():
+        logging.info("set_config() - option: %s", option)
+        if option in editable_options:
+            logging.info("set_config() - editable_option in form: %s", option)
+            sanitized_input = sanitize_for_configparser(request.form[option])
+            config.set(section, option, sanitized_input)
+            write_to_configFile(section, option, sanitized_input)
 
 
     return jsonify({'error': 'Not fully implemented yet.'})
