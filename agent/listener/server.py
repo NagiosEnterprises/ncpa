@@ -1094,6 +1094,35 @@ def nrdp():
 #   Passive Checks
 #       - ??? (should be fine as it can only access the api, which the user already has access to)
 
+def sanitize_for_configparser(input_value):
+    from re import sub as re_sub
+
+    max_length = 1024
+    if len(input_value) > max_length:
+        return False
+    
+    # Remove all control characters, including newlines
+    sanitized = re_sub(r'[\x00-\x1f\x7f-\x9f]', '', sanitized)
+    sanitized = input_value.replace('=', '\\=').replace(':', '\\:').replace('[', '\\[').replace(']', '\\]')
+    
+    return sanitized
+
+def write_to_configFile(section, option, value):
+    config = listener.config['iconfig']
+    value = sanitize_for_configparser(value)
+    config.set(section, option, value)
+
+    allowed_modifications = ['default_units', 'log_level']
+    with open(listener.config['config_file'], 'r') as configfile:
+        lines = configfile.readlines()
+        for i, line in enumerate(lines):
+            if option == "log_level" and line.startswith("loglevel ="):
+                lines[i] = "loglevel = " + value + "\n"
+            elif option == "default_units" and line.startswith("default_units ="):
+                lines[i] = "default_units = " + value + "\n"
+            elif option == "Handlers" and line.startswith("handlers ="):
+                lines[i] = "handlers = " + value + "\n" 
+
 @listener.route('/update-config/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
 def set_config(section=None):
@@ -1105,11 +1134,12 @@ def set_config(section=None):
     nrdp_editable_options = ['nrdp_url', 'nrdp_token', 'nrdp_hostname', 'nrdp_timeout']
     kafkaproducer_editable_options = ['kafkaproducer_hostname', 'kafkaproducer_servers', 'kafkaproducer_clientname', 'kafkaproducer_topic']
 
-    for i in [].append(passive_editable_options).append(nrdp_editable_options).append(kafkaproducer_editable_options):
-        if i in request.form:
+    for editable_option in [].append(passive_editable_options).append(nrdp_editable_options).append(kafkaproducer_editable_options):
+        if editable_option in request.form:
             # sanitize the input
-                
-                config.set(section, i, request.form[i])
+            sanitized_input = sanitize_for_configparser(request.form[editable_option])
+            config.set(section, editable_option, sanitized_input)
+
 
     return jsonify({'error': 'Not implemented yet.'})
 
