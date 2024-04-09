@@ -1155,7 +1155,7 @@ def set_config(section=None):
     nrdp_editable_options = ['nrdp_url', 'nrdp_token', 'nrdp_hostname', 'nrdp_timeout']
     kafkaproducer_editable_options = ['kafkaproducer_hostname', 'kafkaproducer_servers', 'kafkaproducer_clientname', 'kafkaproducer_topic']
 
-    for editable_option in [].append(passive_editable_options).append(nrdp_editable_options).append(kafkaproducer_editable_options):
+    for editable_option in passive_editable_options + nrdp_editable_options + kafkaproducer_editable_options:
         if editable_option in request.form:
             sanitized_input = sanitize_for_configparser(request.form[editable_option])
             config.set(section, editable_option, sanitized_input)
