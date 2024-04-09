@@ -1112,6 +1112,21 @@ def write_to_configFile(section, option, value):
     value = sanitize_for_configparser(value)
     config.set(section, option, value)
 
+    # [section], option_name, option_name_in_ncpa.cfg
+    allowed_modifications_tuples = [
+        ("[listener]",      "log_level",    "loglevel"),
+        ("[listener]",      "default_units","default_units"),
+        ("[passive]",       "handlers",     "handlers"),
+        ("[nrdp]",          "nrdp_url",     "parent"),
+        ("[nrdp]",          "nrdp_token",   "token"),
+        ("[nrdp]",          "hostname",     "hostname"),
+        ("[nrdp]",          "nrdp_timeout", "connection_timeout"),
+        ("[kafkaproducer]", "hostname",     "hostname"),
+        ("[kafkaproducer]", "servers",      "servers"),
+        ("[kafkaproducer]", "client_name",  "clientname"),
+        ("[kafkaproducer]", "topic",        "topic"),
+    ]
+
     with open(listener.config['config_file'], 'r') as configfile:
         lines = configfile.readlines()
         section = ""
@@ -1119,28 +1134,11 @@ def write_to_configFile(section, option, value):
             if line.startswith("["):
                 section = line.strip()
                 logging.debug("write_to_configFile() - section: %s", section)
-            if section == "[listener]" and option == "log_level" and line.startswith("loglevel ="):
-                lines[i] = "loglevel = " + value + "\n"
-            elif section == "[listener]" and option == "default_units" and line.startswith("default_units ="):
-                lines[i] = "default_units = " + value + "\n"
-            elif section == "[passive]" and option == "handlers" and line.startswith("handlers ="):
-                lines[i] = "handlers = " + value + "\n" 
-            elif section == "[nrdp]" and option == "nrdp_url" and line.startswith("parent"):
-                lines[i] = "parent = " + value + "\n"
-            elif section == "[nrdp]" and option == "nrdp_token" and line.startswith("token"):
-                lines[i] = "token = " + value + "\n"
-            elif section == "[nrdp]" and option == "hostname" and line.startswith("hostname"):
-                lines[i] = "hostname = " + value + "\n"
-            elif section == "[nrdp]" and option == "nrdp_timeout" and line.startswith("connection_timeout"):
-                lines[i] = "connection_timeout = " + value + "\n"
-            elif section == "[kafkaproducer]" and option == "hostname" and line.startswith("hostname"):
-                lines[i] = "hostname = " + value + "\n"
-            elif section == "[kafkaproducer]" and option == "servers" and line.startswith("servers"):
-                lines[i] = "servers = " + value + "\n"
-            elif section == "[kafkaproducer]" and option == "client_name" and line.startswith("clientname"):
-                lines[i] = "clientname = " + value + "\n"
-            elif section == "[kafkaproducer]" and option == "topic" and line.startswith("topic"):
-                lines[i] = "topic = " + value + "\n"
+                continue
+            for (target_section, option, option_in_file) in allowed_modifications_tuples:
+                if section == target_section and line.startswith(option_in_file + " ="):
+                    lines[i] = f"{option_in_file} = {value}\n"
+                    break
         
 
 @listener.route('/update-config/', methods=['POST'], provide_automatic_options = False)
