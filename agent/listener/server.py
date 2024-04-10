@@ -1135,7 +1135,37 @@ def write_to_configFile(section, option, value):
     ]
 
     lines = None
+
+    ### Permissions issue with writing to config file, so we will have to spawn a new process to write to the file
+    # try:
+    #     cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg')
+    #     logging.info("write_to_configFile() - cfg_file: %s", cfg_file)
+    #     with open(cfg_file, 'r') as configfile:
+    #         logging.info("file opened for read")
+    #         lines = configfile.readlines()
+    #         section = ""
+    #         for i, line in enumerate(lines):
+    #             if line.startswith("["):
+    #                 section = line.strip()
+    #                 logging.debug("write_to_configFile() - section: %s", section)
+    #                 continue
+    #             for (target_section, option, option_in_file) in allowed_modifications_tuples:
+    #                 if section == target_section and line.startswith(option_in_file + " ="):
+    #                     lines[i] = f"{option_in_file} = {value}\n"
+    #                     break
+    #     configfile.close()
+
+    #     with open(cfg_file, 'w') as configfile:
+    #         logging.info("file opened for write")
+    #         configfile.writelines(lines)
+    #     configfile.close()
+    # except Exception as e:
+    #     logging.exception(e)
+    #     return False
+
     try:
+        import subprocess
+        import environment
         cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg')
         logging.info("write_to_configFile() - cfg_file: %s", cfg_file)
         with open(cfg_file, 'r') as configfile:
@@ -1149,14 +1179,26 @@ def write_to_configFile(section, option, value):
                     continue
                 for (target_section, option, option_in_file) in allowed_modifications_tuples:
                     if section == target_section and line.startswith(option_in_file + " ="):
-                        lines[i] = f"{option_in_file} = {value}\n"
+                        sed_cmd = f"sed -i 's/{option_in_file} = .*/{option_in_file} = {value}/' {cfg_file}"
+                        logging.info("write_to_configFile() - sed_cmd: %s", sed_cmd)
+                        
+                        if environment.SYSTEM == "Windows":
+                             running_check = subprocess.run(
+                                    sed_cmd, 
+                                    # shell=True, 
+                                    stdout=subprocess.PIPE, 
+                                    stderr=subprocess.STDOUT
+                                )
+                        else:
+                            running_check = subprocess.run(
+                                sed_cmd, 
+                                # shell=True, 
+                                stdout=subprocess.PIPE, 
+                                stderr=subprocess.STDOUT,
+                                preexec_fn=os.setsid
+                            )
                         break
-        configfile.close()
-
-        with open(cfg_file, 'w') as configfile:
-            logging.info("file opened for write")
-            configfile.writelines(lines)
-        configfile.close()
+            configfile.close()
     except Exception as e:
         logging.exception(e)
         return False
@@ -1178,12 +1220,9 @@ def set_config(section=None):
     for (option, value) in request.form.items():
         logging.info("set_config() - option: %s", option)
         if option in editable_options:
-            logging.info("set_config() - editable_option in form: %s", option)
-            logging.info("set_config() - value: %s", value)
-            logging.info("set_config() - request.form[option]: %s", request.form[option])
-            # sanitized_input = sanitize_for_configparser(request.form[option])
             sanitized_input = sanitize_for_configparser(value)
             config.set(section, option, sanitized_input)
+            # TODO: instead add to list of changes and write to config at the end
             write_to_configFile(section, option, sanitized_input)
 
 
