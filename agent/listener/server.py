@@ -1128,23 +1128,27 @@ def write_to_configFile(section, option, value):
     ]
 
     lines = None
-    with open(listener.config['config_file'], 'r') as configfile:
-        logging.info("file opened for read")
-        lines = configfile.readlines()
-        section = ""
-        for i, line in enumerate(lines):
-            if line.startswith("["):
-                section = line.strip()
-                logging.debug("write_to_configFile() - section: %s", section)
-                continue
-            for (target_section, option, option_in_file) in allowed_modifications_tuples:
-                if section == target_section and line.startswith(option_in_file + " ="):
-                    lines[i] = f"{option_in_file} = {value}\n"
-                    break
+    try:
+        with open(listener.config['config_file'], 'r') as configfile:
+            logging.info("file opened for read")
+            lines = configfile.readlines()
+            section = ""
+            for i, line in enumerate(lines):
+                if line.startswith("["):
+                    section = line.strip()
+                    logging.debug("write_to_configFile() - section: %s", section)
+                    continue
+                for (target_section, option, option_in_file) in allowed_modifications_tuples:
+                    if section == target_section and line.startswith(option_in_file + " ="):
+                        lines[i] = f"{option_in_file} = {value}\n"
+                        break
 
-    with open(listener.config['config_file'], 'w') as configfile:
-        logging.info("file opened for write")
-        configfile.writelines(lines)
+        with open(listener.config['config_file'], 'w') as configfile:
+            logging.info("file opened for write")
+            configfile.writelines(lines)
+    except Exception as e:
+        logging.exception(e)
+        return False
         
 
 @listener.route('/update-config/', methods=['POST'], provide_automatic_options = False)
@@ -1154,16 +1158,20 @@ def set_config(section=None):
     
     logging.info("set_config() - request.form: %s", request.form)
 
+    general_editable_options = ['loglevel', 'default_units']
     passive_editable_options = ['handlers']
     nrdp_editable_options = ['nrdp_url', 'nrdp_token', 'nrdp_hostname', 'nrdp_timeout']
     kafkaproducer_editable_options = ['kafkaproducer_hostname', 'kafkaproducer_servers', 'kafkaproducer_clientname', 'kafkaproducer_topic']
-    editable_options = passive_editable_options + nrdp_editable_options + kafkaproducer_editable_options
+    editable_options = general_editable_options + passive_editable_options + nrdp_editable_options + kafkaproducer_editable_options
 
     for (option, value) in request.form.items():
         logging.info("set_config() - option: %s", option)
         if option in editable_options:
             logging.info("set_config() - editable_option in form: %s", option)
-            sanitized_input = sanitize_for_configparser(request.form[option])
+            logging.info("set_config() - value: %s", value)
+            logging.info("set_config() - request.form[option]: %s", request.form[option])
+            # sanitized_input = sanitize_for_configparser(request.form[option])
+            sanitized_input = sanitize_for_configparser(value)
             config.set(section, option, sanitized_input)
             write_to_configFile(section, option, sanitized_input)
 
