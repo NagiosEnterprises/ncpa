@@ -1185,14 +1185,14 @@ def write_to_configFile(section, option, value):
                         if environment.SYSTEM == "Windows":
                              running_check = subprocess.run(
                                     sed_cmd, 
-                                    # shell=True, 
+                                    shell=True, 
                                     stdout=subprocess.PIPE, 
                                     stderr=subprocess.STDOUT
                                 )
                         else:
                             running_check = subprocess.run(
                                 sed_cmd, 
-                                # shell=True, 
+                                shell=True, 
                                 stdout=subprocess.PIPE, 
                                 stderr=subprocess.STDOUT,
                                 preexec_fn=os.setsid
