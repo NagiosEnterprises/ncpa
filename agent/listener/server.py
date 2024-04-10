@@ -1136,7 +1136,7 @@ def write_to_configFile(section, option, value):
 
     lines = None
     try:
-        cfg_file = os.path.join('/', 'usr', 'local', 'etc', 'ncpa.cfg')
+        cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg')
         logging.info("write_to_configFile() - cfg_file: %s", cfg_file)
         with open(cfg_file, 'r') as configfile:
             logging.info("file opened for read")
