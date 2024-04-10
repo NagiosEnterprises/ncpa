@@ -1127,7 +1127,9 @@ def write_to_configFile(section, option, value):
         ("[kafkaproducer]", "topic",        "topic"),
     ]
 
+    lines = None
     with open(listener.config['config_file'], 'r') as configfile:
+        logging.info("file opened for read")
         lines = configfile.readlines()
         section = ""
         for i, line in enumerate(lines):
@@ -1141,6 +1143,7 @@ def write_to_configFile(section, option, value):
                     break
 
     with open(listener.config['config_file'], 'w') as configfile:
+        logging.info("file opened for write")
         configfile.writelines(lines)
         
 
