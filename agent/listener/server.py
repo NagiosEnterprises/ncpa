@@ -1109,6 +1109,7 @@ def sanitize_for_configparser(input_value):
 
 def write_to_configFile(section, option, value):
     config = listener.config['iconfig']
+    logging.info("write_to_configFile() - config: %s", config)
     value = sanitize_for_configparser(value)
     config.set(section, option, value)
 
@@ -1129,7 +1130,7 @@ def write_to_configFile(section, option, value):
 
     lines = None
     try:
-        with open(listener.config['config_file'], 'r') as configfile:
+        with open(config['config_file'], 'r') as configfile:
             logging.info("file opened for read")
             lines = configfile.readlines()
             section = ""
