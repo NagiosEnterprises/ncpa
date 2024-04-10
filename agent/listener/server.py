@@ -1197,6 +1197,14 @@ def write_to_configFile(section, option, value):
                                 stderr=subprocess.STDOUT,
                                 preexec_fn=os.setsid
                             )
+                        stdout, stderr = running_check.communicate()
+                        logging.info("write_to_configFile() - running_check: %s", running_check)
+                        logging.info("write_to_configFile() - running_check.returncode: %s", running_check.returncode)
+                        logging.info("write_to_configFile() - running_check.stdout: %s", running_check.stdout)
+                        logging.info("write_to_configFile() - running_check.stderr: %s", running_check.stderr)
+                        if running_check.returncode != 0:
+                            logging.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
+                            return False
                         break
             configfile.close()
     except Exception as e:
