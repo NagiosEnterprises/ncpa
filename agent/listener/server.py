@@ -1115,6 +1115,8 @@ def write_to_configFile(section, option, value):
             logging.debug("write_to_configFile() - option: %s", option)
             logging.debug("write_to_configFile() - value: %s", config.get(section, option))
     value = sanitize_for_configparser(value)
+    if not value:
+        return False
     config.set(section, option, value)
 
     # [section], option_name, option_name_in_ncpa.cfg
@@ -1134,7 +1136,9 @@ def write_to_configFile(section, option, value):
 
     lines = None
     try:
-        with open(config['config_file'], 'r') as configfile:
+        cfg_file = config.get('config_file')
+        logging.info("write_to_configFile() - cfg_file: %s", cfg_file)
+        with open(cfg_file, 'r') as configfile:
             logging.info("file opened for read")
             lines = configfile.readlines()
             section = ""
@@ -1147,10 +1151,12 @@ def write_to_configFile(section, option, value):
                     if section == target_section and line.startswith(option_in_file + " ="):
                         lines[i] = f"{option_in_file} = {value}\n"
                         break
+        configfile.close()
 
-        with open(listener.config['config_file'], 'w') as configfile:
+        with open(cfg_file, 'w') as configfile:
             logging.info("file opened for write")
             configfile.writelines(lines)
+        configfile.close()
     except Exception as e:
         logging.exception(e)
         return False
