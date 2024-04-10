@@ -1165,7 +1165,7 @@ def write_to_configFile(section, option, value):
 
     try:
         import subprocess
-        import environment
+        import listener.environment as environment
         cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg')
         logging.info("write_to_configFile() - cfg_file: %s", cfg_file)
         with open(cfg_file, 'r') as configfile:
