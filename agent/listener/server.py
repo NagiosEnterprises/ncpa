@@ -1121,8 +1121,8 @@ def write_to_configFile(section, option, value):
 
     # [section], option_name, option_name_in_ncpa.cfg
     allowed_modifications_tuples = [
-        ("[listener]",      "log_level",    "loglevel"),
-        ("[listener]",      "default_units","default_units"),
+        ("[general]",       "log_level",    "loglevel"),
+        ("[general]",       "default_units","default_units"),
         ("[passive]",       "handlers",     "handlers"),
         ("[nrdp]",          "nrdp_url",     "parent"),
         ("[nrdp]",          "nrdp_token",   "token"),
@@ -1179,9 +1179,7 @@ def write_to_configFile(section, option, value):
                     continue
                 for (target_section, tbl_option, option_in_file) in allowed_modifications_tuples:
                     logging.info("\n\n write_to_configFile() - target_section: %s", target_section)
-                    logging.info("write_to_configFile() - option_in_file: %s", option_in_file)
-                    logging.info("write_to_configFile() - tbl_option: %s", tbl_option)
-                    logging.info("write_to_configFile() - option: %s", option)
+
                     if section == target_section:
                         logging.info("match section")
                     if option == tbl_option:
