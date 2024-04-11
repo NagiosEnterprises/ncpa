@@ -16,16 +16,6 @@ $(document).ready(function() {
         }
     });
 
-    $('form').submit(function(e) {
-        e.preventDefault();
-        alert('This section is currently in read only mode and any setting changes will not be saved. This will be updated in future versions.');
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', '/update-config/', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.send(new URLSearchParams(new FormData(this)).toString());
-        
-        return false;
-    });
 });
 </script>
 {% endblock %}
@@ -56,28 +46,6 @@ $(document).ready(function() {
 
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Default Units</label>
-            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                <select class="form-control" name="default_units">
-                    <option value="k"{% if sectioncfg['default_units'] == 'K' %} selected{% endif %}>k</option>
-                    <option value="Ki"{% if sectioncfg['default_units'] == 'Ki' %} selected{% endif %}>Ki</option>
-                    <option value="M"{% if sectioncfg['default_units'] == 'M' %} selected{% endif %}>M</option>
-                    <option value="Mi"{% if sectioncfg['default_units'] == 'Mi' %} selected{% endif %}>Mi</option>
-                    <option value="G"{% if sectioncfg['default_units'] == 'G' %} selected{% endif %}>G</option>
-                    <option value="Gi"{% if sectioncfg['default_units'] == 'Gi' %} selected{% endif %}>Gi</option>
-                    <option value="T"{% if sectioncfg['default_units'] == 'T' %} selected{% endif %}>T</option>
-                    <option value="Ti"{% if sectioncfg['default_units'] == 'Ti' %} selected{% endif %}>Ti</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
         </div>
 
