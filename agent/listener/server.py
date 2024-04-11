@@ -1108,7 +1108,6 @@ def sanitize_for_configparser(input_value):
     return sanitized
 
 def write_to_configFile(section, option, value):
-    logging.info("   write_to_configFile() - ")
     config = listener.config['iconfig']
     for section in config.sections():
         logging.debug("write_to_configFile() - section: %s", section)
@@ -1180,6 +1179,7 @@ def write_to_configFile(section, option, value):
                     continue
                 for (target_section, option, option_in_file) in allowed_modifications_tuples:
                     if section == target_section and line.startswith(option_in_file + " ="):
+                        logging.info("   write_to_configFile() - ")
                         logging.info("write_to_configFile() - target_section: %s", target_section)
                         logging.info("write_to_configFile() - option: %s", option)
                         logging.info("write_to_configFile() - option_in_file: %s", option_in_file)
