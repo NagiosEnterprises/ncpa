@@ -1183,7 +1183,6 @@ def write_to_configFile(section, option, value):
                         logging.info("write_to_configFile() - option: %s", option)
                         logging.info("write_to_configFile() - option_in_file: %s", option_in_file)
                         logging.info("write_to_configFile() - line: %s", line)
-                        logging.info(" ")
                         sed_cmd = f"sed -i '{i}s/.*/{option_in_file} = {value}/' {cfg_file}"
                         logging.info("write_to_configFile() - sed_cmd: %s", sed_cmd)
                         
@@ -1212,6 +1211,7 @@ def write_to_configFile(section, option, value):
     except Exception as e:
         logging.exception(e)
         return False
+    logging.info(" ")
         
 
 @listener.route('/update-config/', methods=['POST'], provide_automatic_options = False)
