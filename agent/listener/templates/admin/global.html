@@ -53,7 +53,7 @@ $(document).ready(function() {
                     <form>
 
                         <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Logging</label>
+                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Logging (in browser)</label>
                             <div class="col-sm-6">
                                 <div class="btn-group" data-toggle="buttons">
                                     <label class="btn btn-sm btn-default{% if sectioncfg['check_logging'] %} active{% endif %}">
@@ -96,7 +96,7 @@ $(document).ready(function() {
                             <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Max MB</label>
                             <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="logmaxmb" value="{{ sectioncfg['logmaxmb'] }}" readonly>
+                                    <input type="text" class="form-control" name="log_max_mb" value="{{ sectioncfg['logmaxmb'] }}" readonly>
                                     <div class="input-group-addon">MB</div>
                                 </div>
                             </div>
@@ -106,7 +106,7 @@ $(document).ready(function() {
                             <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Backups</label>
                             <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="logbackups" value="{{ sectioncfg['logbackups'] }}" readonly>
+                                    <input type="text" class="form-control" name="log_backups" value="{{ sectioncfg['logbackups'] }}" readonly>
                                     <div class="input-group-addon">Days</div>
                                 </div>
                             </div>
