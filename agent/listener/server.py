@@ -1178,7 +1178,7 @@ def write_to_configFile(section, option, value):
                     logging.debug("write_to_configFile() - section: %s", section)
                     continue
                 for (target_section, option, option_in_file) in allowed_modifications_tuples:
-                    if section == target_section and line.startswith(option_in_file):
+                    if section == target_section and line.startswith(option_in_file + " ="):
                         logging.info("write_to_configFile() - target_section: %s", target_section)
                         logging.info("write_to_configFile() - option: %s", option)
                         logging.info("write_to_configFile() - option_in_file: %s", option_in_file)
