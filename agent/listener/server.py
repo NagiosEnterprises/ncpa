@@ -1178,12 +1178,11 @@ def write_to_configFile(section, option, value):
                     logging.debug("write_to_configFile() - section: %s", section)
                     continue
                 for (target_section, tbl_option, option_in_file) in allowed_modifications_tuples:
+                    logging.info("\n\n\n write_to_configFile() - target_section: %s", target_section)
+                    logging.info("write_to_configFile() - option_in_file: %s", option_in_file)
+                    logging.info("write_to_configFile() - tbl_option: %s", tbl_option)
+                    logging.info("write_to_configFile() - option: %s", option)
                     if section == target_section and option == tbl_option and line.startswith(option_in_file + " ="):
-                        logging.info("\n\n write_to_configFile() - ")
-                        logging.info("write_to_configFile() - target_section: %s", target_section)
-                        logging.info("write_to_configFile() - tbl_option: %s", tbl_option)
-                        logging.info("write_to_configFile() - option_in_file: %s", option_in_file)
-                        logging.info("write_to_configFile() - option: %s", option)
                         logging.info("write_to_configFile() - line: %s", line)
                         sed_cmd = f"sed -i '{i}s/.*/{option_in_file} = {value}/' {cfg_file}"
                         logging.info("write_to_configFile() - sed_cmd: %s", sed_cmd.strip())
