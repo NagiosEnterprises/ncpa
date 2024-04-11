@@ -1178,16 +1178,11 @@ def write_to_configFile(section, option, value):
                     logging.debug("write_to_configFile() - section: %s", section)
                     continue
                 for (target_section, tbl_option, option_in_file) in allowed_modifications_tuples:
-                    if section == target_section:
-                        logging.info("match section")
-                    if option == tbl_option:
+                    if section == target_section and option == tbl_option:
                         logging.info("match option")
-                        logging.info("write_to_configFile() - section: %s", section)
-                        logging.info("write_to_configFile() - target_section: %s", target_section)
-                        logging.info("write_to_configFile() - tbl_option: %s", tbl_option)
-                        logging.info("write_to_configFile() - option: %s", option)
+                        logging.info("write_to_configFile() - section vs target_section: %s vs %s", section, target_section)
+                        logging.info("write_to_configFile() - option vs tbl_option vs option_in_file: %s vs %s vs %s", option, tbl_option, option_in_file)
                         logging.info("write_to_configFile() - value: %s", value)
-                        logging.info("write_to_configFile() - option_in_file: %s", option_in_file)
                         logging.info("write_to_configFile() - line: %s", line)
                     if line.startswith(option_in_file + " ="):
                         logging.info("match option_in_file")
