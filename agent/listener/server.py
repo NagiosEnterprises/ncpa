@@ -1108,6 +1108,7 @@ def sanitize_for_configparser(input_value):
     return sanitized
 
 def write_to_configFile(section, option, value):
+    logging.info("   write_to_configFile() - ")
     config = listener.config['iconfig']
     for section in config.sections():
         logging.debug("write_to_configFile() - section: %s", section)
@@ -1211,7 +1212,6 @@ def write_to_configFile(section, option, value):
     except Exception as e:
         logging.exception(e)
         return False
-    logging.info(" ")
         
 
 @listener.route('/update-config/', methods=['POST'], provide_automatic_options = False)
