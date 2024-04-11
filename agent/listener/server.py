@@ -1121,13 +1121,20 @@ def write_to_configFile(section, option, value):
 
     # [section], option_name, option_name_in_ncpa.cfg
     allowed_modifications_tuples = [
+        ("[general]",       "check_logging","check_logging"),
+        ("[general]",       "check_checks", "check_logging_time"),
         ("[general]",       "log_level",    "loglevel"),
+        ("[general]",       "log_max_mb",   "logmaxmb"),
+        ("[general]",       "log_backups",  "logbackups"),
         ("[general]",       "default_units","default_units"),
+
         ("[passive]",       "handlers",     "handlers"),
+
         ("[nrdp]",          "nrdp_url",     "parent"),
         ("[nrdp]",          "nrdp_token",   "token"),
         ("[nrdp]",          "hostname",     "hostname"),
         ("[nrdp]",          "nrdp_timeout", "connection_timeout"),
+        
         ("[kafkaproducer]", "hostname",     "hostname"),
         ("[kafkaproducer]", "servers",      "servers"),
         ("[kafkaproducer]", "client_name",  "clientname"),
@@ -1178,7 +1185,7 @@ def write_to_configFile(section, option, value):
                     logging.debug("write_to_configFile() - section: %s", section)
                     continue
                 for (target_section, tbl_option, option_in_file) in allowed_modifications_tuples:
-                    if section == target_section and option == tbl_option and line.startswith(option_in_file + " ="):
+                    if section == target_section and option == tbl_option and (line.startswith(option_in_file + " =") or line.startswith("# " + option_in_file + " =")):
                         logging.info("write_to_configFile() - line: %s", line)
                         sed_cmd = f"sed -i '{i+1}s/.*/{option_in_file} = {value}/' {cfg_file}"
                         logging.info("write_to_configFile() - sed_cmd: %s", sed_cmd.strip())
