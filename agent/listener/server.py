@@ -1178,12 +1178,6 @@ def write_to_configFile(section, option, value):
                     logging.debug("write_to_configFile() - section: %s", section)
                     continue
                 for (target_section, tbl_option, option_in_file) in allowed_modifications_tuples:
-                    # if section == target_section and option == tbl_option and line.startswith(option_in_file + " ="):
-                    #     logging.info("match option")
-                    #     logging.info("write_to_configFile() - section vs target_section: %s vs %s", section, target_section)
-                    #     logging.info("write_to_configFile() - option vs tbl_option vs option_in_file: %s vs %s vs %s", option, tbl_option, option_in_file)
-                    #     logging.info("write_to_configFile() - value: %s", value)
-                    #     logging.info("write_to_configFile() - line: %s", line)
                     if section == target_section and option == tbl_option and line.startswith(option_in_file + " ="):
                         logging.info("write_to_configFile() - line: %s", line)
                         sed_cmd = f"sed -i '{i+1}s/.*/{option_in_file} = {value}/' {cfg_file}"
@@ -1220,6 +1214,8 @@ def write_to_configFile(section, option, value):
 @requires_admin_auth
 def set_config(section=None):
     config = listener.config['iconfig']
+    if config.get('listener', 'allow_config_edit') != 1:
+        return jsonify({'error': 'Editing the config is disabled.'})
     
     logging.info("set_config() - request.form: %s", request.form)
 
