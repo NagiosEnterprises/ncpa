@@ -1226,6 +1226,7 @@ def set_config(section=None):
         logging.info("set_config() - Editing the config is disabled.")
         logging.info("set_config() - request.form: %s", request.form)
         logging.info("set_config() - config.get('listener', 'allow_config_edit'): %s", config.get('listener', 'allow_config_edit'))
+        logging.info("type(config.get('listener', 'allow_config_edit')): %s", type(config.get('listener', 'allow_config_edit'))   )
         logging.info("set_config() - config.get('listener', 'allow_config_edit') != 1: %s", config.get('listener', 'allow_config_edit') != 1    )
         return jsonify({'error': 'Editing the config is disabled.'})
     
