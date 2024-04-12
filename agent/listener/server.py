@@ -13,6 +13,7 @@ import listener.psapi as psapi
 import listener.processes as processes
 import listener.database as database
 import math
+import re
 import ipaddress
 import urllib.parse
 import gevent
@@ -1094,30 +1095,54 @@ def nrdp():
 #   Passive Checks
 #       - ??? (should be fine as it can only access the api, which the user already has access to)
 
+# sanitize inputs from the form
 def sanitize_for_configparser(input_value):
-    from re import sub as re_sub
-
     max_length = 1024
     if len(input_value) > max_length:
         return False
     
-    sanitized = input_value.replace('=', '\\=').replace(':', '\\:').replace('[', '\\[').replace(']', '\\]')
+    sanitized = re.sub(r'([=:[\]])', r'\\\1', input_value)
     # Remove all control characters, including newlines
-    sanitized = re_sub(r'[\x00-\x1f\x7f-\x9f]', '', sanitized)
+    sanitized = re.sub(r'[\x00-\x1f\x7f-\x9f\n\r]', '', sanitized)
     
     return sanitized
 
-def write_to_configFile(section, option, value):
-    config = listener.config['iconfig']
-    for section in config.sections():
-        logging.debug("write_to_configFile() - section: %s", section)
-        for option in config.options(section):
-            logging.debug("write_to_configFile() - option: %s", option)
-            logging.debug("write_to_configFile() - value: %s", config.get(section, option))
-    value = sanitize_for_configparser(value)
-    if not value:
+# validate the input from the form against the valid options
+def validate_config_input(option, value):
+    valid_options = {
+        "check_logging":            ["0", "1"],
+        "check_logging_time":       r"^\d+$",
+        "loglevel":                 ["info", "warning", "debug", "error"],
+        "logmaxmb":                 r"^\d+$",
+        "logbackups":               r"^\d+$",
+        "default_units":            ["K", "Ki", "M", "Mi", "G", "Gi", "T", "Ti"],
+        "handlers":                 ["None", "nrdp", "kafkaproducer", "nrdp, kafkaproducer"],
+        "nrdp_url":                 r"^https?://\S+$",
+        "nrdp_token":               r"^\S+$",
+        "hostname":                 r"^[a-zA-Z0-9.-]+$",
+        "nrdp_timeout":             r"^\d+$",
+        "kafkaproducer_hostname":   r"^[a-zA-Z0-9.-]+$",
+        "kafkaproducer_servers":    r"^\S+(?:,\S+)*$",
+        "kafkaproducer_clientname": r"^\S+$",
+        "kafkaproducer_topic":      r"^\S+$"
+    }
+
+    if option not in valid_options:
         return False
-    config.set(section, option, value)
+    else:
+        if isinstance(valid_options[option], list):
+            if value.strip() not in valid_options[option]:
+                return False
+        elif not re.match(valid_options[option], value.strip()):
+            return False
+
+
+def write_to_configFile(section_option_value_dict):
+    config = listener.config['iconfig']
+    for section, option_value_dict in section_option_value_dict.items():
+        for option, value in option_value_dict.items():
+            if not value:
+                return False
 
     # [section], option_name, option_name_in_ncpa.cfg
     allowed_modifications_tuples = [
@@ -1142,39 +1167,15 @@ def write_to_configFile(section, option, value):
     ]
 
     lines = None
-
-    ### Permissions issue with writing to config file, so we will have to spawn a new process to write to the file
-    # try:
-    #     cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg')
-    #     logging.info("write_to_configFile() - cfg_file: %s", cfg_file)
-    #     with open(cfg_file, 'r') as configfile:
-    #         logging.info("file opened for read")
-    #         lines = configfile.readlines()
-    #         section = ""
-    #         for i, line in enumerate(lines):
-    #             if line.startswith("["):
-    #                 section = line.strip()
-    #                 logging.debug("write_to_configFile() - section: %s", section)
-    #                 continue
-    #             for (target_section, option, option_in_file) in allowed_modifications_tuples:
-    #                 if section == target_section and line.startswith(option_in_file + " ="):
-    #                     lines[i] = f"{option_in_file} = {value}\n"
-    #                     break
-    #     configfile.close()
-
-    #     with open(cfg_file, 'w') as configfile:
-    #         logging.info("file opened for write")
-    #         configfile.writelines(lines)
-    #     configfile.close()
-    # except Exception as e:
-    #     logging.exception(e)
-    #     return False
-
     try:
         import subprocess
         import listener.environment as environment
-        cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg')
+        if environment.SYSTEM == "Windows":
+            cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg')
+        else:
+            cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg')
         logging.info("write_to_configFile() - cfg_file: %s", cfg_file)
+        
         with open(cfg_file, 'r') as configfile:
             logging.info("file opened for read")
             lines = configfile.readlines()
@@ -1223,11 +1224,6 @@ def set_config(section=None):
     config = listener.config['iconfig']
     logging.debug("set_config() - allowed: %s", config.get('listener', 'allow_config_edit'))
     if config.get('listener', 'allow_config_edit') != '1':
-        logging.info("set_config() - Editing the config is disabled.")
-        logging.info("set_config() - request.form: %s", request.form)
-        logging.info("set_config() - config.get('listener', 'allow_config_edit'): %s", config.get('listener', 'allow_config_edit'))
-        logging.info("type(config.get('listener', 'allow_config_edit')): %s", type(config.get('listener', 'allow_config_edit'))   )
-        logging.info("set_config() - config.get('listener', 'allow_config_edit') != 1: %s", config.get('listener', 'allow_config_edit') != 1    )
         return jsonify({'error': 'Editing the config is disabled.'})
     
     logging.info("set_config() - request.form: %s", request.form)
@@ -1238,13 +1234,19 @@ def set_config(section=None):
     kafkaproducer_editable_options = ['kafkaproducer_hostname', 'kafkaproducer_servers', 'kafkaproducer_clientname', 'kafkaproducer_topic']
     editable_options = general_editable_options + passive_editable_options + nrdp_editable_options + kafkaproducer_editable_options
 
+    section_options_to_update = {}
+    
+    # TODO: instead add to list of changes and write to config at the end
     for (option, value) in request.form.items():
         logging.info("set_config() - option: %s", option)
         if option in editable_options:
             sanitized_input = sanitize_for_configparser(value)
             config.set(section, option, sanitized_input)
-            # TODO: instead add to list of changes and write to config at the end
-            write_to_configFile(section, option, sanitized_input)
+            section_options_to_update[section] = {option: sanitized_input}
+    
+    write_to_configFile(section_options_to_update)
+
+    
 
 
     return jsonify({'error': 'Not fully implemented yet.'})
