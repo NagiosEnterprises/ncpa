@@ -151,7 +151,7 @@ cfg_defaults = {
                 'allowed_hosts': '',
                 'max_connections': '200',
                 'allowed_sources': '',
-                'allow_passive_gui_setup': '1',
+                'allow_config_edit': '1',
             },
             'api': {
                 'community_string': 'mytoken',
