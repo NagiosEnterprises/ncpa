@@ -1221,6 +1221,7 @@ def write_to_configFile(section, option, value):
 @requires_admin_auth
 def set_config(section=None):
     config = listener.config['iconfig']
+    logging.debug("set_config() - allowed: %s", config.get('listener', 'allow_config_edit'))
     if config.get('listener', 'allow_config_edit') != 1:
         return jsonify({'error': 'Editing the config is disabled.'})
     
