@@ -1096,6 +1096,7 @@ def nrdp():
 #       - ??? (should be fine as it can only access the api, which the user already has access to)
 
 # sanitize inputs from the form
+# TODO: remove this because valid_options filters the input into the valid values already
 def sanitize_for_configparser(input_value):
     max_length = 1024
     if len(input_value) > max_length:
@@ -1109,33 +1110,52 @@ def sanitize_for_configparser(input_value):
 
 # validate the input from the form against the valid options
 def validate_config_input(option, value):
-    valid_options = {
-        "check_logging":            ["0", "1"],
-        "check_logging_time":       r"^\d+$",
-        "loglevel":                 ["info", "warning", "debug", "error"],
-        "logmaxmb":                 r"^\d+$",
-        "logbackups":               r"^\d+$",
-        "default_units":            ["K", "Ki", "M", "Mi", "G", "Gi", "T", "Ti"],
-        "handlers":                 ["None", "nrdp", "kafkaproducer", "nrdp, kafkaproducer"],
-        "nrdp_url":                 r"^https?://\S+$",
-        "nrdp_token":               r"^\S+$",
-        "hostname":                 r"^[a-zA-Z0-9.-]+$",
-        "nrdp_timeout":             r"^\d+$",
-        "kafkaproducer_hostname":   r"^[a-zA-Z0-9.-]+$",
-        "kafkaproducer_servers":    r"^\S+(?:,\S+)*$",
-        "kafkaproducer_clientname": r"^\S+$",
-        "kafkaproducer_topic":      r"^\S+$"
-    }
+    valid_options = [
+        ("[general]", "check_logging",  "check_logging",        ["0", "1"]),
+        ("[general]", "check_checks",   "check_logging_time",   r"^\d+$"),
+        ("[general]", "log_level",      "loglevel",             ["info", "warning", "debug", "error"]),
+        ("[general]", "log_max_mb",     "logmaxmb",             r"^\d+$"),
+        ("[general]", "log_backups",    "logbackups",           r"^\d+$"),
+        ("[general]", "default_units",  "default_units",        ["K", "Ki", "M", "Mi", "G", "Gi", "T", "Ti"]),
 
-    if option not in valid_options:
-        return False
-    else:
-        if isinstance(valid_options[option], list):
-            if value.strip() not in valid_options[option]:
+        ("[passive]", "handlers",       "handlers",             ["None", "nrdp", "kafkaproducer", "nrdp, kafkaproducer"]),
+
+        ("[nrdp]",    "nrdp_url",       "parent",               r"^https?://\S+$"),
+        ("[nrdp]",    "nrdp_token",     "token",                r"^\S+$"),
+        ("[nrdp]",    "hostname",       "hostname",             r"^[a-zA-Z0-9.-]+$"),
+        ("[nrdp]",    "nrdp_timeout",   "connection_timeout",   r"^\d+$"),
+
+        ("[kafkaproducer]", "hostname",     "hostname",         r"^[a-zA-Z0-9.-]+$"),
+        ("[kafkaproducer]", "servers",      "servers",          r"^\S+(?:,\S+)*$"),
+        ("[kafkaproducer]", "client_name",  "clientname",       r"^\S+$"),
+        ("[kafkaproducer]", "topic",        "topic",            r"^\S+$"),
+
+        # new versions by GPT-4 to be more restrictive TODO: check if this is correct and replace the old ones
+        ("[nrdp]",            "nrdp_token",     "token",                r"^[a-zA-Z0-9\-_\.]+$"),
+        ("[nrdp]",            "hostname",       "hostname",             r"^(?!-)(?!.*--)[a-zA-Z0-9\-]+(?<!-)(?<!\.)$"),
+        ("[nrdp]",            "nrdp_timeout",   "connection_timeout",   r"^\d{1,5}$"),
+
+        ("[kafkaproducer]",   "hostname",       "hostname",             r"^(?!-)(?!.*--)[a-zA-Z0-9\-]+(?<!-)(?<!\.)$"),
+        ("[kafkaproducer]",   "servers",        "servers",              r"^([a-zA-Z0-9-\.]+)(,[a-zA-Z0-9-\.]+)*$"),
+        ("[kafkaproducer]",   "client_name",    "clientname",           r"^[a-zA-Z0-9\-_\.]+$"),
+        ("[kafkaproducer]",   "topic",          "topic",                r"^[a-zA-Z0-9\-_\.]+$"),
+    ]
+
+    # if option not in valid_options:
+    #     return False
+    # else:
+    #     if isinstance(valid_options[option], list):
+    #         if value.strip() not in valid_options[option]:
+    #             return False
+    #     elif not re.match(valid_options[option], value.strip()):
+    #         return False
+
+    for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
+        if option == tbl_option:
+            if value.strip() not in valid_values:
                 return False
-        elif not re.match(valid_options[option], value.strip()):
-            return False
-
+            
+    return False
 
 def write_to_configFile(section_option_value_dict):
     config = listener.config['iconfig']
