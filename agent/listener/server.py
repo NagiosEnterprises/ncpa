@@ -1124,6 +1124,7 @@ def validate_config_input(section, option, value, valid_options):
                 else:
                     return (section, option_in_file, value.strip())
 
+# inputs sanitized and validated, write to the config and file
 def write_to_config_and_file(section_option_value_dict):
     config = listener.config['iconfig']
     for section, option_value_dict in section_option_value_dict.items():
@@ -1146,7 +1147,6 @@ def write_to_config_and_file(section_option_value_dict):
             cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg')
         else:
             cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg')
-        logging.info("write_to_configFile() - cfg_file: %s", cfg_file)
         
         with open(cfg_file, 'r') as configfile:
             logging.info("file opened for read")
@@ -1157,10 +1157,10 @@ def write_to_config_and_file(section_option_value_dict):
                     section = line.strip()
                     logging.debug("write_to_configFile() - section: %s", section)
                     continue
-                for (target_section, tbl_option, option_in_file) in allowed_modifications_tuples:
+                for (target_section, tbl_option, option_in_file, _) in section_option_value_dict:
                     if section == target_section and option == tbl_option and (line.startswith(option_in_file + " =") or line.startswith("# " + option_in_file + " =")):
                         sed_cmds.append(f"sed -i '{i+1}s/.*/{option_in_file} = {value}/' {cfg_file}")
-                        config.set(section, option, sanitized_input)
+                        config.set(section, option, value)
             configfile.close()
 
         for sed_cmd in sed_cmds:
@@ -1193,7 +1193,6 @@ def write_to_config_and_file(section_option_value_dict):
 @requires_admin_auth
 def set_config(section=None):
     config = listener.config['iconfig']
-    logging.debug("set_config() - allowed: %s", config.get('listener', 'allow_config_edit'))
     if config.get('listener', 'allow_config_edit') != '1':
         return jsonify({'error': 'Editing the config is disabled.'})
     
@@ -1239,6 +1238,19 @@ def set_config(section=None):
 
 
     return jsonify({'error': 'Not fully implemented yet.'})
+
+# restart the ncpa service and/or start the passive service
+@listener.route('/start-service/', methods=['POST'], provide_automatic_options = False)
+@requires_admin_auth
+def start_service():
+    config = listener.config['iconfig']
+    if config.get('listener', 'allow_config_edit') != '1':
+        return jsonify({'error': 'Editing the config is disabled.'})
+    # passive service can be started if enabled or if the service is not running
+    elif config.get('listener', 'allow_service_restart') != '1' and listener.p != None:
+        return jsonify({'error': 'Service restart is disabled.'})
+    else:
+
 
 
 # ------------------------------
