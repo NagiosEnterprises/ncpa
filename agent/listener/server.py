@@ -1109,30 +1109,10 @@ def sanitize_for_configparser(input_value):
     return sanitized
 
 # validate the input from the form against the valid options
-def validate_config_input(section, option, value):
+def validate_config_input(section, option, value, valid_options):
     value = sanitize_for_configparser(value)
+
     # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
-    valid_options = [
-        ("[general]", "check_logging",  "check_logging",        ["0", "1"]),
-        ("[general]", "check_checks",   "check_logging_time",   r"^\d+$"),
-        ("[general]", "log_level",      "loglevel",             ["info", "warning", "debug", "error"]),
-        ("[general]", "log_max_mb",     "logmaxmb",             r"^\d+$"),
-        ("[general]", "log_backups",    "logbackups",           r"^\d+$"),
-        ("[general]", "default_units",  "default_units",        ["K", "Ki", "M", "Mi", "G", "Gi", "T", "Ti"]),
-
-        ("[passive]", "handlers",       "handlers",             ["None", "nrdp", "kafkaproducer", "nrdp, kafkaproducer"]),
-
-        ("[nrdp]",    "nrdp_url",       "parent",               r"^https?://\S+/nrdp$"),
-        ("[nrdp]",    "nrdp_token",     "token",                r"^\S+$"),
-        ("[nrdp]",    "hostname",       "hostname",             r"^\S+$"),
-        ("[nrdp]",    "nrdp_timeout",   "connection_timeout",   r"^\d+$"),
-
-        ("[kafkaproducer]", "hostname",     "hostname",         r"^\S+$"),
-        ("[kafkaproducer]", "servers",      "servers",          r"^\S+(?:,\S+)*$"),
-        ("[kafkaproducer]", "client_name",  "clientname",       r"^\S+$"),
-        ("[kafkaproducer]", "topic",        "topic",            r"^\S+$"),
-    ]
-
     for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
         if section == target_section:
             if option == tbl_option:
@@ -1151,7 +1131,12 @@ def write_to_config_and_file(section_option_value_dict):
             if not value:
                 return False
 
-    config.set(section, option, sanitized_input)
+
+    sed_cmds = []
+    for section, option_value_dict in section_option_value_dict.items():
+        for option, value in option_value_dict.items():
+            sed_cmds.append("sed -i 's/^" + option + " =.*/" + option + " = " + value + "/' " + cfg_file)
+            sed_cmds.append(f"sed -i '{i+1}s/.*/{option_in_file} = {value}/' {cfg_file}")
 
     lines = None
     try:
@@ -1174,37 +1159,36 @@ def write_to_config_and_file(section_option_value_dict):
                     continue
                 for (target_section, tbl_option, option_in_file) in allowed_modifications_tuples:
                     if section == target_section and option == tbl_option and (line.startswith(option_in_file + " =") or line.startswith("# " + option_in_file + " =")):
-                        logging.info("write_to_configFile() - line: %s", line)
-                        sed_cmd = f"sed -i '{i+1}s/.*/{option_in_file} = {value}/' {cfg_file}"
-                        logging.info("write_to_configFile() - sed_cmd: %s", sed_cmd.strip())
-                        
-                        if environment.SYSTEM == "Windows":
-                             running_check = subprocess.run(
-                                    sed_cmd, 
-                                    shell=True, 
-                                    stdout=subprocess.PIPE, 
-                                    stderr=subprocess.STDOUT
-                                )
-                        else:
-                            running_check = subprocess.run(
-                                sed_cmd, 
-                                shell=True, 
-                                stdout=subprocess.PIPE, 
-                                stderr=subprocess.STDOUT,
-                                preexec_fn=os.setsid
-                            )
-                        logging.info("write_to_configFile() - running_check: %s", running_check)
-                        logging.info("write_to_configFile() - running_check.returncode: %s", running_check.returncode)
-                        if running_check.returncode != 0:
-                            logging.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
-                            return False
-                        break
+                        sed_cmds.append(f"sed -i '{i+1}s/.*/{option_in_file} = {value}/' {cfg_file}")
+                        config.set(section, option, sanitized_input)
             configfile.close()
+
+        for sed_cmd in sed_cmds:
+            if environment.SYSTEM == "Windows":
+                    running_check = subprocess.run(
+                        sed_cmd, 
+                        shell=True, 
+                        stdout=subprocess.PIPE, 
+                        stderr=subprocess.STDOUT
+                    )
+            else:
+                running_check = subprocess.run(
+                    sed_cmd, 
+                    shell=True, 
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.STDOUT,
+                    preexec_fn=os.setsid
+                )
+            logging.info("write_to_configFile() - running_check: %s", running_check)
+            logging.info("write_to_configFile() - running_check.returncode: %s", running_check.returncode)
+            if running_check.returncode != 0:
+                logging.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
+                return False
     except Exception as e:
         logging.exception(e)
         return False
         
-
+# Endpoint to make allowed changes to the config
 @listener.route('/update-config/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
 def set_config(section=None):
@@ -1215,21 +1199,40 @@ def set_config(section=None):
     
     logging.info("set_config() - request.form: %s", request.form)
 
-    general_editable_options = ['loglevel', 'default_units']
-    passive_editable_options = ['handlers']
-    nrdp_editable_options = ['nrdp_url', 'nrdp_token', 'nrdp_hostname', 'nrdp_timeout']
-    kafkaproducer_editable_options = ['kafkaproducer_hostname', 'kafkaproducer_servers', 'kafkaproducer_clientname', 'kafkaproducer_topic']
-    editable_options = general_editable_options + passive_editable_options + nrdp_editable_options + kafkaproducer_editable_options
+    # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
+    allowed_options = [
+        ("[general]", "check_logging",  "check_logging",        ["0", "1"]),
+        ("[general]", "check_checks",   "check_logging_time",   r"^\d+$"),
+        ("[general]", "log_level",      "loglevel",             ["info", "warning", "debug", "error"]),
+        ("[general]", "log_max_mb",     "logmaxmb",             r"^\d+$"),
+        ("[general]", "log_backups",    "logbackups",           r"^\d+$"),
+        ("[general]", "default_units",  "default_units",        ["K", "Ki", "M", "Mi", "G", "Gi", "T", "Ti"]),
+
+        ("[passive]", "handlers",       "handlers",             ["None", "nrdp", "kafkaproducer", "nrdp, kafkaproducer"]),
+
+        ("[nrdp]",    "nrdp_url",       "parent",               r"^https?://\S+/nrdp$"),
+        ("[nrdp]",    "nrdp_token",     "token",                r"^\S+$"),
+        ("[nrdp]",    "hostname",       "hostname",             r"^\S+$"),
+        ("[nrdp]",    "nrdp_timeout",   "connection_timeout",   r"^\d+$"),
+
+        ("[kafkaproducer]", "hostname",     "hostname",         r"^\S+$"),
+        ("[kafkaproducer]", "servers",      "servers",          r"^\S+(?:,\S+)*$"),
+        ("[kafkaproducer]", "client_name",  "clientname",       r"^\S+$"),
+        ("[kafkaproducer]", "topic",        "topic",            r"^\S+$"),
+    ]
+
+    editable_options_list = [option for (_, option, _, _) in allowed_options]
 
     section_options_to_update = {}
     
     # TODO: instead add to list of changes and write to config at the end
     for (option, value) in request.form.items():
         logging.info("set_config() - option: %s", option)
-        if option in editable_options:
-            current_section, current_option, sanitized_input = validate_config_input(section, option, value)
+        if option in editable_options_list:
+            current_section, current_option, sanitized_input = validate_config_input(section, option, value, allowed_options)
             section_options_to_update[current_section] = {current_option: sanitized_input}
-    
+            if not current_section or not current_option or not sanitized_input:
+                return jsonify({'error': 'Invalid input.'})
     write_to_config_and_file(section_options_to_update)
 
     
