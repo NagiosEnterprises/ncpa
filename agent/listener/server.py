@@ -1109,7 +1109,9 @@ def sanitize_for_configparser(input_value):
     return sanitized
 
 # validate the input from the form against the valid options
-def validate_config_input(option, value):
+def validate_config_input(section, option, value):
+    value = sanitize_for_configparser(value)
+    # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
     valid_options = [
         ("[general]", "check_logging",  "check_logging",        ["0", "1"]),
         ("[general]", "check_checks",   "check_logging_time",   r"^\d+$"),
@@ -1132,43 +1134,24 @@ def validate_config_input(option, value):
     ]
 
     for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
-        if option == tbl_option:
-            if isinstance(valid_values, list):
-                if value.strip() not in valid_values:
+        if section == target_section:
+            if option == tbl_option:
+                if isinstance(valid_values, list):
+                    if value.strip() not in valid_values:
+                        return False
+                elif not re.match(valid_values, value.strip()):
                     return False
-            elif not re.match(valid_values, value.strip()):
-                return False
-            
-    return False
+                else:
+                    return (section, option_in_file, value.strip())
 
-def write_to_configFile(section_option_value_dict):
+def write_to_config_and_file(section_option_value_dict):
     config = listener.config['iconfig']
     for section, option_value_dict in section_option_value_dict.items():
         for option, value in option_value_dict.items():
             if not value:
                 return False
 
-    # [section], option_name, option_name_in_ncpa.cfg
-    allowed_modifications_tuples = [
-        ("[general]",       "check_logging","check_logging"),
-        ("[general]",       "check_checks", "check_logging_time"),
-        ("[general]",       "log_level",    "loglevel"),
-        ("[general]",       "log_max_mb",   "logmaxmb"),
-        ("[general]",       "log_backups",  "logbackups"),
-        ("[general]",       "default_units","default_units"),
-
-        ("[passive]",       "handlers",     "handlers"),
-
-        ("[nrdp]",          "nrdp_url",     "parent"),
-        ("[nrdp]",          "nrdp_token",   "token"),
-        ("[nrdp]",          "hostname",     "hostname"),
-        ("[nrdp]",          "nrdp_timeout", "connection_timeout"),
-        
-        ("[kafkaproducer]", "hostname",     "hostname"),
-        ("[kafkaproducer]", "servers",      "servers"),
-        ("[kafkaproducer]", "client_name",  "clientname"),
-        ("[kafkaproducer]", "topic",        "topic"),
-    ]
+    config.set(section, option, sanitized_input)
 
     lines = None
     try:
@@ -1244,11 +1227,10 @@ def set_config(section=None):
     for (option, value) in request.form.items():
         logging.info("set_config() - option: %s", option)
         if option in editable_options:
-            sanitized_input = sanitize_for_configparser(value)
-            config.set(section, option, sanitized_input)
-            section_options_to_update[section] = {option: sanitized_input}
+            current_section, current_option, sanitized_input = validate_config_input(section, option, value)
+            section_options_to_update[current_section] = {current_option: sanitized_input}
     
-    write_to_configFile(section_options_to_update)
+    write_to_config_and_file(section_options_to_update)
 
     
 
