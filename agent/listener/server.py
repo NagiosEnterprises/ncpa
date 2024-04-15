@@ -1193,6 +1193,7 @@ def write_to_config_and_file(section_option_value_dict):
 @listener.route('/update-config/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
 def set_config(section=None):
+    logging.info("start_service() - daemon.l, daemon.p: %s, %s", daemon.l, daemon.p)
     config = listener.config['iconfig']
     if config.get('listener', 'allow_config_edit') != '1':
         return jsonify({'error': 'Editing the config is disabled.'})
