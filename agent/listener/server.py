@@ -19,6 +19,7 @@ import urllib.parse
 import gevent
 import ncpa
 from ncpa import listener_logger as logging
+from ncpa import d as daemon
 #import inspect
 
 
@@ -1234,9 +1235,6 @@ def set_config(section=None):
                 return jsonify({'error': 'Invalid input.'})
     write_to_config_and_file(section_options_to_update)
 
-    
-
-
     return jsonify({'error': 'Not fully implemented yet.'})
 
 # restart the ncpa service and/or start the passive service
@@ -1250,8 +1248,7 @@ def start_service():
     elif config.get('listener', 'allow_service_restart') != '1' and listener.p != None:
         return jsonify({'error': 'Service restart is disabled.'})
     else:
-
-
+        logging.info("start_service() - daemon.l, daemon.p: %s, %s", daemon.l, daemon.p)
 
 # ------------------------------
 # API Endpoint
