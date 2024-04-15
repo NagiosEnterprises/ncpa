@@ -1120,39 +1120,23 @@ def validate_config_input(option, value):
 
         ("[passive]", "handlers",       "handlers",             ["None", "nrdp", "kafkaproducer", "nrdp, kafkaproducer"]),
 
-        ("[nrdp]",    "nrdp_url",       "parent",               r"^https?://\S+$"),
+        ("[nrdp]",    "nrdp_url",       "parent",               r"^https?://\S+/nrdp$"),
         ("[nrdp]",    "nrdp_token",     "token",                r"^\S+$"),
-        ("[nrdp]",    "hostname",       "hostname",             r"^[a-zA-Z0-9.-]+$"),
+        ("[nrdp]",    "hostname",       "hostname",             r"^\S+$"),
         ("[nrdp]",    "nrdp_timeout",   "connection_timeout",   r"^\d+$"),
 
-        ("[kafkaproducer]", "hostname",     "hostname",         r"^[a-zA-Z0-9.-]+$"),
+        ("[kafkaproducer]", "hostname",     "hostname",         r"^\S+$"),
         ("[kafkaproducer]", "servers",      "servers",          r"^\S+(?:,\S+)*$"),
         ("[kafkaproducer]", "client_name",  "clientname",       r"^\S+$"),
         ("[kafkaproducer]", "topic",        "topic",            r"^\S+$"),
-
-        # new versions by GPT-4 to be more restrictive TODO: check if this is correct and replace the old ones
-        ("[nrdp]",            "nrdp_token",     "token",                r"^[a-zA-Z0-9\-_\.]+$"),
-        ("[nrdp]",            "hostname",       "hostname",             r"^(?!-)(?!.*--)[a-zA-Z0-9\-]+(?<!-)(?<!\.)$"),
-        ("[nrdp]",            "nrdp_timeout",   "connection_timeout",   r"^\d{1,5}$"),
-
-        ("[kafkaproducer]",   "hostname",       "hostname",             r"^(?!-)(?!.*--)[a-zA-Z0-9\-]+(?<!-)(?<!\.)$"),
-        ("[kafkaproducer]",   "servers",        "servers",              r"^([a-zA-Z0-9-\.]+)(,[a-zA-Z0-9-\.]+)*$"),
-        ("[kafkaproducer]",   "client_name",    "clientname",           r"^[a-zA-Z0-9\-_\.]+$"),
-        ("[kafkaproducer]",   "topic",          "topic",                r"^[a-zA-Z0-9\-_\.]+$"),
     ]
-
-    # if option not in valid_options:
-    #     return False
-    # else:
-    #     if isinstance(valid_options[option], list):
-    #         if value.strip() not in valid_options[option]:
-    #             return False
-    #     elif not re.match(valid_options[option], value.strip()):
-    #         return False
 
     for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
         if option == tbl_option:
-            if value.strip() not in valid_values:
+            if isinstance(valid_values, list):
+                if value.strip() not in valid_values:
+                    return False
+            elif not re.match(valid_values, value.strip()):
                 return False
             
     return False
