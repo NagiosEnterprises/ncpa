@@ -45,6 +45,7 @@ from socket import error as SocketError
 from io import open
 from logging.handlers import RotatingFileHandler
 from multiprocessing import Process, Value, freeze_support
+import process.daemon_manager
 
 # Create the listener logger instance, now, because it is required by listener.server.
 # It will be configured later via setup_logger(). See note 'About Logging' below.
@@ -192,7 +193,7 @@ cfg_defaults = {
         }
 
 # --------------------------
-# Core Classes
+# Core Classes -- TODO: Move to a sub-module, add starting/restarting of passive checks for GUI
 # --------------------------
 
 class Base():
@@ -1185,6 +1186,7 @@ def main(has_error):
     # Daemon class to control the agent
     if __SYSTEM__ == 'posix':
         d = Daemon(options, config, has_error, parent_logger)
+        process.daemon_manager.set_daemon(d)
         d.main()
     elif __SYSTEM__ == 'nt':
         # using win32serviceutil.ServiceFramework, run WinService as a service
