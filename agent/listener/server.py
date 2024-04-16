@@ -1142,12 +1142,6 @@ def write_to_config_and_file(section_option_value_dict):
                 return False
 
 
-    sed_cmds = []
-    for section, option_value_dict in section_option_value_dict.items():
-        for option, value in option_value_dict.items():
-            sed_cmds.append("sed -i 's/^" + option + " =.*/" + option + " = " + value + "/' " + cfg_file)
-            sed_cmds.append(f"sed -i '{i+1}s/.*/{option_in_file} = {value}/' {cfg_file}")
-
     lines = None
     try:
         import subprocess
@@ -1156,6 +1150,12 @@ def write_to_config_and_file(section_option_value_dict):
             cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg')
         else:
             cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg')
+
+        sed_cmds = []
+        # for section, option_value_dict in section_option_value_dict.items():
+        #     for option, value in option_value_dict.items():
+        #         sed_cmds.append("sed -i 's/^" + option + " =.*/" + option + " = " + value + "/' " + cfg_file)
+        #         sed_cmds.append(f"sed -i '{i+1}s/.*/{option_in_file} = {value}/' {cfg_file}")
         
         with open(cfg_file, 'r') as configfile:
             logging.info("file opened for read")
@@ -1174,12 +1174,12 @@ def write_to_config_and_file(section_option_value_dict):
 
         for sed_cmd in sed_cmds:
             if environment.SYSTEM == "Windows":
-                    running_check = subprocess.run(
-                        sed_cmd, 
-                        shell=True, 
-                        stdout=subprocess.PIPE, 
-                        stderr=subprocess.STDOUT
-                    )
+                running_check = subprocess.run(
+                    sed_cmd, 
+                    shell=True, 
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.STDOUT
+                )
             else:
                 running_check = subprocess.run(
                     sed_cmd, 
