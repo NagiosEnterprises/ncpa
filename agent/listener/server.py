@@ -1231,6 +1231,10 @@ def set_config(section=None):
     section_options_to_update = {}
     
     # TODO: instead add to list of changes and write to config at the end
+    # set section from the form
+    section = request.form.get('section', None)
+    if section is None:
+        return jsonify({'error': 'No section specified.'})
     for (option, value) in request.form.items():
         logging.info("set_config() - option: %s", option)
         if option in editable_options_list:
