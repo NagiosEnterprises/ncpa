@@ -36,6 +36,8 @@ $(document).ready(function() {
             <div class="col-sm-12 col-lg-10 col-xl-8">
                 <div class="form-horizontal">
 
+                    <input type="hidden" name="section" value="checks">
+
                     {% if checks|length > 1 %}
                         {% for check in checks %}
                         <pre>{{ check[0] }} = {{ check[1] }}</pre>
