@@ -1252,13 +1252,33 @@ def set_config(section=None):
                 return jsonify({'error': 'Invalid input.'})
     write_to_config_and_file(section_options_to_update)
 
-    if not config.get('general', 'allow_restart').contains('None'):
+    # TODO: implement restart of services
+    allow_restart = config.get('general', 'allow_restart', fallback='').lower()
+    if allow_restart in {'none', '0'}:
         if os.name == 'posix':
             logging.info("set_config() - restarting ncpa service")
             daemon = daemon_manager.get_daemon()
             logging.info("set_config() - daemon: %s", daemon)
             logging.info("set_config() - daemon.l, daemon.p: %s, %s", daemon.l, daemon.p)
             daemon.restart()
+    elif allow_restart in {'passive'}:
+        logging.info("set_config() - restarting passive service")
+        daemon = daemon_manager.get_daemon()
+        logging.info("set_config() - daemon: %s", daemon)
+        logging.info("set_config() - daemon.l, daemon.p: %s, %s", daemon.l, daemon.p)
+        # daemon.restart()
+    elif allow_restart in {'listener'}:
+        logging.info("set_config() - restarting ncpa service")
+        daemon = daemon_manager.get_daemon()
+        logging.info("set_config() - daemon: %s", daemon)
+        logging.info("set_config() - daemon.l, daemon.p: %s, %s", daemon.l, daemon.p)
+        # daemon.restart()
+    elif allow_restart in {'all'}:
+        logging.info("set_config() - restarting ncpa and passive services")
+        daemon = daemon_manager.get_daemon()
+        logging.info("set_config() - daemon: %s", daemon)
+        logging.info("set_config() - daemon.l, daemon.p: %s, %s", daemon.l, daemon.p)
+        # daemon.restart()
 
     return jsonify({'error': 'Not fully implemented yet.'})
 
