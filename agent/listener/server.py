@@ -1165,10 +1165,10 @@ def write_to_config_and_file(section_options_to_update):
                     continue
                 logging.info("section_options_to_update: %s", section_options_to_update)
                 for target_section, option_value_dict in section_options_to_update.items():
-                    pattern = re.compile(r'^\s*(#*\s*)(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
 
                     for target_option, value in option_value_dict.items():
                         if section == target_section:
+                            pattern = re.compile(r'^\s*(#*\s*)(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
                             if pattern.match(line):
                                 sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
                                 config.set(section, option, value)
