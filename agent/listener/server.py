@@ -1168,10 +1168,8 @@ def write_to_config_and_file(section_option_value_dict):
                     logging.debug("write_to_configFile() - section: %s", section)
                     continue
                 logging.info("section_option_value_dict: %s", section_option_value_dict)
-                for item in section_option_value_dict:
-                    logging.info("item: %s", item)
-                for (target_section, tbl_option, option_in_file, _) in section_option_value_dict:
-                    if section == target_section and option == tbl_option and (line.startswith(option_in_file + " =") or line.startswith("# " + option_in_file + " =")):
+                for (target_section, option_in_file, value) in section_option_value_dict:
+                    if section == target_section and (line.startswith(option_in_file + " =") or line.startswith("# " + option_in_file + " =")):
                         sed_cmds.append(f"sed -i '{i+1}s/.*/{option_in_file} = {value}/' {cfg_file}")
                         config.set(section, option, value)
             configfile.close()
