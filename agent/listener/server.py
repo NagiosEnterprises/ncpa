@@ -1120,6 +1120,7 @@ def validate_config_input(section, option, value, valid_options):
         logging.info("validate_config_input() - value: %s", value)
         logging.info("validate_config_input() - valid_values: %s", valid_values)
         if section == target_section:
+            logging.info("validate_config_input() - section: %s, option: %s, value: %s", section, option, value)
             if option == tbl_option:
                 logging.info("validate_config_input() - option: %s, value: %s", option, value)
                 if isinstance(valid_values, list):
