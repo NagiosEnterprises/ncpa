@@ -1124,11 +1124,15 @@ def validate_config_input(section, option, value, valid_options):
                 logging.info("validate_config_input() -- matched option: %s, value: %s", option, value)
                 if isinstance(valid_values, list):
                     if value.strip() not in valid_values:
+                        logging.error("validate_config_input() - value not in valid_values: %s", valid_values)
                         return False
                 elif not re.match(valid_values, value.strip()):
+                    logging.error("validate_config_input() - value does not match regex: %s", valid_values)
                     return False
                 else:
+                    logging.info("validate_config_input() -- matched option: %s, value: %s", option, value)
                     return (section, option_in_file, value.strip())
+    return None, None, None
 
 # inputs sanitized and validated, write to the config and file
 def write_to_config_and_file(section_option_value_dict):
