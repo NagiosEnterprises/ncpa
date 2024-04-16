@@ -1115,6 +1115,7 @@ def validate_config_input(section, option, value, valid_options):
 
     # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
     for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
+        logging.info("validate_config_input() - target_section: %s, tbl_option: %s, option_in_file: %s, valid_values: %s", target_section, tbl_option, option_in_file, valid_values)
         if section == target_section:
             if option == tbl_option:
                 if isinstance(valid_values, list):
