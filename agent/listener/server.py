@@ -1154,10 +1154,6 @@ def write_to_config_and_file(section_options_to_update):
 
         sed_cmds = []
         lines = None
-        # for section, option_value_dict in section_options_to_update.items():
-        #     for option, value in option_value_dict.items():
-        #         sed_cmds.append("sed -i 's/^" + option + " =.*/" + option + " = " + value + "/' " + cfg_file)
-        #         sed_cmds.append(f"sed -i '{i+1}s/.*/{option_in_file} = {value}/' {cfg_file}")
         with open(cfg_file, 'r') as configfile:
             logging.info("file opened for read")
             lines = configfile.readlines()
@@ -1168,10 +1164,14 @@ def write_to_config_and_file(section_options_to_update):
                     logging.debug("write_to_configFile() - section: %s", section)
                     continue
                 logging.info("section_options_to_update: %s", section_options_to_update)
-                for (target_section, option_in_file, value) in section_options_to_update:
-                    if section == target_section and (line.startswith(option_in_file + " =") or line.startswith("# " + option_in_file + " =")):
-                        sed_cmds.append(f"sed -i '{i+1}s/.*/{option_in_file} = {value}/' {cfg_file}")
-                        config.set(section, option, value)
+                for target_section, option_value_dict in section_options_to_update.items():
+                    pattern = re.compile(r'^\s*(#*\s*)(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
+
+                    for target_option, value in option_value_dict.items():
+                        if section == target_section:
+                            if pattern.match(line):
+                                sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
+                                config.set(section, option, value)
             configfile.close()
 
         for sed_cmd in sed_cmds:
