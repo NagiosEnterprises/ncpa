@@ -18,6 +18,7 @@ import ipaddress
 import urllib.parse
 import gevent
 import ncpa
+import process.daemon_manager as daemon_manager
 from ncpa import listener_logger as logging
 #import inspect
 
@@ -1234,6 +1235,14 @@ def set_config(section=None):
                 return jsonify({'error': 'Invalid input.'})
     write_to_config_and_file(section_options_to_update)
 
+    if not config.get('general', 'allow_restart').contains('None'):
+        if os.name == 'posix':
+            logging.info("set_config() - restarting ncpa service")
+            daemon = daemon_manager.get_daemon()
+            logging.info("set_config() - daemon: %s", daemon)
+            logging.info("set_config() - daemon.l, daemon.p: %s, %s", daemon.l, daemon.p)
+            daemon.restart()
+
     return jsonify({'error': 'Not fully implemented yet.'})
 
 # restart the ncpa service and/or start the passive service
@@ -1241,13 +1250,20 @@ def set_config(section=None):
 @requires_admin_auth
 def start_service():
     config = listener.config['iconfig']
+    form_data = request.form
+    logging.info("start_service() - form_data: %s", form_data)
     if config.get('listener', 'allow_config_edit') != '1':
         return jsonify({'error': 'Editing the config is disabled.'})
     # passive service can be started if enabled or if the service is not running
-    elif config.get('listener', 'allow_service_restart') != '1' and listener.p != None:
-        return jsonify({'error': 'Service restart is disabled.'})
+    elif not config.get('general', 'allow_restart').contains('passive') and form_data.get('service') == 'passive':
+        return jsonify({'error': 'Restarting Passive service is disabled.'})
     else:
-        logging.info("start_service() - daemon.l, daemon.p: %s, %s", daemon.l, daemon.p)
+        if os.name == 'posix':
+            logging.info("start_service() - restarting ncpa service")
+            daemon = daemon_manager.get_daemon()
+            logging.info("start_service() - daemon: %s", daemon)
+            logging.info("start_service() - daemon.l, daemon.p: %s, %s", daemon.l, daemon.p)
+
 
 # ------------------------------
 # API Endpoint
