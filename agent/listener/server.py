@@ -1136,13 +1136,14 @@ def validate_config_input(section, option, value, valid_options):
 # inputs sanitized and validated, write to the config and file
 def write_to_config_and_file(section_option_value_dict):
     config = listener.config['iconfig']
+
+    # check if all values are valid
     for section, option_value_dict in section_option_value_dict.items():
         for option, value in option_value_dict.items():
             if not value:
                 return False
 
 
-    lines = None
     try:
         import subprocess
         import listener.environment as environment
@@ -1152,11 +1153,11 @@ def write_to_config_and_file(section_option_value_dict):
             cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg')
 
         sed_cmds = []
+        lines = None
         # for section, option_value_dict in section_option_value_dict.items():
         #     for option, value in option_value_dict.items():
         #         sed_cmds.append("sed -i 's/^" + option + " =.*/" + option + " = " + value + "/' " + cfg_file)
         #         sed_cmds.append(f"sed -i '{i+1}s/.*/{option_in_file} = {value}/' {cfg_file}")
-        
         with open(cfg_file, 'r') as configfile:
             logging.info("file opened for read")
             lines = configfile.readlines()
@@ -1166,7 +1167,7 @@ def write_to_config_and_file(section_option_value_dict):
                     section = line.strip()
                     logging.debug("write_to_configFile() - section: %s", section)
                     continue
-                for (target_section, tbl_option, option_in_file, _) in section_option_value_dict:
+                for (target_section, tbl_option, option_in_file, _) in section_option_value_dict.items():
                     if section == target_section and option == tbl_option and (line.startswith(option_in_file + " =") or line.startswith("# " + option_in_file + " =")):
                         sed_cmds.append(f"sed -i '{i+1}s/.*/{option_in_file} = {value}/' {cfg_file}")
                         config.set(section, option, value)
