@@ -625,11 +625,13 @@ class Daemon():
         if not processes:
             return
         if 'p' in processes:
-            self.p.terminate()
-            self.p.join()
+            if self.p:
+                self.p.terminate()
+                self.p.join()
         if 'l' in processes:
-            self.l.terminate()
-            self.l.join()
+            if self.l:
+                self.l.terminate()
+                self.l.join()
         p, l = start_processes(self.options, self.config, self.has_error)
         if p:
             self.p = p
