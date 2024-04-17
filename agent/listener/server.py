@@ -1254,30 +1254,19 @@ def set_config(section=None):
     # TODO: implement restart of services
     allow_restart = config.get('general', 'allow_restart', fallback='').lower()
     if allow_restart in {'none', '0'}:
-        if os.name == 'nt':
-            logging.info("set_config() - restarting ncpa service")
-            daemon = daemon_manager.get_daemon()
-            logging.info("set_config() - daemon: %s", daemon)
-            logging.info("Daemon details: %s, %s", daemon.l, daemon.p)
-            daemon.restart()
-        else:
-            logging.info("set_config() - restarting ncpa service")
-            daemon = daemon_manager.get_daemon()
-            logging.info("set_config() - daemon: %s", daemon)
-            logging.info("Daemon details: %s, %s", daemon.l, daemon.p)
-            daemon.restart()
+        logging.info("set_config() - restarting services is disabled")
     elif allow_restart in {'passive'}:
         logging.info("set_config() - restarting passive service")
         daemon = daemon_manager.get_daemon()
-        daemon.restart()
+        daemon.restart_subprocesses(['p'])
     elif allow_restart in {'listener'}:
         logging.info("set_config() - restarting ncpa service")
         daemon = daemon_manager.get_daemon()
-        daemon.restart()
+        daemon.restart_subprocesses(['l'])
     elif allow_restart in {'all'}:
         logging.info("set_config() - restarting ncpa and passive services")
         daemon = daemon_manager.get_daemon()
-        daemon.restart()
+        daemon.restart_subprocesses(['l', 'p'])
     else:
         logging.info("allow_restart: %s", allow_restart)
 

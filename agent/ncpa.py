@@ -617,11 +617,32 @@ class Daemon():
         else:
             sys.exit("Daemon - stop() - Not running")
 
-    def restart(self):
-        """Restart the process"""
-        self.logger.debug("Daemon - restart() - Restart the process")
-        self.stop()
-        self.start()
+    def restart_subprocesses(self, processes):
+        """
+        Restart the subprocesses
+        Actually starts new processes and terminates the old ones
+        """
+        if not processes:
+            return
+        if 'p' in processes:
+            self.p.terminate()
+            self.p.join()
+        if 'l' in processes:
+            self.l.terminate()
+            self.l.join()
+        p, l = start_processes(self.options, self.config, self.has_error)
+        if p:
+            self.p = p
+        else:
+            p.terminate()
+            p.join()
+        if l:    
+            self.l = l
+        else:
+            l.terminate()
+            l.join()
+
+
 
     def status(self):
         """Return the process status"""
