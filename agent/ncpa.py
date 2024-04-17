@@ -137,6 +137,7 @@ cfg_defaults = {
                 'all_partitions': '1',
                 'exclude_fs_types': 'aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs,nfsd,xenfs',
                 'default_units': 'Gi',
+                'allow_remote_restart': '0',
             },
             'listener': {
                 'ip': address,
@@ -616,34 +617,6 @@ class Daemon():
                 sys.exit(msg)
         else:
             sys.exit("Daemon - stop() - Not running")
-
-    def restart_subprocesses(self, processes):
-        """
-        Restart the subprocesses
-        Actually starts new processes and terminates the old ones
-        """
-        if not processes:
-            return
-        if 'p' in processes:
-            if self.p:
-                self.p.terminate()
-                self.p.join()
-        if 'l' in processes:
-            if self.l:
-                self.l.terminate()
-                self.l.join()
-        p, l = start_processes(self.options, self.config, self.has_error)
-        if p:
-            self.p = p
-        else:
-            p.terminate()
-            p.join()
-        if l:    
-            self.l = l
-        else:
-            l.terminate()
-            l.join()
-
 
 
     def status(self):
