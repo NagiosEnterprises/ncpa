@@ -23,7 +23,20 @@ $(document).ready(function() {
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send(new URLSearchParams(new FormData(this)).toString());
         
-        return false;
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                let response = JSON.parse(xhr.responseText);
+                let flash = document.querySelector('.alert');
+                flash.classList.add('alert-' + response.type);
+                $('#flashMessageText').html(response.message);
+                flash.style.display = 'block';
+                setTimeout(function() {
+                    flash.style.display = 'none';
+                    $('#flashMessageText').html('');
+                    flash.classList.remove('alert-' + response.type);
+                }, 5000);
+            }
+        };
     });
 });
 </script>
@@ -34,7 +47,7 @@ $(document).ready(function() {
 
 {% if flash_msg %}
 <div class="alert alert-{{ flash_msg_type }}">
-    {{ flash_msg_text }}
+    <span id="flashMessageText">{{ flash_msg_text }}</span>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
