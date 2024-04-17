@@ -1243,7 +1243,7 @@ def set_config(section=None):
         if option in editable_options_list:
             (current_section, current_option, sanitized_input) = validate_config_input(section, option, value, allowed_options) or (None, None, None)
             logging.info("set_config() - (current_section, current_option, sanitized_input): %s, %s, %s", current_section, current_option, sanitized_input)
-            section_options_to_update[current_section] = {current_option: sanitized_input}
+            section_options_to_update[current_section, current_option] = sanitized_input
             if not current_section or not current_option or not sanitized_input:
                 logging.info("set_config() - current_section: %s", current_section)
                 logging.info("set_config() - current_option: %s", current_option)
