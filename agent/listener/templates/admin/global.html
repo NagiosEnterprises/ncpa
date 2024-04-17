@@ -29,7 +29,7 @@ $(document).ready(function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 $('#test').html('Changes saved!  <i class="fa fa-check"></i>');
                 let response = JSON.parse(xhr.responseText);
-                let flash = document.querySelector('.alert');
+                let flash = document.querySelector('#flashMessageText');
                 flash.classList.add('alert-' + response.type);
                 $('#flashMessageText').html(response.message);
                 flash.style.display = 'block';
@@ -53,16 +53,21 @@ $(document).ready(function() {
 
 {% if flash_msg %}
 <div class="alert alert-{{ flash_msg_type }}">
-    <span id="flashMessageText">{{ flash_msg_text }}</span>
+    {{ flash_msg_text }}
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
 {% endif %}
 
-<div style="padding: 3rem;">
+<div id="flashMessage" style="display:none;">
+    <span id="flashMessageText"></span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 
-    <p id="test">This is a test</p>
+<div style="padding: 3rem;">
 
     <h3>Global Settings</h3>
     <p>These are generic settings that apply to all of NCPA's services and utilities. These values are stored under the [general] section in the config.</p>
