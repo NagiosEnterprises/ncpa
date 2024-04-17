@@ -1115,10 +1115,6 @@ def validate_config_input(section, option, value, valid_options):
 
     # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
     for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
-        logging.info("validate_config_input() - section: %s == target_section: %s", section, target_section)
-        logging.info("validate_config_input() - option: %s == tbl_option: %s", option, tbl_option)
-        logging.info("validate_config_input() - value: %s", value)
-        logging.info("validate_config_input() - valid_values: %s", valid_values)
         if "["+section+"]" == target_section:
             if option == tbl_option:
                 logging.info("validate_config_input() -- matched option: %s, value: %s", option, value)
@@ -1245,7 +1241,8 @@ def set_config(section=None):
     for (option, value) in request.form.items():
         logging.info("set_config() - option: %s", option)
         if option in editable_options_list:
-            current_section, current_option, sanitized_input = validate_config_input(section, option, value, allowed_options) or (None, None, None)
+            (current_section, current_option, sanitized_input) = validate_config_input(section, option, value, allowed_options) or (None, None, None)
+            logging.info("set_config() - (current_section, current_option, sanitized_input): %s, %s, %s", current_section, current_option, sanitized_input)
             section_options_to_update[current_section] = {current_option: sanitized_input}
             if not current_section or not current_option or not sanitized_input:
                 logging.info("set_config() - current_section: %s", current_section)
