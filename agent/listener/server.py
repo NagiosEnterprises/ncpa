@@ -1137,6 +1137,8 @@ def validate_config_input(section, option, value, valid_options):
 def write_to_config_and_file(section_options_to_update):
     config = listener.config['iconfig']
 
+    logging.info("write_to_configFile() --- section_options_to_update: %s", section_options_to_update)
+
     # check if all values are valid
     for section, option_value_dict in section_options_to_update.items():
         for option, value in option_value_dict.items():
@@ -1163,9 +1165,9 @@ def write_to_config_and_file(section_options_to_update):
                     section = line.strip()
                     logging.debug("write_to_configFile() - section: %s", section)
                     continue
-                logging.info("section_options_to_update: %s", section_options_to_update)
                 for target_section, option_value_dict in section_options_to_update.items():
-
+                    logging.debug("write_to_configFile() - target_section: %s", target_section)
+                    logging.debug("write_to_configFile() - option_value_dict: %s", option_value_dict)
                     for target_option, value in option_value_dict.items():
                         if section == target_section:
                             pattern = re.compile(r'^\s*(#*\s*)(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
