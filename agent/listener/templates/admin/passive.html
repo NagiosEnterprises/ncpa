@@ -23,9 +23,6 @@ $(document).ready(function() {
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send(new URLSearchParams(new FormData(this)).toString());
         
-        $.post('/start-passive/', function(data) {
-            alert(data);
-        });
         return;
     });
 });
