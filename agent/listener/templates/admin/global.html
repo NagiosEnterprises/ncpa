@@ -42,6 +42,8 @@ $(document).ready(function() {
                 $('#flashMessage').addClass('alert-danger');
                 $('#flashMessageText').html('Error saving changes!  <i class="fa fa-times"></i>');
             }
+            $('#flashMessage').fadeIn(500).delay(5000).fadeOut(500);
+            $('#flashMessage').html(xhr.readyState + ' ' + xhr.status + ' ' + xhr.responseText);
         };
     });
 });
@@ -61,10 +63,7 @@ $(document).ready(function() {
 {% endif %}
 
 <div id="flashMessage" class="alert" style="display:none;">
-    <span id="flashMessageText"></span>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+    <p id="flashMessageText"></p>
 </div>
 
 <div style="padding: 3rem;">
