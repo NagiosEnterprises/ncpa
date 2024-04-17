@@ -39,11 +39,8 @@ $(document).ready(function() {
                 }, 5000);
             }
             else {
-                $('#flashMessage').addClass('alert-danger');
                 $('#flashMessageText').html('Error saving changes!  <i class="fa fa-times"></i>');
             }
-            $('#flashMessage').fadeIn(500).delay(5000).fadeOut(500);
-            $('#flashMessage').html(xhr.readyState + ' ' + xhr.status + ' ' + xhr.responseText);
         };
     });
 });
@@ -66,7 +63,7 @@ $(document).ready(function() {
 <div style="padding: 3rem;">
 
     <div id="flashMessage" class="alert" style="display:none;">
-        <p id="flashMessageText"></p>
+        <span id="flashMessageText"></span>
     </div>
 
     <h3>Global Settings</h3>
