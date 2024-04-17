@@ -78,6 +78,15 @@ exclude_fs_types = aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,d
 default_units = Gi
 
 #
+# Allow the user to restart NCPA via the GUI
+# None = Do not allow restart
+# passive = Allow the user to start/restart the passive process via the GUI
+# listener = Allow the user to start/restart the listener process via the GUI
+# all = Allow the user to start/restart both the passive and listener processes via the GUI
+#
+allow_restart = passive
+
+#
 # -------------------------------
 # Listener Configuration (daemon)
 # -------------------------------
@@ -180,11 +189,12 @@ admin_auth_only = 0
 # allowed_sources =
 
 #
-# Allow the user to set up passive monitoring via the web GUI
+# Allow the user to edit several settings via the GUI such as 
+# setting up passive monitoring
 # 0 = Do not allow user modification
 # 1 = Allow user modification
 #
-allow_passive_gui_setup = 1
+allow_config_edit = 1
 
 #
 # -------------------------------
