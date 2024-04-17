@@ -28,10 +28,9 @@ $(document).ready(function() {
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 let response = JSON.parse(xhr.responseText);
-                console.log(response);
                 let flash = document.querySelector('#flashMessage');
                 let flashText = document.querySelector('#flashMessageText');
-                flash.classList.add('alert-success');
+                flash.classList.add('alert-' + response.type);
                 flash.style.display = 'block';
                 flashText.innerHTML = response.message;
                 flashText.innerHTML += '  <i class="fa fa-check"></i>';

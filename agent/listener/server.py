@@ -1235,7 +1235,7 @@ def set_config(section=None):
     # set section from the form
     section = request.form.get('section', None)
     if section is None:
-        return jsonify({'message': 'No section specified.'})
+        return jsonify({'type': 'danger', 'message': 'No section specified.'})
     for (option, value) in request.form.items():
         logging.info("set_config() - option: %s", option)
         if option in editable_options_list:
@@ -1243,7 +1243,7 @@ def set_config(section=None):
             logging.info("set_config() - (current_section, current_option, sanitized_input): %s, %s, %s", current_section, current_option, sanitized_input)
             section_options_to_update[current_section, current_option] = sanitized_input
             if not current_section or not current_option or not sanitized_input:
-                return jsonify({'message': 'Invalid input.'})
+                return jsonify({'type': 'danger', 'message': 'Invalid input.'})
             logging.info("set_config() - adding to section_options_to_update: %s, %s", current_option, sanitized_input)
     write_to_config_and_file(section_options_to_update)
 
@@ -1271,14 +1271,14 @@ def set_config(section=None):
                 )
             else:
                 logging.error("unsupported OS")
-                return jsonify({'message': 'Unsupported OS. This service must be restarted manually.'})
+                return jsonify({'type': 'danger', 'message': 'Unsupported OS. This service must be restarted manually.'})
         except Exception as e:
             logging.exception(e)
-            return jsonify({'message': 'Failed to restart the service.'})
+            return jsonify({'type': 'danger', 'message': 'Failed to restart the service.'})
             
     logging.info("end of set_config()")
 
-    return jsonify({'message': 'Configuration updated.'})
+    return jsonify({'type': 'success', 'message': 'Configuration updated.'})
 
 # restart the ncpa service and/or start the passive service
 @listener.route('/start-service/', methods=['POST'], provide_automatic_options = False)
@@ -1288,10 +1288,10 @@ def start_service():
     form_data = request.form
     logging.info("start_service() - form_data: %s", form_data)
     if config.get('listener', 'allow_config_edit') != '1':
-        return jsonify({'message': 'Editing the config is disabled.'})
+        return jsonify({'type': 'danger', 'message': 'Editing the config is disabled.'})
     # passive service can be started if enabled or if the service is not running
     elif not config.get('general', 'allow_restart').contains('passive') and form_data.get('service') == 'passive':
-        return jsonify({'message': 'Restarting Passive service is disabled.'})
+        return jsonify({'type': 'danger', 'message': 'Restarting Passive service is disabled.'})
     else:
         if os.name == 'posix':
             logging.info("start_service() - restarting ncpa service")
