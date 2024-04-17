@@ -1249,10 +1249,18 @@ def set_config(section=None):
             logging.info("set_config() - adding to section_options_to_update: %s, %s", current_option, sanitized_input)
     write_to_config_and_file(section_options_to_update)
 
+    logging.info("set_config() -- wrote to config file")
+
     # TODO: implement restart of services
     allow_restart = config.get('general', 'allow_restart', fallback='').lower()
     if allow_restart in {'none', '0'}:
-        if os.name == 'posix':
+        if os.name == 'nt':
+            logging.info("set_config() - restarting ncpa service")
+            daemon = daemon_manager.get_daemon()
+            logging.info("set_config() - daemon: %s", daemon)
+            logging.info("Daemon details: %s, %s", daemon.l, daemon.p)
+            daemon.restart()
+        else:
             logging.info("set_config() - restarting ncpa service")
             daemon = daemon_manager.get_daemon()
             logging.info("set_config() - daemon: %s", daemon)
@@ -1270,6 +1278,10 @@ def set_config(section=None):
         logging.info("set_config() - restarting ncpa and passive services")
         daemon = daemon_manager.get_daemon()
         # daemon.restart()
+    else:
+        logging.info("allow_restart: %s", allow_restart)
+
+    logging.info("end of set_config()")
 
     return jsonify({'error': 'Not fully implemented yet.'})
 
