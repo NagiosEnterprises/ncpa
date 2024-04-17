@@ -1165,7 +1165,7 @@ def write_to_config_and_file(section_options_to_update):
                         pattern = re.compile(r'^\s*(#*\s*)(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
                         if pattern.match(line):
                             sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
-                            config.set(section, option, value)
+                            config.set(target_section, target_option, value)
                             logging.info("write_to_configFile() - sed_cmd: %s", sed_cmds[-1])
             configfile.close()
 
