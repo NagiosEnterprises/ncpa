@@ -1130,17 +1130,16 @@ def validate_config_input(section, option, value, valid_options):
     return None, None, None
 
 # inputs sanitized and validated, write to the config and file
+# section_options_to_update = {("[section]", "option_name"): "value"}
 def write_to_config_and_file(section_options_to_update):
     config = listener.config['iconfig']
 
     logging.info("write_to_configFile() --- section_options_to_update: %s", section_options_to_update)
 
     # check if all values are valid
-    for section, option_value_dict in section_options_to_update.items():
-        for option, value in option_value_dict.items():
-            if not value:
-                return False
-
+    for (section, option), value in section_options_to_update.items():
+        if not value:
+            return False
 
     try:
         import subprocess
@@ -1161,15 +1160,14 @@ def write_to_config_and_file(section_options_to_update):
                     section = line.strip()
                     logging.debug("write_to_configFile() - section: %s", section)
                     continue
-                for target_section, option_value_dict in section_options_to_update.items():
+                for (target_section, target_option), value in section_options_to_update.items():
                     logging.debug("write_to_configFile() - target_section: %s", target_section)
-                    logging.debug("write_to_configFile() - option_value_dict: %s", option_value_dict)
-                    for target_option, value in option_value_dict.items():
-                        if section == target_section:
-                            pattern = re.compile(r'^\s*(#*\s*)(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
-                            if pattern.match(line):
-                                sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
-                                config.set(section, option, value)
+                    logging.debug("write_to_configFile() - target_option: %s", target_option)
+                    if section == target_section:
+                        pattern = re.compile(r'^\s*(#*\s*)(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
+                        if pattern.match(line):
+                            sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
+                            config.set(section, option, value)
             configfile.close()
 
         for sed_cmd in sed_cmds:
