@@ -1269,15 +1269,15 @@ def set_config(section=None):
     elif allow_restart in {'passive'}:
         logging.info("set_config() - restarting passive service")
         daemon = daemon_manager.get_daemon()
-        # daemon.restart()
+        daemon.restart()
     elif allow_restart in {'listener'}:
         logging.info("set_config() - restarting ncpa service")
         daemon = daemon_manager.get_daemon()
-        # daemon.restart()
+        daemon.restart()
     elif allow_restart in {'all'}:
         logging.info("set_config() - restarting ncpa and passive services")
         daemon = daemon_manager.get_daemon()
-        # daemon.restart()
+        daemon.restart()
     else:
         logging.info("allow_restart: %s", allow_restart)
 

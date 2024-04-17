@@ -617,6 +617,12 @@ class Daemon():
         else:
             sys.exit("Daemon - stop() - Not running")
 
+    def restart(self):
+        """Restart the process"""
+        self.logger.debug("Daemon - restart() - Restart the process")
+        self.stop()
+        self.start()
+
     def status(self):
         """Return the process status"""
         self.logger.debug("Daemon - status() - Return the process status")
