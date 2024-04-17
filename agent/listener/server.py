@@ -1245,10 +1245,8 @@ def set_config(section=None):
             logging.info("set_config() - (current_section, current_option, sanitized_input): %s, %s, %s", current_section, current_option, sanitized_input)
             section_options_to_update[current_section, current_option] = sanitized_input
             if not current_section or not current_option or not sanitized_input:
-                logging.info("set_config() - current_section: %s", current_section)
-                logging.info("set_config() - current_option: %s", current_option)
-                logging.info("set_config() - sanitized_input: %s", sanitized_input)
                 return jsonify({'error': 'Invalid input.'})
+            logging.info("set_config() - adding to section_options_to_update: %s, %s", current_option, sanitized_input)
     write_to_config_and_file(section_options_to_update)
 
     # TODO: implement restart of services
