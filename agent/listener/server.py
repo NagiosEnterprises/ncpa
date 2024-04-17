@@ -1210,7 +1210,7 @@ def set_config(section=None):
     # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
     allowed_options = [
         ("[general]", "check_logging",  "check_logging",        ["0", "1"]),
-        ("[general]", "check_checks",   "check_logging_time",   r"^\d+$"),
+        ("[general]", "check_logging_time","check_logging_time",r"^\d+$"),
         ("[general]", "log_level",      "loglevel",             ["info", "warning", "debug", "error"]),
         ("[general]", "log_max_mb",     "logmaxmb",             r"^\d+$"),
         ("[general]", "log_backups",    "logbackups",           r"^\d+$"),
