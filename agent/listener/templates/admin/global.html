@@ -27,10 +27,10 @@ $(document).ready(function() {
         
         xhr.onreadystatechange = function() {
             console.log(xhr.readyState, xhr.status);    
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                let response = JSON.parse(xhr.responseText);
-                let flash = document.querySelector('#flashMessage');
-                let flashText = document.querySelector('#flashMessageText');
+            let response = JSON.parse(xhr.responseText);
+            let flash = document.querySelector('#flashMessage');
+            let flashText = document.querySelector('#flashMessageText');
+            if (response.type == 'success') {
                 flash.classList.add('alert-' + response.type);
                 flash.style.display = 'block';
                 flashText.innerHTML = response.message;
