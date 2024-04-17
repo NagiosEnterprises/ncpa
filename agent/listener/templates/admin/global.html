@@ -23,11 +23,10 @@ $(document).ready(function() {
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send(new URLSearchParams(new FormData(this)).toString());
 
-        $('#test').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>');
+        $('#flashMessageText').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>');
         
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
-                $('#test').html('Changes saved!  <i class="fa fa-check"></i>');
                 let response = JSON.parse(xhr.responseText);
                 let flash = document.querySelector('#flashMessageText');
                 flash.classList.add('alert-' + response.type);
@@ -40,7 +39,7 @@ $(document).ready(function() {
                 }, 5000);
             }
             else {
-                $('#test').html('Error saving changes!  <i class="fa fa-times"></i>');
+                $('#flashMessageText').html('Error saving changes!  <i class="fa fa-times"></i>');
             }
         };
     });
