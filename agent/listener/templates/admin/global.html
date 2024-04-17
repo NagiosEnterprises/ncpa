@@ -22,9 +22,12 @@ $(document).ready(function() {
         xhr.open('POST', '/update-config/', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send(new URLSearchParams(new FormData(this)).toString());
+
+        $('#test').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>');
         
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#test').html('Changes saved!  <i class="fa fa-check"></i>');
                 let response = JSON.parse(xhr.responseText);
                 let flash = document.querySelector('.alert');
                 flash.classList.add('alert-' + response.type);
@@ -35,6 +38,9 @@ $(document).ready(function() {
                     $('#flashMessageText').html('');
                     flash.classList.remove('alert-' + response.type);
                 }, 5000);
+            }
+            else {
+                $('#test').html('Error saving changes!  <i class="fa fa-times"></i>');
             }
         };
     });
@@ -55,6 +61,8 @@ $(document).ready(function() {
 {% endif %}
 
 <div style="padding: 3rem;">
+
+    <p id="test">This is a test</p>
 
     <h3>Global Settings</h3>
     <p>These are generic settings that apply to all of NCPA's services and utilities. These values are stored under the [general] section in the config.</p>
