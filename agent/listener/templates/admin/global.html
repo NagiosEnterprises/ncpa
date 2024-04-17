@@ -30,7 +30,7 @@ $(document).ready(function() {
                 let response = JSON.parse(xhr.responseText);
                 let flash = document.querySelector('#flashMessageText');
                 flash.classList.add('alert-' + response.type);
-                $('#flashMessageText').html(response.message);
+                flash.innerHTML = response.message;
                 flash.style.display = 'block';
                 setTimeout(function() {
                     flash.style.display = 'none';
@@ -39,6 +39,7 @@ $(document).ready(function() {
                 }, 5000);
             }
             else {
+                $('#flashMessage').addClass('alert-danger');
                 $('#flashMessageText').html('Error saving changes!  <i class="fa fa-times"></i>');
             }
         };
@@ -59,7 +60,7 @@ $(document).ready(function() {
 </div>
 {% endif %}
 
-<div id="flashMessage" style="display:none;">
+<div id="flashMessage" class="alert" style="display:none;">
     <span id="flashMessageText"></span>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
