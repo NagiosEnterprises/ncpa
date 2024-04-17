@@ -18,7 +18,7 @@ $(document).ready(function() {
 
     $('#start-passive').click(function() {
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', '/start-passive/', true);
+        xhr.open('POST', '/update-config/', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send(new URLSearchParams(new FormData($('form')[0])).toString());
         
