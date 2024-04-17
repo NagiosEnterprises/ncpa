@@ -1168,9 +1168,13 @@ def write_to_config_and_file(section_options_to_update):
                         if pattern.match(line):
                             sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
                             config.set(section, option, value)
+                            logging.info("write_to_configFile() - sed_cmd: %s", sed_cmds[-1])
             configfile.close()
 
+        logging.info("write_to_configFile() - sed_cmds: %s", sed_cmds)
+
         for sed_cmd in sed_cmds:
+            logging.info("write_to_configFile() - sed_cmd: %s", sed_cmd)
             if environment.SYSTEM == "Windows":
                 running_check = subprocess.run(
                     sed_cmd, 
