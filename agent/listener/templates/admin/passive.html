@@ -15,13 +15,12 @@ $(document).ready(function() {
             return false;
         }
     });
-        
-    $('form').submit(function(e) {
-        e.preventDefault();
+
+    $('#start-passive').click(function() {
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', '/update-config/', true);
+        xhr.open('POST', '/start-passive/', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.send(new URLSearchParams(new FormData(this)).toString());
+        xhr.send(new URLSearchParams(new FormData($('form')[0])).toString());
         
         return;
     });
