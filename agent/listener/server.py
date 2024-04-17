@@ -1161,14 +1161,15 @@ def write_to_config_and_file(section_options_to_update):
                     logging.debug("write_to_configFile() - section: %s", section)
                     continue
                 for (target_section, target_option), value in section_options_to_update.items():
-                    logging.debug("write_to_configFile() - target_section: %s", target_section)
-                    logging.debug("write_to_configFile() - target_option: %s", target_option)
                     if section == target_section:
+                        logging.info("write_to_configFile() - matched section: %s", section)
                         pattern = re.compile(r'^\s*(#*\s*)(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
                         if pattern.match(line):
                             sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
                             config.set(section, option, value)
                             logging.info("write_to_configFile() - sed_cmd: %s", sed_cmds[-1])
+                    else:
+                        logging.info("write_to_configFile() - no match: %s", section)
             configfile.close()
 
         logging.info("write_to_configFile() - sed_cmds: %s", sed_cmds)
