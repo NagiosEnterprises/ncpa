@@ -19,6 +19,8 @@ import urllib.parse
 import gevent
 import ncpa
 import process.daemon_manager as daemon_manager
+import subprocess
+import listener.environment as environment
 from ncpa import listener_logger as logging
 #import inspect
 
@@ -1142,8 +1144,6 @@ def write_to_config_and_file(section_options_to_update):
             return False
 
     try:
-        import subprocess
-        import listener.environment as environment
         if environment.SYSTEM == "Windows":
             cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg')
         else:
