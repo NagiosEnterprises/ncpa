@@ -28,12 +28,12 @@ $(document).ready(function() {
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 let response = JSON.parse(xhr.responseText);
+                console.log(response);
                 let flash = document.querySelector('#flashMessage');
                 let flashText = document.querySelector('#flashMessageText');
                 flash.classList.add('alert-success');
                 flash.style.display = 'block';
                 flashText.innerHTML = response.message;
-                flashText.innerHTML = response;
                 flashText.innerHTML += '  <i class="fa fa-check"></i>';
                 setTimeout(function() {
                     flash.style.display = 'none';
@@ -68,12 +68,11 @@ $(document).ready(function() {
 </div>
 {% endif %}
 
+<div id="flashMessage" class="alert" style="display:none;">
+    <div id="flashMessageText"></div>
+</div>
 
 <div style="padding: 3rem;">
-
-    <div id="flashMessage" class="alert" style="display:none;">
-        <div id="flashMessageText"></div>
-    </div>
 
     <h3>Global Settings</h3>
     <p>These are generic settings that apply to all of NCPA's services and utilities. These values are stored under the [general] section in the config.</p>
