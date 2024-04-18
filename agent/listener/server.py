@@ -1247,34 +1247,36 @@ def set_config(section=None):
             logging.info("set_config() - adding to section_options_to_update: %s, %s", current_option, sanitized_input)
     write_to_config_and_file(section_options_to_update)
 
-    allow_restart = config.get('general', 'allow_remote_restart').lower()
-    if allow_restart in {'none', '0'}:
-        logging.info("restart not allowed")
-    else:
-        try:
-            logging.info("allow_restart: %s", allow_restart)
-            if os.name == 'nt':
-                logging.info("restarting ncpa service")
-                restart_ncpa = subprocess.run(
-                    "net stop ncpa && net start ncpa",
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.STDOUT
-                )
-            elif os.name == 'posix':
-                logging.info("restarting ncpa service")
-                restart_ncpa = subprocess.run(
-                    "systemctl restart ncpa",
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.STDOUT
-                )
-            else:
-                logging.error("unsupported OS")
-                return jsonify({'type': 'danger', 'message': 'Unsupported OS. This service must be restarted manually.'})
-        except Exception as e:
-            logging.exception(e)
-            return jsonify({'type': 'danger', 'message': 'Failed to restart the service.'})
+
+    # TODO: finish restarting of the service
+    # allow_restart = config.get('general', 'allow_remote_restart').lower()
+    # if allow_restart in {'none', '0'}:
+    #     logging.info("restart not allowed")
+    # else:
+    #     try:
+    #         logging.info("allow_restart: %s", allow_restart)
+    #         if os.name == 'nt':
+    #             logging.info("restarting ncpa service")
+    #             restart_ncpa = subprocess.run(
+    #                 "net stop ncpa && net start ncpa",
+    #                 shell=True,
+    #                 stdout=subprocess.PIPE,
+    #                 stderr=subprocess.STDOUT
+    #             )
+    #         elif os.name == 'posix':
+    #             logging.info("restarting ncpa service")
+    #             restart_ncpa = subprocess.run(
+    #                 "systemctl restart ncpa",
+    #                 shell=True,
+    #                 stdout=subprocess.PIPE,
+    #                 stderr=subprocess.STDOUT
+    #             )
+    #         else:
+    #             logging.error("unsupported OS")
+    #             return jsonify({'type': 'danger', 'message': 'Unsupported OS. This service must be restarted manually.'})
+    #     except Exception as e:
+    #         logging.exception(e)
+    #         return jsonify({'type': 'danger', 'message': 'Failed to restart the service.'})
             
     logging.info("end of set_config()")
 
