@@ -35,7 +35,6 @@ $(document).ready(function() {
                 flash.style.display = 'block';
                 flashText.innerHTML = '<i class="fa fa-check"></i>  ';
                 flashText.innerHTML += response.message;
-                flashText.innerHTML += ' ';
             } else {
                 $('#flashMessageText').html('<i class="fa fa-times"></i> ' + response.message);
                 $('#flashMessage').addClass('alert-danger').show();

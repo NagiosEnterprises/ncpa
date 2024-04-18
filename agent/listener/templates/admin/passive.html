@@ -17,11 +17,12 @@ $(document).ready(function() {
     });
 
     $('#start-passive').click(function() {
+        e.preventDefault();
         let xhr = new XMLHttpRequest();
         xhr.open('POST', '/update-config/', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.send(new URLSearchParams(new FormData($('form')[0])).toString());
-        
+        xhr.send(new URLSearchParams(new FormData(this)).toString());
+
         $('#flashMessageText').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>');
         
         xhr.onreadystatechange = function() {
@@ -34,20 +35,13 @@ $(document).ready(function() {
                 flash.style.display = 'block';
                 flashText.innerHTML = '<i class="fa fa-check"></i>  ';
                 flashText.innerHTML += response.message;
-                flashText.innerHTML += ' Note: You may need to restart NCPA for all changes to take effect.'
-                setTimeout(function() {
-                    flash.style.display = 'none';
-                    $('#flashMessageText').html('');
-                    flash.classList.remove('alert-' + response.type);
-                }, 5000);
             } else {
-                $('#flashMessage').addClass('alert-danger').show();
                 $('#flashMessageText').html('<i class="fa fa-times"></i> ' + response.message);
+                $('#flashMessage').addClass('alert-danger').show();
             }
             setTimeout(function() {
-                $('#flashMessage').hide();
+                $('#flashMessage').hide().removeClass('alert-danger').removeClass('alert-success');
                 $('#flashMessageText').html('');
-                $('#flashMessage').removeClass('alert-danger');
             }, 5000);
         };
     });
