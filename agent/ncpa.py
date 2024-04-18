@@ -153,7 +153,7 @@ cfg_defaults = {
                 'allowed_hosts': '',
                 'max_connections': '200',
                 'allowed_sources': '',
-                'allow_config_edit': '1',
+                'allow_config_edit': '1', # Note: this is limited to non-sensitive settings
             },
             'api': {
                 'community_string': 'mytoken',
