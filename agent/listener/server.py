@@ -1129,7 +1129,7 @@ def validate_config_input(section, option, value, valid_options):
     return None, None, None
 
 # inputs sanitized and validated, write to the config and file
-# section_options_to_update = {("[section]", "option_name"): "value"}
+# section_options_to_update = {("section", "option_name"): "value"}
 def write_to_config_and_file(section_options_to_update):
     config = listener.config['iconfig']
 
