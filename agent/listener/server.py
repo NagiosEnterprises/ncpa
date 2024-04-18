@@ -1184,7 +1184,7 @@ def write_to_config_and_file(section_options_to_update):
                     stderr=subprocess.STDOUT,
                     preexec_fn=os.setsid
                 )
-                
+
             if running_check.returncode != 0:
                 logging.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
                 return False
@@ -1226,7 +1226,6 @@ def set_config(section=None):
 
     section_options_to_update = {}
     
-    # TODO: instead add to list of changes and write to config at the end
     # set section from the form
     section = request.form.get('section', None)
     if section is None:
@@ -1240,7 +1239,7 @@ def set_config(section=None):
     write_to_config_and_file(section_options_to_update)
 
 
-    # TODO: finish restarting of the service
+    # TODO: finish option of restarting of the service (disabled by default)
     # allow_restart = config.get('general', 'allow_remote_restart').lower()
     # if allow_restart in {'none', '0'}:
     #     logging.info("restart not allowed")
