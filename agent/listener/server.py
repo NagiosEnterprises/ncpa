@@ -1161,9 +1161,17 @@ def write_to_config_and_file(section_options_to_update):
             configfile.close()
 
         for sed_cmd in sed_cmds:
+            match = re.match(r's/(.*)/(.*)/', sed_cmd)
+            if not match:
+                continue
+            pattern, replacement = match.groups()
+
             if environment.SYSTEM == "Windows":
+                # Convert sed syntax to PowerShell equivalent
+                powershell_cmd = f"Get-Content {cfg_file} | Foreach-Object {{ $_ -replace '{pattern}', '{replacement}' }} | Set-Content {cfg_file}"
+                command = ["powershell", "-Command", powershell_cmd]
                 running_check = subprocess.run(
-                    sed_cmd, 
+                    command, 
                     shell=True, 
                     stdout=subprocess.PIPE, 
                     stderr=subprocess.STDOUT
