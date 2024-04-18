@@ -32,6 +32,7 @@ $(document).ready(function() {
             let flashText = document.querySelector('#flashMessageText');
             if (response.type == 'success') {
                 flash.classList.add('alert-' + response.type);
+                flash.classList.remove('alert-danger');
                 flash.style.display = 'block';
                 flashText.innerHTML = '<i class="fa fa-check"></i>  ';
                 flashText.innerHTML += response.message;
