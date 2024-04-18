@@ -1147,17 +1147,39 @@ def write_to_config_and_file(section_options_to_update):
         lines = None
         with open(cfg_file, 'r') as configfile:
             lines = configfile.readlines()
-            section = ""
+
+            uncommented_options = set()
+            section = None
+
+            for i, line in enumerate(lines):
+                line = line.strip()
+                if line.startswith("["):
+                    section = line.strip()
+                    continue
+                if '=' in line and not line.startswith('#'):
+                    option = line.split('=')[0].strip()
+                    uncommented_options.add((section, option))
+
+            section = None
+
             for i, line in enumerate(lines):
                 if line.startswith("["):
                     section = line.strip()
                     continue
                 for (target_section, target_option), value in section_options_to_update.items():
                     if section == "["+target_section+"]":
-                        pattern = re.compile(r'^\s*(#*\s*)(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
-                        if pattern.match(line):
-                            sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
-                            config.set(target_section, target_option, value)
+                        pattern = re.compile(r'^\s*(#\s*)(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
+                        no_comment_pattern = re.compile(r'^\s*(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
+                        
+                        # if there is an uncommented version in the config file, we don't want to replace commented out versions
+                        if (section, target_option) in uncommented_options:
+                            if no_comment_pattern.match(line):
+                                sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
+                                config.set(target_section, target_option, value)
+                        else:
+                            if pattern.match(line):
+                                sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
+                                config.set(target_section, target_option, value)
             configfile.close()
 
         for sed_cmd in sed_cmds:
