@@ -1230,7 +1230,7 @@ def set_config(section=None):
             (current_section, current_option, sanitized_input) = validate_config_input(section, option, value, allowed_options) or (None, None, None)
             section_options_to_update[current_section, current_option] = sanitized_input
             if not current_section or not current_option or not sanitized_input:
-                return jsonify({'type': 'danger', 'message': 'Invalid input.'})
+                return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
     write_to_config_and_file(section_options_to_update)
 
 
