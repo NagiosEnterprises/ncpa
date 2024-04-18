@@ -42,7 +42,7 @@ $(document).ready(function() {
                 }, 5000);
             } else {
                 $('#flashMessage').addClass('alert-danger').show();
-                $('#flashMessageText').html('Error saving changes!  <i class="fa fa-times"></i>');
+                $('#flashMessageText').html('<i class="fa fa-times"></i> ' + response.message);
             }
             setTimeout(function() {
                 $('#flashMessage').hide();

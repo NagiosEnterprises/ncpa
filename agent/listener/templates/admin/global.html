@@ -35,20 +35,14 @@ $(document).ready(function() {
                 flash.style.display = 'block';
                 flashText.innerHTML = '<i class="fa fa-check"></i>  ';
                 flashText.innerHTML += response.message;
-                flashText.innerHTML += ' Note: You may need to restart NCPA for all changes to take effect.'
-                setTimeout(function() {
-                    flash.style.display = 'none';
-                    $('#flashMessageText').html('');
-                    flash.classList.remove('alert-' + response.type);
-                }, 5000);
+                flashText.innerHTML += ' ';
             } else {
+                $('#flashMessageText').html('<i class="fa fa-times"></i> ' + response.message);
                 $('#flashMessage').addClass('alert-danger').show();
-                $('#flashMessageText').html('Error saving changes!  <i class="fa fa-times"></i>');
             }
             setTimeout(function() {
-                $('#flashMessage').hide();
+                $('#flashMessage').hide().removeClass('alert-danger').removeClass('alert-success');
                 $('#flashMessageText').html('');
-                $('#flashMessage').removeClass('alert-danger');
             }, 5000);
         };
     });
