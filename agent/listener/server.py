@@ -1119,6 +1119,7 @@ def validate_config_input(section, option, value, valid_options):
     for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
         if "["+section+"]" == target_section:
             if option == tbl_option:
+                logging.info("validate_config_input() - section: %s, option: %s, value: %s, valid_values: %s", section, option, value, valid_values)
                 if isinstance(valid_values, list):
                     if value.strip() not in valid_values:
                         return False
