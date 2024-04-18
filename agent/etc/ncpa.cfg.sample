@@ -77,14 +77,6 @@ exclude_fs_types = aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,d
 #
 default_units = Gi
 
-#
-# Allow the user to restart NCPA via the GUI
-# None = Do not allow restart
-# passive = Allow the user to start/restart the passive process via the GUI
-# listener = Allow the user to start/restart the listener process via the GUI
-# all = Allow the user to start/restart both the passive and listener processes via the GUI
-#
-allow_restart = passive
 
 #
 # -------------------------------
