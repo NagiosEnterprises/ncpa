@@ -1066,23 +1066,21 @@ def nrdp():
 # ------------------------------
 # Configuration Endpoints
 # ------------------------------
-
-# DO NOT ALLOW MODIFICATION OF OTHER CONFIG SETTINGS, RESTRICT TO SPECIFIC SECTIONS
 #
 # ALLOWED SECTIONS:
 #   Global
-#      - Check Logging?
-#      - Check Log Retention?
-#      - Log Level
-#      - Log Max MB?
-#      - Log Backups Days?
-#      - Default Units
+#      - Check Logging (in browser)
+#      - Check Log Retention (days)
+#      - Log Level (info, warning, debug, error)
+#      - Log Max MB
+#      - Log Backups (days)
+#      - Default Units (K,Ki,M,Mi,G,Gi,T,Ti)
 #   Listener
-#       NONE, DO NOT ALLOW
+#       None
 #   API
-#       NONE, DO NOT ALLOW
+#       None
 #   Passive
-#       - Handlers (None, NRDP, Kafka Producer)
+#       - Handlers (None, NRDP, Kafka Producer, Both)
 #   NRDP
 #       - NRDP URL
 #       - NRDP Token
@@ -1094,12 +1092,11 @@ def nrdp():
 #       - Client Name
 #       - Topic
 #   Plugin Directives
-#       - NONE, DO NOT ALLOW
+#       - None
 #   Passive Checks
-#       - ??? (should be fine as it can only access the api, which the user already has access to)
+#       - ??? (should be fine as it can only access the api, which the user already has access to) TODO: implement
 
 # sanitize inputs from the form
-# TODO: remove this because valid_options filters the input into the valid values already
 def sanitize_for_configparser(input_value):
     max_length = 1024
     if len(input_value) > max_length:
