@@ -1119,7 +1119,6 @@ def validate_config_input(section, option, value, valid_options):
     for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
         if "["+section+"]" == target_section:
             if option == tbl_option:
-                logging.info("validate_config_input() -- matched option: %s, value: %s", option, value)
                 if isinstance(valid_values, list):
                     if value.strip() not in valid_values:
                         return False
@@ -1136,8 +1135,6 @@ def validate_config_input(section, option, value, valid_options):
 def write_to_config_and_file(section_options_to_update):
     config = listener.config['iconfig']
 
-    logging.info("write_to_configFile() --- section_options_to_update: %s", section_options_to_update)
-
     # check if all values are valid
     for (section, option), value in section_options_to_update.items():
         if not value:
@@ -1152,7 +1149,6 @@ def write_to_config_and_file(section_options_to_update):
         sed_cmds = []
         lines = None
         with open(cfg_file, 'r') as configfile:
-            logging.info("file opened for read")
             lines = configfile.readlines()
             section = ""
             for i, line in enumerate(lines):
@@ -1161,18 +1157,13 @@ def write_to_config_and_file(section_options_to_update):
                     continue
                 for (target_section, target_option), value in section_options_to_update.items():
                     if section == "["+target_section+"]":
-                        logging.info("write_to_configFile() - matched section: %s", section)
                         pattern = re.compile(r'^\s*(#*\s*)(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
                         if pattern.match(line):
                             sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
                             config.set(target_section, target_option, value)
-                            logging.info("write_to_configFile() - sed_cmd: %s", sed_cmds[-1])
             configfile.close()
 
-        logging.info("write_to_configFile() - sed_cmds: %s", sed_cmds)
-
         for sed_cmd in sed_cmds:
-            logging.info("write_to_configFile() - sed_cmd: %s", sed_cmd)
             if environment.SYSTEM == "Windows":
                 running_check = subprocess.run(
                     sed_cmd, 
@@ -1202,8 +1193,6 @@ def set_config(section=None):
     config = listener.config['iconfig']
     if config.get('listener', 'allow_config_edit') != '1':
         return jsonify({'message': 'Editing your configuration via the GUI is disabled.'})
-    
-    logging.info("set_config() - request.form: %s", request.form)
 
     # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
     allowed_options = [
@@ -1237,14 +1226,11 @@ def set_config(section=None):
     if section is None:
         return jsonify({'type': 'danger', 'message': 'No section specified.'})
     for (option, value) in request.form.items():
-        logging.info("set_config() - option: %s", option)
         if option in editable_options_list:
             (current_section, current_option, sanitized_input) = validate_config_input(section, option, value, allowed_options) or (None, None, None)
-            logging.info("set_config() - (current_section, current_option, sanitized_input): %s, %s, %s", current_section, current_option, sanitized_input)
             section_options_to_update[current_section, current_option] = sanitized_input
             if not current_section or not current_option or not sanitized_input:
                 return jsonify({'type': 'danger', 'message': 'Invalid input.'})
-            logging.info("set_config() - adding to section_options_to_update: %s, %s", current_option, sanitized_input)
     write_to_config_and_file(section_options_to_update)
 
 
@@ -1277,29 +1263,8 @@ def set_config(section=None):
     #     except Exception as e:
     #         logging.exception(e)
     #         return jsonify({'type': 'danger', 'message': 'Failed to restart the service.'})
-            
-    logging.info("end of set_config()")
 
-    return jsonify({'type': 'success', 'message': 'Configuration updated.'})
-
-# restart the ncpa service and/or start the passive service
-@listener.route('/start-service/', methods=['POST'], provide_automatic_options = False)
-@requires_admin_auth
-def start_service():
-    config = listener.config['iconfig']
-    form_data = request.form
-    logging.info("start_service() - form_data: %s", form_data)
-    if config.get('listener', 'allow_config_edit') != '1':
-        return jsonify({'type': 'danger', 'message': 'Editing the config is disabled.'})
-    # passive service can be started if enabled or if the service is not running
-    elif not config.get('general', 'allow_restart').contains('passive') and form_data.get('service') == 'passive':
-        return jsonify({'type': 'danger', 'message': 'Restarting Passive service is disabled.'})
-    else:
-        if os.name == 'posix':
-            logging.info("start_service() - restarting ncpa service")
-            daemon = daemon_manager.get_daemon()
-            logging.info("start_service() - daemon: %s", daemon)
-            logging.info("start_service() - daemon.l, daemon.p: %s, %s", daemon.l, daemon.p)
+    return jsonify({'type': 'success', 'message': 'Configuration updated. Note: You may need to restart NCPA for all changes to take effect.'})
 
 
 # ------------------------------
