@@ -1133,10 +1133,9 @@ def validate_config_input(section, option, value, valid_options):
 def write_to_config_and_file(section_options_to_update):
     config = listener.config['iconfig']
 
-    # check if all values are valid
     for (section, option), value in section_options_to_update.items():
         if not value:
-            return False
+            return False # Invalid input detected, don't write to config file
 
     try:
         if environment.SYSTEM == "Windows":
