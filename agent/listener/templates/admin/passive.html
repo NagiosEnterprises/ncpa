@@ -46,6 +46,14 @@ $(document).ready(function() {
             }, 10000);
         };
     });
+
+    $('input[name="handlers"]').change(function() {
+        if ($(this).val() == 'nrdp') {
+            $('#nrdp-alert').show();
+        } else {
+            $('#nrdp-alert').hide();
+        }
+    });
 });
 </script>
 {% endblock %}
@@ -87,11 +95,10 @@ $(document).ready(function() {
                                         <input type="radio" name="handlers" value="nrdp, kafkaproducer" autocomplete="off"{% if sectioncfg['handlers'] == 'nrdp, kafkaproducer' or sectioncfg['handlers'] == 'kafkaproducer, nrdp' %} checked{% endif %}> Both
                                     </label>
                                 </div>
-                                {% if 'nrdp' in handlers %}
-                                <div class="alert alert-info" style="margin-top: 5px;">
+                                
+                                <div id="nrdp-alert" class="alert alert-info" style="margin-top: 5px;" {if 'nrdp' in handlers %}style="display: none;"{endif}>
                                     Note: You have enabled NRDP as a passive handler. If you do not configure the NRDP handler, NCPA will fail to start.
                                 </div>
-                                {% endif %}
                             </div>
                         </div>
 
