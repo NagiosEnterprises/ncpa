@@ -47,6 +47,10 @@ $(document).ready(function() {
         };
     });
 
+    if ($('input[name="handlers"]:checked').val() == 'nrdp') {
+        $('#nrdp-alert').show();
+    }
+
     $('input[name="handlers"]').change(function() {
         if ($(this).val() == 'nrdp') {
             $('#nrdp-alert').show();
@@ -96,7 +100,7 @@ $(document).ready(function() {
                                     </label>
                                 </div>
                                 
-                                <div id="nrdp-alert" class="alert alert-info" style="margin-top: 5px;" {if 'nrdp' in handlers %}style="display: none;"{endif}>
+                                <div id="nrdp-alert" class="alert alert-danger" style="margin-top: 5px; display:none;">
                                     Note: You have enabled NRDP as a passive handler. If you do not configure the NRDP handler, NCPA will fail to start.
                                 </div>
                             </div>
