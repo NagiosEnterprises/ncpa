@@ -87,6 +87,11 @@ $(document).ready(function() {
                                         <input type="radio" name="handlers" value="nrdp, kafkaproducer" autocomplete="off"{% if sectioncfg['handlers'] == 'nrdp, kafkaproducer' or sectioncfg['handlers'] == 'kafkaproducer, nrdp' %} checked{% endif %}> Both
                                     </label>
                                 </div>
+                                {% if 'nrdp' in handlers %}
+                                <div class="alert alert-info" style="margin-top: 5px;">
+                                    Note: You have enabled NRDP as a passive handler. If you do not configure the NRDP handler, NCPA will fail to start.
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
 
