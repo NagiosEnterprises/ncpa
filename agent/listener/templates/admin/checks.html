@@ -18,28 +18,31 @@ $(document).ready(function() {
 
     // Add Check Functionality
     $('#add-check-btn').click(function() {
-        var formHtml = '<div id="new-check-form">' +
-                '<div class="form-group">' +
-                    '<div class="form-group">' +
-                        '<label for="host_name">Hostname:</label>' +
-                        '<input type="text" id="host_name" name="host_name" placeholder="Hostname" />' +
+        var formHtml = '<div id="new-check-form" style="background-color:#DDD; border-radius:5px; padding: 15px;">' +
+                '<div class="form-group" style="display:flex; margin-left:15px; margin-bottom:0px;">' +
+                    '<div class="form-group" style="width:12rem; margin-left:-15px; margin-right:-8px;">' +
+                        '<label for="host_name">Hostname:<span style="color:red;">*</span></label>' +
+                        '<input class="form-control" type="text" id="host_name" name="host_name" placeholder="%HOSTNAME%" />' +
                     '</div>' +
-                    '<div class="form-group">' +
-                        '<label for="service_name">Service Name:</label>' +
-                        '<input type="text" id="service_name" name="service_name" placeholder="Service Name" />' +
+                    '<div class="form-group" style="width:12rem; margin-left:10px; margin-right:-8px;">' +
+                        '<label for="service_name">Service:<span style="color:red;">*</span></label>' +
+                        '<input class="form-control" type="text" id="service_name" name="service_name" placeholder="CPU Usage" />' +
                     '</div>' +
-                    '<div class="form-group">' +
-                        '<label for="check_interval">Check Interval (seconds):</label>' +
-                        '<input type="text" id="check_interval" name="check_interval" placeholder="300" />' +
+                    '<div class="form-group" style="width:12rem; margin-left:10px; margin-right:-8px;">' +
+                        '<label for="check_interval">Interval(sec):</label>' +
+                        '<input class="form-control" type="text" id="check_interval" name="check_interval" placeholder="300" />' +
                     '</div>' +
                     // Make the check value a dropdown that is populated with the available checks from the API?
-                    '<div class="form-group">' +
-                        '<label for="check_value">Check Value:</label>' +
-                        '<input type="text" id="check_value" name="check_value" placeholder="Check Value" />' +
+                    '<div class="form-group" style="flex-grow:1; margin-left:10px; padding-right:30px;">' +
+                        '<label for="check_value">Check Value:<span style="color:red;">*</span></label>' +
+                        '<input class="form-control" type="text" id="check_value" name="check_value" placeholder="Check Value" />' +
                     '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
-                    '<button class="btn btn-primary" id="submit-check" style="border-radius:5px;">Submit</button>' +
+                    '<p style="margin-left:15px; margin-bottom:0px; color:red; font-size:12px;">* Required Fields</p>' +
+                '</div>' +
+                '<div class="form-group" style="margin-left:0; margin-bottom:5px;">' +
+                    '<button class="btn btn-primary" id="submit-check" style="margin-right:5px;border-radius:5px;">Submit</button>' +
                     '<button class="btn btn-secondary" id="cancel-check" style="border-radius:5px;">Cancel</button>' +
                 '</div>' +
             '</div>';
@@ -104,7 +107,7 @@ $(document).ready(function() {
                     {% else %}
                         <p>There are no passive checks defined right now.</p>
                     {% endif %}
-                    <button class="btn btn-primary" id="add-check-btn" style="border-radius:5px;">Add Check</button>
+                    <button class="btn btn-primary" id="add-check-btn" style="border-radius:5px; margin-bottom:10px">Add Check</button>
 
                 </div>
             </div>
