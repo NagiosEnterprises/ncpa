@@ -1296,6 +1296,8 @@ def set_config():
 @requires_admin_auth
 def add_check():
 
+    logging.info("add_check() - request.args: %s", request.args)
+
     try:
         if environment.SYSTEM == "Windows":
             cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg.d', 'example.cfg')
