@@ -100,6 +100,7 @@ class WindowsLogsNode(listener.nodes.LazyNode):
         return logs, 'logs'
 
     def run_check(self, *args, **kwargs):
+        logging.info('args: %r, kwargs: %r' % (args, kwargs)) # TODO: remove this line
         try:
             logs = self.walk(*args, **kwargs)['logs'][0]
             log_names = sorted(logs.keys())
@@ -537,6 +538,7 @@ def normalize_xml_event(row, name):
     return safe_log
 
 def get_event_logs(server, name, filters):
+    logging.info('Getting logs for %s' % name)
     if name in stdLogs:
         handle = win32evtlog.OpenEventLog(server, name)
         flags = win32evtlog.EVENTLOG_BACKWARDS_READ | win32evtlog.EVENTLOG_SEQUENTIAL_READ
