@@ -1217,7 +1217,7 @@ def write_to_config_and_file(section_options_to_update):
 # Endpoint to make allowed changes to the config
 @listener.route('/update-config/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
-def set_config(section=None):
+def set_config():
     config = listener.config['iconfig']
     if config.get('listener', 'allow_config_edit') != '1':
         return jsonify({'message': 'Editing your configuration via the GUI is disabled.'})
@@ -1293,6 +1293,10 @@ def set_config(section=None):
 
     return jsonify({'type': 'success', 'message': 'Configuration updated. Note: You may need to restart NCPA for all changes to take effect.'})
 
+@listener.route('/add-check/', methods=['GET'], provide_automatic_options = False)
+@requires_admin_auth
+def add_check():
+    return jsonify({'message': 'This feature is not yet implemented.'})
 
 # ------------------------------
 # API Endpoint
