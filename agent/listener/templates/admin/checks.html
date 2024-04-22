@@ -61,7 +61,7 @@ $(document).ready(function() {
         $('form').submit(function(e) {
             e.preventDefault();
             let xhr = new XMLHttpRequest();
-            xhr.open('POST', '/update-config/', true);
+            xhr.open('POST', '/add-check/', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.send(new URLSearchParams(new FormData(this)).toString());
 
