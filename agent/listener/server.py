@@ -1292,7 +1292,7 @@ def set_config():
 
     return jsonify({'type': 'success', 'message': 'Configuration updated. Note: You may need to restart NCPA for all changes to take effect.'})
 
-@listener.route('/add-check/', methods=['GET'], provide_automatic_options = False)
+@listener.route('/add-check/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
 def add_check():
 
