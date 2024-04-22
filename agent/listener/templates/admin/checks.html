@@ -68,11 +68,11 @@ $(document).ready(function() {
             $('#flashMessageText').addClass('alert-warning').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>').show();
 
             xhr.onreadystatechange = function() {
-                flash.classList.remove('alert-warning');
                 console.log(xhr.readyState, xhr.status);    
                 let response = JSON.parse(xhr.responseText);
                 let flash = document.querySelector('#flashMessage');
                 let flashText = document.querySelector('#flashMessageText');
+                flash.classList.remove('alert-warning');
                 if (response.type == 'success') {
                     flash.classList.add('alert-' + response.type);
                     flash.classList.remove('alert-danger');
