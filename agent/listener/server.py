@@ -1295,10 +1295,6 @@ def set_config():
 @listener.route('/add-check/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
 def add_check():
-
-    logging.info("add_check() - request.args: %s", request.form.items())
-
-
     try:
         if environment.SYSTEM == "Windows":
             cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg.d', 'example.cfg')
@@ -1322,11 +1318,28 @@ def add_check():
             sed_cmds.append(f"sed -i 's/#\[passive checks\]/\[passive checks\]/' {cfg_file}")
 
         for (option, value) in request.form.items():
+            if option == 'host_name':
+                pattern = r"^\S+$"
+                continue
+            elif option == 'service_name':
+                pattern = r"^\S+$"
+                continue
+            elif option == 'check_interval':
+                pattern = r"^\d+$"
+                continue
+            elif option == 'check_value':
+                pattern = r"^\S+$"
+                continue
+            if not re.match(pattern, value.strip()):
+                return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
+            else:
+                sed_cmds.append(f"sed -i '/\[passive checks\]/a {option} = {value}' {cfg_file}")
+        
             logging.info("add_check() - option: %s, value: %s", option, value)
 
     except Exception as e:
         logging.exception(e)
-        return jsonify({'type': 'critical', 'message': 'This feature is not yet implemented.'})
+        return jsonify({'type': 'danger', 'message': 'This feature is not yet implemented.'})
 
     return jsonify({'type': 'success', 'message': 'This feature is not yet implemented.'})
 
