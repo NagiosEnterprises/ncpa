@@ -58,16 +58,17 @@ $(document).ready(function() {
         });
 
         // Submit new check
-        $('#submit-check').click(function() {
+        $('#submit-check').click(function(e) {
             e.preventDefault();
             let xhr = new XMLHttpRequest();
             xhr.open('POST', '/update-config/', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.send(new URLSearchParams(new FormData(this)).toString());
 
-            $('#flashMessageText').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>').show();
+            $('#flashMessageText').addClass('alert-warning').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>').show();
 
             xhr.onreadystatechange = function() {
+                flash.classList.remove('alert-warning');
                 console.log(xhr.readyState, xhr.status);    
                 let response = JSON.parse(xhr.responseText);
                 let flash = document.querySelector('#flashMessage');

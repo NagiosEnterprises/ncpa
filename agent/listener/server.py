@@ -1323,9 +1323,9 @@ def add_check():
 
     except Exception as e:
         logging.exception(e)
-        return jsonify({'message': 'This feature is not yet implemented.'})
+        return jsonify({'type': 'critical', 'message': 'This feature is not yet implemented.'})
 
-    return jsonify({'message': 'This feature is not yet implemented.'})
+    return jsonify({'type': 'success', 'message': 'This feature is not yet implemented.'})
 
 # ------------------------------
 # API Endpoint
