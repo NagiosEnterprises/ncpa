@@ -58,7 +58,7 @@ $(document).ready(function() {
         });
 
         // Submit new check
-        $('#submit-check').click(function(e) {
+        $('form').submit(function(e) {
             e.preventDefault();
             let xhr = new XMLHttpRequest();
             xhr.open('POST', '/update-config/', true);
