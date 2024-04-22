@@ -1222,7 +1222,7 @@ def set_config():
     if config.get('listener', 'allow_config_edit') != '1':
         return jsonify({'message': 'Editing your configuration via the GUI is disabled.'})
 
-    # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
+    # [section], option_name from form, option_name in ncpa.cfg, allowed_values (list or regex)
     allowed_options = [
         ("[general]", "check_logging",  "check_logging",        ["0", "1"]),
         ("[general]", "check_logging_time","check_logging_time",r"^\d+$"),
@@ -1248,7 +1248,6 @@ def set_config():
 
     section_options_to_update = {}
     
-    # set section from the form
     section = request.form.get('section', None)
     if section is None:
         return jsonify({'type': 'danger', 'message': 'No section specified.'})
@@ -1296,6 +1295,36 @@ def set_config():
 @listener.route('/add-check/', methods=['GET'], provide_automatic_options = False)
 @requires_admin_auth
 def add_check():
+
+    try:
+        if environment.SYSTEM == "Windows":
+            cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg.d', 'example.cfg')
+        else:
+            cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg.d', 'example.cfg')
+
+        with open(cfg_file, 'r') as configfile:
+            lines = configfile.readlines()
+            configfile.close()
+        
+        # detect if [passive checks] section exists and is uncommented
+        section_exists = False
+        for line in lines:
+            if line.startswith("[passive checks]"):
+                section_exists = True
+                break
+
+        sed_cmds = []
+        
+        if not section_exists:
+            sed_cmds.append(f"sed -i 's/#\[passive checks\]/\[passive checks\]/' {cfg_file}")
+
+        for (option, value) in request.args.items():
+            logging.info("add_check() - option: %s, value: %s", option, value)
+
+    except Exception as e:
+        logging.exception(e)
+        return jsonify({'message': 'This feature is not yet implemented.'})
+
     return jsonify({'message': 'This feature is not yet implemented.'})
 
 # ------------------------------

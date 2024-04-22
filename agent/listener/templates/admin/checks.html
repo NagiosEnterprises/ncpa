@@ -18,8 +18,8 @@ $(document).ready(function() {
 
     // Add Check Functionality
     $('#add-check-btn').click(function() {
-        var formHtml = '<div id="new-check-form" style="background-color:#DDD; border-radius:5px; padding: 15px;">' +
-                '<div class="form-group" style="display:flex; margin-left:15px; margin-bottom:0px;">' +
+        var formHtml = '<div id="new-check-form" style="background-color:#DDD; border-radius:5px; padding: 15px; margin-bottom:10px;">' +
+                '<div class="form-group" style="display:flex; margin-left:15px; margin-bottom:-10px;">' +
                     '<div class="form-group" style="width:12rem; margin-left:-15px; margin-right:-8px;">' +
                         '<label for="host_name">Hostname:<span style="color:red;">*</span></label>' +
                         '<input class="form-control" type="text" id="host_name" name="host_name" placeholder="%HOSTNAME%" />' +
@@ -32,10 +32,10 @@ $(document).ready(function() {
                         '<label for="check_interval">Interval(sec):</label>' +
                         '<input class="form-control" type="text" id="check_interval" name="check_interval" placeholder="300" />' +
                     '</div>' +
-                    // Make the check value a dropdown that is populated with the available checks from the API?
+                    // ?Make the check value a dropdown that is populated with the available checks from the API + an input for extra options?
                     '<div class="form-group" style="flex-grow:1; margin-left:10px; padding-right:30px;">' +
                         '<label for="check_value">Check Value:<span style="color:red;">*</span></label>' +
-                        '<input class="form-control" type="text" id="check_value" name="check_value" placeholder="Check Value" />' +
+                        '<input class="form-control" type="text" id="check_value" name="check_value" placeholder="cpu/percent --warning 80 --critical 90 --aggregate avg" />' +
                     '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
@@ -64,11 +64,11 @@ $(document).ready(function() {
             };
             $.ajax({
                 type: "POST",
-                url: "/add-check", // Your server-side script to handle POST
+                url: "/add-check/", // Your server-side script to handle POST
                 data: checkData,
                 success: function(response) {
                     if (response.success) {
-                        $('.form-horizontal').prepend('<pre>' + checkData.name + ' = ' + checkData.value + '</pre>');
+                        $('.form-horizontal').append('<pre>' + $('#host_name').val() + '|' + $('#service_name').val() + ( $('#check_interval').val() ? '|' + $('#check_interval').val() : '' ) + ' = ' + $('#check_value').val() + '</pre>');
                         $('#new-check-form').remove();
                     } else {
                         alert("Error adding check");
@@ -107,9 +107,9 @@ $(document).ready(function() {
                     {% else %}
                         <p>There are no passive checks defined right now.</p>
                     {% endif %}
-                    <button class="btn btn-primary" id="add-check-btn" style="border-radius:5px; margin-bottom:10px">Add Check</button>
-
+                    
                 </div>
+				<button class="btn btn-primary" id="add-check-btn" style="border-radius:5px; margin-bottom:10px">Add Check</button>
             </div>
 
         </div>
