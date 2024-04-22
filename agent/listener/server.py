@@ -1296,7 +1296,8 @@ def set_config():
 @requires_admin_auth
 def add_check():
 
-    logging.info("add_check() - request.args: %s", request.args)
+    logging.info("add_check() - request.args: %s", request.form.items())
+
 
     try:
         if environment.SYSTEM == "Windows":
@@ -1320,7 +1321,7 @@ def add_check():
         if not section_exists:
             sed_cmds.append(f"sed -i 's/#\[passive checks\]/\[passive checks\]/' {cfg_file}")
 
-        for (option, value) in request.args.items():
+        for (option, value) in request.form.items():
             logging.info("add_check() - option: %s, value: %s", option, value)
 
     except Exception as e:
