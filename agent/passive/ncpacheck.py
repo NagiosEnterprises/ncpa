@@ -4,6 +4,7 @@ import time
 import hashlib
 import listener.server
 import listener.database as database
+import shlex
 from ncpa import passive_logger as logging
 
 
@@ -206,7 +207,7 @@ class NCPACheck(object):
         """
         logging.debug("Parsing command line style instruction: %s",
                       instruction)
-        stripped_instruction = instruction.strip().split(' ')
+        stripped_instruction = shlex.split(instruction.strip())
 
         api_url = stripped_instruction[0]
         api_args = {}
