@@ -366,8 +366,7 @@ def get_disk_node(config):
                     except OSError as ex:
                         logging.exception(ex)
                     except Exception as e:
-                        logging.exception("Error in make_mountpoint_nodes")
-                        logging.exception(e)
+                        logging.exception("Unexpected error in make_mountpoint_nodes: %s", e)
                 else:
                     tmp = make_mount_other_nodes(x)
                     disk_parts.append(tmp)
