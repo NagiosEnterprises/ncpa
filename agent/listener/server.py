@@ -1290,7 +1290,7 @@ def set_config():
     #         logging.exception(e)
     #         return jsonify({'type': 'danger', 'message': 'Failed to restart the service.'})
 
-    return jsonify({'type': 'success', 'message': 'Configuration updated. Note: You may need to restart NCPA for all changes to take effect.'})
+    return jsonify({'type': 'success', 'message': 'Configuration updated. <b>Note</b>: You may need to <b>restart NCPA</b> for all changes to take effect.'})
 
 @listener.route('/add-check/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
