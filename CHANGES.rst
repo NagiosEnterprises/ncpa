@@ -13,6 +13,7 @@ Changelog
 **Bug Fixes**
 
 - Fixed an issue where NCPA would crash when psutil couldn't find certain file systems. (Blake Bahner)
+- Fixed an issue where NCPA would crash if it couldn't process disk information. (Blake Bahner)
 
 3.0.2 - 03/20/2024
 ==================
