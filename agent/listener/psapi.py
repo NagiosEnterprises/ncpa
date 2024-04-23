@@ -238,21 +238,21 @@ def get_system_node():
     )
 
 
-def get_cpu_node():
+def get_cpu_node(cpu_interval=0.5):
     cpu_count = RunnableNode(
-        "count", method=lambda: ([len(ps.cpu_percent(percpu=True))], "cores")
+        "count", method=lambda:     ([len(ps.cpu_percent(percpu=True))], "cores")
     )
     cpu_percent = LazyNode(
-        "percent", method=lambda: (ps.cpu_percent(interval=0.5, percpu=True), "%")
+        "percent", method=lambda:   (ps.cpu_percent(interval=cpu_interval, percpu=True), "%")
     )
     cpu_user = RunnableNode(
-        "user", method=lambda: ([x.user for x in ps.cpu_times(percpu=True)], "ms")
+        "user", method=lambda:      ([x.user for x in ps.cpu_times(percpu=True)], "ms")
     )
     cpu_system = RunnableNode(
-        "system", method=lambda: ([x.system for x in ps.cpu_times(percpu=True)], "ms")
+        "system", method=lambda:    ([x.system for x in ps.cpu_times(percpu=True)], "ms")
     )
     cpu_idle = RunnableNode(
-        "idle", method=lambda: ([x.idle for x in ps.cpu_times(percpu=True)], "ms")
+        "idle", method=lambda:      ([x.idle for x in ps.cpu_times(percpu=True)], "ms")
     )
     return ParentNode(
         "cpu", children=[cpu_count, cpu_idle, cpu_percent, cpu_system, cpu_user]
@@ -365,6 +365,8 @@ def get_disk_node(config):
                         disk_mountpoints.append(tmp)
                     except OSError as ex:
                         logging.exception(ex)
+                    except Exception as e:
+                        logging.exception("Unexpected error in make_mountpoint_nodes: %s", e)
                 else:
                     tmp = make_mount_other_nodes(x)
                     disk_parts.append(tmp)
