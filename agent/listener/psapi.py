@@ -545,7 +545,7 @@ def getter(accessor, config, full_path, args, cache=False):
     # node. This normally only happens on new API calls. When we are using
     # websockets we use the cached version while it makes requests.
     if not cache:
-        pathlist = full_path.split("/")
+        pathlist = accessor.split("/")
         refresh(config, pathlist)
 
     root.reset_valid_nodes()
