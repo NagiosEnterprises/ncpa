@@ -24,6 +24,10 @@ class ParentNode(object):
 
         for child in children:
             self.add_child(child)
+            
+        logging.debug("Created parent node %s with children %s" % (self.name, self.children))
+        for child in self.children:
+            logging.debug("Child %s" % child)
 
     def reset_valid_nodes(self):
         global valid_nodes
