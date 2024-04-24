@@ -495,8 +495,32 @@ def refresh(config, subnode=None):
         root = get_root_node(config)
         return True
     else:
-        root.update_node(subnode, config)
-    return True
+        try:
+            match subnode[0]:
+                case "cpu":
+                    root.add_child(get_cpu_node())
+                case "memory":
+                    root.add_child(get_memory_node())
+                case "disk":
+                    root.add_child(get_disk_node(config))
+                case "interface":
+                    root.add_child(get_interface_node())
+                case "plugins":
+                    root.add_child(get_plugins_node())
+                case "user":
+                    root.add_child(get_user_node())
+                case "system":
+                    root.add_child(get_system_node())
+                case "service":
+                    root.add_child(services.get_node())
+                case "process":
+                    root.add_child(processes.get_node())
+                case _:
+                    logging.warning("Unknown subnode %s, skipping.", subnode[0])
+            return True
+        except Exception as e:
+            logging.exception(e)
+            return False
 
 
 def getter(accessor, config, full_path, args, cache=False):
@@ -518,9 +542,8 @@ def getter(accessor, config, full_path, args, cache=False):
     # node. This normally only happens on new API calls. When we are using
     # websockets we use the cached version while it makes requests.
     if not cache:
-        refresh(config)
-        # TODO: replace this refresh with a subrefresh for the target node
-
+        pathlist = full_path.split("/")
+        refresh(config, pathlist)
 
     root.reset_valid_nodes()
     return root.accessor(path, config, full_path, args)
