@@ -489,14 +489,22 @@ def get_root_node(config):
     return ParentNode("root", children=children)
 
 
-def refresh(config):
+def refresh(config, subnode=None):
     global root
-    root = get_root_node(config)
+    if not subnode:
+        root = get_root_node(config)
+        return True
+    else:
+        root.update_node(subnode, config)
     return True
 
 
 def getter(accessor, config, full_path, args, cache=False):
     global root
+
+    logging.info("API request for %s", accessor)
+    logging.info("Full path: %s", full_path)
+    logging.info("Arguments: %s", args)
 
     # Sanity check. If accessor is None, we can do nothing meaningfully, and we need to stop.
     if accessor is None:
@@ -511,6 +519,8 @@ def getter(accessor, config, full_path, args, cache=False):
     # websockets we use the cached version while it makes requests.
     if not cache:
         refresh(config)
+        # TODO: replace this refresh with a subrefresh for the target node
+
 
     root.reset_valid_nodes()
     return root.accessor(path, config, full_path, args)
