@@ -79,10 +79,13 @@ def make_info_dict():
     uptime = str(now - __STARTED__)
     uptime = uptime.split('.', 1)[0]
 
+    logging.info("Uptime: %s", uptime)
     # Get check status
     db = database.DB()
     total_checks = db.get_checks_count()
+    logging.info("Total checks: %s", total_checks)
     check_logging_time = int(get_config_value('general', 'check_logging_time', 30))
+    logging.info("Check logging time: %s", check_logging_time)
 
     uname = platform.uname()
     proc_type = uname[5]
