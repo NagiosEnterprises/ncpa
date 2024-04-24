@@ -492,10 +492,12 @@ def get_root_node(config):
 def refresh(config, subnode=None):
     global root
     if not subnode:
+        logging.info("Refreshing root node")
         root = get_root_node(config)
         return True
     else:
         try:
+            logging.info("Refreshing subnode %s", subnode[0])
             match subnode[0]:
                 case "cpu":
                     root.add_child(get_cpu_node())
@@ -521,6 +523,7 @@ def refresh(config, subnode=None):
         except Exception as e:
             logging.exception(e)
             return False
+        
 
 
 def getter(accessor, config, full_path, args, cache=False):
