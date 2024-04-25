@@ -55,7 +55,7 @@ $(document).ready(function() {
 
 
     });
-    
+
     // Cancel button functionality
     $('#cancel-check').click(function() {
         $('#new-check-form').remove();
@@ -84,7 +84,7 @@ $(document).ready(function() {
                 flash.style.display = 'block';
                 flashText.innerHTML = '<i class="fa fa-check"></i>  ';
                 flashText.innerHTML += response.message;
-                $('.form-horizontal').append('<pre>' + $('#host_name').val() + '|' + $('#service_name').val() + ( $('#check_interval').val() ? '|' + $('#check_interval').val() : '' ) + ' = ' + $('#check_value').val() + '</pre>');
+                $('.form-horizontal').append('<pre style="border-radius:5px;">' + response.check + '</pre>');
                 $('#new-check-form').remove();
             } else {
                 $('#flashMessageText').html('<i class="fa fa-times"></i> ' + response.message);
