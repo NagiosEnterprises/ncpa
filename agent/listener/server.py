@@ -1119,7 +1119,6 @@ def validate_config_input(section, option, value, valid_options):
     for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
         if "["+section+"]" == target_section:
             if option == tbl_option:
-                logging.info("validate_config_input() - section: %s, option: %s, value: %s, valid_values: %s", section, option, value, valid_values)
                 if isinstance(valid_values, list):
                     if value.strip() not in valid_values:
                         return False
@@ -1300,10 +1299,7 @@ def set_config():
 def add_check():
     existing_checks = get_config_items('passive checks')
     check_names = [x[0] for x in existing_checks]
-    logging.info("add_check() - check_names: %s", check_names)
     check_names = [x.split('|')[1] for x in check_names]
-    logging.info("add_check() - check_names: %s", check_names)
-    
 
     try:
         if environment.SYSTEM == "Windows":
@@ -1334,6 +1330,8 @@ def add_check():
             if option == 'host_name':
                 pattern = r"^[^\r\n]+$"
             elif option == 'service_name':
+                if value in check_names:
+                    return jsonify({'type': 'danger', 'message': 'Check already exists.'})
                 pattern = r"^[^\r\n]+$"
             elif option == 'check_interval':
                 pattern = r"^\d?$"
