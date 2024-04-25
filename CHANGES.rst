@@ -5,14 +5,14 @@ Changelog
 ==================
 **Updates**
 
-- Added migration of NCPA 2 configuration files to NCPA 3. (Blake Bahner)
+- Added migration of NCPA 2 configuration files and plugins to NCPA 3 on a fresh upgrade. (Blake Bahner)
 - Added the ability to configure certain settings in the NCPA interface. (Blake Bahner)
-- Made the NCPA 3 plugin extensions case-insensitive. (Blake Bahner)
+- Altered the NCPA 3 plugin extensions to be case-insensitive. (Blake Bahner)
 - Removed misleading information from the NCPA 3 configuration file. (Blake Bahner)
-- Updated passive checks to allow escaped spaces. (Blake Bahner)
 
 **Bug Fixes**
 
+- Fixed an issue where passive checks would malfunction when handling arguments with whitespaces that were escaped or encapsulated in quotes. (Blake Bahner)
 - Fixed an issue where NCPA would crash when psutil couldn't find certain file systems. (Blake Bahner)
 - Fixed an issue where NCPA would crash if it couldn't process disk information. (Blake Bahner)
 
