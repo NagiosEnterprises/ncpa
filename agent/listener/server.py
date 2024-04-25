@@ -1341,10 +1341,13 @@ def add_check():
                 value = sanitize_for_configparser(value)
                 values_dict[option] = value
 
+        new_check = None
         if not values_dict['check_interval']:
-            sed_cmds.append(f"sed -i '/\[passive checks\]/a {values_dict['host_name']}|{values_dict['service_name']} = {values_dict['check_value']}' {cfg_file}")
+            new_check = f"{values_dict['host_name']}|{values_dict['service_name']} = {values_dict['check_value']}"
+            sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
         else:
-            sed_cmds.append(f"sed -i '/\[passive checks\]/a {values_dict['host_name']}|{values_dict['service_name']}|{values_dict['check_interval']} = {values_dict['check_value']}' {cfg_file}")
+            new_check = f"{values_dict['host_name']}|{values_dict['service_name']}|{values_dict['check_interval']} = {values_dict['check_value']}"
+            sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
 
         for sed_cmd in sed_cmds:                
                 if environment.SYSTEM == "Windows":
@@ -1379,7 +1382,7 @@ def add_check():
         logging.exception(e)
         return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
 
-    return jsonify({'type': 'success', 'message': 'Check added. <b>Note</b>: You may need to <b>restart NCPA</b> for all changes to take effect.'})
+    return jsonify({'type': 'success', 'message': 'Check added. <b>Note</b>: You may need to <b>restart NCPA</b> for all changes to take effect.', 'check': new_check})
 
 # ------------------------------
 # API Endpoint
