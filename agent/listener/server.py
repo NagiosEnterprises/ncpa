@@ -1326,16 +1326,12 @@ def add_check():
         for (option, value) in request.form.items():
             if option == 'host_name':
                 pattern = r"^\S+$"
-                continue
             elif option == 'service_name':
                 pattern = r"^\S+$"
-                continue
             elif option == 'check_interval':
                 pattern = r"^\d+$"
-                continue
             elif option == 'check_value':
                 pattern = r"^\S+$"
-                continue
             logging.info("add_check() - option: %s, value: %s", option, value)
             if not re.match(pattern, value.strip()):
                 logging.info("add_check() - Invalid input: %s", option)
