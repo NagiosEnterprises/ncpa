@@ -1339,10 +1339,6 @@ def add_check():
             elif option == 'check_value':
                 pattern = r"^[^\r\n]+$"
 
-            logging.info("add_check() - option: %s, value: %s", option, value)
-            logging.info("add_check() - pattern: %s", pattern)
-            logging.info("add_check() - re.match(pattern, value): %s", re.match(pattern, value))
-
             if not re.match(pattern, value):
                 return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
             else:
@@ -1389,7 +1385,7 @@ def add_check():
         logging.exception(e)
         return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
 
-    return jsonify({'type': 'success', 'message': 'Check added. <b>Note</b>: You may need to <b>restart NCPA</b> for all changes to take effect.', 'check': new_check})
+    return jsonify({'type': 'success', 'message': 'Check added. <b>Note</b>: You may need to <b>restart NCPA</b> for all changes to take effect.', 'check': str(new_check)})
 
 # ------------------------------
 # API Endpoint
