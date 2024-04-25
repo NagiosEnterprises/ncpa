@@ -1301,6 +1301,9 @@ def add_check():
     check_names = [x[0] for x in existing_checks]
     check_names = [x.split('|')[1] for x in check_names]
 
+    cfg_file = None
+    sed_cmds = []
+
     try:
         if environment.SYSTEM == "Windows":
             cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg.d', 'example.cfg')
@@ -1311,15 +1314,13 @@ def add_check():
             lines = configfile.readlines()
             configfile.close()
         
-        # detect if [passive checks] section exists and is uncommented
+        # detect if [passive checks] section exists and is uncommented so we know if we need to uncomment it
         section_exists = False
         for line in lines:
             if line.startswith("[passive checks]"):
                 section_exists = True
                 break
 
-        sed_cmds = []
-        
         if not section_exists:
             sed_cmds.append(f"sed -i 's/#\[passive checks\]/\[passive checks\]/' {cfg_file}")
 
