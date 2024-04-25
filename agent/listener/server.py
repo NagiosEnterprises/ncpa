@@ -1295,20 +1295,15 @@ def set_config():
 @listener.route('/add-check/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
 def add_check():
-    logging.info("add_check() - request.form: %s", request.form)
     try:
         if environment.SYSTEM == "Windows":
             cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg.d', 'example.cfg')
         else:
             cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg.d', 'example.cfg')
 
-
-        logging.info("add_check() - cfg_file: %s", cfg_file)
         with open(cfg_file, 'r') as configfile:
             lines = configfile.readlines()
             configfile.close()
-
-        logging.info("add_check() - lines: %s", lines)
         
         # detect if [passive checks] section exists and is uncommented
         section_exists = False
@@ -1320,8 +1315,9 @@ def add_check():
         sed_cmds = []
         
         if not section_exists:
-            logging.info("add_check() - [passive checks] section does not exist, adding it")
             sed_cmds.append(f"sed -i 's/#\[passive checks\]/\[passive checks\]/' {cfg_file}")
+
+        values_dict = {}
 
         for (option, value) in request.form.items():
             if option == 'host_name':
@@ -1332,45 +1328,43 @@ def add_check():
                 pattern = r"^\d+$"
             elif option == 'check_value':
                 pattern = r"^\S+$"
-            logging.info("add_check() - option: %s, value: %s", option, value)
-            if not re.match(pattern, value.strip()):
-                logging.info("add_check() - Invalid input: %s", option)
+            if not re.match(pattern, value.strip()) and not (option == 'check_interval' and value == ''):
                 return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
             else:
-                logging.info("add_check() - option: %s, value: %s", option, value)
-                sed_cmds.append(f"sed -i '/\[passive checks\]/a {option} = {value}' {cfg_file}")
-        
-            logging.info("add_check() - option: %s, value: %s", option, value)
+                values_dict[option] = value
 
-            for sed_cmd in sed_cmds:
-                    logging.info("Running sed command: %s", sed_cmd)
-                    
-                    if environment.SYSTEM == "Windows":
-                        match = re.match(r's/(.*)/(.*)/', sed_cmd)
-                        if not match:
-                            continue
-                        pattern, replacement = match.groups()
-                        # Convert sed syntax to PowerShell equivalent
-                        powershell_cmd = f"Get-Content {cfg_file} | Foreach-Object {{ $_ -replace '{pattern}', '{replacement}' }} | Set-Content {cfg_file}"
-                        command = ["powershell", "-Command", powershell_cmd]
-                        running_check = subprocess.run(
-                            command, 
-                            shell=True, 
-                            stdout=subprocess.PIPE, 
-                            stderr=subprocess.STDOUT
-                        )
-                    else:
-                        running_check = subprocess.run(
-                            sed_cmd, 
-                            shell=True, 
-                            stdout=subprocess.PIPE, 
-                            stderr=subprocess.STDOUT,
-                            preexec_fn=os.setsid
-                        )
-    
-                    if running_check.returncode != 0:
-                        logging.error("add_check() - sed_cmd failed: %s", running_check.stdout)
-                        return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
+        if not values_dict['check_interval']:
+            sed_cmds.append(f"sed -i '/\[passive checks\]/a {values_dict['host_name']}|{values_dict['service_name']} = {values_dict['check_value']}' {cfg_file}")
+        else:
+            sed_cmds.append(f"sed -i '/\[passive checks\]/a {values_dict['host_name']}|{values_dict['service_name']}|{values_dict['check_interval']} = {values_dict['check_value']}' {cfg_file}")
+
+        for sed_cmd in sed_cmds:                
+                if environment.SYSTEM == "Windows":
+                    match = re.match(r's/(.*)/(.*)/', sed_cmd)
+                    if not match:
+                        continue
+                    pattern, replacement = match.groups()
+                    # Convert sed syntax to PowerShell equivalent
+                    powershell_cmd = f"Get-Content {cfg_file} | Foreach-Object {{ $_ -replace '{pattern}', '{replacement}' }} | Set-Content {cfg_file}"
+                    command = ["powershell", "-Command", powershell_cmd]
+                    running_check = subprocess.run(
+                        command, 
+                        shell=True, 
+                        stdout=subprocess.PIPE, 
+                        stderr=subprocess.STDOUT
+                    )
+                else:
+                    running_check = subprocess.run(
+                        sed_cmd, 
+                        shell=True, 
+                        stdout=subprocess.PIPE, 
+                        stderr=subprocess.STDOUT,
+                        preexec_fn=os.setsid
+                    )
+
+                if running_check.returncode != 0:
+                    logging.error("add_check() - sed_cmd failed: %s", running_check.stdout)
+                    return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
 
     except Exception as e:
         logging.exception(e)
