@@ -1369,9 +1369,9 @@ def add_check():
 
     except Exception as e:
         logging.exception(e)
-        return jsonify({'type': 'danger', 'message': 'This feature is not yet implemented.'})
+        return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
 
-    return jsonify({'type': 'success', 'message': 'This feature is not yet implemented.'})
+    return jsonify({'type': 'success', 'message': 'Check added. <b>Note</b>: You may need to <b>restart NCPA</b> for all changes to take effect.'})
 
 # ------------------------------
 # API Endpoint
