@@ -1297,6 +1297,13 @@ def set_config():
 @listener.route('/add-check/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
 def add_check():
+    existing_checks = get_config_items('passive checks')
+    check_names = [x[0] for x in existing_checks]
+    logging.info("add_check() - check_names: %s", check_names)
+    check_names = [x.split('|')[1] for x in check_names]
+    logging.info("add_check() - check_names: %s", check_names)
+    
+
     try:
         if environment.SYSTEM == "Windows":
             cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg.d', 'example.cfg')
