@@ -1295,15 +1295,20 @@ def set_config():
 @listener.route('/add-check/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
 def add_check():
+    logging.info("add_check() - request.form: %s", request.form)
     try:
         if environment.SYSTEM == "Windows":
             cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg.d', 'example.cfg')
         else:
             cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg.d', 'example.cfg')
 
+
+        logging.info("add_check() - cfg_file: %s", cfg_file)
         with open(cfg_file, 'r') as configfile:
             lines = configfile.readlines()
             configfile.close()
+
+        logging.info("add_check() - lines: %s", lines)
         
         # detect if [passive checks] section exists and is uncommented
         section_exists = False
@@ -1315,6 +1320,7 @@ def add_check():
         sed_cmds = []
         
         if not section_exists:
+            logging.info("add_check() - [passive checks] section does not exist, adding it")
             sed_cmds.append(f"sed -i 's/#\[passive checks\]/\[passive checks\]/' {cfg_file}")
 
         for (option, value) in request.form.items():
@@ -1330,9 +1336,12 @@ def add_check():
             elif option == 'check_value':
                 pattern = r"^\S+$"
                 continue
+            logging.info("add_check() - option: %s, value: %s", option, value)
             if not re.match(pattern, value.strip()):
+                logging.info("add_check() - Invalid input: %s", option)
                 return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
             else:
+                logging.info("add_check() - option: %s, value: %s", option, value)
                 sed_cmds.append(f"sed -i '/\[passive checks\]/a {option} = {value}' {cfg_file}")
         
             logging.info("add_check() - option: %s, value: %s", option, value)
