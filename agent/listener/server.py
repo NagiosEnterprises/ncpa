@@ -1106,7 +1106,7 @@ def sanitize_for_configparser(input_value):
     # # Remove all control characters, including newlines
     # sanitized = re.sub(r'[\x00-\x1f\x7f-\x9f\n\r]', '', sanitized)
 
-    sanitized = sanitized.encode().decode('unicode_escape')
+    sanitized = input_value.encode().decode('unicode_escape')
     
     return sanitized
 
