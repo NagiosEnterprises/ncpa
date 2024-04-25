@@ -1331,6 +1331,7 @@ def add_check():
             if not re.match(pattern, value.strip()) and not (option == 'check_interval' and value == ''):
                 return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
             else:
+                value = value.replace(' ', '\ ')
                 values_dict[option] = value
 
         if not values_dict['check_interval']:
