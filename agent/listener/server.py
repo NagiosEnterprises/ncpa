@@ -1338,6 +1338,7 @@ def add_check():
             logging.info("add_check() - option: %s, value: %s", option, value)
 
             for sed_cmd in sed_cmds:
+                    logging.info("Running sed command: %s", sed_cmd)
                     
                     if environment.SYSTEM == "Windows":
                         match = re.match(r's/(.*)/(.*)/', sed_cmd)
