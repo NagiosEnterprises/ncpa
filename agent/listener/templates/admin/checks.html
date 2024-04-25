@@ -78,7 +78,7 @@ $(document).ready(function() {
                 let flash = document.querySelector('#flashMessage');
                 let flashText = document.querySelector('#flashMessageText');
                 flash.classList.remove('alert-warning');
-                if (response.type == 'success' && response.message == 'Check added successfully.') {
+                if (response.type == 'success') {
                     flash.classList.add('alert-' + response.type);
                     flash.classList.remove('alert-danger');
                     flash.style.display = 'block';
