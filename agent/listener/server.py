@@ -1337,6 +1337,35 @@ def add_check():
         
             logging.info("add_check() - option: %s, value: %s", option, value)
 
+            for sed_cmd in sed_cmds:
+                    
+                    if environment.SYSTEM == "Windows":
+                        match = re.match(r's/(.*)/(.*)/', sed_cmd)
+                        if not match:
+                            continue
+                        pattern, replacement = match.groups()
+                        # Convert sed syntax to PowerShell equivalent
+                        powershell_cmd = f"Get-Content {cfg_file} | Foreach-Object {{ $_ -replace '{pattern}', '{replacement}' }} | Set-Content {cfg_file}"
+                        command = ["powershell", "-Command", powershell_cmd]
+                        running_check = subprocess.run(
+                            command, 
+                            shell=True, 
+                            stdout=subprocess.PIPE, 
+                            stderr=subprocess.STDOUT
+                        )
+                    else:
+                        running_check = subprocess.run(
+                            sed_cmd, 
+                            shell=True, 
+                            stdout=subprocess.PIPE, 
+                            stderr=subprocess.STDOUT,
+                            preexec_fn=os.setsid
+                        )
+    
+                    if running_check.returncode != 0:
+                        logging.error("add_check() - sed_cmd failed: %s", running_check.stdout)
+                        return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
+
     except Exception as e:
         logging.exception(e)
         return jsonify({'type': 'danger', 'message': 'This feature is not yet implemented.'})
