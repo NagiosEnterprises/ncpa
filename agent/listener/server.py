@@ -1325,14 +1325,11 @@ def add_check():
             elif option == 'service_name':
                 pattern = r"^[^\r\n]+$"
             elif option == 'check_interval':
-                pattern = r"^\d+$"
+                pattern = r"^\d?$"
             elif option == 'check_value':
                 pattern = r"^[^\r\n]+$"
             if not re.match(pattern, value.strip()):
-                if option == 'check_interval' and not value.strip():
-                    values_dict[option] = None
-                else:
-                    return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
+                return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
             else:
                 value = value.replace(' ', '\ ')
                 values_dict[option] = value
