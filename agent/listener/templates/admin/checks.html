@@ -71,7 +71,9 @@ $(document).ready(function() {
             $('#flashMessageText').addClass('alert-warning').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>').show();
 
             xhr.onreadystatechange = function() {
-                console.log(xhr.readyState, xhr.status);    
+                if (xhr.readyState != 4) {
+                    return;
+                }
                 let response = JSON.parse(xhr.responseText);
                 let flash = document.querySelector('#flashMessage');
                 let flashText = document.querySelector('#flashMessageText');
@@ -85,6 +87,7 @@ $(document).ready(function() {
                     if (response.check) {
                         $('.form-horizontal').append('<pre style="border-radius:5px;">' + response.check + '</pre>');
                         $('#new-check-form').remove();
+                        $('#add-check-btn').show();
                     } else {
                         $('#flashMessageText').html('<i class="fa fa-times"></i> ' + response.message);
                         $('#flashMessage').addClass('alert-danger').show();
@@ -98,8 +101,6 @@ $(document).ready(function() {
                     $('#flashMessageText').html('');
                 }, 10000);
             };
-
-            $('#add-check-btn').show();
         });
     });
 });
