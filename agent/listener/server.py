@@ -1321,13 +1321,13 @@ def add_check():
 
         for (option, value) in request.form.items():
             if option == 'host_name':
-                pattern = r"^\S+$"
+                pattern = r"^[^\r\n]+$"
             elif option == 'service_name':
-                pattern = r"^\S+$"
+                pattern = r"^[^\r\n]+$"
             elif option == 'check_interval':
                 pattern = r"^\d+$"
             elif option == 'check_value':
-                pattern = r"^\S+$"
+                pattern = r"^[^\r\n]+$"
             if not re.match(pattern, value.strip()) and not (option == 'check_interval' and value == ''):
                 return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
             else:
