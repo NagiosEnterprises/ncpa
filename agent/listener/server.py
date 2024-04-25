@@ -1328,6 +1328,11 @@ def add_check():
                 pattern = r"^\d?$"
             elif option == 'check_value':
                 pattern = r"^[^\r\n]+$"
+
+            logging.info("add_check() - option: %s, value: %s", option, value)
+            logging.info("add_check() - pattern: %s", pattern)
+            logging.info("add_check() - re.match(pattern, value): %s", re.match(pattern, value))
+
             if not re.match(pattern, value):
                 return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
             else:
