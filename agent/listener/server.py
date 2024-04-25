@@ -1328,10 +1328,10 @@ def add_check():
                 pattern = r"^\d?$"
             elif option == 'check_value':
                 pattern = r"^[^\r\n]+$"
-            if not re.match(pattern, value.strip()):
+            if not re.match(pattern, value):
                 return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
             else:
-                value = value.replace(' ', '\ ')
+                value = sanitize_for_configparser(value)
                 values_dict[option] = value
 
         if not values_dict['check_interval']:
@@ -1348,6 +1348,7 @@ def add_check():
                     # Convert sed syntax to PowerShell equivalent
                     powershell_cmd = f"Get-Content {cfg_file} | Foreach-Object {{ $_ -replace '{pattern}', '{replacement}' }} | Set-Content {cfg_file}"
                     command = ["powershell", "-Command", powershell_cmd]
+                    logging.debug("add_check() - Powershell command: %s", command)
                     running_check = subprocess.run(
                         command, 
                         shell=True, 
