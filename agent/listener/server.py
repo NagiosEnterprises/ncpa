@@ -1322,6 +1322,7 @@ def add_check():
         values_dict = {}
 
         for (option, value) in request.form.items():
+            value = sanitize_for_configparser(value)
             if option == 'host_name':
                 pattern = r"^[^\r\n]+$"
             elif option == 'service_name':
@@ -1338,7 +1339,6 @@ def add_check():
             if not re.match(pattern, value):
                 return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
             else:
-                value = sanitize_for_configparser(value)
                 values_dict[option] = value
 
         new_check = None
