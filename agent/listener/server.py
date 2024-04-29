@@ -1331,7 +1331,7 @@ def add_check():
                 pattern = r"^[^\r\n]+$"
             elif option == 'service_name':
                 if value in check_names:
-                    return jsonify({'type': 'danger', 'message': 'Check already exists.'})
+                    return jsonify({'type': 'danger', 'message': 'A check with that name already exists.'})
                 pattern = r"^[^\r\n]+$"
             elif option == 'check_interval':
                 pattern = r"^\d*$"
