@@ -1260,6 +1260,8 @@ def set_config():
 
 
     # TODO: finish option of restarting of the service (disabled by default)
+    # TODO: check if the handler (NRDP/KafkaProducer) is configured and only restart if it is or else NCPA will crash
+    # TODO: Let the User know that they need to configure the handler before restarting
     # allow_restart = config.get('general', 'allow_remote_restart').lower()
     # if allow_restart in {'none', '0'}:
     #     logging.info("restart not allowed")
