@@ -1361,8 +1361,7 @@ def add_check():
         # logging.info("add_check() - new_check: %s", new_check)
 
         new_check_parts = new_check.split('=')
-        checks.append((new_check_parts[0].strip(), new_check_parts[1].strip()))
-        config.set('passive checks', checks)
+        config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
         logging.info("updating config...")
         logging.info("add_check() - config.items('passive checks'): %s", config.items('passive checks'))
         # config.set('passive checks', "")
