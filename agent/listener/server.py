@@ -1297,7 +1297,7 @@ def set_config():
 @requires_admin_auth
 def add_check():
     config = listener.config['iconfig']
-    existing_checks = config.get('passive checks')
+    existing_checks = [x for x in get_config_items('passive checks') if x[0] not in listener.config['iconfig'].defaults()]
     logging.info("add_check() - existing_checks: %s", existing_checks)
     # existing_checks = get_config_items('passive checks')
     # check_names = [x[0] for x in existing_checks]
