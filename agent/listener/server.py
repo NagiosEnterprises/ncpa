@@ -1335,7 +1335,7 @@ def add_check():
                     return jsonify({'type': 'danger', 'message': 'Check already exists.'})
                 pattern = r"^[^\r\n]+$"
             elif option == 'check_interval':
-                pattern = r"^\d?$"
+                pattern = r"^\d*$"
             elif option == 'check_value':
                 pattern = r"^[^\r\n]+$"
 
