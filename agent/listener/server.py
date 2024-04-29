@@ -1351,20 +1351,11 @@ def add_check():
         else:
             new_check = f"{values_dict['host_name']}|{values_dict['service_name']}|{values_dict['check_interval']} = {values_dict['check_value']}"
             sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
-        # add check to configuration
-        config = listener.config['iconfig']
-        checks = config.items('passive checks')
-        # checks = [x for x in config.items('passive checks') if x[0] not in config.defaults()]
-        # logging.info("add_check() - config.items('passive checks'): %s", config.items('passive checks'))
-        # logging.info("add_check() - config.defaults(): %s", config.defaults())
-        logging.info("add_check() - checks: %s", checks)
-        # logging.info("add_check() - new_check: %s", new_check)
-
+        # add check to running configuration so it will be displayed in the GUI before restarting NCPA
+        # this does NOT make NCPA start monitoring the check until it is restarted
         new_check_parts = new_check.split('=')
+        config = listener.config['iconfig']
         config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
-        logging.info("updating config...")
-        logging.info("add_check() - config.items('passive checks'): %s", config.items('passive checks'))
-        # config.set('passive checks', "")
 
         for sed_cmd in sed_cmds:                
                 if environment.SYSTEM == "Windows":
