@@ -9,6 +9,7 @@ Changelog
 - Made the NCPA 3 plugin extensions case-insensitive. (Blake Bahner)
 - Removed misleading information from the NCPA 3 configuration file. (Blake Bahner)
 - Updated passive checks to allow escaped spaces. (Blake Bahner)
+- Improved the NCPA token filter to cause significantly fewer crashes when something else goes wrong. (Blake Bahner)
 
 **Bug Fixes**
 
