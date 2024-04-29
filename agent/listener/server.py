@@ -1353,11 +1353,18 @@ def add_check():
             sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
         # add check to configuration
         config = listener.config['iconfig']
-        checks = [x for x in config.items('passive checks') if x[0] not in config.defaults()]
-        logging.info("add_check() - config.items('passive checks'): %s", config.items('passive checks'))
-        logging.info("add_check() - config.defaults(): %s", config.defaults())
+        checks = config.items('passive checks')
+        # checks = [x for x in config.items('passive checks') if x[0] not in config.defaults()]
+        # logging.info("add_check() - config.items('passive checks'): %s", config.items('passive checks'))
+        # logging.info("add_check() - config.defaults(): %s", config.defaults())
         logging.info("add_check() - checks: %s", checks)
-        logging.info("add_check() - new_check: %s", new_check)
+        # logging.info("add_check() - new_check: %s", new_check)
+
+        new_check_parts = new_check.split('=')
+        checks.append((new_check_parts[0].strip(), new_check_parts[1].strip()))
+        config.set('passive checks', checks)
+        logging.info("updating config...")
+        logging.info("add_check() - config.items('passive checks'): %s", config.items('passive checks'))
         # config.set('passive checks', "")
 
         for sed_cmd in sed_cmds:                
