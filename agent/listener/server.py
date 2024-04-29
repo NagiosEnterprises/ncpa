@@ -1298,10 +1298,6 @@ def set_config():
 def add_check():
     config = listener.config['iconfig']
     existing_checks = [x for x in get_config_items('passive checks') if x[0] not in listener.config['iconfig'].defaults()]
-    logging.info("add_check() - existing_checks: %s", existing_checks)
-    # existing_checks = get_config_items('passive checks')
-    # check_names = [x[0] for x in existing_checks]
-    # check_names = [x.split('|')[1] for x in check_names] # check names to prevent duplicates
 
     cfg_file = None
     sed_cmds = []
@@ -1335,8 +1331,9 @@ def add_check():
                 pattern = r"^[^\r\n]+$"
                 hostname = value
             elif option == 'service_name':
-                if value in check_names:
-                    return jsonify({'type': 'danger', 'message': 'A check with that name already exists.'})
+                for check in existing_checks:
+                    if check[0].split('|')[0] == hostname and check[0].split('|')[1] == value:
+                        return jsonify({'type': 'danger', 'message': 'A check with that name already exists.'})
                 pattern = r"^[^\r\n]+$"
             elif option == 'check_interval':
                 pattern = r"^\d*$"
