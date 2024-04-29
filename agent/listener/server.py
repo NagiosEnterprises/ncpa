@@ -1390,6 +1390,7 @@ def add_check():
         logging.exception(e)
         return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
 
+    new_check = new_check.replace('\/', '/') # unescape the slashes that were escaped for the sed command
     return jsonify({'type': 'success', 'message': 'Check added. <b>Note</b>: You may need to <b>restart NCPA</b> for all changes to take effect.', 'check': str(new_check)})
 
 # ------------------------------
