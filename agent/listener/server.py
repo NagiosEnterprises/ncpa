@@ -1094,7 +1094,7 @@ def nrdp():
 #   Plugin Directives
 #       - None
 #   Passive Checks
-#       - ??? (should be fine as it can only access the api, which the user already has access to) TODO: implement
+#       - Adding checks
 
 # sanitize inputs from the form
 def sanitize_for_configparser(input_value):
