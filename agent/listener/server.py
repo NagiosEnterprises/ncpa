@@ -1351,6 +1351,14 @@ def add_check():
         else:
             new_check = f"{values_dict['host_name']}|{values_dict['service_name']}|{values_dict['check_interval']} = {values_dict['check_value']}"
             sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
+        # add check to configuration
+        config = listener.config['iconfig']
+        checks = [x for x in config.items('passive checks') if x[0] not in config.defaults()]
+        logging.info("add_check() - config.items('passive checks'): %s", config.items('passive checks'))
+        logging.info("add_check() - config.defaults(): %s", config.defaults())
+        logging.info("add_check() - checks: %s", checks)
+        logging.info("add_check() - new_check: %s", new_check)
+        # config.set('passive checks', "")
 
         for sed_cmd in sed_cmds:                
                 if environment.SYSTEM == "Windows":
