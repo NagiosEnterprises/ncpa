@@ -1296,9 +1296,12 @@ def set_config():
 @listener.route('/add-check/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
 def add_check():
-    existing_checks = get_config_items('passive checks')
-    check_names = [x[0] for x in existing_checks]
-    check_names = [x.split('|')[1] for x in check_names] # check names to prevent duplicates
+    config = listener.config['iconfig']
+    existing_checks = config.get('passive checks', None)
+    logging.info("add_check() - existing_checks: %s", existing_checks)
+    # existing_checks = get_config_items('passive checks')
+    # check_names = [x[0] for x in existing_checks]
+    # check_names = [x.split('|')[1] for x in check_names] # check names to prevent duplicates
 
     cfg_file = None
     sed_cmds = []
@@ -1325,10 +1328,12 @@ def add_check():
 
         values_dict = {}
 
+        hostname = None
         for (option, value) in request.form.items():
             value = sanitize_for_configparser(value)
             if option == 'host_name':
                 pattern = r"^[^\r\n]+$"
+                hostname = value
             elif option == 'service_name':
                 if value in check_names:
                     return jsonify({'type': 'danger', 'message': 'A check with that name already exists.'})
@@ -1353,7 +1358,6 @@ def add_check():
         # add check to running configuration so it will be displayed in the GUI before restarting NCPA
         # this does NOT make NCPA start monitoring the check until it is restarted
         new_check_parts = new_check.split('=')
-        config = listener.config['iconfig']
         config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
 
         for sed_cmd in sed_cmds:                
