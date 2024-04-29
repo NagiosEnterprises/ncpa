@@ -1102,12 +1102,9 @@ def sanitize_for_configparser(input_value):
     if len(input_value) > max_length:
         return False
     
-    # sanitized = re.sub(r'([=[\]])', r'\\\1', input_value)
-    # # Remove all control characters, including newlines
-    # sanitized = re.sub(r'[\x00-\x1f\x7f-\x9f\n\r]', '', sanitized)
     input_value = input_value.replace('\\', '').replace('\n', '').replace('\r', '')
-
     sanitized = input_value.encode().decode('unicode_escape')
+    sanitized = sanitized.replace('/', '\/')
     
     return sanitized
 
@@ -1294,12 +1291,14 @@ def set_config():
 
     return jsonify({'type': 'success', 'message': 'Configuration updated. <b>Note</b>: You may need to <b>restart NCPA</b> for all changes to take effect.'})
 
+# Endpoint to add a new passive check
+# TODO: implement removing checks
 @listener.route('/add-check/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
 def add_check():
     existing_checks = get_config_items('passive checks')
     check_names = [x[0] for x in existing_checks]
-    check_names = [x.split('|')[1] for x in check_names]
+    check_names = [x.split('|')[1] for x in check_names] # check names to prevent duplicates
 
     cfg_file = None
     sed_cmds = []
