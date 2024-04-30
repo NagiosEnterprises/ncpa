@@ -1185,17 +1185,33 @@ def write_to_config_and_file(section_options_to_update):
         for sed_cmd in sed_cmds:
 
             if environment.SYSTEM == "Windows":
-                match = re.match(r"sed -i '\d*s/(.*)/(.*)/' ", sed_cmd)
+                match = re.match(r"sed -i '(\d*)s/(.*)/(.*)/' ", sed_cmd)
                 logging.info("write_to_configFile() - match: %s", match)
                 if not match:
                     continue
-                pattern, replacement = match.groups()
-                logging.info("write_to_configFile() - pattern: %s", pattern)
-                logging.info("write_to_configFile() - replacement: %s", replacement)
-                # Convert sed syntax to PowerShell equivalent
-                powershell_cmd = f"Get-Content '{cfg_file}' | Foreach-Object {{ $_ -replace '{pattern}', '{replacement}' }} | Set-Content '{cfg_file}'"
-                logging.info("write_to_configFile() - powershell_cmd: %s", powershell_cmd)
-                command = ["powershell", "-Command", powershell_cmd]
+                line_number = int(match.group(1))
+                old_value = match.group(2)
+                new_value = match.group(3)
+                command = f'powershell -Command "(Get-Content {cfg_file} -Raw) -replace "{old_value}", "{new_value}" | Set-Content {cfg_file}"'
+
+                try:
+                    with open(cfg_file, 'r', encoding='utf-8') as file:
+                        lines = file.readlines()
+                except FileNotFoundError:
+                    logging.error("File not found: %s", cfg_file)
+                    return
+                
+                lines[line_number-1] = lines[line_number-1].replace(old_value, new_value)
+
+                try:
+                    with open(cfg_file, 'w', encoding='utf-8') as file:
+                        file.writelines(lines)
+                except FileNotFoundError:
+                    logging.error("File not found: %s", cfg_file)
+                    return
+                except Exception as e:
+                    logging.exception(e)
+                    return
                 running_check = subprocess.run(
                     command, 
                     shell=True, 
