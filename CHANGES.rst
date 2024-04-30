@@ -5,7 +5,7 @@ Changelog
 ==================
 **Updates**
 
-- Added migration of NCPA 2 configuration files to NCPA 3. (Blake Bahner)
+- Added migration of NCPA 2 configuration files and plugins to NCPA 3. (Blake Bahner)
 - Made the NCPA 3 plugin directives case-insensitive on Windows to match standard behavior. (Blake Bahner)
 - Removed misleading information from the NCPA 3 configuration file. (Blake Bahner)
 - Updated passive checks to allow escaped spaces. (Blake Bahner)
