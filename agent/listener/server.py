@@ -1228,11 +1228,11 @@ def write_to_config_and_file(section_options_to_update):
                     stderr=subprocess.STDOUT,
                     preexec_fn=os.setsid
                 )
-            logging.info("write_to_configFile() - running_check: %s", running_check)
+                logging.info("write_to_configFile() - running_check: %s", running_check)
 
-            if running_check.returncode != 0:
-                logging.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
-                return False
+                if running_check.returncode != 0:
+                    logging.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
+                    return False
     except Exception as e:
         logging.exception(e)
         return False
