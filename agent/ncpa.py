@@ -45,6 +45,7 @@ from socket import error as SocketError
 from io import open
 from logging.handlers import RotatingFileHandler
 from multiprocessing import Process, Value, freeze_support
+import process.daemon_manager
 
 # Create the listener logger instance, now, because it is required by listener.server.
 # It will be configured later via setup_logger(). See note 'About Logging' below.
@@ -136,6 +137,7 @@ cfg_defaults = {
                 'all_partitions': '1',
                 'exclude_fs_types': 'aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs,nfsd,xenfs',
                 'default_units': 'Gi',
+                'allow_remote_restart': '0',
             },
             'listener': {
                 'ip': address,
@@ -151,6 +153,7 @@ cfg_defaults = {
                 'allowed_hosts': '',
                 'max_connections': '200',
                 'allowed_sources': '',
+                'allow_config_edit': '1', # Note: this is limited to non-sensitive settings
             },
             'api': {
                 'community_string': 'mytoken',
@@ -191,7 +194,7 @@ cfg_defaults = {
         }
 
 # --------------------------
-# Core Classes
+# Core Classes -- TODO: Move to a sub-module, add starting/restarting of passive checks for GUI
 # --------------------------
 
 class Base():
@@ -425,6 +428,8 @@ class Daemon():
         self.setup_plugins()
         self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
+        self.p, self.l = None, None
+
     def main(self):
         action = self.options['action']
 
@@ -556,7 +561,7 @@ class Daemon():
         self.logger.debug("Daemon - started")
 
         try:
-            start_processes(self.options, self.config, self.has_error)
+            self.p, self.l = start_processes(self.options, self.config, self.has_error)
 
         except Exception as e:
             self.logger.exception("Daemon - Couldn't start processes: %s", e)
@@ -612,6 +617,7 @@ class Daemon():
                 sys.exit(msg)
         else:
             sys.exit("Daemon - stop() - Not running")
+
 
     def status(self):
         """Return the process status"""
@@ -1182,6 +1188,7 @@ def main(has_error):
     # Daemon class to control the agent
     if __SYSTEM__ == 'posix':
         d = Daemon(options, config, has_error, parent_logger)
+        process.daemon_manager.set_daemon(d)
         d.main()
     elif __SYSTEM__ == 'nt':
         # using win32serviceutil.ServiceFramework, run WinService as a service

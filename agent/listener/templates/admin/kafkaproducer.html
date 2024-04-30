@@ -15,14 +15,45 @@ $(document).ready(function() {
             return false;
         }
     });
+
+    $('form').submit(function(e) {
+        e.preventDefault();
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/update-config/', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(new URLSearchParams(new FormData(this)).toString());
+
+        $('#flashMessageText').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>');
+        
+        xhr.onreadystatechange = function() {
+            console.log(xhr.readyState, xhr.status);    
+            let response = JSON.parse(xhr.responseText);
+            let flash = document.querySelector('#flashMessage');
+            let flashText = document.querySelector('#flashMessageText');
+            if (response.type == 'success') {
+                flash.classList.add('alert-' + response.type);
+                flash.classList.remove('alert-danger');
+                flash.style.display = 'block';
+                flashText.innerHTML = '<i class="fa fa-check"></i>  ';
+                flashText.innerHTML += response.message;
+            } else {
+                $('#flashMessageText').html('<i class="fa fa-times"></i> ' + response.message);
+                $('#flashMessage').addClass('alert-danger').show();
+            }
+            setTimeout(function() {
+                $('#flashMessage').hide().removeClass('alert-danger').removeClass('alert-success');
+                $('#flashMessageText').html('');
+            }, 10000);
+        };
+    });
 });
 </script>
 {% endblock %}
 
 {% block content %}
 
-<div class="alert alert-info">
-    This section is currently in <b>read only</b> mode and any setting changes will not be saved. This will be updated in future versions.
+<div id="flashMessage" class="alert" style="display:none;">
+    <div id="flashMessageText"></div>
 </div>
 
 <div style="padding: 3rem;">
@@ -32,7 +63,7 @@ $(document).ready(function() {
 
     <div class="container-fluid" style="margin-top: 3rem; padding: 0;">
 
-        {% if 'nrdp' not in handlers %}
+        {% if 'kafkaproducer' not in handlers %}
         <div class="row">
             <div class="col-lg-12">
                 <div class="alert alert-danger col-sm-12 col-xl-6" style="margin: -1rem 0 3rem 0;">
@@ -42,42 +73,57 @@ $(document).ready(function() {
         </div>
         {% endif %}
 
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="form-horizontal">
+        <form>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Hostname</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3">
-                            <input type="text" class="form-control" name="hostname" value="{{ sectioncfg['hostname'] }}" readonly>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-horizontal">
+                        
+                        <input type="hidden" name="section" value="kafkaproducer">
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Hostname</label>
+                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                                <input type="text" class="form-control" name="hostname" value="{{ sectioncfg['hostname'] }}" {% if 'kafkaproducer' not in handlers %}readonly{% endif %}>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Servers</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3">
-                            <input type="text" class="form-control" name="servers" value="{{ sectioncfg['servers'] }}" readonly>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Servers</label>
+                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                                <input type="text" class="form-control" name="servers" value="{{ sectioncfg['servers'] }}" {% if 'kafkaproducer' not in handlers %}readonly{% endif %}>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Client Name</label>
-                        <div class="col-sm-6 col-md-4 col-lg-2 col-xl-3">
-                            <input type="text" class="form-control" name="client_name" value="{{ sectioncfg['clientname'] }}" readonly>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Client Name</label>
+                            <div class="col-sm-6 col-md-4 col-lg-2 col-xl-3">
+                                <input type="text" class="form-control" name="client_name" value="{{ sectioncfg['clientname'] }}" {% if 'kafkaproducer' not in handlers %}readonly{% endif %}>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Topic</label>
-                        <div class="col-sm-6 col-md-4 col-lg-2 col-xl-3">
-                            <input type="text" class="form-control" name="topic" value="{{ sectioncfg['topic'] }}" readonly>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Topic</label>
+                            <div class="col-sm-6 col-md-4 col-lg-2 col-xl-3">
+                                <input type="text" class="form-control" name="topic" value="{{ sectioncfg['topic'] }}" {% if 'kafkaproducer' not in handlers %}readonly{% endif %}>
+                            </div>
                         </div>
-                    </div>
 
+                        {% if 'kafkaproducer' in handlers %}
+                        <div class="form-group">
+                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2"></label>
+                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    </div>
                 </div>
             </div>
+        
+        </form>
 
-        </div>
     </div>
 
 </div>

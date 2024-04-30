@@ -35,14 +35,17 @@ function resize_help_window() {
 {% block content %}
 
 <div id="admin-section" style="display: table; position: fixed; margin: 0; padding: 0;">
+    
     <div class="left-content" style="display: table-cell; vertical-align: top; min-width: 200px; width: 200px;">
         <div class="well links">
+            
             <div class="section">
                 <div>General</div>
                 <ul>
                     <li><i class="fa fa-fw fa-cogs fa-14"></i> <a href="admin/global" target="admin-frame">Global Settings</a></li>
                 </ul>
             </div>
+
             <div class="section">
                 <div>Services</div>
                 <ul>
@@ -55,11 +58,14 @@ function resize_help_window() {
                     <li><i class="fa fa-fw fa-check fa-14"></i> <a href="admin/passive-checks" target="admin-frame">Passive Checks</a></li>
                 </ul>
             </div>
+
         </div>
     </div>
+
     <div class="right-content" style="display: table-cell; vertical-align: top;">
         <iframe id="admin-iframe" name="admin-frame" src="admin/global" style="border: 0;"></iframe>
     </div>
+
 </div>
 
 {% endblock %}

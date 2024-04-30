@@ -13,10 +13,14 @@ import listener.psapi as psapi
 import listener.processes as processes
 import listener.database as database
 import math
+import re
 import ipaddress
 import urllib.parse
 import gevent
 import ncpa
+import process.daemon_manager as daemon_manager
+import subprocess
+import listener.environment as environment
 from ncpa import listener_logger as logging
 #import inspect
 
@@ -1058,6 +1062,338 @@ def nrdp():
         logging.exception(exc)
         return error(msg=exc)
 
+
+# ------------------------------
+# Configuration Endpoints
+# ------------------------------
+#
+# ALLOWED SECTIONS:
+#   Global
+#      - Check Logging (in browser)
+#      - Check Log Retention (days)
+#      - Log Level (info, warning, debug, error)
+#      - Log Max MB
+#      - Log Backups (days)
+#      - Default Units (K,Ki,M,Mi,G,Gi,T,Ti)
+#   Listener
+#       None
+#   API
+#       None
+#   Passive
+#       - Handlers (None, NRDP, Kafka Producer, Both)
+#   NRDP
+#       - NRDP URL
+#       - NRDP Token
+#       - Hostname
+#       - Connection Timeout
+#   Kafka Producer
+#       - Hostname
+#       - Servers
+#       - Client Name
+#       - Topic
+#   Plugin Directives
+#       - None
+#   Passive Checks
+#       - Adding checks
+
+# sanitize inputs from the form
+def sanitize_for_configparser(input_value):
+    max_length = 1024
+    if len(input_value) > max_length:
+        return False
+    
+    input_value = input_value.replace('\\', '').replace('\n', '').replace('\r', '')
+    sanitized = input_value.encode().decode('unicode_escape')
+    sanitized = sanitized.replace('/', '\/') # escape forward slashes for sed command
+    
+    return sanitized
+
+# validate the input from the form against the valid options
+def validate_config_input(section, option, value, valid_options):
+    # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
+    for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
+        if "["+section+"]" == target_section:
+            if option == tbl_option:
+                if isinstance(valid_values, list):
+                    if value.strip() not in valid_values:
+                        return False
+                    else:
+                        value = sanitize_for_configparser(value)
+                        return (section, option_in_file, value.strip())
+                elif not re.match(valid_values, value.strip()):
+                    return False
+                else:
+                    value = sanitize_for_configparser(value)
+                    return (section, option_in_file, value.strip())
+    return None, None, None
+
+# inputs sanitized and validated, write to the config and file
+# section_options_to_update = {("section", "option_name"): "value"}
+def write_to_config_and_file(section_options_to_update):
+    config = listener.config['iconfig']
+
+    for (section, option), value in section_options_to_update.items():
+        if not value:
+            return False # Invalid input detected, don't write to config file
+
+    try:
+        if environment.SYSTEM == "Windows":
+            cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg')
+        else:
+            cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg')
+
+        sed_cmds = []
+        lines = None
+        with open(cfg_file, 'r') as configfile:
+            lines = configfile.readlines()
+
+            uncommented_options = set()
+            section = None
+
+            for i, line in enumerate(lines):
+                line = line.strip()
+                if line.startswith("["):
+                    section = line.strip()
+                    continue
+                if '=' in line and not line.startswith('#'):
+                    option = line.split('=')[0].strip()
+                    uncommented_options.add((section, option))
+
+            section = None
+
+            for i, line in enumerate(lines):
+                if line.startswith("["):
+                    section = line.strip()
+                    continue
+                for (target_section, target_option), value in section_options_to_update.items():
+                    if section == "["+target_section+"]":
+                        pattern = re.compile(r'^\s*(#\s*)(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
+                        no_comment_pattern = re.compile(r'^\s*(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
+                        
+                        # if there is an uncommented version in the config file, we don't want to replace commented out versions
+                        if (section, target_option) in uncommented_options:
+                            if no_comment_pattern.match(line):
+                                sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
+                                config.set(target_section, target_option, value)
+                        else:
+                            if pattern.match(line):
+                                sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
+                                config.set(target_section, target_option, value)
+            configfile.close()
+
+        for sed_cmd in sed_cmds:
+
+            if environment.SYSTEM == "Windows":
+                match = re.match(r's/(.*)/(.*)/', sed_cmd)
+                if not match:
+                    continue
+                pattern, replacement = match.groups()
+                # Convert sed syntax to PowerShell equivalent
+                powershell_cmd = f"Get-Content {cfg_file} | Foreach-Object {{ $_ -replace '{pattern}', '{replacement}' }} | Set-Content {cfg_file}"
+                command = ["powershell", "-Command", powershell_cmd]
+                running_check = subprocess.run(
+                    command, 
+                    shell=True, 
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.STDOUT
+                )
+            else:
+                running_check = subprocess.run(
+                    sed_cmd, 
+                    shell=True, 
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.STDOUT,
+                    preexec_fn=os.setsid
+                )
+
+            if running_check.returncode != 0:
+                logging.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
+                return False
+    except Exception as e:
+        logging.exception(e)
+        return False
+        
+# Endpoint to make allowed changes to the config
+@listener.route('/update-config/', methods=['POST'], provide_automatic_options = False)
+@requires_admin_auth
+def set_config():
+    config = listener.config['iconfig']
+    if config.get('listener', 'allow_config_edit') != '1':
+        return jsonify({'message': 'Editing your configuration via the GUI is disabled.'})
+
+    # [section], option_name from form, option_name in ncpa.cfg, allowed_values (list or regex)
+    allowed_options = [
+        ("[general]", "check_logging",  "check_logging",        ["0", "1"]),
+        ("[general]", "check_logging_time","check_logging_time",r"^\d+$"),
+        ("[general]", "log_level",      "loglevel",             ["info", "warning", "debug", "error"]),
+        ("[general]", "log_max_mb",     "logmaxmb",             r"^\d+$"),
+        ("[general]", "log_backups",    "logbackups",           r"^\d+$"),
+        ("[general]", "default_units",  "default_units",        ["K", "Ki", "M", "Mi", "G", "Gi", "T", "Ti"]),
+
+        ("[passive]", "handlers",       "handlers",             ["None", "nrdp", "kafkaproducer", "nrdp, kafkaproducer"]),
+
+        ("[nrdp]",    "nrdp_url",       "parent",               r"^https?://\S+/nrdp$"),
+        ("[nrdp]",    "nrdp_token",     "token",                r"^\S+$"),
+        ("[nrdp]",    "hostname",       "hostname",             r"^\S+$"),
+        ("[nrdp]",    "connection_timeout",   "connection_timeout",   r"^\d+$"),
+
+        ("[kafkaproducer]", "hostname",     "hostname",         r"^\S+$"),
+        ("[kafkaproducer]", "servers",      "servers",          r"^\S+(?:,\S+)*$"),
+        ("[kafkaproducer]", "client_name",  "clientname",       r"^\S+$"),
+        ("[kafkaproducer]", "topic",        "topic",            r"^\S+$"),
+    ]
+
+    editable_options_list = [option for (_, option, _, _) in allowed_options]
+
+    section_options_to_update = {}
+    
+    section = request.form.get('section', None)
+    if section is None:
+        return jsonify({'type': 'danger', 'message': 'No section specified.'})
+    for (option, value) in request.form.items():
+        if option in editable_options_list:
+            (current_section, current_option, sanitized_input) = validate_config_input(section, option, value, allowed_options) or (None, None, None)
+            section_options_to_update[current_section, current_option] = sanitized_input
+            if not current_section or not current_option or not sanitized_input:
+                return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
+    write_to_config_and_file(section_options_to_update)
+
+
+    # TODO: finish option of restarting of the service (disabled by default)
+    # TODO: check if the handler (NRDP/KafkaProducer) is configured and only restart if it is or else NCPA will crash
+    # TODO: Let the User know that they need to configure the handler before restarting
+    # allow_restart = config.get('general', 'allow_remote_restart').lower()
+    # if allow_restart in {'none', '0'}:
+    #     logging.info("restart not allowed")
+    # else:
+    #     try:
+    #         logging.info("allow_restart: %s", allow_restart)
+    #         if os.name == 'nt':
+    #             logging.info("restarting ncpa service")
+    #             restart_ncpa = subprocess.run(
+    #                 "net stop ncpa && net start ncpa",
+    #                 shell=True,
+    #                 stdout=subprocess.PIPE,
+    #                 stderr=subprocess.STDOUT
+    #             )
+    #         elif os.name == 'posix':
+    #             logging.info("restarting ncpa service")
+    #             restart_ncpa = subprocess.run(
+    #                 "systemctl restart ncpa",
+    #                 shell=True,
+    #                 stdout=subprocess.PIPE,
+    #                 stderr=subprocess.STDOUT
+    #             )
+    #         else:
+    #             logging.error("unsupported OS")
+    #             return jsonify({'type': 'danger', 'message': 'Unsupported OS. This service must be restarted manually.'})
+    #     except Exception as e:
+    #         logging.exception(e)
+    #         return jsonify({'type': 'danger', 'message': 'Failed to restart the service.'})
+
+    return jsonify({'type': 'success', 'message': 'Configuration updated. <b>Note</b>: You may need to <b>restart NCPA</b> for all changes to take effect.'})
+
+# Endpoint to add a new passive check
+# TODO: implement removing checks
+@listener.route('/add-check/', methods=['POST'], provide_automatic_options = False)
+@requires_admin_auth
+def add_check():
+    config = listener.config['iconfig']
+    existing_checks = [x for x in get_config_items('passive checks') if x[0] not in listener.config['iconfig'].defaults()]
+
+    cfg_file = None
+    sed_cmds = []
+
+    try:
+        if environment.SYSTEM == "Windows":
+            cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg.d', 'example.cfg')
+        else:
+            cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg.d', 'example.cfg')
+
+        with open(cfg_file, 'r') as configfile:
+            lines = configfile.readlines()
+            configfile.close()
+        
+        # detect if [passive checks] section exists and is uncommented so we know if we need to uncomment it
+        section_exists = False
+        for line in lines:
+            if line.startswith("[passive checks]"):
+                section_exists = True
+                break
+
+        if not section_exists:
+            sed_cmds.append(f"sed -i 's/#\[passive checks\]/\[passive checks\]/' {cfg_file}")
+
+        values_dict = {}
+
+        hostname = None
+        for (option, value) in request.form.items():
+            value = sanitize_for_configparser(value)
+            if option == 'host_name':
+                pattern = r"^[^\r\n]+$"
+                hostname = value
+            elif option == 'service_name':
+                for check in existing_checks:
+                    if check[0].split('|')[0] == hostname and check[0].split('|')[1] == value:
+                        return jsonify({'type': 'danger', 'message': 'A check with that name already exists.'})
+                pattern = r"^[^\r\n]+$"
+            elif option == 'check_interval':
+                pattern = r"^\d*$"
+            elif option == 'check_value':
+                pattern = r"^[^\r\n]+$"
+
+            if not re.match(pattern, value):
+                return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
+            else:
+                values_dict[option] = value
+
+        new_check = None
+        if not values_dict['check_interval']:
+            new_check = f"{values_dict['host_name']}|{values_dict['service_name']} = {values_dict['check_value']}"
+            sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
+        else:
+            new_check = f"{values_dict['host_name']}|{values_dict['service_name']}|{values_dict['check_interval']} = {values_dict['check_value']}"
+            sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
+        # add check to running configuration so it will be displayed in the GUI before restarting NCPA
+        # this does NOT make NCPA start monitoring the check until it is restarted
+        new_check_parts = new_check.split('=')
+        config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
+
+        for sed_cmd in sed_cmds:                
+                if environment.SYSTEM == "Windows":
+                    match = re.match(r's/(.*)/(.*)/', sed_cmd)
+                    if not match:
+                        continue
+                    pattern, replacement = match.groups()
+                    # Convert sed syntax to PowerShell equivalent
+                    powershell_cmd = f"Get-Content {cfg_file} | Foreach-Object {{ $_ -replace '{pattern}', '{replacement}' }} | Set-Content {cfg_file}"
+                    command = ["powershell", "-Command", powershell_cmd]
+                    logging.debug("add_check() - Powershell command: %s", command)
+                    running_check = subprocess.run(
+                        command, 
+                        shell=True, 
+                        stdout=subprocess.PIPE, 
+                        stderr=subprocess.STDOUT
+                    )
+                else:
+                    running_check = subprocess.run(
+                        sed_cmd, 
+                        shell=True, 
+                        stdout=subprocess.PIPE, 
+                        stderr=subprocess.STDOUT,
+                        preexec_fn=os.setsid
+                    )
+
+                if running_check.returncode != 0:
+                    logging.error("add_check() - sed_cmd failed: %s", running_check.stdout)
+                    return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
+
+    except Exception as e:
+        logging.exception(e)
+        return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
+
+    new_check = new_check.replace('\/', '/') # unescape the slashes that were escaped for the sed command
+    return jsonify({'type': 'success', 'message': 'Check added. <b>Note</b>: You will need to <b>restart NCPA</b> for the new checks to take effect.', 'check': str(new_check)})
 
 # ------------------------------
 # API Endpoint

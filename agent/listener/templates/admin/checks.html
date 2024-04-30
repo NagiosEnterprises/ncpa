@@ -15,14 +15,107 @@ $(document).ready(function() {
             return false;
         }
     });
+
+    // Add Check Functionality
+    $('#add-check-btn').click(function() {
+        var formHtml = '' +
+            '<form>' +
+                '<div id="new-check-form" style="background-color:#DDD; border-radius:5px; padding: 15px; margin-bottom:10px;">' +
+                    '<div class="form-group" style="display:flex; margin-left:15px; margin-bottom:-10px;">' +
+                        '<div class="form-group" style="width:12rem; margin-left:-15px; margin-right:-8px;">' +
+                            '<label for="host_name">Hostname:<span style="color:red;">*</span></label>' +
+                            '<input class="form-control" type="text" id="host_name" name="host_name" placeholder="%HOSTNAME%" />' +
+                        '</div>' +
+                        '<div class="form-group" style="width:12rem; margin-left:10px; margin-right:-8px;">' +
+                            '<label for="service_name">Service:<span style="color:red;">*</span></label>' +
+                            '<input class="form-control" type="text" id="service_name" name="service_name" placeholder="CPU Usage" />' +
+                        '</div>' +
+                        '<div class="form-group" style="width:12rem; margin-left:10px; margin-right:-8px;">' +
+                            '<label for="check_interval">Interval(sec):</label>' +
+                            '<input class="form-control" type="text" id="check_interval" name="check_interval" placeholder="300" />' +
+                        '</div>' +
+                        // ?Make the check value a dropdown that is populated with the available checks from the API + an input for extra options?
+                        '<div class="form-group" style="flex-grow:1; margin-left:10px; padding-right:30px;">' +
+                            '<label for="check_value">Check Value:<span style="color:red;">*</span></label>' +
+                            '<input class="form-control" type="text" id="check_value" name="check_value" placeholder="cpu/percent --warning 80 --critical 90 --aggregate avg" />' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<p style="margin-left:15px; margin-bottom:0px; color:red; font-size:12px;">* Required Fields</p>' +
+                    '</div>' +
+                    '<div class="form-group" style="margin-left:0; margin-bottom:5px;">' +
+                        '<button class="btn btn-primary" id="submit-check" style="margin-right:5px;border-radius:5px;">Submit</button>' +
+                        '<button class="btn btn-secondary" id="cancel-check" style="border-radius:5px;">Cancel</button>' +
+                    '</div>' +
+                '</div>' +
+            '</form>';
+        $('.form-horizontal').append(formHtml);
+
+        $('#add-check-btn').hide();
+
+
+        // Cancel button functionality
+        $('#cancel-check').click(function() {
+            $('#new-check-form').remove();
+        });
+
+        // Submit new check
+        $('form').submit(function(e) {
+
+            e.preventDefault();
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', '/add-check/', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send(new URLSearchParams(new FormData(this)).toString());
+
+            $('#flashMessageText').addClass('alert-warning').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>').show();
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState != 4) {
+                    return;
+                }
+                let response = JSON.parse(xhr.responseText);
+                let flash = document.querySelector('#flashMessage');
+                let flashText = document.querySelector('#flashMessageText');
+                flash.classList.remove('alert-warning');
+                if (response.type == 'success') {
+                    flash.classList.add('alert-' + response.type);
+                    flash.classList.remove('alert-danger');
+                    flash.style.display = 'block';
+                    flashText.innerHTML = '<i class="fa fa-check"></i>  ';
+                    flashText.innerHTML += response.message;
+                    if (response.check) {
+                        $('.form-horizontal').append('<pre style="border-radius:5px;">' + response.check + '</pre>');
+                        $('#new-check-form').remove();
+                        $('#add-check-btn').show();
+                    } else {
+                        $('#flashMessageText').html('<i class="fa fa-times"></i> ' + response.message);
+                        $('#flashMessage').addClass('alert-danger').show();
+                    }
+                } else {
+                    $('#flashMessageText').html('<i class="fa fa-times"></i> ' + response.message);
+                    $('#flashMessage').addClass('alert-danger').show();
+                }
+                setTimeout(function() {
+                    $('#flashMessage').hide().removeClass('alert-danger').removeClass('alert-success');
+                    $('#flashMessageText').html('');
+                }, 10000);
+            };
+        });
+    });
 });
 </script>
 {% endblock %}
 
 {% block content %}
 
-<div class="alert alert-info">
+<!-- <div class="alert alert-info">
     This section is currently in <b>read only</b> mode and any setting changes will not be saved. This will be updated in future versions.
+</div> -->
+
+
+<div id="flashMessage" class="alert" style="display:none;">
+    <div id="flashMessageText"></div>
 </div>
 
 <div style="padding: 3rem;">
@@ -36,15 +129,18 @@ $(document).ready(function() {
             <div class="col-sm-12 col-lg-10 col-xl-8">
                 <div class="form-horizontal">
 
+                    <input type="hidden" name="section" value="checks">
+
                     {% if checks|length > 1 %}
                         {% for check in checks %}
-                        <pre>{{ check[0] }} = {{ check[1] }}</pre>
+                        <pre style="border-radius:5px;">{{ check[0] }} = {{ check[1] }}</pre>
                         {% endfor %}
                     {% else %}
                         <p>There are no passive checks defined right now.</p>
                     {% endif %}
-
+                    
                 </div>
+				<button class="btn btn-primary" id="add-check-btn" style="border-radius:5px; margin-bottom:10px">Add Check</button>
             </div>
 
         </div>
