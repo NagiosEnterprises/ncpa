@@ -1215,13 +1215,30 @@ def write_to_config_and_file(section_options_to_update):
                 #     logging.exception(e)
                 #     return
 
-                command = f'echo "{"".join(lines)}" > {cfg_file}'
+                # command = f'echo "{"".join(lines)}" > {cfg_file}'
+                # running_check = subprocess.run(
+                #     command, 
+                #     shell=True, 
+                #     stdout=subprocess.PIPE, 
+                #     stderr=subprocess.STDOUT
+                # )
+
+                command = f'echo "{lines[0]}" > {cfg_file}'
                 running_check = subprocess.run(
                     command, 
                     shell=True, 
                     stdout=subprocess.PIPE, 
                     stderr=subprocess.STDOUT
                 )
+                for line in lines[1:]:
+                    logging.debug("write_to_configFile() - line: %s", line)
+                    command = f'echo "{line}" >> {cfg_file}'
+                    running_check = subprocess.run(
+                        command, 
+                        shell=True, 
+                        stdout=subprocess.PIPE, 
+                        stderr=subprocess.STDOUT
+                    )
             else:
                 running_check = subprocess.run(
                     sed_cmd, 
