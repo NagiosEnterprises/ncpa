@@ -1184,12 +1184,15 @@ def write_to_config_and_file(section_options_to_update):
         for sed_cmd in sed_cmds:
 
             if environment.SYSTEM == "Windows":
+                logging.info("write_to_configFile() - sed_cmd: %s", sed_cmd)
                 match = re.match(r's/(.*)/(.*)/', sed_cmd)
+                logging.info("write_to_configFile() - match: %s", match)
                 if not match:
                     continue
                 pattern, replacement = match.groups()
                 # Convert sed syntax to PowerShell equivalent
                 powershell_cmd = f"Get-Content {cfg_file} | Foreach-Object {{ $_ -replace '{pattern}', '{replacement}' }} | Set-Content {cfg_file}"
+                logging.info("write_to_configFile() - powershell_cmd: %s", powershell_cmd)
                 command = ["powershell", "-Command", powershell_cmd]
                 running_check = subprocess.run(
                     command, 
@@ -1205,6 +1208,7 @@ def write_to_config_and_file(section_options_to_update):
                     stderr=subprocess.STDOUT,
                     preexec_fn=os.setsid
                 )
+            logging.info("write_to_configFile() - running_check: %s", running_check)
 
             if running_check.returncode != 0:
                 logging.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
