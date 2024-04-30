@@ -1204,16 +1204,16 @@ def write_to_config_and_file(section_options_to_update):
                 lines[line_number-1] = new_value + '\n'
                 logging.debug("write_to_configFile() - attempting to replace line number %s with %s", line_number, new_value)
 
-                # try:
-                #     with open(cfg_file, 'w', encoding='utf-8') as file:
-                #         file.writelines(lines)
-                #     logging.debug("write_to_configFile() - successfully replaced line number %s with %s", line_number, new_value)
-                # except FileNotFoundError:
-                #     logging.error("File not found: %s", cfg_file)
-                #     return
-                # except Exception as e:
-                #     logging.exception(e)
-                #     return
+                try:
+                    with open(cfg_file, 'w', encoding='utf-8') as file:
+                        file.writelines(lines)
+                    logging.debug("write_to_configFile() - successfully replaced line number %s with %s", line_number, lines[line_number-1])
+                except FileNotFoundError:
+                    logging.error("File not found: %s", cfg_file)
+                    return
+                except Exception as e:
+                    logging.exception(e)
+                    return
 
                 # command = f'echo "{"".join(lines)}" > {cfg_file}'
                 # running_check = subprocess.run(
@@ -1223,22 +1223,22 @@ def write_to_config_and_file(section_options_to_update):
                 #     stderr=subprocess.STDOUT
                 # )
 
-                command = f'echo "{lines[0]}" > {cfg_file}'
-                running_check = subprocess.run(
-                    command, 
-                    shell=True, 
-                    stdout=subprocess.PIPE, 
-                    stderr=subprocess.STDOUT
-                )
-                for line in lines[1:]:
-                    logging.debug("write_to_configFile() - line: %s", line)
-                    command = f'echo "{line}" >> {cfg_file}'
-                    running_check = subprocess.run(
-                        command, 
-                        shell=True, 
-                        stdout=subprocess.PIPE, 
-                        stderr=subprocess.STDOUT
-                    )
+                # command = f'echo "{lines[0]}" > {cfg_file}'
+                # running_check = subprocess.run(
+                #     command, 
+                #     shell=True, 
+                #     stdout=subprocess.PIPE, 
+                #     stderr=subprocess.STDOUT
+                # )
+                # for line in lines[1:]:
+                #     logging.debug("write_to_configFile() - line: %s", line)
+                #     command = f'echo "{line}" >> {cfg_file}'
+                #     running_check = subprocess.run(
+                #         command, 
+                #         shell=True, 
+                #         stdout=subprocess.PIPE, 
+                #         stderr=subprocess.STDOUT
+                #     )
             else:
                 running_check = subprocess.run(
                     sed_cmd, 
