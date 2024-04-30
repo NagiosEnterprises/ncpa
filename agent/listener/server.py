@@ -1204,10 +1204,14 @@ def write_to_config_and_file(section_options_to_update):
                 lines[line_number-1] = lines[line_number-1].replace(old_value, new_value)
                 logging.debug("write_to_configFile() - attempting to replace line number %s with %s", line_number, new_value)
 
+                logging.debug("write_to_configFile() - lines: %s", lines)
+
                 try:
                     with open(cfg_file, 'w', encoding='utf-8') as file:
                         file.writelines(lines)
                     logging.debug("write_to_configFile() - successfully replaced line number %s with %s", line_number, new_value)
+                    file.flush()
+                    file.close()
                 except FileNotFoundError:
                     logging.error("File not found: %s", cfg_file)
                     return
