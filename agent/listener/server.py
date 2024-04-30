@@ -1138,7 +1138,7 @@ def write_to_config_and_file(section_options_to_update):
 
     try:
         if environment.SYSTEM == "Windows":
-            cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg')
+            cfg_file = os.path.join('C:\\', 'Program Files', 'Nagios', 'NCPA', 'etc', 'ncpa.cfg')
         else:
             cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg')
 
@@ -1306,7 +1306,7 @@ def add_check():
 
     try:
         if environment.SYSTEM == "Windows":
-            cfg_file = os.path.join('C:\\', 'Program Files', 'NCPA', 'etc', 'ncpa.cfg.d', 'example.cfg')
+            cfg_file = os.path.join('C:\\', 'Program Files', 'Nagios', 'NCPA', 'etc', 'ncpa.cfg.d', 'example.cfg')
         else:
             cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg.d', 'example.cfg')
 
