@@ -1365,10 +1365,6 @@ def add_check():
         else:
             new_check = f"{values_dict['host_name']}|{values_dict['service_name']}|{values_dict['check_interval']} = {values_dict['check_value']}"
             sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
-        # add check to running configuration so it will be displayed in the GUI before restarting NCPA
-        # this does NOT make NCPA start monitoring the check until it is restarted
-        new_check_parts = new_check.split('=')
-        config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
 
         for sed_cmd in sed_cmds:                
                 if environment.SYSTEM == "Windows":
@@ -1408,6 +1404,11 @@ def add_check():
                 if running_check.returncode != 0:
                     logging.error("add_check() - sed_cmd failed: %s", running_check.stdout)
                     return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
+                else:
+                    # add check to running configuration so it will be displayed in the GUI before restarting NCPA
+                    # this does NOT make NCPA start monitoring the check until it is restarted
+                    new_check_parts = new_check.split('=')
+                    config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
 
     except Exception as e:
         logging.exception(e)
