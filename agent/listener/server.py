@@ -1186,7 +1186,6 @@ def write_to_config_and_file(section_options_to_update):
 
             if environment.SYSTEM == "Windows":
                 match = re.match(r"sed -i '(\d*)s/(.*)/(.*)/' ", sed_cmd)
-                logging.info("write_to_configFile() - match: %s", match)
                 if not match:
                     continue
                 line_number = int(match.group(1))
@@ -1200,12 +1199,10 @@ def write_to_config_and_file(section_options_to_update):
                     return
                 
                 lines[line_number-1] = new_value + '\n'
-                logging.debug("write_to_configFile() - attempting to replace line number %s with %s", line_number, new_value)
 
                 try:
                     with open(cfg_file, 'w', encoding='utf-8') as file:
                         file.writelines(lines)
-                    logging.debug("write_to_configFile() - successfully replaced line number %s with %s", line_number, lines[line_number-1])
                 except FileNotFoundError:
                     logging.error("File not found: %s", cfg_file)
                     return
@@ -1220,7 +1217,6 @@ def write_to_config_and_file(section_options_to_update):
                     stderr=subprocess.STDOUT,
                     preexec_fn=os.setsid
                 )
-                logging.info("write_to_configFile() - running_check: %s", running_check)
 
                 if running_check.returncode != 0:
                     logging.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
