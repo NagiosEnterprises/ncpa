@@ -1184,8 +1184,7 @@ def write_to_config_and_file(section_options_to_update):
         for sed_cmd in sed_cmds:
 
             if environment.SYSTEM == "Windows":
-                logging.info("write_to_configFile() - sed_cmd: %s", sed_cmd)
-                match = re.match(r'\d*s/(.*)/(.*)/ .*', sed_cmd)
+                match = re.match(r"sed -i '\d*s/(.*)/(.*)/' ", sed_cmd)
                 logging.info("write_to_configFile() - match: %s", match)
                 if not match:
                     continue
