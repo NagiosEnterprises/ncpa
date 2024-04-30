@@ -1204,26 +1204,24 @@ def write_to_config_and_file(section_options_to_update):
                 lines[line_number-1] = lines[line_number-1].replace(old_value, new_value)
                 logging.debug("write_to_configFile() - attempting to replace line number %s with %s", line_number, new_value)
 
-                logging.debug("write_to_configFile() - lines: %s", lines)
+                # try:
+                #     with open(cfg_file, 'w', encoding='utf-8') as file:
+                #         file.writelines(lines)
+                #     logging.debug("write_to_configFile() - successfully replaced line number %s with %s", line_number, new_value)
+                # except FileNotFoundError:
+                #     logging.error("File not found: %s", cfg_file)
+                #     return
+                # except Exception as e:
+                #     logging.exception(e)
+                #     return
 
-                try:
-                    with open(cfg_file, 'w', encoding='utf-8') as file:
-                        file.writelines(lines)
-                    logging.debug("write_to_configFile() - successfully replaced line number %s with %s", line_number, new_value)
-                    file.flush()
-                    file.close()
-                except FileNotFoundError:
-                    logging.error("File not found: %s", cfg_file)
-                    return
-                except Exception as e:
-                    logging.exception(e)
-                    return
-                # running_check = subprocess.run(
-                #     command, 
-                #     shell=True, 
-                #     stdout=subprocess.PIPE, 
-                #     stderr=subprocess.STDOUT
-                # )
+                command = f'echo "{"".join(lines)}" > {cfg_file}'
+                running_check = subprocess.run(
+                    command, 
+                    shell=True, 
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.STDOUT
+                )
             else:
                 running_check = subprocess.run(
                     sed_cmd, 
@@ -1232,11 +1230,11 @@ def write_to_config_and_file(section_options_to_update):
                     stderr=subprocess.STDOUT,
                     preexec_fn=os.setsid
                 )
-                logging.info("write_to_configFile() - running_check: %s", running_check)
+            logging.info("write_to_configFile() - running_check: %s", running_check)
 
-                if running_check.returncode != 0:
-                    logging.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
-                    return False
+            if running_check.returncode != 0:
+                logging.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
+                return False
     except Exception as e:
         logging.exception(e)
         return False
