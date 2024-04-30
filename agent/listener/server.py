@@ -1189,8 +1189,10 @@ def write_to_config_and_file(section_options_to_update):
                 if not match:
                     continue
                 pattern, replacement = match.groups()
+                logging.info("write_to_configFile() - pattern: %s", pattern)
+                logging.info("write_to_configFile() - replacement: %s", replacement)
                 # Convert sed syntax to PowerShell equivalent
-                powershell_cmd = f"Get-Content {cfg_file} | Foreach-Object {{ $_ -replace '{pattern}', '{replacement}' }} | Set-Content {cfg_file}"
+                powershell_cmd = f"Get-Content '{cfg_file}' | Foreach-Object {{ $_ -replace '{pattern}', '{replacement}' }} | Set-Content '{cfg_file}'"
                 logging.info("write_to_configFile() - powershell_cmd: %s", powershell_cmd)
                 command = ["powershell", "-Command", powershell_cmd]
                 running_check = subprocess.run(
