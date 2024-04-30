@@ -1184,19 +1184,30 @@ def write_to_config_and_file(section_options_to_update):
         for sed_cmd in sed_cmds:
 
             if environment.SYSTEM == "Windows":
-                match = re.match(r's/(.*)/(.*)/', sed_cmd)
+                match = re.match(r"sed -i '(\d*)s/(.*)/(.*)/' ", sed_cmd)
                 if not match:
                     continue
-                pattern, replacement = match.groups()
-                # Convert sed syntax to PowerShell equivalent
-                powershell_cmd = f"Get-Content {cfg_file} | Foreach-Object {{ $_ -replace '{pattern}', '{replacement}' }} | Set-Content {cfg_file}"
-                command = ["powershell", "-Command", powershell_cmd]
-                running_check = subprocess.run(
-                    command, 
-                    shell=True, 
-                    stdout=subprocess.PIPE, 
-                    stderr=subprocess.STDOUT
-                )
+                line_number = int(match.group(1))
+                new_value = match.group(3)
+
+                try:
+                    with open(cfg_file, 'r', encoding='utf-8') as file:
+                        lines = file.readlines()
+                except FileNotFoundError:
+                    logging.error("File not found: %s", cfg_file)
+                    return
+                
+                lines[line_number-1] = new_value + '\n'
+
+                try:
+                    with open(cfg_file, 'w', encoding='utf-8') as file:
+                        file.writelines(lines)
+                except FileNotFoundError:
+                    logging.error("File not found: %s", cfg_file)
+                    return
+                except Exception as e:
+                    logging.exception(e)
+                    return
             else:
                 running_check = subprocess.run(
                     sed_cmd, 
@@ -1206,9 +1217,9 @@ def write_to_config_and_file(section_options_to_update):
                     preexec_fn=os.setsid
                 )
 
-            if running_check.returncode != 0:
-                logging.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
-                return False
+                if running_check.returncode != 0:
+                    logging.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
+                    return False
     except Exception as e:
         logging.exception(e)
         return False
