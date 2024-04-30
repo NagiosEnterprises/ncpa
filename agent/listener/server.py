@@ -1368,10 +1368,9 @@ def add_check():
 
         for sed_cmd in sed_cmds:                
                 if environment.SYSTEM == "Windows":
-                    match = re.match(r'sed -i \'(\d*)s/.*/(.*)/\' ', sed_cmd)
+                    match = re.match(r'sed -i \'s/.*/(.*)/\' ', sed_cmd)
                     if not match:
                         continue
-                    line_number = int(match.group(1))
                     new_value = match.group(2)
 
                     try:
@@ -1381,7 +1380,10 @@ def add_check():
                         logging.error("File not found: %s", cfg_file)
                         return
                     
-                    lines[line_number-1] = new_value + '\n'
+                    for i, line in enumerate(lines):
+                        if line.startswith("[passive checks]"):
+                            lines.insert(i+1, new_value + '\n')
+                            break
 
                     try:
                         with open(cfg_file, 'w', encoding='utf-8') as file:
