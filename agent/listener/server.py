@@ -1192,7 +1192,7 @@ def write_to_config_and_file(section_options_to_update):
                 line_number = int(match.group(1))
                 old_value = match.group(2)
                 new_value = match.group(3)
-                command = f'powershell -Command "(Get-Content {cfg_file} -Raw) -replace "{old_value}", "{new_value}" | Set-Content {cfg_file}"'
+                # command = f'powershell -Command "(Get-Content {cfg_file} -Raw) -replace "{old_value}", "{new_value}" | Set-Content {cfg_file}"'
 
                 try:
                     with open(cfg_file, 'r', encoding='utf-8') as file:
@@ -1214,12 +1214,12 @@ def write_to_config_and_file(section_options_to_update):
                 except Exception as e:
                     logging.exception(e)
                     return
-                running_check = subprocess.run(
-                    command, 
-                    shell=True, 
-                    stdout=subprocess.PIPE, 
-                    stderr=subprocess.STDOUT
-                )
+                # running_check = subprocess.run(
+                #     command, 
+                #     shell=True, 
+                #     stdout=subprocess.PIPE, 
+                #     stderr=subprocess.STDOUT
+                # )
             else:
                 running_check = subprocess.run(
                     sed_cmd, 
