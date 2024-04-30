@@ -1190,7 +1190,6 @@ def write_to_config_and_file(section_options_to_update):
                 if not match:
                     continue
                 line_number = int(match.group(1))
-                old_value = match.group(2)
                 new_value = match.group(3)
 
                 try:
