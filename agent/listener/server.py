@@ -1145,6 +1145,7 @@ def write_to_config_and_file(section_options_to_update):
         sed_cmds = []
         lines = None
         with open(cfg_file, 'r') as configfile:
+            logging.debug("write_to_configFile() - cfg_file: %s successfully opened", cfg_file)
             lines = configfile.readlines()
 
             uncommented_options = set()
