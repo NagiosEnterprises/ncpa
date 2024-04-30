@@ -863,7 +863,8 @@ if __SYSTEM__ == 'nt':
             self.p, self.l = None, None
 
             self.options = get_options()
-            self.config = get_configuration()
+            # self.config = get_configuration()
+            self.config = self.load_config()
             self.has_error = Value('i', False)
 
             self.setup_plugins()
@@ -873,6 +874,10 @@ if __SYSTEM__ == 'nt':
             for handler in self.logger.handlers:
                 handler.addFilter(tokenFilter)
 
+        def load_config(self):
+            config = get_configuration()
+            config_dict = {section: dict(config.items(section)) for section in config.sections()}
+            return config_dict
 
         def init_logger(self, logger_name):
             self.logger = logging.getLogger(logger_name)
