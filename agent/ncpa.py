@@ -1148,12 +1148,12 @@ def main(has_error):
     log.info("main - SSL version: %s", ssl.OPENSSL_VERSION)
     log.info("main - ZLIB version: %s", zlib_version)
 
-    log.info("main - config: %s", config)
-    for sectionName, configSection in config.items():
-        if sectionName == 'plugin directives':
-            for pluginExtension in list(configSection.keys()):
-                if pluginExtension[0] == '.':
-                    config[sectionName][pluginExtension.lower()] = configSection[pluginExtension]
+    if __SYSTEM__ == 'nt':
+        for sectionName, configSection in config.items():
+            if sectionName == 'plugin directives':
+                for pluginExtension in list(configSection.keys()):
+                    if pluginExtension[0] == '.':
+                        config[sectionName][pluginExtension.lower()] = configSection[pluginExtension]
 
 
     # If we are running this in debug mode from the command line, we need to
