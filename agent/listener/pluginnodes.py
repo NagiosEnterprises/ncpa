@@ -245,7 +245,10 @@ class PluginAgentNode(nodes.ParentNode):
                         continue
                     plugin_abs_path = os.path.join(root, plugin)
                     if os.path.isfile(plugin_abs_path):
-                        self.children[plugin] = PluginNode(plugin, plugin_abs_path)
+                        if environment.SYSTEM == "Windows":
+                            self.children[plugin.lower()] = PluginNode(plugin, plugin_abs_path)
+                        else:
+                            self.children[plugin] = PluginNode(plugin, plugin_abs_path)
         except OSError as exc:
             logging.warning("Unable to access directory %s", plugin_path)
             logging.warning(
