@@ -1367,50 +1367,50 @@ def add_check():
             sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
 
         for sed_cmd in sed_cmds:                
-                if environment.SYSTEM == "Windows":
-                    match = re.match(r'sed -i \'s/.*/(.*)/\' ', sed_cmd)
-                    if not match:
-                        continue
-                    new_value = match.group(2)
+            if environment.SYSTEM == "Windows":
+                match = re.match(r'sed -i \'s/.*/(.*)/\' ', sed_cmd)
+                if not match:
+                    continue
+                new_value = match.group(2)
 
-                    try:
-                        with open(cfg_file, 'r', encoding='utf-8') as file:
-                            lines = file.readlines()
-                    except FileNotFoundError:
-                        logging.error("File not found: %s", cfg_file)
-                        return
-                    
-                    for i, line in enumerate(lines):
-                        if line.startswith("[passive checks]"):
-                            lines.insert(i+1, new_value + '\n')
-                            break
+                try:
+                    with open(cfg_file, 'r', encoding='utf-8') as file:
+                        lines = file.readlines()
+                except FileNotFoundError:
+                    logging.error("File not found: %s", cfg_file)
+                    return
+                
+                for i, line in enumerate(lines):
+                    if line.startswith("[passive checks]"):
+                        lines.insert(i+1, new_value + '\n')
+                        break
 
-                    try:
-                        with open(cfg_file, 'w', encoding='utf-8') as file:
-                            file.writelines(lines)
-                    except FileNotFoundError:
-                        logging.error("File not found: %s", cfg_file)
-                        return
-                    except Exception as e:
-                        logging.exception(e)
-                        return
-                else:
-                    running_check = subprocess.run(
-                        sed_cmd, 
-                        shell=True, 
-                        stdout=subprocess.PIPE, 
-                        stderr=subprocess.STDOUT,
-                        preexec_fn=os.setsid
-                    )
+                try:
+                    with open(cfg_file, 'w', encoding='utf-8') as file:
+                        file.writelines(lines)
+                except FileNotFoundError:
+                    logging.error("File not found: %s", cfg_file)
+                    return
+                except Exception as e:
+                    logging.exception(e)
+                    return
+            else:
+                running_check = subprocess.run(
+                    sed_cmd, 
+                    shell=True, 
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.STDOUT,
+                    preexec_fn=os.setsid
+                )
 
-                if running_check.returncode != 0:
-                    logging.error("add_check() - sed_cmd failed: %s", running_check.stdout)
-                    return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
-                else:
-                    # add check to running configuration so it will be displayed in the GUI before restarting NCPA
-                    # this does NOT make NCPA start monitoring the check until it is restarted
-                    new_check_parts = new_check.split('=')
-                    config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
+            if running_check.returncode != 0:
+                logging.error("add_check() - sed_cmd failed: %s", running_check.stdout)
+                return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
+            else:
+                # add check to running configuration so it will be displayed in the GUI before restarting NCPA
+                # this does NOT make NCPA start monitoring the check until it is restarted
+                new_check_parts = new_check.split('=')
+                config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
 
     except Exception as e:
         logging.exception(e)
