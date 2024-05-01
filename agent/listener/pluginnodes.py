@@ -1,6 +1,5 @@
 import os
 import time
-import logging
 from configparser import NoOptionError
 import subprocess
 import shlex
@@ -11,6 +10,7 @@ import listener.nodes as nodes
 import listener.database as database
 import listener.environment as environment
 import listener.server as server
+from ncpa import listener_logger as logging
 import signal
 from threading import Timer
 

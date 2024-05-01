@@ -1,10 +1,10 @@
 import psutil
 import listener.nodes as nodes
-import logging
 import re
 import platform
 import tempfile
 import subprocess
+from ncpa import listener_logger as logging
 
 
 class ProcessNode(nodes.LazyNode):
