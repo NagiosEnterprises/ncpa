@@ -3,7 +3,8 @@ import time
 import sqlite3
 import sys
 import listener.server
-import logging
+
+from ncpa import listener_logger as logging
 
 # A module to wrap sqlite3 for use with a small database to store things
 # like checks across both passive and active sections

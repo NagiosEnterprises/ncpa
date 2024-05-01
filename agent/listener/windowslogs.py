@@ -46,7 +46,6 @@ adaptation of the input Logged After specification.
 
 """
 
-import logging
 import datetime
 import win32evtlog
 import re
@@ -57,6 +56,7 @@ import listener.database as database
 import listener.server
 import time
 import platform
+from ncpa import listener_logger as logging
 
 
 class WindowsLogsNode(listener.nodes.LazyNode):

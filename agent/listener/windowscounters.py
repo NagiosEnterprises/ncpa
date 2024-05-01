@@ -3,9 +3,9 @@
 import listener.nodes
 import win32pdh
 import time
-import logging
 import copy
 import re
+from ncpa import listener_logger as logging
 
 class WindowsCountersNode(listener.nodes.LazyNode):
 

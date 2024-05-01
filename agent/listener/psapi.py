@@ -1,6 +1,5 @@
 import psutil as ps
 import os
-import logging
 import time
 import re
 import platform
@@ -11,6 +10,7 @@ import listener.processes as processes
 import ncpa
 import listener.environment as environment
 import math
+from ncpa import listener_logger as logging
 
 importables = ("windowscounters", "windowslogs")
 

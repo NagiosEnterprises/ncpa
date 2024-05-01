@@ -1034,7 +1034,6 @@ def setup_logger(config, loggerinstance, logfile):
         if __SYSTEM__ == 'posix':
             chown(config.get('general', 'uid'), config.get('general', 'gid'), logfile)
 
-    handlers.append(logging.StreamHandler())
     loggerinstance.setLevel(level)
 
     for h in handlers:
@@ -1174,7 +1173,6 @@ def main(has_error):
 
         # Temporary set up logging
         log = logging.getLogger()
-        log.addHandler(logging.StreamHandler())
         log.setLevel('DEBUG')
 
         p, l = start_processes(options, config, has_error, True)

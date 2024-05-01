@@ -9,6 +9,8 @@ import re
 import listener.server
 import listener.database as database
 
+from ncpa import listener_logger as logging
+
 
 # Valid nodes is updated as it gets set when calling a node via accessor
 valid_nodes = []
