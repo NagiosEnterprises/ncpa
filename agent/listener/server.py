@@ -1183,7 +1183,7 @@ def write_to_config_and_file(section_options_to_update):
 
         for sed_cmd in sed_cmds:
             if environment.SYSTEM == "Windows":
-                match = re.match(r"sed -i '(\d*)s/(.*)/(.*)/' ", sed_cmd)
+                match = re.match(r"sed -i '(\d*)s/(.*?)/(.*)/' ", sed_cmd)
                 if not match:
                     continue
                 line_number = int(match.group(1))
