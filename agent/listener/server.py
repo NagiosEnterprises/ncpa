@@ -1182,14 +1182,14 @@ def write_to_config_and_file(section_options_to_update):
             configfile.close()
 
         for sed_cmd in sed_cmds:
-            logging.debug("write_to_configFile() - sed command: %s", sed_cmd)
-
             if environment.SYSTEM == "Windows":
                 match = re.match(r"sed -i '(\d*)s/(.*)/(.*)/' ", sed_cmd)
                 if not match:
                     continue
                 line_number = int(match.group(1))
                 new_value = match.group(3)
+
+                logging.debug("write_to_configFile() - replacing line %d with %s", line_number, new_value)
 
                 try:
                     with open(cfg_file, 'r', encoding='utf-8') as file:
@@ -1210,6 +1210,7 @@ def write_to_config_and_file(section_options_to_update):
                     logging.exception(e)
                     return
             else:
+                logging.debug("write_to_configFile() - running sed command: %s", sed_cmd)
                 running_check = subprocess.run(
                     sed_cmd, 
                     shell=True, 
@@ -1368,6 +1369,8 @@ def add_check():
             sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
 
         for sed_cmd in sed_cmds:
+            logging.debug("add_check() - adding check: %s", new_check)
+
             if environment.SYSTEM == "Windows":
                 match = re.match(r"sed -i '/.*/a(.*)\' ", sed_cmd)
                 
