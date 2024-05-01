@@ -1182,6 +1182,7 @@ def write_to_config_and_file(section_options_to_update):
             configfile.close()
 
         for sed_cmd in sed_cmds:
+            logging.debug("write_to_configFile() - sed command: %s", sed_cmd)
 
             if environment.SYSTEM == "Windows":
                 match = re.match(r"sed -i '(\d*)s/(.*)/(.*)/' ", sed_cmd)
