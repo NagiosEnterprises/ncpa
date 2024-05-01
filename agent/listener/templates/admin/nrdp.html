@@ -16,8 +16,8 @@ $(document).ready(function() {
         }
     });
 
-    $('input[name="nrdp_url"]').on('input', function() {
-        $(this).val($(this).val().replace(/\\\//g, '/'));
+    $('input[name="nrdp_url"]').val(function(index, value) {
+        return value.replace(/\\\//g, '/');
     });
 
     $('form').submit(function(e) {
