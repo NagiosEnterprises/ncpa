@@ -6,6 +6,7 @@ import logging
 import pickle
 import copy
 import re
+import listener.environment as environment
 import listener.server
 import listener.database as database
 
@@ -37,6 +38,8 @@ class ParentNode(object):
     def accessor(self, path, config, full_path, args):
         if path:
             next_child_name, rest_path = path[0], path[1:]
+            if environment.SYSTEM == "Windows":
+                next_child_name = next_child_name.lower()
             try:
                 child = self.children[next_child_name]
                 valid_nodes.append(next_child_name)

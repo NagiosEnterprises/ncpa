@@ -31,6 +31,8 @@ except ImportError:
 class PluginNode(nodes.RunnableNode):
     def __init__(self, plugin, plugin_abs_path, *args, **kwargs):
         self.name = plugin
+        if environment.SYSTEM == "Windows":
+            self.name = self.name.lower()
         self.plugin_abs_path = plugin_abs_path
         self.arguments = []
         self.killed = False
