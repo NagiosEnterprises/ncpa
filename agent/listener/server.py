@@ -1369,9 +1369,9 @@ def add_check():
         for sed_cmd in sed_cmds:                
             if environment.SYSTEM == "Windows":
                 match = re.match(r'sed -i \'s/.*/(.*)/\' ', sed_cmd)
-                if not match:
+                if not match or len(match.groups()) < 1:
                     continue
-                new_value = match.group(2)
+                new_value = match.group(1)
 
                 try:
                     with open(cfg_file, 'r', encoding='utf-8') as file:
