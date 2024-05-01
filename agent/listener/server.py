@@ -1366,12 +1366,13 @@ def add_check():
             new_check = f"{values_dict['host_name']}|{values_dict['service_name']}|{values_dict['check_interval']} = {values_dict['check_value']}"
             sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
 
-        for sed_cmd in sed_cmds:                
+        for sed_cmd in sed_cmds:
             if environment.SYSTEM == "Windows":
-                match = re.match(r'sed -i \'s/.*/(.*)/\' ', sed_cmd)
+                match = re.match(r"sed -i '/.*/a(.*)\' ", sed_cmd)
+                
                 if not match or len(match.groups()) < 1:
                     continue
-                new_value = match.group(1)
+                match_value = match.group(1).strip()
 
                 try:
                     with open(cfg_file, 'r', encoding='utf-8') as file:
@@ -1381,8 +1382,9 @@ def add_check():
                     return
                 
                 for i, line in enumerate(lines):
-                    if line.startswith("[passive checks]"):
-                        lines.insert(i+1, new_value + '\n')
+                    if line.startswith("[passive checks]") or line.startswith("#[passive checks]"):
+                        lines[i] = "[passive checks]"
+                        lines.insert(i+1, '\n' + match_value + '\n')
                         break
 
                 try:
