@@ -7,7 +7,7 @@ Changelog
 
 - Added the ability to configure certain settings in the NCPA interface. (Blake Bahner)
 - Added migration of NCPA 2 configuration files and plugins to NCPA 3. (Blake Bahner)
-- Made the NCPA 3 plugin directives case-insensitive on Windows to match standard behavior. (Blake Bahner)
+- Made the NCPA 3 plugins and directives case-insensitive on Windows to match standard Windows behavior. (Blake Bahner)
 - Removed misleading information from the NCPA 3 configuration file. (Blake Bahner)
 - Updated passive checks to allow escaped spaces. (Blake Bahner)
 - Improved the NCPA token filter to cause significantly fewer crashes when something else goes wrong. (Blake Bahner)
