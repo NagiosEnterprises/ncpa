@@ -1403,14 +1403,14 @@ def add_check():
                     preexec_fn=os.setsid
                 )
 
-            if running_check.returncode != 0:
-                logging.error("add_check() - sed_cmd failed: %s", running_check.stdout)
-                return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
-            else:
-                # add check to running configuration so it will be displayed in the GUI before restarting NCPA
-                # this does NOT make NCPA start monitoring the check until it is restarted
-                new_check_parts = new_check.split('=')
-                config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
+                if running_check.returncode != 0:
+                    logging.error("add_check() - sed_cmd failed: %s", running_check.stdout)
+                    return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
+                else:
+                    # add check to running configuration so it will be displayed in the GUI before restarting NCPA
+                    # this does NOT make NCPA start monitoring the check until it is restarted
+                    new_check_parts = new_check.split('=')
+                    config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
 
     except Exception as e:
         logging.exception(e)
