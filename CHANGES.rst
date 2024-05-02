@@ -15,7 +15,7 @@ Changelog
 **Bug Fixes**
 
 - Fixed the allocation of loggers for sections of NCPA that were not logging properly. (Blake Bahner)
-- Fixed an issue where passive checks would malfunction when handling arguments with whitespaces that were escaped or encapsulated in quotes. (Blake Bahner)
+- Fixed an issue where passive checks would malfunction when handling API endpoints and hostnames/servicenames with whitespaces that were escaped or encapsulated in quotes. (Blake Bahner)
 - Fixed an issue where NCPA would crash when psutil couldn't find certain file systems. (Blake Bahner)
 - Fixed an issue where NCPA would crash if it couldn't process disk information. (Blake Bahner)
 
