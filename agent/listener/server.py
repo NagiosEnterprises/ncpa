@@ -1102,7 +1102,10 @@ def sanitize_for_configparser(input_value):
     if len(input_value) > max_length:
         return False
     
-    input_value = input_value.replace('\\', '').replace('\n', '').replace('\r', '')
+    while '\\\\' in input_value:
+        input_value = input_value.replace('\\\\', '')
+    input_value = input_value.replace('\n', '\\n').replace('\r', '\\r')
+
     sanitized = input_value.encode().decode('unicode_escape')
     sanitized = sanitized.replace('/', '\/') # escape forward slashes for sed command
     
