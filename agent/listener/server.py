@@ -1249,14 +1249,15 @@ def set_config():
         ("[passive]", "handlers",       "handlers",             ["None", "nrdp", "kafkaproducer", "nrdp, kafkaproducer"]),
 
         ("[nrdp]",    "nrdp_url",       "parent",               r"^https?://\S+/nrdp$"),
-        ("[nrdp]",    "nrdp_token",     "token",                r"^\S+$"),
-        ("[nrdp]",    "hostname",       "hostname",             r"^\S+$"),
+        ("[nrdp]",    "nrdp_token",     "token",                r"^[^\r\n]+$"),
+        ("[nrdp]",    "hostname",       "hostname",             r"^[^\r\n]+$"),
         ("[nrdp]",    "connection_timeout",   "connection_timeout",   r"^\d+$"),
 
-        ("[kafkaproducer]", "hostname",     "hostname",         r"^\S+$"),
-        ("[kafkaproducer]", "servers",      "servers",          r"^\S+(?:,\S+)*$"),
-        ("[kafkaproducer]", "client_name",  "clientname",       r"^\S+$"),
-        ("[kafkaproducer]", "topic",        "topic",            r"^\S+$"),
+        ("[kafkaproducer]", "hostname",     "hostname",         r"^[^\r\n]+$"),
+        ("[kafkaproducer]", "servers",      "servers",          r"^[^\r\n]+(?:,[^\r\n]+)*$"),
+        ("[kafkaproducer]", "client_name",  "clientname",       r"^[^\r\n]+$"),
+        ("[kafkaproducer]", "topic",        "topic",            r"^[^\r\n]+$"),
+                pattern = r"^[^\r\n]+$"
     ]
 
     editable_options_list = [option for (_, option, _, _) in allowed_options]
