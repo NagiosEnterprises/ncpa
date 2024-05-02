@@ -1377,6 +1377,7 @@ def add_check():
 
             if environment.SYSTEM == "Windows":
                 new_check = new_check.replace('\/', '/') # unescape the slashes that were escaped for the sed command
+                sed_cmd = sed_cmd.replace('\/', '/') # unescape the slashes that were escaped for the sed command
                 match = re.match(r"sed -i '/.*/a(.*)\' ", sed_cmd)
                 
                 if not match or len(match.groups()) < 1:
