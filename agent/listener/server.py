@@ -1257,7 +1257,6 @@ def set_config():
         ("[kafkaproducer]", "servers",      "servers",          r"^[^\r\n]+(?:,[^\r\n]+)*$"),
         ("[kafkaproducer]", "client_name",  "clientname",       r"^[^\r\n]+$"),
         ("[kafkaproducer]", "topic",        "topic",            r"^[^\r\n]+$"),
-                pattern = r"^[^\r\n]+$"
     ]
 
     editable_options_list = [option for (_, option, _, _) in allowed_options]
