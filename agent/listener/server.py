@@ -1368,10 +1368,12 @@ def add_check():
             new_check = f"{values_dict['host_name']}|{values_dict['service_name']}|{values_dict['check_interval']} = {values_dict['check_value']}"
             sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
 
+
         for sed_cmd in sed_cmds:
             logging.debug("add_check() - adding check: %s", new_check)
 
             if environment.SYSTEM == "Windows":
+                new_check = new_check.replace('\/', '/') # unescape the slashes that were escaped for the sed command
                 match = re.match(r"sed -i '/.*/a(.*)\' ", sed_cmd)
                 
                 if not match or len(match.groups()) < 1:
@@ -1418,11 +1420,12 @@ def add_check():
                     new_check_parts = new_check.split('=')
                     config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
 
+                new_check = new_check.replace('\/', '/') # unescape the slashes that were escaped for the sed command
+
     except Exception as e:
         logging.exception(e)
         return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
 
-    new_check = new_check.replace('\/', '/') # unescape the slashes that were escaped for the sed command
     return jsonify({'type': 'success', 'message': 'Check added. <b>Note</b>: You will need to <b>restart NCPA</b> for the new checks to take effect.', 'check': str(new_check)})
 
 # ------------------------------
