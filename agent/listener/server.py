@@ -1407,7 +1407,6 @@ def add_check():
                     logging.exception(e)
                     return
             else:
-                sed_cmd = sed_cmd.replace('\\', '\\\\') # escape the backslashes so the remaining single backslashes are actually saved instead of being used as escape characters
                 running_check = subprocess.run(
                     sed_cmd, 
                     shell=True, 
