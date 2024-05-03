@@ -1104,7 +1104,7 @@ def sanitize_for_configparser(input_value):
     
     while '\\\\' in input_value:
         input_value = input_value.replace('\\\\', '\\')
-    sanitized = input_value.replace('\n', '\\n').replace('\r', '\\r')
+    sanitized = input_value.replace('\n', '').replace('\r', '')
 
     try:
         sanitized = sanitized.replace('\\', '\\\\') # escape backslashes for sed command, which will interpret single backslashes as escape characters
@@ -1120,21 +1120,25 @@ def sanitize_for_configparser(input_value):
 def validate_config_input(section, option, value, valid_options):
     if not value:
         return None, None, None
-    # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
-    for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
-        if "["+section+"]" == target_section:
-            if option == tbl_option:
-                if isinstance(valid_values, list):
-                    if value.strip() not in valid_values:
+    try:
+        # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
+        for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
+            if "["+section+"]" == target_section:
+                if option == tbl_option:
+                    if isinstance(valid_values, list):
+                        if value.strip() not in valid_values:
+                            return False
+                        else:
+                            value = sanitize_for_configparser(value)
+                            return (section, option_in_file, value.strip())
+                    elif not re.match(valid_values, value.strip()):
                         return False
                     else:
                         value = sanitize_for_configparser(value)
                         return (section, option_in_file, value.strip())
-                elif not re.match(valid_values, value.strip()):
-                    return False
-                else:
-                    value = sanitize_for_configparser(value)
-                    return (section, option_in_file, value.strip())
+    except Exception as e:
+        logging.exception(e)
+        return None, None, None
     return None, None, None
 
 # inputs sanitized and validated, write to the config and file
