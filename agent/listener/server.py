@@ -1103,10 +1103,11 @@ def sanitize_for_configparser(input_value):
         return False
     
     while '\\\\' in input_value:
-        input_value = input_value.replace('\\\\', '')
+        input_value = input_value.replace('\\\\', '\\')
     input_value = input_value.replace('\n', '\\n').replace('\r', '\\r')
 
     sanitized = input_value.encode().decode('unicode_escape')
+    sanitized = sanitized.replace('\\', '\\\\') # escape backslashes for sed command, which will interpret single backslashes as escape characters
     sanitized = sanitized.replace('/', '\/') # escape forward slashes for sed command
     
     return sanitized
@@ -1191,6 +1192,7 @@ def write_to_config_and_file(section_options_to_update):
                     continue
                 line_number = int(match.group(1))
                 new_value = match.group(3)
+                new_value = new_value.replace('\\\\', '\\') # unescape backslashes from sed command
 
                 logging.debug("write_to_configFile() - replacing line %d with %s", line_number, new_value)
 
@@ -1376,8 +1378,8 @@ def add_check():
             logging.debug("add_check() - adding check: %s", new_check)
 
             if environment.SYSTEM == "Windows":
-                new_check = new_check.replace('\/', '/') # unescape the slashes that were escaped for the sed command
-                sed_cmd = sed_cmd.replace('\/', '/') # unescape the slashes that were escaped for the sed command
+                new_check = new_check.replace('\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command for GUI
+                sed_cmd = sed_cmd.replace('\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command
                 match = re.match(r"sed -i '/.*/a(.*)\' ", sed_cmd)
                 
                 if not match or len(match.groups()) < 1:
@@ -1424,7 +1426,7 @@ def add_check():
                     new_check_parts = new_check.split('=')
                     config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
 
-                new_check = new_check.replace('\/', '/') # unescape the slashes that were escaped for the sed command
+                new_check = new_check.replace('\/', '/') # unescape the slashes that were escaped for the sed command for GUI
 
     except Exception as e:
         logging.exception(e)
