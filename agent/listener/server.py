@@ -1118,6 +1118,8 @@ def sanitize_for_configparser(input_value):
 
 # validate the input from the form against the valid options
 def validate_config_input(section, option, value, valid_options):
+    if not value:
+        return None, None, None
     # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
     for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
         if "["+section+"]" == target_section:
