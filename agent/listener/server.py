@@ -1103,16 +1103,23 @@ def sanitize_for_configparser(input_value):
         return False
     
     while '\\\\' in input_value:
-        input_value = input_value.replace('\\\\', '')
-    input_value = input_value.replace('\n', '\\n').replace('\r', '\\r')
+        input_value = input_value.replace('\\\\', '\\')
+    sanitized = input_value.replace('\n', '\\n').replace('\r', '\\r')
 
-    sanitized = input_value.encode().decode('unicode_escape')
-    sanitized = sanitized.replace('/', '\/') # escape forward slashes for sed command
+    try:
+        sanitized = sanitized.replace('\\', '\\\\') # escape backslashes for sed command, which will interpret single backslashes as escape characters
+        sanitized = sanitized.encode().decode('unicode_escape')
+        sanitized = sanitized.replace('/', '\/') # escape forward slashes for sed command
+    except Exception as e:
+        logging.exception(e)
+        return False
     
     return sanitized
 
 # validate the input from the form against the valid options
 def validate_config_input(section, option, value, valid_options):
+    if not value:
+        return None, None, None
     # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
     for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
         if "["+section+"]" == target_section:
@@ -1191,6 +1198,7 @@ def write_to_config_and_file(section_options_to_update):
                     continue
                 line_number = int(match.group(1))
                 new_value = match.group(3)
+                new_value = new_value.replace('\\\\', '\\') # unescape backslashes from sed command
 
                 logging.debug("write_to_configFile() - replacing line %d with %s", line_number, new_value)
 
@@ -1350,7 +1358,7 @@ def add_check():
                 hostname = value
             elif option == 'service_name':
                 for check in existing_checks:
-                    if check[0].split('|')[0] == hostname and check[0].split('|')[1] == value:
+                    if check[0].split('|')[0] == hostname.replace('\\\\', '\\') and check[0].split('|')[1] == value.replace('\\\\', '\\'):
                         return jsonify({'type': 'danger', 'message': 'A check with that name already exists.'})
                 pattern = r"^[^\r\n]+$"
             elif option == 'check_interval':
@@ -1376,8 +1384,8 @@ def add_check():
             logging.debug("add_check() - adding check: %s", new_check)
 
             if environment.SYSTEM == "Windows":
-                new_check = new_check.replace('\/', '/') # unescape the slashes that were escaped for the sed command
-                sed_cmd = sed_cmd.replace('\/', '/') # unescape the slashes that were escaped for the sed command
+                new_check = new_check.replace('\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command for GUI
+                sed_cmd = sed_cmd.replace('\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command
                 match = re.match(r"sed -i '/.*/a(.*)\' ", sed_cmd)
                 
                 if not match or len(match.groups()) < 1:
@@ -1406,6 +1414,8 @@ def add_check():
                 except Exception as e:
                     logging.exception(e)
                     return
+                new_check_parts = new_check.split('=')
+                config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
             else:
                 running_check = subprocess.run(
                     sed_cmd, 
@@ -1424,7 +1434,7 @@ def add_check():
                     new_check_parts = new_check.split('=')
                     config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
 
-                new_check = new_check.replace('\/', '/') # unescape the slashes that were escaped for the sed command
+                new_check = new_check.replace('\/', '/') # unescape the slashes that were escaped for the sed command for GUI
 
     except Exception as e:
         logging.exception(e)
