@@ -1100,7 +1100,7 @@ def nrdp():
 def sanitize_for_configparser(input_value):
     max_length = 1024
     if len(input_value) > max_length:
-        return False
+        return ''
     
     while '\\\\' in input_value:
         input_value = input_value.replace('\\\\', '\\')
@@ -1112,7 +1112,7 @@ def sanitize_for_configparser(input_value):
         sanitized = sanitized.replace('/', '\/') # escape forward slashes for sed command
     except Exception as e:
         logging.exception(e)
-        return False
+        return ''
     
     return sanitized
 
@@ -1121,6 +1121,8 @@ def validate_config_input(section, option, value, valid_options):
     if not value:
         return None, None, None
     try:
+        if not isinstance(value, str):
+            return None, None, None
         # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
         for (target_section, tbl_option, option_in_file, valid_values) in valid_options:
             if "["+section+"]" == target_section:
