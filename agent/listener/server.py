@@ -1103,7 +1103,7 @@ def sanitize_for_configparser(input_value):
         return ''
     
     sanitized = input_value
-    while '\\\\' in input_value:
+    while '\\\\' in sanitized:
         sanitized = sanitized.replace('\\\\', '\\')
     sanitized = sanitized.replace('\n', '').replace('\r', '')
     sanitized = sanitized.replace('\\n', '').replace('\\r', '')
