@@ -1105,10 +1105,8 @@ def sanitize_for_configparser(input_value):
     sanitized = input_value
     while '\\\\' in input_value:
         sanitized = sanitized.replace('\\\\', '\\')
-    while '\n' in sanitized or '\r' in sanitized:
-        sanitized = sanitized.replace('\n', '').replace('\r', '')
-    while '\\n' in sanitized or '\\r' in sanitized:
-        sanitized = sanitized.replace('\\n', '').replace('\\r', '')
+    sanitized = sanitized.replace('\n', '').replace('\r', '')
+    sanitized = sanitized.replace('\\n', '').replace('\\r', '')
 
     try:
         sanitized = sanitized.replace('\\', '\\\\') # escape backslashes for sed command, which will interpret single backslashes as escape characters
