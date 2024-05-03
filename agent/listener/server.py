@@ -1358,7 +1358,7 @@ def add_check():
                 hostname = value
             elif option == 'service_name':
                 for check in existing_checks:
-                    if check[0].split('|')[0] == hostname and check[0].split('|')[1] == value:
+                    if check[0].split('|')[0] == hostname.replace('\\\\', '\\') and check[0].split('|')[1] == value.replace('\\\\', '\\'):
                         return jsonify({'type': 'danger', 'message': 'A check with that name already exists.'})
                 pattern = r"^[^\r\n]+$"
             elif option == 'check_interval':
