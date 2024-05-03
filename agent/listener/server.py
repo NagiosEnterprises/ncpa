@@ -1361,10 +1361,6 @@ def add_check():
                     logging.info("check: %s", check)
                     logging.info("hostname: %s", hostname)
                     logging.info("value: %s", value)
-                    logging.info("hostname.replace('\\\\', '\\'): %s", hostname.replace('\\\\', '\\'))
-                    logging.info("check[0].split('|')[0]: %s", check[0].split('|')[0])
-                    logging.info("check[0].split('|')[1]: %s", check[0].split('|')[1])
-                    logging.info("value.replace('\\\\', '\\'): %s", value.replace('\\\\', '\\'))
                     if check[0].split('|')[0] == hostname.replace('\\\\', '\\') and check[0].split('|')[1] == value.replace('\\\\', '\\'):
                         return jsonify({'type': 'danger', 'message': 'A check with that name already exists.'})
                 pattern = r"^[^\r\n]+$"
@@ -1421,6 +1417,8 @@ def add_check():
                 except Exception as e:
                     logging.exception(e)
                     return
+                new_check_parts = new_check.split('=')
+                config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
             else:
                 running_check = subprocess.run(
                     sed_cmd, 
