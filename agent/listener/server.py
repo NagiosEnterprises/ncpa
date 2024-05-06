@@ -1096,21 +1096,17 @@ def nrdp():
 #   Passive Checks
 #       - Adding checks
 
-# sanitize inputs from the form
+# sanitize inputs from the form # TODO: refactor to split into windows and non-windows for easier reading
 def sanitize_for_configparser(input_value):
     max_length = 1024
     if len(input_value) > max_length:
         return ''
     
-    sanitized = input_value
-    while '\\\\' in sanitized:
-        sanitized = sanitized.replace('\\\\', '\\')
-    sanitized = sanitized.replace('\n', '').replace('\r', '')
-    sanitized = sanitized.replace('\\n', '').replace('\\r', '')
-
     try:
-        sanitized = sanitized.replace('\\', '\\\\') # escape backslashes for sed command, which will interpret single backslashes as escape characters
+        sanitized = input_value
         sanitized = sanitized.encode().decode('unicode_escape')
+        sanitized = sanitized.replace('\n', '\\n').replace('\r', '\\r')
+        sanitized = sanitized.replace('\\', '\\\\') # escape backslashes for sed command, which will interpret single backslashes as escape characters
         sanitized = sanitized.replace('/', '\/') # escape forward slashes for sed command
     except Exception as e:
         logging.exception(e)
