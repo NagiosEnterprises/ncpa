@@ -1261,14 +1261,14 @@ def set_config():
         ("[passive]", "handlers",       "handlers",             ["None", "nrdp", "kafkaproducer", "nrdp, kafkaproducer"]),
 
         ("[nrdp]",    "nrdp_url",       "parent",               r"^https?://\S+/nrdp$"),
-        ("[nrdp]",    "nrdp_token",     "token",                r"^[^\r\n]+$"),
-        ("[nrdp]",    "hostname",       "hostname",             r"^[^\r\n]+$"),
+        ("[nrdp]",    "nrdp_token",     "token",                r"^.+$"),
+        ("[nrdp]",    "hostname",       "hostname",             r"^.+$"),
         ("[nrdp]",    "connection_timeout",   "connection_timeout",   r"^\d+$"),
 
-        ("[kafkaproducer]", "hostname",     "hostname",         r"^[^\r\n]+$"),
-        ("[kafkaproducer]", "servers",      "servers",          r"^[^\r\n]+(?:,[^\r\n]+)*$"),
-        ("[kafkaproducer]", "client_name",  "clientname",       r"^[^\r\n]+$"),
-        ("[kafkaproducer]", "topic",        "topic",            r"^[^\r\n]+$"),
+        ("[kafkaproducer]", "hostname",     "hostname",         r"^.+$"),
+        ("[kafkaproducer]", "servers",      "servers",          r"^.+(?:,.+)*$"),
+        ("[kafkaproducer]", "client_name",  "clientname",       r"^.+$"),
+        ("[kafkaproducer]", "topic",        "topic",            r"^.+$"),
     ]
 
     editable_options_list = [option for (_, option, _, _) in allowed_options]
@@ -1358,17 +1358,17 @@ def add_check():
         for (option, value) in request.form.items():
             value = sanitize_for_configparser(value)
             if option == 'host_name':
-                pattern = r"^[^\r\n]+$"
+                pattern = r"^.+$"
                 hostname = value
             elif option == 'service_name':
                 for check in existing_checks:
                     if check[0].split('|')[0] == hostname.replace('\\\\', '\\') and check[0].split('|')[1] == value.replace('\\\\', '\\'):
                         return jsonify({'type': 'danger', 'message': 'A check with that name already exists.'})
-                pattern = r"^[^\r\n]+$"
+                pattern = r"^.+$"
             elif option == 'check_interval':
                 pattern = r"^\d*$"
             elif option == 'check_value':
-                pattern = r"^[^\r\n]+$"
+                pattern = r"^.+$"
 
             if not re.match(pattern, value):
                 return jsonify({'type': 'danger', 'message': 'Invalid input: %s' % option})
