@@ -5,18 +5,18 @@ Changelog
 ==================
 **Updates**
 
-- Added the ability to configure certain settings in the NCPA interface. (Blake Bahner)
-- Added migration of NCPA 2 configuration files and plugins to NCPA 3. (Blake Bahner)
-- Made the NCPA 3 plugins and directives case-insensitive on Windows to match standard Windows behavior. (Blake Bahner)
-- Removed misleading information from the NCPA 3 configuration file. (Blake Bahner)
-- Updated passive checks to allow escaped spaces. (Blake Bahner)
+- Added the ability to configure certain settings in the NCPA interface. [GH#1144] (Blake Bahner)
+- Added migration of NCPA 2 configuration files and plugins to NCPA 3. [GH#1097] (Blake Bahner)
+- Made the NCPA 3 plugins and directives case-insensitive on Windows to match standard Windows behavior. [GH#1137] (Blake Bahner)
+- Removed misleading information from the NCPA 3 configuration file.  (Blake Bahner)
+- Updated passive checks to allow escaped spaces. [GH#1089] (Blake Bahner)
 - Improved the NCPA token filter to cause significantly fewer crashes when something else goes wrong. (Blake Bahner)
 
 **Bug Fixes**
 
 - Fixed the allocation of loggers for sections of NCPA that were not logging properly. (Blake Bahner)
 - Fixed an issue where passive checks would malfunction when handling API endpoints and hostnames/servicenames with whitespaces that were escaped or encapsulated in quotes. (Blake Bahner)
-- Fixed an issue where NCPA would crash when psutil couldn't find certain file systems. (Blake Bahner)
+- Fixed an issue where NCPA would crash when psutil couldn't find certain file systems. [GH#1141] (Blake Bahner)
 - Fixed an issue where NCPA would crash if it couldn't process disk information. (Blake Bahner)
 
 3.0.2 - 03/20/2024
