@@ -1104,7 +1104,7 @@ def sanitize_for_configparser(input_value):
     
     try:
         sanitized = input_value
-        sanitized = sanitized.replace('\N', '\\N') # Unicode escape will break if it sees \N ¯\_(ツ)_/¯
+        sanitized = sanitized.replace('\\N', '\\\\N') # Unicode escape will break if it sees \N ¯\_(ツ)_/¯
         sanitized = sanitized.encode().decode('unicode_escape')
         sanitized = sanitized.replace('\n', '\\n').replace('\r', '\\r')
         sanitized = sanitized.replace('\\', '\\\\') # escape backslashes for sed command, which will interpret single backslashes as escape characters
