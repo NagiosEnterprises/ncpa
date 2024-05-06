@@ -1198,6 +1198,7 @@ def write_to_config_and_file(section_options_to_update):
 
         for sed_cmd in sed_cmds:
             if environment.SYSTEM == "Windows":
+                sed_cmd = sed_cmd.replace('\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command
                 match = re.match(r"sed -i '(\d*)s/(.*?)/(.*)/' ", sed_cmd)
                 if not match:
                     continue
