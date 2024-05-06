@@ -1438,7 +1438,7 @@ def add_check():
                     new_check_parts = new_check.split('=')
                     config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
 
-                new_check = new_check.replace('\/', '/') # unescape the slashes that were escaped for the sed command for GUI
+                new_check = new_check.replace('\/', '/').replace('\\\\','\\') # unescape the slashes that were escaped for the sed command for GUI
 
     except Exception as e:
         logging.exception(e)
