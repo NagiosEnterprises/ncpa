@@ -1260,7 +1260,7 @@ def set_config():
 
         ("[passive]", "handlers",       "handlers",             ["None", "nrdp", "kafkaproducer", "nrdp, kafkaproducer"]),
 
-        ("[nrdp]",    "nrdp_url",       "parent",               r"^https?://\S+/nrdp$"),
+        ("[nrdp]",    "nrdp_url",       "parent",               r"^((https?://\S+/nrdp)\s*,?\s*)+$"),
         ("[nrdp]",    "nrdp_token",     "token",                r"^.+$"),
         ("[nrdp]",    "hostname",       "hostname",             r"^.+$"),
         ("[nrdp]",    "connection_timeout",   "connection_timeout",   r"^\d+$"),
