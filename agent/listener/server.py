@@ -1198,13 +1198,12 @@ def write_to_config_and_file(section_options_to_update):
 
         for sed_cmd in sed_cmds:
             if environment.SYSTEM == "Windows":
-                sed_cmd = sed_cmd.replace('\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command
                 match = re.match(r"sed -i '(\d*)s/(.*?)/(.*)/' ", sed_cmd)
                 if not match:
                     continue
                 line_number = int(match.group(1))
                 new_value = match.group(3)
-                new_value = new_value.replace('\\\\', '\\') # unescape backslashes from sed command
+                new_value = new_value.replace('\/', '/').replace('\\\\', '\\') # unescape backslashes from sed command
 
                 logging.debug("write_to_configFile() - replacing line %d with %s", line_number, new_value)
 
