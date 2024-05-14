@@ -38,7 +38,7 @@ class ParentNode(object):
     def accessor(self, path, config, full_path, args):
         if path:
             next_child_name, rest_path = path[0], path[1:]
-            if environment.SYSTEM == "Windows":
+            if environment.SYSTEM == "Windows" and self.__class__.__name__ == "PluginAgentNode":
                 next_child_name = next_child_name.lower()
             try:
                 child = self.children[next_child_name]
