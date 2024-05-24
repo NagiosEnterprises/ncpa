@@ -1,6 +1,6 @@
 import requests
 import requests.exceptions
-import logging
+from ncpa import passive_logger as logging
 
 
 def send_request(url, connection_timeout, **kwargs):

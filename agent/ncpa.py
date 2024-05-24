@@ -45,27 +45,28 @@ from socket import error as SocketError
 from io import open
 from logging.handlers import RotatingFileHandler
 from multiprocessing import Process, Value, freeze_support
+import process.daemon_manager
 
 # Create the listener logger instance, now, because it is required by listener.server.
 # It will be configured later via setup_logger(). See note 'About Logging' below.
 listener_logger = logging.getLogger("listener")
 def tokenFilter(record):
-    if not hasattr(record, 'msg'):
-        return record
-    try:
-        if record.msg and 'token' in record.msg:
-            parts = record.msg.split('token=')
-            new_parts = [parts[0]]
-            for part in parts[1:]:
-                sub_parts = part.split('&', 1)
-                sub_parts[0] = '********'
-                new_parts.append('&'.join(sub_parts))
-            record.msg = 'token='.join(new_parts)
-        return True
-    except AttributeError:
-        pass
+    if hasattr(record, 'msg') and isinstance(record.msg, str) and record.msg:
+        try:
+            if record.msg and 'token' in record.msg:
+                parts = record.msg.split('token=')
+                new_parts = [parts[0]]
+                for part in parts[1:]:
+                    sub_parts = part.split('&', 1)
+                    sub_parts[0] = '********'
+                    new_parts.append('&'.join(sub_parts))
+                record.msg = 'token='.join(new_parts)
+            return True
+        except AttributeError:
+            pass
+        except Exception as e:
+            return f"Error filtering log record: {e}"
     return record
-
 
 
 # NCPA-specific module imports
@@ -89,7 +90,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.0.2'
+__VERSION__ = '3.1.0'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -136,6 +137,7 @@ cfg_defaults = {
                 'all_partitions': '1',
                 'exclude_fs_types': 'aufs,autofs,binfmt_misc,cifs,cgroup,configfs,debugfs,devpts,devtmpfs,encryptfs,efivarfs,fuse,fusectl,hugetlbfs,mqueue,nfs,overlayfs,proc,pstore,rpc_pipefs,securityfs,selinuxfs,smb,sysfs,tmpfs,tracefs,nfsd,xenfs',
                 'default_units': 'Gi',
+                'allow_remote_restart': '0',
             },
             'listener': {
                 'ip': address,
@@ -151,6 +153,7 @@ cfg_defaults = {
                 'allowed_hosts': '',
                 'max_connections': '200',
                 'allowed_sources': '',
+                'allow_config_edit': '1', # Note: this is limited to non-sensitive settings
             },
             'api': {
                 'community_string': 'mytoken',
@@ -191,7 +194,7 @@ cfg_defaults = {
         }
 
 # --------------------------
-# Core Classes
+# Core Classes -- TODO: Move to a sub-module, add starting/restarting of passive checks for GUI
 # --------------------------
 
 class Base():
@@ -425,6 +428,8 @@ class Daemon():
         self.setup_plugins()
         self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
+        self.p, self.l = None, None
+
     def main(self):
         action = self.options['action']
 
@@ -556,7 +561,7 @@ class Daemon():
         self.logger.debug("Daemon - started")
 
         try:
-            start_processes(self.options, self.config, self.has_error)
+            self.p, self.l = start_processes(self.options, self.config, self.has_error)
 
         except Exception as e:
             self.logger.exception("Daemon - Couldn't start processes: %s", e)
@@ -612,6 +617,7 @@ class Daemon():
                 sys.exit(msg)
         else:
             sys.exit("Daemon - stop() - Not running")
+
 
     def status(self):
         """Return the process status"""
@@ -1028,7 +1034,6 @@ def setup_logger(config, loggerinstance, logfile):
         if __SYSTEM__ == 'posix':
             chown(config.get('general', 'uid'), config.get('general', 'gid'), logfile)
 
-    handlers.append(logging.StreamHandler())
     loggerinstance.setLevel(level)
 
     for h in handlers:
@@ -1130,6 +1135,7 @@ def main(has_error):
     if config.get('general', 'loglevel') == 'debug':
         print("main - options: ", options)
 
+
     # We set up the root logger here. It uses the listener log file, because the web components,
     # which are part of the listener system, need to propagate up to this log. We don't assign a file
     # handler to the listener_log, since it, too, will propagate up to the root logger and into the
@@ -1147,6 +1153,14 @@ def main(has_error):
     log.info("main - SSL version: %s", ssl.OPENSSL_VERSION)
     log.info("main - ZLIB version: %s", zlib_version)
 
+    if __SYSTEM__ == 'nt':
+        for sectionName, configSection in config.items():
+            if sectionName == 'plugin directives':
+                for pluginExtension in list(configSection.keys()):
+                    if pluginExtension[0] == '.':
+                        config[sectionName][pluginExtension.lower()] = configSection[pluginExtension]
+
+
     # If we are running this in debug mode from the command line, we need to
     # wait for the proper output to exit and kill the Passive and Listener
     # Note: We currently do not care about "safely" exiting them
@@ -1159,7 +1173,6 @@ def main(has_error):
 
         # Temporary set up logging
         log = logging.getLogger()
-        log.addHandler(logging.StreamHandler())
         log.setLevel('DEBUG')
 
         p, l = start_processes(options, config, has_error, True)
@@ -1173,6 +1186,7 @@ def main(has_error):
     # Daemon class to control the agent
     if __SYSTEM__ == 'posix':
         d = Daemon(options, config, has_error, parent_logger)
+        process.daemon_manager.set_daemon(d)
         d.main()
     elif __SYSTEM__ == 'nt':
         # using win32serviceutil.ServiceFramework, run WinService as a service

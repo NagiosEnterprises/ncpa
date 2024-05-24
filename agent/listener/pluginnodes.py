@@ -1,6 +1,5 @@
 import os
 import time
-import logging
 from configparser import NoOptionError
 import subprocess
 import shlex
@@ -11,6 +10,7 @@ import listener.nodes as nodes
 import listener.database as database
 import listener.environment as environment
 import listener.server as server
+from ncpa import listener_logger as logging
 import signal
 from threading import Timer
 
@@ -31,6 +31,8 @@ except ImportError:
 class PluginNode(nodes.RunnableNode):
     def __init__(self, plugin, plugin_abs_path, *args, **kwargs):
         self.name = plugin
+        if environment.SYSTEM == "Windows":
+            self.name = self.name.lower()
         self.plugin_abs_path = plugin_abs_path
         self.arguments = []
         self.killed = False
@@ -62,6 +64,8 @@ class PluginNode(nodes.RunnableNode):
 
         """
         _, extension = os.path.splitext(self.name)
+        if environment.SYSTEM == "Windows":
+            extension = extension.lower().strip()
         try:
             if extension.strip() == "":
                 return "$plugin_name $plugin_args"
@@ -241,7 +245,10 @@ class PluginAgentNode(nodes.ParentNode):
                         continue
                     plugin_abs_path = os.path.join(root, plugin)
                     if os.path.isfile(plugin_abs_path):
-                        self.children[plugin] = PluginNode(plugin, plugin_abs_path)
+                        if environment.SYSTEM == "Windows":
+                            self.children[plugin.lower()] = PluginNode(plugin, plugin_abs_path)
+                        else:
+                            self.children[plugin] = PluginNode(plugin, plugin_abs_path)
         except OSError as exc:
             logging.warning("Unable to access directory %s", plugin_path)
             logging.warning(

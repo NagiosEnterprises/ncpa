@@ -8,7 +8,7 @@ import psutil
 import listener.server
 import listener.database as database
 import time
-import logging
+from ncpa import listener_logger as logging
 from stat import ST_MODE,S_IXUSR,S_IXGRP,S_IXOTH
 from threading import Timer
 
