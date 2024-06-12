@@ -1175,7 +1175,7 @@ def main(has_error):
         log = logging.getLogger()
         log.setLevel('DEBUG')
 
-        p, l = start_processes(options, config, has_error, True)
+        p, l = start_processes(options, config, has_error)
 
         # Wait for exit
         print("Running in Debug Mode (https://localhost:5700/)\nPress enter to exit...\n", flush = True)
