@@ -1031,7 +1031,7 @@ def setup_logger(config, loggerinstance, logfile):
             max_log_size_bytes = logmaxmb * 1024 * 1024
             handlers.append(RotatingFileHandler(logfile, maxBytes=max_log_size_bytes, backupCount=logbackups))
 
-        if __SYSTEM__ == 'posix':
+        if __SYSTEM__ == 'posix' and os.path.isfile(logfile):
             chown(config.get('general', 'uid'), config.get('general', 'gid'), logfile)
 
     loggerinstance.setLevel(level)
