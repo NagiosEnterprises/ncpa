@@ -4,7 +4,7 @@ echo -e "***** build/build.sh"
 
 # Global variables
 PYTHONVER="3.11.8"
-SSLVER="3.0.13"
+SSLVER="3.0.15"
 ZLIBVER="1.3.1"
 
 UNAME=$(uname)
@@ -196,7 +196,6 @@ fi
 
     echo -e "\nFreezing app (may take a minute)..."
     $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
-
 
     echo -e "\nSet up packaging dirs..."
     # Move the ncpa binary data
