@@ -47,15 +47,17 @@ adaptation of the input Logged After specification.
 """
 
 import datetime
-import win32evtlog
-import re
-import win32evtlogutil
-import win32con
+import os
+import platform
 import pywintypes
+import re
+import time
+import win32con
+import win32evtlog
+import win32evtlogutil
+
 import listener.database as database
 import listener.server
-import time
-import platform
 from ncpa import listener_logger as logging
 
 
@@ -570,51 +572,56 @@ def get_event_logs(server, name, filters):
             raise versionError('OS is too old for log:'+name) #system too old for non standard logs
         pathLogs = 'C:\Windows\System32\winevt\Logs\\'
         flags = win32evtlog.EvtQueryReverseDirection | win32evtlog.EvtQueryFilePath | win32evtlog.EvtQueryTolerateQueryErrors
-        handle = win32evtlog.EvtQuery(pathLogs + name +'.evtx',flags)
         logs = []
         try:
             logged_after = filters['logged_after']
             logged_after = datetime.datetime.utcnow() - logged_after
         except KeyError:
             logged_after = datetime.datetime.utcnow() - datetime.timedelta(days=1)
-        try:
-            while True:
-                events = win32evtlog.EvtNext(handle, 100)
-                context = win32evtlog.EvtCreateRenderContext(win32evtlog.EvtRenderContextSystem)
-                if events:
-                    for i, event in enumerate(events, 1):
-                        result = win32evtlog.EvtRender(
-                            event, win32evtlog.EvtRenderEventValues, Context=context
-                        )
-                        time_created_value, time_created_variant = result[
-                            win32evtlog.EvtSystemTimeCreated
-                        ]
-                        if time_created_variant == win32evtlog.EvtVarTypeNull:
-                            raise StopIteration
-                        s1 = str(time_created_value)
-                        date_part, offset_part = s1.rsplit('+', 1)
-                        temp_date=datetime.datetime.strptime(str(date_part),date_format1)
-						
-                        # Parse and adjust the timezone offset
-                        hours_offset = int(offset_part[:2])
-                        minutes_offset = int(offset_part[3:])
-                        timezone_offset = datetime.timedelta(hours=hours_offset, minutes=minutes_offset)
-                        if offset_part[0] == '-':
-                            timezone_offset = -timezone_offset
-                        temp_date -=timezone_offset
-                        time_from_event=temp_date.strftime(date_format1)
-                        time_generated = datetime_from_event_date(time_from_event)          
-                        if time_generated < logged_after:
-                            raise StopIteration
-                        else:
-                            row = parseEvt(result,event) #parse only if in timeframe
-                            if is_interestingAppSvc_event(row, filters):
-                                safe_log = normalize_xml_event(row, name)
-                                logs.append(safe_log)
-                else:
-                    raise StopIteration
-        except StopIteration:
-            pass
+
+        for dirpath, dirnames, filenames in os.walk(pathLogs):
+            for file in filenames:
+                if file.endswith('.evtx'):
+                    log_file_path = os.path.join(dirpath, file)
+                    handle = win32evtlog.EvtQuery(log_file_path, flags)
+                    try:
+                        while True:
+                            events = win32evtlog.EvtNext(handle, 100)
+                            context = win32evtlog.EvtCreateRenderContext(win32evtlog.EvtRenderContextSystem)
+                            if events:
+                                for i, event in enumerate(events, 1):
+                                    result = win32evtlog.EvtRender(
+                                        event, win32evtlog.EvtRenderEventValues, Context=context
+                                    )
+                                    time_created_value, time_created_variant = result[
+                                        win32evtlog.EvtSystemTimeCreated
+                                    ]
+                                    if time_created_variant == win32evtlog.EvtVarTypeNull:
+                                        raise StopIteration
+                                    s1 = str(time_created_value)
+                                    date_part, offset_part = s1.rsplit('+', 1)
+                                    temp_date=datetime.datetime.strptime(str(date_part),date_format1)
+                                    
+                                    # Parse and adjust the timezone offset
+                                    hours_offset = int(offset_part[:2])
+                                    minutes_offset = int(offset_part[3:])
+                                    timezone_offset = datetime.timedelta(hours=hours_offset, minutes=minutes_offset)
+                                    if offset_part[0] == '-':
+                                        timezone_offset = -timezone_offset
+                                    temp_date -=timezone_offset
+                                    time_from_event=temp_date.strftime(date_format1)
+                                    time_generated = datetime_from_event_date(time_from_event)          
+                                    if time_generated < logged_after:
+                                        raise StopIteration
+                                    else:
+                                        row = parseEvt(result,event) #parse only if in timeframe
+                                        if is_interestingAppSvc_event(row, filters):
+                                            safe_log = normalize_xml_event(row, name)
+                                            logs.append(safe_log)
+                            else:
+                                raise StopIteration
+                    except StopIteration:
+                        pass
     return logs
 
 
