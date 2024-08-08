@@ -1,15 +1,17 @@
-import psutil as ps
+import ctypes
+import math
 import os
-import time
-import re
 import platform
+import psutil as ps
+import re
+import time
+
 from listener.nodes import ParentNode, RunnableNode, RunnableParentNode, LazyNode
 from listener.pluginnodes import PluginAgentNode
 import listener.services as services
 import listener.processes as processes
-import ncpa
 import listener.environment as environment
-import math
+import ncpa
 from ncpa import listener_logger as logging
 
 importables = ("windowscounters", "windowslogs")
@@ -92,12 +94,38 @@ def make_mountpoint_nodes(partition_name):
     )
     fstype = RunnableNode("fstype", method=lambda: (partition_name.fstype, ""))
     opts = RunnableNode("opts", method=lambda: (partition_name.opts, ""))
-    maxfile = RunnableNode(
-        "max_file_length", method=lambda: (partition_name.maxfile, "")
-    )
-    maxpath = RunnableNode(
-        "max_path_length", method=lambda: (partition_name.maxpath, "")
-    )
+    if __SYSTEM__ == "nt":
+        file_system_flags = ctypes.c_uint(0)
+        fs_name_buf = ctypes.create_unicode_buffer(1024)
+        max_component_length = ctypes.c_uint(0)
+        serial_number = ctypes.c_uint(0)
+        volume_name_buf = ctypes.create_unicode_buffer(1024)
+        
+        maxfile = ctypes.windll.kernel32.GetVolumeInformationW(
+            ctypes.c_wchar_p(mountpoint),
+            volume_name_buf,
+            ctypes.sizeof(volume_name_buf),
+            ctypes.byref(serial_number),
+            ctypes.byref(max_component_length),
+            ctypes.byref(file_system_flags),
+            fs_name_buf,
+            ctypes.sizeof(fs_name_buf)
+        )
+        maxfilelen = "" if maxfile == 0 else max_component_length.value
+        
+        maxfile = RunnableNode(
+            "max_file_length", method=lambda: (maxfilelen, "")
+        )
+        maxpath = RunnableNode(
+            "max_path_length", method=lambda: ("", "")
+        )
+    else:
+        maxfile = RunnableNode(
+            "max_file_length", method=lambda: (partition_name.maxfile, "")
+        )
+        maxpath = RunnableNode(
+            "max_path_length", method=lambda: (partition_name.maxpath, "")
+        )
     safe_mountpoint = re.sub(r"[\\/]+", "|", mountpoint)
 
 
