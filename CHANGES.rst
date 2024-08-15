@@ -1,6 +1,18 @@
 Changelog
 +++++++++
 
+3.1.1 - ??/??/2024
+==================
+**Updates**
+
+- Updated OpenSSL on Linux builds to OpenSSL 3.0.14 to resolve some CVEs. [GH:#1176] (Blake Bahner)
+
+**Bug Fixes**
+
+- Fixed an issue where NCPA would show an error if the logs were missing. (Ivan-Roger)
+- Fixed an issue that would cause NCPA to crash in debug mode due to a wrongly called function. (Ivan-Roger)
+- Fixed an issue where new NCPA builds would fail because of a cx_Freeze update. [GH:#1177,#1178] (Blake Bahner)
+
 3.1.0 - 05/16/2024
 ==================
 **Updates**
