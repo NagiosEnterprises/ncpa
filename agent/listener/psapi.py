@@ -94,7 +94,7 @@ def make_mountpoint_nodes(partition_name):
     )
     fstype = RunnableNode("fstype", method=lambda: (partition_name.fstype, ""))
     opts = RunnableNode("opts", method=lambda: (partition_name.opts, ""))
-    if __SYSTEM__ == "nt":
+    if not hasattr(partition_name, "maxfile") or not hasattr(partition_name, "maxpath"):
         file_system_flags = ctypes.c_uint(0)
         fs_name_buf = ctypes.create_unicode_buffer(1024)
         max_component_length = ctypes.c_uint(0)
