@@ -1,3 +1,6 @@
+%define _source_filedigest_algorithm 8
+%define _binary_filedigest_algorithm 8
+
 Name:           ncpa
 Version:        __VERSION__
 Release:        1.sle15
