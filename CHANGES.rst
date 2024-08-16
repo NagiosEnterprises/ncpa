@@ -6,12 +6,14 @@ Changelog
 **Updates**
 
 - Updated OpenSSL on Linux builds to OpenSSL 3.0.14 to resolve some CVEs. [GH:#1176] (Blake Bahner)
+- Updated the RPM hash to SHA256 to enable the installation of NCPA in FIPS mode. [GH:#1168] (Blake Bahner)
 
 **Bug Fixes**
 
 - Fixed an issue where NCPA would show an error if the logs were missing. (Ivan-Roger)
 - Fixed an issue that would cause NCPA to crash in debug mode due to a wrongly called function. (Ivan-Roger)
 - Fixed an issue where new NCPA builds would fail because of a cx_Freeze update. [GH:#1177,#1178] (Blake Bahner)
+- Fixed an issue where several disk endpoints could give errors instead of values. [GH:#1191] (Blake Bahner)
 
 3.1.0 - 05/16/2024
 ==================
