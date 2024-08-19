@@ -139,7 +139,7 @@ echo Building NCPA
 @REM )
 :: Set manually because of Windows 10 Pro
 :: It already has a python.exe (that links to the windows store for installing Python 3.7) that breaks the dynamic linking
-set pydir="C:\Python311\python.exe"
+set pydir="C:\Python312\python.exe"
 Call "%pydir%" %~dp0\windows\build_ncpa.py %pydir%
 
 :::::::::::::::::::::::
