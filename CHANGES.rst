@@ -6,7 +6,7 @@ Changelog
 **Updates**
 
 - Updated OpenSSL on Linux builds to OpenSSL 3.0.14 to resolve some CVEs. [GH:#1176] (Blake Bahner)
-- Updated Python to 3.12.5 for Windows builds. (Blake Bahner)
+- Updated Python to 3.12.5 for Windows builds to resolve some CVEs. (Blake Bahner)
 - Updated the RPM hash to SHA256 to enable the installation of NCPA in FIPS mode. [GH:#1168] (Blake Bahner)
 
 **Bug Fixes**
