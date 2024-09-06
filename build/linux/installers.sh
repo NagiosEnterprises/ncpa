@@ -123,7 +123,7 @@ install_openssl() {
 
     pushd /usr/src
 
-    wget https://www.openssl.org/source/openssl-$ssl_new_version.tar.gz --no-check-certificate
+    wget https://www.github.com/openssl/openssl/releases/download/openssl-$ssl_new_version/openssl-$ssl_new_version.tar.gz --no-check-certificate
     tar -zxf openssl-$ssl_new_version.tar.gz
 
     pushd openssl-$ssl_new_version
