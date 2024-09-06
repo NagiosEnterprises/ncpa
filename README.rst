@@ -35,7 +35,7 @@ We currently build for the following operating systems on x86-64 architectures:
 - CentOS 9+
 - RHEL 8+
 - Oracle 8+
-- Debian 10+
+- Debian 11+
 - Ubuntu 20+
 - OpenSuSE 15+
 - SLES 15+
