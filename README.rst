@@ -52,8 +52,10 @@ Older systems that have been supported by NCPA in the past:
 - Ubuntu 12.04                  - v2.1.4
 - Ubuntu 14.04                  - v2.2.2
 - Ubuntu 16.04 32b, 18.04 32b   - v2.4.1
+- Ubuntu 20                     - v3.1.0
 - Debian 7                      - v2.1.4
 - Debian 8 32b, 9 32b           - v2.4.1
+- Debian 10                     - v3.1.0
 - OpenSUSE 11, 12, 13           - v2.1.4
 - SLES 11                       - v2.4.0
 - SLES 12                       - v2.4.1
@@ -62,6 +64,7 @@ Older systems that have been supported by NCPA in the past:
 - CentOS / RHEL 5               - v2.0.6
 - CentOS / RHEL 6               - v2.2.2
 - CentOS / RHEL 7               - v3.1.0
+- CentOS 8                      - v3.1.0
 - CentOS Stream 8 - ARM         - v2.4.0
 - Oracle 5                      - v2.0.6
 - Oracle 6                      - v2.2.2
