@@ -32,11 +32,11 @@ NOTE: If you're using Debian 11 or one of the other newer OSes and you see an "E
 
 We currently build for the following operating systems on x86-64 architectures:
 
-- CentOS 8+
+- CentOS 9+
 - RHEL 8+
 - Oracle 8+
 - Debian 10+
-- Ubuntu 18+
+- Ubuntu 20+
 - OpenSuSE 15+
 - SLES 15+
 - Amazon Linux 2
