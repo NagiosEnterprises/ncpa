@@ -114,7 +114,7 @@ def make_mountpoint_nodes(partition_name):
             )
         else:
             maxfile = os.pathconf(mountpoint, os.pathconf_names["PC_NAME_MAX"])
-        maxfilelen = "" if maxfile == 0 else max_component_length.value
+        maxfilelen = "" if (maxfile == 0 or maxfile == "") else max_component_length.value
         
         maxfile = RunnableNode(
             "max_file_length", method=lambda: (maxfilelen, "")
