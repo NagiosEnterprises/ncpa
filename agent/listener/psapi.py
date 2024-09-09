@@ -101,17 +101,20 @@ def make_mountpoint_nodes(partition_name):
         serial_number = ctypes.c_uint(0)
         volume_name_buf = ctypes.create_unicode_buffer(1024)
         
-        maxfile = ctypes.windll.kernel32.GetVolumeInformationW(
-            ctypes.c_wchar_p(mountpoint),
-            volume_name_buf,
-            ctypes.sizeof(volume_name_buf),
-            ctypes.byref(serial_number),
-            ctypes.byref(max_component_length),
-            ctypes.byref(file_system_flags),
-            fs_name_buf,
-            ctypes.sizeof(fs_name_buf)
-        )
-        maxfilelen = "" if maxfile == 0 else max_component_length.value
+        if __SYSTEM__ == "nt":
+            maxfile = ctypes.windll.kernel32.GetVolumeInformationW(
+                ctypes.c_wchar_p(mountpoint),
+                volume_name_buf,
+                ctypes.sizeof(volume_name_buf),
+                ctypes.byref(serial_number),
+                ctypes.byref(max_component_length),
+                ctypes.byref(file_system_flags),
+                fs_name_buf,
+                ctypes.sizeof(fs_name_buf)
+            )
+        else:
+            maxfile = os.pathconf(mountpoint, os.pathconf_names["PC_NAME_MAX"])
+        maxfilelen = "" if (maxfile == 0 or maxfile == "") else max_component_length.value
         
         maxfile = RunnableNode(
             "max_file_length", method=lambda: (maxfilelen, "")
