@@ -114,13 +114,16 @@ def make_mountpoint_nodes(partition_name):
             )
         else:
             maxfile = os.pathconf(mountpoint, os.pathconf_names["PC_NAME_MAX"])
-        maxfilelen = "" if (maxfile == 0 or maxfile == "" or max_component_length.value == 0) else max_component_length.value
+            maxpath = os.pathconf(mountpoint, os.pathconf_names["PC_PATH_MAX"])
+        maxfilelen = "" if (maxfile == 0 or maxfile == "") else max_component_length.value
+        maxfilelen = "" if maxfilelen == 0 else maxfilelen
+        maxpathval = "" if (maxpath == 0 or maxpath == "") else maxpath
         
         maxfile = RunnableNode(
             "max_file_length", method=lambda: (maxfilelen, "")
         )
         maxpath = RunnableNode(
-            "max_path_length", method=lambda: ("", "")
+            "max_path_length", method=lambda: (maxpathval, "")
         )
     else:
         maxfile = RunnableNode(
