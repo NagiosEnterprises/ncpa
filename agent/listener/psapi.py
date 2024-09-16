@@ -100,6 +100,8 @@ def make_mountpoint_nodes(partition_name):
         max_component_length = ctypes.c_uint(0)
         serial_number = ctypes.c_uint(0)
         volume_name_buf = ctypes.create_unicode_buffer(1024)
+        maxpath = ""
+        maxfile = ""
         
         if __SYSTEM__ == "nt":
             maxfile = ctypes.windll.kernel32.GetVolumeInformationW(
