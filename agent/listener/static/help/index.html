@@ -104,6 +104,12 @@ sudo launchctl start com.nagios.ncpa</pre>
                     <h2>Troubleshooting</h2>
                     <p>Sometimes when setting up NCPA things don't work out the first time. We've compiled a few troubleshooting tips and things that could happen that might give people headaches.</p>
 
+                    <p>
+                        <div class="alert alert-info">
+                            <i class="fa fa-file-text-o fa-14 fa-l"></i> <b>Note</b>: You may need to open port 5693 on your firewall to allow communications with NCPA.
+                        </div>
+                    </p>
+
                     <h6>Checking for problems in the logs</h6>
                     <p>Typically if there is an <em>error</em> you will always see that error logged, no matter what your log level since error is the most filtered log level available. However, sometimes Python errors will occur before logging starts in Windows systems. You can normally find these errors in the log files located in the same directory as the .exe files in the Windows Program Files directory that you installed NCPA into.</p>
                     <p>That being said, a good habit to get into is setting your <code>loglevel</code> to <em>debug</em> when you are running into trouble where something is not working correctly. If you do this, and restart your NCPA services, we can get a better idea of what is going on and when it's going in the code. If you can't figure out the issue from reading the debug log, post it in an issue on <a href="https://github.com/NagiosEnterprises/ncpa" target="_new">GitHub</a> <i class="fa fa-external-link"></i> and the developers can take a look.</p>
