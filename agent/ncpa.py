@@ -90,7 +90,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.1.0'
+__VERSION__ = '3.1.1'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -1031,7 +1031,7 @@ def setup_logger(config, loggerinstance, logfile):
             max_log_size_bytes = logmaxmb * 1024 * 1024
             handlers.append(RotatingFileHandler(logfile, maxBytes=max_log_size_bytes, backupCount=logbackups))
 
-        if __SYSTEM__ == 'posix':
+        if __SYSTEM__ == 'posix' and os.path.isfile(logfile):
             chown(config.get('general', 'uid'), config.get('general', 'gid'), logfile)
 
     loggerinstance.setLevel(level)
@@ -1175,7 +1175,7 @@ def main(has_error):
         log = logging.getLogger()
         log.setLevel('DEBUG')
 
-        p, l = start_processes(options, config, has_error, True)
+        p, l = start_processes(options, config, has_error)
 
         # Wait for exit
         print("Running in Debug Mode (https://localhost:5700/)\nPress enter to exit...\n", flush = True)
