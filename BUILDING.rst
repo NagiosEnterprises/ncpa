@@ -41,7 +41,7 @@ This is the installer for NCPA and can be used to install NCPA on a Windows syst
 Building on Linux
 =================
 
-*NOTE: Updates that involve a new/updated dependency (i.e. Python or OpenSSL) version, you will need to delete the `prereqs.installed` file. If your build fails, try deleting this file and trying again.
+*Note: Updates that involve a new/updated dependency (i.e. Python or OpenSSL) version, you will need to delete the `prereqs.installed` file. If your build fails, try deleting this file and trying again.
 
 Building on CentOS 7 is the easiest way to get a working package for all Linux distributions. When you build on CentOS 7, both a .deb as well as an .rpm package are built.
 
