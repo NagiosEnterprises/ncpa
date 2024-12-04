@@ -922,9 +922,7 @@ if __SYSTEM__ == 'nt':
 
         def SvcDoRun(self):
             # log starting of service to windows event log
-            servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                servicemanager.PYS_SERVICE_STARTED,
-                                (self._svc_name_, ''))
+            self.logger.debug("Starting service: %s" % self._svc_name_)
             self.running = True
             self.main()
 
@@ -937,7 +935,6 @@ if __SYSTEM__ == 'nt':
             # wait for stop event
             while self.running: # shouldn't loop, but just in case the event triggers without stop being called
                 win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
-                time.sleep(1)
 
             # kill/clean up child processes
             self.p.terminate()
@@ -946,9 +943,7 @@ if __SYSTEM__ == 'nt':
             self.l.join()
 
             # log stopping of service to windows event log
-            servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                servicemanager.PYS_SERVICE_STOPPED,
-                                (self._svc_name_, ''))
+            self.logger.debug("Stopping service: %s" % self._svc_name_)
             self.ReportServiceStatus(win32service.SERVICE_STOPPED)
 
 
