@@ -435,7 +435,7 @@ class ProcessNode(nodes.LazyNode):
 
             # Add totals to perfdata
             extra_perfdata = (
-                " 'cpu'=%s%s;;; 'memory'=%s%s;;; 'memory_vms'=%s%s;;; 'memory_rss'=%s%s;;;"
+                "'cpu'=%s%s;;; 'memory'=%s%s;;; 'memory_vms'=%s%s;;; 'memory_rss'=%s%s;;;"
                 % (tcpu, "%", tmem, "%", tmem_vms, mem_unit, tmem_rss, mem_unit)
             )
 
@@ -443,10 +443,10 @@ class ProcessNode(nodes.LazyNode):
             stdout_parts = check_return["stdout"].rsplit("|", 1)
             if len(stdout_parts) == 2:
                 check_text, check_perf = stdout_parts
-                check_return["stdout"] = f"{check_text}{extra}|{check_perf}{extra_perfdata}"
-            else:
+                check_return["stdout"] = f"{check_text}{extra} | {check_perf} {extra_perfdata}"
+            else: # This should never happen, but just in case
                 logging.debug("No perfdata found in check return")
-                check_return["stdout"] = f"{check_return['stdout']}{extra}|{extra_perfdata}"
+                check_return["stdout"] = f"{check_return['stdout']}{extra} | {extra_perfdata}"
 
         return check_return
 
