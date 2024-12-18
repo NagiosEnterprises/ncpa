@@ -81,6 +81,8 @@ if os.name == 'posix':
     import pwd
 
 if os.name == 'nt':
+    # ctypes for Windows service control
+    import ctypes
     # pywin32 imports
     import servicemanager
     import win32event
@@ -217,6 +219,11 @@ class Base():
         if autostart:
             self.run()
 
+    def set_process_name(self, name):
+        current_process().name = name
+        elif __SYSTEM__ == 'nt':
+            ctypes.windll.kernel32.SetConsoleTitleW(name)
+
     # Set error flag for parent process to true
     def send_error(self):
         self.has_error.value = True
@@ -233,9 +240,11 @@ class Listener(Base):
     we will be using a seperate process that is forked off the main process
     to run the listener so all of NCPA is bundled in a single service
     """
+    def __init__(self, options, config, has_error):
+        super().__init__(options, config, has_error)
+        set_process_name("Nagios Cross-Platform Agent - Listener")
 
     def run(self):
-        current_process().name = "Nagios Cross-Platform Agent - Listener"
         self.init_logger('listener')
         logger = self.logger
         logger.info("run()")
@@ -332,6 +341,10 @@ class Passive(Base):
     The passive service that runs in the background - this is run in a
     separate thread since it is what the main process is used for
     """
+    def __init__(self, options, config, has_error):
+        super().__init__(options, config, has_error)
+        set_process_name("Nagios Cross-Platform Agent - Passive")
+
     def run_all_handlers(self, *args, **kwargs):
         """
         Will run all handlers that exist.
@@ -369,7 +382,6 @@ class Passive(Base):
                     return
 
     def run(self):
-        current_process().name = "Nagios Cross-Platform Agent - Passive"
         self.init_logger('passive')
         logger = self.logger
         logger.info("run()")
