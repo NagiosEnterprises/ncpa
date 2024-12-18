@@ -221,7 +221,7 @@ class Base():
 
     def set_process_name(self, name):
         current_process().name = name
-        elif __SYSTEM__ == 'nt':
+        if __SYSTEM__ == 'nt':
             ctypes.windll.kernel32.SetConsoleTitleW(name)
 
     # Set error flag for parent process to true
