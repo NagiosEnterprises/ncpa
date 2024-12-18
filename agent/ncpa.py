@@ -240,8 +240,8 @@ class Listener(Base):
     we will be using a seperate process that is forked off the main process
     to run the listener so all of NCPA is bundled in a single service
     """
-    def __init__(self, options, config, has_error):
-        super().__init__(options, config, has_error)
+    def __init__(self, options, config, has_error, autostart=False):
+        super().__init__(options, config, has_error, autostart)
         set_process_name("Nagios Cross-Platform Agent - Listener")
 
     def run(self):
@@ -341,8 +341,8 @@ class Passive(Base):
     The passive service that runs in the background - this is run in a
     separate thread since it is what the main process is used for
     """
-    def __init__(self, options, config, has_error):
-        super().__init__(options, config, has_error)
+    def __init__(self, options, config, has_error, autostart=False):
+        super().__init__(options, config, has_error, autostart)
         set_process_name("Nagios Cross-Platform Agent - Passive")
 
     def run_all_handlers(self, *args, **kwargs):
