@@ -44,7 +44,7 @@ from geventwebsocket.handler import WebSocketHandler
 from socket import error as SocketError
 from io import open
 from logging.handlers import RotatingFileHandler
-from multiprocessing import Process, Value, freeze_support
+from multiprocessing import Process, Value, current_process, freeze_support
 import process.daemon_manager
 
 # Create the listener logger instance, now, because it is required by listener.server.
@@ -233,7 +233,9 @@ class Listener(Base):
     we will be using a seperate process that is forked off the main process
     to run the listener so all of NCPA is bundled in a single service
     """
+
     def run(self):
+        current_process().name = "Nagios Cross-Platform Agent - Listener"
         self.init_logger('listener')
         logger = self.logger
         logger.info("run()")
@@ -367,6 +369,7 @@ class Passive(Base):
                     return
 
     def run(self):
+        current_process().name = "Nagios Cross-Platform Agent - Passive"
         self.init_logger('passive')
         logger = self.logger
         logger.info("run()")
