@@ -7,6 +7,8 @@ Changelog
 
 **Bug Fixes**
 
+- Updated processes check output to preserve perfdata formatting for RRD graphs. [GH:#1224] (Blake Bahner)
+
 3.1.1 - 09/19/2024
 ==================
 **Updates**
