@@ -4,7 +4,7 @@ Changelog
 3.1.2 - 01/XX/2025
 ==================
 **Updates**
-- Updated our instantiation of WSGI server to properly set the error log file. (Blake Bahner)
+- Updated our instantiation of WSGI server to properly set the error log file. [GH:#1227] (Blake Bahner)
 
 **Bug Fixes**
 
