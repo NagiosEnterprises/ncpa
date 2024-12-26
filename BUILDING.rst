@@ -41,7 +41,7 @@ This is the installer for NCPA and can be used to install NCPA on a Windows syst
 Building on Linux
 =================
 
-*Note: Updates that involve a new/updated dependency (i.e. Python or OpenSSL) version, you will need to delete the `prereqs.installed` file. If your build fails, try deleting this file and trying again.*
+*Note: Updates that involve a new/updated dependency (i.e. Python or OpenSSL) version will require that you delete the `prereqs.installed` file. If your build fails, try deleting this file and trying again.*
 
 NCPA must be built on the family of distributions which it will ultimately be run on. i.e. a .deb built on Ubuntu 20 will work on Ubuntu 22/24 and should also work on Debian 10/11
 
