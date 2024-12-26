@@ -43,9 +43,7 @@ Building on Linux
 
 *Note: Updates that involve a new/updated dependency (i.e. Python or OpenSSL) version, you will need to delete the `prereqs.installed` file. If your build fails, try deleting this file and trying again.*
 
-Building on CentOS 7 is the easiest way to get a working package for all Linux distributions. When you build on CentOS 7, both a .deb as well as an .rpm package are built.
-
-In most cases, building on the distribution that is targeted, e.g. building on Ubuntu 20.04 to deploy on Ubuntu 20.04, will work, but the resulting package will not be as portable.
+NCPA must be built on the family of distributions which it will ultimately be run on. i.e. a .deb built on Ubuntu 20 will work on Ubuntu 22/24 and should also work on Debian 10/11
 
 To start, clone the repository in your directory::
 
