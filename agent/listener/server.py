@@ -138,7 +138,9 @@ def lookup_hostname(ip):
     This function gets an ip and returns the hostname lookuped by DNS.
     """
     try:
+        logging.info('Attempting reverse lookup for "%s"', str(ip))
         hostname = socket.gethostbyaddr(str(ip))
+        logging.info('Reverse lookup returned: "%s"', hostname)
         return hostname[0]
     except Exception as e:
         logging.error(e)
