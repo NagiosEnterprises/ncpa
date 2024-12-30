@@ -1,4 +1,4 @@
-cx_Freeze
+cx_Freeze==7.3.0.2759.dev1735527159
 cx_Logging
 psutil
 requests
