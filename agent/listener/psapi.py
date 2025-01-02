@@ -207,25 +207,23 @@ def make_mount_other_nodes(partition):
     return ParentNode(safe_mountpoint, children=[dvn, fstype, opts])
 
 
-def make_if_nodes(if_name):
-    x = ps.net_io_counters(pernic=True)
+def make_if_nodes(if_name, io_counters, if_stats):
 
-    bytes_sent = RunnableNode("bytes_sent", method=lambda: (x[if_name].bytes_sent, "B"))
-    bytes_recv = RunnableNode("bytes_recv", method=lambda: (x[if_name].bytes_recv, "B"))
+    bytes_sent = RunnableNode("bytes_sent", method=lambda: (io_counters[if_name].bytes_sent, "B"))
+    bytes_recv = RunnableNode("bytes_recv", method=lambda: (io_counters[if_name].bytes_recv, "B"))
     packets_sent = RunnableNode(
-        "packets_sent", method=lambda: (x[if_name].packets_sent, "packets")
+        "packets_sent", method=lambda: (io_counters[if_name].packets_sent, "packets")
     )
     packets_recv = RunnableNode(
-        "packets_recv", method=lambda: (x[if_name].packets_recv, "packets")
+        "packets_recv", method=lambda: (io_counters[if_name].packets_recv, "packets")
     )
-    errin = RunnableNode("errin", method=lambda: (x[if_name].errin, "errors"))
-    errout = RunnableNode("errout", method=lambda: (x[if_name].errout, "errors"))
-    dropin = RunnableNode("dropin", method=lambda: (x[if_name].dropin, "packets"))
-    dropout = RunnableNode("dropout", method=lambda: (x[if_name].dropout, "packets"))
+    errin = RunnableNode("errin", method=lambda: (io_counters[if_name].errin, "errors"))
+    errout = RunnableNode("errout", method=lambda: (io_counters[if_name].errout, "errors"))
+    dropin = RunnableNode("dropin", method=lambda: (io_counters[if_name].dropin, "packets"))
+    dropout = RunnableNode("dropout", method=lambda: (io_counters[if_name].dropout, "packets"))
 
-    ifs = ps.net_if_stats()
-    if if_name in ifs:
-        if ifs[if_name].isup:
+    if if_name in if_stats:
+        if if_stats[if_name].isup:
             status = "up"
         else:
             status = "down"
@@ -430,8 +428,11 @@ def get_disk_node(config):
 
 
 def get_interface_node():
+    io_counters = ps.net_io_counters(pernic=True)
+    if_stats = ps.net_if_stats()
+
     if_children = [
-        make_if_nodes(x) for x in list(ps.net_io_counters(pernic=True).keys())
+        make_if_nodes(if_name, io_counters, if_stats) for if_name in io_counters.keys()
     ]
     return ParentNode("interface", children=if_children)
 
