@@ -9,9 +9,12 @@ DIR=$(dirname "$(readlink -f "$0")")
 BUILD_DIR=$($realpath "$DIR/..")
 VERSION=$(cat $BUILD_DIR/../VERSION)
 ARCH=$(arch)
+if [[ $ARCH == "sun4" ]]; then
+	ARCH=sparc
+fi
 
 # Set up package info
-sed "s/VERSION=.*/ARCH=$VERSION/" $DIR/pkginfo > $DIR/pkginfo.tmp
+sed "s/VERSION=.*/VERSION=$VERSION/" $DIR/pkginfo > $DIR/pkginfo.tmp
 sed "s/ARCH=.*/ARCH=$ARCH/" $DIR/pkginfo.tmp > $BUILD_DIR/pkginfo
 rm -rf $DIR/pkginfo.tmp
 

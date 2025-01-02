@@ -2,7 +2,7 @@
 # Create services
 svcbundle -i -s service-name=site/ncpa \
   -s start-method='/usr/local/ncpa/ncpa' \
-  -s stop-method='kill $(cat /usr/local/ncpa/var/run/ncpa.pid)'
+  -s stop-method=':kill' -s duration='daemon'
 
 # Enable services
 svcadm enable site/ncpa
