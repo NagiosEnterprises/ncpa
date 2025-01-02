@@ -223,6 +223,16 @@ def make_if_nodes(if_name):
     dropin = RunnableNode("dropin", method=lambda: (x[if_name].dropin, "packets"))
     dropout = RunnableNode("dropout", method=lambda: (x[if_name].dropout, "packets"))
 
+    ifs = ps.net_if_stats()
+    if if_name in ifs:
+        if ifs[if_name].isup:
+            status = "up"
+        else:
+            status = "down"
+    else:
+        status = "unknown"
+    statusNode = RunnableNode("status", method=lambda: (status, ""))
+
     return RunnableParentNode(
         if_name,
         primary="bytes_sent",
@@ -235,6 +245,7 @@ def make_if_nodes(if_name):
             dropout,
             bytes_sent,
             errout,
+            statusNode,
         ],
     )
 
