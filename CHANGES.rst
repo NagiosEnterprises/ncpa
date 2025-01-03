@@ -4,6 +4,7 @@ Changelog
 3.1.2 - 01/XX/2025
 ==================
 **Updates**
+- Updated check logging to give more details when a check fails due to unexpected types. (Blake Bahner)
 
 **Bug Fixes**
 
