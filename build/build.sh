@@ -4,7 +4,7 @@ echo -e "***** build/build.sh"
 
 # Global variables
 PYTHONVER="3.11.11"
-SSLVER="3.2.2"
+SSLVER="3.2.3"
 ZLIBVER="1.3.1"
 
 UNAME=$(uname)
