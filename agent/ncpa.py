@@ -309,6 +309,7 @@ class Listener(Base):
                                         application=listener.server.listener,
                                         handler_class=WebSocketHandler,
                                         log=listener_logger,
+                                        error_log=listener_logger,
                                         spawn=Pool(max_connections),
                                         **ssl_context)
             logger.debug("run() - start http_server")
@@ -327,6 +328,7 @@ class Listener(Base):
                                         application=listener.server.listener,
                                         handler_class=WebSocketHandler,
                                         log=listener_logger,
+                                        error_log=listener_logger,
                                         spawn=Pool(max_connections),
                                         **ssl_context)
             http_server.serve_forever()
