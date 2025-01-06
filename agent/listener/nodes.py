@@ -439,9 +439,14 @@ class RunnableNode(ParentNode):
                 else:
                     nice_values.append("%0.2f %s" % (x, self.unit))
             except TypeError:
-                logging.info(
-                    "Did not receive normal values. Unable to find meaningful check."
-                )
+                # if logging is debug, don't send the first error message
+                if logging.getLogger().getEffectiveLevel() == logging.DEBUG:
+                    logging.debug("Error: Did not receive normal values at value %r with unit %r when checking %r", x, self.unit, proper_name)
+                    logging.debug("returning 0, OK, ''")
+                else:
+                    logging.info(
+                        "Did not receive normal values. Unable to find meaningful check."
+                    )
                 return 0, "OK: %s was %s" % (proper_name, str(values)), ""
         values_for_info_line = ", ".join(nice_values)
 

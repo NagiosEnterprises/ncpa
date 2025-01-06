@@ -4,6 +4,7 @@ Changelog
 3.1.2 - 01/14/2025
 ==================
 **Updates**
+- Updated check logging to give more details when a check fails due to unexpected types. (Blake Bahner)
 - Updated our instantiation of WSGI server to properly set the error log file. [GH:#1227] (Blake Bahner)
 - Added interface status to the interface endpoint. [GH:#1220] (Blake Bahner)
 - Reworked the interface endpoint to be more efficient. [GH:#1001] (Blake Bahner)
@@ -11,7 +12,6 @@ Changelog
 
 **Bug Fixes**
 - Improved service handling on Windows to reduce the likelihood of problems arising and to resolve an error that was being sent to Windows Event Log. (Blake Bahner)
-
 - Updated processes check output to preserve perfdata formatting for RRD graphs. [GH:#1224] (Blake Bahner)
 
 3.1.1 - 09/19/2024
