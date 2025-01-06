@@ -59,7 +59,7 @@ setlocal
 @REM :::: 1. Configuration
 @REM :::::::::::::::::::::::
 @REM echo Configuring build
-@REM call %~dp0\windows\build_config.bat %build_options%
+@REM call "%~dp0\windows\build_config.bat" %build_options%
 @REM if ERRORLEVEL 1 exit /B %ERRORLEVEL%
 
 :::::::::::::::::::::::
@@ -79,23 +79,23 @@ if ERRORLEVEL 1 goto :restore_policy
 @REM :: 1. Install Prerequisites
 @REM :: 2. Download/Build OpenSSL
 @REM :: 3. Download/Build Python
-@REM powershell -File %~dp0\windows\build_ossl_python\build_all.ps1 ^
-@REM     -ncpa_build_dir %~dp0 ^
-@REM     -base_dir %base_dir% ^
-@REM     -7z_ver %ver_7z% ^
-@REM     -python_ver %python_ver% ^
-@REM     -openssl_ver %openssl_ver% ^
-@REM     -cpu_arch %cpu_arch% ^
-@REM     -install_prereqs %install_prereqs% ^
-@REM     -download_openssl_and_python %download_openssl_and_python% ^
-@REM     -build_openssl_python %build_openssl_python% ^
-@REM     -build_ncpa %build_ncpa%
+@REM powershell -File "%~dp0\windows\build_ossl_python\build_all.ps1" ^
+@REM     -ncpa_build_dir "%~dp0" ^
+@REM     -base_dir "%base_dir%" ^
+@REM     -7z_ver "%ver_7z%" ^
+@REM     -python_ver "%python_ver%" ^
+@REM     -openssl_ver "%openssl_ver%" ^
+@REM     -cpu_arch "%cpu_arch%" ^
+@REM     -install_prereqs "%install_prereqs%" ^
+@REM     -download_openssl_and_python "%download_openssl_and_python%" ^
+@REM     -build_openssl_python "%build_openssl_python%" ^
+@REM     -build_ncpa "%build_ncpa%"
 @REM if ERRORLEVEL 1 goto :restore_policy
 
 :::::::::::::::::::::::
 :::: 3. Install Prereqs
 :::::::::::::::::::::::
-powershell -File %~dp0\windows\choco_prereqs.ps1
+powershell -File "%~dp0\windows\choco_prereqs.ps1"
 if ERRORLEVEL 1 goto :restore_policy
 
 @REM :::::::::::::::::::::::
@@ -114,18 +114,18 @@ if ERRORLEVEL 1 goto :restore_policy
 
 @REM     :: Copy built Python SSL DLLs to installed Python DLLs directory
 @REM     echo Copying OpenSSL DLLs to Python DLLs directory
-@REM     set ssl_dlls=%PYSSLPATH%\libcrypto-3-x64.dll %PYSSLPATH%\libssl-3-x64.dll %PYSSLPATH%\_ssl.pyd
+@REM     set ssl_dlls="%PYSSLPATH%\libcrypto-3-x64.dll %PYSSLPATH%\libssl-3-x64.dll %PYSSLPATH%\_ssl.pyd"
 @REM     for %%i in (%ssl_dlls%) do (
-@REM         echo Copying %%~nxi to %PYDLLPATH%
-@REM         copy %%i %PYDLLPATH%
+@REM         echo "Copying %%~nxi to %PYDLLPATH%"
+@REM         copy "%%i" "%PYDLLPATH%"
 @REM     )
 @REM     if ERRORLEVEL 1 goto :restore_policy
 
-@REM     echo Calling %PYEXEPATH% %~dp0\windows\build_ncpa.py %PYTHONPATH%
+@REM     echo Calling %PYEXEPATH% "%~dp0\windows\build_ncpa.py %PYTHONPATH%"
 @REM     echo NOTE: This will take a while... You can check ncpa\build\build_ncpa.log for progress
 @REM     echo.
-@REM     @REM Call %PYEXEPATH% %~dp0\windows\build_ncpa.py %PYEXEPATH% > build_ncpa.log
-@REM     Call %PYEXEPATH% %~dp0\windows\build_ncpa.py %PYEXEPATH%
+@REM     @REM Call %PYEXEPATH% "%~dp0\windows\build_ncpa.py %PYEXEPATH% > build_ncpa.log"
+@REM     Call %PYEXEPATH% "%~dp0\windows\build_ncpa.py %PYEXEPATH%"
 @REM     if ERRORLEVEL 1 goto :restore_policy
 @REM )
 
@@ -139,8 +139,8 @@ echo Building NCPA
 @REM )
 :: Set manually because of Windows 10 Pro
 :: It already has a python.exe (that links to the windows store for installing Python 3.7) that breaks the dynamic linking
-set pydir="C:\Python312\python.exe"
-Call "%pydir%" %~dp0\windows\build_ncpa.py %pydir%
+set pydir="C:\Python313\python.exe"
+Call "%pydir%" "%~dp0\windows\build_ncpa.py" "%pydir%"
 
 :::::::::::::::::::::::
 :::: 5. Restore original execution policy

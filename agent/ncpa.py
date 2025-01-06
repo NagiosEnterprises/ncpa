@@ -44,7 +44,7 @@ from geventwebsocket.handler import WebSocketHandler
 from socket import error as SocketError
 from io import open
 from logging.handlers import RotatingFileHandler
-from multiprocessing import Process, Value, freeze_support
+from multiprocessing import Process, Value, current_process, freeze_support
 import process.daemon_manager
 
 # Create the listener logger instance, now, because it is required by listener.server.
@@ -81,11 +81,15 @@ if os.name == 'posix':
     import pwd
 
 if os.name == 'nt':
+    # ctypes for Windows service control
+    import ctypes
     # pywin32 imports
     import servicemanager
     import win32event
     import win32service
     import win32serviceutil
+    # threading for Windows service
+    import threading
 
 
 # Set some global variables for later
@@ -215,6 +219,11 @@ class Base():
         if autostart:
             self.run()
 
+    def set_process_name(self, name):
+        current_process().name = name
+        if __SYSTEM__ == 'nt':
+            ctypes.windll.kernel32.SetConsoleTitleW(name)
+
     # Set error flag for parent process to true
     def send_error(self):
         self.has_error.value = True
@@ -231,6 +240,10 @@ class Listener(Base):
     we will be using a seperate process that is forked off the main process
     to run the listener so all of NCPA is bundled in a single service
     """
+    def __init__(self, options, config, has_error, autostart=False):
+        super().__init__(options, config, has_error, autostart)
+        set_process_name("Nagios Cross-Platform Agent - Listener")
+
     def run(self):
         self.init_logger('listener')
         logger = self.logger
@@ -330,6 +343,10 @@ class Passive(Base):
     The passive service that runs in the background - this is run in a
     separate thread since it is what the main process is used for
     """
+    def __init__(self, options, config, has_error, autostart=False):
+        super().__init__(options, config, has_error, autostart)
+        set_process_name("Nagios Cross-Platform Agent - Passive")
+
     def run_all_handlers(self, *args, **kwargs):
         """
         Will run all handlers that exist.
@@ -859,7 +876,7 @@ if __SYSTEM__ == 'nt':
             win32serviceutil.ServiceFramework.__init__(self, args)
             # handle WaitStop event tells the SCM to stop the service
             self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
-            self.running = False
+            self.running_event = threading.Event()
 
             # child process handles (Passive, Listener)
             self.p, self.l = None, None
@@ -918,40 +935,57 @@ if __SYSTEM__ == 'nt':
             logging.getLogger().setLevel(log_level)
 
         def SvcStop(self):
-            self.running = False
-            self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+            """
+            Stop the service
+            This triggers the stop event, which breaks the main loop
+            """
+            self.running_event.clear()
             win32event.SetEvent(self.hWaitStop) # set stop event for main thread
+
+        def SvcRun(self):
+            """
+            Start the service
+            We need to override this method to prevent it reporting NCPA as started before the processes are started
+            """
+            self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
+            self.SvcDoRun()
+            # Once SvcDoRun returns, the service has stopped
+            self.ReportServiceStatus(win32service.SERVICE_STOPPED)
 
         def SvcDoRun(self):
             # log starting of service to windows event log
             servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
                                 servicemanager.PYS_SERVICE_STARTED,
                                 (self._svc_name_, ''))
-            self.running = True
+            self.running_event.set()
             self.main()
 
         def main(self):
-            self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
-            # instantiate child processes
-            self.p, self.l = start_processes(self.options, self.config, self.has_error)
-            self.ReportServiceStatus(win32service.SERVICE_RUNNING)
+            try:
+                # instantiate child processes
+                self.p, self.l = start_processes(self.options, self.config, self.has_error)
+                self.ReportServiceStatus(win32service.SERVICE_RUNNING)
 
-            # wait for stop event
-            while self.running: # shouldn't loop, but just in case the event triggers without stop being called
-                win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
-                time.sleep(1)
+                # wait for stop event
+                while self.running_event.is_set(): # shouldn't loop, but just in case the event triggers without stop being called
+                    result = win32event.WaitForSingleObject(self.hWaitStop, 1000)
+                    if result == win32event.WAIT_OBJECT_0:
+                        break
+                    time.sleep(0.1)
+            finally:
+                # kill/clean up child processes
+                if self.p:
+                    self.p.terminate()
+                    self.p.join() 
+                if self.l:
+                    self.l.terminate()
+                    self.l.join()
 
-            # kill/clean up child processes
-            self.p.terminate()
-            self.l.terminate()
-            self.p.join()
-            self.l.join()
-
-            # log stopping of service to windows event log
-            servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                servicemanager.PYS_SERVICE_STOPPED,
-                                (self._svc_name_, ''))
-            self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                # log stopping of service to windows event log
+                servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+                                    servicemanager.PYS_SERVICE_STOPPED,
+                                    (self._svc_name_, ''))
+                self.ReportServiceStatus(win32service.SERVICE_STOPPED)
 
 
 # --------------------------
