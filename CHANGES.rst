@@ -6,6 +6,7 @@ Changelog
 **Updates**
 
 **Bug Fixes**
+- Improved service handling on Windows to reduce the likelihood of problems arising and to resolve an error that was being sent to Windows Event Log. (Blake Bahner)
 
 3.1.1 - 09/19/2024
 ==================
