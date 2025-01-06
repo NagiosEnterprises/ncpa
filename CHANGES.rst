@@ -6,8 +6,10 @@ Changelog
 **Updates**
 - Added interface status to the interface endpoint. [GH:#1220] (Blake Bahner)
 - Reworked the interface endpoint to be more efficient. [GH:#1001] (Blake Bahner)
+- Updated Python to 3.13.1 on Windows builds to resolve some CVEs. (Blake Bahner)
 
 **Bug Fixes**
+- Improved service handling on Windows to reduce the likelihood of problems arising and to resolve an error that was being sent to Windows Event Log. (Blake Bahner)
 
 3.1.1 - 09/19/2024
 ==================
