@@ -4,6 +4,7 @@ Changelog
 3.1.2 - 01/XX/2025
 ==================
 **Updates**
+- Updated Python to 3.13.1 on Windows builds to resolve some CVEs. (Blake Bahner)
 
 **Bug Fixes**
 - Improved service handling on Windows to reduce the likelihood of problems arising and to resolve an error that was being sent to Windows Event Log. (Blake Bahner)
