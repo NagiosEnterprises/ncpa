@@ -4,6 +4,7 @@ Changelog
 3.1.2 - 01/14/2025
 ==================
 **Updates**
+
 - Added debug logging to reverse DNS lookups to help diagnose issues. (Craig Dienger)
 - Added interface status to the interface endpoint. [GH:#1220] (Blake Bahner)
 - Reworked the interface endpoint to be more efficient. [GH:#1001] (Blake Bahner)
@@ -12,6 +13,7 @@ Changelog
 - Updated Python to 3.13.1 on Windows builds to resolve some CVEs. (Blake Bahner)
 
 **Bug Fixes**
+
 - Improved service handling on Windows to reduce the likelihood of problems arising and to resolve an error that was being sent to Windows Event Log. (Blake Bahner)
 - Updated processes check output to preserve perfdata formatting for RRD graphs. [GH:#1224] (Blake Bahner)
 
