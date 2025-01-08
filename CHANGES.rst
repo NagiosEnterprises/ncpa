@@ -11,7 +11,7 @@ Changelog
 - Updated check logging to give more details when a check fails due to unexpected types. (Blake Bahner)
 - Updated our instantiation of WSGI server to properly set the error log file. [GH:#1227] (Blake Bahner)
 - Updated OpenSSL to 3.2.3 on Linux and Mac builds. (Blake Bahner)
-- Updated Python to 3.13.1 on Windows builds. (Blake Bahner)
+- Updated Python to 3.12.8 on Windows builds. (Blake Bahner)
 
 **Bug Fixes**
 
