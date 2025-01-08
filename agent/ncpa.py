@@ -949,6 +949,10 @@ if __SYSTEM__ == 'nt':
             """
             self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
             self.SvcDoRun()
+            # log stopping of service to windows event log
+            servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+                                servicemanager.PYS_SERVICE_STOPPED,
+                                (self._svc_name_, ''))
             # Once SvcDoRun returns, the service has stopped
             self.ReportServiceStatus(win32service.SERVICE_STOPPED)
 
@@ -980,12 +984,6 @@ if __SYSTEM__ == 'nt':
                 if self.l:
                     self.l.terminate()
                     self.l.join()
-
-                # log stopping of service to windows event log
-                servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                    servicemanager.PYS_SERVICE_STOPPED,
-                                    (self._svc_name_, ''))
-                self.ReportServiceStatus(win32service.SERVICE_STOPPED)
 
 
 # --------------------------
