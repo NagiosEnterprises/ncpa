@@ -436,8 +436,10 @@ class RunnableNode(ParentNode):
             try:
                 if isinstance(x, int):
                     nice_values.append("%d %s" % (x, self.unit))
-                else:
+                elif isinstance(x, float):
                     nice_values.append("%0.2f %s" % (x, self.unit))
+                else:
+                    nice_values.append("%s %s" % (x, self.unit))
             except TypeError:
                 # if logging is debug, don't send the first error message
                 if listener_logger.getEffectiveLevel() == LOGGING_DEBUG:
@@ -482,8 +484,10 @@ class RunnableNode(ParentNode):
 
             if isinstance(x, int):
                 perf = "=%d%s;" % (x, perf_unit)
-            else:
+            elif isinstance(x, float):
                 perf = "=%0.2f%s;" % (x, perf_unit)
+            else:
+                perf = "=%s%s;" % (x, perf_unit)
 
             # Only display on primary value to the fact that warning/critical values are ONLY
             # accurate when on the primary value's perfdata

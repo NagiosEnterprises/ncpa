@@ -15,6 +15,7 @@ Changelog
 
 **Bug Fixes**
 
+- Fixed an issue where API endpoints could report an erroneous unexpected type error. (Blake Bahner)
 - Improved service handling on Windows to reduce the likelihood of problems arising and to resolve an error that was being sent to Windows Event Log. (Blake Bahner)
 - Updated processes check output to preserve perfdata formatting for RRD graphs. [GH:#1224] (Blake Bahner)
 
