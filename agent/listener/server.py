@@ -21,7 +21,7 @@ import ncpa
 import process.daemon_manager as daemon_manager
 import subprocess
 import listener.environment as environment
-from ncpa import listener_logger as logging
+from ncpa import listener_logger
 #import inspect
 
 
@@ -129,7 +129,7 @@ def get_unmapped_ip(ip):
             return str(ipaddress.ip_address(str(ip)))
     # Needed for passive checks, in this case ip is 'Internal'
     except ValueError as e:
-        logging.debug(e)
+        listener_logger.debug(e)
         return ip
 
 
@@ -138,12 +138,12 @@ def lookup_hostname(ip):
     This function gets an ip and returns the hostname lookuped by DNS.
     """
     try:
-        logging.debug('Attempting reverse lookup for "%s"', str(ip))
+        listener_logger.debug('Attempting reverse lookup for "%s"', str(ip))
         hostname = socket.gethostbyaddr(str(ip))
-        logging.debug('Reverse lookup returned: "%s"', hostname)
+        listener_logger.debug('Reverse lookup returned: "%s"', hostname)
         return hostname[0]
     except Exception as e:
-        logging.error(e)
+        listener_logger.error(e)
         return
 
 
@@ -155,7 +155,7 @@ def is_ip(ip):
         ipaddress.ip_address(str(ip)).version
         return True
     except ValueError as e:
-        logging.debug(e)
+        listener_logger.debug(e)
         return False
 
 
@@ -167,7 +167,7 @@ def is_network(ip):
         ipaddress.ip_network(str(ip))
         return True
     except ValueError as e:
-        logging.debug(e)
+        listener_logger.debug(e)
         return False
 
 # Securely compares strings - byte string or unicode
@@ -189,7 +189,7 @@ def before_request():
     # allowed is set to False by default
     allowed = False
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
-    logging.debug("    before_request() - type(request.view_args): %s", type(request.view_args))
+    listener_logger.debug("    before_request() - type(request.view_args): %s", type(request.view_args))
 
     # For logging some debug info for actual page requests
     if isinstance(request.view_args, dict) and ('filename' not in request.view_args):
@@ -201,11 +201,11 @@ def before_request():
             sub_parts[0] = '********'
             new_parts.append('&'.join(sub_parts))
         logurl = 'token='.join(new_parts)
-        logging.info("before_request() - request.url: %s", logurl)
-        logging.debug("    before_request() - request.path: %s", request.path)
-        logging.debug("    before_request() - request.url_rule: %s", request.url_rule)
-        logging.debug("    before_request() - request.view_args: %s", request.view_args)
-        logging.debug("    before_request() - request.routing_exception: %s", request.routing_exception)
+        listener_logger.info("before_request() - request.url: %s", logurl)
+        listener_logger.debug("    before_request() - request.path: %s", request.path)
+        listener_logger.debug("    before_request() - request.url_rule: %s", request.url_rule)
+        listener_logger.debug("    before_request() - request.view_args: %s", request.view_args)
+        listener_logger.debug("    before_request() - request.routing_exception: %s", request.routing_exception)
 
     if allowed_hosts and __INTERNAL__ is False:
         if request.remote_addr:
@@ -506,7 +506,7 @@ def gui_index():
     try:
         return render_template('gui/dashboard.html', **info)
     except Exception as e:
-        logging.exception(e)
+        listener_logger.exception(e)
 
 
 @listener.route('/gui/checks', provide_automatic_options = False)
@@ -801,7 +801,7 @@ def admin_clear_check_log():
 @listener.route('/ws/api/<path:accessor>', websocket=True)
 @requires_token_or_auth
 def api_websocket(accessor=None):
-    logging.debug("api_websocket()")
+    listener_logger.debug("api_websocket()")
     """Meant for use with the websocket and API.
 
     Make a connection to this function, and then pass it the API
@@ -811,7 +811,7 @@ def api_websocket(accessor=None):
     """
     sane_args = dict(request.args)
     sane_args['accessor'] = accessor
-    logging.debug("api_websocket() - sane_args: %s: ", sane_args)
+    listener_logger.debug("api_websocket() - sane_args: %s: ", sane_args)
 
     config = listener.config['iconfig']
 
@@ -824,33 +824,33 @@ def api_websocket(accessor=None):
 
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
-        logging.info("===== api_websocket() - websocket for %s listening...", accessor)
+        listener_logger.info("===== api_websocket() - websocket for %s listening...", accessor)
 
         while not ws.closed:
-            logging.debug("    **** api_websocket() - while open...")
+            listener_logger.debug("    **** api_websocket() - while open...")
             try:
                 message = ws.receive()
                 if message:
-                    logging.debug("        api_websocket - message: %s", message)
+                    listener_logger.debug("        api_websocket - message: %s", message)
                     node = psapi.getter(message, config, request.path, request.args)
-                    logging.debug("        api_websocket - node: %s", node)
+                    listener_logger.debug("        api_websocket - node: %s", node)
                     prop = node.name
-                    logging.debug("        api_websocket - prop: %s", prop)
+                    listener_logger.debug("        api_websocket - prop: %s", prop)
                     val = node.walk(first=True, **sane_args)
-                    logging.debug("        api_websocket - val: %s", val)
+                    listener_logger.debug("        api_websocket - val: %s", val)
                     jval = json.dumps(val[prop])
-                    logging.debug("        api_websocket - jval: %s", jval)
+                    listener_logger.debug("        api_websocket - jval: %s", jval)
                     ws.send(jval)
             except Exception as e:
                 # Socket was probably closed by the browser changing pages
-                logging.warning("api_websocket() Exception: %s", e)
+                listener_logger.warning("api_websocket() Exception: %s", e)
                 ws.close()
                 break
         else:
-            logging.info("===== api_websocket() - websocket for %s closed.", accessor)
+            listener_logger.info("===== api_websocket() - websocket for %s closed.", accessor)
 
     else:
-        logging.warning("api_websocket() - NO request.environ.wsgi.websocket")
+        listener_logger.warning("api_websocket() - NO request.environ.wsgi.websocket")
 
     return ''
 
@@ -860,10 +860,10 @@ def api_websocket(accessor=None):
 def top_websocket():
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
-        logging.info("===== top_websocket() - websocket listening...")
+        listener_logger.info("===== top_websocket() - websocket listening...")
 
         while not ws.closed:
-            logging.debug("    **** top_websocket() - while open...")
+            listener_logger.debug("    **** top_websocket() - while open...")
             load = psutil.cpu_percent()
             vir_mem = psutil.virtual_memory().percent
             swap_mem = psutil.swap_memory().percent
@@ -885,11 +885,11 @@ def top_websocket():
                 gevent.sleep(1)
             except Exception as e:
                 # Socket was probably closed by the browser changing pages
-                logging.warning("top_websocket Exception: %s", e)
+                listener_logger.warning("top_websocket Exception: %s", e)
                 ws.close()
                 break
         else:
-            logging.info("===== top_websocket() - websocket closed.")
+            listener_logger.info("===== top_websocket() - websocket closed.")
 
     return ''
 
@@ -901,11 +901,11 @@ def tail_websocket():
 
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
-        logging.info("===== top_websocket() - websocket listening...")
+        listener_logger.info("===== top_websocket() - websocket listening...")
 
         last_ts = datetime.datetime.now()
         while not ws.closed:
-            logging.debug("    **** tail_websocket() - while open...")
+            listener_logger.debug("    **** tail_websocket() - while open...")
             try:
                 last_ts, logs = listener.windowslogs.tail_method(last_ts=last_ts, **request.args)
 
@@ -914,11 +914,11 @@ def tail_websocket():
 
                 gevent.sleep(5)
             except Exception as e:
-                logging.warning("tail_websocket Exception: %s", e)
+                listener_logger.warning("tail_websocket Exception: %s", e)
                 ws.close()
                 break
         else:
-            logging.info("===== tail_websocket() - websocket closed.")
+            listener_logger.info("===== tail_websocket() - websocket closed.")
 
     return ''
 
@@ -1061,7 +1061,7 @@ def nrdp():
         resp = Response(response.content, 200, mimetype=response.headers['content-type'])
         return resp
     except Exception as exc:
-        logging.exception(exc)
+        listener_logger.exception(exc)
         return error(msg=exc)
 
 
@@ -1112,7 +1112,7 @@ def sanitize_for_configparser(input_value):
         sanitized = sanitized.replace('\\', '\\\\') # escape backslashes for sed command, which will interpret single backslashes as escape characters
         sanitized = sanitized.replace('/', '\/') # escape forward slashes for sed command
     except Exception as e:
-        logging.exception(e)
+        listener_logger.exception(e)
         return ''
     
     return sanitized
@@ -1140,7 +1140,7 @@ def validate_config_input(section, option, value, valid_options):
                         value = sanitize_for_configparser(value)
                         return (section, option_in_file, value.strip())
     except Exception as e:
-        logging.exception(e)
+        listener_logger.exception(e)
         return None, None, None
     return None, None, None
 
@@ -1207,13 +1207,13 @@ def write_to_config_and_file(section_options_to_update):
                 new_value = match.group(3)
                 new_value = new_value.replace('\/', '/').replace('\\\\', '\\') # unescape backslashes from sed command
 
-                logging.debug("write_to_configFile() - replacing line %d with %s", line_number, new_value)
+                listener_logger.debug("write_to_configFile() - replacing line %d with %s", line_number, new_value)
 
                 try:
                     with open(cfg_file, 'r', encoding='utf-8') as file:
                         lines = file.readlines()
                 except FileNotFoundError:
-                    logging.error("File not found: %s", cfg_file)
+                    listener_logger.error("File not found: %s", cfg_file)
                     return
                 
                 lines[line_number-1] = new_value + '\n'
@@ -1222,13 +1222,13 @@ def write_to_config_and_file(section_options_to_update):
                     with open(cfg_file, 'w', encoding='utf-8') as file:
                         file.writelines(lines)
                 except FileNotFoundError:
-                    logging.error("File not found: %s", cfg_file)
+                    listener_logger.error("File not found: %s", cfg_file)
                     return
                 except Exception as e:
-                    logging.exception(e)
+                    listener_logger.exception(e)
                     return
             else:
-                logging.debug("write_to_configFile() - running sed command: %s", sed_cmd)
+                listener_logger.debug("write_to_configFile() - running sed command: %s", sed_cmd)
                 running_check = subprocess.run(
                     sed_cmd, 
                     shell=True, 
@@ -1238,10 +1238,10 @@ def write_to_config_and_file(section_options_to_update):
                 )
 
                 if running_check.returncode != 0:
-                    logging.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
+                    listener_logger.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
                     return False
     except Exception as e:
-        logging.exception(e)
+        listener_logger.exception(e)
         return False
         
 # Endpoint to make allowed changes to the config
@@ -1295,12 +1295,12 @@ def set_config():
     # TODO: Let the User know that they need to configure the handler before restarting
     # allow_restart = config.get('general', 'allow_remote_restart').lower()
     # if allow_restart in {'none', '0'}:
-    #     logging.info("restart not allowed")
+    #     listener_logger.info("restart not allowed")
     # else:
     #     try:
-    #         logging.info("allow_restart: %s", allow_restart)
+    #         listener_logger.info("allow_restart: %s", allow_restart)
     #         if os.name == 'nt':
-    #             logging.info("restarting ncpa service")
+    #             listener_logger.info("restarting ncpa service")
     #             restart_ncpa = subprocess.run(
     #                 "net stop ncpa && net start ncpa",
     #                 shell=True,
@@ -1308,7 +1308,7 @@ def set_config():
     #                 stderr=subprocess.STDOUT
     #             )
     #         elif os.name == 'posix':
-    #             logging.info("restarting ncpa service")
+    #             listener_logger.info("restarting ncpa service")
     #             restart_ncpa = subprocess.run(
     #                 "systemctl restart ncpa",
     #                 shell=True,
@@ -1316,10 +1316,10 @@ def set_config():
     #                 stderr=subprocess.STDOUT
     #             )
     #         else:
-    #             logging.error("unsupported OS")
+    #             listener_logger.error("unsupported OS")
     #             return jsonify({'type': 'danger', 'message': 'Unsupported OS. This service must be restarted manually.'})
     #     except Exception as e:
-    #         logging.exception(e)
+    #         listener_logger.exception(e)
     #         return jsonify({'type': 'danger', 'message': 'Failed to restart the service.'})
 
     return jsonify({'type': 'success', 'message': 'Configuration updated. <b>Note</b>: You may need to <b>restart NCPA</b> for all changes to take effect.'})
@@ -1388,7 +1388,7 @@ def add_check():
 
 
         for sed_cmd in sed_cmds:
-            logging.debug("add_check() - adding check: %s", new_check)
+            listener_logger.debug("add_check() - adding check: %s", new_check)
 
             if environment.SYSTEM == "Windows":
                 new_check = new_check.replace('\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command for GUI
@@ -1403,7 +1403,7 @@ def add_check():
                     with open(cfg_file, 'r', encoding='utf-8') as file:
                         lines = file.readlines()
                 except FileNotFoundError:
-                    logging.error("File not found: %s", cfg_file)
+                    listener_logger.error("File not found: %s", cfg_file)
                     return
                 
                 for i, line in enumerate(lines):
@@ -1416,10 +1416,10 @@ def add_check():
                     with open(cfg_file, 'w', encoding='utf-8') as file:
                         file.writelines(lines)
                 except FileNotFoundError:
-                    logging.error("File not found: %s", cfg_file)
+                    listener_logger.error("File not found: %s", cfg_file)
                     return
                 except Exception as e:
-                    logging.exception(e)
+                    listener_logger.exception(e)
                     return
                 new_check_parts = new_check.split('=')
                 config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
@@ -1433,7 +1433,7 @@ def add_check():
                 )
 
                 if running_check.returncode != 0:
-                    logging.error("add_check() - sed_cmd failed: %s", running_check.stdout)
+                    listener_logger.error("add_check() - sed_cmd failed: %s", running_check.stdout)
                     return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
                 else:
                     # add check to running configuration so it will be displayed in the GUI before restarting NCPA
@@ -1444,7 +1444,7 @@ def add_check():
                 new_check = new_check.replace('\/', '/').replace('\\\\','\\') # unescape the slashes that were escaped for the sed command for GUI
 
     except Exception as e:
-        logging.exception(e)
+        listener_logger.exception(e)
         return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
 
     return jsonify({'type': 'success', 'message': 'Check added. <b>Note</b>: You will need to <b>restart NCPA</b> for the new checks to take effect.', 'check': str(new_check)})
@@ -1493,7 +1493,7 @@ def api(accessor=''):
     try:
         node = psapi.getter(accessor, config, full_path, request.args)
     except ValueError as exc:
-        logging.exception(exc)
+        listener_logger.exception(exc)
         return error(msg='Referencing node that does not exist: %s' % accessor)
     except IndexError as exc:
         # Hide the actual exception and just show nice output to users about changes in the API functionality
