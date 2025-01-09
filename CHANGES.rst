@@ -25,7 +25,7 @@ Changelog
 - Updated to OpenSSL 3.0.15 to resolve some CVEs. [GH:#1176] (Blake Bahner)
 - Updated to Python to 3.12.6 for Windows builds to resolve some CVEs. (Blake Bahner)
 - Updated the RPM hash to SHA256 to enable the installation of NCPA in FIPS mode. [GH:#1168] (Blake Bahner)
-- Dropped support for CentOS 8, Debian 10 and Ubuntu 18 due to OpenSSL no longer supporting these platforms. (Blake Bahner)
+- Dropped support for CentOS 8, RHEL/Oracle 7, Debian 10 and Ubuntu 18 due to OpenSSL no longer supporting these platforms. (Blake Bahner)
 
 **Bug Fixes**
 
