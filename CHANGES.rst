@@ -1,6 +1,12 @@
 Changelog
 +++++++++
 
+3.1.3 - 01/28/2025
+==================
+**Bug Fixes**
+
+- Fixed an issue on Windows where upgrading NCPA to a new Python minor version would cause the service to fail to start. [GH:#1242] (Blake Bahner)
+
 3.1.2 - 01/15/2025
 ==================
 **Updates**
