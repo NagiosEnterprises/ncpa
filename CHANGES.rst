@@ -1,6 +1,24 @@
 Changelog
 +++++++++
 
+3.1.2 - 01/15/2025
+==================
+**Updates**
+
+- Added debug logging to reverse DNS lookups to help diagnose issues. (Craig Dienger)
+- Added interface status to the interface endpoint. [GH:#1220] (Blake Bahner)
+- Reworked the interface endpoint to be more efficient. [GH:#1001] (Blake Bahner)
+- Updated check logging to give more details when a check fails due to unexpected types. (Blake Bahner)
+- Updated our instantiation of WSGI server to properly set the error log file. [GH:#1227] (Blake Bahner)
+- Updated OpenSSL to 3.2.3 on Linux builds. (Blake Bahner)
+- Updated Python to 3.12.8 on Windows builds. (Blake Bahner)
+
+**Bug Fixes**
+
+- Fixed an issue where API endpoints could report an erroneous unexpected type error. (Blake Bahner)
+- Improved service handling on Windows to reduce the likelihood of problems arising and to resolve an error that was being sent to Windows Event Log. (Blake Bahner)
+- Updated processes check output to preserve perfdata formatting for RRD graphs. [GH:#1224] (Blake Bahner)
+
 3.1.1 - 09/19/2024
 ==================
 **Updates**
@@ -8,7 +26,7 @@ Changelog
 - Updated to OpenSSL 3.0.15 to resolve some CVEs. [GH:#1176] (Blake Bahner)
 - Updated to Python to 3.12.6 for Windows builds to resolve some CVEs. (Blake Bahner)
 - Updated the RPM hash to SHA256 to enable the installation of NCPA in FIPS mode. [GH:#1168] (Blake Bahner)
-- Dropped support for CentOS 8, Debian 10 and Ubuntu 18 due to OpenSSL no longer supporting these platforms. (Blake Bahner)
+- Dropped support for CentOS 8, RHEL/Oracle 7, Debian 10 and Ubuntu 18 due to OpenSSL no longer supporting these platforms. (Blake Bahner)
 
 **Bug Fixes**
 

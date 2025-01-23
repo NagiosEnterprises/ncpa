@@ -2,7 +2,7 @@ import os
 import tempfile
 import time
 import itertools
-import logging
+from logging import DEBUG as LOGGING_DEBUG
 import pickle
 import copy
 import re
@@ -10,7 +10,7 @@ import listener.environment as environment
 import listener.server
 import listener.database as database
 
-from ncpa import listener_logger as logging
+from ncpa import listener_logger
 
 
 # Valid nodes is updated as it gets set when calling a node via accessor
@@ -66,7 +66,7 @@ class ParentNode(object):
                     kwargs["first"] = False
                 stat.update(child.walk(*args, **kwargs))
             except Exception as exc:
-                logging.exception(exc)
+                listener_logger.exception(exc)
                 stat.update({name: "Error retrieving child: %r" % str(exc)})
         return {self.name: stat}
 
@@ -211,7 +211,7 @@ class RunnableNode(ParentNode):
         except TypeError:
             values, unit = self.method()
         except AttributeError:
-            logging.error("Error running check for %s... likely timed out..." % self.name)
+            listener_logger.error("Error running check for %s... likely timed out..." % self.name)
             values, unit = None, None
 
         self.set_unit(unit, kwargs)
@@ -254,7 +254,7 @@ class RunnableNode(ParentNode):
             # file having been created yet (check doesn't have old data)
             if values is False:
                 time.sleep(1)
-                logging.debug("Re-running check for 1 second of data.")
+                listener_logger.debug("Re-running check for 1 second of data.")
                 try:
                     values, unit = self.method(*args, **kwargs)
                 except TypeError:
@@ -324,7 +324,7 @@ class RunnableNode(ParentNode):
             values = self.get_delta_values(values, kwargs)
             values = self.get_aggregated_values(values, kwargs)
         except TypeError:
-            logging.warning(
+            listener_logger.warning(
                 "Error converting values to scale and delta. Values: %r" % values
             )
 
@@ -381,7 +381,7 @@ class RunnableNode(ParentNode):
         except Exception as exc:
             returncode = 3
             stdout = str(exc)
-            logging.exception(exc)
+            listener_logger.exception(exc)
 
         # Get the check logging value
         try:
@@ -436,12 +436,19 @@ class RunnableNode(ParentNode):
             try:
                 if isinstance(x, int):
                     nice_values.append("%d %s" % (x, self.unit))
-                else:
+                elif isinstance(x, float):
                     nice_values.append("%0.2f %s" % (x, self.unit))
+                else:
+                    nice_values.append("%s %s" % (x, self.unit))
             except TypeError:
-                logging.info(
-                    "Did not receive normal values. Unable to find meaningful check."
-                )
+                # if logging is debug, don't send the first error message
+                if listener_logger.getEffectiveLevel() == LOGGING_DEBUG:
+                    listener_logger.debug("Error: Did not receive normal values at value %r with unit %r when checking %r", x, self.unit, proper_name)
+                    listener_logger.debug("returning 0, OK, ''")
+                else:
+                    listener_logger.info(
+                        "Did not receive normal values. Unable to find meaningful check."
+                    )
                 return 0, "OK: %s was %s" % (proper_name, str(values)), ""
         values_for_info_line = ", ".join(nice_values)
 
@@ -477,8 +484,10 @@ class RunnableNode(ParentNode):
 
             if isinstance(x, int):
                 perf = "=%d%s;" % (x, perf_unit)
-            else:
+            elif isinstance(x, float):
                 perf = "=%0.2f%s;" % (x, perf_unit)
+            else:
+                perf = "=%s%s;" % (x, perf_unit)
 
             # Only display on primary value to the fact that warning/critical values are ONLY
             # accurate when on the primary value's perfdata
@@ -538,16 +547,16 @@ class RunnableNode(ParentNode):
                 last_modified = os.path.getmtime(tmpfile)
         except (IOError, EOFError):
             # Otherwise load the loaded_values and last_modified with values that will cause zeros to show up.
-            logging.debug('No pickle file found for hash_val "%s"', hash_val)
+            listener_logger.debug('No pickle file found for hash_val "%s"', hash_val)
             loaded_values = values
             last_modified = 0
         except (KeyError, pickle.UnpicklingError):
-            logging.error('Problem unpickling data for hash_val "%s"', hash_val)
+            listener_logger.error('Problem unpickling data for hash_val "%s"', hash_val)
             loaded_values = values
             last_modified = 0
 
         # Update the pickled data
-        logging.debug(
+        listener_logger.debug(
             'Updating pickle for hash_val "%s". Filename is %s.', hash_val, tmpfile
         )
         with open(tmpfile, "wb") as values_file:

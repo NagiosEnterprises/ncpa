@@ -12,6 +12,11 @@ def send_request(url, connection_timeout, **kwargs):
     :rtype: requests.models.Response
     """
 
+    
+    if url == "/":
+        logging.error("Invalid URL: '/' is not a valid URL")
+        return None
+
     try:
         r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=False, allow_redirects=True)
     except requests.exceptions.HTTPError as e:
