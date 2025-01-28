@@ -114,7 +114,7 @@ print("Freezing with cx_Freeze")
 # print("you can track progress in ncpa\\build\\cxFreeze_build.log")
 # print("Python launcher:", python_launcher)
 ## opt 1: run in console:
-subprocess.Popen([python_launcher, 'setup.py', 'build_exe']).wait()
+subprocess.Popen([python_launcher, 'setup.py', 'build_exe']).wait() # TODO: determine if we can/should update this to build instead of build_exe
 ## opt 2: run with logging:
 # with open(os.path.join(basedir, 'build', 'cxFreeze_build.log'), 'w') as logfile:
 #     subprocess.Popen([python_launcher, 'setup.py', 'build_exe'], stdout=logfile).wait()

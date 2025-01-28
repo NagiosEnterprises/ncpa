@@ -319,11 +319,16 @@ Section # "Create Config.ini"
     ; wait for the service(s) to stop
     Sleep 2000
 
-    ; Remove old log files for services and old passive section
+    ; Remove old log files for services and old passive section ;; TODO: I don't think the first three lines here are valid anymore -- double check and if not, remove this.
     Delete "$INSTDIR\ncpa_listener.log"
     Delete "$INSTDIR\ncpa_passive.log"
     RMDir /r "$INSTDIR\passive"
     Delete "$PROGRAMFILES32\Nagios\NCPA\*.*"
+
+    ; Remove old installation files
+    RMDir /r "$INSTDIR\lib"
+    RMDir /r "$INSTDIR\listener"
+    Delete "$INSTDIR\python*.dll"
 
     SetOutPath $INSTDIR
 
