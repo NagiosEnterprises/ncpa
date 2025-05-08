@@ -1,6 +1,12 @@
 Changelog
 +++++++++
 
+3.1.4 - XX/XX/2025
+==================
+**Updates**
+
+- Updated Python to version 3.13.3 for Windows builds
+
 3.1.3 - 01/28/2025
 ==================
 **Bug Fixes**
