@@ -53,8 +53,8 @@ install_prereqs() {
             apt-get -y install gcc g++ zlib1g-dev openssl libssl-dev rpm libffi-dev sqlite3 libsqlite3-dev wget alien  --allow-unauthenticated
         fi
 
-        # debian-builder is not nessery anymore when Ubuntu24 or higher
-        if [[ "$dist" != "ubuntu24" ]]; then
+        # debian-builder is not nessery anymore when Debian 12 or Ubuntu24
+        if [ "$dist" != "debian12" ] && [ "$dist" != "ubuntu24" ]; then
             echo -e "***** linux/setup.sh - apt-get install debian-builder"
             apt-get -y update
             apt-get -y install debian-builder --allow-unauthenticated
