@@ -226,6 +226,7 @@ fi
 /usr/local/ncpa/frozen_application_license.txt
 #/usr/local/ncpa/lib/*.py
 /usr/local/ncpa/lib/*.zip
+/usr/local/ncpa/lib/*.dat
 /usr/local/ncpa/build_resources
 /usr/local/ncpa/listener
 /usr/local/ncpa/plugins

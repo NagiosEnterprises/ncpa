@@ -4,6 +4,7 @@
 *.key
 *.crt
 *.cfg
+.DS_Store
 .idea/
 .vagrant
 .coverage
