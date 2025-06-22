@@ -233,7 +233,6 @@ def make_if_nodes(if_name, io_counters, if_stats):
         status = "unknown"
         speed = 0
         mtu = 0
-
     statusNode = RunnableNode("status", method=lambda: (status, ""))
     speedNode = RunnableNode('speed', method=lambda: (speed, 'Mbit/s'))
     mtuNode = RunnableNode('mtu', method=lambda: (mtu, ""))
