@@ -1,5 +1,11 @@
 Changelog
 +++++++++
+3.1.4 - XX/XX/2025
+==================
+**Updates**
+- Added support for ARM64 builds. (DevSysEngineer)
+- Updated the bundled Python version to 3.13.3 to resolve OpenSSL CVEs. (Blake Bahner)
+- Updated the bundled OpenSSL version to 3.0.16 to resolve OpenSSL CVEs. (Blake Bahner)
 
 3.1.4 - XX/XX/2025
 ==================
