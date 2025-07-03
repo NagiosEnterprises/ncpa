@@ -184,6 +184,7 @@ fi
 
 %defattr(0644,root,root,0755)
 /usr/local/ncpa/*.py
+/usr/local/ncpa/*.dat
 /usr/local/ncpa/*.zip
 /usr/local/ncpa/*.githash
 /usr/local/ncpa/build_resources

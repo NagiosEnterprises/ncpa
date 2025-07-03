@@ -13,7 +13,7 @@ ARCH=$(uname -m)
     echo -e "    Fixing dylib dependencies..."
     # Make some dylib dependency paths relative so they will work on target machine
     NCPAdir="ncpa-$NCPA_VER"
-    sslver="3.1.2"
+    sslver="3.0.16"
     # otool -L $NCPAdir/lib/*
 
     # Add args for install_name_tool() in format:
