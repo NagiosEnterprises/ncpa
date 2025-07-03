@@ -3,8 +3,8 @@
 echo -e "***** build/build.sh"
 
 # Global variables
-PYTHONVER="3.13.3"
-SSLVER="3.0.16"
+PYTHONVER="3.13.5"
+SSLVER="3.0.17"
 ZLIBVER="1.3.1"
 
 UNAME=$(uname)
