@@ -7,14 +7,8 @@ Changelog
 - Improved service handling on Windows to reduce/resolve startup/running issues, particularly around Windows' Event Log process. (Blake Bahner)
 - Added support for ARM64 builds. (DevSysEngineer)
 - Added psutil version to the dashboard to help diagnose issues. (Blake Bahner)
-- Updated the bundled Python version to resolve CVEs. (Blake Bahner)
-- Updated the bundled OpenSSL version to resolve CVEs. (Blake Bahner)
-
-3.1.4 - XX/XX/2025
-==================
-**Updates**
-
-- Updated Python to version 3.13.3 for Windows builds
+- Updated the bundled Python version to resolve CVEs and improve compatibility. (Blake Bahner)
+- Updated the bundled OpenSSL version to resolve CVEs and improve compatibility. (Blake Bahner)
 
 3.1.3 - 01/28/2025
 ==================
