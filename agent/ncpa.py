@@ -1215,6 +1215,7 @@ def main(has_error):
     log.info("main - Python version: %s", sys.version)
     log.info("main - SSL version: %s", ssl.OPENSSL_VERSION)
     log.info("main - ZLIB version: %s", zlib_version)
+    log.info("main - psutil version: %s", psutil.__version__)
 
     if __SYSTEM__ == 'nt':
         for sectionName, configSection in config.items():

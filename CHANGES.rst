@@ -5,6 +5,7 @@ Changelog
 **Updates**
 
 - Improved service handling on Windows to reduce/resolve startup/running issues, particularly around Windows' Event Log process. (Blake Bahner)
+- Improved the efficiency of several API endpoints. (Blake Bahner)
 - Added support for ARM64 builds. (DevSysEngineer)
 - Added psutil version to the dashboard to help diagnose issues. (Blake Bahner)
 - Updated the bundled Python version to resolve CVEs and improve compatibility. (Blake Bahner)
