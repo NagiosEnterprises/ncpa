@@ -9,6 +9,7 @@ Changelog
 - Added psutil version to the dashboard to help diagnose issues. (Blake Bahner)
 - Updated the bundled Python version to resolve CVEs and improve compatibility. (Blake Bahner)
 - Updated the bundled OpenSSL version to resolve CVEs and improve compatibility. (Blake Bahner)
+- Updated psutil to version 7.0.0, resolving many issues.
 
 3.1.3 - 01/28/2025
 ==================
