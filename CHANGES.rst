@@ -5,6 +5,7 @@ Changelog
 **Updates**
 
 - Added support for ARM64 builds. (DevSysEngineer)
+- Added psutil version to the dashboard to help diagnose issues. (Blake Bahner)
 - Updated the bundled Python version to resolve CVEs. (Blake Bahner)
 - Updated the bundled OpenSSL version to resolve CVEs. (Blake Bahner)
 

@@ -98,6 +98,7 @@ def make_info_dict():
              'python_version': sys.version,
              'ssl_version': ssl.OPENSSL_VERSION,
              'zlib_version': zlib_version,
+             'psutil_version': psutil.__version__,
              'processor': proc_type,
              'node': uname[1],
              'system': uname[0],
