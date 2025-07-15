@@ -22,6 +22,7 @@ SKIP_SETUP=0
 PACKAGE_ONLY=0
 BUILD_ONLY=0
 BUILD_TRAVIS=0
+NO_INTERACTION=0
 
 
 # --------------------------
@@ -44,6 +45,7 @@ usage() {
     echo "  -b | --build-only   Build the ncpa binaries only (do not package)"
     echo "  -T | --travis       Set up environment for Travis CI builds"
     echo "  -c | --clean        Clean up the build directory"
+    echo "  -n | --no-interaction  Run without interactive prompts (auto-confirm)"
     echo ""
     echo "Operating Systems Supported:"
     echo " - CentOS, RHEL, Oracle, CloudLinux"
@@ -100,6 +102,9 @@ while [ -n "$1" ]; do
         -T | --travis)
             BUILD_TRAVIS=1
             ;;
+        -n | --no-interaction)
+            NO_INTERACTION=1
+            ;;
     esac
     shift
 done
@@ -129,10 +134,9 @@ fi
 
 # Check that pre-reqs have been installed
 if [ $BUILD_TRAVIS -eq 0 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; then
-    if [ ! -f $BUILD_DIR/prereqs.installed ] && [ $SKIP_SETUP -eq 0 ] || ! which $PYTHONBIN > /dev/null; then
+    if { [ ! -f $BUILD_DIR/prereqs.installed ] && [ $SKIP_SETUP -eq 0 ]; } || ! which $PYTHONBIN > /dev/null; then
         echo "** WARNING: This should not be done on a production system. **"
-        read -r -p "Automatically install system pre-reqs? [Y/n] " resp
-        if [[ $resp =~ ^(yes|y|Y| ) ]] || [[ -z $resp ]]; then
+        if [ $NO_INTERACTION -eq 1 ] || { read -r -p "Automatically install system pre-reqs? [Y/n] " resp && [[ $resp =~ ^(yes|y|Y| ) ]] || [[ -z $resp ]]; }; then
             install_prereqs
             sudo touch $BUILD_DIR/prereqs.installed
         fi
