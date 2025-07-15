@@ -104,6 +104,7 @@ while [ -n "$1" ]; do
             ;;
         -n | --no-interaction)
             NO_INTERACTION=1
+            export NO_INTERACTION
             ;;
     esac
     shift

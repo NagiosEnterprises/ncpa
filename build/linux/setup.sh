@@ -134,10 +134,10 @@ install_prereqs() {
             read
 
             # Install base packages
-            zypper install gcc gcc-c++ zlib zlib-devel sqlite3 sqlite3-devel rpm wget libffi-devel
+            zypper -n install gcc gcc-c++ zlib zlib-devel sqlite3 sqlite3-devel rpm wget libffi-devel
 
             # Install openssl 1.0.x for TLS 1.2 support
-            zypper install openssl1 libopenssl1_0_0 libopenssl1-devel libcurl4-openssl1 curl-openssl1 wget-openssl1
+            zypper -n install openssl1 libopenssl1_0_0 libopenssl1-devel libcurl4-openssl1 curl-openssl1 wget-openssl1
 
         fi
 

@@ -59,9 +59,9 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Ras
 
     echo -e "***** Convert to .deb - apt install alien"
     if [ "$dist_ver" == "centos7" ]; then
-        yum install alien
+        yum -y install alien
     else
-        apt-get install alien
+        apt-get -y install alien
     fi
 
     echo -e "***** Convert to .deb - mk debbuild dir"
