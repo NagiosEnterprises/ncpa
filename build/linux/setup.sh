@@ -54,7 +54,7 @@ install_prereqs() {
         fi
 
         # debian-builder is not nessery anymore when Debian 12 or Ubuntu24
-        if [ "$dist" != "debian12" ] && [ "$dist" != "ubuntu24" ]; then
+        if [ "$dist" == "debian10" ] || [ "$dist" == "debian11" ] || [ "$dist" == "ubuntu20" ] || [ "$dist" == "ubuntu22" ]; then
             echo -e "***** linux/setup.sh - apt-get install debian-builder"
             apt-get -y update
             apt-get -y install debian-builder --allow-unauthenticated
