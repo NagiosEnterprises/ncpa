@@ -276,6 +276,21 @@ class Listener(Base):
                 ssl_str_version = self.config.get('listener', 'ssl_version')
                 ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
                 logger.debug('Using SSL version %s', ssl_str_version)
+                
+                # Get SSL verification mode
+                ssl_verify_mode = self.config.get('listener', 'ssl_verify_mode', fallback='required')
+                logger.debug('SSL verify mode: %s', ssl_verify_mode)
+                
+                # Set SSL context options based on verification mode
+                if ssl_verify_mode == 'none':
+                    ssl_context['cert_reqs'] = ssl.CERT_NONE
+                    logger.info('SSL certificate verification disabled - less secure but avoids handshake errors')
+                elif ssl_verify_mode == 'optional':
+                    ssl_context['cert_reqs'] = ssl.CERT_OPTIONAL
+                    logger.info('SSL certificate verification set to optional')
+                else:  # required (default)
+                    ssl_context['cert_reqs'] = ssl.CERT_REQUIRED
+                    logger.info('SSL certificate verification required')
 
                 max_connections = self.config.getint('listener', 'max_connections')
                 logger.debug("max_connections: %s", max_connections)
@@ -288,16 +303,47 @@ class Listener(Base):
                 return
 
             # Set up certs and start http server
-            if user_cert == 'adhoc':
-                logger.debug('Start create cert')
-                cert, key = certificate.create_self_signed_cert(get_filename('var'), 'ncpa.crt', 'ncpa.key')
-                logger.debug('Cert created')
-            else:
-                cert, key = user_cert.split(',')
+            try:
+                if user_cert == 'adhoc':
+                    logger.debug('Start create cert')
+                    cert, key = certificate.create_self_signed_cert(get_filename('var'), 'ncpa.crt', 'ncpa.key')
+                    logger.debug('Cert created')
+                else:
+                    cert, key = user_cert.split(',')
+                    cert = cert.strip()
+                    key = key.strip()
+                    
+                    # Validate certificate files exist and are readable
+                    if not os.path.exists(cert):
+                        raise Exception(f"Certificate file not found: {cert}")
+                    if not os.path.exists(key):
+                        raise Exception(f"Key file not found: {key}")
+                    
+                    # Test if files are readable
+                    try:
+                        with open(cert, 'r') as f:
+                            cert_content = f.read()
+                        with open(key, 'r') as f:
+                            key_content = f.read()
+                        
+                        # Basic validation - check if files contain PEM markers
+                        if "-----BEGIN CERTIFICATE-----" not in cert_content:
+                            raise Exception(f"Certificate file does not appear to be a valid PEM certificate: {cert}")
+                        if "-----BEGIN" not in key_content or "PRIVATE KEY-----" not in key_content:
+                            raise Exception(f"Key file does not appear to be a valid PEM private key: {key}")
+                            
+                    except IOError as e:
+                        raise Exception(f"Cannot read certificate files: {e}")
 
-            ssl_context['certfile'] = cert
-            ssl_context['keyfile'] = key
-            ssl_context['ssl_version'] = ssl_version
+                ssl_context['certfile'] = cert
+                ssl_context['keyfile'] = key
+                ssl_context['ssl_version'] = ssl_version
+                
+            except Exception as e:
+                logger.error("SSL certificate setup failed: %s", e)
+                logger.error("Consider using 'certificate = adhoc' in configuration to generate a self-signed certificate")
+                self.send_error()
+                return
 
             # Pass config to Flask instance
             listener.server.listener.config['iconfig'] = self.config
@@ -305,33 +351,61 @@ class Listener(Base):
             # Create connection pool
             listener.server.listener.secret_key = os.urandom(24)
             logger.debug("run() - define http_server")
-            http_server = WSGIServer(listener=(address, port),
-                                        application=listener.server.listener,
-                                        handler_class=WebSocketHandler,
-                                        log=listener_logger,
-                                        error_log=listener_logger,
-                                        spawn=Pool(max_connections),
-                                        **ssl_context)
-            logger.debug("run() - start http_server")
-            http_server.serve_forever()
-            logger.debug("run() - http_server running")
+            
+            try:
+                http_server = WSGIServer(listener=(address, port),
+                                            application=listener.server.listener,
+                                            handler_class=WebSocketHandler,
+                                            log=listener_logger,
+                                            error_log=listener_logger,
+                                            spawn=Pool(max_connections),
+                                            **ssl_context)
+                logger.debug("run() - start http_server")
+                http_server.serve_forever()
+                logger.debug("run() - http_server running")
+            except ssl.SSLError as e:
+                logger.error("SSL/TLS error occurred: %s", e)
+                logger.error("This may be due to:")
+                logger.error("1. Invalid or corrupted SSL certificate/key files")
+                logger.error("2. Client certificate validation issues")
+                logger.error("3. SSL protocol version mismatch")
+                logger.error("4. Cipher suite compatibility issues")
+                logger.error("Consider regenerating certificates or checking client SSL settings")
+                self.send_error()
+                return
+            except Exception as e:
+                logger.error("Failed to start HTTPS server: %s", e)
+                self.send_error()
+                return
 
         # If we fail to start in dual stack mode, try IPv4 only
         except SocketError as e:
             if address == '::':
                 logging.info("Failed to start in dual stack mode: %s", e)
                 logging.info("Trying IPv4 only")
+                address = '0.0.0.0'
+                try:
+                    http_server = WSGIServer(listener=(address, port),
+                                                application=listener.server.listener,
+                                                handler_class=WebSocketHandler,
+                                                log=listener_logger,
+                                                error_log=listener_logger,
+                                                spawn=Pool(max_connections),
+                                                **ssl_context)
+                    http_server.serve_forever()
+                except ssl.SSLError as e:
+                    logger.error("SSL/TLS error occurred on IPv4 fallback: %s", e)
+                    logger.error("SSL certificate or configuration issue - please check your SSL setup")
+                    self.send_error()
+                    return
+                except Exception as e:
+                    logger.error("Failed to start HTTPS server on IPv4 fallback: %s", e)
+                    self.send_error()
+                    return
             else: 
                 logging.exception("run() - exception: %s", e)
-            address = '0.0.0.0'
-            http_server = WSGIServer(listener=(address, port),
-                                        application=listener.server.listener,
-                                        handler_class=WebSocketHandler,
-                                        log=listener_logger,
-                                        error_log=listener_logger,
-                                        spawn=Pool(max_connections),
-                                        **ssl_context)
-            http_server.serve_forever()
+                self.send_error()
+                return
 
         except Exception as e:
             logger.exception("exception: %s", e)
