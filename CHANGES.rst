@@ -5,6 +5,7 @@ Changelog
 **Added**
 - Added support for ARM64 builds for Linux. (DevSysEngineer)
 - Added psutil version to the dashboard to help diagnose issues. (Blake Bahner)
+- Added the ability to disable NCPA's web UI in the configuration file. [GH:#1254] (Blake Bahner)
 
 **Updates**
 - Improved service handling on Windows to reduce/resolve startup/running issues, particularly around conflicts with Windows' Event Log process. (Blake Bahner)
