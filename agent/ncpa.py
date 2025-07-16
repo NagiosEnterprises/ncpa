@@ -158,6 +158,7 @@ cfg_defaults = {
                 'max_connections': '200',
                 'allowed_sources': '',
                 'allow_config_edit': '1', # Note: this is limited to non-sensitive settings
+                'disable_gui': '0',  # Disable web GUI while preserving API
             },
             'api': {
                 'community_string': 'mytoken',

@@ -279,6 +279,17 @@ def inject_variables():
     return values
 
 
+# Decorator to disable GUI routes when disable_gui is enabled
+def gui_enabled_required(f):
+    @functools.wraps(f)
+    def gui_check_decoration(*args, **kwargs):
+        disable_gui = int(get_config_value('listener', 'disable_gui', 0))
+        if disable_gui:
+            return error(msg='Web GUI is disabled. Only API access is available.')
+        return f(*args, **kwargs)
+    return gui_check_decoration
+
+
 @listener.template_filter('strftime')
 def _jinja2_filter_datetime(date, fmt=None):
     dt = datetime.datetime.fromtimestamp(date)
@@ -376,6 +387,11 @@ def requires_admin_auth(f):
 
 @listener.route('/login', methods=['GET', 'POST'], provide_automatic_options = False)
 def login():
+    # Check if GUI is disabled
+    disable_gui = int(get_config_value('listener', 'disable_gui', 0))
+    if disable_gui:
+        return error(msg='Web GUI is disabled. Only API access is available.')
+    
     # Verify authentication and redirect if we are authenticated
     if session.get('logged', False):
         return redirect(url_for('index'))
@@ -436,6 +452,7 @@ def login():
 
 @listener.route('/gui/admin/login', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
+@gui_enabled_required
 def admin_login():
     # Verify authentication and redirect if we are authenticated
     if session.get('admin_logged', False):
@@ -462,6 +479,7 @@ def admin_login():
 
 
 @listener.route('/logout', methods=['GET', 'POST'], provide_automatic_options = False)
+@gui_enabled_required
 def logout():
     session.clear()
     session['message'] = 'Successfully logged out.'
@@ -496,12 +514,14 @@ def error_page_not_found(e):
 
 @listener.route('/', provide_automatic_options = False)
 @requires_auth
+@gui_enabled_required
 def index():
     return redirect(url_for('gui_index'))
 
 
 @listener.route('/gui/', provide_automatic_options = False)
 @requires_auth
+@gui_enabled_required
 def gui_index():
     info = make_info_dict()
     try:
@@ -512,6 +532,7 @@ def gui_index():
 
 @listener.route('/gui/checks', provide_automatic_options = False)
 @requires_auth
+@gui_enabled_required
 def checks():
     data = { 'filters': False, 'show_fp': False, 'show_lp': False }
     db = database.DB()
@@ -600,18 +621,21 @@ def checks():
 
 @listener.route('/gui/stats', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
+@gui_enabled_required
 def live_stats():
     return render_template('gui/stats.html')
 
 
 @listener.route('/gui/top', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
+@gui_enabled_required
 def top_base():
     return render_template('gui/top.html')
 
 
 @listener.route('/gui/tail', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
+@gui_enabled_required
 def tail_base():
     return render_template('gui/tail.html')
 
@@ -620,12 +644,14 @@ def tail_base():
 # the explorer for the graphs.
 @listener.route('/gui/graphs', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
+@gui_enabled_required
 def graph_picker():
     return render_template('gui/graphs.html')
 
 
 @listener.route('/gui/api', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_auth
+@gui_enabled_required
 def view_api():
     info = make_info_dict()
     return render_template('gui/api.html', **info)
@@ -634,6 +660,7 @@ def view_api():
 # Help section (just a frame for the actual help)
 @listener.route('/gui/help', provide_automatic_options = False)
 @requires_auth
+@gui_enabled_required
 def help_section():
     return render_template('gui/help.html')
 
@@ -646,6 +673,7 @@ def help_section():
 @listener.route('/gui/admin', methods=['GET', 'POST'], provide_automatic_options = False)
 @listener.route('/gui/admin/', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
+@gui_enabled_required
 def admin():
     tmp_args = {}
     tmp_args['config'] = listener.config['iconfig']
@@ -654,6 +682,7 @@ def admin():
 
 @listener.route('/gui/admin/global', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
+@gui_enabled_required
 def admin_global():
     section = 'general'
     config = listener.config['iconfig']
@@ -676,6 +705,7 @@ def admin_global():
 
 @listener.route('/gui/admin/listener', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
+@gui_enabled_required
 def admin_listener_config():
     section = 'listener'
     config = listener.config['iconfig']
@@ -690,6 +720,7 @@ def admin_listener_config():
 
 @listener.route('/gui/admin/api', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
+@gui_enabled_required
 def admin_api_config():
     section = 'api'
     config = listener.config['iconfig']
@@ -704,6 +735,7 @@ def admin_api_config():
 
 @listener.route('/gui/admin/passive', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
+@gui_enabled_required
 def admin_passive_config():
     section = 'passive'
     config = listener.config['iconfig']
@@ -721,6 +753,7 @@ def admin_passive_config():
 
 @listener.route('/gui/admin/nrdp', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
+@gui_enabled_required
 def admin_nrdp_config():
     section = 'nrdp'
     config = listener.config['iconfig']
@@ -738,6 +771,7 @@ def admin_nrdp_config():
 
 @listener.route('/gui/admin/kafkaproducer', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
+@gui_enabled_required
 def admin_kafkaproducer_config():
     section = 'kafkaproducer'
     config = listener.config['iconfig']
@@ -755,6 +789,7 @@ def admin_kafkaproducer_config():
 
 @listener.route('/gui/admin/plugin-directives', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
+@gui_enabled_required
 def admin_plugin_config():
     section = 'plugin directives'
     config = listener.config['iconfig']
@@ -773,6 +808,7 @@ def admin_plugin_config():
 
 @listener.route('/gui/admin/passive-checks', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
+@gui_enabled_required
 def admin_checks_config():
     try:
         checks = [x for x in get_config_items('passive checks') if x[0] not in listener.config['iconfig'].defaults()]
@@ -786,6 +822,7 @@ def admin_checks_config():
 # Page that removes all checks from the DB
 @listener.route('/gui/admin/clear-check-log', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
+@gui_enabled_required
 def admin_clear_check_log():
     db = database.DB()
     db.truncate('checks')
@@ -858,6 +895,7 @@ def api_websocket(accessor=None):
 
 @listener.route('/ws/top', websocket=True)
 @requires_token_or_auth
+@gui_enabled_required
 def top_websocket():
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
@@ -897,6 +935,7 @@ def top_websocket():
 
 @listener.route('/ws/tail', websocket=True)
 @requires_token_or_auth
+@gui_enabled_required
 def tail_websocket():
     import listener.windowslogs
 
@@ -931,6 +970,7 @@ def tail_websocket():
 
 @listener.route('/top', provide_automatic_options = False)
 @requires_auth
+@gui_enabled_required
 def top():
     display = request.values.get('display', 0)
     highlight = request.values.get('highlight', None)
@@ -963,6 +1003,7 @@ def top():
 
 @listener.route('/tail', provide_automatic_options = False)
 @requires_token_or_auth
+@gui_enabled_required
 def tail(accessor=None):
     info = { }
 
@@ -974,6 +1015,7 @@ def tail(accessor=None):
 
 @listener.route('/graph/<path:accessor>', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_token_or_auth
+@gui_enabled_required
 def graph(accessor=None):
     """
     Accessor method for fetching the HTML for the real-time graphing.
@@ -1248,12 +1290,13 @@ def write_to_config_and_file(section_options_to_update):
 # Endpoint to make allowed changes to the config
 @listener.route('/update-config/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
+@gui_enabled_required
 def set_config():
     config = listener.config['iconfig']
     if config.get('listener', 'allow_config_edit') != '1':
         return jsonify({'message': 'Editing your configuration via the GUI is disabled.'})
 
-    # [section], option_name from form, option_name in ncpa.cfg, allowed_values (list or regex)
+    # [section], option_name, option_name_in_ncpa.cfg, allowed_values (list or regex)
     allowed_options = [
         ("[general]", "check_logging",  "check_logging",        ["0", "1"]),
         ("[general]", "check_logging_time","check_logging_time",r"^\d+$"),
