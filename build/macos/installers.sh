@@ -109,9 +109,9 @@ install_devtools() {
     # Set up environment for this session
     eval "$(run_as_user "$BREWBIN" shellenv)"
 
-    echo -e "    - Installing misc brew packages: pkg-config xz gdbm..."
+    echo -e "    - Installing misc brew packages: pkg-config xz gdbm mpdecimal..."
     run_as_user "$BREWBIN" update
-    run_as_user "$BREWBIN" install pkg-config xz gdbm
+    run_as_user "$BREWBIN" install pkg-config xz gdbm mpdecimal
     if [[ "$os_major_version" == "10" ]]; then
         echo -e "    - Installing libffi (MacOS v10.x only)..."
         run_as_user "$BREWBIN" install libffi
@@ -211,6 +211,11 @@ update_py_packages() {
     
     echo -e "    - Installing Python packages from requirements..."
     run_as_user "$PYTHONBIN" -m pip install -r "$BUILD_DIR/resources/require.txt" --upgrade --break-system-packages --user
+    
+    # Add user's Python bin directory to PATH
+    local user_python_bin=$(run_as_user "$PYTHONBIN" -c "import site; import os; print(os.path.join(site.USER_BASE, 'bin'))")
+    echo "    Adding user Python bin directory to PATH: $user_python_bin"
+    export PATH="$user_python_bin:$PATH"
 
     # Find the Python site-packages directory (check user packages first)
     local site_packages_dir=$(run_as_user "$PYTHONBIN" -c "import site; print(site.getusersitepackages())")
@@ -232,9 +237,15 @@ update_py_packages() {
         local cxlibpath="$cx_freeze_path/bases"
         echo "    cxlibpath: $cxlibpath"
 
-        # Find Python's lib-dynload directory
-        local python_lib_dynload=$(run_as_user "$PYTHONBIN" -c "import sys; import os; print(os.path.join(sys.prefix, 'lib', 'python' + sys.version[:3], 'lib-dynload'))")
+        # Find Python's lib-dynload directory using a more robust method
+        local python_lib_dynload=$(run_as_user "$PYTHONBIN" -c "import sys; import os; import sysconfig; print(os.path.join(sysconfig.get_path('stdlib'), 'lib-dynload'))")
         echo "    Python lib-dynload: $python_lib_dynload"
+        
+        # If that doesn't work, try the traditional approach
+        if [[ ! -d "$python_lib_dynload" ]]; then
+            python_lib_dynload=$(run_as_user "$PYTHONBIN" -c "import sys; import os; version = '{}.{}'.format(sys.version_info[0], sys.version_info[1]); print(os.path.join(sys.prefix, 'lib', 'python' + version, 'lib-dynload'))")
+            echo "    Python lib-dynload (fallback): $python_lib_dynload"
+        fi
 
         # Only proceed if both directories exist
         if [[ -d "$python_lib_dynload" && -d "$cxlibpath" ]]; then
