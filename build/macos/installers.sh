@@ -37,7 +37,7 @@ check_python() {
     local python_cmd=$1
     if command -v $python_cmd &> /dev/null; then
         local version=$($python_cmd --version 2>&1 | cut -d' ' -f2)
-        echo "Found Python: $python_cmd (version $version)"
+        echo "Found Python: $python_cmd (version $version)" >&2
         return 0
     fi
     return 1
@@ -123,8 +123,8 @@ verify_or_install_python() {
     echo -e "\n***** macos/installers.sh - verify_or_install_python()"
     echo -e "    - Checking for system Python installation..."
 
-    local python_cmd=$(find_system_python)
-    if [[ $? -eq 0 ]]; then
+    local python_cmd=$(find_system_python 2>/dev/null)
+    if [[ $? -eq 0 && -n "$python_cmd" ]]; then
         echo -e "    - Using system Python: $python_cmd"
         
         # Set the Python command and binary paths
@@ -161,8 +161,8 @@ verify_or_install_python() {
         eval "$(run_as_user "$BREWBIN" shellenv)"
         
         # Find the newly installed Python
-        local python_cmd=$(find_system_python)
-        if [[ $? -eq 0 ]]; then
+        local python_cmd=$(find_system_python 2>/dev/null)
+        if [[ $? -eq 0 && -n "$python_cmd" ]]; then
             echo -e "    - Successfully installed Python: $python_cmd"
             
             # Set the Python command and binary paths
@@ -195,11 +195,11 @@ update_py_packages() {
     run_as_user "$PYTHONBIN" -m pip install -r "$BUILD_DIR/resources/require.txt" --upgrade
 
     # Find the Python site-packages directory
-    local site_packages_dir=$($PYTHONBIN -c "import site; print(site.getsitepackages()[0])")
+    local site_packages_dir=$(run_as_user "$PYTHONBIN" -c "import site; print(site.getsitepackages()[0])")
     echo "    Site packages directory: $site_packages_dir"
 
     # Check if cx_Freeze is installed and get its path
-    local cx_freeze_path=$($PYTHONBIN -c "import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
+    local cx_freeze_path=$(run_as_user "$PYTHONBIN" -c "import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
     
     if [[ -n "$cx_freeze_path" ]]; then
         echo "    cx_Freeze path: $cx_freeze_path"
@@ -208,7 +208,7 @@ update_py_packages() {
         echo "    cxlibpath: $cxlibpath"
 
         # Find Python's lib-dynload directory
-        local python_lib_dynload=$($PYTHONBIN -c "import sys; import os; print(os.path.join(sys.prefix, 'lib', 'python' + sys.version[:3], 'lib-dynload'))")
+        local python_lib_dynload=$(run_as_user "$PYTHONBIN" -c "import sys; import os; print(os.path.join(sys.prefix, 'lib', 'python' + sys.version[:3], 'lib-dynload'))")
         echo "    Python lib-dynload: $python_lib_dynload"
 
         # Only proceed if both directories exist
