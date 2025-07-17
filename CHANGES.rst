@@ -8,6 +8,7 @@ Changelog
 - Added the ability to disable NCPA's web UI in the configuration file. [GH:#1254] (Blake Bahner)
 
 **Updates**
+- Improved .deb build process to improve compatibility with various Debian-based distributions. (Blake Bahner)
 - Improved service handling on Windows to reduce/resolve startup/running issues, particularly around conflicts with Windows' Event Log process. (Blake Bahner)
 - Improved the efficiency of several API endpoints. (Blake Bahner)
 - Updated the bundled Python version to resolve CVEs and improve compatibility. (Blake Bahner)
