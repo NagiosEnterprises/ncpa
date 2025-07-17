@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Scripts to install homebrew, OpenSSL and Python, and update python libraries
+# Scripts to install homebrew and dev tools, and update python libraries
 
 # Load utilities to fix dynamic libs
 . $BUILD_DIR/macos/linkdynlibs.sh
@@ -10,12 +10,51 @@ os_minor_version=$(echo $os_version | cut -f2 -d.)
 
 # Utility scripts
 
-has_python() {
-    local installchk=$($PYTHONCMD -c "import sys; print(sys.version)" | grep $1)
-    echo $installchk
+# Get the original user who ran sudo (if running as sudo)
+get_original_user() {
+    if [[ $EUID -eq 0 ]]; then
+        # Running as root, get the original user
+        echo ${SUDO_USER:-$USER}
+    else
+        # Not running as root
+        echo $USER
+    fi
 }
 
-# Installs tools needed to make and install OpenSSL, zLib, and Python
+# Run command as the original user (not root)
+run_as_user() {
+    local original_user=$(get_original_user)
+    if [[ $EUID -eq 0 && -n "$SUDO_USER" ]]; then
+        # Running as root via sudo, run as original user
+        sudo -u "$original_user" "$@"
+    else
+        # Not running as root, run normally
+        "$@"
+    fi
+}
+
+check_python() {
+    local python_cmd=$1
+    if command -v $python_cmd &> /dev/null; then
+        local version=$($python_cmd --version 2>&1 | cut -d' ' -f2)
+        echo "Found Python: $python_cmd (version $version)"
+        return 0
+    fi
+    return 1
+}
+
+find_system_python() {
+    # Check for common Python installations
+    for python_cmd in python3 python python3.15 python3.14 python3.13 python3.12 python3.11 python3.10 python3.9 python3.8; do
+        if check_python $python_cmd; then
+            echo $python_cmd
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Installs tools needed to make and install dependencies
 install_devtools() {
     echo -e "\n***** macos/installers.sh - install_devtools()"
     echo -e "    - Installing Homebrew and dev tools on MacOS $os_version..."
@@ -27,112 +66,180 @@ install_devtools() {
         echo -e "\n    - Xcode commmand line tools already installed"
     fi
 
-    BREWBIN="/usr/local/bin/brew"
-    if [ -z $( which brew 2>/dev/null ) ]; then
+    local original_user=$(get_original_user)
+    
+    # Check for Homebrew in common locations
+    BREWBIN=""
+    for brew_path in "/opt/homebrew/bin/brew" "/usr/local/bin/brew" "/home/linuxbrew/.linuxbrew/bin/brew"; do
+        if [[ -x "$brew_path" ]]; then
+            BREWBIN="$brew_path"
+            break
+        fi
+    done
+    
+    if [[ -z "$BREWBIN" ]]; then
         echo -e "    - Installing Homebrew package manager..."
         if [[ "$os_major_version" == "10" ]]; then
             export HOMEBREW_NO_INSTALL_FROM_API=1
         fi
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
+        # Install Homebrew as the original user, not root
+        run_as_user /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        
+        # Find the installed brew binary
+        for brew_path in "/opt/homebrew/bin/brew" "/usr/local/bin/brew"; do
+            if [[ -x "$brew_path" ]]; then
+                BREWBIN="$brew_path"
+                break
+            fi
+        done
     else
-        echo -e "\n    - Homebrew already installed"
+        echo -e "\n    - Homebrew already installed at $BREWBIN"
     fi
 
-    # Add brew env vars to your environment
-    echo -e "\n$(eval "$($BREWBIN shellenv)")" | sudo tee -a ~/.bash_profile > /dev/null
-    eval "$($BREWBIN shellenv)"
+    # Make sure we have the brew binary
+    if [[ -z "$BREWBIN" ]]; then
+        echo -e "ERROR! Could not find or install Homebrew"
+        return 1
+    fi
+
+    # Add brew env vars to user's environment (not root's)
+    local user_home=$(run_as_user sh -c 'echo $HOME')
+    echo -e "\n$(run_as_user "$BREWBIN" shellenv)" >> "$user_home/.bash_profile"
+    
+    # Set up environment for this session
+    eval "$(run_as_user "$BREWBIN" shellenv)"
 
     echo -e "    - Installing misc brew packages: pkg-config xz gdbm..."
-    $BREWBIN update
-    $BREWBIN install pkg-config xz gdbm
+    run_as_user "$BREWBIN" update
+    run_as_user "$BREWBIN" install pkg-config xz gdbm
     if [[ "$os_major_version" == "10" ]]; then
         echo -e "    - Installing libffi (MacOS v10.x only)..."
-        $BREWBIN install libffi
+        run_as_user "$BREWBIN" install libffi
     fi
 
 }
 
-install_python() {
-    echo -e "\n***** macos/installers.sh - install_python()"
-    # Note Python 3.11+ requires OpenSSL 3+ as a dependency, so there is no need to install it separately.
-    local python_new_version=""
+verify_or_install_python() {
+    echo -e "\n***** macos/installers.sh - verify_or_install_python()"
+    echo -e "    - Checking for system Python installation..."
 
-    if [[ ! -z $1 ]]; then
-        python_new_version=$1
+    local python_cmd=$(find_system_python)
+    if [[ $? -eq 0 ]]; then
+        echo -e "    - Using system Python: $python_cmd"
+        
+        # Set the Python command and binary paths
+        export PYTHONCMD=$python_cmd
+        export PYTHONBIN=$python_cmd
+        
+        # Get Python version
+        local python_version=$($python_cmd --version 2>&1 | cut -d' ' -f2)
+        export PYTHONVER=$python_version
+        
+        echo -e "    - Python version: $python_version"
+        
+        # Check if pip is available
+        if ! $python_cmd -m pip --version &> /dev/null; then
+            echo -e "    - Installing pip..."
+            $python_cmd -m ensurepip --upgrade
+        fi
+        
+        return 0
     else
-        if [[ ! -z $PYTHONVER ]]; then
-            python_new_version=$PYTHONVER
+        echo -e "    - No system Python found, installing via Homebrew..."
+        
+        # Make sure Homebrew is installed
+        if [[ -z "$BREWBIN" ]]; then
+            echo -e "    - Installing Homebrew first..."
+            install_devtools
+        fi
+        
+        # Install Python via Homebrew as the original user
+        echo -e "    - Installing Python 3 via Homebrew..."
+        run_as_user "$BREWBIN" install python3
+        
+        # Set up environment after installation
+        eval "$(run_as_user "$BREWBIN" shellenv)"
+        
+        # Find the newly installed Python
+        local python_cmd=$(find_system_python)
+        if [[ $? -eq 0 ]]; then
+            echo -e "    - Successfully installed Python: $python_cmd"
+            
+            # Set the Python command and binary paths
+            export PYTHONCMD=$python_cmd
+            export PYTHONBIN=$python_cmd
+            
+            # Get Python version
+            local python_version=$($python_cmd --version 2>&1 | cut -d' ' -f2)
+            export PYTHONVER=$python_version
+            
+            echo -e "    - Python version: $python_version"
+            return 0
         else
-            echo -e "ERROR! install_python() - No Python version provided!"
+            echo -e "ERROR! Python installation failed!"
+            echo -e "Please install Python 3.8+ manually:"
+            echo -e "  Option 1: Download from https://www.python.org/downloads/"
+            echo -e "  Option 2: Install via Homebrew: brew install python3"
             echo -e "********************************************\n\n"
             return 1
         fi
-    fi
-
-    # Make version shorter for homebrew, e.g. 3.11
-    python_new_version=$(echo $python_new_version | sed 's|\.[0-9]\{1,2\}$||g')
-
-    echo -e "\n\n********************************************"
-    echo -e "Installing Python $python_new_version with OpenSSL...\n"
-
-    $BREWBIN install python@$python_new_version
-
-    local installchk=$(has_python $python_new_version)
-    echo -e "\installchk: $installchk"
-    echo -e "\n\n********************************************"
-
-    if [[ ! -z $installchk ]]; then
-        echo -e "SUCCESS! Python $python_new_version is installed"
-        echo -e "********************************************\n\n"
-        return 0
-    else
-        echo -e "ERROR! Python $python_new_version failed to install correctly"
-        echo -e "********************************************\n\n"
-        return 1
     fi
 }
 
 # Requires globals $PYTHONBIN, $PYTHONVER, $PYTHONCMD and $BUILD_DIR
 update_py_packages() {
     echo -e "\n***** macos/installers.sh - update_py_packages()"
-    $PYTHONBIN -m pip install --upgrade pip
-    $PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade
+    
+    # Install/upgrade pip and packages as the original user
+    run_as_user "$PYTHONBIN" -m pip install --upgrade pip
+    run_as_user "$PYTHONBIN" -m pip install -r "$BUILD_DIR/resources/require.txt" --upgrade
 
-    # cx freeze doesn't grab the proper _sslxxx.so and other dynamic libs, so we copy in the real ones.
-    echo -e "    cx_freeze doesn't grab the proper _sslxxx.so and other dynamic libs, so we copy in the real ones..."
+    # Find the Python site-packages directory
+    local site_packages_dir=$($PYTHONBIN -c "import site; print(site.getsitepackages()[0])")
+    echo "    Site packages directory: $site_packages_dir"
 
-    python_at_seg=python@$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')
+    # Check if cx_Freeze is installed and get its path
+    local cx_freeze_path=$($PYTHONBIN -c "import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
+    
+    if [[ -n "$cx_freeze_path" ]]; then
+        echo "    cx_Freeze path: $cx_freeze_path"
+        
+        local cxlibpath="$cx_freeze_path/bases"
+        echo "    cxlibpath: $cxlibpath"
 
-    cxlibpath="/usr/local/lib/$PYTHONCMD/site-packages/cx_Freeze/bases"
-    echo "    cxlibpath: $cxlibpath"
+        # Find Python's lib-dynload directory
+        local python_lib_dynload=$($PYTHONBIN -c "import sys; import os; print(os.path.join(sys.prefix, 'lib', 'python' + sys.version[:3], 'lib-dynload'))")
+        echo "    Python lib-dynload: $python_lib_dynload"
 
-    eval "$($BREWBIN shellenv)"
+        # Only proceed if both directories exist
+        if [[ -d "$python_lib_dynload" && -d "$cxlibpath" ]]; then
+            echo -e "    - Updating cx_freeze lib-dynload with system Python libraries..."
 
-    pylibpath=$(find $HOMEBREW_CELLAR/$python_at_seg -name *.so | grep "lib-dynload" | head -n1 | sed 's~/lib-dynload/.*~~g')
-    echo "    pylibpath: $pylibpath"
+            # For MacOS 11+ libraries need special treatment
+            if [[ "$os_major_version" != "10" ]]; then
+                if [ ! -d "$python_lib_dynload/../lib-dynload_orig" ]; then
+                    sudo mkdir -p "$python_lib_dynload/../lib-dynload_orig"
+                    sudo cp "$python_lib_dynload"/* "$python_lib_dynload/../lib-dynload_orig/" 2>/dev/null || true
+                fi
+                
+                # Define paths for dependency link fixer
+                setPaths
 
-    echo -e "    - copy $pylibpath/lib-dynload to cx_freeze lib-dynload"
+                #Convert relative dependency paths to absolute
+                fixLibs
+            fi
 
-    # For MacOS 11+ libraries need special treatment
-    if [[ "$os_major_version" != "10" ]]; then
-        if [ ! -d "$pylibpath/lib-dynload_orig" ]; then
-            sudo mkdir $pylibpath/lib-dynload_orig
-            sudo cp $pylibpath/lib-dynload/* $pylibpath/lib-dynload_orig/
+            if [ ! -d "$cxlibpath/lib-dynload_orig" ]; then
+                sudo mkdir -p "$cxlibpath/lib-dynload_orig"
+                sudo cp "$cxlibpath/lib-dynload"/* "$cxlibpath/lib-dynload_orig/" 2>/dev/null || true
+            fi
+
+            # Link python's lib-dynload to cx_freeze lib-dynload
+            sudo cp "$python_lib_dynload"/* "$cxlibpath/lib-dynload/" 2>/dev/null || true
+        else
+            echo "    - Warning: Could not find lib-dynload directories, skipping library updates"
         fi
-        # Define paths for dependency link fixer
-        setPaths
-
-        #Convert relative dependency paths to absolute
-        fixLibs
+    else
+        echo "    - cx_Freeze not found, skipping library updates"
     fi
-
-    if [ ! -d "$cxlibpath/lib-dynload_orig" ]; then
-        sudo mkdir $cxlibpath/lib-dynload_orig
-        sudo cp $cxlibpath/lib-dynload/* $cxlibpath/lib-dynload_orig/
-    fi
-
-
-    # Link python's lib-dynload to cx_freeze lib-dynload to make sure we are using desired OpenSSL, etc.
-    sudo cp $pylibpath/lib-dynload/* $cxlibpath/lib-dynload/
 }

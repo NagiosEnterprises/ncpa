@@ -5,18 +5,15 @@ echo -e "***** macos/setup.sh"
 # Globals - defined in build.sh
 #     PYTHONVER, SSLVER, ZLIBVER
 
-# Make python command, e.g. python3.11
-PYTHONSHORTVER=$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')
-PYTHONCMD="python$PYTHONSHORTVER"
-echo -e "    - PYTHONCMD: $PYTHONCMD"
-
-set +e
-PYTHONBIN=$(which $PYTHONCMD)
-set -e
-SKIP_PYTHON=0
-
 # Load some installers and support functions
 . $BUILD_DIR/macos/installers.sh
+
+# Find system Python - will be set by verify_python function
+PYTHONCMD=""
+PYTHONBIN=""
+
+set +e
+SKIP_PYTHON=0
 
 install_prereqs() {
     echo -e "***** macos/setup.sh - install_prereqs()..."
@@ -35,16 +32,12 @@ install_prereqs() {
         #     echo -e "Homebrew and dev tools already installed.\n"
         # fi
 
-        echo -e "    - Install Python..."
-        has_python=$(has_python $PYTHONSHORTVER)
-        if [[ ! -z $has_python ]]; then
-            echo -e "      Python $PYTHONSHORTVER already installed.\n"
-
+        echo -e "    - Verify or install Python..."
+        if verify_or_install_python; then
+            echo -e "      Python setup successful.\n"
         else
-            echo -e "    - Installing Python $PYTHONVER with OpenSSL 3 ..."
-            cd $BUILD_DIR/resources
-            install_python $PYTHONVER
-            PYTHONBIN=$(which $PYTHONCMD)
+            echo -e "      Python setup failed. Exiting.\n"
+            exit 1
         fi
 
         export PATH=$PATH:$BUILD_DIR/bin
