@@ -79,11 +79,27 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Ras
 
     echo -e "***** Convert to .deb - run alien"
     if [ "$architecture" == "aarch64" ]; then
-      alien -c -k -v --target=arm64 $rpm >> $BUILD_DIR/build.log
+      alien -c -k -v --scripts --target=arm64 $rpm >> $BUILD_DIR/build.log
     else
-      alien -c -k -v $rpm >> $BUILD_DIR/build.log
+      alien -c -k -v --scripts $rpm >> $BUILD_DIR/build.log
     fi
     echo -e "***** Convert to .deb - alien done"
+
+    # Fix dh_usrlocal issue by adding override to debian/rules
+    echo -e "***** Fix dh_usrlocal issue"
+    for debdir in ncpa-*; do
+        if [ -d "$debdir" ]; then
+            echo -e "Processing $debdir"
+            if [ -f "$debdir/debian/rules" ]; then
+                # Add override to skip dh_usrlocal
+                if ! grep -q "override_dh_usrlocal" "$debdir/debian/rules"; then
+                    echo "" >> "$debdir/debian/rules"
+                    echo "override_dh_usrlocal:" >> "$debdir/debian/rules"
+                    echo "	# Skip dh_usrlocal to avoid issues with /usr/local files" >> "$debdir/debian/rules"
+                fi
+            fi
+        fi
+    done
 
     cd $BUILD_DIR
     cp debbuild/*.deb .
