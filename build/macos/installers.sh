@@ -46,7 +46,7 @@ check_python() {
 find_system_python() {
     # Check for common Python installations
     for python_cmd in python3 python python3.15 python3.14 python3.13 python3.12 python3.11 python3.10 python3.9 python3.8; do
-        if check_python $python_cmd; then
+        if check_python $python_cmd 2>/dev/null; then
             echo $python_cmd
             return 0
         fi
@@ -128,14 +128,15 @@ verify_or_install_python() {
         echo -e "    - Using system Python: $python_cmd"
         
         # Set the Python command and binary paths
-        export PYTHONCMD=$python_cmd
-        export PYTHONBIN=$python_cmd
+        export PYTHONCMD="$python_cmd"
+        export PYTHONBIN="$python_cmd"
         
         # Get Python version
         local python_version=$($python_cmd --version 2>&1 | cut -d' ' -f2)
-        export PYTHONVER=$python_version
+        export PYTHONVER="$python_version"
         
         echo -e "    - Python version: $python_version"
+        echo -e "    - Debug: PYTHONCMD='$PYTHONCMD', PYTHONBIN='$PYTHONBIN'"
         
         # Check if pip is available
         if ! $python_cmd -m pip --version &> /dev/null; then
@@ -166,14 +167,15 @@ verify_or_install_python() {
             echo -e "    - Successfully installed Python: $python_cmd"
             
             # Set the Python command and binary paths
-            export PYTHONCMD=$python_cmd
-            export PYTHONBIN=$python_cmd
+            export PYTHONCMD="$python_cmd"
+            export PYTHONBIN="$python_cmd"
             
             # Get Python version
             local python_version=$($python_cmd --version 2>&1 | cut -d' ' -f2)
-            export PYTHONVER=$python_version
+            export PYTHONVER="$python_version"
             
             echo -e "    - Python version: $python_version"
+            echo -e "    - Debug: PYTHONCMD='$PYTHONCMD', PYTHONBIN='$PYTHONBIN'"
             return 0
         else
             echo -e "ERROR! Python installation failed!"
@@ -189,17 +191,40 @@ verify_or_install_python() {
 # Requires globals $PYTHONBIN, $PYTHONVER, $PYTHONCMD and $BUILD_DIR
 update_py_packages() {
     echo -e "\n***** macos/installers.sh - update_py_packages()"
+    echo -e "    - Debug: PYTHONCMD='$PYTHONCMD', PYTHONBIN='$PYTHONBIN'"
+    
+    # Validate that we have a valid Python command
+    if [[ -z "$PYTHONBIN" ]]; then
+        echo -e "ERROR! PYTHONBIN is not set!"
+        return 1
+    fi
+    
+    if ! command -v "$PYTHONBIN" &> /dev/null; then
+        echo -e "ERROR! Python command '$PYTHONBIN' not found!"
+        return 1
+    fi
     
     # Install/upgrade pip and packages as the original user
-    run_as_user "$PYTHONBIN" -m pip install --upgrade pip
-    run_as_user "$PYTHONBIN" -m pip install -r "$BUILD_DIR/resources/require.txt" --upgrade
+    # Use --break-system-packages and --user to handle externally managed environments
+    echo -e "    - Upgrading pip..."
+    run_as_user "$PYTHONBIN" -m pip install --upgrade pip --break-system-packages --user
+    
+    echo -e "    - Installing Python packages from requirements..."
+    run_as_user "$PYTHONBIN" -m pip install -r "$BUILD_DIR/resources/require.txt" --upgrade --break-system-packages --user
 
-    # Find the Python site-packages directory
-    local site_packages_dir=$(run_as_user "$PYTHONBIN" -c "import site; print(site.getsitepackages()[0])")
-    echo "    Site packages directory: $site_packages_dir"
+    # Find the Python site-packages directory (check user packages first)
+    local site_packages_dir=$(run_as_user "$PYTHONBIN" -c "import site; print(site.getusersitepackages())")
+    echo "    User site packages directory: $site_packages_dir"
 
-    # Check if cx_Freeze is installed and get its path
+    # Check if cx_Freeze is installed and get its path (check user packages first)
     local cx_freeze_path=$(run_as_user "$PYTHONBIN" -c "import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
+    
+    # If not found in user packages, check system packages
+    if [[ -z "$cx_freeze_path" ]]; then
+        local system_site_packages=$(run_as_user "$PYTHONBIN" -c "import site; print(site.getsitepackages()[0])")
+        echo "    Checking system site packages: $system_site_packages"
+        cx_freeze_path=$(run_as_user "$PYTHONBIN" -c "import sys; sys.path.insert(0, '$system_site_packages'); import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
+    fi
     
     if [[ -n "$cx_freeze_path" ]]; then
         echo "    cx_Freeze path: $cx_freeze_path"

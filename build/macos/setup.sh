@@ -47,7 +47,14 @@ install_prereqs() {
     #  INSTALL PYTHON MODULES
     # --------------------------
 
-    update_py_packages | sudo tee -a $BUILD_DIR/build.log
+    echo -e "    - Debug: Before update_py_packages - PYTHONCMD='$PYTHONCMD', PYTHONBIN='$PYTHONBIN'"
+    update_py_packages
+    echo $? > /tmp/update_py_packages_exit_code
+    
+    # Append the log separately to avoid pipe issues
+    if [ -f $BUILD_DIR/build.log ]; then
+        echo "update_py_packages completed with exit code: $(cat /tmp/update_py_packages_exit_code)" | sudo tee -a $BUILD_DIR/build.log
+    fi
 
     # --------------------------
     #  MISC ADDITIONS
