@@ -315,13 +315,11 @@ update_py_packages() {
                     # Call setPaths with the python lib-dynload directory
                     setPaths "$python_lib_dynload"
                     
-                    # Convert relative dependency paths to absolute
-                    if declare -f fixLibs >/dev/null 2>&1; then
-                        echo "    - Fixing library dependencies..."
-                        fixLibs
-                    fi
+                    # Note: Library dependency fixing will be handled later by package.sh
+                    # after cx_Freeze has created the build directory
+                    echo "    - Library paths configured for build process"
                 else
-                    echo "    - Warning: setPaths function not found, skipping library fixes"
+                    echo "    - Warning: setPaths function not found, skipping library path setup"
                 fi
             fi
 
