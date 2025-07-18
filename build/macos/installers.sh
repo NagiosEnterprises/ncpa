@@ -300,6 +300,18 @@ update_py_packages() {
                         fi
                     fi
                     
+                    # Also ensure HOMEBREW_CELLAR is set (required by setPaths)
+                    if [[ -z "$HOMEBREW_CELLAR" ]]; then
+                        export HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
+                    fi
+                    
+                    # Ensure PYTHONVER is set (required by setPaths)
+                    if [[ -z "$PYTHONVER" && -n "$PYTHONCMD" ]]; then
+                        export PYTHONVER=$($PYTHONCMD -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+                    fi
+                    
+                    echo "    - Environment: PYTHONVER=$PYTHONVER, HOMEBREW_PREFIX=$HOMEBREW_PREFIX, HOMEBREW_CELLAR=$HOMEBREW_CELLAR"
+                    
                     # Call setPaths with the python lib-dynload directory
                     setPaths "$python_lib_dynload"
                     

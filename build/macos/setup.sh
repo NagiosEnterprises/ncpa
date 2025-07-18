@@ -75,6 +75,7 @@ install_prereqs() {
     fi
     if [[ -n "$HOMEBREW_PREFIX" ]]; then
         export HOMEBREW_PREFIX
+        export HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
     fi
     
     # Also export PATH with user Python bin directory
