@@ -101,17 +101,13 @@ install_devtools() {
         echo -e "ERROR! Could not find or install Homebrew"
         return 1
     fi
-
-    # Add brew env vars to user's environment (not root's)
-    local user_home=$(run_as_user sh -c 'echo $HOME')
-    if [[ -w "$user_home/.bash_profile" ]]; then
-        echo -e "\n$(run_as_user "$BREWBIN" shellenv)" >> "$user_home/.bash_profile"
-    else
-        run_as_user sh -c "echo -e '\n$(\"$BREWBIN\" shellenv)' >> \"$user_home/.bash_profile\""
-    fi
+    
+    # Export BREWBIN for use in other functions
+    export BREWBIN
     
     # Set up environment for this session
     eval "$(run_as_user "$BREWBIN" shellenv)"
+    export HOMEBREW_PREFIX=$(run_as_user "$BREWBIN" --prefix)
 
     echo -e "    - Installing misc brew packages: pkg-config xz gdbm mpdecimal..."
     run_as_user "$BREWBIN" update
@@ -152,6 +148,18 @@ verify_or_install_python() {
         local python_version=$($python_cmd --version 2>&1 | cut -d' ' -f2)
         export PYTHONVER="$python_version"
         
+        # Set up Homebrew environment if we have a brew binary
+        if [[ -n "$BREWBIN" ]]; then
+            eval "$(run_as_user "$BREWBIN" shellenv)"
+            export HOMEBREW_PREFIX=$(run_as_user "$BREWBIN" --prefix)
+        elif command -v brew &> /dev/null; then
+            eval "$(brew shellenv)"
+            export HOMEBREW_PREFIX=$(brew --prefix)
+        else
+            # Fallback to common prefix
+            export HOMEBREW_PREFIX="/usr/local"
+        fi
+        
         echo -e "    - Python version: $python_version"
         echo -e "    - Debug: PYTHONCMD='$PYTHONCMD', PYTHONBIN='$PYTHONBIN'"
         
@@ -190,6 +198,10 @@ verify_or_install_python() {
             # Get Python version
             local python_version=$($python_cmd --version 2>&1 | cut -d' ' -f2)
             export PYTHONVER="$python_version"
+            
+            # Set up Homebrew environment
+            eval "$(run_as_user "$BREWBIN" shellenv)"
+            export HOMEBREW_PREFIX=$(run_as_user "$BREWBIN" --prefix)
             
             echo -e "    - Python version: $python_version"
             echo -e "    - Debug: PYTHONCMD='$PYTHONCMD', PYTHONBIN='$PYTHONBIN'"
@@ -277,9 +289,23 @@ update_py_packages() {
                 
                 # Define paths for dependency link fixer (only if functions exist)
                 if declare -f setPaths >/dev/null 2>&1; then
-                    setPaths
+                    echo "    - Setting up library paths for dependency fixes..."
+                    
+                    # Ensure required environment variables are set
+                    if [[ -z "$HOMEBREW_PREFIX" ]]; then
+                        if [[ -n "$BREWBIN" ]]; then
+                            export HOMEBREW_PREFIX=$(run_as_user "$BREWBIN" --prefix)
+                        else
+                            export HOMEBREW_PREFIX="/usr/local"
+                        fi
+                    fi
+                    
+                    # Call setPaths with the python lib-dynload directory
+                    setPaths "$python_lib_dynload"
+                    
                     # Convert relative dependency paths to absolute
                     if declare -f fixLibs >/dev/null 2>&1; then
+                        echo "    - Fixing library dependencies..."
                         fixLibs
                     fi
                 else

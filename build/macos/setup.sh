@@ -69,6 +69,14 @@ install_prereqs() {
     export PYTHONBIN
     export PYTHONVER
     
+    # Export Homebrew variables if they exist
+    if [[ -n "$BREWBIN" ]]; then
+        export BREWBIN
+    fi
+    if [[ -n "$HOMEBREW_PREFIX" ]]; then
+        export HOMEBREW_PREFIX
+    fi
+    
     # Also export PATH with user Python bin directory
     local user_python_bin=$(run_as_user "$PYTHONBIN" -c "import site; import os; print(os.path.join(site.USER_BASE, 'bin'))" 2>/dev/null)
     if [[ -n "$user_python_bin" ]]; then
