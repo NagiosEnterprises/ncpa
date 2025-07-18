@@ -306,18 +306,28 @@ update_py_packages() {
 ensure_cx_freeze_libraries() {
     echo -e "\n***** macos/installers.sh - ensure_cx_freeze_libraries()"
     
-    # Array of required libraries and their symlink targets
-    declare -A required_libs=(
-        ["/usr/local/opt/mpdecimal/lib/libmpdec.4.0.0.dylib"]="mpdecimal"
-        ["/usr/local/opt/openssl@3/lib/libcrypto.3.dylib"]="openssl@3"
-        ["/usr/local/opt/openssl@3/lib/libssl.3.dylib"]="openssl@3"
-        ["/usr/local/opt/sqlite/lib/libsqlite3.0.dylib"]="sqlite"
-        ["/usr/local/opt/xz/lib/liblzma.5.dylib"]="xz"
+    # Define required libraries and their packages
+    local lib_paths=(
+        "/usr/local/opt/mpdecimal/lib/libmpdec.4.0.0.dylib"
+        "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib"
+        "/usr/local/opt/openssl@3/lib/libssl.3.dylib"
+        "/usr/local/opt/sqlite/lib/libsqlite3.0.dylib"
+        "/usr/local/opt/xz/lib/liblzma.5.dylib"
     )
     
-    for lib_path in "${!required_libs[@]}"; do
+    local packages=(
+        "mpdecimal"
+        "openssl@3"
+        "openssl@3"
+        "sqlite"
+        "xz"
+    )
+    
+    for i in "${!lib_paths[@]}"; do
+        local lib_path="${lib_paths[$i]}"
+        local package="${packages[$i]}"
+        
         if [[ ! -f "$lib_path" ]]; then
-            local package="${required_libs[$lib_path]}"
             local brew_prefix=$(run_as_user "$BREWBIN" --prefix "$package" 2>/dev/null)
             
             if [[ -n "$brew_prefix" ]]; then
@@ -329,14 +339,29 @@ ensure_cx_freeze_libraries() {
                 # Create directory if it doesn't exist
                 sudo mkdir -p "$lib_dir"
                 
-                # Find the actual library file
-                local actual_lib=$(find "$brew_prefix/lib" -name "lib*dylib" -type f | head -1)
-                if [[ -n "$actual_lib" ]]; then
-                    sudo ln -sf "$actual_lib" "$lib_path"
-                    echo -e "      Linked $actual_lib -> $lib_path"
-                else
-                    echo -e "      Warning: Could not find library in $brew_prefix/lib"
-                fi
+                # Handle specific library names
+                case "$lib_name" in
+                    "libmpdec.4.0.0.dylib")
+                        if [[ -f "$brew_prefix/lib/libmpdec.dylib" ]]; then
+                            sudo ln -sf "$brew_prefix/lib/libmpdec.dylib" "$lib_path"
+                            echo -e "      Linked $brew_prefix/lib/libmpdec.dylib -> $lib_path"
+                        fi
+                        ;;
+                    "libcrypto.3.dylib"|"libssl.3.dylib")
+                        local actual_lib=$(find "$brew_prefix/lib" -name "$lib_name" -type f | head -1)
+                        if [[ -n "$actual_lib" ]]; then
+                            sudo ln -sf "$actual_lib" "$lib_path"
+                            echo -e "      Linked $actual_lib -> $lib_path"
+                        fi
+                        ;;
+                    *)
+                        local actual_lib=$(find "$brew_prefix/lib" -name "lib*dylib" -type f | grep -E "${lib_name%.*}" | head -1)
+                        if [[ -n "$actual_lib" ]]; then
+                            sudo ln -sf "$actual_lib" "$lib_path"
+                            echo -e "      Linked $actual_lib -> $lib_path"
+                        fi
+                        ;;
+                esac
             else
                 echo -e "    - Warning: Package $package not found via Homebrew"
             fi

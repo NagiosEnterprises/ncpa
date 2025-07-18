@@ -12,6 +12,11 @@ echo -e "***** macos/setup.sh"
 PYTHONCMD=""
 PYTHONBIN=""
 
+# Set AGENT_DIR if not already set
+if [[ -z "$AGENT_DIR" ]]; then
+    AGENT_DIR="$BUILD_DIR/../agent"
+fi
+
 set +e
 SKIP_PYTHON=0
 
@@ -69,11 +74,49 @@ install_prereqs() {
     if [[ -n "$user_python_bin" ]]; then
         export PATH="$user_python_bin:$PATH"
     fi
+    
+    # Ensure the agent directory has proper permissions for the freeze process
+    local original_user=$(get_original_user)
+    if [[ $EUID -eq 0 && -n "$SUDO_USER" ]]; then
+        echo -e "    - Setting proper permissions for agent directory..."
+        sudo chown -R "$original_user" "$AGENT_DIR" 2>/dev/null || true
+    fi
 
     # --------------------------
     #  MISC ADDITIONS
     # --------------------------
 
+}
+
+# Run cx_freeze build with proper permissions
+run_freeze_build() {
+    echo -e "\n***** macos/setup.sh - run_freeze_build()"
+    
+    # Clean any existing build directory
+    if [[ -d "$AGENT_DIR/build" ]]; then
+        rm -rf "$AGENT_DIR/build"
+    fi
+    
+    # Run the freeze process as the original user
+    local original_user=$(get_original_user)
+    if [[ $EUID -eq 0 && -n "$SUDO_USER" ]]; then
+        # Running as root via sudo, run as original user
+        echo -e "    - Running freeze as user: $original_user"
+        sudo -u "$original_user" -E "$PYTHONBIN" setup.py build_exe
+    else
+        # Not running as root, run normally
+        echo -e "    - Running freeze as current user"
+        "$PYTHONBIN" setup.py build_exe
+    fi
+    
+    # Check if build was successful
+    if [[ -d "$AGENT_DIR/build" ]]; then
+        echo -e "    - Freeze build completed successfully"
+        return 0
+    else
+        echo -e "    - ERROR: Freeze build failed - no build directory created"
+        return 1
+    fi
 }
 
 # Add users/groups
