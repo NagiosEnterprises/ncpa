@@ -73,6 +73,7 @@ if __SYSTEM__ == 'nt':
 elif __SYSTEM__ == 'posix':
 
     include_files += [('../startup/default-plist'   , 'build_resources/default-plist'),
+                      ('../startup/default-watchdog-plist', 'build_resources/default-watchdog-plist'),
                       ('../startup/default-init'    , 'build_resources/default-init'),
                       ('../startup/default-service' , 'build_resources/default-service'),
                       (os.path.join(sys.executable) , 'python')]
@@ -85,6 +86,7 @@ elif __SYSTEM__ == 'posix':
         include_files += [('../build/resources/macosinstall.sh'  , 'build_resources/macosinstall.sh'),
                          ('../build/resources/macosuninstall.sh', 'build_resources/macosuninstall.sh'),
                          ('../build/resources/macosreadme.txt', 'build_resources/macosreadme.txt'),
+                         ('../build/resources/ncpa_startup_check.sh', 'build_resources/ncpa_startup_check.sh'),
                          ('/usr/local/opt/mpdecimal/lib/libmpdec.4.0.0.dylib', 'lib/libmpdec.4.0.0.dylib'),
                          ('/usr/local/opt/openssl@3/lib/libcrypto.3.dylib', 'lib/libcrypto.3.dylib'),
                          ('/usr/local/opt/openssl@3/lib/libssl.3.dylib', 'lib/libssl.3.dylib'),

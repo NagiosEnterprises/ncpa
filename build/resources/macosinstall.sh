@@ -5,7 +5,27 @@
 
 scriptUser=$(whoami)
 if ! id -Gn "${scriptUser}" | grep -q -w admin; then
-    echo -e "\n\n        ERROR!!!: You must have admin privileges to run this script!\n\n"
+    echo -e "\n\necho -n "    Starting NCPA... "
+launchctl load /Library/LaunchDaemons/com.nagios.ncpa.plist
+
+# Enable the service to start automatically on boot
+launchctl enable system/com.nagios.ncpa
+
+launchctl start com.nagios.ncpa
+
+# Load and enable watchdog if it exists
+if [[ -f "/Library/LaunchDaemons/com.nagios.ncpa.watchdog.plist" ]]; then
+    launchctl load /Library/LaunchDaemons/com.nagios.ncpa.watchdog.plist
+    launchctl enable system/com.nagios.ncpa.watchdog
+fi
+
+# Verify the service is running
+sleep 2
+if launchctl list | grep -q "com.nagios.ncpa"; then
+    echo "Started successfully."
+else
+    echo "Warning: Service may not have started properly."
+fi!: You must have admin privileges to run this script!\n\n"
     exit 1
 fi
 
@@ -117,10 +137,22 @@ fi
 
 cp ncpa/build_resources/default-plist /Library/LaunchDaemons/com.nagios.ncpa.plist
 
+# Install watchdog service if startup check script exists
+if [[ -f "${homedir}/ncpa_startup_check.sh" ]]; then
+    if [[ -f "ncpa/build_resources/default-watchdog-plist" ]]; then
+        cp ncpa/build_resources/default-watchdog-plist /Library/LaunchDaemons/com.nagios.ncpa.watchdog.plist
+        chown root:wheel /Library/LaunchDaemons/com.nagios.ncpa.watchdog.plist
+        chmod 644 /Library/LaunchDaemons/com.nagios.ncpa.watchdog.plist
+    fi
+fi
+
 # Remove MacOS x attributes
 echo -n "    Removing MacOS xattributes from LaunchDaemon plists... "
 if [[ $(xattr -l /Library/LaunchDaemons/com.nagios.ncpa.plist) ]]; then
     xattr -d com.apple.quarantine /Library/LaunchDaemons/com.nagios.ncpa.plist
+fi
+if [[ -f "/Library/LaunchDaemons/com.nagios.ncpa.watchdog.plist" ]] && [[ $(xattr -l /Library/LaunchDaemons/com.nagios.ncpa.watchdog.plist) ]]; then
+    xattr -d com.apple.quarantine /Library/LaunchDaemons/com.nagios.ncpa.watchdog.plist
 fi
 
 echo "Done."
@@ -128,6 +160,13 @@ echo "Done."
 echo -n "    Copying new NCPA files... "
 mkdir -p ${homedir}
 cp -Rf ncpa/* ${homedir}
+
+# Copy startup check script if it exists
+if [[ -f "ncpa/build_resources/ncpa_startup_check.sh" ]]; then
+    cp "ncpa/build_resources/ncpa_startup_check.sh" "${homedir}/ncpa_startup_check.sh"
+    chmod +x "${homedir}/ncpa_startup_check.sh"
+fi
+
 echo "Done."
 
 echo -n "    Setting permissions... "
@@ -152,8 +191,18 @@ fi
 echo -n "    Starting NCPA... "
 launchctl load /Library/LaunchDaemons/com.nagios.ncpa.plist
 
+# Enable the service to start automatically on boot
+launchctl enable system/com.nagios.ncpa
+
 launchctl start com.nagios.ncpa
-echo "Done."
+
+# Verify the service is running
+sleep 2
+if launchctl list | grep -q "com.nagios.ncpa"; then
+    echo "Started successfully."
+else
+    echo "Warning: Service may not have started properly. Please run 'launchctl stop com.nagios.ncpa' and 'launchctl start com.nagios.ncpa' to try again."
+fi
 
 listNCPAcomponents() {
     echo "---------------------------------------"

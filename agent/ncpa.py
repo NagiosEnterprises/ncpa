@@ -490,7 +490,10 @@ class Daemon():
             pass
 
     def user_setup_tasks(self):
-        pass
+        # Add a small delay to allow file system operations to complete on macOS
+        if sys.platform == 'darwin':
+            import time
+            time.sleep(1)
 
     def setup_plugins(self):
         plugin_path = self.config.get('plugin directives', 'plugin_path')
@@ -672,8 +675,17 @@ class Daemon():
                 continue
             parent = os.path.dirname(fn)
             if not os.path.exists(parent):
-                os.makedirs(parent)
+                os.makedirs(parent, mode=0o755)
                 self.chown(parent)
+            
+            # Ensure the log file exists and has proper permissions
+            if fn in (self.listener_logfile, self.passive_logfile) and not os.path.exists(fn):
+                try:
+                    with open(fn, 'a'):
+                        pass  # Create empty file
+                    self.chown(fn)
+                except (IOError, OSError) as e:
+                    self.logger.warning("Failed to create log file %s: %s", fn, e)
 
     def set_uid_gid(self):
         """Drop root privileges"""
@@ -703,9 +715,19 @@ class Daemon():
                 gid = os.stat(fn).st_gid
             try:
                 os.chown(fn, uid, gid)
+                # On macOS, ensure the file is readable/writable after chown
+                if sys.platform == 'darwin':
+                    if os.path.isdir(fn):
+                        os.chmod(fn, 0o755)
+                    else:
+                        os.chmod(fn, 0o644)
             except OSError as err:
-                sys.exit("Daemon - chown() - can't chown(%s, %d, %d): %s, %s" %
-                (repr(fn), uid, gid, err.errno, err.strerror))
+                self.logger.error("Daemon - chown() - can't chown(%s, %d, %d): %s, %s", 
+                                 repr(fn), uid, gid, err.errno, err.strerror)
+                # Don't exit on macOS chown errors - just log and continue
+                if sys.platform != 'darwin':
+                    sys.exit("Daemon - chown() - can't chown(%s, %d, %d): %s, %s" %
+                    (repr(fn), uid, gid, err.errno, err.strerror))
 
 
     def check_pid(self):
@@ -842,6 +864,12 @@ class Daemon():
     def daemonize(self):
         """Detach from the terminal and continue as a daemon"""
         self.logger.info("Daemon - daemonize()")
+        
+        # On macOS, add a small delay before daemonizing to ensure file operations complete
+        if sys.platform == 'darwin':
+            import time
+            time.sleep(0.5)
+        
         # swiped from twisted/scripts/twistd.py
         # See http://www.erlenstar.demon.co.uk/unix/faq_toc.html#TOC16
         if os.fork():   # launch child and...
@@ -850,14 +878,20 @@ class Daemon():
         if os.fork():   # launch child and...
             os._exit(0)  # kill off parent again.
         os.umask(63)  # 077 in octal
-        null = os.open('/dev/null', os.O_RDWR)
-        for i in range(3):
-            try:
-                os.dup2(null, i)
-            except OSError as e:
-                if e.errno != errno.EBADF:
-                    raise
-        os.close(null)
+        
+        # Ensure log files are still accessible after daemonizing
+        try:
+            null = os.open('/dev/null', os.O_RDWR)
+            for i in range(3):
+                try:
+                    os.dup2(null, i)
+                except OSError as e:
+                    if e.errno != errno.EBADF:
+                        raise
+            os.close(null)
+        except OSError as e:
+            # Log the error but don't fail - this might happen on some systems
+            self.logger.warning("daemonize - failed to redirect standard streams: %s", e)
 
 # Main class - Windows
 if __SYSTEM__ == 'nt':

@@ -66,12 +66,21 @@ removeNCPAdaemons() {
     fi
 
     if [[ -f "/Library/LaunchDaemons/com.nagios.ncpa.plist" ]] ; then
+        # Disable automatic startup
+        launchctl disable system/com.nagios.ncpa 2>/dev/null || true
         launchctl unload /Library/LaunchDaemons/com.nagios.ncpa.plist
     fi
 
-    launchctl remove com.nagios.ncpa.listener
-    launchctl remove com.nagios.ncpa.passive
-    launchctl remove com.nagios.ncpa
+    # Unload watchdog service if it exists
+    if [[ -f "/Library/LaunchDaemons/com.nagios.ncpa.watchdog.plist" ]] ; then
+        launchctl disable system/com.nagios.ncpa.watchdog 2>/dev/null || true
+        launchctl unload /Library/LaunchDaemons/com.nagios.ncpa.watchdog.plist
+    fi
+
+    launchctl remove com.nagios.ncpa.listener 2>/dev/null || true
+    launchctl remove com.nagios.ncpa.passive 2>/dev/null || true
+    launchctl remove com.nagios.ncpa 2>/dev/null || true
+    launchctl remove com.nagios.ncpa.watchdog 2>/dev/null || true
     echo "Done."
 }
 
@@ -80,6 +89,7 @@ removeNCPAplists() {
     rm -f /Library/LaunchDaemons/com.nagios.ncpa.listener.plist
     rm -f /Library/LaunchDaemons/com.nagios.ncpa.passive.plist
     rm -f /Library/LaunchDaemons/com.nagios.ncpa.plist
+    rm -f /Library/LaunchDaemons/com.nagios.ncpa.watchdog.plist
     echo "Done."
 }
 
