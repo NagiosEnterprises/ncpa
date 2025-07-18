@@ -49,11 +49,25 @@ install_prereqs() {
 
     echo -e "    - Debug: Before update_py_packages - PYTHONCMD='$PYTHONCMD', PYTHONBIN='$PYTHONBIN'"
     update_py_packages
-    echo $? > /tmp/update_py_packages_exit_code
+    local exit_code=$?
+    
+    # Ensure all required libraries exist for cx_Freeze
+    ensure_cx_freeze_libraries
     
     # Append the log separately to avoid pipe issues
     if [ -f $BUILD_DIR/build.log ]; then
-        echo "update_py_packages completed with exit code: $(cat /tmp/update_py_packages_exit_code)" | sudo tee -a $BUILD_DIR/build.log
+        echo "update_py_packages completed with exit code: $exit_code" | sudo tee -a $BUILD_DIR/build.log > /dev/null
+    fi
+
+    # Export environment variables for the build process
+    export PYTHONCMD
+    export PYTHONBIN
+    export PYTHONVER
+    
+    # Also export PATH with user Python bin directory
+    local user_python_bin=$(run_as_user "$PYTHONBIN" -c "import site; import os; print(os.path.join(site.USER_BASE, 'bin'))" 2>/dev/null)
+    if [[ -n "$user_python_bin" ]]; then
+        export PATH="$user_python_bin:$PATH"
     fi
 
     # --------------------------

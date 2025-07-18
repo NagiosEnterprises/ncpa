@@ -104,7 +104,11 @@ install_devtools() {
 
     # Add brew env vars to user's environment (not root's)
     local user_home=$(run_as_user sh -c 'echo $HOME')
-    echo -e "\n$(run_as_user "$BREWBIN" shellenv)" >> "$user_home/.bash_profile"
+    if [[ -w "$user_home/.bash_profile" ]]; then
+        echo -e "\n$(run_as_user "$BREWBIN" shellenv)" >> "$user_home/.bash_profile"
+    else
+        run_as_user sh -c "echo -e '\n$(\"$BREWBIN\" shellenv)' >> \"$user_home/.bash_profile\""
+    fi
     
     # Set up environment for this session
     eval "$(run_as_user "$BREWBIN" shellenv)"
@@ -115,6 +119,19 @@ install_devtools() {
     if [[ "$os_major_version" == "10" ]]; then
         echo -e "    - Installing libffi (MacOS v10.x only)..."
         run_as_user "$BREWBIN" install libffi
+    fi
+    
+    # Create symlink for mpdecimal library if it doesn't exist where cx_Freeze expects it
+    local mpdecimal_path=$(run_as_user "$BREWBIN" --prefix mpdecimal 2>/dev/null)
+    if [[ -n "$mpdecimal_path" && -f "$mpdecimal_path/lib/libmpdec.dylib" ]]; then
+        echo -e "    - Setting up mpdecimal library symlink..."
+        local target_dir="/usr/local/opt/mpdecimal/lib"
+        if [[ ! -d "$target_dir" ]]; then
+            sudo mkdir -p "$target_dir"
+        fi
+        if [[ ! -f "$target_dir/libmpdec.4.0.0.dylib" ]]; then
+            sudo ln -sf "$mpdecimal_path/lib/libmpdec.dylib" "$target_dir/libmpdec.4.0.0.dylib"
+        fi
     fi
 
 }
@@ -258,11 +275,16 @@ update_py_packages() {
                     sudo cp "$python_lib_dynload"/* "$python_lib_dynload/../lib-dynload_orig/" 2>/dev/null || true
                 fi
                 
-                # Define paths for dependency link fixer
-                setPaths
-
-                #Convert relative dependency paths to absolute
-                fixLibs
+                # Define paths for dependency link fixer (only if functions exist)
+                if declare -f setPaths >/dev/null 2>&1; then
+                    setPaths
+                    # Convert relative dependency paths to absolute
+                    if declare -f fixLibs >/dev/null 2>&1; then
+                        fixLibs
+                    fi
+                else
+                    echo "    - Warning: setPaths function not found, skipping library fixes"
+                fi
             fi
 
             if [ ! -d "$cxlibpath/lib-dynload_orig" ]; then
@@ -278,4 +300,48 @@ update_py_packages() {
     else
         echo "    - cx_Freeze not found, skipping library updates"
     fi
+}
+
+# Ensure all required libraries exist for cx_Freeze
+ensure_cx_freeze_libraries() {
+    echo -e "\n***** macos/installers.sh - ensure_cx_freeze_libraries()"
+    
+    # Array of required libraries and their symlink targets
+    declare -A required_libs=(
+        ["/usr/local/opt/mpdecimal/lib/libmpdec.4.0.0.dylib"]="mpdecimal"
+        ["/usr/local/opt/openssl@3/lib/libcrypto.3.dylib"]="openssl@3"
+        ["/usr/local/opt/openssl@3/lib/libssl.3.dylib"]="openssl@3"
+        ["/usr/local/opt/sqlite/lib/libsqlite3.0.dylib"]="sqlite"
+        ["/usr/local/opt/xz/lib/liblzma.5.dylib"]="xz"
+    )
+    
+    for lib_path in "${!required_libs[@]}"; do
+        if [[ ! -f "$lib_path" ]]; then
+            local package="${required_libs[$lib_path]}"
+            local brew_prefix=$(run_as_user "$BREWBIN" --prefix "$package" 2>/dev/null)
+            
+            if [[ -n "$brew_prefix" ]]; then
+                local lib_dir=$(dirname "$lib_path")
+                local lib_name=$(basename "$lib_path")
+                
+                echo -e "    - Creating symlink for $lib_name..."
+                
+                # Create directory if it doesn't exist
+                sudo mkdir -p "$lib_dir"
+                
+                # Find the actual library file
+                local actual_lib=$(find "$brew_prefix/lib" -name "lib*dylib" -type f | head -1)
+                if [[ -n "$actual_lib" ]]; then
+                    sudo ln -sf "$actual_lib" "$lib_path"
+                    echo -e "      Linked $actual_lib -> $lib_path"
+                else
+                    echo -e "      Warning: Could not find library in $brew_prefix/lib"
+                fi
+            else
+                echo -e "    - Warning: Package $package not found via Homebrew"
+            fi
+        else
+            echo -e "    - Library $lib_path already exists"
+        fi
+    done
 }
