@@ -8,7 +8,21 @@ BUILD_RPM_DIR="/tmp/test/usr/src/redhat"
 
 # Build spec file
 cd $BUILD_DIR
-cat aix/ncpa.spec | sed "s/__VERSION__/$NCPA_VER/g" | sed "s|__BUILDROOT__|$BUILD_RPM_DIR|g" > $BUILD_DIR/ncpa.spec
+
+# Determine release number by checking for existing RPMs
+RELEASE=1
+while true; do
+    # Check if RPM with this release already exists
+    if ls $BUILD_DIR/ncpa-$NCPA_VER-$RELEASE.*.rpm 2>/dev/null >&2; then
+        echo -e "***** Found existing RPM with release $RELEASE, incrementing..."
+        RELEASE=$((RELEASE + 1))
+    else
+        echo -e "***** Using release number: $RELEASE"
+        break
+    fi
+done
+
+cat aix/ncpa.spec | sed "s/__VERSION__/$NCPA_VER/g" | sed "s|__BUILDROOT__|$BUILD_RPM_DIR|g" | sed "s/^Release:[[:space:]]*1/Release:\t$RELEASE/" > $BUILD_DIR/ncpa.spec
 
 # Build rpm package (also used on Debian systems)
 (

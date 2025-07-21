@@ -15,5 +15,23 @@
         </array>
         <key>RunAtLoad</key>
         <true/>
+        <key>KeepAlive</key>
+        <true/>
+        <key>Disabled</key>
+        <false/>
+        <key>LaunchOnlyOnce</key>
+        <false/>
+        <key>StandardOutPath</key>
+        <string>/usr/local/ncpa/var/log/ncpa_stdout.log</string>
+        <key>StandardErrorPath</key>
+        <string>/usr/local/ncpa/var/log/ncpa_stderr.log</string>
+        <key>UserName</key>
+        <string>nagios</string>
+        <key>GroupName</key>
+        <string>nagios</string>
+        <key>ProcessType</key>
+        <string>Background</string>
+        <key>ThrottleInterval</key>
+        <integer>10</integer>
     </dict>
 </plist>

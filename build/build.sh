@@ -2,10 +2,9 @@
 
 echo -e "***** build/build.sh"
 
-# Global variables
-PYTHONVER="3.13.5"
-SSLVER="3.0.17"
-ZLIBVER="1.3.1"
+# Source version configuration
+BUILD_DIR_FOR_VERSION=$( cd "$(dirname "$0")" ; pwd -P )
+source "$BUILD_DIR_FOR_VERSION/version_config.sh"
 
 UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
@@ -62,10 +61,15 @@ usage() {
 
 clean_build_dir() {
     echo -e "\n***** build/build.sh - Cleaning up build directory..."
-    sudo rm -rf $BUILD_DIR/ncpa-*
+    # Remove directories named ncpa-* except for the current version, but do not delete .rpm files
+    for dir in "$BUILD_DIR"/ncpa-*; do
+        if [ -d "$dir" ]; then
+            sudo rm -rf "$dir"
+        fi
+    done
     sudo rm -rf $AGENT_DIR/build
     sudo rm -rf $BUILD_DIR/NCPA-INSTALL-*
-    sudo rm -f $BUILD_DIR/*.rpm $BUILD_DIR/*.dmg $BUILD_DIR/*.deb
+    # sudo rm -f $BUILD_DIR/*.rpm $BUILD_DIR/*.dmg $BUILD_DIR/*.deb
     sudo rm -f $BUILD_DIR/ncpa.spec
     sudo rm -f $BUILD_DIR/*.tar.gz
     sudo rm -rf $BUILD_ROOT
@@ -207,7 +211,29 @@ fi
     # Move the ncpa binary data
     cd $BUILD_DIR
     sudo rm -rf $BUILD_DIR/ncpa
-    sudo cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
+    
+    # Find the cx_Freeze build directory (it varies by platform)
+    BUILD_EXE_DIR=$(find $AGENT_DIR/build -maxdepth 1 -name "exe.*" -type d | head -1)
+    
+    if [ -z "$BUILD_EXE_DIR" ]; then
+        echo "ERROR: Could not find cx_Freeze build directory in $AGENT_DIR/build/"
+        echo "Available directories:"
+        ls -la $AGENT_DIR/build/
+        exit 1
+    fi
+    
+    echo "Found cx_Freeze build directory: $BUILD_EXE_DIR"
+    echo "UNAME: $UNAME"
+    
+    # Copy build directory with platform-specific handling for symbolic links
+    if [ "$UNAME" == "Darwin" ]; then
+        # On macOS, use -L to follow symbolic links to avoid issues with relative paths
+        sudo cp -RLf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+    else
+        # On other systems, use standard recursive copy
+        sudo cp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+    fi
+    
     echo $GIT_LONG | sudo tee $BUILD_DIR/ncpa/$GIT_HASH_FILE
 
     # REMOVE LIBFFI COPY - PLEASE CHANGE THIS LATER
@@ -268,6 +294,6 @@ if [ $BUILD_ONLY -eq 0 ]; then
     echo -e "\nClean up packaging dirs..."
     cd $BUILD_DIR
     sudo rm -rf *.tar.gz
-    sudo rm -rf ncpa-$NCPA_VER
+    # sudo rm -rf ncpa-$NCPA_VER
 
 fi

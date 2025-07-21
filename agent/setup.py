@@ -17,6 +17,10 @@ import os
 import platform
 from cx_Freeze import setup, Executable
 
+# Import version configuration
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'build'))
+from version_config import *
+
 # Defined constants
 __ARCH__ = platform.architecture()[0].lower()
 __SYSTEM__ = os.name
@@ -78,22 +82,19 @@ elif __SYSTEM__ == 'posix':
                       (os.path.join(sys.executable) , 'python')]
 
     # Shared library include overrides
-    bin_includes += ['libffi.so', 'libssl.so.3', 'libcrypto.so.3']
+    bin_includes += get_linux_lib_includes()
 
     # Special includes for Mac OS
     if 'darwin' in sys.platform:
         include_files += [('../build/resources/macosinstall.sh'  , 'build_resources/macosinstall.sh'),
                          ('../build/resources/macosuninstall.sh', 'build_resources/macosuninstall.sh'),
-                         ('../build/resources/macosreadme.txt', 'build_resources/macosreadme.txt'),
-                         ('/usr/local/opt/mpdecimal/lib/libmpdec.4.0.0.dylib', 'lib/libmpdec.4.0.0.dylib'),
-                         ('/usr/local/opt/openssl@3/lib/libcrypto.3.dylib', 'lib/libcrypto.3.dylib'),
-                         ('/usr/local/opt/openssl@3/lib/libssl.3.dylib', 'lib/libssl.3.dylib'),
-                         ('/usr/local/opt/sqlite/lib/libsqlite3.0.dylib', 'lib/libsqlite3.0.dylib'),
-                         ('/usr/local/opt/xz/lib/liblzma.5.dylib', 'lib/liblzma.5.dylib')]
+                         ('../build/resources/macosreadme.txt', 'build_resources/macosreadme.txt')]
+        
+        # Add versioned library paths
+        include_files += get_macos_lib_paths()
 
         os_major_version = platform.mac_ver()[0].split('.')[:1][0]
-        if os_major_version == '10':
-            include_files += [('/usr/local/opt/libffi/lib/libffi.8.dylib', 'lib/libffi.8.dylib')]
+        include_files += get_macos_libffi_path(os_major_version)
 
     # Special includes for AIX systems
     if 'aix' in sys.platform:
