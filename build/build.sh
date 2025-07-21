@@ -61,10 +61,15 @@ usage() {
 
 clean_build_dir() {
     echo -e "\n***** build/build.sh - Cleaning up build directory..."
-    sudo rm -rf $BUILD_DIR/ncpa-*
+    # Remove directories named ncpa-* except for the current version, but do not delete .rpm files
+    for dir in "$BUILD_DIR"/ncpa-*; do
+        if [ -d "$dir" ]; then
+            sudo rm -rf "$dir"
+        fi
+    done
     sudo rm -rf $AGENT_DIR/build
     sudo rm -rf $BUILD_DIR/NCPA-INSTALL-*
-    sudo rm -f $BUILD_DIR/*.rpm $BUILD_DIR/*.dmg $BUILD_DIR/*.deb
+    # sudo rm -f $BUILD_DIR/*.rpm $BUILD_DIR/*.dmg $BUILD_DIR/*.deb
     sudo rm -f $BUILD_DIR/ncpa.spec
     sudo rm -f $BUILD_DIR/*.tar.gz
     sudo rm -rf $BUILD_ROOT
@@ -279,6 +284,6 @@ if [ $BUILD_ONLY -eq 0 ]; then
     echo -e "\nClean up packaging dirs..."
     cd $BUILD_DIR
     sudo rm -rf *.tar.gz
-    sudo rm -rf ncpa-$NCPA_VER
+    # sudo rm -rf ncpa-$NCPA_VER
 
 fi
