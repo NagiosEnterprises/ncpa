@@ -223,6 +223,7 @@ fi
     fi
     
     echo "Found cx_Freeze build directory: $BUILD_EXE_DIR"
+    echo "UNAME: $UNAME"
     
     # Copy build directory with platform-specific handling for symbolic links
     if [ "$UNAME" == "Darwin" ]; then
