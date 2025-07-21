@@ -223,7 +223,16 @@ fi
     fi
     
     echo "Found cx_Freeze build directory: $BUILD_EXE_DIR"
-    sudo cp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+    
+    # Copy build directory with platform-specific handling for symbolic links
+    if [ "$UNAME" == "Darwin" ]; then
+        # On macOS, use -L to follow symbolic links to avoid issues with relative paths
+        sudo cp -RLf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+    else
+        # On other systems, use standard recursive copy
+        sudo cp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+    fi
+    
     echo $GIT_LONG | sudo tee $BUILD_DIR/ncpa/$GIT_HASH_FILE
 
     # REMOVE LIBFFI COPY - PLEASE CHANGE THIS LATER
