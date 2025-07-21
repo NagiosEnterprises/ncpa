@@ -490,10 +490,7 @@ class Daemon():
             pass
 
     def user_setup_tasks(self):
-        # Add a small delay to allow file system operations to complete on macOS
-        if sys.platform == 'darwin':
-            import time
-            time.sleep(1)
+        pass
 
     def setup_plugins(self):
         plugin_path = self.config.get('plugin directives', 'plugin_path')
@@ -675,17 +672,8 @@ class Daemon():
                 continue
             parent = os.path.dirname(fn)
             if not os.path.exists(parent):
-                os.makedirs(parent, mode=0o755)
+                os.makedirs(parent)
                 self.chown(parent)
-            
-            # Ensure the log file exists and has proper permissions
-            if fn in (self.listener_logfile, self.passive_logfile) and not os.path.exists(fn):
-                try:
-                    with open(fn, 'a'):
-                        pass  # Create empty file
-                    self.chown(fn)
-                except (IOError, OSError) as e:
-                    self.logger.warning("Failed to create log file %s: %s", fn, e)
 
     def set_uid_gid(self):
         """Drop root privileges"""
