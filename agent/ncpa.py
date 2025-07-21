@@ -683,13 +683,67 @@ class Daemon():
         if self.username:
             gids = [ g.gr_gid for g in grp.getgrall() if self.username in g.gr_mem ]
 
-        # Set the group, alt groups, and user
+        # Set the group first
         try:
             os.setgid(self.gid)
+        except OSError as err:
+            self.logger.exception("Failed to set group ID: %s", err)
+            raise
+
+        # Try to set supplementary groups - this can fail due to security restrictions
+        supplementary_groups_set = False
+        try:
             os.setgroups(gids)
+            supplementary_groups_set = True
+            self.logger.debug("Successfully set supplementary groups: %s", gids)
+        except OSError as err:
+            if sys.platform == 'darwin' and err.errno == 1:  # Operation not permitted on macOS
+                self.logger.warning("setgroups failed on macOS (this is common due to security restrictions)")
+                self.logger.info("Attempting alternative permission setup for macOS...")
+                
+                # On macOS, try to ensure the user is at least in the primary group
+                # and warn about potential permission issues
+                try:
+                    # Verify the user can access group-owned resources by checking the primary group
+                    import pwd
+                    user_info = pwd.getpwuid(self.uid)
+                    self.logger.info("Running as user '%s' (uid:%d) with primary group '%s' (gid:%d)", 
+                                   user_info.pw_name, self.uid, grp.getgrgid(self.gid).gr_name, self.gid)
+                    
+                    # Warn about supplementary groups that couldn't be set
+                    if len(gids) > 1:
+                        missing_groups = [grp.getgrgid(gid).gr_name for gid in gids if gid != self.gid]
+                        self.logger.warning("Could not set supplementary groups on macOS: %s", missing_groups)
+                        self.logger.warning("This may cause permission issues accessing resources owned by these groups")
+                        self.logger.info("Consider adjusting file/directory permissions or group ownership if you encounter access issues")
+                        
+                except Exception as group_err:
+                    self.logger.error("Error while checking group information: %s", group_err)
+                    
+            else:
+                self.logger.exception("Failed to set supplementary groups: %s", err)
+                raise
+
+        # Finally set the user ID
+        try:
             os.setuid(self.uid)
-        except Exception as err:
-            self.logger.exception(err)
+        except OSError as err:
+            self.logger.exception("Failed to set user ID: %s", err)
+            raise
+            
+        # Final verification and helpful logging
+        try:
+            import pwd
+            current_user = pwd.getpwuid(os.getuid())
+            current_group = grp.getgrgid(os.getgid())
+            self.logger.info("Successfully dropped privileges to user '%s' (uid:%d, gid:%d)", 
+                           current_user.pw_name, os.getuid(), os.getgid())
+            
+            if not supplementary_groups_set and sys.platform == 'darwin':
+                self.logger.info("Note: Running with limited group membership due to macOS security restrictions")
+                
+        except Exception as verify_err:
+            self.logger.debug("Could not verify final user/group state: %s", verify_err)
 
     def chown(self, fn):
         """Change the ownership of a file to match the daemon uid/gid"""
