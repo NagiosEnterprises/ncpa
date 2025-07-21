@@ -2,10 +2,9 @@
 
 echo -e "***** build/build.sh"
 
-# Global variables
-PYTHONVER="3.13.5"
-SSLVER="3.0.17"
-ZLIBVER="1.3.1"
+# Source version configuration
+BUILD_DIR_FOR_VERSION=$( cd "$(dirname "$0")" ; pwd -P )
+source "$BUILD_DIR_FOR_VERSION/version_config.sh"
 
 UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then

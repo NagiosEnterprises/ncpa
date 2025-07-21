@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# Source version configuration
+BUILD_DIR_FOR_VERSION=$(dirname "$(dirname "$0")")
+source "$BUILD_DIR_FOR_VERSION/version_config.sh"
+
 # Globals
-PYTHONVER="3.9.13"
 PYTHONTAR="Python-$PYTHONVER"
 PYTHONBIN=$(which python3)
 

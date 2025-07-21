@@ -2,6 +2,10 @@
 
 # Scripts to install homebrew and dev tools, and update python libraries
 
+# Source version configuration
+BUILD_DIR_FOR_VERSION=$(dirname "$(dirname "$0")")
+source "$BUILD_DIR_FOR_VERSION/version_config.sh"
+
 # Load utilities to fix dynamic libs
 . $BUILD_DIR/macos/linkdynlibs.sh
 os_version=$(sw_vers -productVersion)
@@ -344,17 +348,16 @@ ensure_cx_freeze_libraries() {
     
     # Define required libraries and their packages
     local lib_paths=(
-        "/usr/local/opt/mpdecimal/lib/libmpdec.4.0.0.dylib"
-        "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib"
-        "/usr/local/opt/openssl@3/lib/libssl.3.dylib"
-        "/usr/local/opt/sqlite/lib/libsqlite3.0.dylib"
-        "/usr/local/opt/xz/lib/liblzma.5.dylib"
+        "/usr/local/opt/mpdecimal/lib/libmpdec.${MPDECIMAL_VERSION}.dylib"
+        "/usr/local/opt/openssl@${OPENSSL_MAJOR}/lib/libcrypto.${LIBCRYPTO_VERSION}.dylib"
+        "/usr/local/opt/openssl@${OPENSSL_MAJOR}/lib/libssl.${LIBSSL_VERSION}.dylib"
+        "/usr/local/opt/sqlite/lib/libsqlite${SQLITE3_VERSION}.dylib"
+        "/usr/local/opt/xz/lib/liblzma.${LIBLZMA_VERSION}.dylib"
     )
     
     local packages=(
         "mpdecimal"
-        "openssl@3"
-        "openssl@3"
+        "openssl@${OPENSSL_MAJOR}"
         "sqlite"
         "xz"
     )
@@ -377,13 +380,13 @@ ensure_cx_freeze_libraries() {
                 
                 # Handle specific library names
                 case "$lib_name" in
-                    "libmpdec.4.0.0.dylib")
+                    "libmpdec.${MPDECIMAL_VERSION}.dylib")
                         if [[ -f "$brew_prefix/lib/libmpdec.dylib" ]]; then
                             sudo ln -sf "$brew_prefix/lib/libmpdec.dylib" "$lib_path"
                             echo -e "      Linked $brew_prefix/lib/libmpdec.dylib -> $lib_path"
                         fi
                         ;;
-                    "libcrypto.3.dylib"|"libssl.3.dylib")
+                    "libcrypto.${LIBCRYPTO_VERSION}.dylib"|"libssl.${LIBSSL_VERSION}.dylib")
                         local actual_lib=$(find "$brew_prefix/lib" -name "$lib_name" -type f | head -1)
                         if [[ -n "$actual_lib" ]]; then
                             sudo ln -sf "$actual_lib" "$lib_path"
