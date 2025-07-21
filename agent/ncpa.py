@@ -853,11 +853,6 @@ class Daemon():
         """Detach from the terminal and continue as a daemon"""
         self.logger.info("Daemon - daemonize()")
         
-        # On macOS, add a small delay before daemonizing to ensure file operations complete
-        if sys.platform == 'darwin':
-            import time
-            time.sleep(0.5)
-        
         # swiped from twisted/scripts/twistd.py
         # See http://www.erlenstar.demon.co.uk/unix/faq_toc.html#TOC16
         if os.fork():   # launch child and...

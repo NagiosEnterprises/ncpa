@@ -207,7 +207,19 @@ fi
     # Move the ncpa binary data
     cd $BUILD_DIR
     sudo rm -rf $BUILD_DIR/ncpa
-    sudo cp -rf $AGENT_DIR/build/exe.* $BUILD_DIR/ncpa
+    
+    # Find the cx_Freeze build directory (it varies by platform)
+    BUILD_EXE_DIR=$(find $AGENT_DIR/build -maxdepth 1 -name "exe.*" -type d | head -1)
+    
+    if [ -z "$BUILD_EXE_DIR" ]; then
+        echo "ERROR: Could not find cx_Freeze build directory in $AGENT_DIR/build/"
+        echo "Available directories:"
+        ls -la $AGENT_DIR/build/
+        exit 1
+    fi
+    
+    echo "Found cx_Freeze build directory: $BUILD_EXE_DIR"
+    sudo cp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
     echo $GIT_LONG | sudo tee $BUILD_DIR/ncpa/$GIT_HASH_FILE
 
     # REMOVE LIBFFI COPY - PLEASE CHANGE THIS LATER
