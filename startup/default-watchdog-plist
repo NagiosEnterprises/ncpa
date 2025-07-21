@@ -12,6 +12,8 @@
         <integer>300</integer>
         <key>RunAtLoad</key>
         <false/>
+        <key>Disabled</key>
+        <false/>
         <key>UserName</key>
         <string>nagios</string>
         <key>GroupName</key>

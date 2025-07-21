@@ -17,6 +17,8 @@
         <true/>
         <key>KeepAlive</key>
         <true/>
+        <key>Disabled</key>
+        <false/>
         <key>LaunchOnlyOnce</key>
         <false/>
         <key>StandardOutPath</key>
