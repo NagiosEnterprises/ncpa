@@ -20,6 +20,7 @@ from cx_Freeze import setup, Executable
 # Import version configuration
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'build'))
 from version_config import *
+from version_config import get_solaris_lib_paths
 
 # Defined constants
 __ARCH__ = platform.architecture()[0].lower()
@@ -105,6 +106,10 @@ elif __SYSTEM__ == 'posix':
                           ('/usr/lib/libcrypto.a'               , 'libcrypto.a'),
                           ('/usr/lib/libffi.a'                  , 'libffi.a'),
                           ('/opt/freeware/lib/libgcc_s.a'       , 'libgcc_s.a')]
+
+    # Special includes for Solaris systems
+    if 'sunos' in sys.platform.lower():
+        include_files += get_solaris_lib_paths()
 
     binary = Executable('ncpa.py', base=None)
 

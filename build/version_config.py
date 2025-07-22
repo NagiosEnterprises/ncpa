@@ -107,3 +107,17 @@ def get_macos_libffi_path(os_major_version):
 def get_linux_lib_includes():
     """Return Linux library includes with proper versioning"""
     return [f'libffi.so', f'libssl.so.{LIBSSL_VERSION}', f'libcrypto.so.{LIBCRYPTO_VERSION}']
+
+def get_solaris_lib_paths():
+    """Return Solaris library paths with proper versioning"""
+    if system != "SunOS":
+        return []
+    
+    return [
+        (f'/opt/csw/lib/libpython{PYTHON_MAJOR_MINOR}.so', f'libpython{PYTHON_MAJOR_MINOR}.so'),
+        ('/usr/lib/libsqlite3.so', 'libsqlite3.so'),
+        ('/opt/csw/lib/libssl.so', 'libssl.so'),
+        ('/opt/csw/lib/libcrypto.so', 'libcrypto.so'),
+        ('/opt/csw/lib/libffi.so', 'libffi.so'),
+        ('/opt/csw/lib/libz.so', 'libz.so')
+    ]

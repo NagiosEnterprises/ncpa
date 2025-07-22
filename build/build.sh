@@ -219,18 +219,32 @@ fi
         echo "ERROR: Could not find cx_Freeze build directory in $AGENT_DIR/build/"
         echo "Available directories:"
         ls -la $AGENT_DIR/build/
+        echo "Platform: $UNAME"
+        echo "Python version: $($PYTHONBIN --version 2>&1 || echo 'Python version check failed')"
+        echo "cx_Freeze may have failed. Check the build log above for errors."
         exit 1
     fi
     
     echo "Found cx_Freeze build directory: $BUILD_EXE_DIR"
-    echo "UNAME: $UNAME"
     
     # Copy build directory with platform-specific handling for symbolic links
     if [ "$UNAME" == "Darwin" ]; then
         # On macOS, use -L to follow symbolic links to avoid issues with relative paths
+        echo "Copying macOS build with symbolic link resolution..."
         sudo cp -RLf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+    elif [ "$UNAME" == "SunOS" ]; then
+        # On Solaris, handle potential differences in cp command behavior
+        echo "Copying Solaris build..."
+        if command -v gcp >/dev/null 2>&1; then
+            # Use GNU cp if available
+            sudo gcp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+        else
+            # Use standard Solaris cp
+            sudo cp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+        fi
     else
-        # On other systems, use standard recursive copy
+        # On other systems (Linux, AIX), use standard recursive copy
+        echo "Copying build for $UNAME..."
         sudo cp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
     fi
     
@@ -257,11 +271,20 @@ fi
     echo -e "\nBuilding tarball..."
     sudo cp -rf ncpa ncpa-$NCPA_VER
     if [ "$UNAME" == "AIX" ]; then
-        echo -e "***** Build tarball"
+        echo -e "***** Build tarball for AIX"
         sudo tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER | sudo tee -a $BUILD_DIR/build.log
         sudo gzip -f ncpa-$NCPA_VER.tar | sudo tee -a $BUILD_DIR/build.log
+    elif [ "$UNAME" == "SunOS" ]; then
+        echo -e "***** Build tarball for Solaris"
+        # Use gtar if available (GNU tar), otherwise use standard tar
+        if command -v gtar >/dev/null 2>&1; then
+            sudo gtar -czvf ncpa-$NCPA_VER.tar.gz ncpa-$NCPA_VER | sudo tee -a $BUILD_DIR/build.log
+        else
+            sudo tar -cf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER | sudo tee -a $BUILD_DIR/build.log
+            sudo gzip -f ncpa-$NCPA_VER.tar | sudo tee -a $BUILD_DIR/build.log
+        fi
     elif [ "$UNAME" == "Linux" ]; then
-        echo -e "***** Build tarball"
+        echo -e "***** Build tarball for Linux"
         sudo tar -czvf ncpa-$NCPA_VER.tar.gz ncpa-$NCPA_VER | sudo tee -a $BUILD_DIR/build.log
     fi
 )

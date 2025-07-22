@@ -1,15 +1,32 @@
 
-# Stop and disable the services
-svcadm disable ncpa
+#!/bin/bash
 
-# Reload manifests
-svcadm restart manifest-import
+# NCPA Pre-removal script for Solaris
 
-# Remove the actual service configuration
-svccfg delete ncpa
+echo "NCPA: Running pre-removal cleanup..."
 
-# Remove the files from /var
+# Stop the service first
+echo "NCPA: Stopping service..."
+svcadm disable -s site/ncpa 2>/dev/null || true
+
+# Wait a bit for the service to stop
+sleep 2
+
+# Check if the service exists before trying to delete it
+if svcs site/ncpa >/dev/null 2>&1; then
+    echo "NCPA: Removing SMF service..."
+    svccfg delete site/ncpa 2>/dev/null || true
+fi
+
+# Remove the service manifest file
+rm -f /var/svc/manifest/site/ncpa.xml
+
+# Clean up runtime files
+echo "NCPA: Cleaning up runtime files..."
 rm -rf /usr/local/ncpa/var/run
 rm -f /usr/local/ncpa/var/*.crt
-rm -f /usr/local/ncpa/var/*.db
+rm -f /usr/local/ncpa/var/*.db  
 rm -f /usr/local/ncpa/var/*.key
+rm -f /usr/local/ncpa/var/*.pid
+
+echo "NCPA: Pre-removal completed."

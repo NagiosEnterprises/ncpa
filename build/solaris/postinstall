@@ -1,8 +1,69 @@
 
-# Create services
-svcbundle -i -s service-name=site/ncpa \
-  -s start-method='/usr/local/ncpa/ncpa' \
-  -s stop-method='kill $(cat /usr/local/ncpa/var/run/ncpa.pid)'
+#!/bin/bash
 
-# Enable services
+# NCPA Post-installation script for Solaris
+
+echo "NCPA: Running post-installation setup..."
+
+# Set proper ownership and permissions
+chown -R nagios:nagios /usr/local/ncpa/var
+chown nagios:nagios /usr/local/ncpa/etc /usr/local/ncpa/etc/*.cfg*
+chmod -R 755 /usr/local/ncpa/var
+chmod 755 /usr/local/ncpa/etc
+chmod 644 /usr/local/ncpa/etc/*.cfg*
+
+# Create run directory
+mkdir -p /usr/local/ncpa/var/run
+chown nagios:nagios /usr/local/ncpa/var/run
+chmod 755 /usr/local/ncpa/var/run
+
+# Create SMF service manifest
+cat > /var/svc/manifest/site/ncpa.xml << 'EOF'
+<?xml version="1.0"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+<service_bundle type='manifest' name='ncpa'>
+  <service name='site/ncpa' type='service' version='1'>
+    <create_default_instance enabled='false' />
+    <single_instance />
+    <dependency name='network' grouping='require_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/milestone/network:default' />
+    </dependency>
+    <dependency name='filesystem' grouping='require_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/system/filesystem/local' />
+    </dependency>
+    <exec_method type='method' name='start' exec='/usr/local/ncpa/ncpa' timeout_seconds='60'>
+      <method_context working_directory='/usr/local/ncpa'>
+        <method_credential user='nagios' group='nagios' />
+      </method_context>
+    </exec_method>
+    <exec_method type='method' name='stop' exec=':kill' timeout_seconds='60' />
+    <property_group name='startd' type='framework'>
+      <propval name='duration' type='astring' value='contract' />
+      <propval name='ignore_error' type='astring' value='core,signal' />
+    </property_group>
+    <property_group name='application' type='application'>
+      <stability value='Evolving' />
+    </property_group>
+    <stability value='Evolving' />
+    <template>
+      <common_name>
+        <loctext xml:lang='C'>Nagios Cross-Platform Agent</loctext>
+      </common_name>
+      <documentation>
+        <manpage title='ncpa' section='1' />
+      </documentation>
+    </template>
+  </service>
+</service_bundle>
+EOF
+
+# Import the service
+echo "NCPA: Importing SMF service..."
+svccfg import /var/svc/manifest/site/ncpa.xml
+
+# Enable the service  
+echo "NCPA: Enabling SMF service..."
 svcadm enable site/ncpa
+
+echo "NCPA: Post-installation completed successfully."
+echo "NCPA service status: $(svcs -xvs site/ncpa 2>/dev/null || echo 'Service not yet started')"
