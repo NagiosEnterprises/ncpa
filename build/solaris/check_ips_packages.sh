@@ -14,6 +14,15 @@ echo "  OS: $(uname -sr)"
 echo "  IPS Publisher: $(pkg publisher | head -1)"
 echo ""
 
+echo "Current Python Installations:"
+for py_path in /usr/bin/python* /opt/csw/bin/python* /usr/local/bin/python*; do
+    if [ -x "$py_path" ]; then
+        version=$($py_path --version 2>&1 || echo "unknown")
+        echo "  $py_path -> $version"
+    fi
+done
+echo ""
+
 echo "=== Searching for Development Packages ==="
 echo ""
 
@@ -60,7 +69,16 @@ echo ""
 echo "Python Runtime:"
 pkg list -a | grep -E "runtime/python" | sort | while read -r line; do
     pkg_name=$(echo "$line" | awk '{print $1}')
-    echo "  $pkg_name"
+    status=$(echo "$line" | awk '{print $3}')
+    echo "  $pkg_name ($status)"
+done
+echo ""
+
+echo "Python Development:"
+pkg list -a | grep -E "developer/python" | sort | while read -r line; do
+    pkg_name=$(echo "$line" | awk '{print $1}')
+    status=$(echo "$line" | awk '{print $3}')
+    echo "  $pkg_name ($status)"
 done
 echo ""
 
@@ -83,10 +101,19 @@ echo "  sudo pkg install library/ncurses"
 echo "  sudo pkg install compress/bzip2"
 echo "  sudo pkg install library/libffi"
 echo ""
-echo "To install Python:"
-echo "  sudo pkg install runtime/python-39"
-echo "  # or"
-echo "  sudo pkg install runtime/python-38"
+echo "To install Python (RECOMMENDED - much newer than OpenCSW):"
+echo "  sudo pkg install runtime/python-313  # Python 3.13 (latest)"
+echo "  sudo pkg install runtime/python-312  # Python 3.12"
+echo "  sudo pkg install runtime/python-311  # Python 3.11"
+echo "  sudo pkg install runtime/python-310  # Python 3.10"
+echo "  sudo pkg install runtime/python-39   # Python 3.9"
+echo "  sudo pkg install runtime/python-38   # Python 3.8"
+echo ""
+echo "To install Python development tools:"
+echo "  sudo pkg install developer/python/python-313"
+echo "  sudo pkg install developer/python/python-312"
+echo "  sudo pkg install developer/python/python-311"
+echo "  sudo pkg install developer/python/python-310"
 echo ""
 echo "To install developer groups (may include multiple tools):"
 pkg list -a | grep -E "group.*developer" | head -3 | while read -r line; do

@@ -224,6 +224,85 @@ install_prereqs() {
         return 1
     }
 
+    # Function to build Python from source as a last resort
+    build_python_from_source() {
+        local python_version="3.12.8"
+        local python_url="https://www.python.org/ftp/python/${python_version}/Python-${python_version}.tgz"
+        local build_dir="/tmp/python-build-$$"
+        
+        echo "Building Python ${python_version} from source..."
+        echo "This may take 10-30 minutes depending on your system..."
+        
+        # Check for required tools
+        for tool in gcc make wget; do
+            if ! command -v $tool >/dev/null 2>&1; then
+                echo "ERROR: $tool is required but not found"
+                echo "Please install development tools first"
+                return 1
+            fi
+        done
+        
+        # Create build directory
+        mkdir -p "$build_dir"
+        cd "$build_dir"
+        
+        # Download Python source
+        echo "Downloading Python source..."
+        if ! wget "$python_url"; then
+            echo "ERROR: Failed to download Python source"
+            return 1
+        fi
+        
+        # Extract
+        echo "Extracting Python source..."
+        if ! tar -xzf "Python-${python_version}.tgz"; then
+            echo "ERROR: Failed to extract Python source"
+            return 1
+        fi
+        
+        cd "Python-${python_version}"
+        
+        # Configure with appropriate options for Solaris
+        echo "Configuring Python build..."
+        ./configure \
+            --prefix=/usr/local \
+            --enable-shared \
+            --enable-optimizations \
+            --with-ssl \
+            --with-ssl-default-suites=openssl \
+            LDFLAGS="-L/opt/csw/lib -L/usr/lib" \
+            CPPFLAGS="-I/opt/csw/include -I/usr/include" \
+            PKG_CONFIG_PATH="/opt/csw/lib/pkgconfig:/usr/lib/pkgconfig" || {
+            echo "ERROR: Python configure failed"
+            return 1
+        }
+        
+        # Build
+        echo "Building Python (this will take a while)..."
+        if ! make -j$(nproc 2>/dev/null || echo 2); then
+            echo "ERROR: Python build failed"
+            return 1
+        fi
+        
+        # Install
+        echo "Installing Python to /usr/local..."
+        if ! sudo make install; then
+            echo "ERROR: Python installation failed"
+            return 1
+        fi
+        
+        # Update library path
+        echo "/usr/local/lib" | sudo tee -a /etc/ld.so.conf.d/python.conf 2>/dev/null || true
+        sudo ldconfig 2>/dev/null || true
+        
+        # Cleanup
+        cd /
+        rm -rf "$build_dir"
+        
+        echo "✓ Python ${python_version} built and installed successfully"
+        return 0
+    }
+
     # Function to safely install a package if available
     safe_install_package() {
         local pkg="$1"
@@ -322,6 +401,31 @@ install_prereqs() {
     if command -v pkg >/dev/null 2>&1; then
         echo "Attempting to install core dependencies via native pkg manager..."
         
+        # Try to install Python first via IPS - this will give us a much newer version
+        echo "Installing Python via IPS (native Solaris package manager)..."
+        python_ips_installed=false
+        for py_ver in runtime/python-313 runtime/python-312 runtime/python-311 runtime/python-310 runtime/python-39 runtime/python-38; do
+            if check_ips_package "$py_ver"; then
+                echo "Installing $py_ver..."
+                if sudo pkg install --accept "$py_ver"; then
+                    echo "Successfully installed $py_ver"
+                    python_ips_installed=true
+                    # Also try to install development tools for this Python version
+                    dev_pkg=$(echo "$py_ver" | sed 's/runtime/developer/')
+                    if check_ips_package "$dev_pkg"; then
+                        sudo pkg install --accept "$dev_pkg" || echo "Could not install $dev_pkg"
+                    fi
+                    break
+                else
+                    echo "Failed to install $py_ver"
+                fi
+            fi
+        done
+        
+        if [ "$python_ips_installed" = false ]; then
+            echo "No suitable Python found in IPS, will try other methods..."
+        fi
+        
         # Try to install zlib through pkg first
         if pkg list library/zlib >/dev/null 2>&1; then
             echo "Installing zlib via pkg..."
@@ -333,14 +437,6 @@ install_prereqs() {
             if pkg list "$pkg_name" >/dev/null 2>&1; then
                 echo "Installing $pkg_name via pkg..."
                 pkg install --accept "$pkg_name" || echo "Failed to install $pkg_name via pkg"
-            fi
-        done
-        
-        # Try Python installation via pkg
-        for py_ver in runtime/python-39 runtime/python-38 runtime/python-37; do
-            if pkg list "$py_ver" >/dev/null 2>&1; then
-                echo "Installing $py_ver..."
-                pkg install --accept "$py_ver" && break
             fi
         done
     else
@@ -635,43 +731,141 @@ install_prereqs() {
     export LD_LIBRARY_PATH=/opt/csw/lib:/usr/lib:$LD_LIBRARY_PATH
     export PKG_CONFIG_PATH=/opt/csw/lib/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 
-    # Update PYTHONBIN to the actual installed location
+    # Update PYTHONBIN to the actual installed location (prefer IPS over CSW)
     echo "Detecting Python installation..."
     for py_path in \
+        "/usr/bin/python3.13" \
+        "/usr/bin/python3.12" \
+        "/usr/bin/python3.11" \
+        "/usr/bin/python3.10" \
+        "/usr/bin/python3.9" \
+        "/usr/bin/python3.8" \
+        "/usr/bin/python3" \
         "/opt/csw/bin/python3.9" \
         "/opt/csw/bin/python3.8" \
         "/opt/csw/bin/python3.7" \
         "/opt/csw/bin/python3" \
-        "/usr/bin/python3.9" \
-        "/usr/bin/python3.8" \
-        "/usr/bin/python3.7" \
-        "/usr/bin/python3" \
         "/usr/local/bin/python3"; do
         
         if [ -x "$py_path" ]; then
             PYTHONBIN="$py_path"
             echo "Found Python at: $PYTHONBIN"
-            break
+            # Check Python version to ensure it's 3.6 or newer
+            py_version=$($PYTHONBIN --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+            echo "Python version: $py_version"
+            
+            # Check if version is >= 3.6 (minimum for modern pip)
+            if [ -n "$py_version" ]; then
+                major=$(echo "$py_version" | cut -d. -f1)
+                minor=$(echo "$py_version" | cut -d. -f2)
+                if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 6 ]); then
+                    echo "✓ Python version $py_version is suitable"
+                    break
+                else
+                    echo "✗ Python version $py_version is too old (need >= 3.6)"
+                    PYTHONBIN=""
+                fi
+            fi
         fi
     done
 
     if [ -z "$PYTHONBIN" ] || [ ! -x "$PYTHONBIN" ]; then
-        echo "ERROR: Could not find a suitable Python 3 installation"
+        echo "ERROR: Could not find a suitable Python 3.6+ installation"
         echo "Available Python installations:"
         find /opt/csw/bin /usr/bin /usr/local/bin -name "python*" -executable 2>/dev/null || true
-        exit 1
+        
+        echo ""
+        echo "=== PYTHON INSTALLATION OPTIONS ==="
+        echo ""
+        echo "Option 1: Install Python via IPS (recommended):"
+        if command -v pkg >/dev/null 2>&1; then
+            echo "  Available Python packages in IPS:"
+            pkg list -a | grep "runtime/python" | head -5 || echo "  None found"
+            echo ""
+            echo "  Try these commands:"
+            echo "    sudo pkg install runtime/python-313"
+            echo "    sudo pkg install runtime/python-312"
+            echo "    sudo pkg install runtime/python-311"
+            echo "    sudo pkg install runtime/python-310"
+            echo "    sudo pkg install runtime/python-39"
+        else
+            echo "  IPS not available on this system"
+        fi
+        
+        echo ""
+        echo "Option 2: Build Python from source:"
+        echo "  This script can attempt to build Python 3.12 from source"
+        echo "  This requires GCC and development tools to be installed"
+        echo ""
+        
+        if [ $NO_INTERACTION -eq 1 ]; then
+            echo "Non-interactive mode - exiting without Python"
+            exit 1
+        else
+            read -r -p "Would you like to attempt building Python 3.12 from source? [y/N] " build_python
+            if [[ $build_python =~ ^(yes|y|Y)$ ]]; then
+                echo "Attempting to build Python from source..."
+                build_python_from_source
+                
+                # Re-check for Python after build
+                for py_path in "/usr/local/bin/python3" "/usr/local/bin/python3.13" "/usr/local/bin/python3.12" "/usr/local/bin/python3.11" "/usr/local/bin/python3.10" "/usr/local/bin/python3.9"; do
+                    if [ -x "$py_path" ]; then
+                        PYTHONBIN="$py_path"
+                        echo "✓ Found newly built Python at: $PYTHONBIN"
+                        break
+                    fi
+                done
+                
+                if [ -z "$PYTHONBIN" ]; then
+                    echo "ERROR: Python build failed"
+                    exit 1
+                fi
+            else
+                echo "Exiting - Python 3.6+ is required to build NCPA"
+                exit 1
+            fi
+        fi
     fi
 
     echo "Using Python: $PYTHONBIN"
     $PYTHONBIN --version
 
-    # Install pip if not available
+    # Install pip if not available - handle different Python versions
     if ! $PYTHONBIN -m pip --version >/dev/null 2>&1; then
         echo "Installing pip..."
+        
+        # Get Python version to determine which get-pip.py to use
+        py_version=$($PYTHONBIN --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+        major=$(echo "$py_version" | cut -d. -f1)
+        minor=$(echo "$py_version" | cut -d. -f2)
+        
+        if [ "$major" -eq 3 ] && [ "$minor" -lt 6 ]; then
+            # For Python < 3.6, use the legacy pip installer
+            echo "Using legacy pip installer for Python $py_version"
+            pip_url="https://bootstrap.pypa.io/pip/$py_version/get-pip.py"
+        else
+            # For Python >= 3.6, use the modern pip installer
+            echo "Using modern pip installer for Python $py_version"
+            pip_url="https://bootstrap.pypa.io/get-pip.py"
+        fi
+        
         # Download and install pip
-        curl -k https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
-        $PYTHONBIN /tmp/get-pip.py --user
-        rm -f /tmp/get-pip.py
+        if command -v wget >/dev/null 2>&1; then
+            wget -O /tmp/get-pip.py "$pip_url"
+        elif command -v curl >/dev/null 2>&1; then
+            curl -k -o /tmp/get-pip.py "$pip_url"
+        else
+            echo "ERROR: Neither wget nor curl available to download pip"
+            exit 1
+        fi
+        
+        if [ -f /tmp/get-pip.py ]; then
+            $PYTHONBIN /tmp/get-pip.py --user
+            rm -f /tmp/get-pip.py
+        else
+            echo "ERROR: Failed to download pip installer"
+            exit 1
+        fi
     fi
 
     # Export PYTHONBIN for use by the main build script

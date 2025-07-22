@@ -1,5 +1,10 @@
 Changelog
 +++++++++
+3.2.0 - XX/XX/2025
+==================
+**Added**
+- Added support for Solaris 11.4 builds. (Blake Bahner)
+
 3.1.4 - XX/XX/2025
 ==================
 **Added**
