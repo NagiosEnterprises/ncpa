@@ -33,6 +33,16 @@ if command -v /opt/csw/bin/pkgutil >/dev/null 2>&1; then
     done
     
     echo ""
+    echo "=== Python-specific Packages ==="
+    for pkg in py_openssl py_cryptography py_cffi; do
+        if /opt/csw/bin/pkgutil -a | grep -q "^$pkg "; then
+            echo "✓ $pkg - Available"
+        else
+            echo "✗ $pkg - Not found"
+        fi
+    done
+    
+    echo ""
     echo "=== Python Packages ==="
     for pkg in python3 python39 python38 python37 python36; do
         if /opt/csw/bin/pkgutil -a | grep -q "^$pkg "; then

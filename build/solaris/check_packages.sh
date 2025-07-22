@@ -50,6 +50,9 @@ packages=(
     "libffi:FFI library"
     "ffi:FFI"
     "libffi_dev:FFI development"
+    "py_openssl:Python OpenSSL"
+    "py_cryptography:Python cryptography"
+    "py_cffi:Python CFFI"
 )
 
 for pkg_info in "${packages[@]}"; do

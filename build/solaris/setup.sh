@@ -70,12 +70,48 @@ update_py_packages() {
         # Install required packages
         echo "Installing required Python packages..."
         if [ -f "$BUILD_DIR/resources/require.txt" ]; then
-            $PYTHONBIN -m pip install -r "$BUILD_DIR/resources/require.txt" --upgrade --user || {
-                echo "ERROR: Failed to install required packages"
-                echo "Contents of require.txt:"
-                cat "$BUILD_DIR/resources/require.txt"
-                return 1
-            }
+            echo "Found require.txt, installing packages..."
+            
+            # First try to use packages already installed via OpenCSW
+            echo "Checking for OpenCSW Python packages..."
+            csw_packages_found=0
+            
+            # Check if key packages are available via OpenCSW
+            for pkg in py_openssl py_cryptography py_cffi; do
+                if /opt/csw/bin/pkgutil -l | grep -q "^$pkg "; then
+                    echo "Found OpenCSW package: $pkg"
+                    ((csw_packages_found++))
+                fi
+            done
+            
+            if [ $csw_packages_found -gt 0 ]; then
+                echo "Some packages available via OpenCSW, using mixed installation approach"
+                # Install packages that aren't available via OpenCSW using pip
+                for pkg in cx_Freeze psutil requests Jinja2 flask werkzeug docutils gevent gevent-websocket appdirs packaging kafka-python; do
+                    echo "Installing $pkg via pip..."
+                    $PYTHONBIN -m pip install "$pkg" --user || echo "WARNING: Failed to install $pkg"
+                done
+                
+                # For crypto packages, prefer OpenCSW versions if available
+                echo "Installing crypto packages (preferring OpenCSW versions)..."
+                if ! /opt/csw/bin/pkgutil -l | grep -q "^py_openssl "; then
+                    $PYTHONBIN -m pip install pyOpenSSL --user || echo "WARNING: Failed to install pyOpenSSL"
+                fi
+                if ! /opt/csw/bin/pkgutil -l | grep -q "^py_cryptography "; then
+                    $PYTHONBIN -m pip install cryptography --user || echo "WARNING: Failed to install cryptography"
+                fi
+                if ! /opt/csw/bin/pkgutil -l | grep -q "^py_cffi "; then
+                    $PYTHONBIN -m pip install cffi --user || echo "WARNING: Failed to install cffi"
+                fi
+            else
+                echo "No OpenCSW Python packages found, using pip for all packages"
+                $PYTHONBIN -m pip install -r "$BUILD_DIR/resources/require.txt" --upgrade --user || {
+                    echo "ERROR: Failed to install required packages"
+                    echo "Contents of require.txt:"
+                    cat "$BUILD_DIR/resources/require.txt"
+                    return 1
+                }
+            fi
         else
             echo "WARNING: require.txt not found at $BUILD_DIR/resources/require.txt"
             echo "Installing packages individually..."
@@ -177,6 +213,30 @@ install_prereqs() {
         fi
         
         return 1
+    }
+
+    # Function to install Python packages via OpenCSW with correct naming
+    install_python_packages_csw() {
+        echo "Installing Python packages via OpenCSW..."
+        
+        # Map of Python package names to OpenCSW equivalents
+        declare -A py_pkg_map=(
+            ["openssl"]="py_openssl"
+            ["cryptography"]="py_cryptography" 
+            ["cffi"]="py_cffi"
+            ["requests"]="py_requests"
+            ["jinja2"]="py_jinja2"
+            ["flask"]="py_flask"
+            ["psutil"]="py_psutil"
+        )
+        
+        # Try to install Python packages via OpenCSW first
+        for req_pkg in openssl cryptography cffi requests jinja2 flask psutil; do
+            csw_pkg="${py_pkg_map[$req_pkg]}"
+            if [ -n "$csw_pkg" ]; then
+                safe_install_package "$csw_pkg" "Python $req_pkg"
+            fi
+        done
     }
 
     # Install build essentials and dependencies
@@ -298,7 +358,8 @@ install_prereqs() {
         fi
     fi
     
-    install_with_fallbacks "OpenSSL library" openssl libssl openssl_dev ssl
+    # Install system OpenSSL (for system libraries)
+    install_with_fallbacks "system OpenSSL library" openssl libssl openssl_dev ssl
     install_with_fallbacks "libffi library" libffi ffi libffi_dev ffi_dev
     
     # Try to install additional useful packages
@@ -311,6 +372,15 @@ install_prereqs() {
     safe_install_package "libbz2_dev" "bzip2 development"
     safe_install_package "readline" "readline library"
     safe_install_package "ncurses" "ncurses library"
+    
+    # Install Python-specific packages for OpenSSL and cryptography
+    echo "Installing Python-specific packages..."
+    safe_install_package "py_openssl" "Python OpenSSL bindings"
+    safe_install_package "py_cryptography" "Python cryptography"
+    safe_install_package "py_cffi" "Python CFFI"
+    
+    # Install additional Python packages if available
+    install_python_packages_csw
     
     # Check what Python packages are available and install one
     echo "Installing Python..."
