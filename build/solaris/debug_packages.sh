@@ -22,8 +22,29 @@ echo ""
 echo -n "pkgutil (OpenCSW): "
 if command -v /opt/csw/bin/pkgutil >/dev/null 2>&1; then
     echo "Available"
-    echo "Checking for Python packages in OpenCSW..."
-    /opt/csw/bin/pkgutil -a | grep python | head -10 || echo "No Python packages found in OpenCSW"
+    echo "Checking for required packages in OpenCSW..."
+    echo "=== Core Build Dependencies ==="
+    for pkg in gcc4core gcc ggettext gettext zlib libz openssl libssl libffi ffi; do
+        if /opt/csw/bin/pkgutil -a | grep -q "^$pkg "; then
+            echo "✓ $pkg - Available"
+        else
+            echo "✗ $pkg - Not found"
+        fi
+    done
+    
+    echo ""
+    echo "=== Python Packages ==="
+    for pkg in python3 python39 python38 python37 python36; do
+        if /opt/csw/bin/pkgutil -a | grep -q "^$pkg "; then
+            echo "✓ $pkg - Available"
+        else
+            echo "✗ $pkg - Not found"
+        fi
+    done
+    
+    echo ""
+    echo "=== Python-related packages (first 10) ==="
+    /opt/csw/bin/pkgutil -a | grep -i python | head -10 || echo "No Python packages found"
 else
     echo "Not available - installing..."
     if pkgadd -d http://get.opencsw.org/now; then

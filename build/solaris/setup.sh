@@ -95,6 +95,17 @@ install_prereqs() {
 
     echo "Installing prerequisites for Solaris..."
 
+    # Run package availability check first
+    if [ -f "$BUILD_DIR/solaris/check_packages.sh" ]; then
+        echo "Running pre-flight package check..."
+        if "$BUILD_DIR/solaris/check_packages.sh"; then
+            echo "Package check passed, proceeding with installation..."
+        else
+            echo "WARNING: Package check found missing dependencies"
+            echo "Continuing anyway, but some packages may fail to install..."
+        fi
+    fi
+
     # --------------------------
     #  INSTALL SYSTEM REQUIREMENTS
     # --------------------------
@@ -114,6 +125,42 @@ install_prereqs() {
         else
             return 1
         fi
+    }
+
+    # Function to safely install a package if available
+    safe_install_package() {
+        local pkg="$1"
+        local description="$2"
+        echo "Attempting to install $pkg ($description)..."
+        if check_csw_package "$pkg"; then
+            if /opt/csw/bin/pkgutil -y -i "$pkg"; then
+                echo "Successfully installed $pkg"
+                return 0
+            else
+                echo "Failed to install $pkg"
+                return 1
+            fi
+        else
+            echo "Package $pkg not available in catalog"
+            return 1
+        fi
+    }
+
+    # Function to install a package with fallbacks
+    install_with_fallbacks() {
+        local description="$1"
+        shift
+        local packages=("$@")
+        
+        echo "Installing $description..."
+        for pkg in "${packages[@]}"; do
+            if safe_install_package "$pkg" "$description"; then
+                return 0
+            fi
+        done
+        
+        echo "WARNING: Could not install $description - tried: ${packages[*]}"
+        return 1
     }
 
     # Install build essentials and dependencies
@@ -156,40 +203,46 @@ install_prereqs() {
         echo "Continuing with existing catalog..."
     fi
 
+    # Debug: Show some information about available packages
+    echo "Checking catalog status..."
+    echo "Total packages available: $(/opt/csw/bin/pkgutil -a | wc -l)"
+    echo "Sample of available packages:"
+    /opt/csw/bin/pkgutil -a | head -5
+
     # Install Python and dependencies via OpenCSW
     # Try different Python package names that are commonly available
-    echo "Installing Python via OpenCSW..."
+    echo "Installing dependencies via OpenCSW..."
     
-    # First install core build dependencies
-    echo "Installing core dependencies..."
-    /opt/csw/bin/pkgutil -y -i gcc4core ggettext libiconv zlib openssl libffi
+    # Install core build dependencies with fallbacks
+    echo "Installing core build dependencies..."
+    install_with_fallbacks "GCC compiler" gcc4core gcc4g++ gcc
+    install_with_fallbacks "GNU gettext" ggettext gettext
+    install_with_fallbacks "zlib library" zlib libz
+    install_with_fallbacks "OpenSSL library" openssl libssl
+    install_with_fallbacks "libffi library" libffi ffi
+    
+    # Try to install development packages if available
+    echo "Installing optional development packages..."
+    safe_install_package "gcc4g++" "GCC C++ compiler"
+    safe_install_package "pkgconfig" "pkg-config utility"
+    safe_install_package "make" "GNU make"
     
     # Check what Python packages are available and install one
-    echo "Checking available Python packages..."
+    echo "Installing Python..."
     python_installed=false
-    for py_pkg in python3 python39 python38 python37 python36; do
-        if check_csw_package "$py_pkg"; then
-            echo "Package $py_pkg is available, installing..."
-            if /opt/csw/bin/pkgutil -y -i "$py_pkg"; then
-                echo "Successfully installed $py_pkg"
-                python_installed=true
-                break
-            fi
-        else
-            echo "Package $py_pkg is not available in catalog"
-        fi
-    done
+    if install_with_fallbacks "Python interpreter" python3 python39 python38 python37 python36; then
+        python_installed=true
+    fi
 
     if [ "$python_installed" = false ]; then
         echo "WARNING: Could not install Python via CSW packages"
-        echo "Available packages in catalog:"
-        /opt/csw/bin/pkgutil -a | grep python || echo "No Python packages found"
+        echo "Listing available Python-related packages:"
+        /opt/csw/bin/pkgutil -a | grep -i python | head -10 || echo "No Python packages found"
     fi
 
     # Install pip separately if available
-    if check_csw_package "py_pip"; then
-        /opt/csw/bin/pkgutil -y -i py_pip
-    else
+    echo "Installing pip..."
+    if ! install_with_fallbacks "Python pip" py_pip python_pip pip; then
         echo "pip not available via CSW, will install manually later"
     fi
 
