@@ -196,6 +196,34 @@ install_prereqs() {
         return 1
     }
 
+    # Function to check if a library is available on the system
+    check_system_library() {
+        local lib_name="$1"
+        local lib_description="$2"
+        echo "Checking for $lib_description..."
+        
+        # Common library paths on Solaris
+        local lib_paths=(
+            "/usr/lib/lib${lib_name}.so*"
+            "/lib/lib${lib_name}.so*" 
+            "/usr/local/lib/lib${lib_name}.so*"
+            "/opt/csw/lib/lib${lib_name}.so*"
+            "/usr/sfw/lib/lib${lib_name}.so*"
+        )
+        
+        for lib_pattern in "${lib_paths[@]}"; do
+            for lib_file in $lib_pattern; do
+                if [ -f "$lib_file" ]; then
+                    echo "✓ Found $lib_description: $lib_file"
+                    return 0
+                fi
+            done
+        done
+        
+        echo "✗ $lib_description not found"
+        return 1
+    }
+
     # Function to safely install a package if available
     safe_install_package() {
         local pkg="$1"
@@ -454,10 +482,114 @@ install_prereqs() {
         fi
     fi
     
-    safe_install_package "bzip2" "bzip2 compression"
-    safe_install_package "libbz2_dev" "bzip2 development"
-    safe_install_package "readline" "readline library"
-    safe_install_package "ncurses" "ncurses library"
+    # Install bzip2 - try multiple package names for different package managers
+    echo "Installing bzip2 compression library..."
+    if ! safe_install_package "bzip2" "bzip2 compression"; then
+        echo "Trying Solaris 11 IPS packages for bzip2..."
+        if check_ips_package "compress/bzip2"; then
+            if sudo pkg install compress/bzip2; then
+                echo "Successfully installed bzip2 via IPS (compress/bzip2)"
+            else
+                echo "Failed to install bzip2 via IPS"
+            fi
+        elif check_ips_package "library/bzip2"; then
+            if sudo pkg install library/bzip2; then
+                echo "Successfully installed bzip2 via IPS (library/bzip2)"
+            else
+                echo "Failed to install bzip2 via IPS"
+            fi
+        else
+            echo "WARNING: Could not install bzip2 via IPS"
+            check_system_library "bz2" "bzip2 library"
+        fi
+    fi
+    
+    # Install bzip2 development headers
+    echo "Installing bzip2 development headers..."
+    if ! safe_install_package "libbz2_dev" "bzip2 development"; then
+        echo "Trying Solaris 11 IPS packages for bzip2 development..."
+        if check_ips_package "developer/library/bzip2"; then
+            if sudo pkg install developer/library/bzip2; then
+                echo "Successfully installed bzip2 development via IPS"
+            else
+                echo "Failed to install bzip2 development via IPS"
+            fi
+        else
+            echo "WARNING: Could not install bzip2 development headers"
+            # Check if headers are available
+            for header_path in /usr/include/bzlib.h /usr/local/include/bzlib.h /opt/csw/include/bzlib.h; do
+                if [ -f "$header_path" ]; then
+                    echo "Found bzip2 headers: $header_path"
+                    break
+                fi
+            done
+        fi
+    fi
+    
+    # Install readline - try multiple package names for different package managers
+    echo "Installing readline library..."
+    if ! safe_install_package "readline" "readline library"; then
+        # Try IPS package names for Solaris 11
+        echo "Trying Solaris 11 IPS packages for readline..."
+        if check_ips_package "library/readline"; then
+            if sudo pkg install library/readline; then
+                echo "Successfully installed readline via IPS (library/readline)"
+            else
+                echo "Failed to install readline via IPS"
+            fi
+        elif check_ips_package "system/library/readline"; then
+            if sudo pkg install system/library/readline; then
+                echo "Successfully installed readline via IPS (system/library/readline)"
+            else
+                echo "Failed to install readline via IPS"
+            fi
+        elif check_ips_package "library/libedit"; then
+            # libedit is a readline alternative
+            if sudo pkg install library/libedit; then
+                echo "Successfully installed libedit (readline alternative) via IPS"
+            else
+                echo "Failed to install libedit via IPS"
+            fi
+        else
+            echo "WARNING: Could not install readline via IPS"
+            # Check if readline is already available on the system
+            for readline_path in /usr/lib/libreadline.so* /lib/libreadline.so* /usr/local/lib/libreadline.so*; do
+                if [ -f "$readline_path" ]; then
+                    echo "Found existing readline library: $readline_path"
+                    break
+                fi
+            done
+            echo "For more package options, run: $BUILD_DIR/solaris/check_ips_packages.sh"
+        fi
+    fi
+    
+    # Install ncurses - try multiple package names
+    echo "Installing ncurses library..."
+    if ! safe_install_package "ncurses" "ncurses library"; then
+        echo "Trying Solaris 11 IPS packages for ncurses..."
+        if check_ips_package "library/ncurses"; then
+            if sudo pkg install library/ncurses; then
+                echo "Successfully installed ncurses via IPS (library/ncurses)"
+            else
+                echo "Failed to install ncurses via IPS"
+            fi
+        elif check_ips_package "system/library/ncurses"; then
+            if sudo pkg install system/library/ncurses; then
+                echo "Successfully installed ncurses via IPS (system/library/ncurses)"
+            else
+                echo "Failed to install ncurses via IPS"
+            fi
+        else
+            echo "WARNING: Could not install ncurses via IPS"
+            # Check if ncurses is already available on the system
+            for ncurses_path in /usr/lib/libncurses.so* /lib/libncurses.so* /usr/local/lib/libncurses.so*; do
+                if [ -f "$ncurses_path" ]; then
+                    echo "Found existing ncurses library: $ncurses_path"
+                    break
+                fi
+            done
+        fi
+    fi
     
     # Install Python-specific packages (skip OpenSSL - use Python's built-in SSL)
     echo "Installing Python-specific packages..."
@@ -583,6 +715,41 @@ install_prereqs() {
     else
         echo "✗ gcc not found - this may cause build issues"
     fi
+    
+    # Check for readline library
+    echo "Checking for readline library..."
+    readline_found=false
+    for readline_path in /usr/lib/libreadline.so* /lib/libreadline.so* /usr/local/lib/libreadline.so* /opt/csw/lib/libreadline.so*; do
+        if [ -f "$readline_path" ]; then
+            echo "✓ readline library found: $readline_path"
+            readline_found=true
+            break
+        fi
+    done
+    if [ "$readline_found" = false ]; then
+        echo "✗ readline library not found - Python may have limited interactive features"
+    fi
+    
+    # Check for ncurses library
+    echo "Checking for ncurses library..."
+    ncurses_found=false
+    for ncurses_path in /usr/lib/libncurses.so* /lib/libncurses.so* /usr/local/lib/libncurses.so* /opt/csw/lib/libncurses.so*; do
+        if [ -f "$ncurses_path" ]; then
+            echo "✓ ncurses library found: $ncurses_path"
+            ncurses_found=true
+            break
+        fi
+    done
+    if [ "$ncurses_found" = false ]; then
+        echo "✗ ncurses library not found - some terminal features may not work"
+    fi
+    
+    # Check for other critical libraries
+    check_system_library "z" "zlib compression library"
+    check_system_library "ffi" "libffi library" 
+    check_system_library "bz2" "bzip2 compression library"
+    
+    echo "Library verification complete."
 
     # --------------------------
     #  SETUP USER/GROUP

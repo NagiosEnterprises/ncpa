@@ -69,6 +69,11 @@ if command -v pkg >/dev/null 2>&1; then
     echo "  sudo pkg install developer/build/make"
     echo "  sudo pkg install group/developer/developer-gnu"
     echo "  sudo pkg install build-essential"
+    echo ""
+    echo "For readline and ncurses:"
+    echo "  sudo pkg install library/readline"
+    echo "  sudo pkg install library/ncurses"
+    echo "  sudo pkg install library/libedit"
 fi
 
 if [ -f /opt/csw/bin/pkgutil ]; then
@@ -76,6 +81,8 @@ if [ -f /opt/csw/bin/pkgutil ]; then
     echo "Or try OpenCSW:"
     echo "  /opt/csw/bin/pkgutil -i gmake"
     echo "  /opt/csw/bin/pkgutil -i make"
+    echo "  /opt/csw/bin/pkgutil -i readline"
+    echo "  /opt/csw/bin/pkgutil -i ncurses"
 fi
 
 echo ""
@@ -83,3 +90,5 @@ echo "You can also check what's already available in the system:"
 echo "  which make"
 echo "  which gmake"
 echo "  find /usr -name '*make*' -executable 2>/dev/null"
+echo "  find /usr/lib /lib -name 'libreadline*' 2>/dev/null"
+echo "  find /usr/lib /lib -name 'libncurses*' 2>/dev/null"
