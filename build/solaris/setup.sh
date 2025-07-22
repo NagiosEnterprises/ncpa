@@ -69,55 +69,57 @@ update_py_packages() {
         
         # Install required packages
         echo "Installing required Python packages..."
-        if [ -f "$BUILD_DIR/resources/require.txt" ]; then
-            echo "Found require.txt, installing packages..."
+        solaris_requirements="$BUILD_DIR/resources/require-solaris.txt"
+        standard_requirements="$BUILD_DIR/resources/require.txt"
+        
+        if [ -f "$solaris_requirements" ]; then
+            echo "Found Solaris-specific require-solaris.txt, installing packages..."
+            $PYTHONBIN -m pip install -r "$solaris_requirements" --upgrade --user || {
+                echo "WARNING: Some packages failed to install, continuing with individual installation"
+                # Try installing packages individually for better error handling
+                while IFS= read -r pkg; do
+                    if [ -n "$pkg" ] && [ "${pkg#\#}" = "$pkg" ]; then  # Skip empty lines and comments
+                        echo "Installing $pkg..."
+                        if [ "$pkg" = "cryptography" ] || [ "$pkg" = "cffi" ]; then
+                            $PYTHONBIN -m pip install "$pkg" --user || echo "WARNING: Failed to install $pkg (not critical for basic SSL support)"
+                        else
+                            $PYTHONBIN -m pip install "$pkg" --user || echo "WARNING: Failed to install $pkg"
+                        fi
+                    fi
+                done < "$solaris_requirements"
+            }
+        elif [ -f "$standard_requirements" ]; then
+            echo "Found standard require.txt, filtering out pyOpenSSL for Solaris..."
+            # Create a temporary requirements file without pyOpenSSL
+            temp_req="/tmp/require-solaris-temp.txt"
+            grep -v "^pyOpenSSL" "$standard_requirements" > "$temp_req"
             
-            # First try to use packages already installed via OpenCSW
-            echo "Checking for OpenCSW Python packages..."
-            csw_packages_found=0
-            
-            # Check if key packages are available via OpenCSW
-            for pkg in py_openssl py_cryptography py_cffi; do
-                if /opt/csw/bin/pkgutil -l | grep -q "^$pkg "; then
-                    echo "Found OpenCSW package: $pkg"
-                    ((csw_packages_found++))
-                fi
-            done
-            
-            if [ $csw_packages_found -gt 0 ]; then
-                echo "Some packages available via OpenCSW, using mixed installation approach"
-                # Install packages that aren't available via OpenCSW using pip
-                for pkg in cx_Freeze psutil requests Jinja2 flask werkzeug docutils gevent gevent-websocket appdirs packaging kafka-python; do
-                    echo "Installing $pkg via pip..."
-                    $PYTHONBIN -m pip install "$pkg" --user || echo "WARNING: Failed to install $pkg"
-                done
-                
-                # For crypto packages, prefer OpenCSW versions if available
-                echo "Installing crypto packages (preferring OpenCSW versions)..."
-                if ! /opt/csw/bin/pkgutil -l | grep -q "^py_openssl "; then
-                    $PYTHONBIN -m pip install pyOpenSSL --user || echo "WARNING: Failed to install pyOpenSSL"
-                fi
-                if ! /opt/csw/bin/pkgutil -l | grep -q "^py_cryptography "; then
-                    $PYTHONBIN -m pip install cryptography --user || echo "WARNING: Failed to install cryptography"
-                fi
-                if ! /opt/csw/bin/pkgutil -l | grep -q "^py_cffi "; then
-                    $PYTHONBIN -m pip install cffi --user || echo "WARNING: Failed to install cffi"
-                fi
-            else
-                echo "No OpenCSW Python packages found, using pip for all packages"
-                $PYTHONBIN -m pip install -r "$BUILD_DIR/resources/require.txt" --upgrade --user || {
-                    echo "ERROR: Failed to install required packages"
-                    echo "Contents of require.txt:"
-                    cat "$BUILD_DIR/resources/require.txt"
-                    return 1
-                }
-            fi
+            $PYTHONBIN -m pip install -r "$temp_req" --upgrade --user || {
+                echo "WARNING: Some packages failed to install, continuing with individual installation"
+                # Try installing packages individually for better error handling
+                while IFS= read -r pkg; do
+                    if [ -n "$pkg" ] && [ "${pkg#\#}" = "$pkg" ]; then  # Skip empty lines and comments
+                        echo "Installing $pkg..."
+                        if [ "$pkg" = "cryptography" ] || [ "$pkg" = "cffi" ]; then
+                            $PYTHONBIN -m pip install "$pkg" --user || echo "WARNING: Failed to install $pkg (not critical for basic SSL support)"
+                        else
+                            $PYTHONBIN -m pip install "$pkg" --user || echo "WARNING: Failed to install $pkg"
+                        fi
+                    fi
+                done < "$temp_req"
+            }
+            rm -f "$temp_req"
         else
             echo "WARNING: require.txt not found at $BUILD_DIR/resources/require.txt"
             echo "Installing packages individually..."
-            for pkg in cx_Freeze psutil requests Jinja2 flask werkzeug pyOpenSSL cryptography gevent cffi; do
+            # Note: Skipping pyOpenSSL since we'll use Python's built-in ssl module
+            for pkg in cx_Freeze psutil requests Jinja2 flask werkzeug cryptography gevent cffi; do
                 echo "Installing $pkg..."
-                $PYTHONBIN -m pip install "$pkg" --user || echo "WARNING: Failed to install $pkg"
+                if [ "$pkg" = "cryptography" ] || [ "$pkg" = "cffi" ]; then
+                    $PYTHONBIN -m pip install "$pkg" --user || echo "WARNING: Failed to install $pkg (not critical for basic SSL support)"
+                else
+                    $PYTHONBIN -m pip install "$pkg" --user || echo "WARNING: Failed to install $pkg"
+                fi
             done
         fi
     else
@@ -252,8 +254,8 @@ install_prereqs() {
             pkg install --accept library/zlib || echo "Failed to install zlib via pkg"
         fi
         
-        # Try to install other core libraries
-        for pkg_name in library/libffi library/security/openssl developer/gcc; do
+        # Try to install other core libraries (skip OpenSSL, use Python's built-in SSL)
+        for pkg_name in library/libffi developer/gcc; do
             if pkg list "$pkg_name" >/dev/null 2>&1; then
                 echo "Installing $pkg_name via pkg..."
                 pkg install --accept "$pkg_name" || echo "Failed to install $pkg_name via pkg"
@@ -358,8 +360,10 @@ install_prereqs() {
         fi
     fi
     
-    # Install system OpenSSL (for system libraries)
-    install_with_fallbacks "system OpenSSL library" openssl libssl openssl_dev ssl
+    # Install system OpenSSL (for system libraries) - SKIPPED
+    # We rely on Python's built-in SSL support instead of system OpenSSL packages
+    echo "Skipping system OpenSSL installation - using Python's built-in SSL support"
+    
     install_with_fallbacks "libffi library" libffi ffi libffi_dev ffi_dev
     
     # Try to install additional useful packages
@@ -373,9 +377,9 @@ install_prereqs() {
     safe_install_package "readline" "readline library"
     safe_install_package "ncurses" "ncurses library"
     
-    # Install Python-specific packages for OpenSSL and cryptography
+    # Install Python-specific packages (skip OpenSSL - use Python's built-in SSL)
     echo "Installing Python-specific packages..."
-    safe_install_package "py_openssl" "Python OpenSSL bindings"
+    echo "Skipping py_openssl - using Python's built-in SSL support"
     safe_install_package "py_cryptography" "Python cryptography"
     safe_install_package "py_cffi" "Python CFFI"
     

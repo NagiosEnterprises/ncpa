@@ -44,10 +44,10 @@ packages=(
     "libzlib:zlib library alternative"
     "zlib_dev:zlib development"
     "libz_dev:zlib development alternative"
-    "openssl:OpenSSL"
-    "libssl:SSL library"
-    "openssl_dev:OpenSSL development"
     "libffi:FFI library"
+    "ffi:FFI"
+    "libffi_dev:FFI development"
+)
     "ffi:FFI"
     "libffi_dev:FFI development"
     "py_openssl:Python OpenSSL"

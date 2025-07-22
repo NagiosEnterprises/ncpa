@@ -24,7 +24,7 @@ if command -v /opt/csw/bin/pkgutil >/dev/null 2>&1; then
     echo "Available"
     echo "Checking for required packages in OpenCSW..."
     echo "=== Core Build Dependencies ==="
-    for pkg in gcc4core gcc ggettext gettext zlib libz openssl libssl libffi ffi; do
+    for pkg in gcc4core gcc ggettext gettext zlib libz libffi ffi; do
         if /opt/csw/bin/pkgutil -a | grep -q "^$pkg "; then
             echo "✓ $pkg - Available"
         else
