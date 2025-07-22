@@ -6,28 +6,64 @@ source "$BUILD_DIR_FOR_VERSION/version_config.sh"
 
 # Globals - Use the version from version_config.sh
 PYTHONTAR="Python-$PYTHONVER"
-PYTHONBIN="/opt/csw/bin/python3"
+PYTHONBIN=""
 
 # Check if we can detect Python 3.9+ with pkg-config first
 if command -v pkg-config >/dev/null 2>&1; then
     if pkg-config --exists python3; then
-        PYTHONBIN=$(pkg-config --variable=exec_prefix python3)/bin/python3
+        potential_pythonbin=$(pkg-config --variable=exec_prefix python3)/bin/python3
+        if [ -x "$potential_pythonbin" ]; then
+            # Check if this Python is 3.6 or newer
+            py_version=$($potential_pythonbin --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+            if [ -n "$py_version" ]; then
+                major=$(echo "$py_version" | cut -d. -f1)
+                minor=$(echo "$py_version" | cut -d. -f2)
+                if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 6 ]); then
+                    PYTHONBIN="$potential_pythonbin"
+                fi
+            fi
+        fi
     fi
 fi
 
-# Fallback to common Python locations on Solaris
-if [ ! -x "$PYTHONBIN" ]; then
-    for py_path in /opt/csw/bin/python3 /usr/local/bin/python3 /usr/bin/python3; do
+# Fallback to common Python locations on Solaris (prefer IPS over OpenCSW)
+if [ -z "$PYTHONBIN" ] || [ ! -x "$PYTHONBIN" ]; then
+    for py_path in /usr/bin/python3.13 /usr/bin/python3.12 /usr/bin/python3.11 /usr/bin/python3.10 /usr/bin/python3.9 /usr/bin/python3.8 /usr/bin/python3 /usr/local/bin/python3 /opt/csw/bin/python3; do
         if [ -x "$py_path" ]; then
-            PYTHONBIN="$py_path"
-            break
+            # Check if this Python is 3.6 or newer
+            py_version=$($py_path --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+            if [ -n "$py_version" ]; then
+                major=$(echo "$py_version" | cut -d. -f1)
+                minor=$(echo "$py_version" | cut -d. -f2)
+                if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 6 ]); then
+                    PYTHONBIN="$py_path"
+                    break
+                fi
+            fi
         fi
     done
+fi
+
+# If still no suitable Python found, set to default (will be handled later)
+if [ -z "$PYTHONBIN" ]; then
+    PYTHONBIN="/usr/bin/python3"
 fi
 
 # Check version of Solaris
 SOLARIS_VER=$(uname -r | cut -d. -f2)
 ARCH=$(arch)
+
+# Early Python detection output
+echo "Early Python detection:"
+echo "  PYTHONBIN: $PYTHONBIN"
+if [ -x "$PYTHONBIN" ]; then
+    echo "  Version: $($PYTHONBIN --version 2>&1)"
+    # Export PYTHONBIN early so it's available to the build process
+    export PYTHONBIN
+else
+    echo "  ERROR: Python binary not executable or not found"
+fi
+echo ""
 
 update_py_packages() {
     # Update pip and install required packages for Solaris 11+
@@ -870,6 +906,20 @@ install_prereqs() {
 
     # Export PYTHONBIN for use by the main build script
     export PYTHONBIN
+
+    # Add debug output for Python detection
+    echo "Final Python Configuration:"
+    echo "  PYTHONBIN: $PYTHONBIN"
+    echo "  Python version: $($PYTHONBIN --version 2>&1)"
+    echo "  Python executable path: $(which $($PYTHONBIN -c 'import sys; print(sys.executable.split("/")[-1])') 2>/dev/null || echo 'unknown')"
+    echo ""
+    
+    # Run Python debug script if available
+    if [ -f "$BUILD_DIR/solaris/debug_python.sh" ]; then
+        echo "Running Python debug script..."
+        "$BUILD_DIR/solaris/debug_python.sh"
+        echo ""
+    fi
 
     # --------------------------
     #  VERIFY CRITICAL TOOLS
