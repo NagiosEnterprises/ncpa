@@ -35,14 +35,21 @@ total_count=0
 packages=(
     "gcc4core:GCC compiler core"
     "gcc:GCC compiler" 
+    "gcc4:GCC compiler v4"
     "ggettext:GNU gettext"
     "gettext:gettext"
     "zlib:zlib compression"
     "libz:zlib library"
+    "zlib1:zlib version 1"
+    "libzlib:zlib library alternative"
+    "zlib_dev:zlib development"
+    "libz_dev:zlib development alternative"
     "openssl:OpenSSL"
     "libssl:SSL library"
+    "openssl_dev:OpenSSL development"
     "libffi:FFI library"
     "ffi:FFI"
+    "libffi_dev:FFI development"
 )
 
 for pkg_info in "${packages[@]}"; do

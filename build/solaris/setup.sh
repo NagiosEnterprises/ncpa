@@ -160,26 +160,55 @@ install_prereqs() {
         done
         
         echo "WARNING: Could not install $description - tried: ${packages[*]}"
+        
+        # Special handling for critical packages
+        if [[ "$description" == *"zlib"* ]]; then
+            echo "CRITICAL: zlib is required for Python. Checking system libraries..."
+            # Check if zlib is already available on the system
+            if [ -f "/usr/lib/libz.so" ] || [ -f "/lib/libz.so" ] || [ -f "/usr/local/lib/libz.so" ]; then
+                echo "Found system zlib library, continuing..."
+                return 0
+            else
+                echo "ERROR: No zlib library found on system"
+                echo "Available library paths:"
+                find /usr/lib /lib /usr/local/lib -name "*libz*" 2>/dev/null || echo "No zlib libraries found"
+                return 1
+            fi
+        fi
+        
         return 1
     }
 
     # Install build essentials and dependencies
     echo "Installing system packages..."
+    
+    # First try the native Solaris 11 pkg manager for core dependencies
     if command -v pkg >/dev/null 2>&1; then
-        # Use pkg (Solaris 11+ package manager) - try Python 3.9 first, fallback to 3.7/3.8
-        echo "Attempting to install Python via pkg..."
+        echo "Attempting to install core dependencies via native pkg manager..."
+        
+        # Try to install zlib through pkg first
+        if pkg list library/zlib >/dev/null 2>&1; then
+            echo "Installing zlib via pkg..."
+            pkg install --accept library/zlib || echo "Failed to install zlib via pkg"
+        fi
+        
+        # Try to install other core libraries
+        for pkg_name in library/libffi library/security/openssl developer/gcc; do
+            if pkg list "$pkg_name" >/dev/null 2>&1; then
+                echo "Installing $pkg_name via pkg..."
+                pkg install --accept "$pkg_name" || echo "Failed to install $pkg_name via pkg"
+            fi
+        done
+        
+        # Try Python installation via pkg
         for py_ver in runtime/python-39 runtime/python-38 runtime/python-37; do
             if pkg list "$py_ver" >/dev/null 2>&1; then
                 echo "Installing $py_ver..."
-                pkg install --accept \
-                    developer/gcc \
-                    library/libffi \
-                    library/zlib \
-                    library/security/openssl \
-                    "$py_ver" \
-                    && break
+                pkg install --accept "$py_ver" && break
             fi
         done
+    else
+        echo "Native pkg manager not available, will use OpenCSW only"
     fi
 
     # --------------------------
@@ -208,24 +237,80 @@ install_prereqs() {
     echo "Total packages available: $(/opt/csw/bin/pkgutil -a | wc -l)"
     echo "Sample of available packages:"
     /opt/csw/bin/pkgutil -a | head -5
+    
+    # Debug: Check for zlib-related packages
+    echo "Checking for zlib-related packages in catalog..."
+    /opt/csw/bin/pkgutil -a | grep -i zlib | head -10 || echo "No zlib packages found"
+    
+    # Debug: Check for compression-related packages
+    echo "Checking for compression-related packages..."
+    /opt/csw/bin/pkgutil -a | grep -E "(compress|zip|gz)" | head -5 || echo "No compression packages found"
 
     # Install Python and dependencies via OpenCSW
     # Try different Python package names that are commonly available
     echo "Installing dependencies via OpenCSW..."
     
+    # First check if critical libraries are already available
+    echo "Checking for existing system libraries..."
+    
+    # Check for zlib
+    zlib_available=false
+    for zlib_path in /usr/lib/libz.so* /lib/libz.so* /usr/local/lib/libz.so* /opt/csw/lib/libz.so*; do
+        if [ -f "$zlib_path" ]; then
+            echo "Found existing zlib: $zlib_path"
+            zlib_available=true
+            break
+        fi
+    done
+    
+    # Check for zlib headers
+    zlib_headers=false
+    for header_path in /usr/include/zlib.h /usr/local/include/zlib.h /opt/csw/include/zlib.h; do
+        if [ -f "$header_path" ]; then
+            echo "Found zlib headers: $header_path"
+            zlib_headers=true
+            break
+        fi
+    done
+    
     # Install core build dependencies with fallbacks
     echo "Installing core build dependencies..."
-    install_with_fallbacks "GCC compiler" gcc4core gcc4g++ gcc
+    install_with_fallbacks "GCC compiler" gcc4core gcc4g++ gcc gcc4 gccdev
     install_with_fallbacks "GNU gettext" ggettext gettext
-    install_with_fallbacks "zlib library" zlib libz
-    install_with_fallbacks "OpenSSL library" openssl libssl
-    install_with_fallbacks "libffi library" libffi ffi
     
-    # Try to install development packages if available
-    echo "Installing optional development packages..."
+    # Handle zlib specially
+    if [ "$zlib_available" = true ]; then
+        echo "Skipping zlib installation - already available on system"
+    else
+        echo "Attempting to install zlib..."
+        if ! install_with_fallbacks "zlib library" zlib libz zlib1 libzlib zlib_dev libz_dev; then
+            echo "WARNING: Could not install zlib via packages"
+            echo "Checking if zlib can be found anyway..."
+            
+            # Run the zlib detection script if available
+            if [ -f "$BUILD_DIR/solaris/detect_zlib.sh" ]; then
+                echo "Running zlib detection..."
+                "$BUILD_DIR/solaris/detect_zlib.sh"
+            fi
+            
+            # Continue anyway - Python might have its own zlib or find it elsewhere
+            echo "Continuing build despite zlib package installation failure..."
+        fi
+    fi
+    
+    install_with_fallbacks "OpenSSL library" openssl libssl openssl_dev ssl
+    install_with_fallbacks "libffi library" libffi ffi libffi_dev ffi_dev
+    
+    # Try to install additional useful packages
+    echo "Installing additional development packages..."
     safe_install_package "gcc4g++" "GCC C++ compiler"
     safe_install_package "pkgconfig" "pkg-config utility"
     safe_install_package "make" "GNU make"
+    safe_install_package "gmake" "GNU make alternative"
+    safe_install_package "bzip2" "bzip2 compression"
+    safe_install_package "libbz2_dev" "bzip2 development"
+    safe_install_package "readline" "readline library"
+    safe_install_package "ncurses" "ncurses library"
     
     # Check what Python packages are available and install one
     echo "Installing Python..."
