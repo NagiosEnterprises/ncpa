@@ -1,0 +1,42 @@
+# NCPA Build Version Configuration
+# Centralized version management with platform overrides
+
+default_versions:
+  python: "3.13.5"
+  openssl: "3.0.17"
+  zlib: "1.3.1"
+
+platform_overrides:
+  aix:
+    python: "3.6.15"    # Legacy compatibility
+    openssl: "1.1.1"    # System limitations
+    zlib: "1.2.11"
+    openssl_major: "1"
+    
+  sunos:  # Solaris
+    python: "3.9.13"    # System limitations
+    openssl: "1.1.1"    # System limitations
+    zlib: "1.2.11"
+    openssl_major: "1"
+    
+  darwin:  # macOS
+    # macOS-specific library versions for dynamic library fixing
+    mpdecimal: "4.0.0"
+    sqlite3: "3.0"
+    liblzma: "5"
+    libffi: "8"
+    openssl_major: "3"
+    
+  windows:
+    # Windows-specific configurations
+    use_system_python: false
+    openssl_major: "3"
+
+# Environment variable overrides are supported:
+# MACOS_PYTHON_VERSION, LINUX_OPENSSL_VERSION, etc.
+# Format: {PLATFORM}_{COMPONENT}_VERSION
+#
+# Examples:
+#   export MACOS_PYTHON_VERSION="3.12.7"
+#   export LINUX_OPENSSL_VERSION="1.1.1"
+#   export AIX_ZLIB_VERSION="1.2.11"
