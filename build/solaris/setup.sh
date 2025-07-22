@@ -133,6 +133,26 @@ install_prereqs() {
 
     echo "Installing prerequisites for Solaris..."
 
+    # Check for available package managers
+    echo "Checking available package managers..."
+    if command -v pkg >/dev/null 2>&1; then
+        echo "✓ IPS (Image Packaging System) available"
+    else
+        echo "✗ IPS (Image Packaging System) not available"
+    fi
+    
+    if [ -f /opt/csw/bin/pkgutil ]; then
+        echo "✓ OpenCSW package manager available"
+    else
+        echo "✗ OpenCSW not installed - attempting to install..."
+        if command -v pkgadd >/dev/null 2>&1; then
+            pkgadd -d http://get.opencsw.org/now
+            /opt/csw/bin/pkgutil -U
+        else
+            echo "WARNING: Cannot install OpenCSW - pkgadd not available"
+        fi
+    fi
+
     # Run package availability check first
     if [ -f "$BUILD_DIR/solaris/check_packages.sh" ]; then
         echo "Running pre-flight package check..."
@@ -165,23 +185,49 @@ install_prereqs() {
         fi
     }
 
+    # Function to check if a package is available in IPS (native Solaris 11)
+    check_ips_package() {
+        local pkg="$1"
+        if command -v pkg >/dev/null 2>&1; then
+            if pkg list -a "$pkg" >/dev/null 2>&1; then
+                return 0
+            fi
+        fi
+        return 1
+    }
+
     # Function to safely install a package if available
     safe_install_package() {
         local pkg="$1"
         local description="$2"
         echo "Attempting to install $pkg ($description)..."
+        
+        # First try CSW if package is available there
         if check_csw_package "$pkg"; then
             if /opt/csw/bin/pkgutil -y -i "$pkg"; then
-                echo "Successfully installed $pkg"
+                echo "Successfully installed $pkg via CSW"
                 return 0
             else
-                echo "Failed to install $pkg"
-                return 1
+                echo "Failed to install $pkg via CSW"
             fi
         else
-            echo "Package $pkg not available in catalog"
-            return 1
+            echo "Package $pkg not available in CSW catalog"
         fi
+        
+        # If CSW failed or package not available, try IPS (native Solaris 11)
+        echo "Trying native Solaris IPS package manager..."
+        if check_ips_package "$pkg"; then
+            if sudo pkg install "$pkg"; then
+                echo "Successfully installed $pkg via IPS"
+                return 0
+            else
+                echo "Failed to install $pkg via IPS"
+            fi
+        else
+            echo "Package $pkg not available in IPS catalog"
+        fi
+        
+        return 1
     }
 
     # Function to install a package with fallbacks
@@ -370,8 +416,44 @@ install_prereqs() {
     echo "Installing additional development packages..."
     safe_install_package "gcc4g++" "GCC C++ compiler"
     safe_install_package "pkgconfig" "pkg-config utility"
-    safe_install_package "make" "GNU make"
-    safe_install_package "gmake" "GNU make alternative"
+    
+    # Install make - try multiple package names for different package managers
+    echo "Installing GNU make..."
+    if ! safe_install_package "make" "GNU make"; then
+        # Try IPS package names for Solaris 11
+        echo "Trying Solaris 11 IPS packages..."
+        if check_ips_package "developer/build/gnu-make"; then
+            if sudo pkg install developer/build/gnu-make; then
+                echo "Successfully installed GNU make via IPS (developer/build/gnu-make)"
+            else
+                echo "Failed to install GNU make via IPS"
+            fi
+        elif check_ips_package "developer/build/make"; then
+            if sudo pkg install developer/build/make; then
+                echo "Successfully installed make via IPS (developer/build/make)"
+            else
+                echo "Failed to install make via IPS"
+            fi
+        elif check_ips_package "system/header"; then
+            # Install system development headers which includes make utilities
+            if sudo pkg install system/header; then
+                echo "Successfully installed system development tools (includes make)"
+            else
+                echo "Failed to install system development tools"
+            fi
+        elif check_ips_package "build-essential"; then
+            # Some Solaris distributions have a build-essential package
+            if sudo pkg install build-essential; then
+                echo "Successfully installed build-essential package"
+            else
+                echo "Failed to install build-essential"
+            fi
+        else
+            echo "WARNING: Could not install GNU make via IPS. Trying gmake as fallback..."
+            safe_install_package "gmake" "GNU make alternative"
+        fi
+    fi
+    
     safe_install_package "bzip2" "bzip2 compression"
     safe_install_package "libbz2_dev" "bzip2 development"
     safe_install_package "readline" "readline library"
@@ -405,8 +487,8 @@ install_prereqs() {
         echo "pip not available via CSW, will install manually later"
     fi
 
-    # Update PATH to include CSW binaries
-    export PATH=/opt/csw/bin:$PATH
+    # Update PATH to include CSW binaries and other common Solaris locations
+    export PATH=/opt/csw/bin:/opt/csw/sbin:/usr/sfw/bin:/usr/ccs/bin:/usr/bin:/usr/local/bin:$PATH
 
     # Make sure we have the right Python
     if [ ! -x "/opt/csw/bin/python3.9" ] && [ ! -x "/opt/csw/bin/python3" ]; then
@@ -417,7 +499,7 @@ install_prereqs() {
     fi
 
     # Update PATH and library paths for Solaris
-    export PATH=/opt/csw/bin:/opt/csw/sbin:/usr/bin:/usr/local/bin:$PATH
+    export PATH=/opt/csw/bin:/opt/csw/sbin:/usr/sfw/bin:/usr/ccs/bin:/usr/bin:/usr/local/bin:$PATH
     export LD_LIBRARY_PATH=/opt/csw/lib:/usr/lib:$LD_LIBRARY_PATH
     export PKG_CONFIG_PATH=/opt/csw/lib/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 
@@ -462,6 +544,45 @@ install_prereqs() {
 
     # Export PYTHONBIN for use by the main build script
     export PYTHONBIN
+
+    # --------------------------
+    #  VERIFY CRITICAL TOOLS
+    # --------------------------
+
+    echo "Verifying critical build tools..."
+    
+    # Check for make or gmake
+    if command -v make >/dev/null 2>&1; then
+        echo "✓ make available: $(which make)"
+        make --version | head -1 || echo "make version check failed"
+    elif command -v gmake >/dev/null 2>&1; then
+        echo "✓ gmake available: $(which gmake)"
+        gmake --version | head -1 || echo "gmake version check failed"
+        # Create a make symlink if it doesn't exist
+        if [ ! -e /opt/csw/bin/make ] && [ -w /opt/csw/bin ]; then
+            ln -s "$(which gmake)" /opt/csw/bin/make
+            echo "Created make symlink to gmake"
+        fi
+    else
+        echo "✗ Neither make nor gmake found"
+        echo "Running diagnostic script for troubleshooting..."
+        if [ -f "$BUILD_DIR/solaris/debug_make_packages.sh" ]; then
+            "$BUILD_DIR/solaris/debug_make_packages.sh"
+        else
+            echo "Available in PATH:"
+            echo "$PATH" | tr ':' '\n' | while read -r dir; do
+                [ -d "$dir" ] && ls -la "$dir"/*make* 2>/dev/null || true
+            done
+        fi
+        echo "WARNING: Build may fail without make"
+    fi
+    
+    # Check for gcc
+    if command -v gcc >/dev/null 2>&1; then
+        echo "✓ gcc available: $(which gcc)"
+    else
+        echo "✗ gcc not found - this may cause build issues"
+    fi
 
     # --------------------------
     #  SETUP USER/GROUP
