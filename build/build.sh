@@ -259,10 +259,11 @@ sudo mkdir -p $AGENT_DIR/var/log
 GIT_LONG="Not built under GIT"
 GIT_HASH_FILE="NoGIT.githash"
 
-if command -v git > /dev/null; then
-    GIT_LONG=$(git rev-parse HEAD)
-    GIT_SHORT=$(git rev-parse --short HEAD)
-    GIT_UNCOMMITTED=$(git status --untracked-files=no --porcelain)
+if command -v git > /dev/null && git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "Git repository detected, extracting version information..."
+    GIT_LONG=$(git rev-parse HEAD 2>/dev/null || echo "Unable to get git hash")
+    GIT_SHORT=$(git rev-parse --short HEAD 2>/dev/null || echo "nogit")
+    GIT_UNCOMMITTED=$(git status --untracked-files=no --porcelain 2>/dev/null || echo "")
     # echo "GIT_UNCOMMITTED: $GIT_UNCOMMITTED"
     if [ "$GIT_UNCOMMITTED" ]; then
         GIT_LONG="$GIT_LONG++  compiled with uncommitted changes"
@@ -272,6 +273,8 @@ if command -v git > /dev/null; then
     # echo "GIT_LONG: $GIT_LONG"
     # echo "GIT_SHORT: $GIT_SHORT"
     echo "GIT_HASH_FILE: $GIT_HASH_FILE"
+else
+    echo "No git repository found or git not available, using default version info"
 fi
 
 (
