@@ -500,10 +500,14 @@ EOF
     # Function to check if a package is available in CSW
     check_csw_package() {
         local pkg="$1"
-        if /opt/csw/bin/pkgutil -a | grep -q "^$pkg "; then
-            return 0
+        if [ -f /opt/csw/bin/pkgutil ]; then
+            if /opt/csw/bin/pkgutil -a 2>/dev/null | grep -q "^$pkg "; then
+                return 0
+            else
+                return 1
+            fi
         else
-            return 1
+            return 1  # CSW not available
         fi
     }
 
@@ -513,9 +517,12 @@ EOF
         if command -v pkg >/dev/null 2>&1; then
             if pkg list -a "$pkg" >/dev/null 2>&1; then
                 return 0
+            else
+                return 1
             fi
+        else
+            return 1  # IPS not available
         fi
-        return 1
     }
 
     # Function to manually install patchelf if not available through package managers
@@ -779,37 +786,46 @@ EOF
         echo "Attempting to install $pkg ($description)..."
         
         # First try CSW if package is available there
-        if check_csw_package "$pkg"; then
-            if /opt/csw/bin/pkgutil -y -i "$pkg"; then
-                echo "Successfully installed $pkg via CSW"
+        if [ -f /opt/csw/bin/pkgutil ] && check_csw_package "$pkg"; then
+            echo "Found $pkg in CSW catalog, attempting installation..."
+            if /opt/csw/bin/pkgutil -y -i "$pkg" 2>/dev/null; then
+                echo "✓ Successfully installed $pkg via CSW"
                 return 0
             else
-                echo "Failed to install $pkg via CSW"
+                echo "⚠ Failed to install $pkg via CSW (may already be installed)"
             fi
         else
-            echo "Package $pkg not available in CSW catalog"
+            echo "⚠ Package $pkg not available in CSW catalog or CSW not available"
         fi
         
         # If CSW failed or package not available, try IPS (native Solaris 11)
-        echo "Trying native Solaris IPS package manager..."
-        if check_ips_package "$pkg"; then
-            if sudo pkg install "$pkg"; then
-                echo "Successfully installed $pkg via IPS"
-                return 0
+        if command -v pkg >/dev/null 2>&1; then
+            echo "Trying native Solaris IPS package manager for $pkg..."
+            if check_ips_package "$pkg"; then
+                echo "Found $pkg in IPS catalog, attempting installation..."
+                if sudo pkg install "$pkg" 2>/dev/null; then
+                    echo "✓ Successfully installed $pkg via IPS"
+                    return 0
+                else
+                    echo "⚠ Failed to install $pkg via IPS (may already be installed or no permission)"
+                fi
             else
-                echo "Failed to install $pkg via IPS"
+                echo "⚠ Package $pkg not available in IPS catalog"
             fi
         else
-            echo "Package $pkg not available in IPS catalog"
+            echo "⚠ IPS package manager not available"
         fi
         
-        return 1
+        # Don't treat package installation failure as fatal
+        echo "⚠ Could not install $pkg, but continuing build (may already be available)"
+        return 0  # Return success to continue the build
     }
 
     # Install essential system dependencies only (Python handled by venv)
     echo "Installing essential system dependencies..."
+    echo "Note: Package installation failures are non-fatal if tools are already available"
     
-    # Install core build tools
+    # Install core build tools - failures are non-fatal
     echo "Installing development tools..."
     safe_install_package "gcc4core" "GCC compiler core"
     safe_install_package "gcc4g++" "GCC C++ compiler"
@@ -818,7 +834,7 @@ EOF
     safe_install_package "pkgconfig" "pkg-config utility"
     safe_install_package "patchelf" "ELF patching utility"
     
-    # Install core system libraries that Python may need
+    # Install core system libraries that Python may need - failures are non-fatal
     echo "Installing system libraries..."
     safe_install_package "zlib" "zlib compression library"
     safe_install_package "libffi" "libffi library"
@@ -828,16 +844,18 @@ EOF
     safe_install_package "openssl_devel" "OpenSSL development libraries"
     safe_install_package "libssl_devel" "SSL development libraries"
     
-    # Try IPS packages for core dependencies
+    # Try IPS packages for core dependencies - suppress errors and continue
     if command -v pkg >/dev/null 2>&1; then
-        echo "Installing core dependencies via IPS..."
-        pkg install --accept library/zlib 2>/dev/null || echo "zlib already installed or not available"
-        pkg install --accept library/libffi 2>/dev/null || echo "libffi already installed or not available"
-        pkg install --accept library/security/openssl 2>/dev/null || echo "openssl already installed or not available"
-        pkg install --accept developer/gcc 2>/dev/null || echo "gcc already installed or not available"
-        pkg install --accept developer/build/gnu-make 2>/dev/null || echo "make already installed or not available"
-        pkg install --accept developer/linker 2>/dev/null || echo "linker tools already installed or not available"
-        pkg install --accept system/library/gcc-runtime 2>/dev/null || echo "gcc runtime already installed or not available"
+        echo "Installing core dependencies via IPS (errors are non-fatal)..."
+        pkg install --accept library/zlib 2>/dev/null && echo "✓ zlib installed" || echo "⚠ zlib not installed (may already exist)"
+        pkg install --accept library/libffi 2>/dev/null && echo "✓ libffi installed" || echo "⚠ libffi not installed (may already exist)"
+        pkg install --accept library/security/openssl 2>/dev/null && echo "✓ openssl installed" || echo "⚠ openssl not installed (may already exist)"
+        pkg install --accept developer/gcc 2>/dev/null && echo "✓ gcc installed" || echo "⚠ gcc not installed (may already exist)"
+        pkg install --accept developer/build/gnu-make 2>/dev/null && echo "✓ make installed" || echo "⚠ make not installed (may already exist)"
+        pkg install --accept developer/linker 2>/dev/null && echo "✓ linker tools installed" || echo "⚠ linker tools not installed (may already exist)"
+        pkg install --accept system/library/gcc-runtime 2>/dev/null && echo "✓ gcc runtime installed" || echo "⚠ gcc runtime not installed (may already exist)"
+    else
+        echo "⚠ IPS package manager not available, skipping IPS installations"
     fi
     
     # Update PATH to include common tool locations (prioritize /usr/local/bin for manual installs)
@@ -853,25 +871,53 @@ EOF
     # Verify critical build tools
     echo "Verifying critical build tools..."
     
-    # Check for make or gmake
+    # Check for make or gmake - Solaris often has gmake instead of make
     if command -v make >/dev/null 2>&1; then
         echo "✓ make available: $(which make)"
     elif command -v gmake >/dev/null 2>&1; then
         echo "✓ gmake available: $(which gmake)"
-        # Create a make symlink if possible
-        if [ ! -e /opt/csw/bin/make ] && [ -w /opt/csw/bin ]; then
-            ln -s "$(which gmake)" /opt/csw/bin/make
-            echo "Created make symlink to gmake"
+        echo "ℹ Note: Solaris uses gmake instead of make"
+        # Create a make symlink if possible and missing
+        if [ ! -e /usr/local/bin/make ] && [ -w /usr/local/bin ]; then
+            ln -s "$(which gmake)" /usr/local/bin/make 2>/dev/null && echo "✓ Created make symlink to gmake"
+        elif [ ! -e /opt/csw/bin/make ] && [ -w /opt/csw/bin ] 2>/dev/null; then
+            ln -s "$(which gmake)" /opt/csw/bin/make 2>/dev/null && echo "✓ Created make symlink to gmake in CSW"
         fi
     else
-        echo "✗ Neither make nor gmake found - build may fail"
+        echo "⚠ Neither make nor gmake found - attempting to find alternatives..."
+        # Check for other common make locations on Solaris
+        for make_path in /usr/sfw/bin/gmake /usr/bin/gmake /opt/sfw/bin/gmake; do
+            if [ -x "$make_path" ]; then
+                echo "✓ Found alternative make: $make_path"
+                export PATH="$(dirname "$make_path"):$PATH"
+                break
+            fi
+        done
+        
+        if ! command -v make >/dev/null 2>&1 && ! command -v gmake >/dev/null 2>&1; then
+            echo "⚠ No make utility found - this may cause build issues"
+            echo "ℹ The build will attempt to continue anyway"
+        fi
     fi
     
     # Check for gcc
     if command -v gcc >/dev/null 2>&1; then
         echo "✓ gcc available: $(which gcc)"
     else
-        echo "✗ gcc not found - this may cause build issues"
+        echo "⚠ gcc not found - checking for alternatives..."
+        # Check for common GCC locations on Solaris
+        for gcc_path in /opt/csw/bin/gcc /usr/sfw/bin/gcc /opt/sfw/bin/gcc; do
+            if [ -x "$gcc_path" ]; then
+                echo "✓ Found alternative gcc: $gcc_path"
+                export PATH="$(dirname "$gcc_path"):$PATH"
+                break
+            fi
+        done
+        
+        if ! command -v gcc >/dev/null 2>&1; then
+            echo "⚠ No GCC found - this may cause build issues if compilation is needed"
+            echo "ℹ The build will attempt to continue anyway"
+        fi
     fi
     
     # Check for patchelf (required by cx_Freeze)
