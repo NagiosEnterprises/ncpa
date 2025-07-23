@@ -566,14 +566,38 @@ EOF
         echo "Checking C++ compiler capabilities..."
         cpp17_compiler=""
         
+        # First, see what GCC versions are already available on the system
+        echo "Scanning for existing GCC installations..."
+        for gcc_candidate in gcc-14 gcc-13 gcc-12 gcc-11 gcc-10 gcc-9 gcc-8 gcc-7 g++-14 g++-13 g++-12 g++-11 g++-10 g++-9 g++-8 g++-7 gcc g++; do
+            if command -v "$gcc_candidate" >/dev/null 2>&1; then
+                candidate_version=$($gcc_candidate --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
+                if [ -n "$candidate_version" ]; then
+                    candidate_major=$(echo "$candidate_version" | cut -d. -f1)
+                    echo "Found: $gcc_candidate version $candidate_version (major: $candidate_major)"
+                    if [ "$candidate_major" -ge 7 ] && [ -z "$cpp17_compiler" ]; then
+                        echo "✓ Found C++17-capable compiler: $gcc_candidate (version $candidate_version)"
+                        cpp17_compiler="$gcc_candidate"
+                        # Prefer g++ over gcc if both are available
+                        if echo "$gcc_candidate" | grep -q "g++"; then
+                            export CXX="$gcc_candidate"
+                            export CC="${gcc_candidate%++}"  # Convert g++ to gcc
+                        else
+                            export CC="$gcc_candidate"
+                            export CXX="${gcc_candidate}++"  # Try to find corresponding g++
+                        fi
+                    fi
+                fi
+            fi
+        done
+        
         # First, check if current g++ supports C++17
         if command -v g++ >/dev/null 2>&1; then
             GCC_VERSION=$(g++ --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
             if [ -n "$GCC_VERSION" ]; then
                 MAJOR_VER=$(echo "$GCC_VERSION" | cut -d. -f1)
-                echo "Found g++ version: $GCC_VERSION"
+                echo "Found g++ version: $GCC_VERSION (major: $MAJOR_VER)"
                 if [ "$MAJOR_VER" -ge 7 ]; then
-                    echo "✓ Current g++ supports C++17"
+                    echo "✓ Current g++ supports C++17 - no installation needed"
                     cpp17_compiler="g++"
                 else
                     echo "⚠ Current g++ version $GCC_VERSION does not support C++17 (requires 7+)"
@@ -616,26 +640,55 @@ EOF
                 # Try IPS (Solaris 11) first
                 if command -v pkg >/dev/null 2>&1; then
                     echo "Trying to install modern GCC via IPS..."
-                    for gcc_pkg in developer/gcc-11 developer/gcc-10 developer/gcc-9 developer/gcc-8 developer/gcc-7; do
+                    # Try newer versions first, then fall back to older ones
+                    for gcc_pkg in developer/gcc-14 developer/gcc-13 developer/gcc-12 developer/gcc-11 developer/gcc-10 developer/gcc-9 developer/gcc-8 developer/gcc-7; do
                         echo "Attempting to install $gcc_pkg..."
-                        if sudo pkg install --accept "$gcc_pkg" 2>/dev/null; then
+                        install_output=$(sudo pkg install --accept "$gcc_pkg" 2>&1)
+                        install_status=$?
+                        
+                        if [ $install_status -eq 0 ]; then
                             echo "✓ Successfully installed $gcc_pkg"
+                            gcc_installed=true
+                        elif echo "$install_output" | grep -q "No updates necessary"; then
+                            echo "✓ $gcc_pkg already installed (no updates necessary)"
+                            gcc_installed=true
+                        elif echo "$install_output" | grep -q "No matching package"; then
+                            echo "⚠ Package $gcc_pkg not available in this Solaris version"
+                            continue  # Try next package
+                        else
+                            echo "⚠ Failed to install $gcc_pkg: $install_output"
+                            continue  # Try next package
+                        fi
+                        
+                        if [ "$gcc_installed" = true ]; then
                             # Update PATH to include the new compiler
                             export PATH="/usr/gcc/bin:/usr/bin:$PATH"
                             hash -r
                             
-                            # Check if the new compiler works
+                            # Check if the new compiler works and supports C++17
                             if command -v gcc >/dev/null 2>&1; then
                                 new_version=$(gcc --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
                                 if [ -n "$new_version" ]; then
                                     new_major=$(echo "$new_version" | cut -d. -f1)
+                                    echo "Found GCC version: $new_version (major: $new_major)"
                                     if [ "$new_major" -ge 7 ]; then
                                         cpp17_compiler="g++"
-                                        gcc_installed=true
-                                        echo "✓ Installed GCC $new_version with C++17 support"
+                                        echo "✓ Installed/Found GCC $new_version with C++17 support"
                                         break
+                                    else
+                                        echo "⚠ GCC $new_version does not support C++17, trying next package"
+                                        gcc_installed=false
+                                        continue
                                     fi
+                                else
+                                    echo "⚠ Could not determine GCC version, trying next package"
+                                    gcc_installed=false
+                                    continue
                                 fi
+                            else
+                                echo "⚠ GCC not found in PATH after installation, trying next package"
+                                gcc_installed=false
+                                continue
                             fi
                         fi
                     done
@@ -644,26 +697,55 @@ EOF
                 # Try OpenCSW if IPS failed
                 if [ "$gcc_installed" = false ] && [ -f /opt/csw/bin/pkgutil ]; then
                     echo "Trying to install modern GCC via OpenCSW..."
-                    for gcc_pkg in gcc7 gcc8 gcc9 gcc10 gcc11; do
+                    # Try newer versions first, then fall back to older ones  
+                    for gcc_pkg in gcc14 gcc13 gcc12 gcc11 gcc10 gcc9 gcc8 gcc7; do
                         echo "Attempting to install $gcc_pkg via CSW..."
-                        if /opt/csw/bin/pkgutil -y -i "$gcc_pkg" 2>/dev/null; then
+                        install_output=$(/opt/csw/bin/pkgutil -y -i "$gcc_pkg" 2>&1)
+                        install_status=$?
+                        
+                        if [ $install_status -eq 0 ]; then
                             echo "✓ Successfully installed $gcc_pkg via CSW"
+                            gcc_installed=true
+                        elif echo "$install_output" | grep -q "already installed\|up to date"; then
+                            echo "✓ $gcc_pkg already installed via CSW"
+                            gcc_installed=true
+                        elif echo "$install_output" | grep -q "not found\|no such package"; then
+                            echo "⚠ Package $gcc_pkg not available in CSW"
+                            continue  # Try next package
+                        else
+                            echo "⚠ Failed to install $gcc_pkg via CSW: $install_output"
+                            continue  # Try next package
+                        fi
+                        
+                        if [ "$gcc_installed" = true ]; then
                             # Update PATH to include CSW
                             export PATH="/opt/csw/bin:$PATH"
                             hash -r
                             
-                            # Check if the new compiler works
+                            # Check if the new compiler works and supports C++17
                             if command -v gcc >/dev/null 2>&1; then
                                 new_version=$(gcc --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
                                 if [ -n "$new_version" ]; then
                                     new_major=$(echo "$new_version" | cut -d. -f1)
+                                    echo "Found GCC version: $new_version (major: $new_major)"
                                     if [ "$new_major" -ge 7 ]; then
                                         cpp17_compiler="g++"
-                                        gcc_installed=true
-                                        echo "✓ Installed GCC $new_version with C++17 support"
+                                        echo "✓ Installed/Found GCC $new_version with C++17 support"
                                         break
+                                    else
+                                        echo "⚠ GCC $new_version does not support C++17, trying next package"
+                                        gcc_installed=false
+                                        continue
                                     fi
+                                else
+                                    echo "⚠ Could not determine GCC version, trying next package"
+                                    gcc_installed=false
+                                    continue
                                 fi
+                            else
+                                echo "⚠ GCC not found in PATH after installation, trying next package"
+                                gcc_installed=false
+                                continue
                             fi
                         fi
                     done
