@@ -722,19 +722,51 @@ EOF
                         fi
                         
                         if [ "$gcc_installed" = true ]; then
-                            # Update PATH to include the new compiler
-                            export PATH="/usr/gcc/bin:/usr/bin:$PATH"
+                            # Update PATH to include potential GCC installation locations
+                            export PATH="/usr/gcc/bin:/usr/gcc/*/bin:/usr/bin:$PATH"
                             hash -r
                             
-                            # Check if the new compiler works and supports C++17
-                            if command -v gcc >/dev/null 2>&1; then
-                                new_version=$(gcc --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
+                            # Look for the specific GCC version we just installed/confirmed
+                            gcc_version_num=$(echo "$gcc_pkg" | sed 's/.*gcc-//')
+                            potential_gcc_paths=(
+                                "gcc-${gcc_version_num}"
+                                "/usr/gcc/${gcc_version_num}/bin/gcc"
+                                "/usr/gcc/bin/gcc-${gcc_version_num}"
+                                "gcc"
+                            )
+                            
+                            found_gcc=""
+                            for gcc_path in "${potential_gcc_paths[@]}"; do
+                                if command -v "$gcc_path" >/dev/null 2>&1; then
+                                    found_gcc="$gcc_path"
+                                    echo "Found installed GCC: $found_gcc"
+                                    break
+                                fi
+                            done
+                            
+                            if [ -n "$found_gcc" ]; then
+                                new_version=$($found_gcc --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
                                 if [ -n "$new_version" ]; then
                                     new_major=$(echo "$new_version" | cut -d. -f1)
                                     echo "Found GCC version: $new_version (major: $new_major)"
                                     if [ "$new_major" -ge 7 ]; then
-                                        cpp17_compiler="g++"
-                                        echo "✓ Installed/Found GCC $new_version with C++17 support"
+                                        # Set up the compiler environment
+                                        if echo "$found_gcc" | grep -q "g++"; then
+                                            cpp17_compiler="$found_gcc"
+                                            export CXX="$found_gcc"
+                                            export CC="${found_gcc%++}"
+                                        else
+                                            cpp17_compiler="$found_gcc"
+                                            export CC="$found_gcc"
+                                            # Try to find corresponding g++
+                                            corresponding_gxx="${found_gcc%gcc}g++"
+                                            if command -v "$corresponding_gxx" >/dev/null 2>&1; then
+                                                export CXX="$corresponding_gxx"
+                                            else
+                                                export CXX="g++"
+                                            fi
+                                        fi
+                                        echo "✓ Confirmed GCC $new_version with C++17 support (CC=$CC, CXX=$CXX)"
                                         break
                                     else
                                         echo "⚠ GCC $new_version does not support C++17, trying next package"
@@ -747,7 +779,7 @@ EOF
                                     continue
                                 fi
                             else
-                                echo "⚠ GCC not found in PATH after installation, trying next package"
+                                echo "⚠ GCC not found in expected locations after installation, trying next package"
                                 gcc_installed=false
                                 continue
                             fi
@@ -783,15 +815,47 @@ EOF
                             export PATH="/opt/csw/bin:$PATH"
                             hash -r
                             
-                            # Check if the new compiler works and supports C++17
-                            if command -v gcc >/dev/null 2>&1; then
-                                new_version=$(gcc --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
+                            # Look for the specific GCC version we just installed/confirmed via CSW
+                            gcc_version_num=$(echo "$gcc_pkg" | sed 's/gcc//')
+                            potential_gcc_paths=(
+                                "gcc-${gcc_version_num}"
+                                "/opt/csw/bin/gcc-${gcc_version_num}"
+                                "/opt/csw/bin/gcc${gcc_version_num}"
+                                "gcc"
+                            )
+                            
+                            found_gcc=""
+                            for gcc_path in "${potential_gcc_paths[@]}"; do
+                                if command -v "$gcc_path" >/dev/null 2>&1; then
+                                    found_gcc="$gcc_path"
+                                    echo "Found installed GCC via CSW: $found_gcc"
+                                    break
+                                fi
+                            done
+                            
+                            if [ -n "$found_gcc" ]; then
+                                new_version=$($found_gcc --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
                                 if [ -n "$new_version" ]; then
                                     new_major=$(echo "$new_version" | cut -d. -f1)
                                     echo "Found GCC version: $new_version (major: $new_major)"
                                     if [ "$new_major" -ge 7 ]; then
-                                        cpp17_compiler="g++"
-                                        echo "✓ Installed/Found GCC $new_version with C++17 support"
+                                        # Set up the compiler environment
+                                        if echo "$found_gcc" | grep -q "g++"; then
+                                            cpp17_compiler="$found_gcc"
+                                            export CXX="$found_gcc"
+                                            export CC="${found_gcc%++}"
+                                        else
+                                            cpp17_compiler="$found_gcc"
+                                            export CC="$found_gcc"
+                                            # Try to find corresponding g++
+                                            corresponding_gxx="${found_gcc%gcc}g++"
+                                            if command -v "$corresponding_gxx" >/dev/null 2>&1; then
+                                                export CXX="$corresponding_gxx"
+                                            else
+                                                export CXX="g++"
+                                            fi
+                                        fi
+                                        echo "✓ Confirmed GCC $new_version with C++17 support via CSW (CC=$CC, CXX=$CXX)"
                                         break
                                     else
                                         echo "⚠ GCC $new_version does not support C++17, trying next package"
@@ -804,7 +868,7 @@ EOF
                                     continue
                                 fi
                             else
-                                echo "⚠ GCC not found in PATH after installation, trying next package"
+                                echo "⚠ GCC not found in expected locations after CSW installation, trying next package"
                                 gcc_installed=false
                                 continue
                             fi
