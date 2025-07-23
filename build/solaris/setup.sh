@@ -567,72 +567,133 @@ EOF
         cpp17_compiler=""
         
         # First, see what GCC versions are already available on the system
-        echo "Scanning for existing GCC installations..."
-        for gcc_candidate in gcc-14 gcc-13 gcc-12 gcc-11 gcc-10 gcc-9 gcc-8 gcc-7 g++-14 g++-13 g++-12 g++-11 g++-10 g++-9 g++-8 g++-7 gcc g++; do
+        echo "Scanning for existing GCC installations (prioritizing newer versions)..."
+        
+        # Search in order of preference: newer versions first, then g++ variants, then generic gcc/g++
+        # This ensures we find the best available compiler first
+        for gcc_candidate in gcc-14 g++-14 gcc-13 g++-13 gcc-12 g++-12 gcc-11 g++-11 gcc-10 g++-10 gcc-9 g++-9 gcc-8 g++-8 gcc-7 g++-7; do
             if command -v "$gcc_candidate" >/dev/null 2>&1; then
                 candidate_version=$($gcc_candidate --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
                 if [ -n "$candidate_version" ]; then
                     candidate_major=$(echo "$candidate_version" | cut -d. -f1)
-                    echo "Found: $gcc_candidate version $candidate_version (major: $candidate_major)"
+                    echo "Found: $gcc_candidate version $candidate_version (major: $candidate_major) at $(which $gcc_candidate)"
                     if [ "$candidate_major" -ge 7 ] && [ -z "$cpp17_compiler" ]; then
-                        echo "✓ Found C++17-capable compiler: $gcc_candidate (version $candidate_version)"
+                        echo "✓ Selected C++17-capable compiler: $gcc_candidate (version $candidate_version)"
                         cpp17_compiler="$gcc_candidate"
-                        # Prefer g++ over gcc if both are available
+                        # Set up environment variables for the build
                         if echo "$gcc_candidate" | grep -q "g++"; then
                             export CXX="$gcc_candidate"
                             export CC="${gcc_candidate%++}"  # Convert g++ to gcc
+                            echo "  Set CXX=$CXX, CC=$CC"
                         else
                             export CC="$gcc_candidate"
-                            export CXX="${gcc_candidate}++"  # Try to find corresponding g++
+                            # Try to find corresponding g++
+                            corresponding_gxx="${gcc_candidate}++"
+                            if command -v "$corresponding_gxx" >/dev/null 2>&1; then
+                                export CXX="$corresponding_gxx"
+                                echo "  Set CC=$CC, CXX=$CXX"
+                            else
+                                export CXX="g++"
+                                echo "  Set CC=$CC, CXX=$CXX (fallback)"
+                            fi
                         fi
+                        break  # Use the first (highest priority) C++17-capable compiler found
+                    else
+                        echo "  ⚠ Version $candidate_version does not support C++17 (requires GCC 7+)"
                     fi
+                else
+                    echo "  ⚠ Could not determine version for $gcc_candidate"
                 fi
             fi
         done
         
-        # First, check if current g++ supports C++17
-        if command -v g++ >/dev/null 2>&1; then
-            GCC_VERSION=$(g++ --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
-            if [ -n "$GCC_VERSION" ]; then
-                MAJOR_VER=$(echo "$GCC_VERSION" | cut -d. -f1)
-                echo "Found g++ version: $GCC_VERSION (major: $MAJOR_VER)"
-                if [ "$MAJOR_VER" -ge 7 ]; then
-                    echo "✓ Current g++ supports C++17 - no installation needed"
-                    cpp17_compiler="g++"
-                else
-                    echo "⚠ Current g++ version $GCC_VERSION does not support C++17 (requires 7+)"
-                fi
-            else
-                echo "⚠ Could not determine g++ version"
-            fi
-        else
-            echo "⚠ g++ not found in PATH"
-        fi
-        
-        # If current compiler doesn't support C++17, try to find or install a newer one
+        # If we didn't find versioned GCC, check generic gcc/g++ as fallback
         if [ -z "$cpp17_compiler" ]; then
-            echo "Searching for C++17-capable compiler..."
-            
-            # Check for newer GCC versions in common locations
-            for gcc_candidate in gcc-11 gcc-10 gcc-9 gcc-8 gcc-7 g++-11 g++-10 g++-9 g++-8 g++-7; do
+            echo "No versioned GCC found, checking generic gcc/g++..."
+            for gcc_candidate in g++ gcc; do
                 if command -v "$gcc_candidate" >/dev/null 2>&1; then
                     candidate_version=$($gcc_candidate --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
                     if [ -n "$candidate_version" ]; then
                         candidate_major=$(echo "$candidate_version" | cut -d. -f1)
+                        echo "Found: $gcc_candidate version $candidate_version (major: $candidate_major) at $(which $gcc_candidate)"
                         if [ "$candidate_major" -ge 7 ]; then
-                            echo "✓ Found C++17-capable compiler: $gcc_candidate (version $candidate_version)"
+                            echo "✓ Selected C++17-capable compiler: $gcc_candidate (version $candidate_version)"
                             cpp17_compiler="$gcc_candidate"
-                            export CXX="$gcc_candidate"
-                            export CC="${gcc_candidate%++}"  # Convert g++ to gcc
+                            if echo "$gcc_candidate" | grep -q "g++"; then
+                                export CXX="$gcc_candidate"
+                                export CC="gcc"
+                            else
+                                export CC="$gcc_candidate"
+                                export CXX="g++"
+                            fi
+                            echo "  Set CC=$CC, CXX=$CXX"
+                            break
+                        else
+                            echo "  ⚠ Generic $gcc_candidate version $candidate_version does not support C++17"
+                        fi
+                    fi
+                fi
+            done
+        fi
+        
+        # Only check generic g++ if we haven't found a versioned compiler
+        if [ -z "$cpp17_compiler" ] && command -v g++ >/dev/null 2>&1; then
+            GCC_VERSION=$(g++ --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
+            if [ -n "$GCC_VERSION" ]; then
+                MAJOR_VER=$(echo "$GCC_VERSION" | cut -d. -f1)
+                echo "Found generic g++ version: $GCC_VERSION (major: $MAJOR_VER)"
+                if [ "$MAJOR_VER" -ge 7 ]; then
+                    echo "✓ Generic g++ supports C++17 - using as fallback"
+                    cpp17_compiler="g++"
+                    export CXX="g++"
+                    export CC="gcc"
+                else
+                    echo "⚠ Generic g++ version $GCC_VERSION does not support C++17 (requires 7+)"
+                fi
+            else
+                echo "⚠ Could not determine generic g++ version"
+            fi
+        elif [ -n "$cpp17_compiler" ]; then
+            echo "Already found versioned C++17 compiler: $cpp17_compiler - skipping generic g++ check"
+        else
+            echo "⚠ No g++ found in PATH"
+        fi
+        
+        # If we still don't have a C++17 compiler, search common locations for alternatives
+        if [ -z "$cpp17_compiler" ]; then
+            echo "No C++17-capable compiler found in initial scan, searching alternative locations..."
+            
+            # Check for newer GCC versions in common locations (with full paths)
+            for gcc_location in /usr/gcc/*/bin/gcc-* /usr/local/bin/gcc-* /opt/csw/bin/gcc-* /usr/gcc/*/bin/g++-* /usr/local/bin/g++-* /opt/csw/bin/g++-*; do
+                if [ -x "$gcc_location" ]; then
+                    gcc_candidate=$(basename "$gcc_location")
+                    candidate_version=$($gcc_location --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
+                    if [ -n "$candidate_version" ]; then
+                        candidate_major=$(echo "$candidate_version" | cut -d. -f1)
+                        if [ "$candidate_major" -ge 7 ]; then
+                            echo "✓ Found C++17-capable compiler in alternative location: $gcc_location (version $candidate_version)"
+                            cpp17_compiler="$gcc_location"
+                            export PATH="$(dirname "$gcc_location"):$PATH"
+                            if echo "$gcc_candidate" | grep -q "g++"; then
+                                export CXX="$gcc_location"
+                                export CC="${gcc_location%++}"
+                            else
+                                export CC="$gcc_location"
+                                export CXX="${gcc_location%/*}/g++"
+                            fi
+                            echo "  Updated PATH and set CC=$CC, CXX=$CXX"
                             break
                         fi
                     fi
                 fi
             done
+        else
+            echo "Already found C++17 compiler: $cpp17_compiler - skipping alternative location search"
+        fi
             
             # If still no suitable compiler, try to install one
             if [ -z "$cpp17_compiler" ]; then
-                echo "No C++17-capable compiler found, attempting to install modern GCC..."
+                echo "No existing C++17-capable compiler found, attempting to install modern GCC..."
                 
                 # Try installing newer GCC via package managers
                 gcc_installed=false
