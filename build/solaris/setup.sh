@@ -571,7 +571,8 @@ EOF
         
         # Search in order of preference: newer versions first, then g++ variants, then generic gcc/g++
         # This ensures we find the best available compiler first
-        for gcc_candidate in gcc-14 g++-14 gcc-13 g++-13 gcc-12 g++-12 gcc-11 g++-11 gcc-10 g++-10 gcc-9 g++-9 gcc-8 g++-8 gcc-7 g++-7; do
+        # Also check common Solaris GCC installation paths
+        for gcc_candidate in gcc-14 g++-14 gcc-13 g++-13 gcc-12 g++-12 gcc-11 g++-11 gcc-10 g++-10 gcc-9 g++-9 gcc-8 g++-8 gcc-7 g++-7 /usr/gcc/14/bin/gcc /usr/gcc/14/bin/g++ /usr/gcc/13/bin/gcc /usr/gcc/13/bin/g++ /usr/gcc/12/bin/gcc /usr/gcc/12/bin/g++ /usr/gcc/11/bin/gcc /usr/gcc/11/bin/g++ /usr/gcc/10/bin/gcc /usr/gcc/10/bin/g++ /usr/gcc/9/bin/gcc /usr/gcc/9/bin/g++ /usr/gcc/8/bin/gcc /usr/gcc/8/bin/g++ /usr/gcc/7/bin/gcc /usr/gcc/7/bin/g++; do
             if command -v "$gcc_candidate" >/dev/null 2>&1; then
                 candidate_version=$($gcc_candidate --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
                 if [ -n "$candidate_version" ]; then
@@ -583,19 +584,54 @@ EOF
                         # Set up environment variables for the build
                         if echo "$gcc_candidate" | grep -q "g++"; then
                             export CXX="$gcc_candidate"
-                            export CC="${gcc_candidate%++}"  # Convert g++ to gcc
+                            # Try to find corresponding gcc
+                            if echo "$gcc_candidate" | grep -q "/"; then
+                                # Full path - look in same directory  
+                                gcc_dir=$(dirname "$gcc_candidate")
+                                corresponding_gcc="$gcc_dir/gcc"
+                                if [ -x "$corresponding_gcc" ]; then
+                                    export CC="$corresponding_gcc"
+                                else
+                                    export CC="gcc"
+                                fi
+                            else
+                                # Command name - try to derive gcc name
+                                corresponding_gcc="${gcc_candidate%++}"  # Convert g++-14 to gcc-14
+                                if command -v "$corresponding_gcc" >/dev/null 2>&1; then
+                                    export CC="$corresponding_gcc"
+                                else
+                                    export CC="gcc"
+                                fi
+                            fi
                             echo "  Set CXX=$CXX, CC=$CC"
                         else
                             export CC="$gcc_candidate"
                             # Try to find corresponding g++
-                            corresponding_gxx="${gcc_candidate}++"
-                            if command -v "$corresponding_gxx" >/dev/null 2>&1; then
-                                export CXX="$corresponding_gxx"
-                                echo "  Set CC=$CC, CXX=$CXX"
+                            if echo "$gcc_candidate" | grep -q "/"; then
+                                # Full path - look in same directory
+                                gcc_dir=$(dirname "$gcc_candidate")
+                                corresponding_gxx="$gcc_dir/g++"
+                                if [ -x "$corresponding_gxx" ]; then
+                                    export CXX="$corresponding_gxx"
+                                else
+                                    export CXX="g++"
+                                fi
                             else
-                                export CXX="g++"
-                                echo "  Set CC=$CC, CXX=$CXX (fallback)"
+                                # Command name - try to derive g++ name
+                                corresponding_gxx="${gcc_candidate}++"  # Convert gcc-14 to gcc-14++
+                                if command -v "$corresponding_gxx" >/dev/null 2>&1; then
+                                    export CXX="$corresponding_gxx"
+                                else
+                                    # Try gcc-14 -> g++-14 pattern
+                                    version_gxx=$(echo "$gcc_candidate" | sed 's/gcc/g++/')
+                                    if command -v "$version_gxx" >/dev/null 2>&1; then
+                                        export CXX="$version_gxx"
+                                    else
+                                        export CXX="g++"
+                                    fi
+                                fi
                             fi
+                            echo "  Set CC=$CC, CXX=$CXX"
                         fi
                         break  # Use the first (highest priority) C++17-capable compiler found
                     else
@@ -664,26 +700,70 @@ EOF
             echo "No C++17-capable compiler found in initial scan, searching alternative locations..."
             
             # Check for newer GCC versions in common locations (with full paths)
-            for gcc_location in /usr/gcc/*/bin/gcc-* /usr/local/bin/gcc-* /opt/csw/bin/gcc-* /usr/gcc/*/bin/g++-* /usr/local/bin/g++-* /opt/csw/bin/g++-*; do
+            # Filter out utility tools like gcc-ar, gcc-nm, gcc-ranlib, etc.
+            for gcc_location in /usr/gcc/*/bin/gcc /usr/gcc/*/bin/g++ /usr/local/bin/gcc-* /opt/csw/bin/gcc-* /usr/local/bin/g++-* /opt/csw/bin/g++-*; do
                 if [ -x "$gcc_location" ]; then
                     gcc_candidate=$(basename "$gcc_location")
+                    
+                    # Skip utility tools that aren't actual compilers
+                    case "$gcc_candidate" in
+                        *-ar|*-nm|*-ranlib|*-strip|*-objcopy|*-objdump|*-addr2line|*-strings|*-size|*-readelf|*-ld|*-as)
+                            echo "  Skipping utility tool: $gcc_location"
+                            continue
+                            ;;
+                    esac
+                    
+                    # Test if this is actually a compiler by checking --version
                     candidate_version=$($gcc_location --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
                     if [ -n "$candidate_version" ]; then
                         candidate_major=$(echo "$candidate_version" | cut -d. -f1)
+                        echo "Found potential compiler: $gcc_location version $candidate_version (major: $candidate_major)"
                         if [ "$candidate_major" -ge 7 ]; then
                             echo "✓ Found C++17-capable compiler in alternative location: $gcc_location (version $candidate_version)"
                             cpp17_compiler="$gcc_location"
                             export PATH="$(dirname "$gcc_location"):$PATH"
+                            
+                            # Set up CC and CXX properly based on what we found
                             if echo "$gcc_candidate" | grep -q "g++"; then
                                 export CXX="$gcc_location"
-                                export CC="${gcc_location%++}"
+                                # Try to find corresponding gcc in same directory
+                                gcc_dir=$(dirname "$gcc_location")
+                                corresponding_gcc="$gcc_dir/gcc"
+                                if [ -x "$corresponding_gcc" ]; then
+                                    export CC="$corresponding_gcc"
+                                else
+                                    # Try version-specific gcc
+                                    version_num=$(echo "$gcc_candidate" | sed -n 's/g++-\([0-9][0-9]*\)/\1/p')
+                                    if [ -n "$version_num" ] && [ -x "$gcc_dir/gcc-$version_num" ]; then
+                                        export CC="$gcc_dir/gcc-$version_num"
+                                    else
+                                        export CC="gcc"
+                                    fi
+                                fi
                             else
                                 export CC="$gcc_location"
-                                export CXX="${gcc_location%/*}/g++"
+                                # Try to find corresponding g++ in same directory
+                                gcc_dir=$(dirname "$gcc_location")
+                                corresponding_gxx="$gcc_dir/g++"
+                                if [ -x "$corresponding_gxx" ]; then
+                                    export CXX="$corresponding_gxx"
+                                else
+                                    # Try version-specific g++
+                                    version_num=$(echo "$gcc_candidate" | sed -n 's/gcc-\([0-9][0-9]*\)/\1/p')
+                                    if [ -n "$version_num" ] && [ -x "$gcc_dir/g++-$version_num" ]; then
+                                        export CXX="$gcc_dir/g++-$version_num"
+                                    else
+                                        export CXX="g++"
+                                    fi
+                                fi
                             fi
                             echo "  Updated PATH and set CC=$CC, CXX=$CXX"
                             break
+                        else
+                            echo "  ⚠ Version $candidate_version does not support C++17 (requires GCC 7+)"
                         fi
+                    else
+                        echo "  ⚠ Could not determine version for $gcc_location (might not be a compiler)"
                     fi
                 fi
             done
