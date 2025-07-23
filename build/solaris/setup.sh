@@ -1031,8 +1031,30 @@ EOF
                     cd "$extracted_dir"
                     
                     echo "Configuring patchelf..."
+                    echo "DEBUG: Using CC=$CC, CXX=$CXX"
+                    echo "DEBUG: Compiler test:"
+                    echo "  CC version: $($CC --version 2>&1 | head -1)"
+                    echo "  CXX version: $($CXX --version 2>&1 | head -1)"
+                    echo "  Testing basic C compilation:"
+                    echo 'int main(){return 0;}' | $CC -x c - -o /tmp/test_c 2>&1 && echo "✓ C compiler works" || echo "✗ C compiler failed"
+                    rm -f /tmp/test_c
+                    echo "  Testing basic C++ compilation:"
+                    echo 'int main(){return 0;}' | $CXX -x c++ - -o /tmp/test_cxx 2>&1 && echo "✓ C++ compiler works" || echo "✗ C++ compiler failed"  
+                    rm -f /tmp/test_cxx
+                    echo "  Testing C++17 support:"
+                    echo '#include <optional>
+int main(){ std::optional<int> x; return 0; }' | $CXX -std=c++17 -x c++ - -o /tmp/test_cpp17 2>&1 && echo "✓ C++17 works" || echo "✗ C++17 failed"
+                    rm -f /tmp/test_cpp17
+                    
                     # Try configure with explicit C++17 flag first
-                    if CXXFLAGS="-std=c++17" ./configure --prefix=/usr/local 2>/dev/null; then
+                    echo "Running configure with C++17 flags..."
+                    configure_output=$(CXXFLAGS="-std=c++17" ./configure --prefix=/usr/local 2>&1)
+                    configure_status=$?
+                    
+                    if [ $configure_status -eq 0 ]; then
+                        echo "✓ Configure succeeded"
+                    if [ $configure_status -eq 0 ]; then
+                        echo "✓ Configure succeeded"
                         echo "Building patchelf with C++17..."
                         MAKE_CMD=make
                         if command -v gmake >/dev/null 2>&1; then
@@ -1055,7 +1077,19 @@ EOF
                             echo "ERROR: Failed to build patchelf (likely C++17 compiler issue)"
                         fi
                     else
-                        echo "ERROR: Failed to configure patchelf (likely missing C++17 support)"
+                        echo "✗ Configure failed with status $configure_status"
+                        echo "Configure output (last 20 lines):"
+                        echo "$configure_output" | tail -20
+                        echo ""
+                        echo "Checking config.log for more details..."
+                        if [ -f config.log ]; then
+                            echo "=== CONFIG.LOG (last 30 lines) ==="
+                            tail -30 config.log
+                            echo "=== END CONFIG.LOG ==="
+                        else
+                            echo "No config.log found"
+                        fi
+                        echo "ERROR: Failed to configure patchelf (configure failed)"
                     fi
                 else
                     echo "ERROR: Expected patchelf directory not found after extraction"
