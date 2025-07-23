@@ -14,7 +14,7 @@ if command -v pkg-config >/dev/null 2>&1; then
         potential_pythonbin=$(pkg-config --variable=exec_prefix python3)/bin/python3
         if [ -x "$potential_pythonbin" ]; then
             # Check if this Python is 3.6 or newer
-            py_version=$($potential_pythonbin --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+            py_version=$($potential_pythonbin --version 2>&1 | sed -n 's/.*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
             if [ -n "$py_version" ]; then
                 major=$(echo "$py_version" | cut -d. -f1)
                 minor=$(echo "$py_version" | cut -d. -f2)
@@ -31,7 +31,7 @@ if [ -z "$PYTHONBIN" ] || [ ! -x "$PYTHONBIN" ]; then
     for py_path in /usr/bin/python3.13 /usr/bin/python3.12 /usr/bin/python3.11 /usr/bin/python3.10 /usr/bin/python3.9 /usr/bin/python3.8 /usr/bin/python3 /usr/local/bin/python3 /opt/csw/bin/python3; do
         if [ -x "$py_path" ]; then
             # Check if this Python is 3.6 or newer
-            py_version=$($py_path --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+            py_version=$($py_path --version 2>&1 | sed -n 's/.*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
             if [ -n "$py_version" ]; then
                 major=$(echo "$py_version" | cut -d. -f1)
                 minor=$(echo "$py_version" | cut -d. -f2)
@@ -512,7 +512,7 @@ install_prereqs() {
     
     # Debug: Check for compression-related packages
     echo "Checking for compression-related packages..."
-    /opt/csw/bin/pkgutil -a | grep -E "(compress|zip|gz)" | head -5 || echo "No compression packages found"
+    /opt/csw/bin/pkgutil -a | grep "compress\|zip\|gz" | head -5 || echo "No compression packages found"
 
     # Install Python and dependencies via OpenCSW
     # Try different Python package names that are commonly available
@@ -787,7 +787,7 @@ install_prereqs() {
             PYTHONBIN="$py_path"
             echo "Found Python at: $PYTHONBIN"
             # Check Python version to ensure it's 3.6 or newer
-            py_version=$($PYTHONBIN --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+            py_version=$($PYTHONBIN --version 2>&1 | sed -n 's/.*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
             echo "Python version: $py_version"
             
             # Check if version is >= 3.6 (minimum for modern pip)
@@ -871,7 +871,7 @@ install_prereqs() {
         echo "Installing pip..."
         
         # Get Python version to determine which get-pip.py to use
-        py_version=$($PYTHONBIN --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+        py_version=$($PYTHONBIN --version 2>&1 | sed -n 's/.*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
         major=$(echo "$py_version" | cut -d. -f1)
         minor=$(echo "$py_version" | cut -d. -f2)
         
