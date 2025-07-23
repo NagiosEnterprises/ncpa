@@ -568,7 +568,7 @@ EOF
         
         # First, check if current g++ supports C++17
         if command -v g++ >/dev/null 2>&1; then
-            GCC_VERSION=$(g++ --version 2>/dev/null | head -1 | grep -o '[0-9]\+\.[0-9]\+' | head -1)
+            GCC_VERSION=$(g++ --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
             if [ -n "$GCC_VERSION" ]; then
                 MAJOR_VER=$(echo "$GCC_VERSION" | cut -d. -f1)
                 echo "Found g++ version: $GCC_VERSION"
@@ -592,7 +592,7 @@ EOF
             # Check for newer GCC versions in common locations
             for gcc_candidate in gcc-11 gcc-10 gcc-9 gcc-8 gcc-7 g++-11 g++-10 g++-9 g++-8 g++-7; do
                 if command -v "$gcc_candidate" >/dev/null 2>&1; then
-                    candidate_version=$($gcc_candidate --version 2>/dev/null | head -1 | grep -o '[0-9]\+\.[0-9]\+' | head -1)
+                    candidate_version=$($gcc_candidate --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
                     if [ -n "$candidate_version" ]; then
                         candidate_major=$(echo "$candidate_version" | cut -d. -f1)
                         if [ "$candidate_major" -ge 7 ]; then
@@ -626,7 +626,7 @@ EOF
                             
                             # Check if the new compiler works
                             if command -v gcc >/dev/null 2>&1; then
-                                new_version=$(gcc --version 2>/dev/null | head -1 | grep -o '[0-9]\+\.[0-9]\+' | head -1)
+                                new_version=$(gcc --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
                                 if [ -n "$new_version" ]; then
                                     new_major=$(echo "$new_version" | cut -d. -f1)
                                     if [ "$new_major" -ge 7 ]; then
@@ -654,7 +654,7 @@ EOF
                             
                             # Check if the new compiler works
                             if command -v gcc >/dev/null 2>&1; then
-                                new_version=$(gcc --version 2>/dev/null | head -1 | grep -o '[0-9]\+\.[0-9]\+' | head -1)
+                                new_version=$(gcc --version 2>/dev/null | head -1 | sed -n 's/[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
                                 if [ -n "$new_version" ]; then
                                     new_major=$(echo "$new_version" | cut -d. -f1)
                                     if [ "$new_major" -ge 7 ]; then
