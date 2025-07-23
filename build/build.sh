@@ -155,7 +155,7 @@ setup_virtual_environment() {
     
     # Export environment variables from venv manager
     echo "Configuring environment variables..."
-    eval "$("$VENV_MANAGER" export-vars)"
+    eval "$("$VENV_MANAGER" get-env-exports)"
     
     # Verify venv is working
     if [ -z "$PYTHONBIN" ] || [ ! -x "$PYTHONBIN" ]; then

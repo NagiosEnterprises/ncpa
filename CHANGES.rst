@@ -5,6 +5,9 @@ Changelog
 **Added**
 - Added support for Solaris 11.4 builds. (Blake Bahner)
 
+**Updates**
+- Rewrote the build process to use virtual environments for Python dependencies, improving compatibility and isolation. (Blake Bahner)
+
 3.1.4 - XX/XX/2025
 ==================
 **Added**

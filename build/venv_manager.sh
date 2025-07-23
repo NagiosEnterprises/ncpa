@@ -74,31 +74,62 @@ detect_python() {
     for python_cmd in "${python_candidates[@]}"; do
         if command -v "$python_cmd" >/dev/null 2>&1; then
             # Check if this Python is executable and get version
-            if py_version=$($python_cmd --version 2>&1 | sed -n 's/.*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1); then
+            # Use a more robust version extraction method
+            if version_output=$($python_cmd --version 2>&1); then
+                # Extract version using multiple methods for compatibility
+                py_version=""
+                
+                # Method 1: Extract from "Python X.Y.Z" format
+                if [ -z "$py_version" ]; then
+                    py_version=$(echo "$version_output" | grep -o 'Python [0-9][0-9]*\.[0-9][0-9]*' | grep -o '[0-9][0-9]*\.[0-9][0-9]*' | head -1)
+                fi
+                
+                # Method 2: Fallback - extract any X.Y pattern
+                if [ -z "$py_version" ]; then
+                    py_version=$(echo "$version_output" | grep -o '[0-9][0-9]*\.[0-9][0-9]*' | head -1)
+                fi
+                
+                # Method 3: Use awk if available
+                if [ -z "$py_version" ] && command -v awk >/dev/null 2>&1; then
+                    py_version=$(echo "$version_output" | awk '{for(i=1;i<=NF;i++) if($i ~ /^[0-9]+\.[0-9]+/) {split($i,a,"."); print a[1]"."a[2]; break}}')
+                fi
+                
                 if [ -n "$py_version" ]; then
                     local major=$(echo "$py_version" | cut -d. -f1)
                     local minor=$(echo "$py_version" | cut -d. -f2)
                     
-                    # Check if version is >= 3.8 (minimum for modern packages)
-                    if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 8 ]); then
-                        PYTHON_EXECUTABLE="$python_cmd"
-                        PYTHON_VERSION="$py_version"
+                    # Validate that major and minor are numeric
+                    if [ -n "$major" ] && [ -n "$minor" ] && [ "$major" -eq "$major" ] 2>/dev/null && [ "$minor" -eq "$minor" ] 2>/dev/null; then
+                        # Debug output to help troubleshoot
+                        log "Found $python_cmd: version_output='$version_output' -> parsed_version='$py_version' (major=$major, minor=$minor)"
                         
-                        # Check if this matches our preferred version
-                        if [ "$py_version" = "$PYTHON_MAJOR_MINOR" ]; then
-                            log "✓ Found preferred Python $py_version: $python_cmd"
-                            return 0
-                        elif [ "${py_version%.*}" = "${PYTHON_MAJOR_MINOR%.*}" ]; then
-                            log "✓ Found compatible Python $py_version: $python_cmd (close to preferred $PYTHON_MAJOR_MINOR)"
-                            return 0
+                        # Check if version is >= 3.8 (minimum for modern packages)
+                        if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 8 ]); then
+                            PYTHON_EXECUTABLE="$python_cmd"
+                            PYTHON_VERSION="$py_version"
+                            
+                            # Check if this matches our preferred version
+                            if [ "$py_version" = "$PYTHON_MAJOR_MINOR" ]; then
+                                log "✓ Found preferred Python $py_version: $python_cmd"
+                                return 0
+                            elif [ "${py_version%.*}" = "${PYTHON_MAJOR_MINOR%.*}" ]; then
+                                log "✓ Found compatible Python $py_version: $python_cmd (close to preferred $PYTHON_MAJOR_MINOR)"
+                                return 0
+                            else
+                                log "✓ Found suitable Python $py_version: $python_cmd"
+                                return 0
+                            fi
                         else
-                            log "✓ Found suitable Python $py_version: $python_cmd"
-                            return 0
+                            log "⚠ Python $py_version at $python_cmd is too old (need >= 3.8)"
                         fi
                     else
-                        log "⚠ Python $py_version at $python_cmd is too old (need >= 3.8)"
+                        log "⚠ Failed to parse version for $python_cmd (output: '$version_output', parsed: '$py_version')"
                     fi
+                else
+                    log "⚠ Could not extract version from $python_cmd output: '$version_output'"
                 fi
+            else
+                log "⚠ Failed to get version from $python_cmd"
             fi
         fi
     done
@@ -373,6 +404,7 @@ get_activation_command() {
 }
 
 # Export environment variables for external scripts
+# Export environment variables (for display)
 export_vars() {
     if [ ! -d "$VENV_PATH" ]; then
         error "Virtual environment not found"
@@ -405,6 +437,31 @@ export_vars() {
     echo "  PLATFORM=$PLATFORM"
 }
 
+# Generate shell export statements (for eval)
+get_env_exports() {
+    if [ ! -d "$VENV_PATH" ]; then
+        error "Virtual environment not found"
+        return 1
+    fi
+    
+    if [ -f "$VENV_PATH/bin/python" ]; then
+        echo "export PYTHONBIN=\"$VENV_PATH/bin/python\""
+        echo "export PYTHONCMD=\"$VENV_PATH/bin/python\""
+        echo "export PIP_EXECUTABLE=\"$VENV_PATH/bin/pip\""
+    elif [ -f "$VENV_PATH/Scripts/python.exe" ]; then
+        echo "export PYTHONBIN=\"$VENV_PATH/Scripts/python.exe\""
+        echo "export PYTHONCMD=\"$VENV_PATH/Scripts/python.exe\""
+        echo "export PIP_EXECUTABLE=\"$VENV_PATH/Scripts/pip.exe\""
+    else
+        error "Python executable not found in virtual environment"
+        return 1
+    fi
+    
+    echo "export VIRTUAL_ENV=\"$VENV_PATH\""
+    echo "export VENV_PATH=\"$VENV_PATH\""
+    echo "export PLATFORM=\"$PLATFORM\""
+}
+
 # Usage information
 usage() {
     echo "NCPA Virtual Environment Manager"
@@ -420,7 +477,8 @@ usage() {
     echo "  list                List installed packages"
     echo "  status              Show virtual environment status"
     echo "  clean               Remove the virtual environment"
-    echo "  export-vars         Export environment variables"
+    echo "  export-vars         Show environment variables"
+    echo "  get-env-exports     Generate shell export statements for eval"
     echo "  get-activation      Print activation command for sourcing"
     echo ""
     echo "Environment Variables:"
@@ -471,6 +529,9 @@ main() {
             ;;
         "export-vars")
             export_vars
+            ;;
+        "get-env-exports")
+            get_env_exports
             ;;
         "get-activation")
             get_activation_command
