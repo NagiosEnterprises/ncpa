@@ -226,42 +226,72 @@ update_py_packages() {
     echo -e "\n***** macos/installers.sh - update_py_packages()"
     echo -e "    - Debug: PYTHONCMD='$PYTHONCMD', PYTHONBIN='$PYTHONBIN'"
     
-    # Validate that we have a valid Python command
-    if [[ -z "$PYTHONBIN" ]]; then
-        echo -e "ERROR! PYTHONBIN is not set!"
-        return 1
-    fi
-    
-    if ! command -v "$PYTHONBIN" &> /dev/null; then
-        echo -e "ERROR! Python command '$PYTHONBIN' not found!"
-        return 1
-    fi
-    
-    # Install/upgrade pip and packages as the original user
-    # Use --break-system-packages and --user to handle externally managed environments
-    echo -e "    - Upgrading pip..."
-    run_as_user "$PYTHONBIN" -m pip install --upgrade pip --break-system-packages --user
-    
-    echo -e "    - Installing Python packages from requirements..."
-    run_as_user "$PYTHONBIN" -m pip install -r "$BUILD_DIR/resources/require.txt" --upgrade --break-system-packages --user
-    
-    # Add user's Python bin directory to PATH
-    local user_python_bin=$(run_as_user "$PYTHONBIN" -c "import site; import os; print(os.path.join(site.USER_BASE, 'bin'))")
-    echo "    Adding user Python bin directory to PATH: $user_python_bin"
-    export PATH="$user_python_bin:$PATH"
+    # Check if we're in virtual environment mode
+    if [[ -n "$VENV_MANAGER" && -n "$VENV_NAME" ]]; then
+        echo -e "    - Using virtual environment approach via venv_manager"
+        if ! "$VENV_MANAGER" install_packages; then
+            echo -e "ERROR! Failed to install Python packages via venv_manager"
+            return 1
+        fi
+        
+        # Get the virtual environment Python executable
+        local venv_python=$("$VENV_MANAGER" get_python_path)
+        if [[ -z "$venv_python" ]]; then
+            echo -e "ERROR! Could not get virtual environment Python path"
+            return 1
+        fi
+        
+        # Update our Python commands to use the venv Python
+        export PYTHONBIN="$venv_python"
+        export PYTHONCMD="$venv_python"
+        echo -e "    - Updated PYTHONBIN to virtual environment: $PYTHONBIN"
+        
+        # Find the virtual environment site-packages directory
+        local site_packages_dir=$("$venv_python" -c "import site; print(site.getsitepackages()[0])")
+        echo "    Virtual environment site packages directory: $site_packages_dir"
+        
+        # Check if cx_Freeze is installed in the virtual environment
+        local cx_freeze_path=$("$venv_python" -c "import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
+    else
+        echo -e "    - Using legacy system Python approach"
+        
+        # Validate that we have a valid Python command
+        if [[ -z "$PYTHONBIN" ]]; then
+            echo -e "ERROR! PYTHONBIN is not set!"
+            return 1
+        fi
+        
+        if ! command -v "$PYTHONBIN" &> /dev/null; then
+            echo -e "ERROR! Python command '$PYTHONBIN' not found!"
+            return 1
+        fi
+        
+        # Install/upgrade pip and packages as the original user
+        # Use --break-system-packages and --user to handle externally managed environments
+        echo -e "    - Upgrading pip..."
+        run_as_user "$PYTHONBIN" -m pip install --upgrade pip --break-system-packages --user
+        
+        echo -e "    - Installing Python packages from requirements..."
+        run_as_user "$PYTHONBIN" -m pip install -r "$BUILD_DIR/resources/require.txt" --upgrade --break-system-packages --user
+        
+        # Add user's Python bin directory to PATH
+        local user_python_bin=$(run_as_user "$PYTHONBIN" -c "import site; import os; print(os.path.join(site.USER_BASE, 'bin'))")
+        echo "    Adding user Python bin directory to PATH: $user_python_bin"
+        export PATH="$user_python_bin:$PATH"
 
-    # Find the Python site-packages directory (check user packages first)
-    local site_packages_dir=$(run_as_user "$PYTHONBIN" -c "import site; print(site.getusersitepackages())")
-    echo "    User site packages directory: $site_packages_dir"
+        # Find the Python site-packages directory (check user packages first)
+        local site_packages_dir=$(run_as_user "$PYTHONBIN" -c "import site; print(site.getusersitepackages())")
+        echo "    User site packages directory: $site_packages_dir"
 
-    # Check if cx_Freeze is installed and get its path (check user packages first)
-    local cx_freeze_path=$(run_as_user "$PYTHONBIN" -c "import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
-    
-    # If not found in user packages, check system packages
-    if [[ -z "$cx_freeze_path" ]]; then
-        local system_site_packages=$(run_as_user "$PYTHONBIN" -c "import site; print(site.getsitepackages()[0])")
-        echo "    Checking system site packages: $system_site_packages"
-        cx_freeze_path=$(run_as_user "$PYTHONBIN" -c "import sys; sys.path.insert(0, '$system_site_packages'); import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
+        # Check if cx_Freeze is installed and get its path (check user packages first)
+        local cx_freeze_path=$(run_as_user "$PYTHONBIN" -c "import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
+        
+        # If not found in user packages, check system packages
+        if [[ -z "$cx_freeze_path" ]]; then
+            local system_site_packages=$(run_as_user "$PYTHONBIN" -c "import site; print(site.getsitepackages()[0])")
+            echo "    Checking system site packages: $system_site_packages"
+            cx_freeze_path=$(run_as_user "$PYTHONBIN" -c "import sys; sys.path.insert(0, '$system_site_packages'); import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
+        fi
     fi
     
     if [[ -n "$cx_freeze_path" ]]; then

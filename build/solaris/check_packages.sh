@@ -48,12 +48,6 @@ packages=(
     "ffi:FFI"
     "libffi_dev:FFI development"
 )
-    "ffi:FFI"
-    "libffi_dev:FFI development"
-    "py_openssl:Python OpenSSL"
-    "py_cryptography:Python cryptography"
-    "py_cffi:Python CFFI"
-)
 
 for pkg_info in "${packages[@]}"; do
     pkg="${pkg_info%%:*}"

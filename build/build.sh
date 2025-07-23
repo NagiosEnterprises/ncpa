@@ -16,12 +16,18 @@ else
 fi
 NCPA_VER=$(cat $BUILD_DIR/../VERSION)
 
+# Virtual environment configuration
+VENV_MANAGER="$BUILD_DIR/venv_manager.sh"
+VENV_NAME="ncpa-build-$(echo "$UNAME" | tr '[:upper:]' '[:lower:]')"
+export VENV_NAME
+
 # User-defined variables
 SKIP_SETUP=0
 PACKAGE_ONLY=0
 BUILD_ONLY=0
 BUILD_TRAVIS=0
 NO_INTERACTION=0
+CLEAN_VENV=0
 
 
 # --------------------------
@@ -45,6 +51,7 @@ usage() {
     echo "  -T | --travis       Set up environment for Travis CI builds"
     echo "  -c | --clean        Clean up the build directory"
     echo "  -n | --no-interaction  Run without interactive prompts (auto-confirm)"
+    echo "  -C | --clean-venv   Clean virtual environment and recreate"
     echo ""
     echo "Operating Systems Supported:"
     echo " - CentOS, RHEL, Oracle, CloudLinux"
@@ -110,9 +117,58 @@ while [ -n "$1" ]; do
             NO_INTERACTION=1
             export NO_INTERACTION
             ;;
+        -C | --clean-venv)
+            CLEAN_VENV=1
+            ;;
     esac
     shift
 done
+
+
+# --------------------------
+# Virtual Environment Setup
+# --------------------------
+
+setup_virtual_environment() {
+    echo "=== Setting up Virtual Environment ==="
+    
+    # Clean venv if requested
+    if [ $CLEAN_VENV -eq 1 ]; then
+        echo "Cleaning existing virtual environment..."
+        if [ -x "$VENV_MANAGER" ]; then
+            "$VENV_MANAGER" clean
+        fi
+    fi
+    
+    # Check if venv manager exists
+    if [ ! -x "$VENV_MANAGER" ]; then
+        echo "ERROR: Virtual environment manager not found or not executable: $VENV_MANAGER"
+        exit 1
+    fi
+    
+    # Setup virtual environment
+    echo "Creating and setting up virtual environment: $VENV_NAME"
+    if ! "$VENV_MANAGER" setup; then
+        echo "ERROR: Failed to setup virtual environment"
+        exit 1
+    fi
+    
+    # Export environment variables from venv manager
+    echo "Configuring environment variables..."
+    eval "$("$VENV_MANAGER" export-vars)"
+    
+    # Verify venv is working
+    if [ -z "$PYTHONBIN" ] || [ ! -x "$PYTHONBIN" ]; then
+        echo "ERROR: Python executable not found after venv setup: $PYTHONBIN"
+        exit 1
+    fi
+    
+    echo "✓ Virtual environment ready"
+    echo "  Python: $PYTHONBIN"
+    echo "  Version: $($PYTHONBIN --version 2>&1)"
+    echo "  Virtual Env: $VIRTUAL_ENV"
+    echo "=================================="
+}
 
 
 # --------------------------
@@ -122,6 +178,13 @@ done
 
 # Load required things for different systems
 echo -e "\nRunning build for: $UNAME"
+
+# Always setup virtual environment first
+setup_virtual_environment
+
+# Load platform-specific configurations (but skip their Python setup)
+export SKIP_PYTHON=1  # Tell platform scripts to skip Python installation
+
 if [ "$UNAME" == "Linux" ]; then
     export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin:$PATH
     . $BUILD_DIR/linux/setup.sh
@@ -139,7 +202,8 @@ fi
 
 # Check that pre-reqs have been installed
 if [ $BUILD_TRAVIS -eq 0 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; then
-    if { [ ! -f $BUILD_DIR/prereqs.installed ] && [ $SKIP_SETUP -eq 0 ]; } || ! which $PYTHONBIN > /dev/null; then
+    # With venv approach, we always have Python available
+    if [ $SKIP_SETUP -eq 0 ] && [ ! -f $BUILD_DIR/prereqs.installed ]; then
         echo "** WARNING: This should not be done on a production system. **"
         if [ $NO_INTERACTION -eq 1 ] || { read -r -p "Automatically install system pre-reqs? [Y/n] " resp && [[ $resp =~ ^(yes|y|Y| ) ]] || [[ -z $resp ]]; }; then
             install_prereqs
@@ -151,7 +215,18 @@ elif [ $BUILD_TRAVIS -eq 1 ]; then
     # Set up travis environment
     sudo useradd nagios
     cd $BUILD_DIR
-    python -m pip install -r resources/require.txt --upgrade
+    
+    # Use virtual environment if available, otherwise fall back to system pip
+    if [[ -n "$VENV_MANAGER" && -f "$VENV_MANAGER" ]]; then
+        echo "Setting up virtual environment for Travis CI build..."
+        if ! "$VENV_MANAGER" setup; then
+            echo "Virtual environment setup failed, falling back to system pip"
+            python -m pip install -r resources/require.txt --upgrade
+        fi
+    else
+        echo "Using system pip for Travis CI build..."
+        python -m pip install -r resources/require.txt --upgrade
+    fi
     exit 0
 fi
 
