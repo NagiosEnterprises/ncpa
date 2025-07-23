@@ -233,6 +233,7 @@ update_py_packages() {
         
         # Install required packages
         echo "Installing required Python packages in virtual environment..."
+        solaris_build_requirements="$BUILD_DIR/resources/require-solaris-build.txt"
         solaris_requirements="$BUILD_DIR/resources/require-solaris.txt"
         standard_requirements="$BUILD_DIR/resources/require.txt"
         
@@ -249,8 +250,41 @@ update_py_packages() {
             fi
         }
         
-        # Try requirements file first
-        if [ -f "$solaris_requirements" ]; then
+        # Try requirements file first - prefer build-specific over runtime
+        if [ -f "$solaris_build_requirements" ]; then
+            echo "Installing from Solaris build requirements: $solaris_build_requirements"
+            if "$PYTHONBIN" -m pip install -r "$solaris_build_requirements" --upgrade; then
+                echo "✓ Successfully installed packages from require-solaris-build.txt"
+            else
+                echo "Batch installation failed, trying individual packages..."
+                while IFS= read -r pkg; do
+                    if [ -n "$pkg" ] && [ "${pkg#\#}" = "$pkg" ]; then  # Skip empty lines and comments
+                        install_venv_package "$pkg"
+                    fi
+                done < "$solaris_build_requirements"
+            fi
+            
+            # Try to install SSL support after core packages
+            echo "Attempting to install SSL support packages..."
+            ssl_installed=false
+            for ssl_pkg in pyOpenSSL cryptography; do
+                echo "Trying to install $ssl_pkg..."
+                if install_venv_package "$ssl_pkg"; then
+                    echo "✓ Successfully installed $ssl_pkg"
+                    ssl_installed=true
+                    break  # If one works, we're good
+                else
+                    echo "Failed to install $ssl_pkg, will try next option"
+                fi
+            done
+            
+            if [ "$ssl_installed" = false ]; then
+                echo "WARNING: No SSL Python libraries installed successfully."
+                echo "NCPA will attempt to use system openssl command for certificate generation."
+                echo "Make sure 'openssl' is available in PATH at runtime."
+            fi
+            
+        elif [ -f "$solaris_requirements" ]; then
             echo "Installing from Solaris-specific requirements: $solaris_requirements"
             if "$PYTHONBIN" -m pip install -r "$solaris_requirements" --upgrade; then
                 echo "✓ Successfully installed packages from require-solaris.txt"
@@ -284,9 +318,29 @@ update_py_packages() {
         else
             echo "WARNING: No requirements file found, installing core packages individually..."
             # Install essential packages for NCPA
-            for pkg in cx_Freeze psutil requests Jinja2 flask werkzeug pyOpenSSL gevent cffi appdirs packaging; do
+            for pkg in cx_Freeze psutil requests Jinja2 flask werkzeug gevent appdirs packaging; do
                 install_venv_package "$pkg"
             done
+            
+            # Try to install SSL support separately  
+            echo "Attempting to install SSL support..."
+            ssl_installed=false
+            for ssl_pkg in pyOpenSSL cryptography; do
+                echo "Trying to install $ssl_pkg..."
+                if install_venv_package "$ssl_pkg"; then
+                    echo "✓ Successfully installed $ssl_pkg"
+                    ssl_installed=true
+                    break  # If one works, we're good
+                else
+                    echo "Failed to install $ssl_pkg, will try next option"
+                fi
+            done
+            
+            if [ "$ssl_installed" = false ]; then
+                echo "WARNING: No SSL Python libraries installed successfully."
+                echo "NCPA will attempt to use system openssl command for certificate generation."
+                echo "Make sure 'openssl' is available in PATH at runtime."
+            fi
         fi
         
         echo "✓ Python package installation completed in virtual environment"

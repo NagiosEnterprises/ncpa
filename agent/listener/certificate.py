@@ -47,7 +47,11 @@ def create_self_signed_cert(cert_dir, cert_file, key_file):
             # Fallback to pyOpenSSL
             _create_cert_with_openssl(target_cert, target_key)
         else:
-            raise ImportError("Neither cryptography nor pyOpenSSL libraries are available for certificate generation")
+            # Final fallback - try to use system openssl command
+            try:
+                _create_cert_with_system_openssl(target_cert, target_key)
+            except Exception as e:
+                raise ImportError("Neither cryptography nor pyOpenSSL libraries are available, and system openssl command failed: %s" % str(e))
 
     return target_cert, target_key
 
@@ -128,3 +132,54 @@ def _create_cert_with_openssl(target_cert, target_key):
     # Write private key
     with open(target_key, "wb") as f:
         f.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, k))
+
+
+def _create_cert_with_system_openssl(target_cert, target_key):
+    """Create self-signed certificate using system openssl command (final fallback)"""
+    import subprocess
+    import tempfile
+    
+    # Create a temporary config file for OpenSSL
+    config_content = """[req]
+distinguished_name = req_distinguished_name
+x509_extensions = v3_req
+prompt = no
+
+[req_distinguished_name]
+C = US
+ST = Minnesota
+L = St. Paul
+O = Nagios Enterprises, LLC
+OU = Development
+CN = %s
+
+[v3_req]
+keyUsage = keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+""" % socket.gethostname()
+    
+    try:
+        # Create temporary config file
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.conf', delete=False) as config_file:
+            config_file.write(config_content)
+            config_path = config_file.name
+        
+        # Generate private key and certificate using system openssl
+        cmd = [
+            'openssl', 'req', '-new', '-x509', '-days', '3650',
+            '-nodes', '-out', target_cert, '-keyout', target_key,
+            '-config', config_path
+        ]
+        
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        
+        # Clean up temp file
+        os.unlink(config_path)
+        
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        # Clean up temp file if it exists
+        try:
+            os.unlink(config_path)
+        except:
+            pass
+        raise Exception("System openssl command failed: %s" % str(e))
