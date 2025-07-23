@@ -750,20 +750,46 @@ EOF
                                     new_major=$(echo "$new_version" | cut -d. -f1)
                                     echo "Found GCC version: $new_version (major: $new_major)"
                                     if [ "$new_major" -ge 7 ]; then
-                                        # Set up the compiler environment
+                                        # Set up the compiler environment properly
                                         if echo "$found_gcc" | grep -q "g++"; then
                                             cpp17_compiler="$found_gcc"
                                             export CXX="$found_gcc"
-                                            export CC="${found_gcc%++}"
+                                            # For g++, try to find corresponding gcc
+                                            corresponding_gcc="${found_gcc%++}"
+                                            if command -v "$corresponding_gcc" >/dev/null 2>&1; then
+                                                export CC="$corresponding_gcc"
+                                            else
+                                                # Fallback: try to find any gcc in the same directory
+                                                gcc_dir=$(dirname $(which "$found_gcc") 2>/dev/null)
+                                                if [ -n "$gcc_dir" ] && [ -x "$gcc_dir/gcc" ]; then
+                                                    export CC="$gcc_dir/gcc"
+                                                else
+                                                    # Last resort: use generic gcc
+                                                    export CC="gcc"
+                                                fi
+                                            fi
                                         else
                                             cpp17_compiler="$found_gcc"
                                             export CC="$found_gcc"
-                                            # Try to find corresponding g++
-                                            corresponding_gxx="${found_gcc%gcc}g++"
+                                            # For gcc, try to find corresponding g++
+                                            corresponding_gxx="${found_gcc}++"
                                             if command -v "$corresponding_gxx" >/dev/null 2>&1; then
                                                 export CXX="$corresponding_gxx"
                                             else
-                                                export CXX="g++"
+                                                # Try gcc version with ++ suffix
+                                                version_gxx=$(echo "$found_gcc" | sed 's/gcc/g++/')
+                                                if command -v "$version_gxx" >/dev/null 2>&1; then
+                                                    export CXX="$version_gxx"
+                                                else
+                                                    # Fallback: try to find any g++ in the same directory
+                                                    gcc_dir=$(dirname $(which "$found_gcc") 2>/dev/null)
+                                                    if [ -n "$gcc_dir" ] && [ -x "$gcc_dir/g++" ]; then
+                                                        export CXX="$gcc_dir/g++"
+                                                    else
+                                                        # Last resort: use generic g++
+                                                        export CXX="g++"
+                                                    fi
+                                                fi
                                             fi
                                         fi
                                         echo "✓ Confirmed GCC $new_version with C++17 support (CC=$CC, CXX=$CXX)"
