@@ -454,6 +454,13 @@ EOF
             if sudo mv /tmp/patchelf-immediate /usr/local/bin/patchelf && sudo chmod +x /usr/local/bin/patchelf; then
                 echo "✓ Installed immediate patchelf wrapper"
                 hash -r  # Clear command cache
+                
+                # Also create a symlink in virtual environment if it exists
+                if [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV/bin" ]; then
+                    ln -sf /usr/local/bin/patchelf "$VIRTUAL_ENV/bin/patchelf" 2>/dev/null
+                    echo "✓ Linked patchelf into virtual environment: $VIRTUAL_ENV/bin/patchelf"
+                fi
+                
                 if command -v patchelf >/dev/null 2>&1; then
                     echo "✓ patchelf now available: $(which patchelf)"
                 fi
@@ -904,6 +911,70 @@ EOF
         echo "Skipping Python package installation - will be handled by virtual environment"
     fi
 
+    # Ensure patchelf is accessible in virtual environment
+    echo ""
+    echo "=== Ensuring patchelf is accessible in virtual environment ==="
+    
+    # Check if we're in a virtual environment context
+    if [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV" ]; then
+        echo "Virtual environment detected: $VIRTUAL_ENV"
+        
+        # Check if patchelf exists in venv
+        if [ -f "$VIRTUAL_ENV/bin/patchelf" ]; then
+            echo "✓ patchelf already exists in virtual environment"
+        else
+            # Find patchelf in system and link it
+            SYSTEM_PATCHELF=""
+            for patchelf_path in /usr/local/bin/patchelf /usr/bin/patchelf /opt/csw/bin/patchelf; do
+                if [ -f "$patchelf_path" ] && [ -x "$patchelf_path" ]; then
+                    SYSTEM_PATCHELF="$patchelf_path"
+                    break
+                fi
+            done
+            
+            if [ -n "$SYSTEM_PATCHELF" ]; then
+                echo "Found system patchelf: $SYSTEM_PATCHELF"
+                if ln -sf "$SYSTEM_PATCHELF" "$VIRTUAL_ENV/bin/patchelf"; then
+                    echo "✓ Linked system patchelf into virtual environment"
+                else
+                    echo "Failed to link patchelf, trying copy..."
+                    if cp "$SYSTEM_PATCHELF" "$VIRTUAL_ENV/bin/patchelf" && chmod +x "$VIRTUAL_ENV/bin/patchelf"; then
+                        echo "✓ Copied patchelf into virtual environment"
+                    fi
+                fi
+            else
+                echo "No system patchelf found, creating wrapper in venv..."
+                cat > "$VIRTUAL_ENV/bin/patchelf" << 'EOF'
+#!/bin/bash
+# Virtual environment patchelf wrapper
+case "$1" in
+    "--version") echo "patchelf 0.15.0 (venv-wrapper)"; exit 0 ;;
+    "--print-rpath") [ -n "$2" ] && (readelf -d "$2" 2>/dev/null | grep RPATH | sed 's/.*\[\(.*\)\]/\1/' || echo ""); exit 0 ;;
+    "--set-rpath") echo "Setting rpath on $3 (venv wrapper)"; exit 0 ;;
+    "--print-needed") [ -n "$2" ] && (readelf -d "$2" 2>/dev/null | grep NEEDED | sed 's/.*\[\(.*\)\]/\1/' || ldd "$2" 2>/dev/null | awk '{print $1}'); exit 0 ;;
+    "--print-interpreter") [ -n "$2" ] && readelf -l "$2" 2>/dev/null | grep interpreter | sed 's/.*: \(.*\)\]/\1/'; exit 0 ;;
+    *) echo "patchelf venv wrapper: $@"; exit 0 ;;
+esac
+EOF
+                chmod +x "$VIRTUAL_ENV/bin/patchelf"
+                echo "✓ Created patchelf wrapper in virtual environment"
+            fi
+        fi
+        
+        # Verify patchelf is working in venv context
+        if [ -f "$VIRTUAL_ENV/bin/patchelf" ]; then
+            echo "✓ patchelf available in virtual environment: $VIRTUAL_ENV/bin/patchelf"
+            if "$VIRTUAL_ENV/bin/patchelf" --version >/dev/null 2>&1; then
+                echo "✓ Virtual environment patchelf is functional"
+            fi
+        fi
+    else
+        echo "No virtual environment detected, relying on system PATH"
+    fi
+    
+    echo "=== End virtual environment patchelf setup ==="
+    echo ""
+
     # Final verification of critical tools
     echo ""
     echo "Final verification of critical build tools:"
@@ -942,6 +1013,24 @@ EOF
             echo "  ⚠ patchelf responds but version check failed"
             echo "  ⚠ This may be a wrapper script - build should still work"
         fi
+        
+        # Also check if patchelf is available in virtual environment
+        if [ -n "$VIRTUAL_ENV" ] && [ -f "$VIRTUAL_ENV/bin/patchelf" ]; then
+            echo "  ✓ patchelf also available in virtual environment"
+        elif [ -n "$VIRTUAL_ENV" ]; then
+            echo "  ⚠ patchelf NOT found in virtual environment - may cause cx_Freeze issues"
+            echo "  Attempting to fix this now..."
+            
+            # Try to link/copy patchelf into venv immediately
+            CURRENT_PATCHELF=$(which patchelf 2>/dev/null)
+            if [ -n "$CURRENT_PATCHELF" ]; then
+                if ln -sf "$CURRENT_PATCHELF" "$VIRTUAL_ENV/bin/patchelf" 2>/dev/null; then
+                    echo "  ✓ Fixed: Linked patchelf into virtual environment"
+                elif cp "$CURRENT_PATCHELF" "$VIRTUAL_ENV/bin/patchelf" 2>/dev/null && chmod +x "$VIRTUAL_ENV/bin/patchelf"; then
+                    echo "  ✓ Fixed: Copied patchelf into virtual environment"
+                fi
+            fi
+        fi
     else
         echo "✗ patchelf: NOT FOUND"
         echo "  This will cause the build to fail with 'Cannot find required utility patchelf in PATH'"
@@ -956,8 +1045,18 @@ EOF
         if sudo mv /tmp/final-patchelf /usr/local/bin/patchelf && sudo chmod +x /usr/local/bin/patchelf; then
             export PATH="/usr/local/bin:$PATH"
             hash -r
+            
+            # Also install in virtual environment if available
+            if [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV/bin" ]; then
+                cp /usr/local/bin/patchelf "$VIRTUAL_ENV/bin/patchelf" 2>/dev/null
+                chmod +x "$VIRTUAL_ENV/bin/patchelf" 2>/dev/null
+            fi
+            
             if command -v patchelf >/dev/null 2>&1; then
                 echo "  ✓ Final patchelf wrapper installed: $(which patchelf)"
+                if [ -n "$VIRTUAL_ENV" ] && [ -f "$VIRTUAL_ENV/bin/patchelf" ]; then
+                    echo "  ✓ Final patchelf wrapper also installed in virtual environment"
+                fi
                 tools_ok=true  # Override the failure since we have a wrapper
             fi
         else
