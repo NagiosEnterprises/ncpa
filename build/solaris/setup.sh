@@ -2,23 +2,56 @@
 
 # Source version configuration
 BUILD_DIR_FOR_VERSION=$(dirname "$(dirname "$0")")
+if [ ! -f "$BUILD_DIR_FOR_VERSION/version_config.sh" ]; then
+    echo "ERROR: Cannot find version_config.sh at $BUILD_DIR_FOR_VERSION/version_config.sh"
+    exit 1
+fi
+
+echo "Loading version configuration from: $BUILD_DIR_FOR_VERSION/version_config.sh"
 source "$BUILD_DIR_FOR_VERSION/version_config.sh"
+
+# Validate that required variables are set
+if [ -z "$PYTHONVER" ] || [ -z "$PYTHON_MAJOR_MINOR" ]; then
+    echo "ERROR: Required version variables not set. Check version_config.sh"
+    echo "PYTHONVER: '$PYTHONVER'"
+    echo "PYTHON_MAJOR_MINOR: '$PYTHON_MAJOR_MINOR'"
+    exit 1
+fi
 
 # Globals - Use the version from version_config.sh
 PYTHONTAR="Python-$PYTHONVER"
 PYTHONBIN=""
+PREFERRED_PYTHON_VERSION="$PYTHON_MAJOR_MINOR"  # Use version from config (e.g., "3.13")
+NO_INTERACTION="${NO_INTERACTION:-0}"  # Default to interactive mode if not set
 
-# Check if we can detect Python 3.9+ with pkg-config first
+# Build directory for referencing other scripts
+BUILD_DIR="${BUILD_DIR_FOR_VERSION}"
+
+# Debug output for version configuration
+echo "=== Version Configuration ==="
+echo "PYTHONVER: $PYTHONVER"
+echo "PYTHON_MAJOR_MINOR: $PYTHON_MAJOR_MINOR"
+echo "PREFERRED_PYTHON_VERSION: $PREFERRED_PYTHON_VERSION"
+echo "SSLVER: $SSLVER"
+echo "ZLIBVER: $ZLIBVER"
+echo "================================"
+echo ""
+
+# Check if we can detect the configured Python version first
 if command -v pkg-config >/dev/null 2>&1; then
     if pkg-config --exists python3; then
         potential_pythonbin=$(pkg-config --variable=exec_prefix python3)/bin/python3
         if [ -x "$potential_pythonbin" ]; then
-            # Check if this Python is 3.6 or newer
+            # Check if this Python matches our preferred version
             py_version=$($potential_pythonbin --version 2>&1 | sed -n 's/.*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
             if [ -n "$py_version" ]; then
                 major=$(echo "$py_version" | cut -d. -f1)
                 minor=$(echo "$py_version" | cut -d. -f2)
-                if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 6 ]); then
+                if [ "$py_version" = "$PREFERRED_PYTHON_VERSION" ]; then
+                    echo "Found exact match for preferred Python $PREFERRED_PYTHON_VERSION via pkg-config"
+                    PYTHONBIN="$potential_pythonbin"
+                elif [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 6 ]); then
+                    echo "Found compatible Python $py_version via pkg-config (not preferred $PREFERRED_PYTHON_VERSION)"
                     PYTHONBIN="$potential_pythonbin"
                 fi
             fi
@@ -26,22 +59,63 @@ if command -v pkg-config >/dev/null 2>&1; then
     fi
 fi
 
-# Fallback to common Python locations on Solaris (prefer IPS over OpenCSW)
+# Fallback to common Python locations on Solaris (prefer configured version, then IPS over OpenCSW)
 if [ -z "$PYTHONBIN" ] || [ ! -x "$PYTHONBIN" ]; then
-    for py_path in /usr/bin/python3.13 /usr/bin/python3.12 /usr/bin/python3.11 /usr/bin/python3.10 /usr/bin/python3.9 /usr/bin/python3.8 /usr/bin/python3 /usr/local/bin/python3 /opt/csw/bin/python3; do
+    echo "Searching for Python $PREFERRED_PYTHON_VERSION or compatible versions..."
+    
+    # First, explicitly check for the configured Python version in all common locations
+    preferred_paths=(
+        "/usr/bin/python$PREFERRED_PYTHON_VERSION"
+        "/usr/local/bin/python$PREFERRED_PYTHON_VERSION" 
+        "/opt/csw/bin/python$PREFERRED_PYTHON_VERSION"
+        "/usr/bin/python${PYTHON_MAJOR}"
+        "/usr/local/bin/python${PYTHON_MAJOR}"
+        "/opt/csw/bin/python${PYTHON_MAJOR}"
+    )
+    
+    for py_path in "${preferred_paths[@]}"; do
         if [ -x "$py_path" ]; then
-            # Check if this Python is 3.6 or newer
+            # Check if this Python matches our preferred version
             py_version=$($py_path --version 2>&1 | sed -n 's/.*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
             if [ -n "$py_version" ]; then
-                major=$(echo "$py_version" | cut -d. -f1)
-                minor=$(echo "$py_version" | cut -d. -f2)
-                if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 6 ]); then
+                if [ "$py_version" = "$PREFERRED_PYTHON_VERSION" ]; then
                     PYTHONBIN="$py_path"
+                    echo "Found exact match for preferred Python $PREFERRED_PYTHON_VERSION: $PYTHONBIN"
                     break
                 fi
             fi
         fi
     done
+    
+    # If no exact match found, fallback to other compatible versions
+    if [ -z "$PYTHONBIN" ]; then
+        echo "No exact match for Python $PREFERRED_PYTHON_VERSION found, checking compatible versions..."
+        fallback_paths=(
+            "/usr/bin/python3.13" "/usr/bin/python3.12" "/usr/bin/python3.11" 
+            "/usr/bin/python3.10" "/usr/bin/python3.9" "/usr/bin/python3.8" 
+            "/usr/bin/python3" 
+            "/usr/local/bin/python3.13" "/usr/local/bin/python3.12" "/usr/local/bin/python3.11"
+            "/usr/local/bin/python3.10" "/usr/local/bin/python3.9" "/usr/local/bin/python3"
+            "/opt/csw/bin/python3.13" "/opt/csw/bin/python3.12" "/opt/csw/bin/python3.11"
+            "/opt/csw/bin/python3.10" "/opt/csw/bin/python3.9" "/opt/csw/bin/python3"
+        )
+        
+        for py_path in "${fallback_paths[@]}"; do
+            if [ -x "$py_path" ]; then
+                # Check if this Python is 3.6 or newer
+                py_version=$($py_path --version 2>&1 | sed -n 's/.*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
+                if [ -n "$py_version" ]; then
+                    major=$(echo "$py_version" | cut -d. -f1)
+                    minor=$(echo "$py_version" | cut -d. -f2)
+                    if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 6 ]); then
+                        PYTHONBIN="$py_path"
+                        echo "Found compatible Python $py_version: $PYTHONBIN"
+                        break
+                    fi
+                fi
+            fi
+        done
+    fi
 fi
 
 # If still no suitable Python found, set to default (will be handled later)
@@ -52,6 +126,35 @@ fi
 # Check version of Solaris
 SOLARIS_VER=$(uname -r | cut -d. -f2)
 ARCH=$(arch)
+
+# Override with configured Python version if available (preferred version)
+echo "Checking for configured Python version ($PREFERRED_PYTHON_VERSION)..."
+override_paths=(
+    "/usr/bin/python$PREFERRED_PYTHON_VERSION"
+    "/usr/local/bin/python$PREFERRED_PYTHON_VERSION"
+    "/opt/csw/bin/python$PREFERRED_PYTHON_VERSION"
+    "/usr/bin/python${PYTHON_MAJOR}"
+    "/usr/local/bin/python${PYTHON_MAJOR}"
+    "/opt/csw/bin/python${PYTHON_MAJOR}"
+)
+
+for preferred_py in "${override_paths[@]}"; do
+    if [ -x "$preferred_py" ]; then
+        py_version=$($preferred_py --version 2>&1 | sed -n 's/.*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
+        if [ -n "$py_version" ]; then
+            if [ "$py_version" = "$PREFERRED_PYTHON_VERSION" ]; then
+                echo "Overriding with configured Python $PREFERRED_PYTHON_VERSION: $preferred_py"
+                PYTHONBIN="$preferred_py"
+                break
+            elif [ "${py_version%.*}" = "${PREFERRED_PYTHON_VERSION%.*}" ]; then
+                # Same major.minor, different patch version
+                echo "Found compatible Python $py_version (close to preferred $PREFERRED_PYTHON_VERSION): $preferred_py"
+                PYTHONBIN="$preferred_py"
+                break
+            fi
+        fi
+    fi
+done
 
 # Early Python detection output
 echo "Early Python detection:"
@@ -262,11 +365,11 @@ install_prereqs() {
 
     # Function to build Python from source as a last resort
     build_python_from_source() {
-        local python_version="3.12.8"
+        local python_version="$PYTHONVER"  # Use configured version
         local python_url="https://www.python.org/ftp/python/${python_version}/Python-${python_version}.tgz"
         local build_dir="/tmp/python-build-$$"
         
-        echo "Building Python ${python_version} from source..."
+        echo "Building Python ${python_version} from source (configured version)..."
         echo "This may take 10-30 minutes depending on your system..."
         
         # Check for required tools
@@ -437,10 +540,19 @@ install_prereqs() {
     if command -v pkg >/dev/null 2>&1; then
         echo "Attempting to install core dependencies via native pkg manager..."
         
-        # Try to install Python first via IPS - this will give us a much newer version
+        # Try to install Python first via IPS - prefer the configured version
         echo "Installing Python via IPS (native Solaris package manager)..."
+        echo "Preferred version: Python $PREFERRED_PYTHON_VERSION"
+        
+        # Build IPS package list with configured version first
+        ips_python_packages=(
+            "runtime/python-${PYTHON_MAJOR}${PYTHON_MAJOR_MINOR#*.}"  # e.g., runtime/python-313
+            "runtime/python-313" "runtime/python-312" "runtime/python-311" 
+            "runtime/python-310" "runtime/python-39" "runtime/python-38"
+        )
+        
         python_ips_installed=false
-        for py_ver in runtime/python-313 runtime/python-312 runtime/python-311 runtime/python-310 runtime/python-39 runtime/python-38; do
+        for py_ver in "${ips_python_packages[@]}"; do
             if check_ips_package "$py_ver"; then
                 echo "Installing $py_ver..."
                 if sudo pkg install --accept "$py_ver"; then
@@ -767,43 +879,66 @@ install_prereqs() {
     export LD_LIBRARY_PATH=/opt/csw/lib:/usr/lib:$LD_LIBRARY_PATH
     export PKG_CONFIG_PATH=/opt/csw/lib/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 
-    # Update PYTHONBIN to the actual installed location (prefer IPS over CSW)
+    # Update PYTHONBIN to the actual installed location (prefer configured version, then IPS over CSW)
     echo "Detecting Python installation..."
-    for py_path in \
-        "/usr/bin/python3.13" \
-        "/usr/bin/python3.12" \
-        "/usr/bin/python3.11" \
-        "/usr/bin/python3.10" \
-        "/usr/bin/python3.9" \
-        "/usr/bin/python3.8" \
-        "/usr/bin/python3" \
-        "/opt/csw/bin/python3.9" \
-        "/opt/csw/bin/python3.8" \
-        "/opt/csw/bin/python3.7" \
-        "/opt/csw/bin/python3" \
-        "/usr/local/bin/python3"; do
-        
+    echo "Looking for configured Python version: $PREFERRED_PYTHON_VERSION"
+    
+    # First, explicitly check for the configured Python version in all common locations
+    preferred_detection_paths=(
+        "/usr/bin/python$PREFERRED_PYTHON_VERSION"
+        "/usr/local/bin/python$PREFERRED_PYTHON_VERSION"
+        "/opt/csw/bin/python$PREFERRED_PYTHON_VERSION"
+    )
+    
+    for py_path in "${preferred_detection_paths[@]}"; do
         if [ -x "$py_path" ]; then
-            PYTHONBIN="$py_path"
-            echo "Found Python at: $PYTHONBIN"
-            # Check Python version to ensure it's 3.6 or newer
-            py_version=$($PYTHONBIN --version 2>&1 | sed -n 's/.*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
-            echo "Python version: $py_version"
-            
-            # Check if version is >= 3.6 (minimum for modern pip)
+            # Check if this Python matches our configured version
+            py_version=$($py_path --version 2>&1 | sed -n 's/.*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
             if [ -n "$py_version" ]; then
-                major=$(echo "$py_version" | cut -d. -f1)
-                minor=$(echo "$py_version" | cut -d. -f2)
-                if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 6 ]); then
+                if [ "$py_version" = "$PREFERRED_PYTHON_VERSION" ] || [ "${py_version%.*}" = "${PREFERRED_PYTHON_VERSION%.*}" ]; then
+                    PYTHONBIN="$py_path"
+                    echo "Found configured Python $py_version: $PYTHONBIN"
                     echo "✓ Python version $py_version is suitable"
                     break
-                else
-                    echo "✗ Python version $py_version is too old (need >= 3.6)"
-                    PYTHONBIN=""
                 fi
             fi
         fi
     done
+    
+    # If no configured version found, fallback to other versions
+    if [ -z "$PYTHONBIN" ]; then
+        echo "Configured Python $PREFERRED_PYTHON_VERSION not found, checking fallback versions..."
+        fallback_detection_paths=(
+            "/usr/bin/python3.13" "/usr/bin/python3.12" "/usr/bin/python3.11"
+            "/usr/bin/python3.10" "/usr/bin/python3.9" "/usr/bin/python3.8"
+            "/usr/bin/python3" 
+            "/opt/csw/bin/python3.9" "/opt/csw/bin/python3.8" "/opt/csw/bin/python3.7"
+            "/opt/csw/bin/python3" "/usr/local/bin/python3"
+        )
+        
+        for py_path in "${fallback_detection_paths[@]}"; do
+            if [ -x "$py_path" ]; then
+                PYTHONBIN="$py_path"
+                echo "Found Python at: $PYTHONBIN"
+                # Check Python version to ensure it's 3.6 or newer
+                py_version=$($PYTHONBIN --version 2>&1 | sed -n 's/.*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
+                echo "Python version: $py_version"
+                
+                # Check if version is >= 3.6 (minimum for modern pip)
+                if [ -n "$py_version" ]; then
+                    major=$(echo "$py_version" | cut -d. -f1)
+                    minor=$(echo "$py_version" | cut -d. -f2)
+                    if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 6 ]); then
+                        echo "✓ Python version $py_version is suitable"
+                        break
+                    else
+                        echo "✗ Python version $py_version is too old (need >= 3.6)"
+                        PYTHONBIN=""
+                    fi
+                fi
+            fi
+        done
+    fi
 
     if [ -z "$PYTHONBIN" ] || [ ! -x "$PYTHONBIN" ]; then
         echo "ERROR: Could not find a suitable Python 3.6+ installation"
@@ -813,12 +948,16 @@ install_prereqs() {
         echo ""
         echo "=== PYTHON INSTALLATION OPTIONS ==="
         echo ""
+        echo "Configured Python version: $PYTHONVER"
+        echo "Preferred Python version: $PREFERRED_PYTHON_VERSION"
+        echo ""
         echo "Option 1: Install Python via IPS (recommended):"
         if command -v pkg >/dev/null 2>&1; then
             echo "  Available Python packages in IPS:"
             pkg list -a | grep "runtime/python" | head -5 || echo "  None found"
             echo ""
-            echo "  Try these commands:"
+            echo "  Try these commands (in order of preference):"
+            echo "    sudo pkg install runtime/python-${PYTHON_MAJOR}${PYTHON_MAJOR_MINOR#*.}"  # Configured version
             echo "    sudo pkg install runtime/python-313"
             echo "    sudo pkg install runtime/python-312"
             echo "    sudo pkg install runtime/python-311"
@@ -830,7 +969,7 @@ install_prereqs() {
         
         echo ""
         echo "Option 2: Build Python from source:"
-        echo "  This script can attempt to build Python 3.12 from source"
+        echo "  This script can attempt to build Python $PYTHONVER from source (configured version)"
         echo "  This requires GCC and development tools to be installed"
         echo ""
         
@@ -838,13 +977,21 @@ install_prereqs() {
             echo "Non-interactive mode - exiting without Python"
             exit 1
         else
-            read -r -p "Would you like to attempt building Python 3.12 from source? [y/N] " build_python
+            read -r -p "Would you like to attempt building Python $PYTHONVER from source? [y/N] " build_python
             if [[ $build_python =~ ^(yes|y|Y)$ ]]; then
                 echo "Attempting to build Python from source..."
                 build_python_from_source
                 
-                # Re-check for Python after build
-                for py_path in "/usr/local/bin/python3" "/usr/local/bin/python3.13" "/usr/local/bin/python3.12" "/usr/local/bin/python3.11" "/usr/local/bin/python3.10" "/usr/local/bin/python3.9"; do
+                # Re-check for Python after build (look for configured version first)
+                check_paths=(
+                    "/usr/local/bin/python$PREFERRED_PYTHON_VERSION"
+                    "/usr/local/bin/python$PYTHON_MAJOR"
+                    "/usr/local/bin/python3"
+                    "/usr/local/bin/python3.13" "/usr/local/bin/python3.12" 
+                    "/usr/local/bin/python3.11" "/usr/local/bin/python3.10" "/usr/local/bin/python3.9"
+                )
+                
+                for py_path in "${check_paths[@]}"; do
                     if [ -x "$py_path" ]; then
                         PYTHONBIN="$py_path"
                         echo "✓ Found newly built Python at: $PYTHONBIN"
@@ -865,6 +1012,12 @@ install_prereqs() {
 
     echo "Using Python: $PYTHONBIN"
     $PYTHONBIN --version
+
+    # Validate that the selected Python works
+    if ! $PYTHONBIN -c "import sys; print('Python validation successful')" 2>/dev/null; then
+        echo "ERROR: Selected Python $PYTHONBIN failed basic validation"
+        exit 1
+    fi
 
     # Install pip if not available - handle different Python versions
     if ! $PYTHONBIN -m pip --version >/dev/null 2>&1; then
@@ -904,14 +1057,31 @@ install_prereqs() {
         fi
     fi
 
-    # Export PYTHONBIN for use by the main build script
+    # Export PYTHONBIN for use by the main build script and other processes
     export PYTHONBIN
+    export PYTHONVER
+    export PYTHON_MAJOR_MINOR
+    export PREFERRED_PYTHON_VERSION
 
     # Add debug output for Python detection
-    echo "Final Python Configuration:"
-    echo "  PYTHONBIN: $PYTHONBIN"
-    echo "  Python version: $($PYTHONBIN --version 2>&1)"
+    echo "=== FINAL PYTHON CONFIGURATION ==="
+    echo "  Configured Python version: $PYTHONVER"
+    echo "  Preferred Python version: $PREFERRED_PYTHON_VERSION"
+    echo "  Selected PYTHONBIN: $PYTHONBIN"
+    echo "  Actual Python version: $($PYTHONBIN --version 2>&1)"
+    
+    # Check if we got the preferred version
+    actual_version=$($PYTHONBIN --version 2>&1 | sed -n 's/.*\([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
+    if [ "$actual_version" = "$PREFERRED_PYTHON_VERSION" ]; then
+        echo "  ✓ Using configured Python version: $actual_version"
+    elif [ "${actual_version%.*}" = "${PREFERRED_PYTHON_VERSION%.*}" ]; then
+        echo "  ⚠ Using compatible Python version: $actual_version (configured: $PREFERRED_PYTHON_VERSION)"
+    else
+        echo "  ⚠ Using different Python version: $actual_version (configured: $PREFERRED_PYTHON_VERSION)"
+    fi
+    
     echo "  Python executable path: $(which $($PYTHONBIN -c 'import sys; print(sys.executable.split("/")[-1])') 2>/dev/null || echo 'unknown')"
+    echo "===================================="
     echo ""
     
     # Run Python debug script if available
@@ -1018,3 +1188,32 @@ install_prereqs() {
     update_py_packages
 
 }
+
+# Main execution
+main() {
+    echo "=========================================="
+    echo "NCPA Solaris Setup Script"
+    echo "=========================================="
+    echo "This script will install prerequisites and configure Python for NCPA build"
+    echo ""
+    
+    # Ensure we have the proper permissions
+    if [ "$(id -u)" -eq 0 ]; then
+        echo "WARNING: Running as root. Some package installations may require sudo anyway."
+    fi
+    
+    # Install prerequisites
+    install_prereqs
+    
+    echo ""
+    echo "=========================================="
+    echo "Setup completed successfully!"
+    echo "Python binary: $PYTHONBIN"
+    echo "Python version: $($PYTHONBIN --version 2>&1)"
+    echo "=========================================="
+}
+
+# Only run main if script is executed directly (not sourced)
+if [ "${BASH_SOURCE[0]}" = "${0}" ] || [ -z "${BASH_SOURCE[0]}" ]; then
+    main "$@"
+fi
