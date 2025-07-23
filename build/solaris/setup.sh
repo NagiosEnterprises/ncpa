@@ -251,8 +251,12 @@ update_py_packages() {
         }
         
         # Try requirements file first - prefer build-specific over runtime
+        echo "DEBUG: Checking for solaris_build_requirements: $solaris_build_requirements"
+        echo "DEBUG: File exists check: $(test -f "$solaris_build_requirements" && echo "YES" || echo "NO")"
         if [ -f "$solaris_build_requirements" ]; then
             echo "Installing from Solaris build requirements: $solaris_build_requirements"
+            echo "DEBUG: Contents of $solaris_build_requirements:"
+            cat "$solaris_build_requirements"
             if "$PYTHONBIN" -m pip install -r "$solaris_build_requirements" --upgrade; then
                 echo "✓ Successfully installed packages from require-solaris-build.txt"
             else
@@ -285,6 +289,39 @@ update_py_packages() {
             fi
             
         elif [ -f "$solaris_requirements" ]; then
+            echo "Installing from Solaris-specific requirements: $solaris_requirements"
+            echo "DEBUG: Contents of $solaris_requirements:"
+            cat "$solaris_requirements"
+            if "$PYTHONBIN" -m pip install -r "$solaris_requirements" --upgrade; then
+                echo "✓ Successfully installed packages from require-solaris.txt"
+            else
+                echo "Batch installation failed, trying individual packages..."
+                while IFS= read -r pkg; do
+                    if [ -n "$pkg" ] && [ "${pkg#\#}" = "$pkg" ]; then  # Skip empty lines and comments
+                        install_venv_package "$pkg"
+                    fi
+                done < "$solaris_requirements"
+            fi
+            
+            # Try to install SSL support after core packages  
+            echo "Attempting to install SSL support..."
+            ssl_installed=false
+            for ssl_pkg in pyOpenSSL cryptography; do
+                echo "Trying to install $ssl_pkg..."
+                if install_venv_package "$ssl_pkg"; then
+                    echo "✓ Successfully installed $ssl_pkg"
+                    ssl_installed=true
+                    break  # If one works, we're good
+                else
+                    echo "Failed to install $ssl_pkg, will try next option"
+                fi
+            done
+            
+            if [ "$ssl_installed" = false ]; then
+                echo "WARNING: No SSL Python libraries installed successfully."
+                echo "NCPA will attempt to use system openssl command for certificate generation."
+                echo "Make sure 'openssl' is available in PATH at runtime."
+            fi
             echo "Installing from Solaris-specific requirements: $solaris_requirements"
             if "$PYTHONBIN" -m pip install -r "$solaris_requirements" --upgrade; then
                 echo "✓ Successfully installed packages from require-solaris.txt"

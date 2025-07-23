@@ -5,10 +5,8 @@ Jinja2
 flask
 werkzeug
 docutils
-pyOpenSSL
 gevent
 gevent-websocket
-cffi
 appdirs
 packaging
 kafka-python
