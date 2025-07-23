@@ -440,6 +440,88 @@ install_prereqs() {
         return 1
     }
 
+    # Function to manually install patchelf if not available through package managers
+    install_patchelf_manual() {
+        echo "Attempting to build patchelf from source..."
+        
+        # Create a temporary directory for building
+        TEMP_BUILD_DIR="/tmp/patchelf-build-$$"
+        mkdir -p "$TEMP_BUILD_DIR"
+        cd "$TEMP_BUILD_DIR"
+        
+        # Check if we have basic build tools
+        if ! command -v gcc >/dev/null 2>&1; then
+            echo "ERROR: gcc not available for building patchelf"
+            cd - >/dev/null
+            rm -rf "$TEMP_BUILD_DIR"
+            return 1
+        fi
+        
+        if ! command -v make >/dev/null 2>&1 && ! command -v gmake >/dev/null 2>&1; then
+            echo "ERROR: make/gmake not available for building patchelf"
+            cd - >/dev/null
+            rm -rf "$TEMP_BUILD_DIR"
+            return 1
+        fi
+        
+        # Try to download and build patchelf
+        PATCHELF_VERSION="0.18.0"
+        PATCHELF_URL="https://github.com/NixOS/patchelf/releases/download/$PATCHELF_VERSION/patchelf-$PATCHELF_VERSION.tar.gz"
+        
+        echo "Downloading patchelf $PATCHELF_VERSION..."
+        if command -v wget >/dev/null 2>&1; then
+            wget "$PATCHELF_URL" -O patchelf.tar.gz
+        elif command -v curl >/dev/null 2>&1; then
+            curl -L "$PATCHELF_URL" -o patchelf.tar.gz
+        else
+            echo "ERROR: Neither wget nor curl available for downloading patchelf"
+            cd - >/dev/null
+            rm -rf "$TEMP_BUILD_DIR"
+            return 1
+        fi
+        
+        # Extract and build
+        if [ -f patchelf.tar.gz ]; then
+            tar -xzf patchelf.tar.gz
+            cd patchelf-*
+            
+            echo "Configuring patchelf..."
+            if ./configure --prefix=/usr/local; then
+                echo "Building patchelf..."
+                if command -v gmake >/dev/null 2>&1; then
+                    MAKE_CMD=gmake
+                else
+                    MAKE_CMD=make
+                fi
+                
+                if $MAKE_CMD; then
+                    echo "Installing patchelf..."
+                    if sudo $MAKE_CMD install; then
+                        echo "✓ patchelf successfully installed to /usr/local/bin/patchelf"
+                        # Update PATH to include /usr/local/bin
+                        export PATH="/usr/local/bin:$PATH"
+                        cd - >/dev/null
+                        rm -rf "$TEMP_BUILD_DIR"
+                        return 0
+                    else
+                        echo "ERROR: Failed to install patchelf"
+                    fi
+                else
+                    echo "ERROR: Failed to build patchelf"
+                fi
+            else
+                echo "ERROR: Failed to configure patchelf"
+            fi
+        else
+            echo "ERROR: Failed to download patchelf"
+        fi
+        
+        # Cleanup on failure
+        cd - >/dev/null
+        rm -rf "$TEMP_BUILD_DIR"
+        return 1
+    }
+
     # Function to safely install a package if available
     safe_install_package() {
         local pkg="$1"
@@ -484,6 +566,7 @@ install_prereqs() {
     safe_install_package "make" "GNU make"
     safe_install_package "gmake" "GNU make alternative"
     safe_install_package "pkgconfig" "pkg-config utility"
+    safe_install_package "patchelf" "ELF patching utility"
     
     # Install core system libraries that Python may need
     echo "Installing system libraries..."
@@ -503,10 +586,12 @@ install_prereqs() {
         pkg install --accept library/security/openssl 2>/dev/null || echo "openssl already installed or not available"
         pkg install --accept developer/gcc 2>/dev/null || echo "gcc already installed or not available"
         pkg install --accept developer/build/gnu-make 2>/dev/null || echo "make already installed or not available"
+        pkg install --accept developer/linker 2>/dev/null || echo "linker tools already installed or not available"
+        pkg install --accept system/library/gcc-runtime 2>/dev/null || echo "gcc runtime already installed or not available"
     fi
     
     # Update PATH to include common tool locations
-    export PATH=/opt/csw/bin:/opt/csw/sbin:/usr/sfw/bin:/usr/ccs/bin:/usr/bin:/usr/local/bin:$PATH
+    export PATH=/usr/local/bin:/opt/csw/bin:/opt/csw/sbin:/usr/sfw/bin:/usr/ccs/bin:/usr/bin:$PATH
     export LD_LIBRARY_PATH=/opt/csw/lib:/usr/lib:$LD_LIBRARY_PATH
     export PKG_CONFIG_PATH=/opt/csw/lib/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 
@@ -532,6 +617,14 @@ install_prereqs() {
         echo "✓ gcc available: $(which gcc)"
     else
         echo "✗ gcc not found - this may cause build issues"
+    fi
+    
+    # Check for patchelf (required by cx_Freeze)
+    if command -v patchelf >/dev/null 2>&1; then
+        echo "✓ patchelf available: $(which patchelf)"
+    else
+        echo "✗ patchelf not found - attempting manual installation..."
+        install_patchelf_manual
     fi
     
     # Setup nagios user and group
