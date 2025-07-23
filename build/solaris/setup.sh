@@ -883,8 +883,7 @@ EOF
                     rm -rf "$TEMP_BUILD_DIR"
                     return 1
                 fi
-            fi
-        fi
+            fi  # End of "If still no suitable compiler, try to install one"
         
         if [ -n "$cpp17_compiler" ]; then
             echo "✓ Using C++17-capable compiler: $cpp17_compiler"
