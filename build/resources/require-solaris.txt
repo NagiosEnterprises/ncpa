@@ -5,7 +5,7 @@ Jinja2
 flask
 werkzeug
 docutils
-cryptography
+pyOpenSSL
 gevent
 gevent-websocket
 cffi

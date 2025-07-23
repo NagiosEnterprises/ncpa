@@ -264,10 +264,11 @@ update_py_packages() {
             fi
         elif [ -f "$standard_requirements" ]; then
             echo "Installing from standard requirements: $standard_requirements"
-            # For Solaris, exclude pyOpenSSL as we use Python's built-in SSL
-            echo "Filtering out pyOpenSSL for Solaris compatibility..."
+            # For Solaris, replace cryptography with pyOpenSSL to avoid Rust dependency
+            echo "Filtering out cryptography and ensuring pyOpenSSL for Solaris compatibility..."
             temp_req="/tmp/require-solaris-venv.txt"
-            grep -v "^pyOpenSSL" "$standard_requirements" > "$temp_req"
+            grep -v "^cryptography" "$standard_requirements" | grep -v "^pyOpenSSL" > "$temp_req"
+            echo "pyOpenSSL" >> "$temp_req"
             
             if "$PYTHONBIN" -m pip install -r "$temp_req" --upgrade; then
                 echo "✓ Successfully installed packages from require.txt"
@@ -283,7 +284,7 @@ update_py_packages() {
         else
             echo "WARNING: No requirements file found, installing core packages individually..."
             # Install essential packages for NCPA
-            for pkg in cx_Freeze psutil requests Jinja2 flask werkzeug cryptography gevent cffi appdirs packaging; do
+            for pkg in cx_Freeze psutil requests Jinja2 flask werkzeug pyOpenSSL gevent cffi appdirs packaging; do
                 install_venv_package "$pkg"
             done
         fi
@@ -400,12 +401,15 @@ install_prereqs() {
     safe_install_package "bzip2" "bzip2 compression"
     safe_install_package "readline" "readline library"
     safe_install_package "ncurses" "ncurses library"
+    safe_install_package "openssl_devel" "OpenSSL development libraries"
+    safe_install_package "libssl_devel" "SSL development libraries"
     
     # Try IPS packages for core dependencies
     if command -v pkg >/dev/null 2>&1; then
         echo "Installing core dependencies via IPS..."
         pkg install --accept library/zlib 2>/dev/null || echo "zlib already installed or not available"
         pkg install --accept library/libffi 2>/dev/null || echo "libffi already installed or not available"
+        pkg install --accept library/security/openssl 2>/dev/null || echo "openssl already installed or not available"
         pkg install --accept developer/gcc 2>/dev/null || echo "gcc already installed or not available"
         pkg install --accept developer/build/gnu-make 2>/dev/null || echo "make already installed or not available"
     fi
