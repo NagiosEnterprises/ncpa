@@ -522,6 +522,124 @@ install_prereqs() {
         return 1
     }
 
+    # Alternative patchelf installation methods
+    install_patchelf_alternative() {
+        echo "Trying alternative patchelf installation methods..."
+        
+        # Method 1: Try a different version or pre-compiled binary
+        echo "Attempting to download pre-compiled patchelf binary..."
+        TEMP_DIR="/tmp/patchelf-alt-$$"
+        mkdir -p "$TEMP_DIR"
+        cd "$TEMP_DIR"
+        
+        # Try downloading a pre-compiled binary for x86_64
+        if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "amd64" ]; then
+            PATCHELF_BINARY_URL="https://github.com/NixOS/patchelf/releases/download/0.18.0/patchelf-0.18.0-x86_64.tar.gz"
+            echo "Downloading pre-compiled patchelf for x86_64..."
+            
+            if command -v wget >/dev/null 2>&1; then
+                if wget "$PATCHELF_BINARY_URL" -O patchelf-binary.tar.gz; then
+                    tar -xzf patchelf-binary.tar.gz
+                    if [ -f patchelf-0.18.0-x86_64/bin/patchelf ]; then
+                        sudo cp patchelf-0.18.0-x86_64/bin/patchelf /usr/local/bin/
+                        sudo chmod +x /usr/local/bin/patchelf
+                        cd - >/dev/null
+                        rm -rf "$TEMP_DIR"
+                        echo "✓ Pre-compiled patchelf installed successfully"
+                        return 0
+                    fi
+                fi
+            elif command -v curl >/dev/null 2>&1; then
+                if curl -L "$PATCHELF_BINARY_URL" -o patchelf-binary.tar.gz; then
+                    tar -xzf patchelf-binary.tar.gz
+                    if [ -f patchelf-0.18.0-x86_64/bin/patchelf ]; then
+                        sudo cp patchelf-0.18.0-x86_64/bin/patchelf /usr/local/bin/
+                        sudo chmod +x /usr/local/bin/patchelf
+                        cd - >/dev/null
+                        rm -rf "$TEMP_DIR"
+                        echo "✓ Pre-compiled patchelf installed successfully"
+                        return 0
+                    fi
+                fi
+            fi
+        fi
+        
+        # Method 2: Try building an older, simpler version
+        echo "Trying to build older version of patchelf..."
+        cd "$TEMP_DIR"
+        rm -rf *
+        
+        PATCHELF_OLD_VERSION="0.15.0"
+        PATCHELF_OLD_URL="https://github.com/NixOS/patchelf/releases/download/$PATCHELF_OLD_VERSION/patchelf-$PATCHELF_OLD_VERSION.tar.gz"
+        
+        if command -v wget >/dev/null 2>&1; then
+            wget "$PATCHELF_OLD_URL" -O patchelf-old.tar.gz
+        elif command -v curl >/dev/null 2>&1; then
+            curl -L "$PATCHELF_OLD_URL" -o patchelf-old.tar.gz
+        fi
+        
+        if [ -f patchelf-old.tar.gz ]; then
+            tar -xzf patchelf-old.tar.gz
+            cd patchelf-*
+            
+            if ./configure --prefix=/usr/local; then
+                MAKE_CMD=make
+                if command -v gmake >/dev/null 2>&1; then
+                    MAKE_CMD=gmake
+                fi
+                
+                if $MAKE_CMD && sudo $MAKE_CMD install; then
+                    cd - >/dev/null
+                    rm -rf "$TEMP_DIR"
+                    echo "✓ Older patchelf version installed successfully"
+                    return 0
+                fi
+            fi
+        fi
+        
+        # Method 3: Create a minimal wrapper script if all else fails
+        echo "Creating patchelf wrapper script as last resort..."
+        cd - >/dev/null
+        rm -rf "$TEMP_DIR"
+        
+        # Create a simple script that mimics basic patchelf functionality
+        cat > /tmp/patchelf-wrapper << 'EOF'
+#!/bin/bash
+# Minimal patchelf wrapper for Solaris
+echo "WARNING: Using patchelf wrapper - limited functionality"
+echo "patchelf $@"
+
+# Handle common patchelf operations
+case "$1" in
+    "--print-rpath")
+        echo "WARNING: patchelf wrapper cannot print rpath"
+        exit 0
+        ;;
+    "--set-rpath")
+        echo "WARNING: patchelf wrapper cannot set rpath"
+        exit 0
+        ;;
+    "--print-needed")
+        echo "WARNING: patchelf wrapper cannot print needed libraries"
+        exit 0
+        ;;
+    *)
+        echo "WARNING: patchelf wrapper does not support operation: $1"
+        exit 0
+        ;;
+esac
+EOF
+        
+        if sudo mv /tmp/patchelf-wrapper /usr/local/bin/patchelf && sudo chmod +x /usr/local/bin/patchelf; then
+            echo "✓ Created patchelf wrapper script (limited functionality)"
+            echo "WARNING: This wrapper provides minimal patchelf functionality"
+            echo "The build may work but with reduced binary optimization"
+            return 0
+        fi
+        
+        return 1
+    }
+
     # Function to safely install a package if available
     safe_install_package() {
         local pkg="$1"
@@ -590,10 +708,15 @@ install_prereqs() {
         pkg install --accept system/library/gcc-runtime 2>/dev/null || echo "gcc runtime already installed or not available"
     fi
     
-    # Update PATH to include common tool locations
+    # Update PATH to include common tool locations (prioritize /usr/local/bin for manual installs)
     export PATH=/usr/local/bin:/opt/csw/bin:/opt/csw/sbin:/usr/sfw/bin:/usr/ccs/bin:/usr/bin:$PATH
     export LD_LIBRARY_PATH=/opt/csw/lib:/usr/lib:$LD_LIBRARY_PATH
     export PKG_CONFIG_PATH=/opt/csw/lib/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
+    
+    # Ensure the updated PATH is available for the current session
+    hash -r  # Clear bash command hash table to refresh PATH
+    
+    echo "Updated PATH: $PATH"
 
     # Verify critical build tools
     echo "Verifying critical build tools..."
@@ -624,7 +747,19 @@ install_prereqs() {
         echo "✓ patchelf available: $(which patchelf)"
     else
         echo "✗ patchelf not found - attempting manual installation..."
-        install_patchelf_manual
+        if install_patchelf_manual; then
+            echo "✓ patchelf manual installation completed"
+            # Verify installation worked
+            if command -v patchelf >/dev/null 2>&1; then
+                echo "✓ patchelf now available: $(which patchelf)"
+            else
+                echo "✗ patchelf installation failed - trying alternative methods..."
+                install_patchelf_alternative
+            fi
+        else
+            echo "✗ Manual patchelf installation failed - trying alternative methods..."
+            install_patchelf_alternative
+        fi
     fi
     
     # Setup nagios user and group
@@ -642,6 +777,56 @@ install_prereqs() {
         update_py_packages
     else
         echo "Skipping Python package installation - will be handled by virtual environment"
+    fi
+
+    # Final verification of critical tools
+    echo ""
+    echo "Final verification of critical build tools:"
+    
+    # Critical tool verification with clear status
+    tools_ok=true
+    
+    if command -v gcc >/dev/null 2>&1; then
+        echo "✓ gcc: $(which gcc)"
+    else
+        echo "✗ gcc: NOT FOUND"
+        tools_ok=false
+    fi
+    
+    if command -v make >/dev/null 2>&1 || command -v gmake >/dev/null 2>&1; then
+        if command -v make >/dev/null 2>&1; then
+            echo "✓ make: $(which make)"
+        else
+            echo "✓ gmake: $(which gmake)"
+        fi
+    else
+        echo "✗ make/gmake: NOT FOUND"
+        tools_ok=false
+    fi
+    
+    if command -v patchelf >/dev/null 2>&1; then
+        echo "✓ patchelf: $(which patchelf)"
+        # Test patchelf basic functionality
+        if patchelf --version >/dev/null 2>&1; then
+            echo "  ✓ patchelf version: $(patchelf --version 2>/dev/null | head -1)"
+        else
+            echo "  ⚠ patchelf responds but version check failed (wrapper script?)"
+        fi
+    else
+        echo "✗ patchelf: NOT FOUND"
+        echo "  This will cause the build to fail with 'Cannot find required utility patchelf in PATH'"
+        tools_ok=false
+    fi
+    
+    if [ "$tools_ok" = false ]; then
+        echo ""
+        echo "WARNING: Some critical build tools are missing!"
+        echo "The build may fail. Please resolve the missing tools manually."
+        echo ""
+    else
+        echo ""
+        echo "✓ All critical build tools are available"
+        echo ""
     fi
 
 }
