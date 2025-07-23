@@ -1048,16 +1048,21 @@ int main(){ std::optional<int> x; return 0; }' | $CXX -std=c++17 -x c++ - -o /tm
                     
                     # Try configure with explicit C++17 flag first
                     echo "Running configure with C++17 flags..."
-                    configure_output=$(CXXFLAGS="-std=c++17" ./configure --prefix=/usr/local 2>&1)
+                    
+                    # Determine which make to use
+                    MAKE_CMD=make
+                    if command -v gmake >/dev/null 2>&1; then
+                        MAKE_CMD=gmake
+                        echo "Using gmake for Solaris compatibility"
+                    fi
+                    
+                    # Configure with gmake and disable dependency tracking for Solaris compatibility
+                    configure_output=$(CXXFLAGS="-std=c++17" MAKE="$MAKE_CMD" ./configure --prefix=/usr/local --disable-dependency-tracking 2>&1)
                     configure_status=$?
                     
                     if [ $configure_status -eq 0 ]; then
                         echo "✓ Configure succeeded"
-                        echo "Building patchelf with C++17..."
-                        MAKE_CMD=make
-                        if command -v gmake >/dev/null 2>&1; then
-                            MAKE_CMD=gmake
-                        fi
+                        echo "Building patchelf with C++17 using $MAKE_CMD..."
                         
                         if $MAKE_CMD -j1 2>/dev/null; then
                             echo "Installing patchelf..."
