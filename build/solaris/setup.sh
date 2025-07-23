@@ -1053,8 +1053,6 @@ int main(){ std::optional<int> x; return 0; }' | $CXX -std=c++17 -x c++ - -o /tm
                     
                     if [ $configure_status -eq 0 ]; then
                         echo "✓ Configure succeeded"
-                    if [ $configure_status -eq 0 ]; then
-                        echo "✓ Configure succeeded"
                         echo "Building patchelf with C++17..."
                         MAKE_CMD=make
                         if command -v gmake >/dev/null 2>&1; then
