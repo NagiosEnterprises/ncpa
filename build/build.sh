@@ -291,17 +291,48 @@ fi
         # Ensure patchelf is available for cx_Freeze
         if command -v patchelf >/dev/null 2>&1; then
             echo "patchelf found at $(which patchelf) - cx_Freeze should work properly"
+            echo "patchelf version: $(patchelf --version 2>&1 || echo 'version check failed')"
+            
+            # Test patchelf functionality on a simple binary first
+            echo "Testing patchelf functionality..."
+            test_binary="/bin/ls"
+            if [ -f "$test_binary" ]; then
+                echo "Testing patchelf --print-rpath on $test_binary:"
+                patchelf --print-rpath "$test_binary" 2>&1 || echo "rpath test failed"
+                echo "Testing patchelf --print-needed on $test_binary:"
+                patchelf --print-needed "$test_binary" 2>&1 || echo "needed test failed"
+            fi
         else
             echo "WARNING: patchelf not found - cx_Freeze may fail"
         fi
         
+        # Set additional environment variables to help cx_Freeze handle patchelf failures gracefully
+        export CX_FREEZE_IGNORE_RPATH_ERRORS=1
+        export CX_FREEZE_FALLBACK_MODE=1
+        
         # Run the build
-        $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
+        echo "Starting cx_Freeze build with enhanced error handling..."
+        $PYTHONBIN setup.py build_exe 2>&1 | sudo tee $BUILD_DIR/build.log
         BUILD_RESULT=$?
         
         # Check if build failed
         if [ $BUILD_RESULT -ne 0 ]; then
-            echo "cx_Freeze build failed on Solaris"
+            echo "cx_Freeze build failed on Solaris with exit code: $BUILD_RESULT"
+            echo "Checking for partial build artifacts..."
+            if [ -d "$AGENT_DIR/build" ]; then
+                echo "Build directory contents:"
+                ls -la "$AGENT_DIR/build/"
+                # Look for any exe.* directories that might have been created
+                exe_dirs=$(find "$AGENT_DIR/build" -type d -name "exe.*" 2>/dev/null)
+                if [ -n "$exe_dirs" ]; then
+                    echo "Found partial build directories:"
+                    echo "$exe_dirs"
+                    echo "Contents of first partial build:"
+                    ls -la $(echo "$exe_dirs" | head -1) 2>/dev/null || echo "Could not list contents"
+                fi
+            fi
+            echo "Last 50 lines of build log:"
+            tail -50 "$BUILD_DIR/build.log" 2>/dev/null || echo "Could not read build log"
             exit $BUILD_RESULT
         fi
     else
@@ -325,14 +356,37 @@ fi
     if [ -z "$BUILD_EXE_DIR" ]; then
         echo "ERROR: Could not find cx_Freeze build directory in $AGENT_DIR/build/"
         echo "Available directories:"
-        ls -la $AGENT_DIR/build/
+        ls -la $AGENT_DIR/build/ 2>/dev/null || echo "Build directory does not exist"
         echo "Platform: $UNAME"
         echo "Python version: $($PYTHONBIN --version 2>&1 || echo 'Python version check failed')"
         echo "cx_Freeze may have failed. Check the build log above for errors."
+        
+        # Show the last part of the build log for debugging
+        if [ -f "$BUILD_DIR/build.log" ]; then
+            echo "Last 30 lines of build log:"
+            tail -30 "$BUILD_DIR/build.log"
+        fi
         exit 1
     fi
     
     echo "Found cx_Freeze build directory: $BUILD_EXE_DIR"
+    
+    # Verify the build directory has the expected structure
+    echo "Verifying build directory structure..."
+    if [ ! -f "$BUILD_EXE_DIR/ncpa" ]; then
+        echo "WARNING: Main ncpa executable not found in $BUILD_EXE_DIR"
+        echo "Contents of build directory:"
+        ls -la "$BUILD_EXE_DIR" 2>/dev/null
+    else
+        echo "✓ Main ncpa executable found"
+        # Check if the executable is actually executable
+        if [ -x "$BUILD_EXE_DIR/ncpa" ]; then
+            echo "✓ ncpa executable has proper permissions"
+        else
+            echo "WARNING: ncpa executable lacks execute permissions"
+            ls -la "$BUILD_EXE_DIR/ncpa"
+        fi
+    fi
     
     # Copy build directory with platform-specific handling for symbolic links
     if [ "$UNAME" == "Darwin" ]; then
@@ -365,13 +419,45 @@ fi
     sudo rm -f $BUILD_DIR/ncpa/libffi-*.so.*
 
     # Set permissions
+    echo "Setting file permissions..."
     sudo chmod -R g+r $BUILD_DIR/ncpa
     sudo chmod -R a+r $BUILD_DIR/ncpa
-    sudo chown -R nagios:nagios $BUILD_DIR/ncpa/var
-    sudo chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
-    sudo chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
-    sudo chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
-    sudo chmod -R 755 $BUILD_DIR/ncpa/var
+    
+    # Check if expected directories exist before setting ownership
+    if [ -d "$BUILD_DIR/ncpa/var" ]; then
+        echo "Setting ownership for var directory..."
+        sudo chown -R nagios:nagios $BUILD_DIR/ncpa/var
+        sudo chmod -R 755 $BUILD_DIR/ncpa/var
+    else
+        echo "WARNING: var directory not found at $BUILD_DIR/ncpa/var"
+        echo "Creating var directory structure..."
+        sudo mkdir -p $BUILD_DIR/ncpa/var/log
+        sudo chown -R nagios:nagios $BUILD_DIR/ncpa/var
+        sudo chmod -R 755 $BUILD_DIR/ncpa/var
+    fi
+    
+    if [ -d "$BUILD_DIR/ncpa/etc" ]; then
+        echo "Setting ownership for etc directory..."
+        sudo chown nagios:nagios $BUILD_DIR/ncpa/etc
+        sudo chmod 755 $BUILD_DIR/ncpa/etc
+        
+        # Set ownership for config files if they exist
+        if ls $BUILD_DIR/ncpa/etc/*.cfg* >/dev/null 2>&1; then
+            sudo chown nagios:nagios $BUILD_DIR/ncpa/etc/*.cfg*
+        fi
+        
+        if [ -d "$BUILD_DIR/ncpa/etc/ncpa.cfg.d" ]; then
+            sudo chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d
+            sudo chmod 755 $BUILD_DIR/ncpa/etc/ncpa.cfg.d
+            if ls $BUILD_DIR/ncpa/etc/ncpa.cfg.d/* >/dev/null 2>&1; then
+                sudo chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
+            fi
+        fi
+    else
+        echo "WARNING: etc directory not found at $BUILD_DIR/ncpa/etc"
+        echo "This may indicate an incomplete build"
+    fi
+    
     sudo chmod 755 $BUILD_DIR/ncpa
 
     # Build tarball
