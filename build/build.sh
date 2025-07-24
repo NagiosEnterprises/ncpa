@@ -717,6 +717,20 @@ if [ $BUILD_ONLY -eq 0 ]; then
 
     # Build package based on system
     echo -e "\nPackaging for system type..."
+    
+    # Ensure we're in the build directory and verify ncpa directory exists
+    cd $BUILD_DIR
+    if [ ! -d "ncpa" ]; then
+        echo "ERROR: ncpa directory not found for packaging!"
+        echo "Current directory: $(pwd)"
+        echo "Available directories:"
+        ls -la
+        echo "Looking for ncpa-* directories..."
+        ls -la ncpa-* 2>/dev/null || echo "No ncpa-* directories found"
+        exit 1
+    fi
+    
+    echo "✓ Found ncpa directory for packaging"
 
     if [ "$UNAME" == "Linux" ]; then
         linux/package.sh

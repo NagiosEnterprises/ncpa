@@ -32,6 +32,17 @@ rm -rf $DIR/pkginfo.tmp
     rm -f ncpa*.pkg
 
     echo "Preparing package files..."
+    
+    # Verify ncpa directory exists
+    if [ ! -d "ncpa" ]; then
+        echo "ERROR: ncpa directory not found in $BUILD_DIR"
+        echo "Available directories:"
+        ls -la
+        echo "Looking for ncpa-* directories..."
+        ls -la ncpa-* 2>/dev/null || echo "No ncpa-* directories found"
+        exit 1
+    fi
+    
     # Add package information/scripts to pkg base
     cp pkginfo ncpa/pkginfo
     cp solaris/postinstall ncpa/postinstall
