@@ -628,10 +628,45 @@ esac'
     sudo rm -rf ncpa-$NCPA_VER
     
     if [ "$UNAME" == "SunOS" ]; then
-        # On Solaris, use -R instead of -r for cp
-        sudo cp -Rf ncpa ncpa-$NCPA_VER
+        # On Solaris, use -R instead of -r for cp, and handle broken symlinks
+        echo "Copying with Solaris-compatible options, skipping broken symlinks..."
+        if command -v gcp >/dev/null 2>&1; then
+            # Use GNU cp if available - it handles broken symlinks better
+            sudo gcp -rf ncpa ncpa-$NCPA_VER 2>/dev/null || {
+                echo "WARNING: Some files could not be copied (likely broken symlinks)"
+                # Try copying without following symlinks
+                sudo gcp -rd ncpa ncpa-$NCPA_VER 2>/dev/null || sudo cp -Rf ncpa ncpa-$NCPA_VER
+            }
+        else
+            # Use standard Solaris cp with error handling for broken symlinks
+            sudo cp -Rf ncpa ncpa-$NCPA_VER 2>/dev/null || {
+                echo "WARNING: Standard copy failed, trying alternative approach..."
+                # Create target directory manually and copy contents
+                sudo mkdir -p ncpa-$NCPA_VER
+                (cd ncpa && find . -type f -exec sudo cp {} ../ncpa-$NCPA_VER/{} \; 2>/dev/null || true)
+                (cd ncpa && find . -type d -exec sudo mkdir -p ../ncpa-$NCPA_VER/{} \; 2>/dev/null || true)
+                (cd ncpa && find . -type l | while read -r link; do
+                    if [ -e "$link" ]; then
+                        sudo cp "$link" "../ncpa-$NCPA_VER/$link" 2>/dev/null || true
+                    fi
+                done)
+            }
+        fi
     else
-        sudo cp -rf ncpa ncpa-$NCPA_VER
+        # On other systems (Linux, AIX), use standard recursive copy with error handling
+        echo "Copying build directory, handling broken symlinks..."
+        sudo cp -rf ncpa ncpa-$NCPA_VER 2>/dev/null || {
+            echo "WARNING: Standard copy failed, trying without broken symlinks..."
+            # Create target directory and copy valid files only
+            sudo mkdir -p ncpa-$NCPA_VER
+            (cd ncpa && find . -type f -exec cp {} ../ncpa-$NCPA_VER/{} \; 2>/dev/null || true)
+            (cd ncpa && find . -type d -exec mkdir -p ../ncpa-$NCPA_VER/{} \; 2>/dev/null || true)
+            (cd ncpa && find . -type l | while read -r link; do
+                if [ -e "$link" ]; then
+                    cp "$link" "../ncpa-$NCPA_VER/$link" 2>/dev/null || true
+                fi
+            done)
+        }
     fi
     if [ "$UNAME" == "AIX" ]; then
         echo -e "***** Build tarball for AIX"
