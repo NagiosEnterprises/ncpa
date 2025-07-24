@@ -487,20 +487,12 @@ esac'
 
 
     echo -e "\nSet up packaging dirs..."
-    # Move the ncpa binary data - ensure we're working with absolute paths
+    # Copy the cx_Freeze build output to BUILD_DIR
     echo "=== Directory Setup Debug ==="
-    echo "Current directory before setup: $(pwd)"
+    echo "Current directory: $(pwd)"
     echo "BUILD_DIR: $BUILD_DIR"
     echo "AGENT_DIR: $AGENT_DIR"
     echo "=========================="
-    
-    # CRITICAL: Ensure we're in BUILD_DIR, not AGENT_DIR for the copy operation
-    cd "$BUILD_DIR" || {
-        echo "ERROR: Cannot change to BUILD_DIR: $BUILD_DIR"
-        exit 1
-    }
-    echo "Changed to BUILD_DIR: $(pwd)"
-    sudo rm -rf "$BUILD_DIR/ncpa"
     
     # Find the cx_Freeze build directory (it varies by platform)
     echo "Looking for cx_Freeze build directory in: $AGENT_DIR/build"
@@ -528,7 +520,6 @@ esac'
     fi
     
     echo "Found cx_Freeze build directory: $BUILD_EXE_DIR"
-    echo "BUILD_EXE_DIR absolute path: $(cd "$BUILD_EXE_DIR" && pwd)" 2>/dev/null || echo "Could not resolve absolute path"
     
     # Verify the build directory has the expected structure
     echo "Verifying build directory structure..."
@@ -538,68 +529,37 @@ esac'
         ls -la "$BUILD_EXE_DIR" 2>/dev/null
     else
         echo "✓ Main ncpa executable found"
-        # Check if the executable is actually executable
-        if [ -x "$BUILD_EXE_DIR/ncpa" ]; then
-            echo "✓ ncpa executable has proper permissions"
-        else
-            echo "WARNING: ncpa executable lacks execute permissions"
-            ls -la "$BUILD_EXE_DIR/ncpa"
-        fi
     fi
     
-    # Copy build directory with platform-specific handling for symbolic links
-    echo "=== Copy Operation Debug ==="
-    echo "Current working directory: $(pwd)"
-    echo "Source (BUILD_EXE_DIR): $BUILD_EXE_DIR"
-    echo "Destination: $BUILD_DIR/ncpa"
-    echo "Source exists: $(test -d "$BUILD_EXE_DIR" && echo "YES" || echo "NO")"
-    echo "Source contents:"
-    ls -la "$BUILD_EXE_DIR" 2>/dev/null || echo "Source directory not accessible"
-    echo "Destination parent ($BUILD_DIR) contents before copy:"
-    ls -la "$BUILD_DIR" 2>/dev/null || echo "Destination parent not accessible"
-    echo "========================="
+    # Copy the entire build directory to BUILD_DIR/ncpa
+    echo "=== Copy Operation ==="
+    echo "Copying $BUILD_EXE_DIR to $BUILD_DIR/ncpa"
     
-    # Ensure we're in the build directory (should already be, but double-check)
-    if [ "$(pwd)" != "$BUILD_DIR" ]; then
-        echo "WARNING: Not in BUILD_DIR, changing directory to $BUILD_DIR"
-        cd "$BUILD_DIR" || {
-            echo "ERROR: Cannot change to BUILD_DIR: $BUILD_DIR"
-            exit 1
-        }
+    # Remove any existing ncpa directory in BUILD_DIR
+    if [ -d "$BUILD_DIR/ncpa" ]; then
+        echo "Removing existing $BUILD_DIR/ncpa directory"
+        sudo rm -rf "$BUILD_DIR/ncpa"
     fi
-    echo "Confirmed in directory: $(pwd)"
     
-    echo "Copying build from $BUILD_EXE_DIR to $BUILD_DIR/ncpa"
-    
-    # Note: The difference is that we're copying the CONTENTS of BUILD_EXE_DIR to ncpa/
-    # not the directory itself. So we need to copy BUILD_EXE_DIR/* to ncpa/
-    
-    if [ "$UNAME" == "Darwin" ]; then
-        # On macOS, use -L to follow symbolic links to avoid issues with relative paths
-        echo "Copying macOS build with symbolic link resolution..."
-        sudo mkdir -p "$BUILD_DIR/ncpa"
-        sudo cp -RLf "$BUILD_EXE_DIR"/* "$BUILD_DIR/ncpa/"
-        COPY_RESULT=$?
-    elif [ "$UNAME" == "SunOS" ]; then
+    # Copy the entire exe.* directory to BUILD_DIR and rename it to ncpa
+    if [ "$UNAME" == "SunOS" ]; then
         # On Solaris, handle potential differences in cp command behavior
         echo "Copying Solaris build..."
-        sudo mkdir -p "$BUILD_DIR/ncpa"
         if command -v gcp >/dev/null 2>&1; then
             # Use GNU cp if available
-            echo "Using GNU cp (gcp) with absolute paths"
-            sudo gcp -rf "$BUILD_EXE_DIR"/* "$BUILD_DIR/ncpa/"
+            echo "Using GNU cp (gcp)"
+            sudo gcp -rf "$BUILD_EXE_DIR" "$BUILD_DIR/ncpa"
             COPY_RESULT=$?
         else
-            # Use standard Solaris cp (use -R instead of -r)
-            echo "Using standard Solaris cp with absolute paths"
-            sudo cp -Rf "$BUILD_EXE_DIR"/* "$BUILD_DIR/ncpa/"
+            # Use standard Solaris cp
+            echo "Using standard Solaris cp"
+            sudo cp -Rf "$BUILD_EXE_DIR" "$BUILD_DIR/ncpa"
             COPY_RESULT=$?
         fi
     else
-        # On other systems (Linux, AIX), use standard recursive copy
-        echo "Copying build for $UNAME with absolute paths..."
-        sudo mkdir -p "$BUILD_DIR/ncpa"
-        sudo cp -rf "$BUILD_EXE_DIR"/* "$BUILD_DIR/ncpa/"
+        # On other systems, use standard recursive copy
+        echo "Copying build for $UNAME..."
+        sudo cp -rf "$BUILD_EXE_DIR" "$BUILD_DIR/ncpa"
         COPY_RESULT=$?
     fi
     
@@ -610,22 +570,15 @@ esac'
         echo "ERROR: Failed to copy build directory (exit code: $COPY_RESULT)"
         echo "Source: $BUILD_EXE_DIR"
         echo "Destination: $BUILD_DIR/ncpa"
-        echo "Source contents:"
-        ls -la "$BUILD_EXE_DIR" 2>/dev/null || echo "Source directory not accessible"
-        echo "Destination parent directory:"
-        ls -la "$BUILD_DIR" 2>/dev/null || echo "Destination parent not accessible"
         exit 1
     fi
     
     # Verify the copy worked
     echo "=== Post-Copy Verification ==="
-    echo "Checking if $BUILD_DIR/ncpa exists..."
     if [ ! -d "$BUILD_DIR/ncpa" ]; then
         echo "ERROR: ncpa directory was not created successfully"
-        echo "Destination directory contents:"
+        echo "BUILD_DIR contents:"
         ls -la "$BUILD_DIR"
-        echo "Attempting to list $BUILD_DIR/ncpa:"
-        ls -la "$BUILD_DIR/ncpa" 2>&1 || echo "Directory does not exist"
         exit 1
     else
         echo "✓ Successfully copied build to $BUILD_DIR/ncpa"
