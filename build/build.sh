@@ -353,7 +353,7 @@ fi
 (
     echo -e "\nBuilding NCPA binaries..."
     echo "=== Subshell Environment Debug ==="
-    $BUILD_DIR=$(pwd)
+    BUILD_DIR=$(pwd)
     echo "BUILD_DIR at start of subshell: $BUILD_DIR"
     echo "AGENT_DIR at start of subshell: $AGENT_DIR"
     echo "Current directory at start of subshell: $(pwd)"
