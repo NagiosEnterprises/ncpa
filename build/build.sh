@@ -533,6 +533,7 @@ esac'
     
     # Copy the build directory to BUILD_DIR/ncpa (rename the exe.* directory to ncpa)
     echo "=== Copy Operation ==="
+    echo "Current directory: $(pwd)"
     echo "Copying $BUILD_EXE_DIR to $BUILD_DIR/ncpa"
     
     # Remove any existing ncpa directory in BUILD_DIR
