@@ -707,6 +707,23 @@ esac'
     fi
 )
 
+echo "=== Post-build directory verification ==="
+echo "Current directory: $(pwd)"
+echo "Build directory: $BUILD_DIR"
+cd $BUILD_DIR
+echo "Contents of build directory:"
+ls -la
+if [ -d "ncpa" ]; then
+    echo "✓ ncpa directory found"
+    echo "Contents of ncpa directory:"
+    ls -la ncpa/ | head -10
+else
+    echo "✗ ncpa directory NOT found"
+    echo "Looking for ncpa-* directories:"
+    ls -la ncpa-* 2>/dev/null || echo "No ncpa-* directories found"
+fi
+echo "============================================"
+
 
 # --------------------------
 # Package
