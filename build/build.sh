@@ -29,8 +29,52 @@ BUILD_TRAVIS=0
 NO_INTERACTION=0
 CLEAN_VENV=0
 
+echo "=== Post-build directory verification ==="
+echo "Current working directory: $(pwd)"
+echo "Build directory (BUILD_DIR): $BUILD_DIR"
 
-# --------------------------
+# Ensure we're in the BUILD_DIR for final verification
+cd "$BUILD_DIR" || {
+    echo "ERROR: Cannot change to BUILD_DIR: $BUILD_DIR"
+    exit 1
+}
+
+echo "Confirmed in directory: $(pwd)"
+echo "Contents of build directory:"
+ls -la
+
+if [ -d "ncpa" ]; then
+    echo "✓ ncpa directory found"
+    echo "ncpa directory details:"
+    ls -ld ncpa/
+    echo "Contents of ncpa directory (first 10 items):"
+    ls -la ncpa/ | head -10
+    echo "Total files in ncpa directory: $(find ncpa/ -type f | wc -l 2>/dev/null || echo 'count failed')"
+    
+    # Check for key files that should be present
+    if [ -f "ncpa/ncpa" ]; then
+        echo "✓ Main ncpa executable found"
+    else
+        echo "✗ Main ncpa executable NOT found"
+    fi
+else
+    echo "✗ ncpa directory NOT found"
+    echo "Looking for ncpa-* directories:"
+    ls -la ncpa-* 2>/dev/null || echo "No ncpa-* directories found"
+    echo "Looking for any directories with 'ncpa' in the name:"
+    ls -la *ncpa* 2>/dev/null || echo "No directories with 'ncpa' in name found"
+    
+    # Debug: Check if the source build directory still exists
+    echo "Checking source build directory: $BUILD_EXE_DIR"
+    if [ -d "$BUILD_EXE_DIR" ]; then
+        echo "Source build directory still exists"
+        echo "Source contents:"
+        ls -la "$BUILD_EXE_DIR" | head -10
+    else
+        echo "Source build directory no longer exists"
+    fi
+fi
+echo "============================================"--------------------------
 # General functions
 # --------------------------
 
@@ -480,11 +524,19 @@ esac'
 
 
     echo -e "\nSet up packaging dirs..."
-    # Move the ncpa binary data
+    # Move the ncpa binary data - ensure we're working with absolute paths
+    echo "=== Directory Setup Debug ==="
+    echo "Current directory before setup: $(pwd)"
+    echo "BUILD_DIR: $BUILD_DIR"
+    echo "AGENT_DIR: $AGENT_DIR"
+    echo "=========================="
+    
     cd $BUILD_DIR
+    echo "Changed to BUILD_DIR: $(pwd)"
     sudo rm -rf $BUILD_DIR/ncpa
     
     # Find the cx_Freeze build directory (it varies by platform)
+    echo "Looking for cx_Freeze build directory in: $AGENT_DIR/build"
     if [ "$UNAME" == "SunOS" ]; then
         # Solaris find doesn't support -maxdepth, use alternative approach
         BUILD_EXE_DIR=$(find $AGENT_DIR/build -type d -name "exe.*" | head -1)
@@ -509,6 +561,7 @@ esac'
     fi
     
     echo "Found cx_Freeze build directory: $BUILD_EXE_DIR"
+    echo "BUILD_EXE_DIR absolute path: $(cd "$BUILD_EXE_DIR" && pwd)" 2>/dev/null || echo "Could not resolve absolute path"
     
     # Verify the build directory has the expected structure
     echo "Verifying build directory structure..."
@@ -528,32 +581,59 @@ esac'
     fi
     
     # Copy build directory with platform-specific handling for symbolic links
+    echo "=== Copy Operation Debug ==="
+    echo "Current working directory: $(pwd)"
+    echo "Source (BUILD_EXE_DIR): $BUILD_EXE_DIR"
+    echo "Destination: $BUILD_DIR/ncpa"
+    echo "Source exists: $(test -d "$BUILD_EXE_DIR" && echo "YES" || echo "NO")"
+    echo "Source contents:"
+    ls -la "$BUILD_EXE_DIR" 2>/dev/null || echo "Source directory not accessible"
+    echo "Destination parent ($BUILD_DIR) contents before copy:"
+    ls -la "$BUILD_DIR" 2>/dev/null || echo "Destination parent not accessible"
+    echo "========================="
+    
+    # Ensure we're in the build directory
+    cd "$BUILD_DIR" || {
+        echo "ERROR: Cannot change to BUILD_DIR: $BUILD_DIR"
+        exit 1
+    }
+    echo "Confirmed in directory: $(pwd)"
+    
     echo "Copying build from $BUILD_EXE_DIR to $BUILD_DIR/ncpa"
+    
+    # Note: The difference is that we're copying the CONTENTS of BUILD_EXE_DIR to ncpa/
+    # not the directory itself. So we need to copy BUILD_EXE_DIR/* to ncpa/
+    
     if [ "$UNAME" == "Darwin" ]; then
         # On macOS, use -L to follow symbolic links to avoid issues with relative paths
         echo "Copying macOS build with symbolic link resolution..."
-        sudo cp -RLf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+        sudo mkdir -p "$BUILD_DIR/ncpa"
+        sudo cp -RLf "$BUILD_EXE_DIR"/* "$BUILD_DIR/ncpa/"
         COPY_RESULT=$?
     elif [ "$UNAME" == "SunOS" ]; then
         # On Solaris, handle potential differences in cp command behavior
         echo "Copying Solaris build..."
+        sudo mkdir -p "$BUILD_DIR/ncpa"
         if command -v gcp >/dev/null 2>&1; then
             # Use GNU cp if available
             echo "Using GNU cp (gcp)"
-            sudo gcp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+            sudo gcp -rf "$BUILD_EXE_DIR"/* "$BUILD_DIR/ncpa/"
             COPY_RESULT=$?
         else
             # Use standard Solaris cp (use -R instead of -r)
             echo "Using standard Solaris cp"
-            sudo cp -Rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+            sudo cp -Rf "$BUILD_EXE_DIR"/* "$BUILD_DIR/ncpa/"
             COPY_RESULT=$?
         fi
     else
         # On other systems (Linux, AIX), use standard recursive copy
         echo "Copying build for $UNAME..."
-        sudo cp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+        sudo mkdir -p "$BUILD_DIR/ncpa"
+        sudo cp -rf "$BUILD_EXE_DIR"/* "$BUILD_DIR/ncpa/"
         COPY_RESULT=$?
     fi
+    
+    echo "Copy operation completed with exit code: $COPY_RESULT"
     
     # Check if copy was successful
     if [ $COPY_RESULT -ne 0 ]; then
@@ -568,16 +648,22 @@ esac'
     fi
     
     # Verify the copy worked
+    echo "=== Post-Copy Verification ==="
+    echo "Checking if $BUILD_DIR/ncpa exists..."
     if [ ! -d "$BUILD_DIR/ncpa" ]; then
         echo "ERROR: ncpa directory was not created successfully"
         echo "Destination directory contents:"
         ls -la "$BUILD_DIR"
+        echo "Attempting to list $BUILD_DIR/ncpa:"
+        ls -la "$BUILD_DIR/ncpa" 2>&1 || echo "Directory does not exist"
         exit 1
     else
         echo "✓ Successfully copied build to $BUILD_DIR/ncpa"
         echo "ncpa directory contents:"
         ls -la "$BUILD_DIR/ncpa" | head -10
+        echo "ncpa directory file count: $(find "$BUILD_DIR/ncpa" -type f | wc -l 2>/dev/null || echo 'count failed')"
     fi
+    echo "============================"
     
     echo $GIT_LONG | sudo tee $BUILD_DIR/ncpa/$GIT_HASH_FILE
 
