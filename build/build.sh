@@ -531,23 +531,27 @@ esac'
     echo "AGENT_DIR: $AGENT_DIR"
     echo "=========================="
     
-    cd $BUILD_DIR
+    # CRITICAL: Ensure we're in BUILD_DIR, not AGENT_DIR for the copy operation
+    cd "$BUILD_DIR" || {
+        echo "ERROR: Cannot change to BUILD_DIR: $BUILD_DIR"
+        exit 1
+    }
     echo "Changed to BUILD_DIR: $(pwd)"
-    sudo rm -rf $BUILD_DIR/ncpa
+    sudo rm -rf "$BUILD_DIR/ncpa"
     
     # Find the cx_Freeze build directory (it varies by platform)
     echo "Looking for cx_Freeze build directory in: $AGENT_DIR/build"
     if [ "$UNAME" == "SunOS" ]; then
         # Solaris find doesn't support -maxdepth, use alternative approach
-        BUILD_EXE_DIR=$(find $AGENT_DIR/build -type d -name "exe.*" | head -1)
+        BUILD_EXE_DIR=$(find "$AGENT_DIR/build" -type d -name "exe.*" | head -1)
     else
-        BUILD_EXE_DIR=$(find $AGENT_DIR/build -maxdepth 1 -name "exe.*" -type d | head -1)
+        BUILD_EXE_DIR=$(find "$AGENT_DIR/build" -maxdepth 1 -name "exe.*" -type d | head -1)
     fi
     
     if [ -z "$BUILD_EXE_DIR" ]; then
         echo "ERROR: Could not find cx_Freeze build directory in $AGENT_DIR/build/"
         echo "Available directories:"
-        ls -la $AGENT_DIR/build/ 2>/dev/null || echo "Build directory does not exist"
+        ls -la "$AGENT_DIR/build/" 2>/dev/null || echo "Build directory does not exist"
         echo "Platform: $UNAME"
         echo "Python version: $($PYTHONBIN --version 2>&1 || echo 'Python version check failed')"
         echo "cx_Freeze may have failed. Check the build log above for errors."
@@ -592,11 +596,14 @@ esac'
     ls -la "$BUILD_DIR" 2>/dev/null || echo "Destination parent not accessible"
     echo "========================="
     
-    # Ensure we're in the build directory
-    cd "$BUILD_DIR" || {
-        echo "ERROR: Cannot change to BUILD_DIR: $BUILD_DIR"
-        exit 1
-    }
+    # Ensure we're in the build directory (should already be, but double-check)
+    if [ "$(pwd)" != "$BUILD_DIR" ]; then
+        echo "WARNING: Not in BUILD_DIR, changing directory..."
+        cd "$BUILD_DIR" || {
+            echo "ERROR: Cannot change to BUILD_DIR: $BUILD_DIR"
+            exit 1
+        }
+    fi
     echo "Confirmed in directory: $(pwd)"
     
     echo "Copying build from $BUILD_EXE_DIR to $BUILD_DIR/ncpa"
@@ -616,18 +623,18 @@ esac'
         sudo mkdir -p "$BUILD_DIR/ncpa"
         if command -v gcp >/dev/null 2>&1; then
             # Use GNU cp if available
-            echo "Using GNU cp (gcp)"
+            echo "Using GNU cp (gcp) with absolute paths"
             sudo gcp -rf "$BUILD_EXE_DIR"/* "$BUILD_DIR/ncpa/"
             COPY_RESULT=$?
         else
             # Use standard Solaris cp (use -R instead of -r)
-            echo "Using standard Solaris cp"
+            echo "Using standard Solaris cp with absolute paths"
             sudo cp -Rf "$BUILD_EXE_DIR"/* "$BUILD_DIR/ncpa/"
             COPY_RESULT=$?
         fi
     else
         # On other systems (Linux, AIX), use standard recursive copy
-        echo "Copying build for $UNAME..."
+        echo "Copying build for $UNAME with absolute paths..."
         sudo mkdir -p "$BUILD_DIR/ncpa"
         sudo cp -rf "$BUILD_EXE_DIR"/* "$BUILD_DIR/ncpa/"
         COPY_RESULT=$?
