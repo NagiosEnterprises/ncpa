@@ -531,7 +531,7 @@ esac'
         echo "✓ Main ncpa executable found"
     fi
     
-    # Copy the entire build directory to BUILD_DIR/ncpa
+    # Copy the build directory to BUILD_DIR/ncpa (rename the exe.* directory to ncpa)
     echo "=== Copy Operation ==="
     echo "Copying $BUILD_EXE_DIR to $BUILD_DIR/ncpa"
     
@@ -541,52 +541,26 @@ esac'
         sudo rm -rf "$BUILD_DIR/ncpa"
     fi
     
-    # Copy the entire exe.* directory to BUILD_DIR and rename it to ncpa
-    if [ "$UNAME" == "SunOS" ]; then
+    # Copy the build directory (original working approach from venv implementation)
+    if [ "$UNAME" == "Darwin" ]; then
+        # On macOS, use -L to follow symbolic links to avoid issues with relative paths
+        echo "Copying macOS build with symbolic link resolution..."
+        sudo cp -RLf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+    elif [ "$UNAME" == "SunOS" ]; then
         # On Solaris, handle potential differences in cp command behavior
         echo "Copying Solaris build..."
         if command -v gcp >/dev/null 2>&1; then
             # Use GNU cp if available
-            echo "Using GNU cp (gcp)"
-            sudo gcp -rf "$BUILD_EXE_DIR" "$BUILD_DIR/ncpa"
-            COPY_RESULT=$?
+            sudo gcp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
         else
             # Use standard Solaris cp
-            echo "Using standard Solaris cp"
-            sudo cp -Rf "$BUILD_EXE_DIR" "$BUILD_DIR/ncpa"
-            COPY_RESULT=$?
+            sudo cp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
         fi
     else
-        # On other systems, use standard recursive copy
+        # On other systems (Linux, AIX), use standard recursive copy
         echo "Copying build for $UNAME..."
-        sudo cp -rf "$BUILD_EXE_DIR" "$BUILD_DIR/ncpa"
-        COPY_RESULT=$?
+        sudo cp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
     fi
-    
-    echo "Copy operation completed with exit code: $COPY_RESULT"
-    
-    # Check if copy was successful
-    if [ $COPY_RESULT -ne 0 ]; then
-        echo "ERROR: Failed to copy build directory (exit code: $COPY_RESULT)"
-        echo "Source: $BUILD_EXE_DIR"
-        echo "Destination: $BUILD_DIR/ncpa"
-        exit 1
-    fi
-    
-    # Verify the copy worked
-    echo "=== Post-Copy Verification ==="
-    if [ ! -d "$BUILD_DIR/ncpa" ]; then
-        echo "ERROR: ncpa directory was not created successfully"
-        echo "BUILD_DIR contents:"
-        ls -la "$BUILD_DIR"
-        exit 1
-    else
-        echo "✓ Successfully copied build to $BUILD_DIR/ncpa"
-        echo "ncpa directory contents:"
-        ls -la "$BUILD_DIR/ncpa" | head -10
-        echo "ncpa directory file count: $(find "$BUILD_DIR/ncpa" -type f | wc -l 2>/dev/null || echo 'count failed')"
-    fi
-    echo "============================"
     
     echo $GIT_LONG | sudo tee $BUILD_DIR/ncpa/$GIT_HASH_FILE
 
@@ -614,120 +588,20 @@ esac'
         fi
     fi
 
-    # Set permissions
-    echo "Setting file permissions..."
-    
-    # Set permissions more carefully to avoid warnings about missing files and broken symlinks
-    if [ -d "$BUILD_DIR/ncpa" ]; then
-        # Set permissions for regular files (excluding broken symlinks)
-        find "$BUILD_DIR/ncpa" -type f -exec sudo chmod g+r,a+r {} \; 2>/dev/null || true
-        
-        # Set permissions for directories
-        find "$BUILD_DIR/ncpa" -type d -exec sudo chmod g+r,a+r {} \; 2>/dev/null || true
-        
-        # Handle symlinks separately - only set permissions on valid symlinks
-        find "$BUILD_DIR/ncpa" -type l | while read -r symlink; do
-            if [ -L "$symlink" ]; then
-                # Symlink exists - try to set permissions regardless of target validity
-                sudo chmod g+r,a+r "$symlink" 2>/dev/null || true
-                # Check if target exists for informational purposes
-                if [ ! -e "$symlink" ]; then
-                    echo "INFO: Symlink exists but target missing: $symlink -> $(readlink "$symlink" 2>/dev/null || echo 'unknown')"
-                fi
-            fi
-        done
-        
-        echo "✓ Basic file permissions set"
-    else
-        echo "WARNING: ncpa build directory not found"
-    fi
-    
-    # Check if expected directories exist before setting ownership
-    if [ -d "$BUILD_DIR/ncpa/var" ]; then
-        echo "Setting ownership for var directory..."
-        sudo chown -R nagios:nagios $BUILD_DIR/ncpa/var
-        sudo chmod -R 755 $BUILD_DIR/ncpa/var
-    else
-        echo "WARNING: var directory not found at $BUILD_DIR/ncpa/var"
-        echo "Creating var directory structure..."
-        sudo mkdir -p $BUILD_DIR/ncpa/var/log
-        sudo chown -R nagios:nagios $BUILD_DIR/ncpa/var
-        sudo chmod -R 755 $BUILD_DIR/ncpa/var
-    fi
-    
-    if [ -d "$BUILD_DIR/ncpa/etc" ]; then
-        echo "Setting ownership for etc directory..."
-        sudo chown nagios:nagios $BUILD_DIR/ncpa/etc
-        sudo chmod 755 $BUILD_DIR/ncpa/etc
-        
-        # Set ownership for config files if they exist
-        if ls $BUILD_DIR/ncpa/etc/*.cfg* >/dev/null 2>&1; then
-            sudo chown nagios:nagios $BUILD_DIR/ncpa/etc/*.cfg*
-        fi
-        
-        if [ -d "$BUILD_DIR/ncpa/etc/ncpa.cfg.d" ]; then
-            sudo chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d
-            sudo chmod 755 $BUILD_DIR/ncpa/etc/ncpa.cfg.d
-            if ls $BUILD_DIR/ncpa/etc/ncpa.cfg.d/* >/dev/null 2>&1; then
-                sudo chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
-            fi
-        fi
-    else
-        echo "WARNING: etc directory not found at $BUILD_DIR/ncpa/etc"
-        echo "This may indicate an incomplete build"
-    fi
-    
+    # Set permissions (original working approach)
+    sudo chmod -R g+r $BUILD_DIR/ncpa
+    sudo chmod -R a+r $BUILD_DIR/ncpa
+    sudo chown -R nagios:nagios $BUILD_DIR/ncpa/var
+    sudo chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
+    sudo chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
+    sudo chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
+    sudo chmod -R 755 $BUILD_DIR/ncpa/var
     sudo chmod 755 $BUILD_DIR/ncpa
 
-    # Build tarball
+    # Build tarball (original working approach)
     echo -e "\nBuilding tarball..."
-    
-    # Remove any existing versioned directory to avoid copy conflicts
-    sudo rm -rf ncpa-$NCPA_VER
-    
-    if [ "$UNAME" == "SunOS" ]; then
-        # On Solaris, use -R instead of -r for cp, and handle broken symlinks
-        echo "Copying with Solaris-compatible options, skipping broken symlinks..."
-        if command -v gcp >/dev/null 2>&1; then
-            # Use GNU cp if available - it handles broken symlinks better
-            sudo gcp -rf ncpa ncpa-$NCPA_VER 2>/dev/null || {
-                echo "WARNING: Some files could not be copied (likely broken symlinks)"
-                # Try copying without following symlinks
-                sudo gcp -rd ncpa ncpa-$NCPA_VER 2>/dev/null || sudo cp -Rf ncpa ncpa-$NCPA_VER
-            }
-        else
-            # Use standard Solaris cp with error handling for broken symlinks
-            sudo cp -Rf ncpa ncpa-$NCPA_VER 2>/dev/null || {
-                echo "WARNING: Standard copy failed, trying alternative approach..."
-                # Create target directory manually and copy contents
-                sudo mkdir -p ncpa-$NCPA_VER
-                (cd ncpa && find . -type f -exec sudo cp {} ../ncpa-$NCPA_VER/{} \; 2>/dev/null || true)
-                (cd ncpa && find . -type d -exec sudo mkdir -p ../ncpa-$NCPA_VER/{} \; 2>/dev/null || true)
-                (cd ncpa && find . -type l | while read -r link; do
-                    if [ -L "$link" ]; then
-                        # Copy the symlink itself, not its target
-                        sudo cp -d "$link" "../ncpa-$NCPA_VER/$link" 2>/dev/null || true
-                    fi
-                done)
-            }
-        fi
-    else
-        # On other systems (Linux, AIX), use standard recursive copy with error handling
-        echo "Copying build directory, handling broken symlinks..."
-        sudo cp -rf ncpa ncpa-$NCPA_VER 2>/dev/null || {
-            echo "WARNING: Standard copy failed, trying without broken symlinks..."
-            # Create target directory and copy valid files only
-            sudo mkdir -p ncpa-$NCPA_VER
-            (cd ncpa && find . -type f -exec cp {} ../ncpa-$NCPA_VER/{} \; 2>/dev/null || true)
-            (cd ncpa && find . -type d -exec mkdir -p ../ncpa-$NCPA_VER/{} \; 2>/dev/null || true)
-            (cd ncpa && find . -type l | while read -r link; do
-                if [ -L "$link" ]; then
-                    # Copy the symlink itself, not its target
-                    cp -d "$link" "../ncpa-$NCPA_VER/$link" 2>/dev/null || true
-                fi
-            done)
-        }
-    fi
+    cd $BUILD_DIR
+    sudo cp -rf ncpa ncpa-$NCPA_VER
     if [ "$UNAME" == "AIX" ]; then
         echo -e "***** Build tarball for AIX"
         sudo tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER | sudo tee -a $BUILD_DIR/build.log
@@ -746,23 +620,6 @@ esac'
         sudo tar -czvf ncpa-$NCPA_VER.tar.gz ncpa-$NCPA_VER | sudo tee -a $BUILD_DIR/build.log
     fi
 )
-
-echo "=== Post-build directory verification ==="
-echo "Current directory: $(pwd)"
-echo "Build directory: $BUILD_DIR"
-cd $BUILD_DIR
-echo "Contents of build directory:"
-ls -la
-if [ -d "ncpa" ]; then
-    echo "✓ ncpa directory found"
-    echo "Contents of ncpa directory:"
-    ls -la ncpa/ | head -10
-else
-    echo "✗ ncpa directory NOT found"
-    echo "Looking for ncpa-* directories:"
-    ls -la ncpa-* 2>/dev/null || echo "No ncpa-* directories found"
-fi
-echo "============================================"
 
 
 # --------------------------
