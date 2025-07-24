@@ -623,6 +623,10 @@ esac'
 
     # Build tarball
     echo -e "\nBuilding tarball..."
+    
+    # Remove any existing versioned directory to avoid copy conflicts
+    sudo rm -rf ncpa-$NCPA_VER
+    
     if [ "$UNAME" == "SunOS" ]; then
         # On Solaris, use -R instead of -r for cp
         sudo cp -Rf ncpa ncpa-$NCPA_VER
