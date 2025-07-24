@@ -528,24 +528,55 @@ esac'
     fi
     
     # Copy build directory with platform-specific handling for symbolic links
+    echo "Copying build from $BUILD_EXE_DIR to $BUILD_DIR/ncpa"
     if [ "$UNAME" == "Darwin" ]; then
         # On macOS, use -L to follow symbolic links to avoid issues with relative paths
         echo "Copying macOS build with symbolic link resolution..."
         sudo cp -RLf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+        COPY_RESULT=$?
     elif [ "$UNAME" == "SunOS" ]; then
         # On Solaris, handle potential differences in cp command behavior
         echo "Copying Solaris build..."
         if command -v gcp >/dev/null 2>&1; then
             # Use GNU cp if available
+            echo "Using GNU cp (gcp)"
             sudo gcp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+            COPY_RESULT=$?
         else
             # Use standard Solaris cp (use -R instead of -r)
+            echo "Using standard Solaris cp"
             sudo cp -Rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+            COPY_RESULT=$?
         fi
     else
         # On other systems (Linux, AIX), use standard recursive copy
         echo "Copying build for $UNAME..."
         sudo cp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+        COPY_RESULT=$?
+    fi
+    
+    # Check if copy was successful
+    if [ $COPY_RESULT -ne 0 ]; then
+        echo "ERROR: Failed to copy build directory (exit code: $COPY_RESULT)"
+        echo "Source: $BUILD_EXE_DIR"
+        echo "Destination: $BUILD_DIR/ncpa"
+        echo "Source contents:"
+        ls -la "$BUILD_EXE_DIR" 2>/dev/null || echo "Source directory not accessible"
+        echo "Destination parent directory:"
+        ls -la "$BUILD_DIR" 2>/dev/null || echo "Destination parent not accessible"
+        exit 1
+    fi
+    
+    # Verify the copy worked
+    if [ ! -d "$BUILD_DIR/ncpa" ]; then
+        echo "ERROR: ncpa directory was not created successfully"
+        echo "Destination directory contents:"
+        ls -la "$BUILD_DIR"
+        exit 1
+    else
+        echo "✓ Successfully copied build to $BUILD_DIR/ncpa"
+        echo "ncpa directory contents:"
+        ls -la "$BUILD_DIR/ncpa" | head -10
     fi
     
     echo $GIT_LONG | sudo tee $BUILD_DIR/ncpa/$GIT_HASH_FILE
