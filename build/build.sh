@@ -9,12 +9,19 @@ source "$BUILD_DIR_FOR_VERSION/version_config.sh"
 UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
     BUILD_DIR=$( cd "$(dirname "$0")" ; pwd -P )
-    AGENT_DIR="$BUILD_DIR/../agent"
+    AGENT_DIR=$( cd "$BUILD_DIR/../agent" ; pwd -P )
 else
     BUILD_DIR=$(dirname "$(readlink -f "$0")")
     AGENT_DIR=$(readlink -f "$BUILD_DIR/../agent")
 fi
 NCPA_VER=$(cat $BUILD_DIR/../VERSION)
+
+echo "=== Path Resolution Debug ==="
+echo "Script location: $(dirname "$0")"
+echo "BUILD_DIR (absolute): $BUILD_DIR"
+echo "AGENT_DIR (absolute): $AGENT_DIR"
+echo "UNAME: $UNAME"
+echo "============================="
 
 # Virtual environment configuration
 VENV_MANAGER="$BUILD_DIR/venv_manager.sh"
@@ -29,55 +36,8 @@ BUILD_TRAVIS=0
 NO_INTERACTION=0
 CLEAN_VENV=0
 
-echo "=== Post-build directory verification ==="
-echo "Current working directory: $(pwd)"
-echo "Build directory (BUILD_DIR): $BUILD_DIR"
 
-# Ensure we're in the build directory (should already be, but double-check)
-if [ "$(pwd)" != "$BUILD_DIR" ]; then
-    echo "WARNING: Not in BUILD_DIR, changing directory to $BUILD_DIR"
-    cd "$BUILD_DIR" || {
-        echo "ERROR: Cannot change to BUILD_DIR: $BUILD_DIR"
-        exit 1
-    }
-fi
-
-echo "Confirmed in directory: $(pwd)"
-echo "Contents of build directory:"
-ls -la
-
-if [ -d "ncpa" ]; then
-    echo "✓ ncpa directory found"
-    echo "ncpa directory details:"
-    ls -ld ncpa/
-    echo "Contents of ncpa directory (first 10 items):"
-    ls -la ncpa/ | head -10
-    echo "Total files in ncpa directory: $(find ncpa/ -type f | wc -l 2>/dev/null || echo 'count failed')"
-    
-    # Check for key files that should be present
-    if [ -f "ncpa/ncpa" ]; then
-        echo "✓ Main ncpa executable found"
-    else
-        echo "✗ Main ncpa executable NOT found"
-    fi
-else
-    echo "✗ ncpa directory NOT found"
-    echo "Looking for ncpa-* directories:"
-    ls -la ncpa-* 2>/dev/null || echo "No ncpa-* directories found"
-    echo "Looking for any directories with 'ncpa' in the name:"
-    ls -la *ncpa* 2>/dev/null || echo "No directories with 'ncpa' in name found"
-    
-    # Debug: Check if the source build directory still exists
-    echo "Checking source build directory: $BUILD_EXE_DIR"
-    if [ -d "$BUILD_EXE_DIR" ]; then
-        echo "Source build directory still exists"
-        echo "Source contents:"
-        ls -la "$BUILD_EXE_DIR" | head -10
-    else
-        echo "Source build directory no longer exists"
-    fi
-fi
-echo "============================================"--------------------------
+# --------------------------
 # General functions
 # --------------------------
 
