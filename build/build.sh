@@ -289,9 +289,50 @@ fi
         export SOLARIS_BUILD=1
         
         # Ensure patchelf is available for cx_Freeze
+        echo "Ensuring patchelf wrapper is properly configured..."
+        
+        # Force virtual environment bin directory to be first in PATH
+        if [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV/bin" ]; then
+            export PATH="$VIRTUAL_ENV/bin:$PATH"
+            echo "Updated PATH to prioritize virtual environment: $VIRTUAL_ENV/bin"
+        fi
+        
+        # Ensure /usr/local/bin is in PATH
+        if ! echo "$PATH" | grep -q "/usr/local/bin"; then
+            export PATH="/usr/local/bin:$PATH"
+            echo "Added /usr/local/bin to PATH"
+        fi
+        
         if command -v patchelf >/dev/null 2>&1; then
-            echo "patchelf found at $(which patchelf) - cx_Freeze should work properly"
-            echo "patchelf version: $(patchelf --version 2>&1 || echo 'version check failed')"
+            patchelf_path=$(which patchelf)
+            echo "patchelf found at $patchelf_path"
+            
+            patchelf_version=$(patchelf --version 2>&1 || echo 'version check failed')
+            echo "patchelf version: $patchelf_version"
+            
+            # Check if it's our wrapper
+            if echo "$patchelf_version" | grep -q "wrapper"; then
+                echo "✓ Using our Solaris-compatible patchelf wrapper"
+            else
+                echo "⚠ Warning: patchelf may not be our wrapper - this could cause issues"
+                echo "Attempting to ensure wrapper is used..."
+                
+                # Try to force our wrapper to take precedence
+                if [ -f "/usr/local/bin/patchelf" ]; then
+                    # Check if /usr/local/bin/patchelf is our wrapper
+                    if head -1 /usr/local/bin/patchelf 2>/dev/null | grep -q "#!/bin/bash" && grep -q "wrapper" /usr/local/bin/patchelf 2>/dev/null; then
+                        echo "Found our wrapper at /usr/local/bin/patchelf"
+                        if [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV/bin" ]; then
+                            echo "Copying wrapper to virtual environment..."
+                            cp /usr/local/bin/patchelf "$VIRTUAL_ENV/bin/patchelf"
+                            chmod +x "$VIRTUAL_ENV/bin/patchelf"
+                            export PATH="$VIRTUAL_ENV/bin:$PATH"
+                            hash -r
+                            echo "Updated patchelf location: $(which patchelf)"
+                        fi
+                    fi
+                fi
+            fi
             
             # Test patchelf functionality on a simple binary first
             echo "Testing patchelf functionality..."

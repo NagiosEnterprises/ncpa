@@ -641,18 +641,56 @@ esac
 EOF
             
             if sudo mv /tmp/patchelf-immediate /usr/local/bin/patchelf && sudo chmod +x /usr/local/bin/patchelf; then
-                echo "✓ Installed immediate patchelf wrapper"
-                hash -r  # Clear command cache
+                echo "✓ Installed immediate patchelf wrapper to /usr/local/bin/patchelf"
                 
-                # Also create a symlink in virtual environment if it exists
+                # Also install in virtual environment bin directory with higher priority
                 if [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV/bin" ]; then
-                    ln -sf /usr/local/bin/patchelf "$VIRTUAL_ENV/bin/patchelf" 2>/dev/null
-                    echo "✓ Linked patchelf into virtual environment: $VIRTUAL_ENV/bin/patchelf"
+                    # Copy wrapper to venv bin directory (this takes precedence in PATH)
+                    cp /usr/local/bin/patchelf "$VIRTUAL_ENV/bin/patchelf" 2>/dev/null
+                    chmod +x "$VIRTUAL_ENV/bin/patchelf" 2>/dev/null
+                    echo "✓ Installed patchelf wrapper in virtual environment: $VIRTUAL_ENV/bin/patchelf"
+                    
+                    # Force cx_Freeze to use the venv version by updating PATH
+                    export PATH="$VIRTUAL_ENV/bin:$PATH"
+                    echo "✓ Updated PATH to prioritize virtual environment patchelf"
                 fi
+                
+                # Remove any pip-installed patchelf binary that might interfere
+                pip_patchelf_locations=(
+                    "$VIRTUAL_ENV/bin/patchelf"
+                    "/usr/local/bin/patchelf"
+                    "/root/.local/bin/patchelf"
+                )
+                
+                for location in "${pip_patchelf_locations[@]}"; do
+                    if [ -f "$location" ] && [ ! -L "$location" ]; then
+                        # Check if this is the pip-installed binary (not our wrapper)
+                        if head -1 "$location" 2>/dev/null | grep -q "^#!/" && grep -q "patchelf wrapper" "$location" 2>/dev/null; then
+                            echo "✓ Found our wrapper at $location - keeping it"
+                        else
+                            echo "ℹ Replacing potential pip-installed patchelf at $location with wrapper"
+                            cp /usr/local/bin/patchelf "$location" 2>/dev/null
+                            chmod +x "$location" 2>/dev/null
+                        fi
+                    fi
+                done
+                
+                hash -r  # Clear command cache
                 
                 if command -v patchelf >/dev/null 2>&1; then
                     echo "✓ patchelf now available: $(which patchelf)"
                     echo "ℹ Using compatibility wrapper - build should continue successfully"
+                    
+                    # Verify our wrapper is being used
+                    patchelf_version=$(patchelf --version 2>&1)
+                    if echo "$patchelf_version" | grep -q "wrapper"; then
+                        echo "✓ Confirmed wrapper is active: $patchelf_version"
+                    else
+                        echo "⚠ Warning: patchelf may not be our wrapper"
+                        echo "   Version output: $patchelf_version"
+                    fi
+                else
+                    echo "⚠ patchelf still not found in PATH"
                 fi
             else
                 echo "⚠ Failed to install patchelf wrapper"
