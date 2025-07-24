@@ -590,7 +590,31 @@ esac'
             echo "Destination contents:"
             ls -la "$BUILD_DIR/ncpa" | head -10
             echo "Main executable exists: $([ -f "$BUILD_DIR/ncpa/ncpa" ] && echo "YES" || echo "NO")"
+            
+            # Check if we accidentally created a nested structure
+            if [ -d "$BUILD_DIR/ncpa/exe."* ]; then
+                echo "WARNING: Found nested exe.* directory structure!"
+                echo "Nested directories found:"
+                ls -la "$BUILD_DIR/ncpa/" | grep "^d" | grep "exe\."
+                echo "This indicates the copy created a nested structure instead of renaming."
+                echo "Attempting to fix by moving contents up one level..."
+                
+                # Find the nested exe.* directory
+                nested_dir=$(find "$BUILD_DIR/ncpa" -maxdepth 1 -name "exe.*" -type d | head -1)
+                if [ -n "$nested_dir" ]; then
+                    echo "Moving contents from $nested_dir to $BUILD_DIR/ncpa"
+                    # Create a temporary directory
+                    temp_dir="$BUILD_DIR/ncpa_temp_$$"
+                    sudo mv "$nested_dir" "$temp_dir"
+                    sudo rm -rf "$BUILD_DIR/ncpa"
+                    sudo mv "$temp_dir" "$BUILD_DIR/ncpa"
+                    echo "✓ Fixed nested directory structure"
+                fi
+            fi
         fi
+        echo "Final verification:"
+        echo "ncpa directory exists: $([ -d "$BUILD_DIR/ncpa" ] && echo "YES" || echo "NO")"
+        echo "ncpa executable exists: $([ -f "$BUILD_DIR/ncpa/ncpa" ] && echo "YES" || echo "NO")"
         echo "================================="
     else
         # On other systems (Linux, AIX), use standard recursive copy
@@ -655,10 +679,45 @@ esac'
     fi
     echo "============================="
     
-    sudo cp -rf ncpa ncpa-$NCPA_VER
+    # Create tarball copy with platform-specific handling
+    if [ "$UNAME" == "SunOS" ]; then
+        echo "Using Solaris-specific copy method for tarball creation..."
+        if command -v gcp >/dev/null 2>&1; then
+            # Use GNU cp if available
+            sudo gcp -rf ncpa ncpa-$NCPA_VER
+        else
+            # Use alternative method for standard Solaris cp
+            echo "Using manual copy approach for Solaris..."
+            sudo mkdir -p ncpa-$NCPA_VER
+            # Use tar to copy directory contents to avoid cp issues
+            (cd ncpa && sudo tar cf - .) | (cd ncpa-$NCPA_VER && sudo tar xf -)
+        fi
+    else
+        # Use standard copy for other platforms
+        sudo cp -rf ncpa ncpa-$NCPA_VER
+    fi
     
     # Verify the copy worked
     echo "ncpa-$NCPA_VER directory created: $([ -d "ncpa-$NCPA_VER" ] && echo "YES" || echo "NO")"
+    
+    # Add Solaris-specific debugging for tarball copy
+    if [ "$UNAME" == "SunOS" ] && [ ! -d "ncpa-$NCPA_VER" ]; then
+        echo "=== Solaris Tarball Copy Failed - Debugging ==="
+        echo "Attempting alternative copy method for Solaris..."
+        
+        # Try with GNU cp if available
+        if command -v gcp >/dev/null 2>&1; then
+            echo "Trying with GNU cp..."
+            sudo gcp -rf ncpa ncpa-$NCPA_VER
+        else
+            echo "Trying manual copy approach..."
+            sudo mkdir -p ncpa-$NCPA_VER
+            sudo find ncpa -mindepth 1 -maxdepth 1 -exec cp -rf {} ncpa-$NCPA_VER/ \;
+        fi
+        
+        echo "Second attempt result: $([ -d "ncpa-$NCPA_VER" ] && echo "SUCCESS" || echo "FAILED")"
+        echo "============================================="
+    fi
     
     if [ "$UNAME" == "AIX" ]; then
         echo -e "***** Build tarball for AIX"
