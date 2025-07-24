@@ -592,15 +592,22 @@ esac'
             echo "Main executable exists: $([ -f "$BUILD_DIR/ncpa/ncpa" ] && echo "YES" || echo "NO")"
             
             # Check if we accidentally created a nested structure
-            if [ -d "$BUILD_DIR/ncpa/exe."* ]; then
+            if ls -1 "$BUILD_DIR/ncpa/" 2>/dev/null | grep -q "^exe\."; then
                 echo "WARNING: Found nested exe.* directory structure!"
                 echo "Nested directories found:"
                 ls -la "$BUILD_DIR/ncpa/" | grep "^d" | grep "exe\."
                 echo "This indicates the copy created a nested structure instead of renaming."
                 echo "Attempting to fix by moving contents up one level..."
                 
-                # Find the nested exe.* directory
-                nested_dir=$(find "$BUILD_DIR/ncpa" -maxdepth 1 -name "exe.*" -type d | head -1)
+                # Find the nested exe.* directory (Solaris-compatible approach)
+                nested_dir=""
+                for dir in "$BUILD_DIR/ncpa"/exe.*; do
+                    if [ -d "$dir" ]; then
+                        nested_dir="$dir"
+                        break
+                    fi
+                done
+                
                 if [ -n "$nested_dir" ]; then
                     echo "Moving contents from $nested_dir to $BUILD_DIR/ncpa"
                     # Create a temporary directory
@@ -680,16 +687,23 @@ esac'
     echo "============================="
     
     # Create tarball copy with platform-specific handling
+    # First, ensure any existing target directory is removed
+    if [ -d "ncpa-$NCPA_VER" ]; then
+        echo "Removing existing ncpa-$NCPA_VER directory..."
+        sudo rm -rf "ncpa-$NCPA_VER"
+    fi
+    
     if [ "$UNAME" == "SunOS" ]; then
         echo "Using Solaris-specific copy method for tarball creation..."
         if command -v gcp >/dev/null 2>&1; then
-            # Use GNU cp if available
+            # Use GNU cp if available - copy the directory itself
+            echo "Using GNU cp to copy ncpa directory..."
             sudo gcp -rf ncpa ncpa-$NCPA_VER
         else
-            # Use alternative method for standard Solaris cp
-            echo "Using manual copy approach for Solaris..."
+            # Use tar method for standard Solaris cp to avoid cp issues
+            echo "Using tar-based copy approach for Solaris..."
             sudo mkdir -p ncpa-$NCPA_VER
-            # Use tar to copy directory contents to avoid cp issues
+            # Use tar to copy directory contents preserving structure
             (cd ncpa && sudo tar cf - .) | (cd ncpa-$NCPA_VER && sudo tar xf -)
         fi
     else
@@ -700,22 +714,42 @@ esac'
     # Verify the copy worked
     echo "ncpa-$NCPA_VER directory created: $([ -d "ncpa-$NCPA_VER" ] && echo "YES" || echo "NO")"
     
-    # Add Solaris-specific debugging for tarball copy
+    # If Solaris copy failed, try alternative methods
     if [ "$UNAME" == "SunOS" ] && [ ! -d "ncpa-$NCPA_VER" ]; then
-        echo "=== Solaris Tarball Copy Failed - Debugging ==="
-        echo "Attempting alternative copy method for Solaris..."
+        echo "=== Solaris Tarball Copy Failed - Trying Alternative Methods ==="
         
-        # Try with GNU cp if available
+        # Clean up any partial attempt
+        sudo rm -rf "ncpa-$NCPA_VER" 2>/dev/null || true
+        
         if command -v gcp >/dev/null 2>&1; then
-            echo "Trying with GNU cp..."
+            echo "Attempting with GNU cp (gcp)..."
             sudo gcp -rf ncpa ncpa-$NCPA_VER
-        else
-            echo "Trying manual copy approach..."
-            sudo mkdir -p ncpa-$NCPA_VER
-            sudo find ncpa -mindepth 1 -maxdepth 1 -exec cp -rf {} ncpa-$NCPA_VER/ \;
         fi
         
-        echo "Second attempt result: $([ -d "ncpa-$NCPA_VER" ] && echo "SUCCESS" || echo "FAILED")"
+        # If gcp also failed or is not available, try find-based copy
+        if [ ! -d "ncpa-$NCPA_VER" ]; then
+            echo "Attempting find-based copy method..."
+            sudo mkdir -p ncpa-$NCPA_VER
+            # Use find to copy each top-level item individually
+            if [ "$UNAME" == "SunOS" ]; then
+                # Solaris find doesn't support -maxdepth, use alternative approach
+                for item in ncpa/*; do
+                    if [ -e "$item" ]; then
+                        sudo cp -rf "$item" "ncpa-$NCPA_VER/"
+                    fi
+                done
+            else
+                sudo find ncpa -mindepth 1 -maxdepth 1 -exec cp -rf {} ncpa-$NCPA_VER/ \;
+            fi
+        fi
+        
+        echo "Final attempt result: $([ -d "ncpa-$NCPA_VER" ] && echo "SUCCESS" || echo "FAILED")"
+        
+        # If all methods failed, exit with error
+        if [ ! -d "ncpa-$NCPA_VER" ]; then
+            echo "ERROR: All copy methods failed on Solaris. Cannot create ncpa-$NCPA_VER directory."
+            exit 1
+        fi
         echo "============================================="
     fi
     
