@@ -8,63 +8,70 @@ source "$BUILD_DIR_FOR_VERSION/version_config.sh"
 
 UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
-    # For systems without readlink -f, use a more robust approach to get script's absolute directory
-    # Handle cases where script is invoked as ./build.sh, ../build/build.sh, /full/path/build.sh, etc.
+    # For systems without readlink -f, use a simpler, more reliable approach
     echo "=== Solaris Path Resolution Debug ==="
     echo "Script invocation (\$0): '$0'"
-    echo "dirname \"\$0\": '$(dirname "$0")'"
+    echo "Current working directory: $(pwd)"
     
-    SCRIPT_SOURCE="$0"
-    echo "Initial SCRIPT_SOURCE: '$SCRIPT_SOURCE'"
+    # Get the directory containing the script
+    SCRIPT_DIR="$(dirname "$0")"
+    echo "dirname \"\$0\": '$SCRIPT_DIR'"
     
-    # Handle symlinks
-    while [ -L "$SCRIPT_SOURCE" ]; do
-        # Resolve symlinks
-        SCRIPT_DIR="$(cd -P "$(dirname "$SCRIPT_SOURCE")" && pwd)"
-        echo "SCRIPT_DIR from symlink: '$SCRIPT_DIR'"
-        SCRIPT_SOURCE="$(readlink "$SCRIPT_SOURCE")"
-        echo "Resolved SCRIPT_SOURCE: '$SCRIPT_SOURCE'"
-        # Check if the resolved path is relative (doesn't start with /)
-        case "$SCRIPT_SOURCE" in
-            /*) 
-                echo "SCRIPT_SOURCE is absolute: '$SCRIPT_SOURCE'"
-                ;;
-            *)
-                echo "SCRIPT_SOURCE is relative, making absolute..."
-                SCRIPT_SOURCE="$SCRIPT_DIR/$SCRIPT_SOURCE"
-                echo "Final SCRIPT_SOURCE after relative check: '$SCRIPT_SOURCE'"
-                ;;
-        esac
-    done
-    
-    echo "About to resolve final BUILD_DIR from: '$(dirname "$SCRIPT_SOURCE")'"
-    SCRIPT_DIR_NAME="$(dirname "$SCRIPT_SOURCE")"
-    echo "SCRIPT_DIR_NAME: '$SCRIPT_DIR_NAME'"
-    
-    # Ensure we get absolute path
-    if [ "$SCRIPT_DIR_NAME" = "." ]; then
-        # If dirname returns ".", get current working directory
+    # Convert to absolute path immediately
+    if [ "$SCRIPT_DIR" = "." ]; then
+        # Script is in current directory (e.g., ./build.sh)
         BUILD_DIR="$(pwd)"
-        echo "Using current directory as BUILD_DIR: '$BUILD_DIR'"
+        echo "Script in current directory, BUILD_DIR: '$BUILD_DIR'"
+    elif [ "$SCRIPT_DIR" = ".." ]; then
+        # Script is in parent directory (e.g., ../build.sh)
+        BUILD_DIR="$(cd .. && pwd)"
+        echo "Script in parent directory, BUILD_DIR: '$BUILD_DIR'"
     else
-        BUILD_DIR="$(cd -P "$SCRIPT_DIR_NAME" && pwd)"
-        echo "Resolved BUILD_DIR via cd: '$BUILD_DIR'"
+        # Script has a path (e.g., /path/to/build.sh or relative/path/build.sh)
+        BUILD_DIR="$(cd "$SCRIPT_DIR" && pwd)"
+        echo "Script has path, BUILD_DIR: '$BUILD_DIR'"
     fi
     
-    # Verify BUILD_DIR is absolute
+    # Handle symlinks if the script itself is a symlink
+    SCRIPT_PATH="$0"
+    if [ -L "$SCRIPT_PATH" ]; then
+        echo "Script is a symlink, resolving..."
+        # For symlinks, we need to resolve the actual location
+        while [ -L "$SCRIPT_PATH" ]; do
+            LINK_TARGET="$(readlink "$SCRIPT_PATH")"
+            case "$LINK_TARGET" in
+                /*) 
+                    # Absolute symlink
+                    SCRIPT_PATH="$LINK_TARGET"
+                    ;;
+                *)
+                    # Relative symlink
+                    SCRIPT_PATH="$(dirname "$SCRIPT_PATH")/$LINK_TARGET"
+                    ;;
+            esac
+        done
+        # Now get the directory of the resolved script
+        BUILD_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
+        echo "Resolved symlink, final BUILD_DIR: '$BUILD_DIR'"
+    fi
+    
+    # Verify BUILD_DIR is absolute and exists
     case "$BUILD_DIR" in
         /*) 
-            echo "✓ BUILD_DIR is absolute: '$BUILD_DIR'"
+            if [ -d "$BUILD_DIR" ]; then
+                echo "✓ BUILD_DIR is absolute and exists: '$BUILD_DIR'"
+            else
+                echo "✗ BUILD_DIR is absolute but doesn't exist: '$BUILD_DIR'"
+                exit 1
+            fi
             ;;
         *)
             echo "✗ BUILD_DIR is not absolute: '$BUILD_DIR'"
-            echo "Forcing to current directory..."
-            BUILD_DIR="$(pwd)"
-            echo "Fallback BUILD_DIR: '$BUILD_DIR'"
+            exit 1
             ;;
     esac
     
-    AGENT_DIR=$( cd "$BUILD_DIR/../agent" ; pwd -P )
+    AGENT_DIR="$(cd "$BUILD_DIR/../agent" && pwd)"
     echo "Resolved AGENT_DIR: '$AGENT_DIR'"
     echo "====================================="
 else
