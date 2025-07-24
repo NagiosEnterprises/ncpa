@@ -43,11 +43,13 @@ rm -rf $DIR/pkginfo.tmp
         exit 1
     fi
     
-    # Add package information/scripts to pkg base
+    # Add package information/scripts to current directory (where pkgmk runs)
+    # pkginfo goes into the ncpa directory for the package content
     cp pkginfo ncpa/pkginfo
-    cp solaris/postinstall ncpa/postinstall
-    cp solaris/preinstall ncpa/preinstall  
-    cp solaris/preremove ncpa/preremove
+    # Install scripts stay in current directory for pkgmk to find them
+    cp solaris/postinstall ./postinstall
+    cp solaris/preinstall ./preinstall  
+    cp solaris/preremove ./preremove
 
     echo "Creating prototype file..."
     # Add prototype file
@@ -60,6 +62,14 @@ rm -rf $DIR/pkginfo.tmp
     echo "Generating file list..."
     if command -v pkgproto >/dev/null 2>&1; then
         pkgproto ncpa >> prototype
+        echo "✓ Prototype file created successfully"
+        echo "Verifying install scripts exist in current directory:"
+        echo "  preinstall: $([ -f preinstall ] && echo "✓ EXISTS" || echo "✗ MISSING")"
+        echo "  postinstall: $([ -f postinstall ] && echo "✓ EXISTS" || echo "✗ MISSING")"
+        echo "  preremove: $([ -f preremove ] && echo "✓ EXISTS" || echo "✗ MISSING")"
+        echo "  pkginfo: $([ -f ncpa/pkginfo ] && echo "✓ EXISTS" || echo "✗ MISSING")"
+        echo "First 10 lines of prototype file:"
+        head -10 prototype
     else
         echo "ERROR: pkgproto command not found."
         echo "Please ensure Solaris packaging tools are installed."
@@ -69,7 +79,15 @@ rm -rf $DIR/pkginfo.tmp
     echo "Building package..."
     # Build package and create the .pkg file
     if command -v pkgmk >/dev/null 2>&1; then
-        pkgmk -o -b $(pwd)
+        echo "Running pkgmk to build package..."
+        if pkgmk -o -b $(pwd); then
+            echo "✓ pkgmk completed successfully"
+        else
+            echo "ERROR: pkgmk failed with exit code $?"
+            echo "Check prototype file and ensure all referenced files exist:"
+            cat prototype
+            exit 1
+        fi
     else
         echo "ERROR: pkgmk command not found."
         echo "Please ensure Solaris packaging tools are installed."
@@ -77,8 +95,29 @@ rm -rf $DIR/pkginfo.tmp
     fi
     
     if command -v pkgtrans >/dev/null 2>&1; then
-        pkgtrans -s /var/spool/pkg ncpa-$VERSION.$ARCH.pkg ncpa
-        mv -f /var/spool/pkg/ncpa-$VERSION.$ARCH.pkg .
+        echo "Running pkgtrans to create final package..."
+        if pkgtrans -s /var/spool/pkg ncpa-$VERSION.$ARCH.pkg ncpa; then
+            echo "✓ pkgtrans completed successfully"
+            # Check if the package file was actually created
+            if [ -f "/var/spool/pkg/ncpa-$VERSION.$ARCH.pkg" ]; then
+                echo "✓ Package file found, moving to build directory..."
+                mv -f /var/spool/pkg/ncpa-$VERSION.$ARCH.pkg .
+                if [ -f "ncpa-$VERSION.$ARCH.pkg" ]; then
+                    echo "✓ Package successfully moved to: $(pwd)/ncpa-$VERSION.$ARCH.pkg"
+                else
+                    echo "ERROR: Failed to move package to current directory"
+                    exit 1
+                fi
+            else
+                echo "ERROR: Package file was not created: /var/spool/pkg/ncpa-$VERSION.$ARCH.pkg"
+                echo "Available files in /var/spool/pkg:"
+                ls -la /var/spool/pkg/ 2>/dev/null || echo "Cannot list /var/spool/pkg/"
+                exit 1
+            fi
+        else
+            echo "ERROR: pkgtrans failed with exit code $?"
+            exit 1
+        fi
     else
         echo "ERROR: pkgtrans command not found."
         echo "Please ensure Solaris packaging tools are installed."
@@ -90,9 +129,12 @@ rm -rf $DIR/pkginfo.tmp
     rm -rf /var/spool/pkg/ncpa
     rm -f prototype
     rm -f pkginfo
-    rm -f ncpa/postinstall
-    rm -f ncpa/preinstall
-    rm -f ncpa/preremove
+    # Remove install scripts from current directory (not from ncpa/)
+    rm -f postinstall
+    rm -f preinstall
+    rm -f preremove
+    # Remove pkginfo from ncpa directory
+    rm -f ncpa/pkginfo
 
     echo "Package created successfully: ncpa-$VERSION.$ARCH.pkg"
 )
