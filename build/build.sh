@@ -557,6 +557,23 @@ esac'
     # have a special name like libffi-6322464e.so.6.0.4
     sudo rm -f $BUILD_DIR/ncpa/libffi-*.so.*
 
+    # Handle problematic symlinks created by cx_Freeze
+    echo "Checking for broken SSL library symlinks..."
+    if [ -L "$BUILD_DIR/ncpa/libcrypto.so" ]; then
+        crypto_target=$(readlink "$BUILD_DIR/ncpa/libcrypto.so" 2>/dev/null || echo "")
+        if [ ! -e "$BUILD_DIR/ncpa/libcrypto.so" ]; then
+            echo "INFO: Removing broken libcrypto.so symlink (pointed to: $crypto_target)"
+            sudo rm -f "$BUILD_DIR/ncpa/libcrypto.so"
+        fi
+    fi
+    if [ -L "$BUILD_DIR/ncpa/libssl.so" ]; then
+        ssl_target=$(readlink "$BUILD_DIR/ncpa/libssl.so" 2>/dev/null || echo "")
+        if [ ! -e "$BUILD_DIR/ncpa/libssl.so" ]; then
+            echo "INFO: Removing broken libssl.so symlink (pointed to: $ssl_target)"
+            sudo rm -f "$BUILD_DIR/ncpa/libssl.so"
+        fi
+    fi
+
     # Set permissions
     echo "Setting file permissions..."
     
@@ -570,12 +587,13 @@ esac'
         
         # Handle symlinks separately - only set permissions on valid symlinks
         find "$BUILD_DIR/ncpa" -type l | while read -r symlink; do
-            if [ -e "$symlink" ]; then
-                # Symlink target exists, safe to chmod
+            if [ -L "$symlink" ]; then
+                # Symlink exists - try to set permissions regardless of target validity
                 sudo chmod g+r,a+r "$symlink" 2>/dev/null || true
-            else
-                # Broken symlink - either remove it or skip it
-                echo "INFO: Skipping broken symlink: $symlink"
+                # Check if target exists for informational purposes
+                if [ ! -e "$symlink" ]; then
+                    echo "INFO: Symlink exists but target missing: $symlink -> $(readlink "$symlink" 2>/dev/null || echo 'unknown')"
+                fi
             fi
         done
         
@@ -646,8 +664,9 @@ esac'
                 (cd ncpa && find . -type f -exec sudo cp {} ../ncpa-$NCPA_VER/{} \; 2>/dev/null || true)
                 (cd ncpa && find . -type d -exec sudo mkdir -p ../ncpa-$NCPA_VER/{} \; 2>/dev/null || true)
                 (cd ncpa && find . -type l | while read -r link; do
-                    if [ -e "$link" ]; then
-                        sudo cp "$link" "../ncpa-$NCPA_VER/$link" 2>/dev/null || true
+                    if [ -L "$link" ]; then
+                        # Copy the symlink itself, not its target
+                        sudo cp -d "$link" "../ncpa-$NCPA_VER/$link" 2>/dev/null || true
                     fi
                 done)
             }
@@ -662,8 +681,9 @@ esac'
             (cd ncpa && find . -type f -exec cp {} ../ncpa-$NCPA_VER/{} \; 2>/dev/null || true)
             (cd ncpa && find . -type d -exec mkdir -p ../ncpa-$NCPA_VER/{} \; 2>/dev/null || true)
             (cd ncpa && find . -type l | while read -r link; do
-                if [ -e "$link" ]; then
-                    cp "$link" "../ncpa-$NCPA_VER/$link" 2>/dev/null || true
+                if [ -L "$link" ]; then
+                    # Copy the symlink itself, not its target
+                    cp -d "$link" "../ncpa-$NCPA_VER/$link" 2>/dev/null || true
                 fi
             done)
         }
