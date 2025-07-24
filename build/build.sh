@@ -8,7 +8,16 @@ source "$BUILD_DIR_FOR_VERSION/version_config.sh"
 
 UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
-    BUILD_DIR=$( cd "$(dirname "$0")" ; pwd -P )
+    # For systems without readlink -f, use a more robust approach to get script's absolute directory
+    # Handle cases where script is invoked as ./build.sh, ../build/build.sh, /full/path/build.sh, etc.
+    SCRIPT_SOURCE="$0"
+    while [ -L "$SCRIPT_SOURCE" ]; do
+        # Resolve symlinks
+        SCRIPT_DIR="$(cd -P "$(dirname "$SCRIPT_SOURCE")" && pwd)"
+        SCRIPT_SOURCE="$(readlink "$SCRIPT_SOURCE")"
+        [[ $SCRIPT_SOURCE != /* ]] && SCRIPT_SOURCE="$SCRIPT_DIR/$SCRIPT_SOURCE"
+    done
+    BUILD_DIR="$(cd -P "$(dirname "$SCRIPT_SOURCE")" && pwd)"
     AGENT_DIR=$( cd "$BUILD_DIR/../agent" ; pwd -P )
 else
     BUILD_DIR=$(dirname "$(readlink -f "$0")")
@@ -17,10 +26,12 @@ fi
 NCPA_VER=$(cat $BUILD_DIR/../VERSION)
 
 echo "=== Path Resolution Debug ==="
+echo "Script invocation: $0"
 echo "Script location: $(dirname "$0")"
 echo "BUILD_DIR (absolute): $BUILD_DIR"
 echo "AGENT_DIR (absolute): $AGENT_DIR"
 echo "UNAME: $UNAME"
+echo "Current working directory: $(pwd)"
 echo "============================="
 
 # Virtual environment configuration
