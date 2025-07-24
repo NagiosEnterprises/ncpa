@@ -1,5 +1,10 @@
 Changelog
 +++++++++
+3.2.0 - XX/XX/2025
+==================
+**Bug Fixes**
+- Fixed an issue where Windows Event log date formats were not being parsed properly, leading to crashes. [GH:#1194] (Blake Bahner)
+
 3.1.4 - XX/XX/2025
 ==================
 **Added**
