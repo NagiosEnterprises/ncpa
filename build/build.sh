@@ -17,19 +17,52 @@ if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ];
     SCRIPT_SOURCE="$0"
     echo "Initial SCRIPT_SOURCE: '$SCRIPT_SOURCE'"
     
+    # Handle symlinks
     while [ -L "$SCRIPT_SOURCE" ]; do
         # Resolve symlinks
         SCRIPT_DIR="$(cd -P "$(dirname "$SCRIPT_SOURCE")" && pwd)"
         echo "SCRIPT_DIR from symlink: '$SCRIPT_DIR'"
         SCRIPT_SOURCE="$(readlink "$SCRIPT_SOURCE")"
         echo "Resolved SCRIPT_SOURCE: '$SCRIPT_SOURCE'"
-        [[ $SCRIPT_SOURCE != /* ]] && SCRIPT_SOURCE="$SCRIPT_DIR/$SCRIPT_SOURCE"
-        echo "Final SCRIPT_SOURCE after relative check: '$SCRIPT_SOURCE'"
+        # Check if the resolved path is relative (doesn't start with /)
+        case "$SCRIPT_SOURCE" in
+            /*) 
+                echo "SCRIPT_SOURCE is absolute: '$SCRIPT_SOURCE'"
+                ;;
+            *)
+                echo "SCRIPT_SOURCE is relative, making absolute..."
+                SCRIPT_SOURCE="$SCRIPT_DIR/$SCRIPT_SOURCE"
+                echo "Final SCRIPT_SOURCE after relative check: '$SCRIPT_SOURCE'"
+                ;;
+        esac
     done
     
     echo "About to resolve final BUILD_DIR from: '$(dirname "$SCRIPT_SOURCE")'"
-    BUILD_DIR="$(cd -P "$(dirname "$SCRIPT_SOURCE")" && pwd)"
-    echo "Resolved BUILD_DIR: '$BUILD_DIR'"
+    SCRIPT_DIR_NAME="$(dirname "$SCRIPT_SOURCE")"
+    echo "SCRIPT_DIR_NAME: '$SCRIPT_DIR_NAME'"
+    
+    # Ensure we get absolute path
+    if [ "$SCRIPT_DIR_NAME" = "." ]; then
+        # If dirname returns ".", get current working directory
+        BUILD_DIR="$(pwd)"
+        echo "Using current directory as BUILD_DIR: '$BUILD_DIR'"
+    else
+        BUILD_DIR="$(cd -P "$SCRIPT_DIR_NAME" && pwd)"
+        echo "Resolved BUILD_DIR via cd: '$BUILD_DIR'"
+    fi
+    
+    # Verify BUILD_DIR is absolute
+    case "$BUILD_DIR" in
+        /*) 
+            echo "✓ BUILD_DIR is absolute: '$BUILD_DIR'"
+            ;;
+        *)
+            echo "✗ BUILD_DIR is not absolute: '$BUILD_DIR'"
+            echo "Forcing to current directory..."
+            BUILD_DIR="$(pwd)"
+            echo "Fallback BUILD_DIR: '$BUILD_DIR'"
+            ;;
+    esac
     
     AGENT_DIR=$( cd "$BUILD_DIR/../agent" ; pwd -P )
     echo "Resolved AGENT_DIR: '$AGENT_DIR'"
