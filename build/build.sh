@@ -559,8 +559,30 @@ esac'
 
     # Set permissions
     echo "Setting file permissions..."
-    sudo chmod -R g+r $BUILD_DIR/ncpa
-    sudo chmod -R a+r $BUILD_DIR/ncpa
+    
+    # Set permissions more carefully to avoid warnings about missing files and broken symlinks
+    if [ -d "$BUILD_DIR/ncpa" ]; then
+        # Set permissions for regular files (excluding broken symlinks)
+        find "$BUILD_DIR/ncpa" -type f -exec sudo chmod g+r,a+r {} \; 2>/dev/null || true
+        
+        # Set permissions for directories
+        find "$BUILD_DIR/ncpa" -type d -exec sudo chmod g+r,a+r {} \; 2>/dev/null || true
+        
+        # Handle symlinks separately - only set permissions on valid symlinks
+        find "$BUILD_DIR/ncpa" -type l | while read -r symlink; do
+            if [ -e "$symlink" ]; then
+                # Symlink target exists, safe to chmod
+                sudo chmod g+r,a+r "$symlink" 2>/dev/null || true
+            else
+                # Broken symlink - either remove it or skip it
+                echo "INFO: Skipping broken symlink: $symlink"
+            fi
+        done
+        
+        echo "✓ Basic file permissions set"
+    else
+        echo "WARNING: ncpa build directory not found"
+    fi
     
     # Check if expected directories exist before setting ownership
     if [ -d "$BUILD_DIR/ncpa/var" ]; then
