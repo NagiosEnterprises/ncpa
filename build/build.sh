@@ -10,15 +10,30 @@ UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
     # For systems without readlink -f, use a more robust approach to get script's absolute directory
     # Handle cases where script is invoked as ./build.sh, ../build/build.sh, /full/path/build.sh, etc.
+    echo "=== Solaris Path Resolution Debug ==="
+    echo "Script invocation (\$0): '$0'"
+    echo "dirname \"\$0\": '$(dirname "$0")'"
+    
     SCRIPT_SOURCE="$0"
+    echo "Initial SCRIPT_SOURCE: '$SCRIPT_SOURCE'"
+    
     while [ -L "$SCRIPT_SOURCE" ]; do
         # Resolve symlinks
         SCRIPT_DIR="$(cd -P "$(dirname "$SCRIPT_SOURCE")" && pwd)"
+        echo "SCRIPT_DIR from symlink: '$SCRIPT_DIR'"
         SCRIPT_SOURCE="$(readlink "$SCRIPT_SOURCE")"
+        echo "Resolved SCRIPT_SOURCE: '$SCRIPT_SOURCE'"
         [[ $SCRIPT_SOURCE != /* ]] && SCRIPT_SOURCE="$SCRIPT_DIR/$SCRIPT_SOURCE"
+        echo "Final SCRIPT_SOURCE after relative check: '$SCRIPT_SOURCE'"
     done
+    
+    echo "About to resolve final BUILD_DIR from: '$(dirname "$SCRIPT_SOURCE")'"
     BUILD_DIR="$(cd -P "$(dirname "$SCRIPT_SOURCE")" && pwd)"
+    echo "Resolved BUILD_DIR: '$BUILD_DIR'"
+    
     AGENT_DIR=$( cd "$BUILD_DIR/../agent" ; pwd -P )
+    echo "Resolved AGENT_DIR: '$AGENT_DIR'"
+    echo "====================================="
 else
     BUILD_DIR=$(dirname "$(readlink -f "$0")")
     AGENT_DIR=$(readlink -f "$BUILD_DIR/../agent")
@@ -297,6 +312,11 @@ fi
 
 (
     echo -e "\nBuilding NCPA binaries..."
+    echo "=== Subshell Environment Debug ==="
+    echo "BUILD_DIR at start of subshell: $BUILD_DIR"
+    echo "AGENT_DIR at start of subshell: $AGENT_DIR"
+    echo "Current directory at start of subshell: $(pwd)"
+    echo "=================================="
     cd $AGENT_DIR
 
     echo -e "\nFreezing app (may take a minute)..."
@@ -500,6 +520,9 @@ esac'
     echo -e "\nSet up packaging dirs..."
     # Copy the cx_Freeze build output to BUILD_DIR
     echo "=== Directory Setup Debug ==="
+    echo "BUILD_DIR variable content: '$BUILD_DIR'"
+    echo "BUILD_DIR variable length: ${#BUILD_DIR}"
+    echo "BUILD_DIR starts with '/': $([ "${BUILD_DIR:0:1}" = "/" ] && echo "YES" || echo "NO")"
     echo "Current directory: $(pwd)"
     echo "BUILD_DIR: $BUILD_DIR"
     echo "AGENT_DIR: $AGENT_DIR"
