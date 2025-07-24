@@ -33,11 +33,14 @@ echo "=== Post-build directory verification ==="
 echo "Current working directory: $(pwd)"
 echo "Build directory (BUILD_DIR): $BUILD_DIR"
 
-# Ensure we're in the BUILD_DIR for final verification
-cd "$BUILD_DIR" || {
-    echo "ERROR: Cannot change to BUILD_DIR: $BUILD_DIR"
-    exit 1
-}
+# Ensure we're in the build directory (should already be, but double-check)
+if [ "$(pwd)" != "$BUILD_DIR" ]; then
+    echo "WARNING: Not in BUILD_DIR, changing directory to $BUILD_DIR"
+    cd "$BUILD_DIR" || {
+        echo "ERROR: Cannot change to BUILD_DIR: $BUILD_DIR"
+        exit 1
+    }
+fi
 
 echo "Confirmed in directory: $(pwd)"
 echo "Contents of build directory:"
@@ -598,7 +601,7 @@ esac'
     
     # Ensure we're in the build directory (should already be, but double-check)
     if [ "$(pwd)" != "$BUILD_DIR" ]; then
-        echo "WARNING: Not in BUILD_DIR, changing directory..."
+        echo "WARNING: Not in BUILD_DIR, changing directory to $BUILD_DIR"
         cd "$BUILD_DIR" || {
             echo "ERROR: Cannot change to BUILD_DIR: $BUILD_DIR"
             exit 1
