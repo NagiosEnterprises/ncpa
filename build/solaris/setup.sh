@@ -401,54 +401,95 @@ install_prereqs() {
         echo "ℹ patchelf not found (this is expected on Solaris)"
         echo "Attempting immediate patchelf installation..."
         
-        # Try a quick binary download first for common architectures
-        echo "Trying quick binary installation..."
-        TEMP_PATCHELF="/tmp/patchelf-quick-$$"
-        mkdir -p "$TEMP_PATCHELF"
-        cd "$TEMP_PATCHELF"
-        
-        # Update PATH immediately to include /usr/local/bin
-        export PATH="/usr/local/bin:$PATH"
-        
+        # First try: Install patchelf via pip in virtual environment
+        echo "Trying to install patchelf via pip in virtual environment..."
         patchelf_installed=false
         
-        if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "amd64" ]; then
-            echo "Downloading patchelf binary for x86_64..."
-            if command -v curl >/dev/null 2>&1; then
-                echo "Using curl to download patchelf..."
-                if curl -L --connect-timeout 30 "https://github.com/NixOS/patchelf/releases/download/0.18.0/patchelf-0.18.0-x86_64.tar.gz" -o patchelf.tar.gz 2>/dev/null; then
-                    if tar -xzf patchelf.tar.gz 2>/dev/null && [ -f patchelf-0.18.0-x86_64/bin/patchelf ]; then
-                        if sudo cp patchelf-0.18.0-x86_64/bin/patchelf /usr/local/bin/ 2>/dev/null && sudo chmod +x /usr/local/bin/patchelf 2>/dev/null; then
-                            patchelf_installed=true
-                        fi
+        if [ -n "$VIRTUAL_ENV" ] && [ -n "$PYTHONBIN" ] && [ -x "$PYTHONBIN" ]; then
+            echo "Virtual environment detected: $VIRTUAL_ENV"
+            echo "Using Python: $PYTHONBIN"
+            
+            # Check if pip is available in venv
+            if "$PYTHONBIN" -m pip --version >/dev/null 2>&1; then
+                echo "Attempting to install patchelf via pip..."
+                pip_output=$("$PYTHONBIN" -m pip install patchelf 2>&1)
+                pip_status=$?
+                
+                if [ $pip_status -eq 0 ]; then
+                    echo "✓ Successfully installed patchelf via pip"
+                    # Update PATH to include venv bin directory
+                    export PATH="$VIRTUAL_ENV/bin:$PATH"
+                    hash -r  # Clear command cache
+                    
+                    # Verify patchelf is now available
+                    if command -v patchelf >/dev/null 2>&1; then
+                        echo "✓ patchelf now available via pip: $(which patchelf)"
+                        patchelf_installed=true
+                    else
+                        echo "⚠ patchelf installed via pip but not found in PATH"
                     fi
-                fi
-            elif command -v wget >/dev/null 2>&1; then
-                echo "Using wget to download patchelf..."
-                if wget --timeout=30 "https://github.com/NixOS/patchelf/releases/download/0.18.0/patchelf-0.18.0-x86_64.tar.gz" -O patchelf.tar.gz 2>/dev/null; then
-                    if tar -xzf patchelf.tar.gz 2>/dev/null && [ -f patchelf-0.18.0-x86_64/bin/patchelf ]; then
-                        if sudo cp patchelf-0.18.0-x86_64/bin/patchelf /usr/local/bin/ 2>/dev/null && sudo chmod +x /usr/local/bin/patchelf 2>/dev/null; then
-                            patchelf_installed=true
-                        fi
-                    fi
+                else
+                    echo "⚠ pip install patchelf failed: $pip_output"
+                    echo "Will try alternative installation methods..."
                 fi
             else
-                echo "⚠ Neither curl nor wget available for downloading"
+                echo "⚠ pip not available in virtual environment"
+                echo "Will try alternative installation methods..."
             fi
         else
-            echo "ℹ Architecture $(uname -m) - skipping binary download, will use wrapper"
+            echo "⚠ Virtual environment not properly configured"
+            echo "VIRTUAL_ENV: $VIRTUAL_ENV"
+            echo "PYTHONBIN: $PYTHONBIN"
+            echo "Will try alternative installation methods..."
         fi
         
-        cd - >/dev/null
-        rm -rf "$TEMP_PATCHELF"
-        
-        # Check if quick install worked
-        if [ "$patchelf_installed" = true ] && command -v patchelf >/dev/null 2>&1; then
-            echo "✓ Quick patchelf installation successful: $(which patchelf)"
-        else
-            echo "ℹ Binary installation failed or not attempted, installing compatibility wrapper..."
-            # Install the comprehensive wrapper immediately
-            cat > /tmp/patchelf-immediate << 'EOF'
+        # If pip installation failed, try other methods
+        if [ "$patchelf_installed" = false ]; then
+            echo "Trying quick binary installation..."
+            TEMP_PATCHELF="/tmp/patchelf-quick-$$"
+            mkdir -p "$TEMP_PATCHELF"
+            cd "$TEMP_PATCHELF"
+            
+            # Update PATH immediately to include /usr/local/bin
+            export PATH="/usr/local/bin:$PATH"
+            
+            if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "amd64" ]; then
+                echo "Downloading patchelf binary for x86_64..."
+                if command -v curl >/dev/null 2>&1; then
+                    echo "Using curl to download patchelf..."
+                    if curl -L --connect-timeout 30 "https://github.com/NixOS/patchelf/releases/download/0.18.0/patchelf-0.18.0-x86_64.tar.gz" -o patchelf.tar.gz 2>/dev/null; then
+                        if tar -xzf patchelf.tar.gz 2>/dev/null && [ -f patchelf-0.18.0-x86_64/bin/patchelf ]; then
+                            if sudo cp patchelf-0.18.0-x86_64/bin/patchelf /usr/local/bin/ 2>/dev/null && sudo chmod +x /usr/local/bin/patchelf 2>/dev/null; then
+                                patchelf_installed=true
+                            fi
+                        fi
+                    fi
+                elif command -v wget >/dev/null 2>&1; then
+                    echo "Using wget to download patchelf..."
+                    if wget --timeout=30 "https://github.com/NixOS/patchelf/releases/download/0.18.0/patchelf-0.18.0-x86_64.tar.gz" -O patchelf.tar.gz 2>/dev/null; then
+                        if tar -xzf patchelf.tar.gz 2>/dev/null && [ -f patchelf-0.18.0-x86_64/bin/patchelf ]; then
+                            if sudo cp patchelf-0.18.0-x86_64/bin/patchelf /usr/local/bin/ 2>/dev/null && sudo chmod +x /usr/local/bin/patchelf 2>/dev/null; then
+                                patchelf_installed=true
+                            fi
+                        fi
+                    fi
+                else
+                    echo "⚠ Neither curl nor wget available for downloading"
+                fi
+            else
+                echo "ℹ Architecture $(uname -m) - skipping binary download, will use wrapper"
+            fi
+            
+            cd - >/dev/null
+            rm -rf "$TEMP_PATCHELF"
+            
+            # Check if quick install worked
+            if [ "$patchelf_installed" = true ] && command -v patchelf >/dev/null 2>&1; then
+                echo "✓ Quick patchelf installation successful: $(which patchelf)"
+            else
+                echo "ℹ Binary installation failed or not attempted, installing compatibility wrapper..."
+                # Install the comprehensive wrapper immediately
+                cat > /tmp/patchelf-immediate << 'EOF'
 #!/bin/bash
 # Immediate patchelf wrapper for Solaris build compatibility
 case "$1" in
@@ -479,6 +520,7 @@ EOF
                 echo "⚠ Failed to install patchelf wrapper"
             fi
         fi
+        fi  # End of pip installation failure fallback
     fi
     echo "=== End patchelf check ==="
     echo ""
