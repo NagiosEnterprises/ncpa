@@ -547,15 +547,51 @@ esac'
         echo "Copying macOS build with symbolic link resolution..."
         sudo cp -RLf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
     elif [ "$UNAME" == "SunOS" ]; then
-        # On Solaris, handle potential differences in cp command behavior
+        # On Solaris, ensure consistent directory copying behavior
         echo "Copying Solaris build..."
+        # First, ensure the parent directory exists
+        sudo mkdir -p "$BUILD_DIR"
+        
+        # Add diagnostic information
+        echo "=== Solaris Copy Diagnostics ==="
+        echo "Source: $BUILD_EXE_DIR"
+        echo "Destination: $BUILD_DIR/ncpa"
+        echo "Source exists: $([ -d "$BUILD_EXE_DIR" ] && echo "YES" || echo "NO")"
+        echo "Source contents:"
+        ls -la "$BUILD_EXE_DIR" 2>/dev/null || echo "Cannot list source directory"
+        echo "Destination parent exists: $([ -d "$BUILD_DIR" ] && echo "YES" || echo "NO")"
+        echo "================================"
+        
+        # Copy the directory and rename it to ncpa (same as Linux approach)
         if command -v gcp >/dev/null 2>&1; then
-            # Use GNU cp if available
-            sudo gcp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+            # Use GNU cp if available - copy directory itself, not contents
+            echo "Using GNU cp (gcp) for Solaris copy..."
+            if sudo gcp -rf "$BUILD_EXE_DIR" "$BUILD_DIR/ncpa"; then
+                echo "✓ GNU cp succeeded"
+            else
+                echo "✗ GNU cp failed with exit code: $?"
+                exit 1
+            fi
         else
-            # Use standard Solaris cp
-            sudo cp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+            # Use standard Solaris cp - copy directory itself, not contents
+            echo "Using standard Solaris cp..."
+            if sudo cp -rf "$BUILD_EXE_DIR" "$BUILD_DIR/ncpa"; then
+                echo "✓ Standard cp succeeded"
+            else
+                echo "✗ Standard cp failed with exit code: $?"
+                exit 1
+            fi
         fi
+        
+        # Verify the copy worked
+        echo "=== Solaris Copy Verification ==="
+        echo "Destination exists: $([ -d "$BUILD_DIR/ncpa" ] && echo "YES" || echo "NO")"
+        if [ -d "$BUILD_DIR/ncpa" ]; then
+            echo "Destination contents:"
+            ls -la "$BUILD_DIR/ncpa" | head -10
+            echo "Main executable exists: $([ -f "$BUILD_DIR/ncpa/ncpa" ] && echo "YES" || echo "NO")"
+        fi
+        echo "================================="
     else
         # On other systems (Linux, AIX), use standard recursive copy
         echo "Copying build for $UNAME..."
@@ -601,7 +637,29 @@ esac'
     # Build tarball (original working approach)
     echo -e "\nBuilding tarball..."
     cd $BUILD_DIR
+    
+    # Verify ncpa directory exists before creating tarball
+    echo "=== Tarball Creation Debug ==="
+    echo "Current directory: $(pwd)"
+    echo "BUILD_DIR: $BUILD_DIR"
+    echo "NCPA_VER: $NCPA_VER"
+    echo "ncpa directory exists: $([ -d "ncpa" ] && echo "YES" || echo "NO")"
+    if [ -d "ncpa" ]; then
+        echo "ncpa directory size: $(du -sh ncpa 2>/dev/null || echo "unknown")"
+        echo "ncpa executable exists: $([ -f "ncpa/ncpa" ] && echo "YES" || echo "NO")"
+    else
+        echo "ERROR: ncpa directory not found for tarball creation!"
+        echo "Available directories in BUILD_DIR:"
+        ls -la
+        exit 1
+    fi
+    echo "============================="
+    
     sudo cp -rf ncpa ncpa-$NCPA_VER
+    
+    # Verify the copy worked
+    echo "ncpa-$NCPA_VER directory created: $([ -d "ncpa-$NCPA_VER" ] && echo "YES" || echo "NO")"
+    
     if [ "$UNAME" == "AIX" ]; then
         echo -e "***** Build tarball for AIX"
         sudo tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER | sudo tee -a $BUILD_DIR/build.log
