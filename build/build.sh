@@ -288,23 +288,16 @@ fi
         export CX_FREEZE_SILENCE_MISSING_MODULES=1
         export SOLARIS_BUILD=1
         
-        # Temporarily rename patchelf if it exists to avoid cx_Freeze using it
-        PATCHELF_PATH=""
+        # Ensure patchelf is available for cx_Freeze
         if command -v patchelf >/dev/null 2>&1; then
-            PATCHELF_PATH=$(which patchelf)
-            echo "Temporarily disabling patchelf at $PATCHELF_PATH"
-            sudo mv "$PATCHELF_PATH" "${PATCHELF_PATH}.disabled" 2>/dev/null || true
+            echo "patchelf found at $(which patchelf) - cx_Freeze should work properly"
+        else
+            echo "WARNING: patchelf not found - cx_Freeze may fail"
         fi
         
         # Run the build
         $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
         BUILD_RESULT=$?
-        
-        # Restore patchelf if we moved it
-        if [ -n "$PATCHELF_PATH" ] && [ -f "${PATCHELF_PATH}.disabled" ]; then
-            echo "Restoring patchelf"
-            sudo mv "${PATCHELF_PATH}.disabled" "$PATCHELF_PATH" 2>/dev/null || true
-        fi
         
         # Check if build failed
         if [ $BUILD_RESULT -ne 0 ]; then
