@@ -282,7 +282,38 @@ fi
     cd $AGENT_DIR
 
     echo -e "\nFreezing app (may take a minute)..."
-    $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
+    # Set environment variables to help with Solaris build issues
+    if [ "$UNAME" == "SunOS" ]; then
+        echo "Setting Solaris-specific environment variables for cx_Freeze..."
+        export CX_FREEZE_SILENCE_MISSING_MODULES=1
+        export SOLARIS_BUILD=1
+        
+        # Temporarily rename patchelf if it exists to avoid cx_Freeze using it
+        PATCHELF_PATH=""
+        if command -v patchelf >/dev/null 2>&1; then
+            PATCHELF_PATH=$(which patchelf)
+            echo "Temporarily disabling patchelf at $PATCHELF_PATH"
+            sudo mv "$PATCHELF_PATH" "${PATCHELF_PATH}.disabled" 2>/dev/null || true
+        fi
+        
+        # Run the build
+        $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
+        BUILD_RESULT=$?
+        
+        # Restore patchelf if we moved it
+        if [ -n "$PATCHELF_PATH" ] && [ -f "${PATCHELF_PATH}.disabled" ]; then
+            echo "Restoring patchelf"
+            sudo mv "${PATCHELF_PATH}.disabled" "$PATCHELF_PATH" 2>/dev/null || true
+        fi
+        
+        # Check if build failed
+        if [ $BUILD_RESULT -ne 0 ]; then
+            echo "cx_Freeze build failed on Solaris"
+            exit $BUILD_RESULT
+        fi
+    else
+        $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
+    fi
 
 
     echo -e "\nSet up packaging dirs..."
@@ -291,7 +322,12 @@ fi
     sudo rm -rf $BUILD_DIR/ncpa
     
     # Find the cx_Freeze build directory (it varies by platform)
-    BUILD_EXE_DIR=$(find $AGENT_DIR/build -maxdepth 1 -name "exe.*" -type d | head -1)
+    if [ "$UNAME" == "SunOS" ]; then
+        # Solaris find doesn't support -maxdepth, use alternative approach
+        BUILD_EXE_DIR=$(find $AGENT_DIR/build -type d -name "exe.*" | head -1)
+    else
+        BUILD_EXE_DIR=$(find $AGENT_DIR/build -maxdepth 1 -name "exe.*" -type d | head -1)
+    fi
     
     if [ -z "$BUILD_EXE_DIR" ]; then
         echo "ERROR: Could not find cx_Freeze build directory in $AGENT_DIR/build/"
@@ -317,8 +353,8 @@ fi
             # Use GNU cp if available
             sudo gcp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
         else
-            # Use standard Solaris cp
-            sudo cp -rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
+            # Use standard Solaris cp (use -R instead of -r)
+            sudo cp -Rf "$BUILD_EXE_DIR" $BUILD_DIR/ncpa
         fi
     else
         # On other systems (Linux, AIX), use standard recursive copy
@@ -347,7 +383,12 @@ fi
 
     # Build tarball
     echo -e "\nBuilding tarball..."
-    sudo cp -rf ncpa ncpa-$NCPA_VER
+    if [ "$UNAME" == "SunOS" ]; then
+        # On Solaris, use -R instead of -r for cp
+        sudo cp -Rf ncpa ncpa-$NCPA_VER
+    else
+        sudo cp -rf ncpa ncpa-$NCPA_VER
+    fi
     if [ "$UNAME" == "AIX" ]; then
         echo -e "***** Build tarball for AIX"
         sudo tar cvf ncpa-$NCPA_VER.tar ncpa-$NCPA_VER | sudo tee -a $BUILD_DIR/build.log

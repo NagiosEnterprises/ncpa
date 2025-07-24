@@ -124,6 +124,20 @@ buildOptions = dict(includes=includes,
                     zip_exclude_packages=[],
                     include_msvcr=True)
 
+# Add Solaris-specific build options to avoid patchelf issues
+if 'sunos' in sys.platform.lower():
+    print("Applying Solaris-specific build options...")
+    # Disable automatic rpath modification for Solaris
+    buildOptions['silent'] = False
+    # These options may help avoid patchelf usage
+    buildOptions['replace_paths'] = []  # Disable path replacement
+    buildOptions['bin_path_includes'] = []  # Don't modify binary paths
+    # Try to avoid some cx_Freeze features that might use patchelf
+    if 'zip_include_packages' in buildOptions:
+        buildOptions['zip_include_packages'] = []  # Disable zip packaging
+    # Disable some optimization that might trigger patchelf
+    buildOptions['optimize'] = 0
+
 # Create setup for distutils
 setup(name = "NCPA",
       version = version,
