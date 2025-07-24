@@ -1,6 +1,6 @@
 Changelog
 +++++++++
-3.1.4 - XX/XX/2025
+3.1.4 - 07/30/2025
 ==================
 **Added**
 - Added support for ARM64 builds for Linux. (DevSysEngineer)
