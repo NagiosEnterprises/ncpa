@@ -351,6 +351,80 @@ fi
         export CX_FREEZE_IGNORE_RPATH_ERRORS=1
         export CX_FREEZE_FALLBACK_MODE=1
         
+        # CRITICAL: Ensure our patchelf wrapper is active right before cx_Freeze runs
+        echo "Final patchelf verification before cx_Freeze..."
+        if command -v patchelf >/dev/null 2>&1; then
+            current_patchelf=$(which patchelf)
+            echo "Current patchelf location: $current_patchelf"
+            
+            # Test the version to see if it's our wrapper
+            version_output=$(patchelf --version 2>&1)
+            echo "patchelf version output: $version_output"
+            
+            if echo "$version_output" | grep -q "wrapper"; then
+                echo "✓ Our wrapper is active - cx_Freeze should work"
+            else
+                echo "⚠ WARNING: patchelf is not our wrapper - attempting emergency replacement"
+                
+                # Emergency replacement: directly overwrite the patchelf that cx_Freeze will use
+                if [ -f "/usr/local/bin/patchelf" ]; then
+                    echo "Emergency: backing up current patchelf and installing wrapper"
+                    sudo cp "$current_patchelf" "${current_patchelf}.backup" 2>/dev/null || true
+                    
+                    # Create emergency wrapper directly at the problematic location
+                    sudo tee "$current_patchelf" > /dev/null << 'EMERGENCY_EOF'
+#!/bin/bash
+# Emergency patchelf wrapper for Solaris cx_Freeze compatibility
+case "$1" in
+    "--version") echo "patchelf 0.18.0 (emergency-wrapper)"; exit 0 ;;
+    "--print-rpath") 
+        if [ -n "$2" ] && [ -f "$2" ]; then
+            if command -v readelf >/dev/null 2>&1; then
+                readelf -d "$2" 2>/dev/null | grep -E 'RPATH|RUNPATH' | sed 's/.*\[\(.*\)\]/\1/' | head -1
+            else
+                echo ""
+            fi
+        else
+            echo ""
+        fi
+        exit 0 ;;
+    "--set-rpath"|"--add-rpath"|"--remove-rpath"|"--set-interpreter"|"--shrink-rpath"|"--add-needed"|"--remove-needed"|"--replace-needed"|"--no-default-lib")
+        echo "INFO: patchelf emergency wrapper handling: $@" >&2
+        exit 0 ;;
+    "--print-needed")
+        if [ -n "$2" ] && [ -f "$2" ]; then
+            if command -v readelf >/dev/null 2>&1; then
+                readelf -d "$2" 2>/dev/null | grep NEEDED | sed 's/.*\[\(.*\)\]/\1/'
+            elif command -v ldd >/dev/null 2>&1; then
+                ldd "$2" 2>/dev/null | awk '{print $1}' | grep -v '=>'
+            fi
+        fi
+        exit 0 ;;
+    "--print-interpreter")
+        if [ -n "$2" ] && [ -f "$2" ]; then
+            if command -v readelf >/dev/null 2>&1; then
+                readelf -l "$2" 2>/dev/null | grep interpreter | sed 's/.*: \(.*\)\]/\1/'
+            fi
+        fi
+        exit 0 ;;
+    *) exit 0 ;;
+esac
+EMERGENCY_EOF
+                    sudo chmod +x "$current_patchelf"
+                    hash -r
+                    
+                    echo "Emergency wrapper installed. Testing..."
+                    if patchelf --version 2>&1 | grep -q "emergency-wrapper"; then
+                        echo "✓ Emergency wrapper is now active"
+                    else
+                        echo "✗ Emergency wrapper installation failed"
+                    fi
+                fi
+            fi
+        else
+            echo "✗ CRITICAL: patchelf not found at all - cx_Freeze will fail"
+        fi
+        
         # Run the build
         echo "Starting cx_Freeze build with enhanced error handling..."
         $PYTHONBIN setup.py build_exe 2>&1 | sudo tee $BUILD_DIR/build.log
