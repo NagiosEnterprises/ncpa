@@ -157,7 +157,52 @@ if svcs application/ncpa >/dev/null 2>&1; then
         svcs -xv application/ncpa
     fi
 else
-    echo "NCPA: ERROR - Service not found in SMF repository after import"
+    echo "NCPA: Service not visible via svcs, but exists in repository"
+    echo "NCPA: Attempting to force service refresh and enable..."
+    
+    # Force refresh the service
+    svccfg -s application/ncpa refresh 2>&1 || echo "NCPA: Direct refresh failed"
+    svccfg -s application/ncpa:default refresh 2>&1 || echo "NCPA: Instance refresh failed"
+    
+    # Wait for SMF to process the refresh
+    sleep 5
+    
+    # Try to enable the service by instance
+    echo "NCPA: Trying to enable by full instance name..."
+    if svcadm enable application/ncpa:default 2>&1; then
+        echo "NCPA: Service enabled successfully by instance name"
+        
+        # Wait and check status
+        sleep 5
+        if svcs application/ncpa:default >/dev/null 2>&1; then
+            service_status=$(svcs -H -o state application/ncpa:default 2>/dev/null)
+            echo "NCPA: Service status: $service_status"
+            
+            if [ "$service_status" = "online" ]; then
+                echo "NCPA: Service is running successfully"
+            else
+                echo "NCPA: Service enabled but not online - status: $service_status"
+                echo "NCPA: Service details:"
+                svcs -xv application/ncpa:default 2>&1 || echo "NCPA: Could not get service details"
+                echo "NCPA: Check service logs:"
+                echo "NCPA:   sudo tail -f /var/svc/log/application-ncpa:default.log"
+            fi
+        else
+            echo "NCPA: Service still not visible after enable attempt"
+        fi
+    else
+        echo "NCPA: Failed to enable service by instance name"
+        echo "NCPA: Trying manual property changes..."
+        
+        # Try to manually set the service to enabled
+        svccfg -s application/ncpa:default setprop general/enabled = boolean: true 2>&1 || echo "NCPA: Failed to set enabled property"
+        svccfg -s application/ncpa:default refresh 2>&1 || echo "NCPA: Failed to refresh after property change"
+        
+        sleep 3
+        echo "NCPA: Final status check..."
+        svcs application/ncpa:default 2>&1 || echo "NCPA: Service still not accessible"
+    fi
+    
     echo "NCPA: Available services matching 'ncpa':"
     svcs -a | grep ncpa || echo "NCPA: No services found matching 'ncpa'"
     echo "NCPA: All services in application category:"
