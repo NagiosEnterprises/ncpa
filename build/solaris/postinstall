@@ -554,19 +554,7 @@ for level in 0 1 6; do
 done
 
 # Start NCPA immediately after installation
-echo "NCPA: Setting up and starting NCPA service..."
-
-# First ensure no old processes are running
-echo "NCPA: Ensuring clean startup environment..."
-for pattern in "/usr/local/ncpa/ncpa" "ncpa"; do
-    pids=$(pgrep -f "$pattern" 2>/dev/null)
-    if [ -n "$pids" ]; then
-        echo "NCPA: Cleaning up existing processes: $pids"
-        for pid in $pids; do
-            kill -9 $pid 2>/dev/null || true
-        done
-    fi
-done
+echo "NCPA: Starting NCPA service..."
 
 if "$STARTUP_SCRIPT" start; then
     echo "NCPA: ✓ NCPA started successfully after installation"
