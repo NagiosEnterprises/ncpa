@@ -63,11 +63,43 @@ EOF
 
 # Import the service
 echo "NCPA: Importing SMF service..."
-svccfg import /var/svc/manifest/site/ncpa.xml
+if svccfg import /var/svc/manifest/site/ncpa.xml; then
+    echo "NCPA: SMF service imported successfully"
+else
+    echo "NCPA: WARNING - SMF service import failed"
+fi
 
-# Enable the service  
-echo "NCPA: Enabling SMF service..."
-svcadm enable site/ncpa
+# Wait a moment for SMF to process
+sleep 2
 
-echo "NCPA: Post-installation completed successfully."
-echo "NCPA service status: $(svcs -xvs site/ncpa 2>/dev/null || echo 'Service not yet started')"
+# Check if service was imported
+if svccfg list | grep -q site/ncpa; then
+    echo "NCPA: Service found in SMF repository"
+    
+    # Enable the service  
+    echo "NCPA: Enabling SMF service..."
+    if svcadm enable site/ncpa; then
+        echo "NCPA: Service enabled successfully"
+        
+        # Wait a moment and check status
+        sleep 3
+        service_status=$(svcs -H -o state site/ncpa 2>/dev/null)
+        echo "NCPA: Service status: $service_status"
+        
+        if [ "$service_status" = "online" ]; then
+            echo "NCPA: Service is running successfully"
+        else
+            echo "NCPA: Service is not online yet - status: $service_status"
+            echo "NCPA: You may need to check the service logs and start manually:"
+            echo "NCPA:   sudo tail -f /var/svc/log/site-ncpa:default.log"
+            echo "NCPA:   sudo svcadm restart site/ncpa"
+        fi
+    else
+        echo "NCPA: WARNING - Failed to enable service"
+    fi
+else
+    echo "NCPA: ERROR - Service not found in SMF repository after import"
+fi
+
+echo "NCPA: Post-installation completed."
+echo "NCPA: To manually start the service later, run: sudo svcadm enable site/ncpa"
