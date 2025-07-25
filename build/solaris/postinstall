@@ -78,56 +78,43 @@ svccfg delete site/ncpa 2>/dev/null || true
 
 # Create service manually using svccfg commands
 echo "NCPA: Creating SMF service manually..."
-svccfg << EOF
-add application/ncpa
-select application/ncpa
-add default instance
-select default
-setprop startd/timeout_seconds = count: 60
-setprop startd/ignore_error = astring: core,signal
-setprop application/auto_enable = boolean: false
-exit
-EOF
+svccfg -s svc:/ add application/ncpa service 2>/dev/null || true
+svccfg -s application/ncpa add default instance 2>/dev/null || true
 
-# Set the start method
-echo "NCPA: Setting service start method..."
-svccfg << EOF
-select application/ncpa:default
-setprop start/exec = astring: "/usr/local/ncpa/ncpa --start"
-setprop start/timeout_seconds = count: 60
-setprop start/user = astring: nagios
-setprop start/group = astring: nagios
-setprop start/working_directory = astring: /usr/local/ncpa
-setprop start/environment = astring: ( "LD_LIBRARY_PATH=/usr/local/ncpa/lib:/usr/local/lib:/lib:/usr/lib" "PATH=/usr/local/bin:/usr/bin:/bin" )
-exit
-EOF
+# Set basic service properties
+echo "NCPA: Setting basic service properties..."
+svccfg -s application/ncpa:default setprop startd/timeout_seconds = count: 60
+svccfg -s application/ncpa:default setprop startd/ignore_error = astring: "core,signal"
+svccfg -s application/ncpa:default setprop general/enabled = boolean: false
 
-# Set the stop method
-echo "NCPA: Setting service stop method..."
-svccfg << EOF
-select application/ncpa:default
-setprop stop/exec = astring: ":kill"
-setprop stop/timeout_seconds = count: 60
-exit
-EOF
+# Add start method property group
+echo "NCPA: Adding start method..."
+svccfg -s application/ncpa:default addpg start method
+svccfg -s application/ncpa:default setprop start/exec = astring: '"/usr/local/ncpa/ncpa --start"'
+svccfg -s application/ncpa:default setprop start/timeout_seconds = count: 60
+svccfg -s application/ncpa:default setprop start/user = astring: nagios
+svccfg -s application/ncpa:default setprop start/group = astring: nagios
+svccfg -s application/ncpa:default setprop start/working_directory = astring: "/usr/local/ncpa"
+
+# Add stop method property group  
+echo "NCPA: Adding stop method..."
+svccfg -s application/ncpa:default addpg stop method
+svccfg -s application/ncpa:default setprop stop/exec = astring: ":kill"
+svccfg -s application/ncpa:default setprop stop/timeout_seconds = count: 60
 
 # Add dependencies
 echo "NCPA: Adding service dependencies..."
-svccfg << EOF
-select application/ncpa
-add dependency multi-user type service
-select dependency multi-user
-setprop grouping = astring: require_all
-setprop restart_on = astring: none
-setprop entities = fmri: svc:/milestone/multi-user:default
-select ..
-add dependency filesystem type service
-select dependency filesystem
-setprop grouping = astring: require_all
-setprop restart_on = astring: none
-setprop entities = fmri: svc:/system/filesystem/local
-exit
-EOF
+svccfg -s application/ncpa add multi-user dependency
+svccfg -s application/ncpa setprop multi-user/grouping = astring: require_all
+svccfg -s application/ncpa setprop multi-user/restart_on = astring: none
+svccfg -s application/ncpa setprop multi-user/type = astring: service
+svccfg -s application/ncpa setprop multi-user/entities = fmri: "svc:/milestone/multi-user:default"
+
+svccfg -s application/ncpa add filesystem dependency  
+svccfg -s application/ncpa setprop filesystem/grouping = astring: require_all
+svccfg -s application/ncpa setprop filesystem/restart_on = astring: none
+svccfg -s application/ncpa setprop filesystem/type = astring: service
+svccfg -s application/ncpa setprop filesystem/entities = fmri: "svc:/system/filesystem/local"
 
 # Refresh the service
 echo "NCPA: Refreshing service configuration..."
