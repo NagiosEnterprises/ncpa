@@ -136,7 +136,7 @@ Before building NCPA on Solaris, ensure you have the following packages installe
 **Build NCPA**::
 
   cd ncpa/build
-  ./build.sh
+  sudo ./solaris/package.sh
 
 The build process will:
 
@@ -151,38 +151,119 @@ Copy the resulting ``~/ncpa/build/ncpa-3.X.X.sparc.pkg`` or ``~/ncpa/build/ncpa-
 
   pkgadd -d ./ncpa-3.X.X.<arch>.pkg
 
+The installation process will:
+
+* Stop any existing NCPA processes
+* Create the nagios user and group if they don't exist
+* Set up proper file permissions and ownership
+* Attempt to create an SMF service for service management
+* Create backup init.d scripts for automatic startup
+* Start NCPA automatically after installation
+
 **Solaris-Specific Features**
 
 The Solaris build includes:
 
-* **SMF Integration**: Attempts to create a proper SMF (Service Management Facility) service
-* **Manual Service Management**: Provides backup scripts for systems with SMF issues
-* **Automatic Startup**: Configures NCPA to start automatically on boot using init.d scripts
-* **Process Cleanup**: Enhanced process management to prevent leftover processes during restarts/upgrades
+* **Comprehensive Process Management**: Enhanced cleanup logic prevents leftover processes during upgrades and restarts
+* **SMF Integration**: Attempts to create a proper SMF (Service Management Facility) service with full diagnostics
+* **Automatic Fallback**: Provides reliable init.d scripts when SMF has visibility issues  
+* **Automatic Startup**: Configures NCPA to start automatically on boot using multiple methods
+* **SSL Certificate Compatibility**: Generates certificates compatible with both Firefox and Chromium browsers
+* **Manual Service Control**: Provides comprehensive service management scripts
 
 **Service Management**
 
-Start/stop NCPA using the service script::
+NCPA provides multiple ways to manage the service:
+
+**Primary Method - Service Script**::
 
   /usr/local/bin/ncpa-service {start|stop|restart|status|killall}
 
-Or use the traditional SMF commands if the service was imported successfully::
+**Init.d Method** (works on all systems)::
+
+  /etc/init.d/ncpa {start|stop|restart|status}
+
+**SMF Method** (if service is visible)::
 
   svcadm enable application/ncpa
   svcadm disable application/ncpa
   svcs application/ncpa
 
-**Known Issues**
+**Troubleshooting Commands**::
 
-* Some Solaris systems may experience SMF service visibility issues where the service imports successfully but doesn't appear in ``svcs`` output
-* The manual service script provides a reliable workaround for SMF issues
-* NCPA may require ``setgroups()`` permission adjustments on some Solaris configurations
+  # Aggressive cleanup of stuck processes
+  sudo /usr/local/bin/ncpa-service killall
+  
+  # Check service status
+  sudo /usr/local/bin/ncpa-service status
+  
+  # View running processes
+  ps -ef | grep ncpa
+  
+  # Check logs
+  tail -f /usr/local/ncpa/var/log/ncpa.log
+
+**Known Issues and Solutions**
+
+* **SMF Service Visibility**: Some Solaris systems may experience issues where SMF services import successfully but don't appear in ``svcs`` output due to repository corruption
+  
+  *Solution*: Use the reliable service script: ``/usr/local/bin/ncpa-service``
+
+* **Process Cleanup**: During upgrades, old NCPA processes are automatically cleaned up before starting new ones
+
+  *Manual cleanup*: ``sudo /usr/local/bin/ncpa-service killall``
+
+* **SSL Certificate Browser Compatibility**: NCPA generates SSL certificates with proper key usage extensions for both Firefox and Chromium-based browsers
+
+* **Permission Issues**: NCPA may require ``setgroups()`` permission adjustments on some Solaris configurations (automatically handled in the code)
+
+* **Multiple Processes**: If you see multiple NCPA processes after an upgrade, use the killall command to clean them up
+
+**Automatic Startup**
+
+NCPA is configured to start automatically on boot using multiple mechanisms:
+
+1. **SMF Service** (if successfully imported): ``application/ncpa``
+2. **Init.d Scripts**: ``/etc/init.d/ncpa`` with run-level links in ``/etc/rc*.d/``
+3. **Service Script**: ``/usr/local/bin/ncpa-service`` called by init scripts
+
+This redundant approach ensures NCPA starts reliably across different Solaris configurations.
 
 **Uninstalling**
 
 Remove NCPA using::
 
   pkgrm ncpa
+
+The uninstall process will:
+
+* Stop all NCPA processes using multiple methods
+* Remove SMF service definitions and startup links  
+* Clean up service scripts and configuration files
+* Remove PID files and lock files
+* Preserve user data and logs (in ``/usr/local/ncpa/var/``)
+
+**Upgrade Process**
+
+To upgrade NCPA:
+
+1. **Install new package** (no need to manually stop NCPA)::
+
+     pkgadd -d ./ncpa-3.X.X.<arch>.pkg
+
+2. **The upgrade automatically**:
+   
+   * Stops existing NCPA processes
+   * Installs new files
+   * Starts fresh NCPA instance
+   * Preserves configuration and logs
+
+**Build Requirements**
+
+The Solaris build requires the NCPA source to already be built (frozen) before packaging. The complete build process is::
+
+  cd ncpa/build
+  sudo ./build.sh              # Build the frozen NCPA binary
 
 This will automatically stop all NCPA processes and clean up service configurations.
 
