@@ -18,11 +18,11 @@ chown nagios:nagios /usr/local/ncpa/var/run
 chmod 755 /usr/local/ncpa/var/run
 
 # Create SMF service manifest
-cat > /var/svc/manifest/site/ncpa.xml << 'EOF'
+cat > /var/svc/manifest/application/ncpa.xml << 'EOF'
 <?xml version="1.0"?>
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 <service_bundle type='manifest' name='ncpa'>
-  <service name='site/ncpa' type='service' version='1'>
+  <service name='application/ncpa' type='service' version='1'>
     <create_default_instance enabled='false' />
     <single_instance />
     <dependency name='network' grouping='require_all' restart_on='none' type='service'>
@@ -31,7 +31,7 @@ cat > /var/svc/manifest/site/ncpa.xml << 'EOF'
     <dependency name='filesystem' grouping='require_all' restart_on='none' type='service'>
       <service_fmri value='svc:/system/filesystem/local' />
     </dependency>
-    <exec_method type='method' name='start' exec='/usr/local/ncpa/ncpa' timeout_seconds='60'>
+    <exec_method type='method' name='start' exec='/usr/local/ncpa/ncpa --start' timeout_seconds='60'>
       <method_context working_directory='/usr/local/ncpa'>
         <method_credential user='nagios' group='nagios' />
         <method_environment>
@@ -62,31 +62,32 @@ EOF
 
 # Validate the SMF manifest first
 echo "NCPA: Validating SMF manifest..."
-if svccfg validate /var/svc/manifest/site/ncpa.xml; then
+if svccfg validate /var/svc/manifest/application/ncpa.xml; then
     echo "NCPA: SMF manifest validation passed"
 else
     echo "NCPA: ERROR - SMF manifest validation failed"
     echo "NCPA: Manifest content:"
-    tail -20 /var/svc/manifest/site/ncpa.xml
+    tail -20 /var/svc/manifest/application/ncpa.xml
     exit 1
 fi
 
 # Remove any existing service first
 echo "NCPA: Removing any existing SMF service..."
+svccfg delete application/ncpa 2>/dev/null || true
 svccfg delete site/ncpa 2>/dev/null || true
 
 # Import the service using direct svccfg commands
 echo "NCPA: Importing SMF service..."
-if svccfg import /var/svc/manifest/site/ncpa.xml; then
+if svccfg import /var/svc/manifest/application/ncpa.xml; then
     echo "NCPA: SMF service imported successfully"
 else
     echo "NCPA: ERROR - SMF service import failed"
     echo "NCPA: Checking XML syntax..."
     if command -v xmllint >/dev/null 2>&1; then
-        xmllint --noout /var/svc/manifest/site/ncpa.xml 2>&1 | head -5
+        xmllint --noout /var/svc/manifest/application/ncpa.xml 2>&1 | head -5
     fi
     echo "NCPA: Checking svccfg validate..."
-    svccfg validate /var/svc/manifest/site/ncpa.xml 2>&1 | head -5
+    svccfg validate /var/svc/manifest/application/ncpa.xml 2>&1 | head -5
 fi
 
 # Force a repository refresh
@@ -95,9 +96,9 @@ svcadm restart svc:/system/manifest-import:default 2>/dev/null || true
 sleep 2
 
 # Try alternative import method if first didn't work
-if ! svcs site/ncpa >/dev/null 2>&1; then
+if ! svcs application/ncpa >/dev/null 2>&1; then
     echo "NCPA: Service not found, trying alternative import method..."
-    svccfg -s site/ncpa refresh 2>/dev/null || true
+    svccfg -s application/ncpa refresh 2>/dev/null || true
     sleep 2
 fi
 
@@ -106,19 +107,19 @@ sleep 3
 
 # Check if service was imported with detailed diagnostics
 echo "NCPA: Checking if service was imported..."
-if svcs site/ncpa >/dev/null 2>&1; then
+if svcs application/ncpa >/dev/null 2>&1; then
     echo "NCPA: Service found in SMF repository"
     echo "NCPA: Current service status:"
-    svcs -l site/ncpa
+    svcs -l application/ncpa
     
     # Enable the service  
     echo "NCPA: Enabling SMF service..."
-    if svcadm enable site/ncpa; then
+    if svcadm enable application/ncpa; then
         echo "NCPA: Service enabled successfully"
         
         # Wait a moment and check status
         sleep 5
-        service_status=$(svcs -H -o state site/ncpa 2>/dev/null)
+        service_status=$(svcs -H -o state application/ncpa 2>/dev/null)
         echo "NCPA: Service status: $service_status"
         
         if [ "$service_status" = "online" ]; then
@@ -126,25 +127,25 @@ if svcs site/ncpa >/dev/null 2>&1; then
         else
             echo "NCPA: Service is not online yet - status: $service_status"
             echo "NCPA: Service details:"
-            svcs -xv site/ncpa
+            svcs -xv application/ncpa
             echo "NCPA: You may need to check the service logs and start manually:"
-            echo "NCPA:   sudo tail -f /var/svc/log/site-ncpa:default.log"
-            echo "NCPA:   sudo svcadm restart site/ncpa"
+            echo "NCPA:   sudo tail -f /var/svc/log/application-ncpa:default.log"
+            echo "NCPA:   sudo svcadm restart application/ncpa"
         fi
     else
         echo "NCPA: WARNING - Failed to enable service"
         echo "NCPA: Service status:"
-        svcs -xv site/ncpa
+        svcs -xv application/ncpa
     fi
 else
     echo "NCPA: ERROR - Service not found in SMF repository after import"
     echo "NCPA: Available services matching 'ncpa':"
     svcs | grep -i ncpa || echo "NCPA: No services found matching 'ncpa'"
-    echo "NCPA: All services in site category:"
-    svcs | grep site/ || echo "NCPA: No services found in site category"
+    echo "NCPA: All services in application category:"
+    svcs | grep application/ | head -5 || echo "NCPA: No services found in application category"
     echo "NCPA: Checking manifest file:"
-    ls -la /var/svc/manifest/site/ncpa.xml
+    ls -la /var/svc/manifest/application/ncpa.xml
 fi
 
 echo "NCPA: Post-installation completed."
-echo "NCPA: To manually start the service later, run: sudo svcadm enable site/ncpa"
+echo "NCPA: To manually start the service later, run: sudo svcadm enable application/ncpa"
