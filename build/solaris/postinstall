@@ -71,146 +71,196 @@ else
     exit 1
 fi
 
-# Remove any existing service first
-echo "NCPA: Removing any existing SMF service..."
-svccfg delete application/ncpa 2>/dev/null || true
-svccfg delete site/ncpa 2>/dev/null || true
+# COMPLETE SMF SERVICE CLEANUP AND RECREATION
+echo "NCPA: Performing complete SMF service cleanup..."
 
-# Try importing the XML manifest again with detailed error reporting
-echo "NCPA: Importing SMF service from manifest..."
-if svccfg import /var/svc/manifest/application/ncpa.xml 2>&1; then
-    echo "NCPA: SMF service imported successfully"
-else
-    echo "NCPA: Import failed, trying alternative approach..."
-    
-    # Create a temporary manifest in /tmp and try importing from there
-    cp /var/svc/manifest/application/ncpa.xml /tmp/ncpa.xml
-    chmod 644 /tmp/ncpa.xml
-    
-    echo "NCPA: Trying import from /tmp/ncpa.xml..."
-    if svccfg import /tmp/ncpa.xml 2>&1; then
-        echo "NCPA: SMF service imported from temporary location"
-    else
-        echo "NCPA: Both import attempts failed, creating basic service manually..."
-        
-        # Last resort: create a very basic service
-        svccfg -s svc:/ add application/ncpa service
-        svccfg -s application/ncpa add default instance
-        svccfg -s application/ncpa:default addpg start method
-        svccfg -s application/ncpa:default setprop start/exec = astring: "/usr/local/ncpa/ncpa --start"
-        svccfg -s application/ncpa:default setprop start/timeout_seconds = count: 60
-        svccfg -s application/ncpa:default addpg stop method  
-        svccfg -s application/ncpa:default setprop stop/exec = astring: ":kill"
-        svccfg -s application/ncpa:default setprop stop/timeout_seconds = count: 60
-    fi
-    
-    rm -f /tmp/ncpa.xml
-fi
+# Force remove all traces of ncpa services
+echo "NCPA: Removing all traces of NCPA services..."
+svccfg delete -f application/ncpa 2>/dev/null || true
+svccfg delete -f site/ncpa 2>/dev/null || true
 
-# Refresh the service
-echo "NCPA: Refreshing service configuration..."
-svccfg -s application/ncpa refresh 2>/dev/null || true
-
-# Wait a moment for SMF to process
+# Clear any repository corruption by restarting manifest-import first
+echo "NCPA: Clearing SMF repository state..."
+svcadm restart svc:/system/manifest-import 2>/dev/null || true
 sleep 3
 
-# Check if service was imported with detailed diagnostics
-echo "NCPA: Checking if service was imported..."
-echo "NCPA: Debugging - checking service with different methods..."
-echo "NCPA: Method 1 - svcs application/ncpa:"
-svcs application/ncpa 2>&1 || echo "  Service not found with method 1"
-echo "NCPA: Method 2 - svcs -a | grep ncpa:"
-svcs -a | grep ncpa || echo "  No services found containing 'ncpa'"
-echo "NCPA: Method 3 - svcs -a | grep application:"
-svcs -a | grep application | head -3 || echo "  No application services found"
-echo "NCPA: Method 4 - svccfg list application/ncpa:"
-svccfg list application/ncpa 2>&1 || echo "  Service not found in svccfg"
+# Remove the manifest from the standard location to prevent auto-import conflicts
+echo "NCPA: Temporarily moving manifest to prevent conflicts..."
+if [ -f /var/svc/manifest/application/ncpa.xml ]; then
+    mv /var/svc/manifest/application/ncpa.xml /tmp/ncpa.xml.backup
+fi
 
-if svcs application/ncpa >/dev/null 2>&1; then
-    echo "NCPA: Service found in SMF repository"
-    echo "NCPA: Current service status:"
-    svcs -l application/ncpa
+# Wait for SMF to process the restart
+sleep 5
+
+# Use direct svccfg commands to create service instead of XML import
+echo "NCPA: Creating service directly using svccfg commands..."
+if svccfg << 'SVCCFG_EOF'
+add application/ncpa service
+select application/ncpa
+add default instance
+select default
+addpg startd framework
+setprop startd/duration = astring: contract
+setprop startd/ignore_error = astring: "core,signal"
+addpg general framework
+setprop general/enabled = boolean: false
+addpg start method
+setprop start/exec = astring: "/usr/local/ncpa/ncpa --start"
+setprop start/timeout_seconds = count: 60
+setprop start/type = astring: method
+addpg stop method
+setprop stop/exec = astring: ":kill"
+setprop stop/timeout_seconds = count: 60
+setprop stop/type = astring: method
+addpg dependency_multi-user dependency
+setprop dependency_multi-user/entities = fmri: svc:/milestone/multi-user:default
+setprop dependency_multi-user/grouping = astring: require_all
+setprop dependency_multi-user/restart_on = astring: none
+setprop dependency_multi-user/type = astring: service
+addpg dependency_filesystem dependency
+setprop dependency_filesystem/entities = fmri: svc:/system/filesystem/local
+setprop dependency_filesystem/grouping = astring: require_all
+setprop dependency_filesystem/restart_on = astring: none
+setprop dependency_filesystem/type = astring: service
+addpg method_context application
+setprop method_context/working_directory = astring: "/usr/local/ncpa"
+setprop method_context/user = astring: nagios
+setprop method_context/group = astring: nagios
+addpg method_environment application
+setprop method_environment/LD_LIBRARY_PATH = astring: "/usr/local/ncpa/lib:/usr/local/lib:/lib:/usr/lib"
+setprop method_environment/PATH = astring: "/usr/local/bin:/usr/bin:/bin"
+refresh
+exit
+SVCCFG_EOF
+then
+    echo "NCPA: Service created successfully using direct svccfg commands"
+else
+    echo "NCPA: Direct svccfg creation failed, falling back to manual approach..."
     
-    # Enable the service  
-    echo "NCPA: Enabling SMF service..."
-    if svcadm enable application/ncpa; then
-        echo "NCPA: Service enabled successfully"
-        
-        # Wait a moment and check status
-        sleep 5
-        service_status=$(svcs -H -o state application/ncpa 2>/dev/null)
-        echo "NCPA: Service status: $service_status"
-        
-        if [ "$service_status" = "online" ]; then
-            echo "NCPA: Service is running successfully"
-        else
-            echo "NCPA: Service is not online yet - status: $service_status"
-            echo "NCPA: Service details:"
-            svcs -xv application/ncpa
-            echo "NCPA: You may need to check the service logs and start manually:"
-            echo "NCPA:   sudo tail -f /var/svc/log/application-ncpa:default.log"
-            echo "NCPA:   sudo svcadm restart application/ncpa"
+    # Final fallback: use extremely simple service creation
+    echo "NCPA: Using minimal service creation approach..."
+    svccfg add application/ncpa service 2>/dev/null || true
+    svccfg -s application/ncpa add default instance 2>/dev/null || true
+    svccfg -s application/ncpa:default addpg start method 2>/dev/null || true
+    svccfg -s application/ncpa:default setprop start/exec = astring: "/usr/local/ncpa/ncpa --start" 2>/dev/null || true
+    svccfg -s application/ncpa:default setprop start/timeout_seconds = count: 60 2>/dev/null || true
+    svccfg -s application/ncpa:default addpg stop method 2>/dev/null || true
+    svccfg -s application/ncpa:default setprop stop/exec = astring: ":kill" 2>/dev/null || true
+    svccfg -s application/ncpa:default setprop stop/timeout_seconds = count: 60 2>/dev/null || true
+    svccfg -s application/ncpa:default addpg general framework 2>/dev/null || true
+    svccfg -s application/ncpa:default setprop general/enabled = boolean: false 2>/dev/null || true
+fi
+
+# Force refresh all services to ensure our service is recognized
+echo "NCPA: Forcing SMF repository refresh..."
+svcadm refresh svc:/ 2>/dev/null || true
+sleep 3
+
+# Restore the manifest to its proper location for future reference
+echo "NCPA: Restoring manifest to proper location..."
+if [ -f /tmp/ncpa.xml.backup ]; then
+    mv /tmp/ncpa.xml.backup /var/svc/manifest/application/ncpa.xml
+    chmod 644 /var/svc/manifest/application/ncpa.xml
+fi
+
+# Wait for SMF to process all changes
+sleep 5
+
+# Comprehensive service verification
+echo "NCPA: Comprehensive service verification..."
+echo "NCPA: Method 1 - svcs application/ncpa:"
+if svcs application/ncpa 2>/dev/null; then
+    echo "NCPA: ✓ Service visible via standard svcs command"
+    service_found=true
+else
+    echo "NCPA: ✗ Service not found with standard svcs command"
+    service_found=false
+fi
+
+echo "NCPA: Method 2 - svcs application/ncpa:default:"
+if svcs application/ncpa:default 2>/dev/null; then
+    echo "NCPA: ✓ Service instance visible via svcs"
+    instance_found=true
+else
+    echo "NCPA: ✗ Service instance not found"
+    instance_found=false
+fi
+
+echo "NCPA: Method 3 - svccfg select test:"
+if svccfg -s application/ncpa:default listprop >/dev/null 2>&1; then
+    echo "NCPA: ✓ Service accessible via svccfg"
+    svccfg_accessible=true
+else
+    echo "NCPA: ✗ Service not accessible via svccfg"
+    svccfg_accessible=false
+fi
+
+# Try to enable the service if any method found it
+if [ "$service_found" = "true" ] || [ "$instance_found" = "true" ] || [ "$svccfg_accessible" = "true" ]; then
+    echo "NCPA: Service detected, attempting to enable..."
+    
+    # Try multiple enable approaches
+    enable_success=false
+    
+    if [ "$service_found" = "true" ]; then
+        echo "NCPA: Attempting enable via service name..."
+        if svcadm enable application/ncpa 2>/dev/null; then
+            echo "NCPA: ✓ Service enabled via service name"
+            enable_success=true
         fi
+    fi
+    
+    if [ "$enable_success" = "false" ] && [ "$instance_found" = "true" ]; then
+        echo "NCPA: Attempting enable via instance name..."
+        if svcadm enable application/ncpa:default 2>/dev/null; then
+            echo "NCPA: ✓ Service enabled via instance name"
+            enable_success=true
+        fi
+    fi
+    
+    if [ "$enable_success" = "false" ] && [ "$svccfg_accessible" = "true" ]; then
+        echo "NCPA: Attempting enable via svccfg property change..."
+        if svccfg -s application/ncpa:default setprop general/enabled = boolean: true 2>/dev/null && \
+           svccfg -s application/ncpa:default refresh 2>/dev/null; then
+            echo "NCPA: ✓ Service enabled via property change"
+            enable_success=true
+        fi
+    fi
+    
+    if [ "$enable_success" = "true" ]; then
+        # Wait for service to start and check status
+        echo "NCPA: Waiting for service to start..."
+        sleep 10
+        
+        # Check final status
+        for method in "application/ncpa" "application/ncpa:default"; do
+            if service_status=$(svcs -H -o state "$method" 2>/dev/null); then
+                echo "NCPA: Service status ($method): $service_status"
+                if [ "$service_status" = "online" ]; then
+                    echo "NCPA: ✓ Service is running successfully!"
+                    echo "NCPA: Service details:"
+                    svcs -l "$method" 2>/dev/null || true
+                    break
+                elif [ "$service_status" = "disabled" ]; then
+                    echo "NCPA: ⚠ Service is disabled, attempting to re-enable..."
+                    svcadm enable "$method" 2>/dev/null || true
+                elif [ "$service_status" = "maintenance" ]; then
+                    echo "NCPA: ⚠ Service is in maintenance mode"
+                    echo "NCPA: Service details:"
+                    svcs -xv "$method" 2>/dev/null || true
+                    echo "NCPA: Check service logs:"
+                    echo "NCPA:   sudo tail -f /var/svc/log/application-ncpa:default.log"
+                fi
+            fi
+        done
     else
-        echo "NCPA: WARNING - Failed to enable service"
-        echo "NCPA: Service status:"
-        svcs -xv application/ncpa
+        echo "NCPA: ✗ All enable attempts failed"
     fi
 else
-    echo "NCPA: Service not visible via svcs, but exists in repository"
-    echo "NCPA: Attempting to force service refresh and enable..."
-    
-    # Force refresh the service
-    svccfg -s application/ncpa refresh 2>&1 || echo "NCPA: Direct refresh failed"
-    svccfg -s application/ncpa:default refresh 2>&1 || echo "NCPA: Instance refresh failed"
-    
-    # Wait for SMF to process the refresh
-    sleep 5
-    
-    # Try to enable the service by instance
-    echo "NCPA: Trying to enable by full instance name..."
-    if svcadm enable application/ncpa:default 2>&1; then
-        echo "NCPA: Service enabled successfully by instance name"
-        
-        # Wait and check status
-        sleep 5
-        if svcs application/ncpa:default >/dev/null 2>&1; then
-            service_status=$(svcs -H -o state application/ncpa:default 2>/dev/null)
-            echo "NCPA: Service status: $service_status"
-            
-            if [ "$service_status" = "online" ]; then
-                echo "NCPA: Service is running successfully"
-            else
-                echo "NCPA: Service enabled but not online - status: $service_status"
-                echo "NCPA: Service details:"
-                svcs -xv application/ncpa:default 2>&1 || echo "NCPA: Could not get service details"
-                echo "NCPA: Check service logs:"
-                echo "NCPA:   sudo tail -f /var/svc/log/application-ncpa:default.log"
-            fi
-        else
-            echo "NCPA: Service still not visible after enable attempt"
-        fi
-    else
-        echo "NCPA: Failed to enable service by instance name"
-        echo "NCPA: Trying manual property changes..."
-        
-        # Try to manually set the service to enabled
-        svccfg -s application/ncpa:default setprop general/enabled = boolean: true 2>&1 || echo "NCPA: Failed to set enabled property"
-        svccfg -s application/ncpa:default refresh 2>&1 || echo "NCPA: Failed to refresh after property change"
-        
-        sleep 3
-        echo "NCPA: Final status check..."
-        svcs application/ncpa:default 2>&1 || echo "NCPA: Service still not accessible"
-    fi
-    
-    echo "NCPA: Available services matching 'ncpa':"
-    svcs -a | grep ncpa || echo "NCPA: No services found matching 'ncpa'"
-    echo "NCPA: All services in application category:"
-    svcs -a | grep application | head -5 || echo "NCPA: No services found in application category"
-    echo "NCPA: Checking manifest file:"
-    ls -la /var/svc/manifest/application/ncpa.xml
-    echo "NCPA: Checking SMF repository integrity:"
-    svccfg inventory /var/svc/manifest/application/ncpa.xml 2>&1 || echo "NCPA: Inventory check failed"
+    echo "NCPA: ✗ Service not detected by any method"
+    echo "NCPA: Checking what services exist in application category:"
+    svcs -a | grep application | head -5 2>/dev/null || echo "NCPA: No application services found"
 fi
 
 echo "NCPA: Post-installation completed."
