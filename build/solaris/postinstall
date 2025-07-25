@@ -5,6 +5,61 @@
 
 echo "NCPA: Running post-installation setup..."
 
+# FIRST: Stop any existing NCPA processes (since preinstall runs AFTER file copy in Solaris)
+echo "NCPA: Stopping any existing NCPA processes before setup..."
+
+# Try using existing service scripts first
+if [ -x "/usr/local/bin/ncpa-service" ]; then
+    echo "NCPA: Using existing service script to stop NCPA..."
+    /usr/local/bin/ncpa-service stop 2>/dev/null || true
+elif [ -x "/usr/local/bin/ncpa-start.sh" ]; then
+    echo "NCPA: Using existing start script to stop NCPA..."
+    /usr/local/bin/ncpa-start.sh stop 2>/dev/null || true
+fi
+
+# Try SMF methods
+if command -v svcadm >/dev/null 2>&1; then
+    svcadm disable -s site/ncpa 2>/dev/null || true
+    svcadm disable -s application/ncpa 2>/dev/null || true
+fi
+
+# Comprehensive process cleanup
+echo "NCPA: Performing comprehensive process cleanup..."
+for pattern in "/usr/local/ncpa/ncpa" "ncpa" "/usr/local/ncpa"; do
+    pids=$(pgrep -f "$pattern" 2>/dev/null)
+    if [ -n "$pids" ]; then
+        echo "NCPA: Found processes with pattern '$pattern': $pids"
+        for pid in $pids; do
+            echo "NCPA: Stopping process $pid..."
+            kill $pid 2>/dev/null || true
+            sleep 1
+            
+            # Force kill if still running
+            if ps -p $pid > /dev/null 2>&1; then
+                echo "NCPA: Force killing process $pid..."
+                kill -9 $pid 2>/dev/null || true
+            fi
+        done
+    fi
+done
+
+# Wait and verify cleanup
+sleep 2
+remaining=$(pgrep -f "/usr/local/ncpa" 2>/dev/null | wc -l)
+if [ "$remaining" -gt 0 ]; then
+    echo "NCPA: Warning: $remaining processes may still be running"
+    # Final aggressive cleanup
+    pkill -9 -f "/usr/local/ncpa" 2>/dev/null || true
+else
+    echo "NCPA: All existing processes stopped successfully"
+fi
+
+# Clean up PID files
+rm -f /usr/local/ncpa/var/run/*.pid 2>/dev/null || true
+rm -f /var/lock/subsys/ncpa 2>/dev/null || true
+
+echo "NCPA: Process cleanup completed, proceeding with setup..."
+
 # Set proper ownership and permissions
 chown -R nagios:nagios /usr/local/ncpa/var
 chown nagios:nagios /usr/local/ncpa/etc /usr/local/ncpa/etc/*.cfg*
