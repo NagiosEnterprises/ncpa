@@ -88,6 +88,12 @@ sleep 5
 echo "NCPA: Attempting standard manifest import..."
 if svccfg import /var/svc/manifest/application/ncpa.xml 2>&1; then
     echo "NCPA: ✓ Service imported successfully via manifest"
+    
+    # Follow the svccfg recommendation to restart manifest-import after import
+    echo "NCPA: Restarting manifest-import to make service visible..."
+    svcadm restart svc:/system/manifest-import 2>/dev/null || true
+    sleep 10  # Give more time for manifest-import to process
+    
     service_created=true
 else
     echo "NCPA: Standard import failed, trying alternative approach..."
@@ -145,9 +151,9 @@ else
 fi
 
 # Force refresh all services to ensure our service is recognized
-echo "NCPA: Forcing SMF repository refresh..."
+echo "NCPA: Forcing additional SMF repository refresh..."
 svcadm refresh svc:/ 2>/dev/null || true
-sleep 5
+sleep 10  # Give more time for service to appear
 
 # Wait for SMF to process all changes
 sleep 5
