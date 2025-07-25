@@ -2,6 +2,7 @@ import os
 import socket
 import time
 from datetime import datetime, timedelta
+from ipaddress import IPv4Address
 
 try:
     # Try to use the cryptography library (preferred)
@@ -86,6 +87,31 @@ def _create_cert_with_cryptography(target_cert, target_key):
         datetime.utcnow()
     ).not_valid_after(
         datetime.utcnow() + timedelta(days=3650)  # 10 years
+    ).add_extension(
+        x509.KeyUsage(
+            digital_signature=True,
+            key_encipherment=True,
+            key_agreement=False,
+            key_cert_sign=False,
+            crl_sign=False,
+            content_commitment=False,
+            data_encipherment=False,
+            encipher_only=False,
+            decipher_only=False,
+        ),
+        critical=True,
+    ).add_extension(
+        x509.ExtendedKeyUsage([
+            x509.oid.ExtendedKeyUsageOID.SERVER_AUTH,
+        ]),
+        critical=True,
+    ).add_extension(
+        x509.SubjectAlternativeName([
+            x509.DNSName(socket.gethostname()),
+            x509.DNSName("localhost"),
+            x509.IPAddress(IPv4Address("127.0.0.1")),
+        ]),
+        critical=False,
     ).sign(private_key, hashes.SHA256())
     
     # Write certificate
@@ -123,6 +149,15 @@ def _create_cert_with_openssl(target_cert, target_key):
     cert.gmtime_adj_notAfter(10 * 365 * 24 * 60 * 60)
     cert.set_issuer(cert.get_subject())
     cert.set_pubkey(k)
+    
+    # Add extensions for Chromium compatibility
+    cert.add_extensions([
+        crypto.X509Extension(b"keyUsage", True, b"digitalSignature, keyEncipherment"),
+        crypto.X509Extension(b"extendedKeyUsage", True, b"serverAuth"),
+        crypto.X509Extension(b"subjectAltName", False, 
+                           ("DNS:%s, DNS:localhost, IP:127.0.0.1" % socket.gethostname()).encode()),
+    ])
+    
     cert.sign(k, 'sha256')
 
     # Write certificate
@@ -154,9 +189,10 @@ OU = Development
 CN = %s
 
 [v3_req]
-keyUsage = keyEncipherment, dataEncipherment
-extendedKeyUsage = serverAuth
-""" % socket.gethostname()
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = critical, serverAuth
+subjectAltName = DNS:%s, DNS:localhost, IP:127.0.0.1
+""" % (socket.gethostname(), socket.gethostname())
     
     try:
         # Create temporary config file
