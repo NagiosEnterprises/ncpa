@@ -11,7 +11,17 @@ PID_FILE="$NCPA_DIR/var/run/ncpa.pid"
 start_ncpa() {
     echo "Starting NCPA..."
     
-    # Check if already running
+    # First, ensure no NCPA processes are running
+    echo "Checking for existing NCPA processes..."
+    existing_pids=$(pgrep -f "/usr/local/ncpa/ncpa" 2>/dev/null)
+    if [ -n "$existing_pids" ]; then
+        echo "Found existing NCPA processes: $existing_pids"
+        echo "Stopping existing processes before starting new one..."
+        stop_ncpa
+        sleep 2
+    fi
+    
+    # Check PID file
     if [ -f "$PID_FILE" ]; then
         pid=$(cat "$PID_FILE")
         if ps -p $pid > /dev/null 2>&1; then
@@ -46,21 +56,60 @@ start_ncpa() {
 stop_ncpa() {
     echo "Stopping NCPA..."
     
+    # First try to stop using PID file
     if [ -f "$PID_FILE" ]; then
         pid=$(cat "$PID_FILE")
         if ps -p $pid > /dev/null 2>&1; then
+            echo "Stopping NCPA process $pid..."
             kill $pid
+            sleep 2
+            
+            # Check if it's still running
+            if ps -p $pid > /dev/null 2>&1; then
+                echo "Process still running, forcing termination..."
+                kill -9 $pid 2>/dev/null
+            fi
             echo "NCPA stopped (PID: $pid)"
-            rm -f "$PID_FILE"
-        else
-            echo "NCPA process not found, removing PID file"
-            rm -f "$PID_FILE"
         fi
-    else
-        # Try to find and kill NCPA processes
-        pkill -f "ncpa"
-        echo "Killed any running NCPA processes"
+        rm -f "$PID_FILE"
     fi
+    
+    # Always do comprehensive cleanup of all NCPA processes
+    echo "Performing comprehensive NCPA process cleanup..."
+    
+    # Find and kill all NCPA processes more thoroughly
+    for pattern in "/usr/local/ncpa/ncpa" "ncpa" "$NCPA_DIR/ncpa"; do
+        pids=$(pgrep -f "$pattern" 2>/dev/null)
+        if [ -n "$pids" ]; then
+            echo "Found NCPA processes with pattern '$pattern': $pids"
+            for pid in $pids; do
+                echo "Stopping process $pid..."
+                kill $pid 2>/dev/null
+                sleep 1
+                
+                # Force kill if still running
+                if ps -p $pid > /dev/null 2>&1; then
+                    echo "Force killing process $pid..."
+                    kill -9 $pid 2>/dev/null
+                fi
+            done
+        fi
+    done
+    
+    # Wait a moment and verify cleanup
+    sleep 2
+    remaining=$(pgrep -f "/usr/local/ncpa/ncpa" 2>/dev/null | wc -l)
+    if [ "$remaining" -gt 0 ]; then
+        echo "Warning: $remaining NCPA processes may still be running"
+        echo "Remaining processes:"
+        ps -ef | grep ncpa | grep -v grep
+    else
+        echo "All NCPA processes stopped successfully"
+    fi
+    
+    # Clean up any remaining PID files
+    rm -f "$PID_FILE" 2>/dev/null
+    rm -f "$NCPA_DIR/var/run"/*.pid 2>/dev/null
 }
 
 status_ncpa() {
@@ -79,6 +128,41 @@ status_ncpa() {
     fi
 }
 
+killall_ncpa() {
+    echo "Performing aggressive cleanup of ALL NCPA processes..."
+    
+    # Find and display all NCPA-related processes
+    echo "Current NCPA processes:"
+    ps -ef | grep -i ncpa | grep -v grep
+    
+    # Kill all NCPA processes aggressively
+    for pattern in "/usr/local/ncpa/ncpa" "ncpa" "/usr/local/ncpa"; do
+        pids=$(pgrep -f "$pattern" 2>/dev/null)
+        if [ -n "$pids" ]; then
+            echo "Killing processes matching '$pattern': $pids"
+            for pid in $pids; do
+                kill -9 $pid 2>/dev/null || true
+            done
+        fi
+    done
+    
+    # Clean up all PID files
+    rm -f "$PID_FILE" 2>/dev/null
+    rm -f "$NCPA_DIR/var/run"/*.pid 2>/dev/null
+    rm -f /var/lock/subsys/ncpa 2>/dev/null
+    
+    sleep 1
+    
+    # Verify cleanup
+    remaining=$(ps -ef | grep -i ncpa | grep -v grep | wc -l)
+    if [ "$remaining" -eq 0 ]; then
+        echo "All NCPA processes have been terminated"
+    else
+        echo "Warning: Some NCPA processes may still be running:"
+        ps -ef | grep -i ncpa | grep -v grep
+    fi
+}
+
 case "$1" in
     start)
         start_ncpa
@@ -94,8 +178,16 @@ case "$1" in
     status)
         status_ncpa
         ;;
+    killall)
+        killall_ncpa
+        ;;
     *)
-        echo "Usage: $0 {start|stop|restart|status}"
+        echo "Usage: $0 {start|stop|restart|status|killall}"
+        echo "  start   - Start NCPA service"
+        echo "  stop    - Stop NCPA service gracefully"
+        echo "  restart - Restart NCPA service"
+        echo "  status  - Show NCPA service status"
+        echo "  killall - Aggressively terminate all NCPA processes"
         exit 1
         ;;
 esac
