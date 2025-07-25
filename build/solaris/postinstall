@@ -31,9 +31,13 @@ cat > /var/svc/manifest/site/ncpa.xml << 'EOF'
     <dependency name='filesystem' grouping='require_all' restart_on='none' type='service'>
       <service_fmri value='svc:/system/filesystem/local' />
     </dependency>
-    <exec_method type='method' name='start' exec='/usr/local/ncpa/ncpa' timeout_seconds='60'>
+    <exec_method type='method' name='start' exec='/usr/local/ncpa/ncpa --start' timeout_seconds='60'>
       <method_context working_directory='/usr/local/ncpa'>
         <method_credential user='nagios' group='nagios' />
+        <method_environment>
+          <envvar name='LD_LIBRARY_PATH' value='/usr/local/ncpa/lib:/usr/local/lib:/lib:/usr/lib' />
+          <envvar name='PATH' value='/usr/local/bin:/usr/bin:/bin' />
+        </method_environment>
       </method_context>
     </exec_method>
     <exec_method type='method' name='stop' exec=':kill' timeout_seconds='60' />
