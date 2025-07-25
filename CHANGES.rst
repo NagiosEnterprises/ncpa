@@ -7,6 +7,7 @@ Changelog
 
 **Updates**
 - Rewrote the build process to use virtual environments for Python dependencies, improving compatibility and isolation. (Blake Bahner)
+- Improved process killing logic on unix systems to handle more edge cases and ensure all child processes are terminated. (Blake Bahner)
 
 3.1.4 - XX/XX/2025
 ==================

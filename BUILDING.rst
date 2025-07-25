@@ -10,6 +10,8 @@ This document contains instructions for:
 
 * `Building on MacOS <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-macos>`_
 
+* `Building on Solaris <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-solaris>`_
+
 *WARNING*: DO THIS ON A DEDICATED VM OR A NON-PRODUCTION SYSTEM!
 
 THE BUILD SCRIPT WILL MAKE CHANGES TO THE SYSTEM THAT MAY BE INCOMPATIBLE WITH OTHER SOFTWARE
@@ -106,6 +108,83 @@ python3, wget and git installed prior to building NCPA v3.x.:
   ./build.sh
 
 Note that there may be some difficulty with installing this on other machines without Apple Developer credentials, and with the enhanced system security in newer versions. Please see `Installing on Nagios NCPA v 2.4 Agent on MacOS <https://nagiosenterprises.my.site.com/support/s/article/Installing-the-Nagios-NCPA-v-2-4-Agent-on-MacOS-7ec3e7de>`_ for more information.
+
+
+Building on Solaris
+===================
+
+NCPA can be built on Solaris 11.4 SRU78 or higher systems. The build process creates a native Solaris package (.pkg) that can be installed using the standard Solaris package management tools.
+
+Prerequisites
+------------
+
+Before building NCPA on Solaris, ensure you have the following packages installed::
+
+  pkg install developer/build/gnu-make
+  pkg install developer/gcc
+  pkg install system/header
+  pkg install library/zlib
+  pkg install library/security/openssl
+  pkg install runtime/python-39
+  pkg install library/python/pip-39
+
+**Clone the repository**::
+
+  cd ~
+  git clone https://github.com/NagiosEnterprises/ncpa
+
+**Build NCPA**::
+
+  cd ncpa/build
+  ./build.sh
+
+The build process will:
+
+1. Set up a Python virtual environment with all required dependencies
+2. Build the NCPA binary using cx_Freeze 
+3. Create a Solaris package (.pkg file) with install/uninstall scripts
+4. Configure automatic startup and service management
+
+**Install on the target Solaris server**
+
+Copy the resulting ``~/ncpa/build/ncpa-3.X.X.sparc.pkg`` or ``~/ncpa/build/ncpa-3.X.X.i386.pkg`` to the desired server and install using::
+
+  pkgadd -d ./ncpa-3.X.X.<arch>.pkg
+
+**Solaris-Specific Features**
+
+The Solaris build includes:
+
+* **SMF Integration**: Attempts to create a proper SMF (Service Management Facility) service
+* **Manual Service Management**: Provides backup scripts for systems with SMF issues
+* **Automatic Startup**: Configures NCPA to start automatically on boot using init.d scripts
+* **Process Cleanup**: Enhanced process management to prevent leftover processes during restarts/upgrades
+
+**Service Management**
+
+Start/stop NCPA using the service script::
+
+  /usr/local/bin/ncpa-service {start|stop|restart|status|killall}
+
+Or use the traditional SMF commands if the service was imported successfully::
+
+  svcadm enable application/ncpa
+  svcadm disable application/ncpa
+  svcs application/ncpa
+
+**Known Issues**
+
+* Some Solaris systems may experience SMF service visibility issues where the service imports successfully but doesn't appear in ``svcs`` output
+* The manual service script provides a reliable workaround for SMF issues
+* NCPA may require ``setgroups()`` permission adjustments on some Solaris configurations
+
+**Uninstalling**
+
+Remove NCPA using::
+
+  pkgrm ncpa
+
+This will automatically stop all NCPA processes and clean up service configurations.
 
 Building Tips
 =============
