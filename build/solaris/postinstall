@@ -187,9 +187,43 @@ if [ "$service_created" = "true" ]; then
     echo "NCPA: Raw svccfg inventory check:"
     svccfg inventory /var/svc/manifest/application/ncpa.xml 2>/dev/null || echo "NCPA: Inventory check failed"
     
+    echo "NCPA: Checking if service is masked:"
+    if svccfg -s application/ncpa:default listprop -l >/dev/null 2>&1; then
+        echo "NCPA: ⚠ Service is MASKED - attempting to unmask..."
+        
+        # Try to unmask the service by deleting and re-importing
+        echo "NCPA: Attempting to unmask by deleting and re-importing..."
+        svccfg delete -f application/ncpa 2>/dev/null || true
+        sleep 3
+        
+        # Re-import the service
+        if svccfg import /var/svc/manifest/application/ncpa.xml 2>&1; then
+            echo "NCPA: ✓ Service re-imported successfully"
+            
+            # Force a complete SMF refresh
+            svcadm refresh svc:/ 2>/dev/null || true
+            sleep 5
+            
+            # Check if it's now visible
+            if svcs application/ncpa:default >/dev/null 2>&1; then
+                echo "NCPA: ✓ Service is now visible after unmasking"
+                service_unmasked=true
+            else
+                echo "NCPA: ⚠ Service still not visible after unmasking attempt"
+                service_unmasked=false
+            fi
+        else
+            echo "NCPA: ✗ Failed to re-import service for unmasking"
+            service_unmasked=false
+        fi
+    else
+        echo "NCPA: Service is not masked (or doesn't exist)"
+        service_unmasked=false
+    fi
+    
     echo "NCPA: ======================================="
     
-    # Comprehensive service verification
+    # Comprehensive service verification (after potential unmasking)
     echo "NCPA: Comprehensive service verification..."
     echo "NCPA: Method 1 - svcs application/ncpa:"
     if svcs application/ncpa 2>/dev/null; then
@@ -216,6 +250,17 @@ if [ "$service_created" = "true" ]; then
     else
         echo "NCPA: ✗ Service not accessible via svccfg"
         svccfg_accessible=false
+    fi
+
+    # Special handling if service was unmasked
+    if [ "$service_unmasked" = "true" ]; then
+        echo "NCPA: Service was successfully unmasked, forcing enable..."
+        if svcadm enable application/ncpa:default 2>/dev/null; then
+            echo "NCPA: ✓ Service enabled after unmasking"
+            sleep 5
+            service_status=$(svcs -H -o state application/ncpa:default 2>/dev/null || echo "unknown")
+            echo "NCPA: Service status after unmasking: $service_status"
+        fi
     fi
 
     # Try to enable the service if any method found it
