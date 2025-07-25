@@ -160,6 +160,35 @@ sleep 5
 
 # Only proceed with service verification if service was created successfully
 if [ "$service_created" = "true" ]; then
+    # Add extensive diagnostic information before verification
+    echo "NCPA: === SMF Repository Diagnostics ==="
+    echo "NCPA: Checking SMF repository state..."
+    
+    echo "NCPA: All services containing 'ncpa' (case insensitive):"
+    svcs -a | grep -i ncpa || echo "NCPA: No services found containing 'ncpa'"
+    
+    echo "NCPA: SVCs repository scan for application services:"
+    svcs -a | grep "^disabled.*application/" | head -3
+    svcs -a | grep "^online.*application/" | head -3
+    svcs -a | grep "^maintenance.*application/" | head -3
+    
+    echo "NCPA: Checking svccfg repository directly:"
+    svccfg list | grep ncpa || echo "NCPA: No ncpa entries in svccfg list"
+    
+    echo "NCPA: Checking specific service paths:"
+    svccfg list application 2>/dev/null | grep ncpa || echo "NCPA: No ncpa under application category"
+    
+    echo "NCPA: Checking manifest processing status:"
+    svcs svc:/system/manifest-import || echo "NCPA: Manifest-import service status unknown"
+    
+    echo "NCPA: Checking for any SMF errors:"
+    svcs -xv 2>/dev/null | grep -A5 -B5 ncpa || echo "NCPA: No SMF errors related to ncpa"
+    
+    echo "NCPA: Raw svccfg inventory check:"
+    svccfg inventory /var/svc/manifest/application/ncpa.xml 2>/dev/null || echo "NCPA: Inventory check failed"
+    
+    echo "NCPA: ======================================="
+    
     # Comprehensive service verification
     echo "NCPA: Comprehensive service verification..."
     echo "NCPA: Method 1 - svcs application/ncpa:"
