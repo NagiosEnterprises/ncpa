@@ -157,7 +157,6 @@ The installation process will:
 * Create the nagios user and group if they don't exist
 * Set up proper file permissions and ownership
 * Attempt to create an SMF service for service management
-* Create backup init.d scripts for automatic startup
 * Start NCPA automatically after installation
 
 **Solaris-Specific Features**
@@ -166,7 +165,6 @@ The Solaris build includes:
 
 * **Comprehensive Process Management**: Enhanced cleanup logic prevents leftover processes during upgrades and restarts
 * **SMF Integration**: Attempts to create a proper SMF (Service Management Facility) service with full diagnostics
-* **Automatic Fallback**: Provides reliable init.d scripts when SMF has visibility issues  
 * **Automatic Startup**: Configures NCPA to start automatically on boot using multiple methods
 * **SSL Certificate Compatibility**: Generates certificates compatible with both Firefox and Chromium browsers
 * **Manual Service Control**: Provides comprehensive service management scripts
@@ -178,10 +176,6 @@ NCPA provides multiple ways to manage the service:
 **Primary Method - Service Script**::
 
   /usr/local/bin/ncpa-service {start|stop|restart|status|killall}
-
-**Init.d Method** (works on all systems)::
-
-  /etc/init.d/ncpa {start|stop|restart|status}
 
 **SMF Method** (if service is visible)::
 
@@ -224,8 +218,7 @@ NCPA provides multiple ways to manage the service:
 NCPA is configured to start automatically on boot using multiple mechanisms:
 
 1. **SMF Service** (if successfully imported): ``application/ncpa``
-2. **Init.d Scripts**: ``/etc/init.d/ncpa`` with run-level links in ``/etc/rc*.d/``
-3. **Service Script**: ``/usr/local/bin/ncpa-service`` called by init scripts
+2. **Service Script**: ``/usr/local/bin/ncpa-service`` called by init scripts
 
 This redundant approach ensures NCPA starts reliably across different Solaris configurations.
 
@@ -263,7 +256,7 @@ To upgrade NCPA:
 The Solaris build requires the NCPA source to already be built (frozen) before packaging. The complete build process is::
 
   cd ncpa/build
-  sudo ./build.sh              # Build the frozen NCPA binary
+  sudo ./build.sh              # Build the frozen NCPA binary and Solaris package
 
 This will automatically stop all NCPA processes and clean up service configurations.
 
