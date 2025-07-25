@@ -5,21 +5,51 @@
 
 echo "NCPA: Running pre-removal cleanup..."
 
-# Stop the service first
-echo "NCPA: Stopping service..."
+# Stop NCPA using the service script if available
+echo "NCPA: Stopping NCPA service..."
+if [ -x "/usr/local/bin/ncpa-service" ]; then
+    /usr/local/bin/ncpa-service stop
+    echo "NCPA: Service stopped using service script"
+fi
+
+# Also try traditional SMF methods
 svcadm disable -s site/ncpa 2>/dev/null || true
+svcadm disable -s application/ncpa 2>/dev/null || true
 
 # Wait a bit for the service to stop
 sleep 2
 
-# Check if the service exists before trying to delete it
+# Check if the services exist before trying to delete them
 if svcs site/ncpa >/dev/null 2>&1; then
-    echo "NCPA: Removing SMF service..."
+    echo "NCPA: Removing site/ncpa SMF service..."
     svccfg delete site/ncpa 2>/dev/null || true
 fi
 
-# Remove the service manifest file
+if svcs application/ncpa >/dev/null 2>&1; then
+    echo "NCPA: Removing application/ncpa SMF service..."
+    svccfg delete application/ncpa 2>/dev/null || true
+fi
+
+# Remove startup links
+echo "NCPA: Removing startup links..."
+for level in 0 1 2 3 6; do
+    rm -f "/etc/rc${level}.d/S99ncpa" 2>/dev/null || true
+    rm -f "/etc/rc${level}.d/K01ncpa" 2>/dev/null || true
+done
+
+# Remove service scripts
+echo "NCPA: Removing service scripts..."
+rm -f /usr/local/bin/ncpa-service 2>/dev/null || true
+rm -f /usr/local/bin/ncpa-start.sh 2>/dev/null || true
+rm -f /etc/init.d/ncpa 2>/dev/null || true
+
+# Remove the service manifest files
 rm -f /var/svc/manifest/site/ncpa.xml
+rm -f /var/svc/manifest/application/ncpa.xml
+
+# Clean up any remaining NCPA processes
+echo "NCPA: Cleaning up any remaining processes..."
+pkill -f "/usr/local/ncpa/ncpa" 2>/dev/null || true
 
 # Clean up runtime files
 echo "NCPA: Cleaning up runtime files..."
@@ -28,5 +58,8 @@ rm -f /usr/local/ncpa/var/*.crt
 rm -f /usr/local/ncpa/var/*.db  
 rm -f /usr/local/ncpa/var/*.key
 rm -f /usr/local/ncpa/var/*.pid
+
+# Remove lock files
+rm -f /var/lock/subsys/ncpa 2>/dev/null || true
 
 echo "NCPA: Pre-removal completed."

@@ -46,6 +46,13 @@ rm -rf $DIR/pkginfo.tmp
     # Add package information/scripts to current directory (where pkgmk runs)
     # pkginfo goes into the ncpa directory for the package content
     cp pkginfo ncpa/pkginfo
+    
+    # Copy the manual start script to the package for installation
+    echo "Adding manual start script to package..."
+    mkdir -p ncpa/usr/local/bin
+    cp solaris/ncpa-start.sh ncpa/usr/local/bin/ncpa-start.sh
+    chmod +x ncpa/usr/local/bin/ncpa-start.sh
+    
     # Install scripts stay in current directory for pkgmk to find them
     cp solaris/postinstall ./postinstall
     cp solaris/preinstall ./preinstall  

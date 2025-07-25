@@ -336,5 +336,236 @@ else
     echo "NCPA: Then: sudo svcadm enable application/ncpa"
 fi
 
+# Since SMF service has visibility issues, start NCPA manually and set up automatic startup
+echo "NCPA: Setting up automatic startup and starting NCPA..."
+
+# Copy the manual start script to system location
+STARTUP_SCRIPT="/usr/local/bin/ncpa-service"
+cat > "$STARTUP_SCRIPT" << 'SCRIPT_EOF'
+#!/bin/bash
+
+# NCPA service management script for Solaris
+# Handles startup, shutdown, and automatic boot startup
+
+NCPA_DIR="/usr/local/ncpa"
+NCPA_USER="nagios"
+NCPA_GROUP="nagios"
+PID_FILE="$NCPA_DIR/var/run/ncpa.pid"
+
+start_ncpa() {
+    echo "Starting NCPA..."
+    
+    # Check if already running
+    if [ -f "$PID_FILE" ]; then
+        pid=$(cat "$PID_FILE")
+        if ps -p $pid > /dev/null 2>&1; then
+            echo "NCPA is already running (PID: $pid)"
+            return 0
+        else
+            echo "Removing stale PID file"
+            rm -f "$PID_FILE"
+        fi
+    fi
+    
+    # Set environment
+    export LD_LIBRARY_PATH="$NCPA_DIR/lib:/usr/local/lib:/lib:/usr/lib"
+    export PATH="/usr/local/bin:/usr/bin:/bin"
+    
+    # Change to NCPA directory and start
+    cd "$NCPA_DIR"
+    
+    # Start NCPA as nagios user
+    sudo -u $NCPA_USER -g $NCPA_GROUP "$NCPA_DIR/ncpa" --start &
+    
+    if [ $? -eq 0 ]; then
+        echo "NCPA started successfully"
+        echo "Check status with: ps -ef | grep ncpa"
+        echo "Check logs in: $NCPA_DIR/var/log/"
+        return 0
+    else
+        echo "Failed to start NCPA"
+        return 1
+    fi
+}
+
+stop_ncpa() {
+    echo "Stopping NCPA..."
+    
+    if [ -f "$PID_FILE" ]; then
+        pid=$(cat "$PID_FILE")
+        if ps -p $pid > /dev/null 2>&1; then
+            kill $pid
+            echo "NCPA stopped (PID: $pid)"
+            rm -f "$PID_FILE"
+        else
+            echo "NCPA process not found, removing PID file"
+            rm -f "$PID_FILE"
+        fi
+    else
+        # Try to find and kill NCPA processes
+        pkill -f "$NCPA_DIR/ncpa"
+        echo "Killed any running NCPA processes"
+    fi
+}
+
+status_ncpa() {
+    if [ -f "$PID_FILE" ]; then
+        pid=$(cat "$PID_FILE")
+        if ps -p $pid > /dev/null 2>&1; then
+            echo "NCPA is running (PID: $pid)"
+            return 0
+        else
+            echo "NCPA is not running (stale PID file)"
+            return 1
+        fi
+    else
+        echo "NCPA is not running"
+        return 1
+    fi
+}
+
+case "$1" in
+    start)
+        start_ncpa
+        ;;
+    stop)
+        stop_ncpa
+        ;;
+    restart)
+        stop_ncpa
+        sleep 2
+        start_ncpa
+        ;;
+    status)
+        status_ncpa
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+        ;;
+esac
+SCRIPT_EOF
+
+chmod +x "$STARTUP_SCRIPT"
+chown root:root "$STARTUP_SCRIPT"
+echo "NCPA: Service script installed at $STARTUP_SCRIPT"
+
+# Create init.d script for automatic startup on boot
+INIT_SCRIPT="/etc/init.d/ncpa"
+cat > "$INIT_SCRIPT" << 'INIT_EOF'
+#!/bin/sh
+
+# NCPA init script for Solaris
+# chkconfig: 35 99 99
+# description: Nagios Cross-Platform Agent
+
+. /lib/svc/share/smf_include.sh
+
+USER="nagios"
+DAEMON="ncpa"
+ROOT_DIR=/usr/local/ncpa
+
+LOCK_FILE=/var/lock/subsys/ncpa
+
+start() {
+    if [ -f $LOCK_FILE ]; then
+        echo "NCPA is locked."
+        exit 1
+    fi
+    
+    echo -n "Starting $DAEMON: "
+    /usr/local/bin/ncpa-service start
+    
+    if [ $? -eq 0 ]; then
+        echo "OK"
+        touch $LOCK_FILE
+        return 0
+    else
+        echo "FAILED"
+        return 1
+    fi
+}
+
+stop() {
+    echo -n "Shutting down $DAEMON: "
+    /usr/local/bin/ncpa-service stop
+    
+    if [ $? -eq 0 ]; then
+        echo "OK"
+        rm -f $LOCK_FILE
+        return 0
+    else
+        echo "FAILED"
+        return 1
+    fi
+}
+
+restart() {
+    stop
+    sleep 2
+    start
+}
+
+status() {
+    /usr/local/bin/ncpa-service status
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status
+        ;;
+    restart)
+        restart
+        ;;
+    *)
+        echo "Usage: {start|stop|status|restart}"
+        exit 1
+        ;;
+esac
+
+exit $?
+INIT_EOF
+
+chmod +x "$INIT_SCRIPT"
+chown root:root "$INIT_SCRIPT"
+echo "NCPA: Init script installed at $INIT_SCRIPT"
+
+# Add to system startup (Solaris style)
+# Create symbolic links for different run levels
+for level in 2 3; do
+    if [ -d "/etc/rc${level}.d" ]; then
+        ln -sf "$INIT_SCRIPT" "/etc/rc${level}.d/S99ncpa" 2>/dev/null || true
+        echo "NCPA: Added startup link for run level $level"
+    fi
+done
+
+# Create shutdown links
+for level in 0 1 6; do
+    if [ -d "/etc/rc${level}.d" ]; then
+        ln -sf "$INIT_SCRIPT" "/etc/rc${level}.d/K01ncpa" 2>/dev/null || true
+        echo "NCPA: Added shutdown link for run level $level"
+    fi
+done
+
+# Start NCPA immediately after installation
+echo "NCPA: Starting NCPA service..."
+if "$STARTUP_SCRIPT" start; then
+    echo "NCPA: ✓ NCPA started successfully after installation"
+    echo "NCPA: Service is now running and will auto-start on boot"
+    
+    # Show current status
+    sleep 2
+    "$STARTUP_SCRIPT" status
+else
+    echo "NCPA: ✗ Failed to start NCPA after installation"
+    echo "NCPA: You can start it manually with: sudo $STARTUP_SCRIPT start"
+fi
+
 echo "NCPA: Post-installation completed."
 echo "NCPA: To manually start the service later, run: sudo svcadm enable application/ncpa"
