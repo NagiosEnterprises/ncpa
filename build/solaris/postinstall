@@ -25,8 +25,8 @@ cat > /var/svc/manifest/application/ncpa.xml << 'EOF'
   <service name='application/ncpa' type='service' version='1'>
     <create_default_instance enabled='false' />
     <single_instance />
-    <dependency name='network' grouping='require_all' restart_on='none' type='service'>
-      <service_fmri value='svc:/milestone/network:default' />
+    <dependency name='multi-user' grouping='require_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/milestone/multi-user:default' />
     </dependency>
     <dependency name='filesystem' grouping='require_all' restart_on='none' type='service'>
       <service_fmri value='svc:/system/filesystem/local' />
