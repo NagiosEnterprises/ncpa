@@ -95,7 +95,9 @@ sleep 5
 
 # Use direct svccfg commands to create service instead of XML import
 echo "NCPA: Creating service directly using svccfg commands..."
-if svccfg << 'SVCCFG_EOF'
+
+# Create a temporary svccfg script file
+cat > /tmp/ncpa_svccfg_commands.txt << 'EOF'
 add application/ncpa service
 select application/ncpa
 add default instance
@@ -132,24 +134,42 @@ setprop method_environment/LD_LIBRARY_PATH = astring: "/usr/local/ncpa/lib:/usr/
 setprop method_environment/PATH = astring: "/usr/local/bin:/usr/bin:/bin"
 refresh
 exit
-SVCCFG_EOF
-then
+EOF
+
+if svccfg -f /tmp/ncpa_svccfg_commands.txt 2>&1; then
     echo "NCPA: Service created successfully using direct svccfg commands"
+    rm -f /tmp/ncpa_svccfg_commands.txt
 else
-    echo "NCPA: Direct svccfg creation failed, falling back to manual approach..."
+    echo "NCPA: Direct svccfg creation failed, falling back to step-by-step approach..."
+    rm -f /tmp/ncpa_svccfg_commands.txt
     
-    # Final fallback: use extremely simple service creation
-    echo "NCPA: Using minimal service creation approach..."
-    svccfg add application/ncpa service 2>/dev/null || true
-    svccfg -s application/ncpa add default instance 2>/dev/null || true
-    svccfg -s application/ncpa:default addpg start method 2>/dev/null || true
-    svccfg -s application/ncpa:default setprop start/exec = astring: "/usr/local/ncpa/ncpa --start" 2>/dev/null || true
-    svccfg -s application/ncpa:default setprop start/timeout_seconds = count: 60 2>/dev/null || true
-    svccfg -s application/ncpa:default addpg stop method 2>/dev/null || true
-    svccfg -s application/ncpa:default setprop stop/exec = astring: ":kill" 2>/dev/null || true
-    svccfg -s application/ncpa:default setprop stop/timeout_seconds = count: 60 2>/dev/null || true
-    svccfg -s application/ncpa:default addpg general framework 2>/dev/null || true
-    svccfg -s application/ncpa:default setprop general/enabled = boolean: false 2>/dev/null || true
+    # Final fallback: use individual svccfg commands
+    echo "NCPA: Using step-by-step service creation approach..."
+    
+    # Basic service and instance creation
+    if svccfg add application/ncpa service 2>/dev/null; then
+        echo "NCPA: ✓ Service created"
+    else
+        echo "NCPA: ✗ Failed to create service"
+    fi
+    
+    if svccfg -s application/ncpa add default instance 2>/dev/null; then
+        echo "NCPA: ✓ Instance created"
+    else
+        echo "NCPA: ✗ Failed to create instance"
+    fi
+    
+    # Add essential properties
+    svccfg -s application/ncpa:default addpg start method 2>/dev/null
+    svccfg -s application/ncpa:default setprop start/exec = astring: "/usr/local/ncpa/ncpa --start" 2>/dev/null
+    svccfg -s application/ncpa:default setprop start/timeout_seconds = count: 60 2>/dev/null
+    svccfg -s application/ncpa:default addpg stop method 2>/dev/null
+    svccfg -s application/ncpa:default setprop stop/exec = astring: ":kill" 2>/dev/null
+    svccfg -s application/ncpa:default setprop stop/timeout_seconds = count: 60 2>/dev/null
+    svccfg -s application/ncpa:default addpg general framework 2>/dev/null
+    svccfg -s application/ncpa:default setprop general/enabled = boolean: false 2>/dev/null
+    
+    echo "NCPA: Basic service properties set"
 fi
 
 # Force refresh all services to ensure our service is recognized
