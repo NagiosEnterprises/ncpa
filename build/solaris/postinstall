@@ -71,7 +71,11 @@ else
     exit 1
 fi
 
-# Import the service
+# Remove any existing service first
+echo "NCPA: Removing any existing SMF service..."
+svccfg delete site/ncpa 2>/dev/null || true
+
+# Import the service using direct svccfg commands
 echo "NCPA: Importing SMF service..."
 if svccfg import /var/svc/manifest/site/ncpa.xml; then
     echo "NCPA: SMF service imported successfully"
@@ -83,6 +87,18 @@ else
     fi
     echo "NCPA: Checking svccfg validate..."
     svccfg validate /var/svc/manifest/site/ncpa.xml 2>&1 | head -5
+fi
+
+# Force a repository refresh
+echo "NCPA: Refreshing SMF repository..."
+svcadm restart svc:/system/manifest-import:default 2>/dev/null || true
+sleep 2
+
+# Try alternative import method if first didn't work
+if ! svcs site/ncpa >/dev/null 2>&1; then
+    echo "NCPA: Service not found, trying alternative import method..."
+    svccfg -s site/ncpa refresh 2>/dev/null || true
+    sleep 2
 fi
 
 # Wait a moment for SMF to process
