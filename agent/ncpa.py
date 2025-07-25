@@ -697,11 +697,13 @@ class Daemon():
             supplementary_groups_set = True
             self.logger.debug("Successfully set supplementary groups: %s", gids)
         except OSError as err:
-            if sys.platform == 'darwin' and err.errno == 1:  # Operation not permitted on macOS
-                self.logger.warning("setgroups failed on macOS (this is common due to security restrictions)")
-                self.logger.info("Attempting alternative permission setup for macOS...")
+            if (sys.platform == 'darwin' and err.errno == 1) or (sys.platform.startswith('sunos') and err.errno == 1):
+                # Operation not permitted on macOS or Solaris
+                platform_name = "macOS" if sys.platform == 'darwin' else "Solaris"
+                self.logger.warning("setgroups failed on %s (this is common due to security restrictions)", platform_name)
+                self.logger.info("Attempting alternative permission setup for %s...", platform_name)
                 
-                # On macOS, try to ensure the user is at least in the primary group
+                # On these platforms, try to ensure the user is at least in the primary group
                 # and warn about potential permission issues
                 try:
                     # Verify the user can access group-owned resources by checking the primary group
@@ -713,7 +715,7 @@ class Daemon():
                     # Warn about supplementary groups that couldn't be set
                     if len(gids) > 1:
                         missing_groups = [grp.getgrgid(gid).gr_name for gid in gids if gid != self.gid]
-                        self.logger.warning("Could not set supplementary groups on macOS: %s", missing_groups)
+                        self.logger.warning("Could not set supplementary groups on %s: %s", platform_name, missing_groups)
                         self.logger.warning("This may cause permission issues accessing resources owned by these groups")
                         self.logger.info("Consider adjusting file/directory permissions or group ownership if you encounter access issues")
                         
@@ -739,8 +741,9 @@ class Daemon():
             self.logger.info("Successfully dropped privileges to user '%s' (uid:%d, gid:%d)", 
                            current_user.pw_name, os.getuid(), os.getgid())
             
-            if not supplementary_groups_set and sys.platform == 'darwin':
-                self.logger.info("Note: Running with limited group membership due to macOS security restrictions")
+            if not supplementary_groups_set and (sys.platform == 'darwin' or sys.platform.startswith('sunos')):
+                platform_name = "macOS" if sys.platform == 'darwin' else "Solaris"
+                self.logger.info("Note: Running with limited group membership due to %s security restrictions", platform_name)
                 
         except Exception as verify_err:
             self.logger.debug("Could not verify final user/group state: %s", verify_err)
