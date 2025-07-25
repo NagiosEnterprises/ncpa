@@ -76,31 +76,62 @@ echo "NCPA: Removing any existing SMF service..."
 svccfg delete application/ncpa 2>/dev/null || true
 svccfg delete site/ncpa 2>/dev/null || true
 
-# Import the service using direct svccfg commands
-echo "NCPA: Importing SMF service..."
-if svccfg import /var/svc/manifest/application/ncpa.xml; then
-    echo "NCPA: SMF service imported successfully"
-else
-    echo "NCPA: ERROR - SMF service import failed"
-    echo "NCPA: Checking XML syntax..."
-    if command -v xmllint >/dev/null 2>&1; then
-        xmllint --noout /var/svc/manifest/application/ncpa.xml 2>&1 | head -5
-    fi
-    echo "NCPA: Checking svccfg validate..."
-    svccfg validate /var/svc/manifest/application/ncpa.xml 2>&1 | head -5
-fi
+# Create service manually using svccfg commands
+echo "NCPA: Creating SMF service manually..."
+svccfg << EOF
+add application/ncpa
+select application/ncpa
+add default instance
+select default
+setprop startd/timeout_seconds = count: 60
+setprop startd/ignore_error = astring: core,signal
+setprop application/auto_enable = boolean: false
+exit
+EOF
 
-# Force a repository refresh
-echo "NCPA: Refreshing SMF repository..."
-svcadm restart svc:/system/manifest-import:default 2>/dev/null || true
-sleep 2
+# Set the start method
+echo "NCPA: Setting service start method..."
+svccfg << EOF
+select application/ncpa:default
+setprop start/exec = astring: "/usr/local/ncpa/ncpa --start"
+setprop start/timeout_seconds = count: 60
+setprop start/user = astring: nagios
+setprop start/group = astring: nagios
+setprop start/working_directory = astring: /usr/local/ncpa
+setprop start/environment = astring: ( "LD_LIBRARY_PATH=/usr/local/ncpa/lib:/usr/local/lib:/lib:/usr/lib" "PATH=/usr/local/bin:/usr/bin:/bin" )
+exit
+EOF
 
-# Try alternative import method if first didn't work
-if ! svcs application/ncpa >/dev/null 2>&1; then
-    echo "NCPA: Service not found, trying alternative import method..."
-    svccfg -s application/ncpa refresh 2>/dev/null || true
-    sleep 2
-fi
+# Set the stop method
+echo "NCPA: Setting service stop method..."
+svccfg << EOF
+select application/ncpa:default
+setprop stop/exec = astring: ":kill"
+setprop stop/timeout_seconds = count: 60
+exit
+EOF
+
+# Add dependencies
+echo "NCPA: Adding service dependencies..."
+svccfg << EOF
+select application/ncpa
+add dependency multi-user type service
+select dependency multi-user
+setprop grouping = astring: require_all
+setprop restart_on = astring: none
+setprop entities = fmri: svc:/milestone/multi-user:default
+select ..
+add dependency filesystem type service
+select dependency filesystem
+setprop grouping = astring: require_all
+setprop restart_on = astring: none
+setprop entities = fmri: svc:/system/filesystem/local
+exit
+EOF
+
+# Refresh the service
+echo "NCPA: Refreshing service configuration..."
+svccfg -s application/ncpa refresh
 
 # Wait a moment for SMF to process
 sleep 3
