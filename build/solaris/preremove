@@ -47,25 +47,25 @@ rm -f /etc/init.d/ncpa 2>/dev/null || true
 rm -f /var/svc/manifest/site/ncpa.xml
 rm -f /var/svc/manifest/application/ncpa.xml
 
-# Clean up any remaining NCPA processes
-echo "NCPA: Performing comprehensive process cleanup..."
-for pattern in "/usr/local/ncpa/ncpa" "ncpa" "/usr/local/ncpa"; do
-    pids=$(pgrep -f "$pattern" 2>/dev/null)
-    if [ -n "$pids" ]; then
-        echo "NCPA: Found processes with pattern '$pattern': $pids"
-        for pid in $pids; do
-            echo "NCPA: Stopping process $pid..."
-            kill $pid 2>/dev/null || true
-            sleep 1
+# # Clean up any remaining NCPA processes
+# echo "NCPA: Performing comprehensive process cleanup..."
+# for pattern in "/usr/local/ncpa/ncpa" "ncpa" "/usr/local/ncpa"; do
+#     pids=$(pgrep -f "$pattern" 2>/dev/null)
+#     if [ -n "$pids" ]; then
+#         echo "NCPA: Found processes with pattern '$pattern': $pids"
+#         for pid in $pids; do
+#             echo "NCPA: Stopping process $pid..."
+#             kill $pid 2>/dev/null || true
+#             sleep 1
             
-            # Force kill if still running
-            if ps -p $pid > /dev/null 2>&1; then
-                echo "NCPA: Force killing process $pid..."
-                kill -9 $pid 2>/dev/null || true
-            fi
-        done
-    fi
-done
+#             # Force kill if still running
+#             if ps -p $pid > /dev/null 2>&1; then
+#                 echo "NCPA: Force killing process $pid..."
+#                 kill -9 $pid 2>/dev/null || true
+#             fi
+#         done
+#     fi
+# done
 
 # Wait and verify cleanup
 sleep 2
