@@ -94,7 +94,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.1.3'
+__VERSION__ = '3.1.4'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -158,6 +158,7 @@ cfg_defaults = {
                 'max_connections': '200',
                 'allowed_sources': '',
                 'allow_config_edit': '1', # Note: this is limited to non-sensitive settings
+                'disable_gui': '0',  # Disable web GUI while preserving API
             },
             'api': {
                 'community_string': 'mytoken',
@@ -682,13 +683,67 @@ class Daemon():
         if self.username:
             gids = [ g.gr_gid for g in grp.getgrall() if self.username in g.gr_mem ]
 
-        # Set the group, alt groups, and user
+        # Set the group first
         try:
             os.setgid(self.gid)
+        except OSError as err:
+            self.logger.exception("Failed to set group ID: %s", err)
+            raise
+
+        # Try to set supplementary groups - this can fail due to security restrictions
+        supplementary_groups_set = False
+        try:
             os.setgroups(gids)
+            supplementary_groups_set = True
+            self.logger.debug("Successfully set supplementary groups: %s", gids)
+        except OSError as err:
+            if sys.platform == 'darwin' and err.errno == 1:  # Operation not permitted on macOS
+                self.logger.warning("setgroups failed on macOS (this is common due to security restrictions)")
+                self.logger.info("Attempting alternative permission setup for macOS...")
+                
+                # On macOS, try to ensure the user is at least in the primary group
+                # and warn about potential permission issues
+                try:
+                    # Verify the user can access group-owned resources by checking the primary group
+                    import pwd
+                    user_info = pwd.getpwuid(self.uid)
+                    self.logger.info("Running as user '%s' (uid:%d) with primary group '%s' (gid:%d)", 
+                                   user_info.pw_name, self.uid, grp.getgrgid(self.gid).gr_name, self.gid)
+                    
+                    # Warn about supplementary groups that couldn't be set
+                    if len(gids) > 1:
+                        missing_groups = [grp.getgrgid(gid).gr_name for gid in gids if gid != self.gid]
+                        self.logger.warning("Could not set supplementary groups on macOS: %s", missing_groups)
+                        self.logger.warning("This may cause permission issues accessing resources owned by these groups")
+                        self.logger.info("Consider adjusting file/directory permissions or group ownership if you encounter access issues")
+                        
+                except Exception as group_err:
+                    self.logger.error("Error while checking group information: %s", group_err)
+                    
+            else:
+                self.logger.exception("Failed to set supplementary groups: %s", err)
+                raise
+
+        # Finally set the user ID
+        try:
             os.setuid(self.uid)
-        except Exception as err:
-            self.logger.exception(err)
+        except OSError as err:
+            self.logger.exception("Failed to set user ID: %s", err)
+            raise
+            
+        # Final verification and helpful logging
+        try:
+            import pwd
+            current_user = pwd.getpwuid(os.getuid())
+            current_group = grp.getgrgid(os.getgid())
+            self.logger.info("Successfully dropped privileges to user '%s' (uid:%d, gid:%d)", 
+                           current_user.pw_name, os.getuid(), os.getgid())
+            
+            if not supplementary_groups_set and sys.platform == 'darwin':
+                self.logger.info("Note: Running with limited group membership due to macOS security restrictions")
+                
+        except Exception as verify_err:
+            self.logger.debug("Could not verify final user/group state: %s", verify_err)
 
     def chown(self, fn):
         """Change the ownership of a file to match the daemon uid/gid"""
@@ -702,9 +757,19 @@ class Daemon():
                 gid = os.stat(fn).st_gid
             try:
                 os.chown(fn, uid, gid)
+                # On macOS, ensure the file is readable/writable after chown
+                if sys.platform == 'darwin':
+                    if os.path.isdir(fn):
+                        os.chmod(fn, 0o755)
+                    else:
+                        os.chmod(fn, 0o644)
             except OSError as err:
-                sys.exit("Daemon - chown() - can't chown(%s, %d, %d): %s, %s" %
-                (repr(fn), uid, gid, err.errno, err.strerror))
+                self.logger.error("Daemon - chown() - can't chown(%s, %d, %d): %s, %s", 
+                                 repr(fn), uid, gid, err.errno, err.strerror)
+                # Don't exit on macOS chown errors - just log and continue
+                if sys.platform != 'darwin':
+                    sys.exit("Daemon - chown() - can't chown(%s, %d, %d): %s, %s" %
+                    (repr(fn), uid, gid, err.errno, err.strerror))
 
 
     def check_pid(self):
@@ -841,6 +906,7 @@ class Daemon():
     def daemonize(self):
         """Detach from the terminal and continue as a daemon"""
         self.logger.info("Daemon - daemonize()")
+        
         # swiped from twisted/scripts/twistd.py
         # See http://www.erlenstar.demon.co.uk/unix/faq_toc.html#TOC16
         if os.fork():   # launch child and...
@@ -849,14 +915,20 @@ class Daemon():
         if os.fork():   # launch child and...
             os._exit(0)  # kill off parent again.
         os.umask(63)  # 077 in octal
-        null = os.open('/dev/null', os.O_RDWR)
-        for i in range(3):
-            try:
-                os.dup2(null, i)
-            except OSError as e:
-                if e.errno != errno.EBADF:
-                    raise
-        os.close(null)
+        
+        # Ensure log files are still accessible after daemonizing
+        try:
+            null = os.open('/dev/null', os.O_RDWR)
+            for i in range(3):
+                try:
+                    os.dup2(null, i)
+                except OSError as e:
+                    if e.errno != errno.EBADF:
+                        raise
+            os.close(null)
+        except OSError as e:
+            # Log the error but don't fail - this might happen on some systems
+            self.logger.warning("daemonize - failed to redirect standard streams: %s", e)
 
 # Main class - Windows
 if __SYSTEM__ == 'nt':
@@ -947,22 +1019,51 @@ if __SYSTEM__ == 'nt':
             Start the service
             We need to override this method to prevent it reporting NCPA as started before the processes are started
             """
-            self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
+            try:
+                self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
+            except Exception as e:
+                self.logger.exception("SvcRun - Failed to report service start pending: %s", e)
+                self.has_error.value = True
+                self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                return
             self.SvcDoRun()
+
             # log stopping of service to windows event log
-            servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+            try:
+                servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
                                 servicemanager.PYS_SERVICE_STOPPED,
                                 (self._svc_name_, ''))
+            except Exception as e:
+                self.logger.exception("SvcRun - Failed to log service stop: %s", e)
+
             # Once SvcDoRun returns, the service has stopped
-            self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+            try:
+                self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+            except Exception as e:
+                self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
 
         def SvcDoRun(self):
             # log starting of service to windows event log
-            servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+            try:
+                servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
                                 servicemanager.PYS_SERVICE_STARTED,
                                 (self._svc_name_, ''))
-            self.running_event.set()
-            self.main()
+            except Exception as e:
+                self.logger.exception("SvcDoRun - Failed to log service start: %s", e)
+            try:
+                self.running_event.set()
+            except Exception as e:
+                self.logger.exception("SvcDoRun - Failed to set running event: %s", e)
+            try:
+                self.main()
+            except Exception as e:
+                self.logger.exception("SvcDoRun - Failed to run main: %s", e)
+                self.has_error.value = True
+                self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                # log error to windows event log
+                servicemanager.LogErrorMsg(servicemanager.EVENTLOG_ERROR_TYPE,
+                                           servicemanager.PYS_SERVICE_STOPPED,
+                                           (self._svc_name_, str(e)))
 
         def main(self):
             try:
@@ -1186,6 +1287,7 @@ def main(has_error):
     log.info("main - Python version: %s", sys.version)
     log.info("main - SSL version: %s", ssl.OPENSSL_VERSION)
     log.info("main - ZLIB version: %s", zlib_version)
+    log.info("main - psutil version: %s", psutil.__version__)
 
     if __SYSTEM__ == 'nt':
         for sectionName, configSection in config.items():

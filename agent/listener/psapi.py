@@ -26,34 +26,39 @@ def get_uptime():
 
 
 def make_disk_nodes(disk_name):
+    disk_counters = ps.disk_io_counters(perdisk=True)
+    counters = disk_counters.get(disk_name)
+    if counters is None:
+        return ParentNode(disk_name, children=[])
+
     read_time = RunnableNode(
         "read_time",
-        method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_time, "ms"),
+        method=lambda: (counters.read_time, "ms"),
     )
     write_time = RunnableNode(
         "write_time",
-        method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_time, "ms"),
+        method=lambda: (counters.write_time, "ms"),
     )
     read_count = RunnableNode(
         "read_count",
-        method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_count, "c"),
+        method=lambda: (counters.read_count, "c"),
     )
     write_count = RunnableNode(
         "write_count",
-        method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_count, "c"),
+        method=lambda: (counters.write_count, "c"),
     )
     read_bytes = RunnableNode(
         "read_bytes",
-        method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].read_bytes, "B"),
+        method=lambda: (counters.read_bytes, "B"),
     )
     write_bytes = RunnableNode(
         "write_bytes",
-        method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].write_bytes, "B"),
+        method=lambda: (counters.write_bytes, "B"),
     )
-    if __SYSTEM__ == "posix" and platform.system() != "Darwin":
+    if __SYSTEM__ == "posix" and platform.system() != "Darwin" and hasattr(counters, "busy_time"):
         busy_time = RunnableNode(
             "busy_time",
-            method=lambda: (ps.disk_io_counters(perdisk=True)[disk_name].busy_time, "ms"),
+            method=lambda: (counters.busy_time, "ms"),
         )
         return ParentNode(
             disk_name,

@@ -446,14 +446,14 @@ Section ""
     ; Install the service on new install
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c diskperf -Y'
-    nsExec::Exec '$9 /c sc create NCPA binPath="\"$INSTDIR\ncpa.exe\"" DisplayName="Nagios Cross-Platform Agent" start=auto'
+    nsExec::Exec '$9 /c sc create NCPA binPath="\"$INSTDIR\ncpa.exe\"" DisplayName="Nagios Cross-Platform Agent" start=delayed-auto'
 
     ; Start the NCPA service
     nsExec::Exec '$9 /c sc start NCPA'
 
     ${If} $installed == "0"
         nsExec::Exec '$9 /c diskperf -Y'
-        nsExec::Exec '$9 /c sc create NCPA binPath= "\"$INSTDIR\ncpa.exe\"" DisplayName= "Nagios Cross-Platform Agent" start=auto'
+        nsExec::Exec '$9 /c sc create NCPA binPath= "\"$INSTDIR\ncpa.exe\"" DisplayName= "Nagios Cross-Platform Agent" start=delayed-auto'
         nsExec::Exec '$9 /c netsh advfirewall firewall add rule name="NCPA" dir=in action=allow protocol=TCP localport=${PORT}'
         nsExec::Exec '$9 /c sc start NCPA'
     ${EndIf}

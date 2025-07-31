@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# Source version configuration
+BUILD_DIR_FOR_VERSION=$(dirname "$(dirname "$0")")
+source "$BUILD_DIR_FOR_VERSION/version_config.sh"
+
 # Globals
-PYTHONVER="3.9.13"
 PYTHONTAR="Python-$PYTHONVER"
 PYTHONBIN=$(which python3)
 
@@ -30,25 +33,20 @@ install_prereqs() {
 
     # Install pre-reqs for Solaris systems
     if [ ! -f /usr/bin/gcc ]; then
-        pkg install gcc libffi zlib
+        pkg install --accept gcc libffi zlib
     fi
 
 
     # --------------------------
-    #  INSTALL SOURCE FILES
+    #  
     # --------------------------
 
 
     cd $BUILD_DIR/resources
 
-    # Install bundled Python version from source if needed
-    if [ ! -f $PYTHONTAR.tgz ]; then
-        wget https://www.python.org/ftp/python/$PYTHONVERSION/$PYTHONTAR.tgz
-    fi
-    tar xf $PYTHONTAR.tgz
-    cd $PYTHONTAR
-    ./configure && make && make altinstall
-    cd ..
+    pkgadd -d http://get.opencsw.org/now
+    /opt/csw/bin/pkgutil -U
+    /opt/csw/bin/pkgutil -y -i python33
     rm -rf $PYTHONTAR
 
     # Install pip python modules

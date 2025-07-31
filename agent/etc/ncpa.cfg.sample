@@ -189,6 +189,14 @@ admin_auth_only = 0
 allow_config_edit = 1
 
 #
+# Disable the web GUI completely while preserving API access
+# This is useful for headless monitoring setups that only need API access
+# 0 = Web GUI enabled (default)
+# 1 = Web GUI disabled (only API access available)
+#
+# disable_gui = 0
+
+#
 # -------------------------------
 # Listener Configuration (API)
 # -------------------------------

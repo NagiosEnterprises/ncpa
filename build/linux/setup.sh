@@ -46,13 +46,19 @@ install_prereqs() {
         if [[ "$ssl_maj_ver" -lt 3 ]]; then
             echo -e "***** linux/setup.sh - apt-get install with excluding SSL pkgs"
             apt-get -y update
-            apt-get -y install gcc g++ debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien  --allow-unauthenticated
+            apt-get -y install gcc g++ rpm libffi-dev sqlite3 libsqlite3-dev wget alien  --allow-unauthenticated
         else
             echo -e "***** linux/setup.sh - apt-get install with SSL pkgs"
             apt-get -y update
-            apt-get -y install gcc g++ zlib1g-dev openssl libssl-dev debian-builder rpm libffi-dev sqlite3 libsqlite3-dev wget alien  --allow-unauthenticated
+            apt-get -y install gcc g++ zlib1g-dev openssl libssl-dev rpm libffi-dev sqlite3 libsqlite3-dev wget alien  --allow-unauthenticated
         fi
 
+        # debian-builder is not nessery anymore when Debian 12 or Ubuntu24
+        if [ "$dist" == "debian10" ] || [ "$dist" == "debian11" ] || [ "$dist" == "ubuntu20" ] || [ "$dist" == "ubuntu22" ]; then
+            echo -e "***** linux/setup.sh - apt-get install debian-builder"
+            apt-get -y update
+            apt-get -y install debian-builder --allow-unauthenticated
+        fi
     elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
         echo -e "***** linux/setup.sh - install_prereqs() - CentOS/RHEL"
 
@@ -128,10 +134,10 @@ install_prereqs() {
             read
 
             # Install base packages
-            zypper install gcc gcc-c++ zlib zlib-devel sqlite3 sqlite3-devel rpm wget libffi-devel
+            zypper -n install gcc gcc-c++ zlib zlib-devel sqlite3 sqlite3-devel rpm wget libffi-devel
 
             # Install openssl 1.0.x for TLS 1.2 support
-            zypper install openssl1 libopenssl1_0_0 libopenssl1-devel libcurl4-openssl1 curl-openssl1 wget-openssl1
+            zypper -n install openssl1 libopenssl1_0_0 libopenssl1-devel libcurl4-openssl1 curl-openssl1 wget-openssl1
 
         fi
 

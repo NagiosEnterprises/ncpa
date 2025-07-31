@@ -12,7 +12,7 @@ Downloads
 Current versions:
 
 +---------+-------------+-------------------------------------------------------+
-| Current | **3.1.2**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
+| Current | **3.1.4**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
 Note: If your nagios repo is outdated when installing NCPA, you must first update your GPG key using the following:

@@ -14,7 +14,21 @@ NCPA_VER=$(cat $BUILD_DIR/../VERSION)
 # Build spec file
 echo -e "***** Build spec file"
 cd $BUILD_DIR
-cat linux/ncpa.spec | sed "s/__VERSION__/$NCPA_VER/g" | sed "s|__BUILDROOT__|$BUILD_RPM_DIR|g" > $BUILD_DIR/ncpa.spec
+
+# Determine release number by checking for existing RPMs
+RELEASE=1
+while true; do
+    # Check if RPM with this release already exists
+    if ls $BUILD_DIR/ncpa-$NCPA_VER-$RELEASE.*.rpm 2>/dev/null >&2; then
+        echo -e "***** Found existing RPM with release $RELEASE, incrementing..."
+        RELEASE=$((RELEASE + 1))
+    else
+        echo -e "***** Using release number: $RELEASE"
+        break
+    fi
+done
+
+cat linux/ncpa.spec | sed "s/__VERSION__/$NCPA_VER/g" | sed "s|__BUILDROOT__|$BUILD_RPM_DIR|g" | sed "s/^Release:[[:space:]]*1/Release:\t$RELEASE/" > $BUILD_DIR/ncpa.spec
 
 # Build rpm package (also used on Debian systems)
 echo -e "***** Build rpm package"
@@ -59,9 +73,9 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Ras
 
     echo -e "***** Convert to .deb - apt install alien"
     if [ "$dist_ver" == "centos7" ]; then
-        yum install alien
+        yum -y install alien
     else
-        apt-get install alien
+        apt-get -y install alien
     fi
 
     echo -e "***** Convert to .deb - mk debbuild dir"
@@ -77,13 +91,34 @@ if [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ] || [ "$distro" == "Ras
         rpm="*armhf.rpm"
     fi
 
-    echo -e "***** Convert to .deb - run alien"
+    echo -e "***** Convert to .deb - run alien with --generate"
     if [ "$architecture" == "aarch64" ]; then
-      alien -c -k -v --target=arm64 $rpm >> $BUILD_DIR/build.log
+      alien -g -k -v --scripts --target=arm64 $rpm >> $BUILD_DIR/build.log
     else
-      alien -c -k -v $rpm >> $BUILD_DIR/build.log
+      alien -g -k -v --scripts $rpm >> $BUILD_DIR/build.log
     fi
-    echo -e "***** Convert to .deb - alien done"
+    echo -e "***** Convert to .deb - alien generate done"
+
+    # Fix dh_usrlocal issue by adding override to debian/rules
+    echo -e "***** Fix dh_usrlocal issue"
+    for debdir in ncpa-*; do
+        if [ -d "$debdir" ]; then
+            echo -e "Processing $debdir"
+            if [ -f "$debdir/debian/rules" ]; then
+                # Add override to skip dh_usrlocal
+                if ! grep -q "override_dh_usrlocal" "$debdir/debian/rules"; then
+                    echo "" >> "$debdir/debian/rules"
+                    echo "override_dh_usrlocal:" >> "$debdir/debian/rules"
+                    echo -e "\t# Skip dh_usrlocal to avoid issues with /usr/local files" >> "$debdir/debian/rules"
+                fi
+                # Now build the package
+                echo -e "***** Building deb package with fixed rules"
+                cd "$debdir"
+                dpkg-buildpackage -b -uc -us >> $BUILD_DIR/build.log 2>&1
+                cd ..
+            fi
+        fi
+    done
 
     cd $BUILD_DIR
     cp debbuild/*.deb .

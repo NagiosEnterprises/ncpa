@@ -21,8 +21,16 @@ setPaths() {
     if [[ ! -z $1 ]]; then
         dynlibpath=$1
     else
+        # Use version from config if available, otherwise fallback
         if [[ -z $PYTHONVER ]]; then
-            PYTHONVER="3.11.3"
+            # Source version config if not already loaded
+            if [[ -z "$PYTHON_VERSION" ]]; then
+                BUILD_DIR_FOR_VERSION=$(dirname "$(dirname "$0")")
+                if [[ -f "$BUILD_DIR_FOR_VERSION/version_config.sh" ]]; then
+                    source "$BUILD_DIR_FOR_VERSION/version_config.sh"
+                fi
+            fi
+            PYTHONVER="${PYTHON_VERSION:-3.13.5}"
         fi
         python_at_seg=python@$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')
 

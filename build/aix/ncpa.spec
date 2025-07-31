@@ -3,7 +3,7 @@
 
 Name:           ncpa
 Version:        __VERSION__
-Release:        1
+Release:        1%{?dist}
 Vendor:         Nagios Enterprises, LLC
 Summary:        A cross-platform active and passive monitoring agent
 BuildRoot:      __BUILDROOT__/BUILDROOT/
@@ -117,6 +117,7 @@ fi
 %defattr(0644,root,root,0755)
 /usr/local/ncpa/*.a
 /usr/local/ncpa/*.py
+/usr/local/ncpa/*.dat
 /usr/local/ncpa/*.zip
 /usr/local/ncpa/build_resources
 /usr/local/ncpa/listener
