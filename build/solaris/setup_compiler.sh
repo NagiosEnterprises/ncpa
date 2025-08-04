@@ -20,7 +20,7 @@ install_latest_gcc() {
         # Get list of available GCC packages, sorted by version (newest first)
         echo "Searching for available GCC packages..."
         # First get all GCC packages, then sort them properly by version number
-        available_gcc_raw=$(pkg list -a 'developer/gcc*' 2>/dev/null | egrep 'developer/gcc-[0-9]+')
+        available_gcc_raw=$(pkg list -a 'developer/gcc*' 2>/dev/null | egrep 'developer/gcc-[0-9]')
         
         if [ -n "$available_gcc_raw" ]; then
             # Extract version numbers and sort them properly
@@ -28,8 +28,9 @@ install_latest_gcc() {
             echo "$available_gcc_raw"
             echo ""
             
-            # Sort by extracting the version number after gcc- and sorting numerically in reverse
-            available_gcc=$(echo "$available_gcc_raw" | sed 's/.*developer\/gcc-\([0-9][0-9]*\).*/\1 &/' | sort -nr | head -10 | sed 's/^[0-9][0-9]* //')
+            # Extract actual version numbers from the version string and sort by major version
+            # This handles cases like gcc-53 (version 5.3) vs gcc-14 (version 14)
+            available_gcc=$(echo "$available_gcc_raw" | sed 's/.*\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\).*/\1 &/' | sort -nr | head -10 | sed 's/^[0-9][0-9]* //')
             
             echo "Sorted GCC packages (newest first):"
             echo "$available_gcc"
@@ -109,8 +110,9 @@ install_latest_gcc() {
             echo "$available_csw_gcc_raw"
             echo ""
             
-            # Sort by extracting the version number after gcc and sorting numerically in reverse
-            available_csw_gcc=$(echo "$available_csw_gcc_raw" | sed 's/^gcc\([0-9][0-9]*\).*/\1 &/' | sort -nr | head -10 | sed 's/^[0-9][0-9]* //')
+            # Sort by extracting version numbers and handling both major versions and major.minor versions
+            # Convert gcc53 (5.3) to sort key 5, gcc12 (12) to sort key 12, etc.
+            available_csw_gcc=$(echo "$available_csw_gcc_raw" | sed 's/^gcc\([0-9][0-9]*\).*/\1 &/' | sed 's/^\([5-9]\)[0-9] /\1 /' | sort -nr | head -10 | sed 's/^[0-9][0-9]* //')
             
             echo "Sorted CSW GCC packages (newest first):"
             echo "$available_csw_gcc"
