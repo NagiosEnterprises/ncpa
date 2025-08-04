@@ -19,7 +19,7 @@ install_latest_gcc() {
         
         # Get list of available GCC packages, sorted by version (newest first)
         echo "Searching for available GCC packages..."
-        available_gcc=$(pkg list -a 'developer/gcc*' 2>/dev/null | grep -E 'developer/gcc-[0-9]+' | sort -V -r | head -10)
+        available_gcc=$(pkg list -a 'developer/gcc*' 2>/dev/null | egrep 'developer/gcc-[0-9]+' | sort -n -t- -k3 -r | head -10)
         
         if [ -n "$available_gcc" ]; then
             echo "Available GCC packages:"
@@ -30,7 +30,7 @@ install_latest_gcc() {
             while IFS= read -r line; do
                 if [ -n "$line" ]; then
                     pkg_name=$(echo "$line" | awk '{print $1}')
-                    if [ -n "$pkg_name" ] && [[ "$pkg_name" =~ ^developer/gcc-[0-9]+$ ]]; then
+                    if [ -n "$pkg_name" ] && echo "$pkg_name" | egrep '^developer/gcc-[0-9]+$' >/dev/null; then
                         echo "🔧 Attempting to install: $pkg_name"
                         attempted_packages+=("$pkg_name")
                         
@@ -84,7 +84,7 @@ install_latest_gcc() {
         
         # Get list of available GCC packages (newest first)
         echo "Searching for available GCC packages in OpenCSW..."
-        available_csw_gcc=$(/opt/csw/bin/pkgutil -a 2>/dev/null | grep -E '^gcc[0-9]+' | sort -V -r | head -10)
+        available_csw_gcc=$(/opt/csw/bin/pkgutil -a 2>/dev/null | egrep '^gcc[0-9]+' | sort -n -t'c' -k2 -r | head -10)
         
         if [ -n "$available_csw_gcc" ]; then
             echo "Available CSW GCC packages:"
@@ -95,7 +95,7 @@ install_latest_gcc() {
             while IFS= read -r line; do
                 if [ -n "$line" ]; then
                     pkg_name=$(echo "$line" | awk '{print $1}')
-                    if [ -n "$pkg_name" ] && [[ "$pkg_name" =~ ^gcc[0-9]+$ ]]; then
+                    if [ -n "$pkg_name" ] && echo "$pkg_name" | egrep '^gcc[0-9]+$' >/dev/null; then
                         echo "🔧 Attempting to install CSW package: $pkg_name"
                         attempted_packages+=("$pkg_name")
                         
@@ -234,7 +234,7 @@ setup_solaris_compilers() {
     echo "Scanning compiler search paths..."
     for cxx_candidate in "${compiler_search_paths[@]}"; do
         # Handle glob patterns
-        if [[ "$cxx_candidate" == *"*"* ]]; then
+        if echo "$cxx_candidate" | grep '\*' >/dev/null; then
             # Expand glob and process each match
             for expanded_path in $cxx_candidate; do
                 if [ -x "$expanded_path" ]; then
@@ -302,7 +302,7 @@ setup_solaris_compilers() {
         for gcc_path in "${c_search_paths[@]}"; do
             if [ -n "$gcc_path" ] && [ "$gcc_path" != "null" ]; then
                 # Handle glob patterns for C compiler too
-                if [[ "$gcc_path" == *"*"* ]]; then
+                if echo "$gcc_path" | grep '\*' >/dev/null; then
                     for expanded_gcc in $gcc_path; do
                         if [ -x "$expanded_gcc" ]; then
                             echo "  Testing C compiler: $expanded_gcc"
@@ -405,7 +405,7 @@ setup_solaris_compilers() {
             echo "Post-installation compiler scan..."
             for cxx_candidate in "${compiler_search_paths[@]}"; do
                 # Handle glob patterns
-                if [[ "$cxx_candidate" == *"*"* ]]; then
+                if echo "$cxx_candidate" | grep '\*' >/dev/null; then
                     # Expand glob and process each match
                     for expanded_path in $cxx_candidate; do
                         if [ -x "$expanded_path" ]; then
@@ -465,7 +465,7 @@ setup_solaris_compilers() {
                 
                 for gcc_path in "${c_search_paths[@]}"; do
                     if [ -n "$gcc_path" ] && [ "$gcc_path" != "null" ]; then
-                        if [[ "$gcc_path" == *"*"* ]]; then
+                        if echo "$gcc_path" | grep '\*' >/dev/null; then
                             for expanded_gcc in $gcc_path; do
                                 if [ -x "$expanded_gcc" ]; then
                                     if echo 'int main(){return 0;}' | "$expanded_gcc" -x c - -o /tmp/test_cc_post_$$ 2>/dev/null; then
