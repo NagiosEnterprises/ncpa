@@ -2026,6 +2026,224 @@ EOF
 }
 
 # Main execution
+# Function to ensure C++ compiler environment is set up for Python builds
+setup_cpp_compiler_environment() {
+    echo ""
+    echo "=== Setting up C++ Compiler Environment for Python builds ==="
+    
+    # First, check if we already have working compilers
+    if command -v g++ >/dev/null 2>&1 && command -v gcc >/dev/null 2>&1; then
+        echo "✓ Found g++ and gcc in PATH"
+        # Test if they work
+        if echo 'int main(){return 0;}' | g++ -x c++ - -o /tmp/test_cpp_$$  2>/dev/null; then
+            rm -f /tmp/test_cpp_$$
+            echo "✓ g++ is working - using existing compilers"
+            export CC="gcc"
+            export CXX="g++"
+            echo "✓ Set CC=$CC, CXX=$CXX"
+            return 0
+        else
+            echo "⚠ g++ found but not working properly"
+        fi
+    fi
+    
+    # If no working compilers, try to find and install them
+    echo "Searching for C++ compilers on Solaris..."
+    
+    cpp_compiler_found=""
+    c_compiler_found=""
+    
+    # Search for C++ compilers (prefer newer versions)
+    for cxx_candidate in g++-14 g++-13 g++-12 g++-11 g++-10 g++-9 g++-8 g++-7 /usr/gcc/*/bin/g++ /usr/local/bin/g++* /opt/csw/bin/g++* g++; do
+        if command -v "$cxx_candidate" >/dev/null 2>&1; then
+            # Test if this compiler works
+            if echo 'int main(){return 0;}' | "$cxx_candidate" -x c++ - -o /tmp/test_cxx_$$ 2>/dev/null; then
+                rm -f /tmp/test_cxx_$$
+                echo "✓ Found working C++ compiler: $cxx_candidate"
+                cpp_compiler_found="$cxx_candidate"
+                
+                # Find corresponding C compiler
+                cxx_dir=$(dirname "$cxx_candidate" 2>/dev/null || echo "/usr/bin")
+                cxx_base=$(basename "$cxx_candidate")
+                
+                # Try to find matching C compiler
+                case "$cxx_base" in
+                    g++-*)
+                        version_suffix="${cxx_base#g++-}"
+                        gcc_candidate="gcc-$version_suffix"
+                        ;;
+                    g++)
+                        gcc_candidate="gcc"
+                        ;;
+                    *)
+                        gcc_candidate="gcc"
+                        ;;
+                esac
+                
+                # Look for C compiler in same directory first, then in PATH
+                for gcc_path in "$cxx_dir/$gcc_candidate" "$(which $gcc_candidate 2>/dev/null)" "gcc"; do
+                    if [ -n "$gcc_path" ] && command -v "$gcc_path" >/dev/null 2>&1; then
+                        if echo 'int main(){return 0;}' | "$gcc_path" -x c - -o /tmp/test_cc_$$ 2>/dev/null; then
+                            rm -f /tmp/test_cc_$$
+                            echo "✓ Found working C compiler: $gcc_path"
+                            c_compiler_found="$gcc_path"
+                            break
+                        fi
+                    fi
+                done
+                
+                if [ -n "$c_compiler_found" ]; then
+                    break  # Found both compilers
+                fi
+            fi
+        fi
+    done
+    
+    # If we still don't have compilers, try to install them
+    if [ -z "$cpp_compiler_found" ] || [ -z "$c_compiler_found" ]; then
+        echo "No working C/C++ compilers found, attempting to install..."
+        
+        # Try installing via IPS (Solaris 11+)
+        if command -v pkg >/dev/null 2>&1; then
+            echo "Attempting to install GCC via IPS package manager..."
+            
+            # Try newer versions first
+            for gcc_pkg in developer/gcc-14 developer/gcc-13 developer/gcc-12 developer/gcc-11 developer/gcc-10 developer/gcc-9 developer/gcc-8 developer/gcc-7; do
+                echo "Trying to install $gcc_pkg..."
+                if sudo pkg install --accept "$gcc_pkg" 2>/dev/null; then
+                    echo "✓ Successfully installed $gcc_pkg"
+                    hash -r  # Refresh command hash
+                    
+                    # Update PATH to include GCC installation paths
+                    export PATH="/usr/gcc/bin:/usr/gcc/*/bin:$PATH"
+                    
+                    # Try to find the newly installed compilers
+                    for new_cxx in g++ /usr/gcc/*/bin/g++; do
+                        if command -v "$new_cxx" >/dev/null 2>&1; then
+                            if echo 'int main(){return 0;}' | "$new_cxx" -x c++ - -o /tmp/test_new_$$ 2>/dev/null; then
+                                rm -f /tmp/test_new_$$
+                                cpp_compiler_found="$new_cxx"
+                                
+                                # Find matching C compiler
+                                cxx_dir=$(dirname "$new_cxx")
+                                if [ -x "$cxx_dir/gcc" ]; then
+                                    c_compiler_found="$cxx_dir/gcc"
+                                elif command -v gcc >/dev/null 2>&1; then
+                                    c_compiler_found="gcc"
+                                fi
+                                break
+                            fi
+                        fi
+                    done
+                    
+                    if [ -n "$cpp_compiler_found" ] && [ -n "$c_compiler_found" ]; then
+                        break  # Successfully installed and found compilers
+                    fi
+                elif echo "$?" | grep -q "No matching package"; then
+                    echo "⚠ Package $gcc_pkg not available in this Solaris version"
+                    continue
+                else
+                    echo "⚠ Failed to install $gcc_pkg"
+                    continue
+                fi
+            done
+        fi
+        
+        # Try OpenCSW if IPS didn't work
+        if [ -z "$cpp_compiler_found" ] && [ -f /opt/csw/bin/pkgutil ]; then
+            echo "Attempting to install GCC via OpenCSW..."
+            for gcc_pkg in gcc14 gcc13 gcc12 gcc11 gcc10 gcc9 gcc8 gcc7; do
+                if sudo /opt/csw/bin/pkgutil -y -i "$gcc_pkg" 2>/dev/null; then
+                    echo "✓ Installed $gcc_pkg via OpenCSW"
+                    export PATH="/opt/csw/bin:/opt/csw/gcc*/bin:$PATH"
+                    hash -r
+                    
+                    # Look for newly installed compilers
+                    for new_cxx in /opt/csw/bin/g++* /opt/csw/gcc*/bin/g++; do
+                        if [ -x "$new_cxx" ]; then
+                            cpp_compiler_found="$new_cxx"
+                            # Find corresponding gcc
+                            cxx_dir=$(dirname "$new_cxx")
+                            if [ -x "$cxx_dir/gcc" ]; then
+                                c_compiler_found="$cxx_dir/gcc"
+                            fi
+                            break
+                        fi
+                    done
+                    
+                    if [ -n "$cpp_compiler_found" ]; then
+                        break
+                    fi
+                fi
+            done
+        fi
+    fi
+    
+    # Final check and export
+    if [ -n "$cpp_compiler_found" ] && [ -n "$c_compiler_found" ]; then
+        echo "✓ Setting up compiler environment:"
+        echo "  CC=$c_compiler_found"
+        echo "  CXX=$cpp_compiler_found"
+        
+        export CC="$c_compiler_found"
+        export CXX="$cpp_compiler_found"
+        
+        # Also set compiler flags for Python builds
+        export CFLAGS="-fPIC"
+        export CXXFLAGS="-fPIC -std=c++11"
+        export LDFLAGS=""
+        
+        # Make sure the compiler paths are in PATH
+        cpp_dir=$(dirname "$cpp_compiler_found")
+        if [ -n "$cpp_dir" ] && [ "$cpp_dir" != "/usr/bin" ]; then
+            export PATH="$cpp_dir:$PATH"
+        fi
+        
+        echo "✓ C++ compiler environment configured successfully"
+        echo "✓ Compilers should now be available for Python package builds"
+        
+        # Create a simple test to verify everything works
+        echo "Testing compiler setup..."
+        if echo 'int main(){return 0;}' | "$CXX" -x c++ - -o /tmp/final_test_$$ 2>/dev/null; then
+            rm -f /tmp/final_test_$$
+            echo "✓ Final compiler test passed"
+        else
+            echo "⚠ Warning: Final compiler test failed - builds may still fail"
+        fi
+        
+        # Export environment to a file that can be sourced by build scripts
+        env_file="/tmp/solaris_build_env.sh"
+        cat > "$env_file" << EOF
+#!/bin/bash
+# Solaris build environment setup
+# Generated by setup.sh on $(date)
+
+export CC="$c_compiler_found"
+export CXX="$cpp_compiler_found"
+export CFLAGS="-fPIC"
+export CXXFLAGS="-fPIC -std=c++11"
+export LDFLAGS=""
+export PATH="$cpp_dir:\$PATH"
+
+echo "✓ Solaris build environment loaded:"
+echo "  CC=\$CC"
+echo "  CXX=\$CXX"
+echo "  CFLAGS=\$CFLAGS"
+echo "  CXXFLAGS=\$CXXFLAGS"
+EOF
+        chmod +x "$env_file"
+        echo "✓ Build environment exported to: $env_file"
+        echo "  Source this file before running builds: source $env_file"
+        
+        return 0
+    else
+        echo "✗ Failed to find or install working C/C++ compilers"
+        echo "⚠ Python packages requiring compilation may fail to build"
+        echo "⚠ Consider manually installing GCC development tools"
+        return 1
+    fi
+}
+
 main() {
     echo "=========================================="
     echo "NCPA Solaris Setup Script (Virtual Environment)"
@@ -2041,6 +2259,9 @@ main() {
     
     # Install system prerequisites only (Python packages handled by venv)
     install_prereqs
+    
+    # Set up C++ compiler environment for Python builds
+    setup_cpp_compiler_environment
     
     echo ""
     echo "=========================================="

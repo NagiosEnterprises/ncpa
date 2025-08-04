@@ -367,6 +367,112 @@ fi
         export CX_FREEZE_SILENCE_MISSING_MODULES=1
         export SOLARIS_BUILD=1
         
+        # CRITICAL: Set up C++ compiler environment for Python package compilation
+        echo "=== Setting up C++ compiler environment for Python builds ==="
+        
+        # Source the compiler setup if available
+        if [ -f "$BUILD_DIR/solaris/setup_compiler.sh" ]; then
+            echo "Loading Solaris compiler setup..."
+            source "$BUILD_DIR/solaris/setup_compiler.sh"
+        elif [ -f "/tmp/solaris_build_env.sh" ]; then
+            echo "Loading build environment from setup..."
+            source "/tmp/solaris_build_env.sh"
+        else
+            echo "Setting up compiler environment inline..."
+            
+            # Try to find working compilers
+            cpp_compiler=""
+            c_compiler=""
+            
+            # Search for C++ compilers (prefer newer versions)
+            for cxx_candidate in g++-14 g++-13 g++-12 g++-11 g++-10 g++-9 g++-8 g++-7 /usr/gcc/*/bin/g++ /usr/local/bin/g++* /opt/csw/bin/g++* g++; do
+                if command -v "$cxx_candidate" >/dev/null 2>&1; then
+                    # Test if this compiler works
+                    if echo 'int main(){return 0;}' | "$cxx_candidate" -x c++ - -o /tmp/test_cxx_build_$$ 2>/dev/null; then
+                        rm -f /tmp/test_cxx_build_$$
+                        echo "✓ Found working C++ compiler: $cxx_candidate"
+                        cpp_compiler="$cxx_candidate"
+                        
+                        # Find corresponding C compiler
+                        cxx_dir=$(dirname "$cxx_candidate" 2>/dev/null || echo "/usr/bin")
+                        cxx_base=$(basename "$cxx_candidate")
+                        
+                        # Try to find matching C compiler
+                        case "$cxx_base" in
+                            g++-*)
+                                version_suffix="${cxx_base#g++-}"
+                                gcc_candidate="gcc-$version_suffix"
+                                ;;
+                            g++)
+                                gcc_candidate="gcc"
+                                ;;
+                            *)
+                                gcc_candidate="gcc"
+                                ;;
+                        esac
+                        
+                        # Look for C compiler in same directory first, then in PATH
+                        for gcc_path in "$cxx_dir/$gcc_candidate" "$(which $gcc_candidate 2>/dev/null)" "gcc"; do
+                            if [ -n "$gcc_path" ] && command -v "$gcc_path" >/dev/null 2>&1; then
+                                if echo 'int main(){return 0;}' | "$gcc_path" -x c - -o /tmp/test_cc_build_$$ 2>/dev/null; then
+                                    rm -f /tmp/test_cc_build_$$
+                                    echo "✓ Found working C compiler: $gcc_path"
+                                    c_compiler="$gcc_path"
+                                    break
+                                fi
+                            fi
+                        done
+                        
+                        if [ -n "$c_compiler" ]; then
+                            break  # Found both compilers
+                        fi
+                    fi
+                fi
+            done
+            
+            # Set up the environment if compilers were found
+            if [ -n "$cpp_compiler" ] && [ -n "$c_compiler" ]; then
+                echo "✓ Setting up compiler environment:"
+                echo "  CC=$c_compiler"
+                echo "  CXX=$cpp_compiler"
+                
+                export CC="$c_compiler"
+                export CXX="$cpp_compiler"
+                export CFLAGS="-fPIC"
+                export CXXFLAGS="-fPIC -std=c++11"
+                export LDFLAGS=""
+                
+                # Make sure the compiler directory is in PATH
+                cpp_dir=$(dirname "$cpp_compiler")
+                if [ -n "$cpp_dir" ] && [ "$cpp_dir" != "/usr/bin" ]; then
+                    export PATH="$cpp_dir:$PATH"
+                fi
+                
+                echo "✓ C++ compiler environment configured for Python builds"
+            else
+                echo "⚠ WARNING: No working C/C++ compilers found"
+                echo "⚠ Python packages requiring compilation (like greenlet) may fail"
+                echo "⚠ Attempting to set basic fallback environment..."
+                
+                # Set fallback environment
+                export CC="gcc"
+                export CXX="g++"
+                export CFLAGS="-fPIC"
+                export CXXFLAGS="-fPIC -std=c++11"
+                export LDFLAGS=""
+            fi
+        fi
+        
+        # Display final compiler environment
+        echo "Final compiler environment:"
+        echo "  CC=$CC"
+        echo "  CXX=$CXX"
+        echo "  CFLAGS=$CFLAGS"
+        echo "  CXXFLAGS=$CXXFLAGS"
+        echo "  PATH (first 3 entries): $(echo "$PATH" | cut -d: -f1-3)"
+        echo "=== End compiler setup ==="
+        echo ""
+        
         # Ensure patchelf is available for cx_Freeze
         echo "Ensuring patchelf wrapper is properly configured..."
         
