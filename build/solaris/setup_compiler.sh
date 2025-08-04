@@ -29,12 +29,7 @@ install_latest_gcc() {
             echo ""
             
             # Sort by extracting the version number after gcc- and sorting numerically in reverse
-            available_gcc=$(echo "$available_gcc_raw" | awk '{
-                # Extract the version number from developer/gcc-NN
-                match($1, /developer\/gcc-([0-9]+)/, arr)
-                version = arr[1]
-                print version " " $0
-            }' | sort -nr | head -10 | cut -d' ' -f2-)
+            available_gcc=$(echo "$available_gcc_raw" | sed 's/.*developer\/gcc-\([0-9][0-9]*\).*/\1 &/' | sort -nr | head -10 | sed 's/^[0-9][0-9]* //')
             
             echo "Sorted GCC packages (newest first):"
             echo "$available_gcc"
@@ -115,12 +110,7 @@ install_latest_gcc() {
             echo ""
             
             # Sort by extracting the version number after gcc and sorting numerically in reverse
-            available_csw_gcc=$(echo "$available_csw_gcc_raw" | awk '{
-                # Extract the version number from gccNN
-                match($1, /^gcc([0-9]+)/, arr)
-                version = arr[1]
-                print version " " $0
-            }' | sort -nr | head -10 | cut -d' ' -f2-)
+            available_csw_gcc=$(echo "$available_csw_gcc_raw" | sed 's/^gcc\([0-9][0-9]*\).*/\1 &/' | sort -nr | head -10 | sed 's/^[0-9][0-9]* //')
             
             echo "Sorted CSW GCC packages (newest first):"
             echo "$available_csw_gcc"
