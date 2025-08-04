@@ -268,9 +268,6 @@ setup_solaris_compilers() {
     
     # Find corresponding C compiler if we found a C++ compiler
     if [ -n "$cpp_compiler_found" ]; then
-                
-    # Find corresponding C compiler if we found a C++ compiler
-    if [ -n "$cpp_compiler_found" ]; then
         echo "✓ Found C++ compiler: $cpp_compiler_found"
         echo "Looking for corresponding C compiler..."
         
@@ -494,7 +491,37 @@ setup_solaris_compilers() {
             # Check if we found compilers after installation
             if [ -n "$cpp_compiler_found" ] && [ -n "$c_compiler_found" ]; then
                 echo "✅ Successfully found compilers after installation!"
-                # Continue with the setup (fall through to the existing setup code)
+                # Set up the compiler environment for the newly found compilers
+                echo "✓ Setting up compiler environment:"
+                echo "  CC=$c_compiler_found"
+                echo "  CXX=$cpp_compiler_found"
+                
+                export CC="$c_compiler_found"
+                export CXX="$cpp_compiler_found"
+                
+                # Also set compiler flags for Python builds
+                export CFLAGS="-fPIC"
+                export CXXFLAGS="-fPIC -std=c++11"
+                export LDFLAGS=""
+                
+                # Make sure the compiler paths are in PATH
+                cpp_dir=$(dirname "$cpp_compiler_found")
+                if [ -n "$cpp_dir" ] && [ "$cpp_dir" != "/usr/bin" ]; then
+                    export PATH="$cpp_dir:$PATH"
+                fi
+                
+                echo "✓ C++ compiler environment configured successfully"
+                
+                # Test the setup
+                echo "Testing compiler setup..."
+                if echo 'int main(){return 0;}' | "$CXX" -x c++ - -o /tmp/final_test_post_$$ 2>/dev/null; then
+                    rm -f /tmp/final_test_post_$$
+                    echo "✓ Compiler test passed - ready for Python builds"
+                    return 0
+                else
+                    echo "⚠ Warning: Compiler test failed even after installation"
+                    return 1
+                fi
             else
                 echo "❌ Still no working compilers found even after installation"
                 echo "Debug info:"
