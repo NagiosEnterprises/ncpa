@@ -24,9 +24,6 @@ install_latest_gcc() {
         
         if [ -n "$available_gcc_raw" ]; then
             # Extract version numbers and sort them properly
-            echo "Raw GCC packages found:"
-            echo "$available_gcc_raw"
-            echo ""
             
             # Parse the actual version number from the second column and sort by major version
             # Input format: developer/gcc-14    14.1.0-11.4.62.0.1.74.0    i--
@@ -40,10 +37,6 @@ install_latest_gcc() {
                     echo "$major_version $line"
                 fi
             done | sort -nr | head -10 | sed 's/^[0-9][0-9]* //')
-            
-            echo "Sorted GCC packages (newest first):"
-            echo "$available_gcc"
-            echo ""
         else
             available_gcc=""
         fi
