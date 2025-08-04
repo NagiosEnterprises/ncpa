@@ -28,9 +28,18 @@ install_latest_gcc() {
             echo "$available_gcc_raw"
             echo ""
             
-            # Extract actual version numbers from the version string and sort by major version
-            # This handles cases like gcc-53 (version 5.3) vs gcc-14 (version 14)
-            available_gcc=$(echo "$available_gcc_raw" | sed 's/.*\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\).*/\1 &/' | sort -nr | head -10 | sed 's/^[0-9][0-9]* //')
+            # Parse the actual version number from the second column and sort by major version
+            # Input format: developer/gcc-14    14.1.0-11.4.62.0.1.74.0    i--
+            # Input format: developer/gcc-53    5.3.0-11.4.27.0.1.74.0     i--
+            available_gcc=$(echo "$available_gcc_raw" | while IFS= read -r line; do
+                if [ -n "$line" ]; then
+                    # Extract the actual version number (second field)
+                    version_field=$(echo "$line" | awk '{print $2}')
+                    # Extract major version from version string (everything before first dot)
+                    major_version=$(echo "$version_field" | sed 's/\([0-9][0-9]*\)\..*/\1/')
+                    echo "$major_version $line"
+                fi
+            done | sort -nr | head -10 | sed 's/^[0-9][0-9]* //')
             
             echo "Sorted GCC packages (newest first):"
             echo "$available_gcc"
@@ -110,9 +119,30 @@ install_latest_gcc() {
             echo "$available_csw_gcc_raw"
             echo ""
             
-            # Sort by extracting version numbers and handling both major versions and major.minor versions
-            # Convert gcc53 (5.3) to sort key 5, gcc12 (12) to sort key 12, etc.
-            available_csw_gcc=$(echo "$available_csw_gcc_raw" | sed 's/^gcc\([0-9][0-9]*\).*/\1 &/' | sed 's/^\([5-9]\)[0-9] /\1 /' | sort -nr | head -10 | sed 's/^[0-9][0-9]* //')
+            # Parse the actual version number and sort by major version
+            # OpenCSW format typically shows package name and version info
+            available_csw_gcc=$(echo "$available_csw_gcc_raw" | while IFS= read -r line; do
+                if [ -n "$line" ]; then
+                    # Try to extract version info from the line - OpenCSW format varies
+                    # Look for version patterns like "12.2.0" or "5.3.0" in the line
+                    version_info=$(echo "$line" | sed 's/.*\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\).*/\1/')
+                    if [ "$version_info" != "$line" ]; then
+                        # Found a version pattern
+                        echo "$version_info $line"
+                    else
+                        # Fallback: extract number from package name (gcc12 -> 12, gcc53 -> 5)
+                        pkg_num=$(echo "$line" | sed 's/^gcc\([0-9][0-9]*\).*/\1/')
+                        if [ "$pkg_num" -gt 20 ]; then
+                            # Likely major.minor encoded (53 = 5.3, so use 5)
+                            major_ver=$(echo "$pkg_num" | sed 's/\(.\).*/\1/')
+                            echo "$major_ver $line"
+                        else
+                            # Regular major version
+                            echo "$pkg_num $line"
+                        fi
+                    fi
+                fi
+            done | sort -nr | head -10 | sed 's/^[0-9][0-9]* //')
             
             echo "Sorted CSW GCC packages (newest first):"
             echo "$available_csw_gcc"
