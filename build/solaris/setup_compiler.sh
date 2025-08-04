@@ -19,10 +19,32 @@ install_latest_gcc() {
         
         # Get list of available GCC packages, sorted by version (newest first)
         echo "Searching for available GCC packages..."
-        available_gcc=$(pkg list -a 'developer/gcc*' 2>/dev/null | egrep 'developer/gcc-[0-9]+' | sort -n -t- -k3 -r | head -10)
+        # First get all GCC packages, then sort them properly by version number
+        available_gcc_raw=$(pkg list -a 'developer/gcc*' 2>/dev/null | egrep 'developer/gcc-[0-9]+')
+        
+        if [ -n "$available_gcc_raw" ]; then
+            # Extract version numbers and sort them properly
+            echo "Raw GCC packages found:"
+            echo "$available_gcc_raw"
+            echo ""
+            
+            # Sort by extracting the version number after gcc- and sorting numerically in reverse
+            available_gcc=$(echo "$available_gcc_raw" | awk '{
+                # Extract the version number from developer/gcc-NN
+                match($1, /developer\/gcc-([0-9]+)/, arr)
+                version = arr[1]
+                print version " " $0
+            }' | sort -nr | head -10 | cut -d' ' -f2-)
+            
+            echo "Sorted GCC packages (newest first):"
+            echo "$available_gcc"
+            echo ""
+        else
+            available_gcc=""
+        fi
         
         if [ -n "$available_gcc" ]; then
-            echo "Available GCC packages:"
+            echo "Available GCC packages (sorted by version):"
             echo "$available_gcc"
             echo ""
             
@@ -84,10 +106,31 @@ install_latest_gcc() {
         
         # Get list of available GCC packages (newest first)
         echo "Searching for available GCC packages in OpenCSW..."
-        available_csw_gcc=$(/opt/csw/bin/pkgutil -a 2>/dev/null | egrep '^gcc[0-9]+' | sort -n -t'c' -k2 -r | head -10)
+        # First get all GCC packages, then sort them properly by version number
+        available_csw_gcc_raw=$(/opt/csw/bin/pkgutil -a 2>/dev/null | egrep '^gcc[0-9]+')
+        
+        if [ -n "$available_csw_gcc_raw" ]; then
+            echo "Raw CSW GCC packages found:"
+            echo "$available_csw_gcc_raw"
+            echo ""
+            
+            # Sort by extracting the version number after gcc and sorting numerically in reverse
+            available_csw_gcc=$(echo "$available_csw_gcc_raw" | awk '{
+                # Extract the version number from gccNN
+                match($1, /^gcc([0-9]+)/, arr)
+                version = arr[1]
+                print version " " $0
+            }' | sort -nr | head -10 | cut -d' ' -f2-)
+            
+            echo "Sorted CSW GCC packages (newest first):"
+            echo "$available_csw_gcc"
+            echo ""
+        else
+            available_csw_gcc=""
+        fi
         
         if [ -n "$available_csw_gcc" ]; then
-            echo "Available CSW GCC packages:"
+            echo "Available CSW GCC packages (sorted by version):"
             echo "$available_csw_gcc"
             echo ""
             
