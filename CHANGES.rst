@@ -1,5 +1,10 @@
 Changelog
 +++++++++
+3.2.0 - XX/XX/2025
+==================
+**Bug Fixes**
+- Fixed an issue where the API form would not clear fields after certain actions. (Blake Bahner)
+
 3.1.4 - XX/XX/2025
 ==================
 **Added**
