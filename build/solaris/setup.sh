@@ -430,14 +430,58 @@ install_prereqs() {
             if "$PYTHONBIN" -m pip --version >/dev/null 2>&1; then
                 echo "Attempting to install patchelf via pip in virtual environment..."
                 
-                # Try to upgrade pip first to ensure we have latest version
-                echo "Upgrading pip to latest version..."
-                "$PYTHONBIN" -m pip install --upgrade pip >/dev/null 2>&1 || echo "⚠ Could not upgrade pip, continuing..."
+                # Pre-flight checks to avoid known hanging scenarios
+                echo "Performing pre-flight checks..."
                 
-                # Install patchelf with verbose output for debugging
-                echo "Installing patchelf (this may take a moment to compile)..."
-                pip_output=$("$PYTHONBIN" -m pip install --verbose patchelf 2>&1)
-                pip_status=$?
+                # Check if we have basic build tools that patchelf compilation requires
+                build_tools_available=true
+                for tool in gcc g++ make; do
+                    if ! command -v "$tool" >/dev/null 2>&1; then
+                        echo "⚠ Build tool '$tool' not available - patchelf compilation will likely fail"
+                        build_tools_available=false
+                    fi
+                done
+                
+                # Check for Rust (patchelf may require it in newer versions)
+                if ! command -v rustc >/dev/null 2>&1; then
+                    echo "⚠ Rust compiler not available - may cause issues with some dependencies"
+                fi
+                
+                # If build tools are missing, skip pip installation and go straight to alternatives
+                if [ "$build_tools_available" = false ]; then
+                    echo "⚠ Essential build tools missing, skipping pip installation"
+                    echo "Will try binary installation or wrapper instead..."
+                else
+                    # Try to upgrade pip first to ensure we have latest version
+                    echo "Upgrading pip to latest version..."
+                    "$PYTHONBIN" -m pip install --upgrade pip >/dev/null 2>&1 || echo "⚠ Could not upgrade pip, continuing..."
+                    
+                    # Install patchelf with timeout and better error handling
+                    echo "Installing patchelf (this may take a moment to compile)..."
+                    echo "⚠ If this hangs, it will timeout after 5 minutes..."
+                    
+                    # Use timeout command if available, otherwise set up a background process
+                    pip_output=""
+                    pip_status=1
+                    
+                    if command -v timeout >/dev/null 2>&1; then
+                        # Use timeout command (5 minutes)
+                        echo "Using timeout command (300 seconds) for pip install..."
+                        pip_output=$(timeout 300 "$PYTHONBIN" -m pip install patchelf --no-cache-dir 2>&1)
+                        pip_status=$?
+                        
+                        if [ $pip_status -eq 124 ]; then
+                            echo "⚠ pip install patchelf timed out after 5 minutes"
+                            echo "This usually means compilation issues on Solaris"
+                            pip_status=1  # Treat timeout as failure
+                        fi
+                    else
+                        # Fallback: try without verbose and with a shorter approach
+                        echo "No timeout command available, trying quick install..."
+                        pip_output=$("$PYTHONBIN" -m pip install patchelf --no-cache-dir 2>&1)
+                        pip_status=$?
+                    fi
+                fi  # End of build tools check
                 
                 if [ $pip_status -eq 0 ]; then
                     echo "✓ Successfully installed patchelf via pip"
@@ -471,9 +515,9 @@ install_prereqs() {
                     fi
                 else
                     echo "⚠ pip install patchelf failed with status $pip_status"
-                    # Show relevant error info (last 10 lines) to help diagnose
-                    echo "Error details (last 10 lines):"
-                    echo "$pip_output" | tail -10
+                    # Show only relevant error info (last 5 lines) to avoid overwhelming output
+                    echo "Error details (last 5 lines):"
+                    echo "$pip_output" | tail -5
                     echo "Will try alternative installation methods..."
                 fi
             else
@@ -491,78 +535,11 @@ install_prereqs() {
         if [ "$patchelf_installed" = false ]; then
             echo ""
             echo "=== Trying fallback installation methods ==="
+            echo "ℹ For fastest build, trying wrapper installation first..."
             
-            # First try: Quick binary installation with venv priority
-            echo "Trying quick binary installation..."
-            TEMP_PATCHELF="/tmp/patchelf-quick-$$"
-            mkdir -p "$TEMP_PATCHELF"
-            cd "$TEMP_PATCHELF"
-            
-            if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "amd64" ]; then
-                echo "Downloading patchelf binary for x86_64..."
-                binary_downloaded=false
-                
-                if command -v curl >/dev/null 2>&1; then
-                    echo "Using curl to download patchelf..."
-                    if curl -L --connect-timeout 30 "https://github.com/NixOS/patchelf/releases/download/0.18.0/patchelf-0.18.0-x86_64.tar.gz" -o patchelf.tar.gz 2>/dev/null; then
-                        binary_downloaded=true
-                    fi
-                elif command -v wget >/dev/null 2>&1; then
-                    echo "Using wget to download patchelf..."
-                    if wget --timeout=30 "https://github.com/NixOS/patchelf/releases/download/0.18.0/patchelf-0.18.0-x86_64.tar.gz" -O patchelf.tar.gz 2>/dev/null; then
-                        binary_downloaded=true
-                    fi
-                else
-                    echo "⚠ Neither curl nor wget available for downloading"
-                fi
-                
-                if [ "$binary_downloaded" = true ] && tar -xzf patchelf.tar.gz 2>/dev/null && [ -f patchelf-0.18.0-x86_64/bin/patchelf ]; then
-                    echo "✓ Successfully downloaded and extracted patchelf binary"
-                    
-                    # PRIORITY 1: Install in virtual environment if available
-                    if [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV/bin" ]; then
-                        echo "Installing patchelf binary in virtual environment: $VIRTUAL_ENV/bin/"
-                        if cp patchelf-0.18.0-x86_64/bin/patchelf "$VIRTUAL_ENV/bin/patchelf" 2>/dev/null && chmod +x "$VIRTUAL_ENV/bin/patchelf" 2>/dev/null; then
-                            echo "✓ Successfully installed patchelf in virtual environment"
-                            # Ensure venv bin is first in PATH
-                            ensure_venv_priority
-                            patchelf_installed=true
-                        else
-                            echo "⚠ Failed to install patchelf in venv, trying system location"
-                        fi
-                    fi
-                    
-                    # PRIORITY 2: Install system-wide only if venv installation failed
-                    if [ "$patchelf_installed" = false ]; then
-                        echo "Installing patchelf binary system-wide as fallback..."
-                        # Try /usr/local/bin first (usually writable and in PATH)
-                        if sudo cp patchelf-0.18.0-x86_64/bin/patchelf /usr/local/bin/ 2>/dev/null && sudo chmod +x /usr/local/bin/patchelf 2>/dev/null; then
-                            echo "✓ Successfully installed patchelf system-wide: /usr/local/bin/patchelf"
-                            export PATH="/usr/local/bin:$PATH"
-                            hash -r
-                            patchelf_installed=true
-                        else
-                            echo "⚠ Failed to install patchelf system-wide"
-                        fi
-                    fi
-                else
-                    echo "⚠ Failed to download or extract patchelf binary"
-                fi
-            else
-                echo "ℹ Architecture $(uname -m) - binary not available, will use wrapper"
-            fi
-            
-            cd - >/dev/null
-            rm -rf "$TEMP_PATCHELF"
-            
-            # Check if binary install worked
-            if [ "$patchelf_installed" = true ] && command -v patchelf >/dev/null 2>&1; then
-                echo "✓ Binary patchelf installation successful: $(which patchelf)"
-            else
-                echo "ℹ Binary installation failed or not attempted, installing compatibility wrapper..."
-                
-                # Install the comprehensive wrapper with venv priority
-                cat > /tmp/patchelf-wrapper-$$ << 'EOF'
+            # PRIORITY 0: Try wrapper installation immediately (fastest option)
+            echo "Installing compatibility wrapper (fastest option)..."
+            cat > /tmp/patchelf-wrapper-immediate-$$ << 'EOF'
 #!/bin/bash
 # Enhanced patchelf wrapper for Solaris build compatibility
 # This script provides patchelf functionality using standard Unix tools
@@ -712,22 +689,102 @@ case "$1" in
         ;;
 esac
 EOF
+            
+            # Install wrapper immediately in venv if available
+            immediate_wrapper_installed=false
+            if [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV/bin" ]; then
+                echo "Installing immediate wrapper in virtual environment..."
+                if mv "/tmp/patchelf-wrapper-immediate-$$" "$VIRTUAL_ENV/bin/patchelf" && chmod +x "$VIRTUAL_ENV/bin/patchelf"; then
+                    echo "✓ Successfully installed immediate wrapper in venv"
+                    ensure_venv_priority
+                    immediate_wrapper_installed=true
+                    patchelf_installed=true
+                fi
+            fi
+            
+            # If venv installation failed, install system-wide
+            if [ "$immediate_wrapper_installed" = false ]; then
+                echo "Installing immediate wrapper system-wide..."
+                if sudo mv "/tmp/patchelf-wrapper-immediate-$$" /usr/local/bin/patchelf && sudo chmod +x /usr/local/bin/patchelf; then
+                    echo "✓ Successfully installed immediate wrapper system-wide"
+                    export PATH="/usr/local/bin:$PATH"
+                    hash -r
+                    immediate_wrapper_installed=true
+                    patchelf_installed=true
+                fi
+            fi
+            
+            # If wrapper installation succeeded, skip other methods
+            if [ "$immediate_wrapper_installed" = true ]; then
+                echo "✓ Immediate wrapper installation successful - skipping slower methods"
+            else
+                echo "⚠ Immediate wrapper installation failed - trying other methods..."
                 
-                # PRIORITY 1: Install wrapper in virtual environment first
-                wrapper_installed=false
-                if [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV/bin" ]; then
-                    echo "Installing patchelf wrapper in virtual environment: $VIRTUAL_ENV/bin/patchelf"
-                    if mv "/tmp/patchelf-wrapper-$$" "$VIRTUAL_ENV/bin/patchelf" && chmod +x "$VIRTUAL_ENV/bin/patchelf"; then
-                        echo "✓ Successfully installed patchelf wrapper in virtual environment"
-                        # Ensure venv bin is first in PATH
-                        ensure_venv_priority
-                        wrapper_installed=true
+                # PRIORITY 1: Try binary installation
+                echo "Trying binary installation..."
+                TEMP_PATCHELF="/tmp/patchelf-quick-$$"
+                mkdir -p "$TEMP_PATCHELF"
+                cd "$TEMP_PATCHELF"
+                
+                if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "amd64" ]; then
+                    echo "Downloading patchelf binary for x86_64..."
+                    binary_downloaded=false
+                    
+                    if command -v curl >/dev/null 2>&1; then
+                        echo "Using curl to download patchelf..."
+                        if curl -L --connect-timeout 30 "https://github.com/NixOS/patchelf/releases/download/0.18.0/patchelf-0.18.0-x86_64.tar.gz" -o patchelf.tar.gz 2>/dev/null; then
+                            binary_downloaded=true
+                        fi
+                    elif command -v wget >/dev/null 2>&1; then
+                        echo "Using wget to download patchelf..."
+                        if wget --timeout=30 "https://github.com/NixOS/patchelf/releases/download/0.18.0/patchelf-0.18.0-x86_64.tar.gz" -O patchelf.tar.gz 2>/dev/null; then
+                            binary_downloaded=true
+                        fi
                     else
-                        echo "⚠ Failed to install wrapper in venv, trying system location"
-                        # Copy the temp file back for system installation
-                        cat > /tmp/patchelf-wrapper-$$ << 'EOF'
-#!/bin/bash
-# Enhanced patchelf wrapper for Solaris build compatibility
+                        echo "⚠ Neither curl nor wget available for downloading"
+                    fi
+                    
+                    if [ "$binary_downloaded" = true ] && tar -xzf patchelf.tar.gz 2>/dev/null && [ -f patchelf-0.18.0-x86_64/bin/patchelf ]; then
+                        echo "✓ Successfully downloaded and extracted patchelf binary"
+                        
+                        # PRIORITY: Install in virtual environment if available
+                        if [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV/bin" ]; then
+                            echo "Installing patchelf binary in virtual environment: $VIRTUAL_ENV/bin/"
+                            if cp patchelf-0.18.0-x86_64/bin/patchelf "$VIRTUAL_ENV/bin/patchelf" 2>/dev/null && chmod +x "$VIRTUAL_ENV/bin/patchelf" 2>/dev/null; then
+                                echo "✓ Successfully installed patchelf in virtual environment"
+                                ensure_venv_priority
+                                patchelf_installed=true
+                            else
+                                echo "⚠ Failed to install patchelf in venv, trying system location"
+                            fi
+                        fi
+                        
+                        # Install system-wide only if venv installation failed
+                        if [ "$patchelf_installed" = false ]; then
+                            echo "Installing patchelf binary system-wide as fallback..."
+                            if sudo cp patchelf-0.18.0-x86_64/bin/patchelf /usr/local/bin/ 2>/dev/null && sudo chmod +x /usr/local/bin/patchelf 2>/dev/null; then
+                                echo "✓ Successfully installed patchelf system-wide: /usr/local/bin/patchelf"
+                                export PATH="/usr/local/bin:$PATH"
+                                hash -r
+                                patchelf_installed=true
+                            else
+                                echo "⚠ Failed to install patchelf system-wide"
+                            fi
+                        fi
+                    else
+                        echo "⚠ Failed to download or extract patchelf binary"
+                    fi
+                else
+                    echo "ℹ Architecture $(uname -m) - binary not available"
+                fi
+                
+                cd - >/dev/null
+                rm -rf "$TEMP_PATCHELF"
+            fi  # End of immediate wrapper check
+        fi  # End of pip installation failure fallback
+    fi
+    
+    # Final verification and summary
 # This script provides patchelf functionality using standard Unix tools
 
 PATCHELF_WRAPPER_VERSION="3.0-solaris-enhanced"
