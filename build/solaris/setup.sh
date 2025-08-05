@@ -1038,9 +1038,6 @@ EOF
                 else
                     echo "⚠ Failed to install patchelf wrapper"
                 fi
-            fi
-        fi  # End of binary installation check
-    fi
     
     # Final verification and summary
     echo ""
