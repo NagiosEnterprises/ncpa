@@ -446,6 +446,7 @@ Section ""
     ; Install the service on new install
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c diskperf -Y'
+    ; If not set to delayed-auto, there are a number of issues that can arise ranging from not starting to conflicts with the 
     nsExec::Exec '$9 /c sc create NCPA binPath="\"$INSTDIR\ncpa.exe\"" DisplayName="Nagios Cross-Platform Agent" start=delayed-auto'
 
     ; Start the NCPA service

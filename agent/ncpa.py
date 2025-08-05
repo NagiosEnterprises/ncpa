@@ -94,7 +94,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.1.4'
+__VERSION__ = '3.2.0'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -195,7 +195,12 @@ cfg_defaults = {
                 '.wsf': 'cscript $plugin_name $plugin_args //NoLogo',
                 '.bat': 'cmd /c $plugin_name $plugin_args',
             },
-            'passive checks' : {}
+            'passive checks' : {},
+            'windows': {
+                'enable_event_log': '1',
+                'event_log_max_retries': '3',
+                'event_log_retry_delay': '1',
+            }
         }
 
 # --------------------------
@@ -932,6 +937,95 @@ class Daemon():
 
 # Main class - Windows
 if __SYSTEM__ == 'nt':
+    def safe_log_to_event_log(message_type, message_id, message_data, fallback_logger=None, config=None, shutdown_mode=False):
+        """
+        Safely log to Windows Event Log with fallback to standard logging
+        
+        Args:
+            message_type: servicemanager.EVENTLOG_*_TYPE constant
+            message_id: servicemanager.PYS_SERVICE_* constant  
+            message_data: tuple of (service_name, message)
+            fallback_logger: logger to use if Event Log fails
+            config: configuration object to check Event Log settings
+            shutdown_mode: if True, use more aggressive timeouts for shutdown scenarios
+        
+        Returns:
+            bool: True if successfully logged to Event Log, False otherwise
+        """
+        # Check if Event Log is enabled in configuration
+        if config:
+            try:
+                enable_event_log = config.getboolean('windows', 'enable_event_log')
+                if not enable_event_log:
+                    if fallback_logger:
+                        fallback_logger.debug("Event Log disabled in configuration")
+                    return False
+            except (ValueError, AttributeError):
+                # Default to enabled if configuration is missing or invalid
+                pass
+        
+        # Get retry settings from configuration
+        max_retries = 1 if shutdown_mode else 3  # Reduce retries during shutdown
+        retry_delay = 0.5 if shutdown_mode else 1  # Faster retries during shutdown
+        if config and not shutdown_mode:  # Only use config settings during normal operation
+            try:
+                max_retries = config.getint('windows', 'event_log_max_retries')
+                retry_delay = config.getfloat('windows', 'event_log_retry_delay')
+            except (ValueError, AttributeError):
+                pass
+        
+        # Attempt to log to Event Log with retries
+        import time
+        for attempt in range(max_retries + 1):
+            try:
+                if message_type == servicemanager.EVENTLOG_ERROR_TYPE:
+                    servicemanager.LogErrorMsg(message_type, message_id, message_data)
+                else:
+                    servicemanager.LogMsg(message_type, message_id, message_data)
+                return True
+            except Exception as e:
+                if fallback_logger:
+                    if attempt < max_retries:
+                        fallback_logger.debug("Event Log attempt %d failed, retrying: %s", attempt + 1, e)
+                        if retry_delay > 0:
+                            time.sleep(retry_delay)
+                    else:
+                        if shutdown_mode:
+                            fallback_logger.debug("Event Log failed during shutdown (this is normal): %s", e)
+                        else:
+                            fallback_logger.warning("Failed to log to Windows Event Log after %d attempts: %s", max_retries + 1, e)
+                        
+                        # Log the original message to fallback logger
+                        message_text = message_data[1] if len(message_data) > 1 else str(message_data)
+                        if message_type == servicemanager.EVENTLOG_ERROR_TYPE:
+                            fallback_logger.error("Event Log Message (ERROR): %s", message_text)
+                        else:
+                            fallback_logger.info("Event Log Message (INFO): %s", message_text)
+                
+                if attempt == max_retries:
+                    return False
+        
+        return False
+
+    def validate_service_state(logger=None):
+        """
+        Validate that the Windows service manager is available and responsive
+        
+        Returns:
+            bool: True if service manager is available, False otherwise
+        """
+        try:
+            # Try a simple operation to test if service manager is responsive
+            import win32service
+            scm_handle = win32service.OpenSCManager(None, None, win32service.SC_MANAGER_CONNECT)
+            if scm_handle:
+                win32service.CloseServiceHandle(scm_handle)
+                return True
+        except Exception as e:
+            if logger:
+                logger.warning("Service manager validation failed: %s", e)
+        return False
+
     class WinService(win32serviceutil.ServiceFramework):
         """
         Windows service class
@@ -1026,30 +1120,54 @@ if __SYSTEM__ == 'nt':
                 self.has_error.value = True
                 self.ReportServiceStatus(win32service.SERVICE_STOPPED)
                 return
-            self.SvcDoRun()
-
-            # log stopping of service to windows event log
+            
             try:
-                servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                servicemanager.PYS_SERVICE_STOPPED,
-                                (self._svc_name_, ''))
-            except Exception as e:
-                self.logger.exception("SvcRun - Failed to log service stop: %s", e)
+                self.SvcDoRun()
+            finally:
+                # Ensure service cleanup happens even if SvcDoRun fails
+                # Move Event Log operations here with timeout to prevent hanging during shutdown
+                try:
+                    # Use a separate thread with timeout for Event Log operation during shutdown
+                    import threading
+                    import time
+                    
+                    def log_service_stopped():
+                        safe_log_to_event_log(
+                            servicemanager.EVENTLOG_INFORMATION_TYPE,
+                            servicemanager.PYS_SERVICE_STOPPED,
+                            (self._svc_name_, ''),
+                            self.logger,
+                            self.config,
+                            shutdown_mode=True  # Enable shutdown mode for faster timeouts
+                        )
+                    
+                    # Start Event Log operation in separate thread with 5-second timeout
+                    log_thread = threading.Thread(target=log_service_stopped, daemon=True)
+                    log_thread.start()
+                    log_thread.join(timeout=5.0)
+                    
+                    if log_thread.is_alive():
+                        self.logger.warning("Event Log operation timed out during service shutdown")
+                        
+                except Exception as e:
+                    # Don't let Event Log failures prevent service shutdown
+                    self.logger.warning("Failed to log service stop to Event Log: %s", e)
 
-            # Once SvcDoRun returns, the service has stopped
-            try:
-                self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-            except Exception as e:
-                self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
+                # Once SvcDoRun returns, the service has stopped
+                try:
+                    self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                except Exception as e:
+                    self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
 
         def SvcDoRun(self):
             # log starting of service to windows event log
-            try:
-                servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                servicemanager.PYS_SERVICE_STARTED,
-                                (self._svc_name_, ''))
-            except Exception as e:
-                self.logger.exception("SvcDoRun - Failed to log service start: %s", e)
+            safe_log_to_event_log(
+                servicemanager.EVENTLOG_INFORMATION_TYPE,
+                servicemanager.PYS_SERVICE_STARTED,
+                (self._svc_name_, ''),
+                self.logger,
+                self.config
+            )
             try:
                 self.running_event.set()
             except Exception as e:
@@ -1061,9 +1179,13 @@ if __SYSTEM__ == 'nt':
                 self.has_error.value = True
                 self.ReportServiceStatus(win32service.SERVICE_STOPPED)
                 # log error to windows event log
-                servicemanager.LogErrorMsg(servicemanager.EVENTLOG_ERROR_TYPE,
-                                           servicemanager.PYS_SERVICE_STOPPED,
-                                           (self._svc_name_, str(e)))
+                safe_log_to_event_log(
+                    servicemanager.EVENTLOG_ERROR_TYPE,
+                    servicemanager.PYS_SERVICE_STOPPED,
+                    (self._svc_name_, str(e)),
+                    self.logger,
+                    self.config
+                )
 
         def main(self):
             try:
@@ -1327,9 +1449,24 @@ def main(has_error):
     elif __SYSTEM__ == 'nt':
         # using win32serviceutil.ServiceFramework, run WinService as a service
         if len(sys.argv) == 1:
-            servicemanager.Initialize()
-            servicemanager.PrepareToHostSingle(WinService)
-            servicemanager.StartServiceCtrlDispatcher()
+            try:
+                servicemanager.Initialize()
+                servicemanager.PrepareToHostSingle(WinService)
+                servicemanager.StartServiceCtrlDispatcher()
+            except Exception as e:
+                # Log the error using standard logging before attempting Event Log
+                parent_logger.error("Failed to initialize Windows service: %s", e)
+                try:
+                    # Attempt to log to Event Log if possible
+                    servicemanager.LogErrorMsg(
+                        servicemanager.EVENTLOG_ERROR_TYPE,
+                        servicemanager.PYS_SERVICE_STOPPED,
+                        ("NCPA", f"Service initialization failed: {str(e)}")
+                    )
+                except Exception:
+                    # If Event Log also fails, just continue with standard logging
+                    pass
+                sys.exit(1)
         else:
             win32serviceutil.HandleCommandLine(WinService)
 
