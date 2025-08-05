@@ -50,6 +50,17 @@ ensure_venv_priority() {
         # Add venv bin to the front of PATH
         export PATH="$VIRTUAL_ENV/bin:$PATH"
         echo "✓ Ensured virtual environment priority in PATH: $VIRTUAL_ENV/bin"
+        
+        # Set PYTHONBIN to use virtual environment Python
+        if [ -x "$VIRTUAL_ENV/bin/python" ]; then
+            PYTHONBIN="$VIRTUAL_ENV/bin/python"
+            export PYTHONBIN
+            echo "✓ Set PYTHONBIN to virtual environment Python: $PYTHONBIN"
+        elif [ -x "$VIRTUAL_ENV/bin/python3" ]; then
+            PYTHONBIN="$VIRTUAL_ENV/bin/python3"
+            export PYTHONBIN
+            echo "✓ Set PYTHONBIN to virtual environment Python3: $PYTHONBIN"
+        fi
     fi
 }
 
@@ -59,6 +70,20 @@ ensure_venv_priority
 # If using virtual environment (recommended), skip Python detection
 if [ "$SKIP_PYTHON" -eq 1 ]; then
     echo "Skipping Python setup - using virtual environment"
+    
+    # Ensure PYTHONBIN is set to virtual environment Python
+    if [ -z "$PYTHONBIN" ] && [ -n "$VIRTUAL_ENV" ]; then
+        if [ -x "$VIRTUAL_ENV/bin/python" ]; then
+            PYTHONBIN="$VIRTUAL_ENV/bin/python"
+            export PYTHONBIN
+            echo "✓ Set PYTHONBIN to virtual environment Python: $PYTHONBIN"
+        elif [ -x "$VIRTUAL_ENV/bin/python3" ]; then
+            PYTHONBIN="$VIRTUAL_ENV/bin/python3"
+            export PYTHONBIN
+            echo "✓ Set PYTHONBIN to virtual environment Python3: $PYTHONBIN"
+        fi
+    fi
+    
     if [ -n "$PYTHONBIN" ] && [ -x "$PYTHONBIN" ]; then
         echo "Using Python from virtual environment: $PYTHONBIN"
         echo "Python version: $($PYTHONBIN --version 2>&1)"
