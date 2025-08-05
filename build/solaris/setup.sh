@@ -455,58 +455,10 @@ install_prereqs() {
             if "$PYTHONBIN" -m pip --version >/dev/null 2>&1; then
                 echo "Attempting to install patchelf via pip in virtual environment..."
                 
-                # Pre-flight checks to avoid known hanging scenarios
-                echo "Performing pre-flight checks..."
-                
-                # Check if we have basic build tools that patchelf compilation requires
-                build_tools_available=true
-                for tool in gcc g++ make; do
-                    if ! command -v "$tool" >/dev/null 2>&1; then
-                        echo "⚠ Build tool '$tool' not available - patchelf compilation will likely fail"
-                        build_tools_available=false
-                    fi
-                done
-                
-                # Check for Rust (patchelf may require it in newer versions)
-                if ! command -v rustc >/dev/null 2>&1; then
-                    echo "⚠ Rust compiler not available - may cause issues with some dependencies"
-                fi
-                
-                # If build tools are missing, skip pip installation and go straight to alternatives
-                if [ "$build_tools_available" = false ]; then
-                    echo "⚠ Essential build tools missing, skipping pip installation"
-                    echo "Will try binary installation or wrapper instead..."
-                else
-                    # Try to upgrade pip first to ensure we have latest version
-                    echo "Upgrading pip to latest version..."
-                    "$PYTHONBIN" -m pip install --upgrade pip >/dev/null 2>&1 || echo "⚠ Could not upgrade pip, continuing..."
-                    
-                    # Install patchelf with timeout and better error handling
-                    echo "Installing patchelf (this may take a moment to compile)..."
-                    echo "⚠ If this hangs, it will timeout after 5 minutes..."
-                    
-                    # Use timeout command if available, otherwise set up a background process
-                    pip_output=""
-                    pip_status=1
-                    
-                    if command -v timeout >/dev/null 2>&1; then
-                        # Use timeout command (5 minutes)
-                        echo "Using timeout command (300 seconds) for pip install..."
-                        pip_output=$(timeout 300 "$PYTHONBIN" -m pip install patchelf --no-cache-dir 2>&1)
-                        pip_status=$?
-                        
-                        if [ $pip_status -eq 124 ]; then
-                            echo "⚠ pip install patchelf timed out after 5 minutes"
-                            echo "This usually means compilation issues on Solaris"
-                            pip_status=1  # Treat timeout as failure
-                        fi
-                    else
-                        # Fallback: try without verbose and with a shorter approach
-                        echo "No timeout command available, trying quick install..."
-                        pip_output=$("$PYTHONBIN" -m pip install patchelf --no-cache-dir 2>&1)
-                        pip_status=$?
-                    fi
-                fi  # End of build tools check
+                # Install patchelf directly in the virtual environment
+                echo "Installing patchelf (this may take a moment to compile)..."
+                pip_output=$("$PYTHONBIN" -m pip install --verbose patchelf 2>&1)
+                pip_status=$?
                 
                 if [ $pip_status -eq 0 ]; then
                     echo "✓ Successfully installed patchelf via pip"
