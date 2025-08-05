@@ -960,7 +960,6 @@ EOF
                 fi
             fi
         fi  # End of binary installation check
-        fi  # End of pip installation failure fallback
     fi
     
     # Final verification and summary
