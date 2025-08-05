@@ -957,9 +957,7 @@ case "$1" in
         ;;
 esac
 EOF
-                    fi
-                fi
-                
+
                 # PRIORITY 2: Install system-wide only if venv installation failed
                 if [ "$wrapper_installed" = false ]; then
                     echo "Installing patchelf wrapper system-wide as fallback..."
