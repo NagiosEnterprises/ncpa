@@ -453,7 +453,7 @@ install_prereqs() {
             
             # Check if pip is available in venv
             if "$PYTHONBIN" -m pip --version >/dev/null 2>&1; then
-                echo "Attempting to install patchelf via pip in virtual environment..."
+                echo "Attempting to install patchelf via pip in virtual environment: $PYTHONBIN"
                 
                 # Install patchelf directly in the virtual environment
                 echo "Installing patchelf (this may take a moment to compile)..."
