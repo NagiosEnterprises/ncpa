@@ -594,10 +594,22 @@ fi
         
         # Always copy the wrapper if it exists in /usr/local/bin, regardless of current patchelf status
         if [ -f "/usr/local/bin/patchelf" ] && [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV/bin" ]; then
-            echo "Copying patchelf wrapper from /usr/local/bin to virtual environment..."
-            cp /usr/local/bin/patchelf "$VIRTUAL_ENV/bin/patchelf"
-            chmod +x "$VIRTUAL_ENV/bin/patchelf"
-            echo "✓ Patchelf wrapper copied to: $VIRTUAL_ENV/bin/patchelf"
+            # Check if the file already exists in venv and is identical
+            if [ -f "$VIRTUAL_ENV/bin/patchelf" ]; then
+                if cmp -s "/usr/local/bin/patchelf" "$VIRTUAL_ENV/bin/patchelf" 2>/dev/null; then
+                    echo "✓ Patchelf wrapper already exists and is identical in virtual environment"
+                else
+                    echo "Updating patchelf wrapper in virtual environment (files differ)..."
+                    cp /usr/local/bin/patchelf "$VIRTUAL_ENV/bin/patchelf"
+                    chmod +x "$VIRTUAL_ENV/bin/patchelf"
+                    echo "✓ Patchelf wrapper updated in: $VIRTUAL_ENV/bin/patchelf"
+                fi
+            else
+                echo "Copying patchelf wrapper from /usr/local/bin to virtual environment..."
+                cp /usr/local/bin/patchelf "$VIRTUAL_ENV/bin/patchelf"
+                chmod +x "$VIRTUAL_ENV/bin/patchelf"
+                echo "✓ Patchelf wrapper copied to: $VIRTUAL_ENV/bin/patchelf"
+            fi
         fi
         
         # CRITICAL: Ensure virtual environment bin is FIRST in PATH
