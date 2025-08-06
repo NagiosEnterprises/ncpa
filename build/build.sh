@@ -488,6 +488,21 @@ fi
             echo "Added /usr/local/bin to PATH"
         fi
         
+        # ALWAYS ensure patchelf wrapper is available in virtual environment
+        echo "Ensuring patchelf wrapper is available in virtual environment..."
+        if [ -f "/usr/local/bin/patchelf" ] && [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV/bin" ]; then
+            # Check if /usr/local/bin/patchelf is our wrapper
+            if head -1 /usr/local/bin/patchelf 2>/dev/null | grep -q "#!/bin/bash" && grep -q "wrapper" /usr/local/bin/patchelf 2>/dev/null; then
+                echo "Copying our patchelf wrapper to virtual environment..."
+                cp /usr/local/bin/patchelf "$VIRTUAL_ENV/bin/patchelf"
+                chmod +x "$VIRTUAL_ENV/bin/patchelf"
+                # Force venv bin to be first in PATH
+                export PATH="$VIRTUAL_ENV/bin:$PATH"
+                hash -r
+                echo "✓ Patchelf wrapper installed in virtual environment"
+            fi
+        fi
+        
         if command -v patchelf >/dev/null 2>&1; then
             patchelf_path=$(which patchelf)
             echo "patchelf found at $patchelf_path"
