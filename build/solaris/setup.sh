@@ -830,13 +830,12 @@ EOF
     if [ -f /opt/csw/bin/pkgutil ]; then
         echo "✓ OpenCSW package manager available"
     else
-        echo "✗ OpenCSW not installed - attempting to install..."
-        if command -v pkgadd >/dev/null 2>&1; then
-            pkgadd -d http://get.opencsw.org/now
-            /opt/csw/bin/pkgutil -U
-        else
-            echo "WARNING: Cannot install OpenCSW - pkgadd not available"
-        fi
+        echo "✗ OpenCSW not installed"
+        echo "ℹ Note: OpenCSW installation requires manual setup on modern Solaris"
+        echo "ℹ HTTP/HTTPS package downloads are no longer supported by pkgadd"
+        echo "ℹ Continuing without OpenCSW - IPS (pkg) will be used instead"
+        echo "ℹ If you need OpenCSW packages, please install manually from:"
+        echo "ℹ   https://www.opencsw.org/manual/for-administrators/getting-started.html"
     fi
 
     # Check if we're on Solaris 11 or later
