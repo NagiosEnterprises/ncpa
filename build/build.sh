@@ -354,7 +354,7 @@ EOF
     fi
     
     echo "========================================================="
-fi
+fi 
 
 # Load platform-specific configurations (but skip their Python setup)
 export SKIP_PYTHON=1  # Tell platform scripts to skip Python installation
