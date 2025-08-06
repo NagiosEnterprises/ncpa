@@ -490,18 +490,26 @@ fi
         
         # ALWAYS ensure patchelf wrapper is available in virtual environment
         echo "Ensuring patchelf wrapper is available in virtual environment..."
+        
+        # Always copy the wrapper if it exists in /usr/local/bin, regardless of current patchelf status
         if [ -f "/usr/local/bin/patchelf" ] && [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV/bin" ]; then
-            # Check if /usr/local/bin/patchelf is our wrapper
-            if head -1 /usr/local/bin/patchelf 2>/dev/null | grep -q "#!/bin/bash" && grep -q "wrapper" /usr/local/bin/patchelf 2>/dev/null; then
-                echo "Copying our patchelf wrapper to virtual environment..."
-                cp /usr/local/bin/patchelf "$VIRTUAL_ENV/bin/patchelf"
-                chmod +x "$VIRTUAL_ENV/bin/patchelf"
-                # Force venv bin to be first in PATH
-                export PATH="$VIRTUAL_ENV/bin:$PATH"
-                hash -r
-                echo "✓ Patchelf wrapper installed in virtual environment"
-            fi
+            echo "Copying patchelf wrapper from /usr/local/bin to virtual environment..."
+            cp /usr/local/bin/patchelf "$VIRTUAL_ENV/bin/patchelf"
+            chmod +x "$VIRTUAL_ENV/bin/patchelf"
+            echo "✓ Patchelf wrapper copied to: $VIRTUAL_ENV/bin/patchelf"
         fi
+        
+        # CRITICAL: Ensure virtual environment bin is FIRST in PATH
+        if [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV/bin" ]; then
+            # Remove any existing venv paths from PATH to avoid duplicates
+            PATH_WITHOUT_VENV=$(echo "$PATH" | sed "s|$VIRTUAL_ENV/bin:||g" | sed "s|:$VIRTUAL_ENV/bin||g" | sed "s|$VIRTUAL_ENV/bin$||g")
+            export PATH="$VIRTUAL_ENV/bin:$PATH_WITHOUT_VENV"
+            echo "✓ Virtual environment bin directory prioritized in PATH"
+            echo "PATH (first 3 entries): $(echo "$PATH" | cut -d: -f1-3)"
+        fi
+        
+        # Clear command hash to ensure fresh lookups
+        hash -r
         
         if command -v patchelf >/dev/null 2>&1; then
             patchelf_path=$(which patchelf)
@@ -648,6 +656,42 @@ esac'
         else
             echo "✗ CRITICAL: patchelf not found at all - cx_Freeze will fail"
         fi
+        
+        # FINAL: Verify patchelf is available right before cx_Freeze
+        echo "=== FINAL PATCHELF VERIFICATION ==="
+        echo "Current PATH (first 5 entries): $(echo "$PATH" | cut -d: -f1-5)"
+        echo "VIRTUAL_ENV: $VIRTUAL_ENV"
+        
+        if command -v patchelf >/dev/null 2>&1; then
+            patchelf_location=$(which patchelf)
+            echo "✓ patchelf found at: $patchelf_location"
+            
+            # Test patchelf version
+            patchelf_version=$(patchelf --version 2>&1 || echo "version check failed")
+            echo "patchelf version: $patchelf_version"
+            
+            # Verify it's executable
+            if [ -x "$patchelf_location" ]; then
+                echo "✓ patchelf is executable"
+            else
+                echo "✗ patchelf is not executable"
+            fi
+        else
+            echo "✗ CRITICAL: patchelf not found in PATH"
+            echo "Available commands in first PATH directory:"
+            first_path_dir=$(echo "$PATH" | cut -d: -f1)
+            if [ -d "$first_path_dir" ]; then
+                ls -la "$first_path_dir" | grep patchelf || echo "No patchelf found"
+            fi
+            
+            # Emergency installation if needed
+            if [ -f "/usr/local/bin/patchelf" ]; then
+                echo "Emergency: Creating direct symlink to system patchelf wrapper"
+                ln -sf /usr/local/bin/patchelf /usr/bin/patchelf 2>/dev/null || true
+                hash -r
+            fi
+        fi
+        echo "==================================="
         
         # Run the build
         echo "Starting cx_Freeze build with enhanced error handling..."
