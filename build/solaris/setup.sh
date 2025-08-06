@@ -1,5 +1,28 @@
 #!/bin/bash
 
+# Ensure Solaris 11.4 SRU 78 or higher
+SOLARIS_RELEASE=$(uname -v 2>/dev/null)
+if [ -n "$SOLARIS_RELEASE" ]; then
+    # Extract SRU number if present (e.g., "11.4.0.15.0" or "11.4.78.0.0")
+    SRU=$(echo "$SOLARIS_RELEASE" | awk -F. '{ if (NF >= 3) print $3; else print "0"; }')
+    if [ "$SRU" -lt 78 ]; then
+        echo "ERROR: Solaris 11.4 SRU 78 or higher is required."
+        echo "Detected SRU: $SRU (from uname -v: $SOLARIS_RELEASE)"
+        echo "Please update your system before continuing."
+        exit 1
+    else
+        echo "✓ Solaris SRU $SRU detected (>= 78) - proceeding."
+    fi
+else
+    echo "WARNING: Unable to determine Solaris SRU version. Continuing, but build may fail."
+fi
+
+# Ensure IPS package repository is up to date
+if command -v pkg >/dev/null 2>&1; then
+    echo "Updating IPS package repository..."
+    pkg update --accept || echo "WARNING: pkg update failed or not needed"
+fi
+
 # Source version configuration
 BUILD_DIR_FOR_VERSION=$(dirname "$(dirname "$0")")
 if [ ! -f "$BUILD_DIR_FOR_VERSION/version_config.sh" ]; then
