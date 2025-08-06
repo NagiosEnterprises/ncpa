@@ -118,16 +118,6 @@ NCPA can be built on Solaris 11.4 SRU78 or higher systems. The build process cre
 Prerequisites
 ------------
 
-Before building NCPA on Solaris, ensure you have the following packages installed::
-
-  pkg install developer/build/gnu-make
-  pkg install developer/gcc
-  pkg install system/header
-  pkg install library/zlib
-  pkg install library/security/openssl
-  pkg install runtime/python-39
-  pkg install library/python/pip-39
-
 **Clone the repository**::
 
   cd ~
@@ -136,20 +126,44 @@ Before building NCPA on Solaris, ensure you have the following packages installe
 **Build NCPA**::
 
   cd ncpa/build
-  sudo ./solaris/package.sh
+  sudo ./build.sh
 
 The build process will:
 
 1. Set up a Python virtual environment with all required dependencies
 2. Build the NCPA binary using cx_Freeze 
-3. Create a Solaris package (.pkg file) with install/uninstall scripts
-4. Configure automatic startup and service management
+3. Create a Solaris package (.pkg file)
 
 **Install on the target Solaris server**
 
 Copy the resulting ``~/ncpa/build/ncpa-3.X.X.sparc.pkg`` or ``~/ncpa/build/ncpa-3.X.X.i386.pkg`` to the desired server and install using::
 
   pkgadd -d ./ncpa-3.X.X.<arch>.pkg
+
+**Silent Installation**
+
+For automated installations without interactive prompts, use::
+
+  pkgadd -n -a ./admin_file -d ./ncpa-3.X.X.<arch>.pkg ncpa
+
+Where ``admin_file`` contains::
+
+  mail=
+  instance=unique
+  partial=nocheck
+  runlevel=nocheck
+  idepend=nocheck
+  rdepend=nocheck
+  space=nocheck
+  setuid=nocheck
+  conflict=nocheck
+  action=nocheck
+  networktimeout=60
+  networkretries=3
+  authentication=quit
+  keystore=/var/sadm/security
+  proxy=
+  basedir=default
 
 The installation process will:
 
@@ -197,6 +211,58 @@ NCPA provides multiple ways to manage the service:
   # Check logs
   tail -f /usr/local/ncpa/var/log/ncpa.log
 
+**Auto-Startup Troubleshooting**
+
+If NCPA doesn't start automatically after a reboot:
+
+1. **Check SMF service status**::
+
+     svcs application/ncpa
+     svcs -xv application/ncpa
+
+2. **Manually enable SMF service**::
+
+     sudo svcadm enable application/ncpa
+
+3. **Check init script links**::
+
+     ls -la /etc/rc2.d/S99ncpa /etc/rc3.d/S99ncpa
+
+4. **Test init script manually**::
+
+     sudo /etc/init.d/ncpa start
+     sudo /etc/init.d/ncpa status
+
+5. **Check init script permissions and syntax**::
+
+     ls -la /etc/init.d/ncpa
+     sudo sh -n /etc/init.d/ncpa  # Check for syntax errors
+
+6. **Force startup via service script**::
+
+     sudo /usr/local/bin/ncpa-service start
+
+7. **Check for legacy run control entries**::
+
+     svcs -a | grep ncpa
+
+8. **Debug boot environment issues**::
+
+     # Check if environment variables are available during boot
+     sudo /etc/init.d/ncpa start 2>&1 | tee /tmp/ncpa_boot_test.log
+     
+     # Verify PATH and library paths
+     env | grep -E "PATH|LD_LIBRARY_PATH"
+
+**Common Auto-Startup Issues**
+
+* **SMF Include Dependency**: The init script no longer depends on SMF includes that may not be available during early boot
+* **Environment Variables**: The init script now explicitly sets PATH and LD_LIBRARY_PATH for boot compatibility  
+* **Lock Directory**: The script automatically creates the required lock directory (/var/lock/subsys)
+* **Fallback Mechanisms**: If the service script isn't available, the init script can start NCPA directly
+
+If SMF service is not visible, NCPA will use the traditional init script method for auto-startup.
+
 **Known Issues and Solutions**
 
 * **SMF Service Visibility**: Some Solaris systems may experience issues where SMF services import successfully but don't appear in ``svcs`` output due to repository corruption
@@ -242,7 +308,7 @@ To upgrade NCPA:
 
 1. **Install new package** (no need to manually stop NCPA)::
 
-     pkgadd -d ./ncpa-3.X.X.<arch>.pkg
+     pkgadd -n -a ./admin_file -d ./ncpa-3.X.X.<arch>.pkg
 
 2. **The upgrade automatically**:
    
