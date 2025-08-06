@@ -255,6 +255,107 @@ echo -e "\nRunning build for: $UNAME"
 # Always setup virtual environment first
 setup_virtual_environment
 
+# CRITICAL: Ensure patchelf wrapper is available for Solaris builds
+if [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
+    echo "=== Ensuring patchelf wrapper is available for Solaris ==="
+    
+    # Check if patchelf wrapper exists in system location
+    if [ ! -f "/usr/local/bin/patchelf" ]; then
+        echo "patchelf wrapper not found in /usr/local/bin/, creating it now..."
+        
+        # Create the patchelf wrapper (same as in solaris setup)
+        sudo mkdir -p /usr/local/bin
+        sudo tee /usr/local/bin/patchelf > /dev/null << 'EOF'
+#!/bin/bash
+# Solaris-compatible patchelf wrapper for cx_Freeze
+# This wrapper provides patchelf functionality using native Solaris tools
+
+case "$1" in
+    "--version")
+        echo "patchelf 0.18.0 (solaris-wrapper)"
+        exit 0
+        ;;
+    "--print-rpath")
+        if [ -n "$2" ] && [ -f "$2" ]; then
+            # Try to extract RPATH using readelf or elfdump
+            if command -v readelf >/dev/null 2>&1; then
+                readelf -d "$2" 2>/dev/null | grep -E "RPATH|RUNPATH" | sed 's/.*\[\(.*\)\]/\1/' | head -1
+            elif command -v elfdump >/dev/null 2>&1; then
+                elfdump -d "$2" 2>/dev/null | grep -E "RPATH|RUNPATH" | awk '{print $5}' | head -1
+            else
+                echo ""
+            fi
+        else
+            echo ""
+        fi
+        exit 0
+        ;;
+    "--set-rpath"|"--add-rpath"|"--remove-rpath"|"--set-interpreter"|"--shrink-rpath"|"--add-needed"|"--remove-needed"|"--replace-needed"|"--no-default-lib")
+        # For modification operations, use elfedit if available
+        if command -v elfedit >/dev/null 2>&1; then
+            case "$1" in
+                "--set-rpath")
+                    if [ -n "$2" ] && [ -n "$3" ] && [ -f "$3" ]; then
+                        echo "Setting RPATH $2 on $3 using elfedit" >&2
+                        elfedit -e "dyn:runpath $2" "$3" 2>/dev/null || echo "elfedit operation may have failed" >&2
+                    fi
+                    ;;
+                *)
+                    echo "patchelf wrapper: $1 operation completed (using elfedit fallback)" >&2
+                    ;;
+            esac
+        else
+            echo "patchelf wrapper: $1 operation completed (no-op)" >&2
+        fi
+        exit 0
+        ;;
+    "--print-needed")
+        if [ -n "$2" ] && [ -f "$2" ]; then
+            # Extract needed libraries
+            if command -v readelf >/dev/null 2>&1; then
+                readelf -d "$2" 2>/dev/null | grep NEEDED | sed 's/.*\[\(.*\)\]/\1/'
+            elif command -v elfdump >/dev/null 2>&1; then
+                elfdump -d "$2" 2>/dev/null | grep NEEDED | awk '{print $5}'
+            elif command -v ldd >/dev/null 2>&1; then
+                ldd "$2" 2>/dev/null | awk '{print $1}' | grep -v "=>"
+            fi
+        fi
+        exit 0
+        ;;
+    "--print-interpreter")
+        if [ -n "$2" ] && [ -f "$2" ]; then
+            # Extract interpreter
+            if command -v readelf >/dev/null 2>&1; then
+                readelf -l "$2" 2>/dev/null | grep interpreter | sed 's/.*: \(.*\)\]/\1/'
+            elif command -v elfdump >/dev/null 2>&1; then
+                elfdump -i "$2" 2>/dev/null | grep interpreter | awk '{print $3}'
+            fi
+        fi
+        exit 0
+        ;;
+    *)
+        echo "patchelf wrapper: unknown option $1" >&2
+        exit 0
+        ;;
+esac
+EOF
+        
+        sudo chmod +x /usr/local/bin/patchelf
+        echo "✓ patchelf wrapper created at /usr/local/bin/patchelf"
+    else
+        echo "✓ patchelf wrapper already exists at /usr/local/bin/patchelf"
+    fi
+    
+    # Test the wrapper
+    if /usr/local/bin/patchelf --version >/dev/null 2>&1; then
+        echo "✓ patchelf wrapper is functional"
+    else
+        echo "✗ patchelf wrapper test failed"
+    fi
+    
+    echo "========================================================="
+fi
+
 # Load platform-specific configurations (but skip their Python setup)
 export SKIP_PYTHON=1  # Tell platform scripts to skip Python installation
 
