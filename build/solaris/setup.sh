@@ -464,11 +464,13 @@ install_prereqs() {
         echo "ℹ patchelf not found (this is expected on Solaris)"
         echo "Attempting immediate patchelf installation..."
         
-        # First try: Install patchelf via pip in virtual environment (PREFERRED METHOD)
-        echo "Trying to install patchelf via pip in virtual environment..."
+        # Skip pip installation of patchelf on Solaris due to cmake/HTTPS issues
+        echo "Skipping pip installation of patchelf on Solaris (causes cmake build failures with HTTPS)"
+        echo "Going directly to compatibility wrapper installation (faster and more reliable)..."
         patchelf_installed=false
         
-        if [ -n "$VIRTUAL_ENV" ] && [ -n "$PYTHONBIN" ] && [ -x "$PYTHONBIN" ]; then
+        # Skip pip installation entirely - it causes cmake build failures with HTTPS protocol issues
+        if false; then
             echo "Virtual environment detected: $VIRTUAL_ENV"
             echo "Using Python: $PYTHONBIN"
             
@@ -483,6 +485,7 @@ install_prereqs() {
                 echo "Installing patchelf (this may take a moment to compile)..."
                 pip_output=$("$PYTHONBIN" -m pip install --verbose patchelf 2>&1)
                 pip_status=$?
+                echo "$pip_output"
                 
                 if [ $pip_status -eq 0 ]; then
                     echo "✓ Successfully installed patchelf via pip"
@@ -523,16 +526,14 @@ install_prereqs() {
                 fi
             else
                 echo "⚠ pip not available in virtual environment"
-                echo "Will try alternative installation methods..."
+                echo "Will use alternative installation methods..."
             fi
         else
-            echo "⚠ Virtual environment not properly configured"
-            echo "VIRTUAL_ENV: $VIRTUAL_ENV"
-            echo "PYTHONBIN: $PYTHONBIN"
-            echo "Will try alternative installation methods..."
+            echo "ℹ Skipping pip installation entirely on Solaris (avoids cmake/HTTPS issues)"
+            echo "Will use wrapper installation method..."
         fi
         
-        # If pip installation failed, try other methods (prioritizing venv)
+        # Since we skipped pip installation on Solaris, proceed with wrapper installation
         if [ "$patchelf_installed" = false ]; then
             echo ""
             echo "=== Trying fallback installation methods ==="
