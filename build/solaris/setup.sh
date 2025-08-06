@@ -258,6 +258,7 @@ echo ""
 fi  # End of Python detection conditional
 
 update_py_packages() {
+    $PYTHONBIN -m pip --disable-pip-version-check list --outdated --format=json | python -c "import json, sys; print('\n'.join([x['name'] for x in json.load(sys.stdin)]))" | xargs -n1 $PYTHONBIN -m pip install -U
     # Install Python packages in virtual environment (Solaris 11+)
     if [ "$SOLARIS_VER" -ge 11 ]; then
         echo "Installing Python packages for Solaris 11 in virtual environment..."
