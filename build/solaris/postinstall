@@ -237,7 +237,7 @@ if [ "$service_created" = "true" ]; then
     svcs svc:/system/manifest-import || echo "NCPA: Manifest-import service status unknown"
     
     echo "NCPA: Checking for any SMF errors:"
-    svcs -xv 2>/dev/null | grep -A5 -B5 ncpa || echo "NCPA: No SMF errors related to ncpa"
+    svcs -xv 2>/dev/null | grep ncpa || echo "NCPA: No SMF errors related to ncpa"
     
     echo "NCPA: Raw svccfg inventory check:"
     svccfg inventory /var/svc/manifest/application/ncpa.xml 2>/dev/null || echo "NCPA: Inventory check failed"
