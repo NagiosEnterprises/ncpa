@@ -52,7 +52,7 @@ rm -f /var/svc/manifest/application/ncpa.xml
 
 # Clean up any remaining NCPA processes
 echo "NCPA: Performing comprehensive process cleanup..."
-timeout 30 bash -c '
+timeout 120 bash -c '
 for pattern in "/usr/local/ncpa/ncpa" "ncpa" "/usr/local/ncpa"; do
     pids=$(pgrep -f "$pattern" 2>/dev/null)
     if [ -n "$pids" ]; then

@@ -144,26 +144,7 @@ Copy the resulting ``~/ncpa/build/ncpa-3.X.X.sparc.pkg`` or ``~/ncpa/build/ncpa-
 
 For automated installations without interactive prompts, use::
 
-  pkgadd -n -a ./admin_file -d ./ncpa-3.X.X.<arch>.pkg ncpa
-
-Where ``admin_file`` contains::
-
-  mail=
-  instance=unique
-  partial=nocheck
-  runlevel=nocheck
-  idepend=nocheck
-  rdepend=nocheck
-  space=nocheck
-  setuid=nocheck
-  conflict=nocheck
-  action=nocheck
-  networktimeout=60
-  networkretries=3
-  authentication=quit
-  keystore=/var/sadm/security
-  proxy=
-  basedir=default
+  pkgadd -a ./admin_file -d ./ncpa-3.X.X.<arch>.pkg ncpa
 
 The installation process will:
 
@@ -317,10 +298,7 @@ If ``pkgrm ncpa`` gets stuck or ``pkginfo | grep ncpa`` still shows the package 
      pkginfo | grep ncpa
      
      # Try force removal (skip scripts) - may not work if root operations needed
-     sudo pkgrm -n -a /dev/null ncpa
-     
-     # If the above fails due to root requirements, try alternative approach
-     sudo pkgrm -f ncpa
+     sudo pkgrm -a /dev/null ncpa
 
 3. **Manual database cleanup** (if package still shows)::
 
