@@ -2,32 +2,35 @@
 #!/bin/bash
 
 # NCPA Pre-removal script for Solaris
+# Set timeout to prevent hanging during package removal
+set -m  # Enable job control
+trap 'echo "NCPA: Pre-removal timeout, continuing..."; exit 0' TERM
 
 echo "NCPA: Running pre-removal cleanup..."
 
 # Stop NCPA using the service script if available
 echo "NCPA: Stopping NCPA service..."
 if [ -x "/usr/local/bin/ncpa-service" ]; then
-    /usr/local/bin/ncpa-service stop
+    timeout 30 /usr/local/bin/ncpa-service stop 2>/dev/null || true
     echo "NCPA: Service stopped using service script"
 fi
 
-# Also try traditional SMF methods
-svcadm disable -s site/ncpa 2>/dev/null || true
-svcadm disable -s application/ncpa 2>/dev/null || true
+# Also try traditional SMF methods (without synchronous wait to prevent hanging)
+timeout 10 svcadm disable site/ncpa 2>/dev/null || true
+timeout 10 svcadm disable application/ncpa 2>/dev/null || true
 
-# Wait a bit for the service to stop
-sleep 2
+# Wait a bit for the service to stop (but don't wait synchronously)
+sleep 3
 
-# Check if the services exist before trying to delete them
-if svcs site/ncpa >/dev/null 2>&1; then
+# Check if the services exist before trying to delete them (with timeout)
+if timeout 5 svcs site/ncpa >/dev/null 2>&1; then
     echo "NCPA: Removing site/ncpa SMF service..."
-    svccfg delete site/ncpa 2>/dev/null || true
+    timeout 10 svccfg delete site/ncpa 2>/dev/null || true
 fi
 
-if svcs application/ncpa >/dev/null 2>&1; then
+if timeout 5 svcs application/ncpa >/dev/null 2>&1; then
     echo "NCPA: Removing application/ncpa SMF service..."
-    svccfg delete application/ncpa 2>/dev/null || true
+    timeout 10 svccfg delete application/ncpa 2>/dev/null || true
 fi
 
 # Remove startup links
@@ -49,10 +52,11 @@ rm -f /var/svc/manifest/application/ncpa.xml
 
 # Clean up any remaining NCPA processes
 echo "NCPA: Performing comprehensive process cleanup..."
+timeout 30 bash -c '
 for pattern in "/usr/local/ncpa/ncpa" "ncpa" "/usr/local/ncpa"; do
     pids=$(pgrep -f "$pattern" 2>/dev/null)
     if [ -n "$pids" ]; then
-        echo "NCPA: Found processes with pattern '$pattern': $pids"
+        echo "NCPA: Found processes with pattern '\''$pattern'\'': $pids"
         for pid in $pids; do
             echo "NCPA: Stopping process $pid..."
             kill $pid 2>/dev/null || true
@@ -60,10 +64,11 @@ for pattern in "/usr/local/ncpa/ncpa" "ncpa" "/usr/local/ncpa"; do
         done
     fi
 done
+' || true
 
 # Wait and verify cleanup
 sleep 2
-remaining=$(pgrep -f "/usr/local/ncpa" 2>/dev/null | wc -l)
+remaining=$(pgrep -f "/usr/local/ncpa" 2>/dev/null | wc -l || echo "0")
 if [ "$remaining" -gt 0 ]; then
     echo "NCPA: Warning: $remaining processes may still be running"
     # Final aggressive cleanup
