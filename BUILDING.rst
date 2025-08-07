@@ -302,13 +302,83 @@ The uninstall process will:
 * Remove PID files and lock files
 * Preserve user data and logs (in ``/usr/local/ncpa/var/``)
 
+**Troubleshooting Uninstall Issues**
+
+If ``pkgrm ncpa`` gets stuck or ``pkginfo | grep ncpa`` still shows the package after removal attempts:
+
+1. **Kill hanging pkgrm processes**::
+
+     ps -ef | grep pkgrm
+     sudo pkill -f pkgrm
+
+2. **Force package removal from database**::
+
+     # Check package status
+     pkginfo | grep ncpa
+     
+     # Try force removal (skip scripts) - may not work if root operations needed
+     sudo pkgrm -n -a /dev/null ncpa
+     
+     # If the above fails due to root requirements, try alternative approach
+     sudo pkgrm -f ncpa
+
+3. **Manual database cleanup** (if package still shows)::
+
+     # Back up package database
+     sudo cp -r /var/sadm/pkg /var/sadm/pkg.backup
+     
+     # Remove NCPA from package database
+     sudo rm -rf /var/sadm/pkg/ncpa
+     
+     # Refresh package database
+     sudo pkgchk -n
+
+4. **Alternative: Edit package scripts to prevent hanging**::
+
+     # If package removal keeps hanging, temporarily modify preremove script
+     sudo cp /var/sadm/pkg/ncpa/install/preremove /var/sadm/pkg/ncpa/install/preremove.backup
+     sudo sh -c 'echo "#!/bin/bash" > /var/sadm/pkg/ncpa/install/preremove'
+     sudo sh -c 'echo "echo NCPA: Skipping preremove operations" >> /var/sadm/pkg/ncpa/install/preremove'
+     sudo sh -c 'echo "exit 0" >> /var/sadm/pkg/ncpa/install/preremove'
+     sudo chmod +x /var/sadm/pkg/ncpa/install/preremove
+     
+     # Now try normal removal
+     sudo pkgrm ncpa
+
+5. **Complete manual cleanup**::
+
+     # Remove SMF services
+     sudo svcadm disable application/ncpa 2>/dev/null || true
+     sudo svccfg delete -f application/ncpa 2>/dev/null || true
+     
+     # Remove startup links
+     sudo rm -f /etc/rc2.d/S99ncpa /etc/rc3.d/S99ncpa
+     sudo rm -f /etc/rc0.d/K01ncpa /etc/rc1.d/K01ncpa /etc/rc6.d/K01ncpa
+     
+     # Remove service scripts
+     sudo rm -f /usr/local/bin/ncpa-service
+     sudo rm -f /usr/local/bin/ncpa-start.sh
+     sudo rm -f /etc/init.d/ncpa
+     
+     # Remove main installation
+     sudo rm -rf /usr/local/ncpa
+     
+     # Remove SMF manifests
+     sudo rm -f /var/svc/manifest/application/ncpa.xml
+
+6. **Verify complete removal**::
+
+     pkginfo | grep ncpa          # Should return nothing
+     svcs -a | grep ncpa          # Should return nothing
+     ps -ef | grep ncpa           # Should return nothing (except grep)
+
 **Upgrade Process**
 
 To upgrade NCPA:
 
 1. **Install new package** (no need to manually stop NCPA)::
 
-     pkgadd -n -a ./admin_file -d ./ncpa-3.X.X.<arch>.pkg
+     pkgadd -a ./admin_file -d ./ncpa-3.X.X.<arch>.pkg
 
 2. **The upgrade automatically**:
    
