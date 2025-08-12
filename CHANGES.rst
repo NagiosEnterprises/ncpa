@@ -8,6 +8,7 @@ Changelog
 **Updates**
 - Rewrote the build process to use virtual environments for Python dependencies, improving compatibility and isolation. (Blake Bahner)
 - Improved process killing logic on unix systems to handle more edge cases and ensure all child processes are terminated. (Blake Bahner)
+- Updated passive check sending to attempt certificate verification when possible, falling back to legacy behavior if verification fails. (Blake Bahner)
 
 **Bug Fixes**
 - Fixed an issue where the API form would not clear fields after certain actions. (Blake Bahner)
