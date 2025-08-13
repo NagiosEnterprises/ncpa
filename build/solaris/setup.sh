@@ -24,7 +24,9 @@ echo "Checking for C/C++ compiler (gcc/g++, cc/CC) required for building Python 
 
 # Function to check for any working compiler
 find_compiler() {
+    echo "Looking for C/C++ compiler..."
     for c in gcc g++ cc CC; do
+        echo "Checking for $c..."
         if command -v "$c" >/dev/null 2>&1; then
             echo "$c"
             return 0
@@ -34,6 +36,7 @@ find_compiler() {
 }
 
 COMPILER_FOUND=$(find_compiler)
+echo "Compiler: $COMPILER_FOUND"
 if [ -z "$COMPILER_FOUND" ]; then
     echo "No working C/C++ compiler found. Attempting installation via all available package managers and locations..."
     installed=false
