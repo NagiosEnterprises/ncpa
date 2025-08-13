@@ -229,9 +229,15 @@ install_prereqs() {
 }
 
 # This must be outside of install_prereqs(), so it will be executed during workflow build.
+
 echo -e "***** linux/setup.sh - add users/groups"
 set +e
 useradd nagios
 groupadd nagios
 usermod -g nagios nagios
 set -e
+
+# Automatically install Python requirements in venv after setup
+if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
+    "$VENV_MANAGER" install-requirements
+fi

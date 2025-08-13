@@ -35,29 +35,42 @@ find_compiler() {
 
 COMPILER_FOUND=$(find_compiler)
 if [ -z "$COMPILER_FOUND" ]; then
-    echo "No working C/C++ compiler found. Attempting installation via available package managers..."
+    echo "No working C/C++ compiler found. Attempting installation via all available package managers and locations..."
     installed=false
-    # Try IPS (pkg)
+    # Try IPS (pkg) for all known GCC and Studio versions
     if command -v pkg >/dev/null 2>&1; then
-        echo "Trying IPS (pkg) for GCC..."
-        sudo pkg install --accept developer/gcc developer/gcc-15 developer/gcc-14 developer/gcc-13 developer/gcc-12 developer/gcc-11 developer/gcc-10 developer/gcc-9 developer/gcc-8 developer/gcc-7 developer/solarisstudio-cc
-        installed=true
+        for pkgname in developer/gcc developer/gcc-15 developer/gcc-14 developer/gcc-13 developer/gcc-12 developer/gcc-11 developer/gcc-10 developer/gcc-9 developer/gcc-8 developer/gcc-7 developer/solarisstudio-cc; do
+            echo "Trying IPS (pkg) for $pkgname..."
+            sudo pkg install --accept "$pkgname" && installed=true && break
+        done
     fi
-    # Try OpenCSW
+    # Try OpenCSW for all known GCC versions
     if [ "$installed" = false ] && [ -f /opt/csw/bin/pkgutil ]; then
-        echo "Trying OpenCSW for GCC..."
-        sudo /opt/csw/bin/pkgutil -y -i gcc15 gcc14 gcc13 gcc12 gcc11 gcc10 gcc9 gcc8 gcc7
-        installed=true
+        for cswver in gcc15 gcc14 gcc13 gcc12 gcc11 gcc10 gcc9 gcc8 gcc7; do
+            echo "Trying OpenCSW for $cswver..."
+            sudo /opt/csw/bin/pkgutil -y -i "$cswver" && installed=true && break
+        done
+    fi
+    # Try common manual install locations
+    if [ "$installed" = false ]; then
+        for path in /usr/gcc/bin/gcc /usr/local/bin/gcc /opt/csw/bin/gcc /usr/bin/gcc; do
+            if [ -x "$path" ]; then
+                echo "Found manually installed gcc at $path"
+                export PATH="$(dirname $path):$PATH"
+                installed=true
+                break
+            fi
+        done
     fi
     # Try Oracle Developer Studio (manual)
     if [ "$installed" = false ]; then
         echo "If you have Oracle Developer Studio, ensure 'cc' and 'CC' are in your PATH."
         echo "You can download it from: https://www.oracle.com/tools/developer-studio/"
     fi
-    # Re-check after install
+    # Re-check after all install attempts
     COMPILER_FOUND=$(find_compiler)
     if [ -z "$COMPILER_FOUND" ]; then
-        echo "ERROR: No C/C++ compiler available after attempted installation."
+        echo "ERROR: No C/C++ compiler available after all attempted installations."
         echo "Please manually install GCC or Oracle Developer Studio and ensure it is in your PATH."
         exit 1
     fi
