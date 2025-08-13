@@ -24,9 +24,7 @@ echo "Checking for C/C++ compiler (gcc/g++, cc/CC) required for building Python 
 
 # Function to check for any working compiler
 find_compiler() {
-    echo "Looking for C/C++ compiler..."
     for c in gcc g++ cc CC; do
-        echo "Checking for $c..."
         if command -v "$c" >/dev/null 2>&1; then
             echo "$c"
             return 0
@@ -35,8 +33,6 @@ find_compiler() {
     echo ""
 }
 
-find_compiler
-echo "looking for compiler..."
 COMPILER_FOUND=$(find_compiler)
 echo "Compiler: $COMPILER_FOUND"
 if [ -z "$COMPILER_FOUND" ]; then
@@ -85,8 +81,16 @@ fi
 
 # Set environment variables for build tools
 
-# Ensure PATH, CC, and CXX are exported for all subshells and build steps
-export PATH="/usr/gcc/bin:/usr/local/bin:/opt/csw/bin:/usr/bin:$PATH"
+## Dynamically add all /usr/gcc/*/bin directories to PATH
+GCC_BIN_PATHS=""
+for d in /usr/gcc/*/bin; do
+    if [ -d "$d" ]; then
+        GCC_BIN_PATHS="$GCC_BIN_PATHS:$d"
+    fi
+done
+# Remove leading colon if present
+GCC_BIN_PATHS="${GCC_BIN_PATHS#:}"
+export PATH="$GCC_BIN_PATHS:/usr/gcc/bin:/usr/local/bin:/opt/csw/bin:/usr/bin:$PATH"
 export CC
 export CXX
 hash -r  # Refresh shell command lookup
