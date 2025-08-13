@@ -16,6 +16,11 @@ else
     PYTHONBIN=$(which python3)
 fi
 
+# Automatically install Python requirements in venv after setup
+if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
+    "$VENV_MANAGER" install-requirements
+fi
+
 update_py_packages() {
     # Check if we're in virtual environment mode
     if [[ -n "$VENV_MANAGER" && -n "$VENV_NAME" && "$SKIP_PYTHON" == "1" ]]; then

@@ -24,6 +24,11 @@ if [[ -z "$AGENT_DIR" ]]; then
     AGENT_DIR="$BUILD_DIR/../agent"
 fi
 
+# Automatically install Python requirements in venv after setup
+if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
+    "$VENV_MANAGER" install-requirements
+fi
+
 echo -e "***** macos/setup.sh - SKIP_PYTHON: $SKIP_PYTHON"
 
 set +e

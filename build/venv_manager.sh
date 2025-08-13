@@ -505,7 +505,7 @@ main() {
             activate_venv
             ;;
         "setup")
-            create_venv && activate_venv && setup_build_tools && install_requirements
+            create_venv && activate_venv && setup_build_tools
             ;;
         "install-requirements")
             activate_venv && install_requirements "$1"
