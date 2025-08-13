@@ -35,6 +35,7 @@ find_compiler() {
     return 1
 }
 
+find_compiler
 echo "looking for compiler..."
 COMPILER_FOUND=$(find_compiler)
 echo "Compiler: $COMPILER_FOUND"
