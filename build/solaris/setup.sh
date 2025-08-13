@@ -17,6 +17,70 @@ else
     echo "WARNING: Unable to determine Solaris SRU version. Continuing, but build may fail."
 fi
 
+# Ensure C/C++ compiler is available for building Python wheels
+
+# --- Future-proof compiler check and installation for Solaris ---
+echo "Checking for C/C++ compiler (gcc/g++, cc/CC) required for building Python wheels..."
+
+# Function to check for any working compiler
+find_compiler() {
+    for c in gcc g++ cc CC; do
+        if command -v "$c" >/dev/null 2>&1; then
+            echo "$c"
+            return 0
+        fi
+    done
+    return 1
+}
+
+COMPILER_FOUND=$(find_compiler)
+if [ -z "$COMPILER_FOUND" ]; then
+    echo "No working C/C++ compiler found. Attempting installation via available package managers..."
+    installed=false
+    # Try IPS (pkg)
+    if command -v pkg >/dev/null 2>&1; then
+        echo "Trying IPS (pkg) for GCC..."
+        sudo pkg install --accept developer/gcc developer/gcc-15 developer/gcc-14 developer/gcc-13 developer/gcc-12 developer/gcc-11 developer/gcc-10 developer/gcc-9 developer/gcc-8 developer/gcc-7 developer/solarisstudio-cc
+        installed=true
+    fi
+    # Try OpenCSW
+    if [ "$installed" = false ] && [ -f /opt/csw/bin/pkgutil ]; then
+        echo "Trying OpenCSW for GCC..."
+        sudo /opt/csw/bin/pkgutil -y -i gcc15 gcc14 gcc13 gcc12 gcc11 gcc10 gcc9 gcc8 gcc7
+        installed=true
+    fi
+    # Try Oracle Developer Studio (manual)
+    if [ "$installed" = false ]; then
+        echo "If you have Oracle Developer Studio, ensure 'cc' and 'CC' are in your PATH."
+        echo "You can download it from: https://www.oracle.com/tools/developer-studio/"
+    fi
+    # Re-check after install
+    COMPILER_FOUND=$(find_compiler)
+    if [ -z "$COMPILER_FOUND" ]; then
+        echo "ERROR: No C/C++ compiler available after attempted installation."
+        echo "Please manually install GCC or Oracle Developer Studio and ensure it is in your PATH."
+        exit 1
+    fi
+else
+    echo "✓ C/C++ compiler found: $COMPILER_FOUND ($(which $COMPILER_FOUND))"
+fi
+
+# Set environment variables for build tools
+export PATH="/usr/gcc/bin:/usr/local/bin:/opt/csw/bin:/usr/bin:$PATH"
+if command -v gcc >/dev/null 2>&1; then
+    export CC="gcc"
+else
+    export CC="$COMPILER_FOUND"
+fi
+if command -v g++ >/dev/null 2>&1; then
+    export CXX="g++"
+elif command -v CC >/dev/null 2>&1; then
+    export CXX="CC"
+else
+    export CXX="$COMPILER_FOUND"
+fi
+# --- End future-proof compiler check ---
+
 # Ensure IPS package repository is up to date
 if command -v pkg >/dev/null 2>&1; then
     echo "Updating IPS package repository..."
