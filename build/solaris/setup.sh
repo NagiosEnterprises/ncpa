@@ -66,19 +66,47 @@ else
 fi
 
 # Set environment variables for build tools
+
+# Ensure PATH, CC, and CXX are exported for all subshells and build steps
 export PATH="/usr/gcc/bin:/usr/local/bin:/opt/csw/bin:/usr/bin:$PATH"
+export CC
+export CXX
+hash -r  # Refresh shell command lookup
+
+# Set CC and CXX to preferred available compilers
 if command -v gcc >/dev/null 2>&1; then
-    export CC="gcc"
+    CC="gcc"
 else
-    export CC="$COMPILER_FOUND"
+    CC="$COMPILER_FOUND"
 fi
 if command -v g++ >/dev/null 2>&1; then
-    export CXX="g++"
+    CXX="g++"
 elif command -v CC >/dev/null 2>&1; then
-    export CXX="CC"
+    CXX="CC"
 else
-    export CXX="$COMPILER_FOUND"
+    CXX="$COMPILER_FOUND"
 fi
+export CC
+export CXX
+
+# Print diagnostics for compiler availability
+echo "PATH: $PATH"
+echo "CC: $CC ($(which $CC 2>/dev/null))"
+echo "CXX: $CXX ($(which $CXX 2>/dev/null))"
+if command -v gcc >/dev/null 2>&1; then gcc --version; fi
+if command -v g++ >/dev/null 2>&1; then g++ --version; fi
+if command -v cc >/dev/null 2>&1; then cc -V 2>&1 | head -10; fi
+if command -v CC >/dev/null 2>&1; then CC -V 2>&1 | head -10; fi
+
+# Test compiler functionality in the current shell and subshells
+echo 'int main(){return 0;}' > /tmp/test_compiler.c
+if "$CC" -o /tmp/test_compiler /tmp/test_compiler.c >/dev/null 2>&1; then
+    echo "✓ $CC can compile C programs."
+else
+    echo "✗ $CC failed to compile a simple C program."
+    exit 1
+fi
+rm -f /tmp/test_compiler /tmp/test_compiler.c
 # --- End future-proof compiler check ---
 
 # Ensure IPS package repository is up to date
