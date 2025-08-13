@@ -32,7 +32,7 @@ find_compiler() {
             return 0
         fi
     done
-    return 1
+    echo ""
 }
 
 find_compiler
