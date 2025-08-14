@@ -309,15 +309,16 @@ Section # "Create Config.ini"
 
     Call CheckInstall
 
-    ; Disable currently running ncpa listener/passive services
+    ; Disable currently running ncpa service(s) and force kill lingering processes
     ReadEnvStr $9 COMSPEC
     nsExec::Exec '$9 /c sc stop ncpalistener'
     nsExec::Exec '$9 /c sc stop ncpapassive'
     nsExec::Exec '$9 /c sc delete ncpalistener'
     nsExec::Exec '$9 /c sc delete ncpapassive'
     nsExec::Exec '$9 /c sc stop ncpa'
-    ; wait for the service(s) to stop
     Sleep 2000
+    nsExec::Exec '$9 /c taskkill /F /IM ncpa.exe'
+    Sleep 1000
 
     ; Remove old log files for services and old passive section ;; TODO: I don't think the first three lines here are valid anymore -- double check and if not, remove this.
     Delete "$INSTDIR\ncpa_listener.log"

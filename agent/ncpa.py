@@ -1068,6 +1068,22 @@ if __SYSTEM__ == 'nt':
                                            servicemanager.PYS_SERVICE_STOPPED,
                                            (self._svc_name_, str(e)))
 
+
+        def force_kill(self, proc, name):
+            try:
+                import os, signal, sys
+                if proc.is_alive():
+                    self.logger.warning(f"{name} process did not terminate cleanly. Attempting force kill...")
+                    if hasattr(proc, 'pid') and proc.pid:
+                        os.kill(proc.pid, signal.SIGTERM)
+                        proc.join(timeout=5)
+                        if proc.is_alive():
+                            self.logger.error(f"{name} process (PID {proc.pid}) could not be killed.")
+                    else:
+                        self.logger.error(f"{name} process has no PID; cannot force kill.")
+            except Exception as e:
+                self.logger.exception(f"Error force-killing {name} process: {e}")
+
         def main(self):
             try:
                 # instantiate child processes
@@ -1082,12 +1098,28 @@ if __SYSTEM__ == 'nt':
                     time.sleep(0.1)
             finally:
                 # kill/clean up child processes
-                if self.p:
-                    self.p.terminate()
-                    self.p.join() 
-                if self.l:
-                    self.l.terminate()
-                    self.l.join()
+                try:
+                    if self.p:
+                        self.logger.info("Terminating passive process...")
+                        self.p.terminate()
+                        self.p.join(timeout=10)
+                        if self.p.is_alive():
+                            self.logger.warning("Passive process did not terminate cleanly.")
+                            self.force_kill(self.p, "Passive")
+                    if self.l:
+                        self.logger.info("Terminating listener process...")
+                        self.l.terminate()
+                        self.l.join(timeout=10)
+                        if self.l.is_alive():
+                            self.logger.warning("Listener process did not terminate cleanly.")
+                            self.force_kill(self.l, "Listener")
+                    # Add any additional cleanup here (close files, sockets, etc.)
+                    self.logger.info("Service cleanup complete. Exiting.")
+                except Exception as e:
+                    self.logger.exception("Error during service cleanup: %s", e)
+
+                import sys
+                sys.exit(0)
 
 
 # --------------------------
