@@ -36,6 +36,23 @@ error() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $*" | tee -a "$BUILD_LOG" >&2
 }
 
+get_original_user() {
+    if [ "$EUID" -eq 0 ]; then
+        echo "${SUDO_USER:-$USER}"
+    else
+        echo "$USER"
+    fi
+}
+
+run_as_user() {
+    local original_user=$(get_original_user)
+    if [ "$EUID" -eq 0 ] && [ -n "$SUDO_USER" ]; then
+        sudo -u "$original_user" "$@"
+    else
+        "$@"
+    fi
+}
+
 # Python version detection with preference for configured version
 detect_python() {
     local python_candidates=()
@@ -85,9 +102,9 @@ detect_python() {
         log "Ensuring latest Python 3 is installed via Homebrew..."
         if command -v brew >/dev/null 2>&1; then
             log "Running: brew update"
-            brew update
+            run_as_user brew update
             log "Running: brew install python"
-            brew install python
+            run_as_user brew install python
             log "Homebrew Python installation/update complete."
             # Add Homebrew Python to candidates
             python_candidates+=("/opt/homebrew/bin/python3" "/usr/local/bin/python3")
