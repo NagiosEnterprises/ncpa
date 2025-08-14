@@ -80,60 +80,6 @@ detect_python() {
     newest_cmd=""
     newest_version=""
 
-    for python_cmd in "${python_candidates[@]}"; do
-        if command -v "$python_cmd" >/dev/null 2>&1; then
-            if version_output=$($python_cmd --version 2>&1); then
-                py_version=""
-                # Method 1: Extract from "Python X.Y.Z" format
-                if [ -z "$py_version" ]; then
-                    py_version=$(echo "$version_output" | grep -o 'Python [0-9][0-9]*\.[0-9][0-9]*' | grep -o '[0-9][0-9]*\.[0-9][0-9]*' | head -1)
-                fi
-                # Method 2: Fallback - extract any X.Y pattern
-                if [ -z "$py_version" ]; then
-                    py_version=$(echo "$version_output" | grep -o '[0-9][0-9]*\.[0-9][0-9]*' | head -1)
-                fi
-                # Method 3: Use awk if available
-                if [ -z "$py_version" ] && command -v awk >/dev/null 2>&1; then
-                    py_version=$(echo "$version_output" | awk '{for(i=1;i<=NF;i++) if($i ~ /^[0-9]+\.[0-9]+/) {split($i,a,"."); print a[1]"."a[2]; break}}')
-                fi
-                if [ -n "$py_version" ]; then
-                    major=$(echo "$py_version" | cut -d. -f1)
-                    minor=$(echo "$py_version" | cut -d. -f2)
-                    if [ -n "$major" ] && [ -n "$minor" ] && [ "$major" -eq "$major" ] 2>/dev/null && [ "$minor" -eq "$minor" ] 2>/dev/null; then
-                        if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 8 ]); then
-                            log "Found $python_cmd: version_output='$version_output' -> parsed_version='$py_version' (major=$major, minor=$minor)"
-                            python_cmds_found+=("$python_cmd")
-                            python_versions_found+=("$py_version")
-                            # Track the newest version
-                            if [ "$major" -gt "$newest_major" ] || { [ "$major" -eq "$newest_major" ] && [ "$minor" -gt "$newest_minor" ]; }; then
-                                newest_major="$major"
-                                newest_minor="$minor"
-                                newest_cmd="$python_cmd"
-                                newest_version="$py_version"
-                            fi
-                        else
-                            log "⚠ Python $py_version at $python_cmd is too old (need >= 3.8)"
-                        fi
-                    else
-                        log "⚠ Failed to parse version for $python_cmd (output: '$version_output', parsed: '$py_version')"
-                    fi
-                else
-                    log "⚠ Could not extract version from $python_cmd output: '$version_output'"
-                fi
-            else
-                log "⚠ Failed to get version from $python_cmd"
-            fi
-        fi
-    done
-
-    # Always use the newest stable version found (ignore PYTHON_MAJOR_MINOR preference)
-    if [ -n "$newest_cmd" ]; then
-        PYTHON_EXECUTABLE="$newest_cmd"
-        PYTHON_VERSION="$newest_version"
-        log "✓ Using newest available Python $newest_version: $newest_cmd"
-        return 0
-    fi
-
     # If no suitable Python found, try to install latest Python with Homebrew on macOS
     if [ "$PLATFORM" = "macos" ]; then
         if ! command -v brew >/dev/null 2>&1; then
@@ -194,6 +140,60 @@ detect_python() {
             error "Failed to install Python with Homebrew. Please install manually."
             return 1
         fi
+    fi
+
+    for python_cmd in "${python_candidates[@]}"; do
+        if command -v "$python_cmd" >/dev/null 2>&1; then
+            if version_output=$($python_cmd --version 2>&1); then
+                py_version=""
+                # Method 1: Extract from "Python X.Y.Z" format
+                if [ -z "$py_version" ]; then
+                    py_version=$(echo "$version_output" | grep -o 'Python [0-9][0-9]*\.[0-9][0-9]*' | grep -o '[0-9][0-9]*\.[0-9][0-9]*' | head -1)
+                fi
+                # Method 2: Fallback - extract any X.Y pattern
+                if [ -z "$py_version" ]; then
+                    py_version=$(echo "$version_output" | grep -o '[0-9][0-9]*\.[0-9][0-9]*' | head -1)
+                fi
+                # Method 3: Use awk if available
+                if [ -z "$py_version" ] && command -v awk >/dev/null 2>&1; then
+                    py_version=$(echo "$version_output" | awk '{for(i=1;i<=NF;i++) if($i ~ /^[0-9]+\.[0-9]+/) {split($i,a,"."); print a[1]"."a[2]; break}}')
+                fi
+                if [ -n "$py_version" ]; then
+                    major=$(echo "$py_version" | cut -d. -f1)
+                    minor=$(echo "$py_version" | cut -d. -f2)
+                    if [ -n "$major" ] && [ -n "$minor" ] && [ "$major" -eq "$major" ] 2>/dev/null && [ "$minor" -eq "$minor" ] 2>/dev/null; then
+                        if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 8 ]); then
+                            log "Found $python_cmd: version_output='$version_output' -> parsed_version='$py_version' (major=$major, minor=$minor)"
+                            python_cmds_found+=("$python_cmd")
+                            python_versions_found+=("$py_version")
+                            # Track the newest version
+                            if [ "$major" -gt "$newest_major" ] || { [ "$major" -eq "$newest_major" ] && [ "$minor" -gt "$newest_minor" ]; }; then
+                                newest_major="$major"
+                                newest_minor="$minor"
+                                newest_cmd="$python_cmd"
+                                newest_version="$py_version"
+                            fi
+                        else
+                            log "⚠ Python $py_version at $python_cmd is too old (need >= 3.8)"
+                        fi
+                    else
+                        log "⚠ Failed to parse version for $python_cmd (output: '$version_output', parsed: '$py_version')"
+                    fi
+                else
+                    log "⚠ Could not extract version from $python_cmd output: '$version_output'"
+                fi
+            else
+                log "⚠ Failed to get version from $python_cmd"
+            fi
+        fi
+    done
+
+    # Always use the newest stable version found (ignore PYTHON_MAJOR_MINOR preference)
+    if [ -n "$newest_cmd" ]; then
+        PYTHON_EXECUTABLE="$newest_cmd"
+        PYTHON_VERSION="$newest_version"
+        log "✓ Using newest available Python $newest_version: $newest_cmd"
+        return 0
     fi
     error "No suitable Python 3.8+ interpreter found and automatic installation failed."
     return 1
