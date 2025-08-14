@@ -126,7 +126,8 @@ detect_python() {
 
     # Prefer the configured version if available
     if [ -n "$PYTHON_MAJOR_MINOR" ]; then
-        for cmd in "${!python_found[@]}"; do
+        # Mac/BSD Bash does not support ${!assoc_array[@]} reliably, so use workaround
+        for cmd in $(printf '%s\n' "${!python_found[@]}"); do
             if [ "${python_found[$cmd]}" = "$PYTHON_MAJOR_MINOR" ]; then
                 PYTHON_EXECUTABLE="$cmd"
                 PYTHON_VERSION="$PYTHON_MAJOR_MINOR"
