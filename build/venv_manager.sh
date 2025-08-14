@@ -72,8 +72,9 @@ detect_python() {
     log "Detecting Python interpreter (preferred: $PYTHON_MAJOR_MINOR)..."
     
 
-    # Collect all valid Python candidates and their versions
-    declare -A python_found
+    # Collect all valid Python candidates and their versions (Bash 3.x compatible)
+    python_cmds_found=()
+    python_versions_found=()
     newest_major=0
     newest_minor=0
     newest_cmd=""
@@ -101,6 +102,8 @@ detect_python() {
                     if [ -n "$major" ] && [ -n "$minor" ] && [ "$major" -eq "$major" ] 2>/dev/null && [ "$minor" -eq "$minor" ] 2>/dev/null; then
                         if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 8 ]); then
                             log "Found $python_cmd: version_output='$version_output' -> parsed_version='$py_version' (major=$major, minor=$minor)"
+                            python_cmds_found+=("$python_cmd")
+                            python_versions_found+=("$py_version")
                             # Track the newest version
                             if [ "$major" -gt "$newest_major" ] || { [ "$major" -eq "$newest_major" ] && [ "$minor" -gt "$newest_minor" ]; }; then
                                 newest_major="$major"
@@ -108,7 +111,6 @@ detect_python() {
                                 newest_cmd="$python_cmd"
                                 newest_version="$py_version"
                             fi
-                            python_found["$python_cmd"]="$py_version"
                         else
                             log "⚠ Python $py_version at $python_cmd is too old (need >= 3.8)"
                         fi
@@ -126,14 +128,15 @@ detect_python() {
 
     # Prefer the configured version if available
     if [ -n "$PYTHON_MAJOR_MINOR" ]; then
-        # Mac/BSD Bash does not support ${!assoc_array[@]} reliably, so use workaround
-        for cmd in $(printf '%s\n' "${!python_found[@]}"); do
-            if [ "${python_found[$cmd]}" = "$PYTHON_MAJOR_MINOR" ]; then
-                PYTHON_EXECUTABLE="$cmd"
+        i=0
+        while [ $i -lt ${#python_cmds_found[@]} ]; do
+            if [ "${python_versions_found[$i]}" = "$PYTHON_MAJOR_MINOR" ]; then
+                PYTHON_EXECUTABLE="${python_cmds_found[$i]}"
                 PYTHON_VERSION="$PYTHON_MAJOR_MINOR"
-                log "✓ Found preferred Python $PYTHON_MAJOR_MINOR: $cmd"
+                log "✓ Found preferred Python $PYTHON_MAJOR_MINOR: ${python_cmds_found[$i]}"
                 return 0
             fi
+            i=$((i+1))
         done
     fi
 
