@@ -82,63 +82,12 @@ detect_python() {
 
     # If no suitable Python found, try to install latest Python with Homebrew on macOS
     if [ "$PLATFORM" = "macos" ]; then
-        if ! command -v brew >/dev/null 2>&1; then
-            log "Homebrew is not installed. Attempting to install Homebrew..."
-            NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            # Add Homebrew to PATH for immediate use
-            if [ -d "/opt/homebrew/bin" ]; then
-                export PATH="/opt/homebrew/bin:$PATH"
-            elif [ -d "/usr/local/bin" ]; then
-                export PATH="/usr/local/bin:$PATH"
-            fi
-            if ! command -v brew >/dev/null 2>&1; then
-                error "Failed to install Homebrew automatically. Please install Homebrew from https://brew.sh and re-run this script."
+        if [ -f "$SCRIPT_DIR/macos/installers.sh" ]; then
+            source "$SCRIPT_DIR/macos/installers.sh"
+            if ! verify_or_install_python; then
+                error "Failed to verify or install Python on macOS"
                 return 1
             fi
-            log "✓ Homebrew installed successfully."
-        fi
-        # Update Homebrew to get the latest Python formula
-        log "Updating Homebrew to get the latest Python version..."
-        brew update >/dev/null 2>&1
-        # Try to install latest Python (usually python@3.x)
-        if brew install python >/dev/null 2>&1; then
-            log "✓ Homebrew installed latest Python. Retrying detection..."
-            # Add Homebrew Python to PATH for immediate detection
-            export PATH="/usr/local/bin:/opt/homebrew/bin:$PATH"
-            # Try detection again
-            for python_cmd in "${python_candidates[@]}"; do
-                if command -v "$python_cmd" >/dev/null 2>&1; then
-                    if version_output=$($python_cmd --version 2>&1); then
-                        py_version=""
-                        if [ -z "$py_version" ]; then
-                            py_version=$(echo "$version_output" | grep -o 'Python [0-9][0-9]*\.[0-9][0-9]*' | grep -o '[0-9][0-9]*\.[0-9][0-9]*' | head -1)
-                        fi
-                        if [ -z "$py_version" ]; then
-                            py_version=$(echo "$version_output" | grep -o '[0-9][0-9]*\.[0-9][0-9]*' | head -1)
-                        fi
-                        if [ -z "$py_version" ] && command -v awk >/dev/null 2>&1; then
-                            py_version=$(echo "$version_output" | awk '{for(i=1;i<=NF;i++) if($i ~ /^[0-9]+\.[0-9]+/) {split($i,a,"."); print a[1]"."a[2]; break}}')
-                        fi
-                        if [ -n "$py_version" ]; then
-                            major=$(echo "$py_version" | cut -d. -f1)
-                            minor=$(echo "$py_version" | cut -d. -f2)
-                            if [ -n "$major" ] && [ -n "$minor" ] && [ "$major" -eq "$major" ] 2>/dev/null && [ "$minor" -eq "$minor" ] 2>/dev/null; then
-                                if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 8 ]); then
-                                    PYTHON_EXECUTABLE="$python_cmd"
-                                    PYTHON_VERSION="$py_version"
-                                    log "✓ Found newly installed Python $py_version: $python_cmd"
-                                    return 0
-                                fi
-                            fi
-                        fi
-                    fi
-                fi
-            done
-            error "Homebrew installed Python, but no suitable version was detected. Please check your Homebrew installation."
-            return 1
-        else
-            error "Failed to install Python with Homebrew. Please install manually."
-            return 1
         fi
     fi
 
