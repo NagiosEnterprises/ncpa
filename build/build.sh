@@ -6,94 +6,6 @@ echo -e "***** build/build.sh"
 BUILD_DIR_FOR_VERSION=$( cd "$(dirname "$0")" ; pwd -P )
 source "$BUILD_DIR_FOR_VERSION/version_config.sh"
 
-UNAME=$(uname)
-if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
-    # For systems without readlink -f, use a simpler, more reliable approach
-    echo "=== Solaris Path Resolution Debug ==="
-    echo "Script invocation (\$0): '$0'"
-    echo "Current working directory: $(pwd)"
-    
-    # Get the directory containing the script
-    SCRIPT_DIR="$(dirname "$0")"
-    echo "dirname \"\$0\": '$SCRIPT_DIR'"
-    
-    # Convert to absolute path immediately
-    if [ "$SCRIPT_DIR" = "." ]; then
-        # Script is in current directory (e.g., ./build.sh)
-        BUILD_DIR="$(pwd)"
-        echo "Script in current directory, BUILD_DIR: '$BUILD_DIR'"
-    elif [ "$SCRIPT_DIR" = ".." ]; then
-        # Script is in parent directory (e.g., ../build.sh)
-        BUILD_DIR="$(cd .. && pwd)"
-        echo "Script in parent directory, BUILD_DIR: '$BUILD_DIR'"
-    else
-        # Script has a path (e.g., /path/to/build.sh or relative/path/build.sh)
-        BUILD_DIR="$(cd "$SCRIPT_DIR" && pwd)"
-        echo "Script has path, BUILD_DIR: '$BUILD_DIR'"
-    fi
-    
-    # Handle symlinks if the script itself is a symlink
-    SCRIPT_PATH="$0"
-    if [ -L "$SCRIPT_PATH" ]; then
-        echo "Script is a symlink, resolving..."
-        # For symlinks, we need to resolve the actual location
-        while [ -L "$SCRIPT_PATH" ]; do
-            LINK_TARGET="$(readlink "$SCRIPT_PATH")"
-            case "$LINK_TARGET" in
-                /*) 
-                    # Absolute symlink
-                    SCRIPT_PATH="$LINK_TARGET"
-                    ;;
-                *)
-                    # Relative symlink
-                    SCRIPT_PATH="$(dirname "$SCRIPT_PATH")/$LINK_TARGET"
-                    ;;
-            esac
-        done
-        # Now get the directory of the resolved script
-        BUILD_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
-        echo "Resolved symlink, final BUILD_DIR: '$BUILD_DIR'"
-    fi
-    
-    # Verify BUILD_DIR is absolute and exists
-    case "$BUILD_DIR" in
-        /*) 
-            if [ -d "$BUILD_DIR" ]; then
-                echo "✓ BUILD_DIR is absolute and exists: '$BUILD_DIR'"
-            else
-                echo "✗ BUILD_DIR is absolute but doesn't exist: '$BUILD_DIR'"
-                exit 1
-            fi
-            ;;
-        *)
-            echo "✗ BUILD_DIR is not absolute: '$BUILD_DIR'"
-            exit 1
-            ;;
-    esac
-    
-    AGENT_DIR="$(cd "$BUILD_DIR/../agent" && pwd)"
-    echo "Resolved AGENT_DIR: '$AGENT_DIR'"
-    echo "====================================="
-else
-    BUILD_DIR=$(dirname "$(readlink -f "$0")")
-    AGENT_DIR=$(readlink -f "$BUILD_DIR/../agent")
-fi
-NCPA_VER=$(cat $BUILD_DIR/../VERSION)
-
-echo "=== Path Resolution Debug ==="
-echo "Script invocation: $0"
-echo "Script location: $(dirname "$0")"
-echo "BUILD_DIR (absolute): $BUILD_DIR"
-echo "AGENT_DIR (absolute): $AGENT_DIR"
-echo "UNAME: $UNAME"
-echo "Current working directory: $(pwd)"
-echo "============================="
-
-# Virtual environment configuration
-VENV_MANAGER="$BUILD_DIR/venv_manager.sh"
-VENV_NAME="ncpa-build-$(echo "$UNAME" | tr '[:upper:]' '[:lower:]')"
-export VENV_NAME
-
 # User-defined variables
 SKIP_SETUP=0
 PACKAGE_ONLY=0
@@ -202,6 +114,94 @@ done
 # Virtual Environment Setup
 # --------------------------
 
+UNAME=$(uname)
+if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
+    # For systems without readlink -f, use a simpler, more reliable approach
+    echo "=== Path Resolution Debug ==="
+    echo "Script invocation (\$0): '$0'"
+    echo "Current working directory: $(pwd)"
+    
+    # Get the directory containing the script
+    SCRIPT_DIR="$(dirname "$0")"
+    echo "dirname \"\$0\": '$SCRIPT_DIR'"
+    
+    # Convert to absolute path immediately
+    if [ "$SCRIPT_DIR" = "." ]; then
+        # Script is in current directory (e.g., ./build.sh)
+        BUILD_DIR="$(pwd)"
+        echo "Script in current directory, BUILD_DIR: '$BUILD_DIR'"
+    elif [ "$SCRIPT_DIR" = ".." ]; then
+        # Script is in parent directory (e.g., ../build.sh)
+        BUILD_DIR="$(cd .. && pwd)"
+        echo "Script in parent directory, BUILD_DIR: '$BUILD_DIR'"
+    else
+        # Script has a path (e.g., /path/to/build.sh or relative/path/build.sh)
+        BUILD_DIR="$(cd "$SCRIPT_DIR" && pwd)"
+        echo "Script has path, BUILD_DIR: '$BUILD_DIR'"
+    fi
+    
+    # Handle symlinks if the script itself is a symlink
+    SCRIPT_PATH="$0"
+    if [ -L "$SCRIPT_PATH" ]; then
+        echo "Script is a symlink, resolving..."
+        # For symlinks, we need to resolve the actual location
+        while [ -L "$SCRIPT_PATH" ]; do
+            LINK_TARGET="$(readlink "$SCRIPT_PATH")"
+            case "$LINK_TARGET" in
+                /*) 
+                    # Absolute symlink
+                    SCRIPT_PATH="$LINK_TARGET"
+                    ;;
+                *)
+                    # Relative symlink
+                    SCRIPT_PATH="$(dirname "$SCRIPT_PATH")/$LINK_TARGET"
+                    ;;
+            esac
+        done
+        # Now get the directory of the resolved script
+        BUILD_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
+        echo "Resolved symlink, final BUILD_DIR: '$BUILD_DIR'"
+    fi
+    
+    # Verify BUILD_DIR is absolute and exists
+    case "$BUILD_DIR" in
+        /*) 
+            if [ -d "$BUILD_DIR" ]; then
+                echo "✓ BUILD_DIR is absolute and exists: '$BUILD_DIR'"
+            else
+                echo "✗ BUILD_DIR is absolute but doesn't exist: '$BUILD_DIR'"
+                exit 1
+            fi
+            ;;
+        *)
+            echo "✗ BUILD_DIR is not absolute: '$BUILD_DIR'"
+            exit 1
+            ;;
+    esac
+    
+    AGENT_DIR="$(cd "$BUILD_DIR/../agent" && pwd)"
+    echo "Resolved AGENT_DIR: '$AGENT_DIR'"
+    echo "====================================="
+else
+    BUILD_DIR=$(dirname "$(readlink -f "$0")")
+    AGENT_DIR=$(readlink -f "$BUILD_DIR/../agent")
+fi
+NCPA_VER=$(cat $BUILD_DIR/../VERSION)
+
+echo "=== Path Resolution Debug ==="
+echo "Script invocation: $0"
+echo "Script location: $(dirname "$0")"
+echo "BUILD_DIR (absolute): $BUILD_DIR"
+echo "AGENT_DIR (absolute): $AGENT_DIR"
+echo "UNAME: $UNAME"
+echo "Current working directory: $(pwd)"
+echo "============================="
+
+# Virtual environment configuration
+VENV_MANAGER="$BUILD_DIR/venv_manager.sh"
+VENV_NAME="ncpa-build-$(echo "$UNAME" | tr '[:upper:]' '[:lower:]')"
+export VENV_NAME
+
 setup_virtual_environment() {
     echo "=== Setting up Virtual Environment ==="
     
@@ -254,107 +254,6 @@ echo -e "\nRunning build for: $UNAME"
 
 # Always setup virtual environment first
 setup_virtual_environment
-
-# CRITICAL: Ensure patchelf wrapper is available for Solaris builds
-if [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
-    echo "=== Ensuring patchelf wrapper is available for Solaris ==="
-    
-    # Check if patchelf wrapper exists in system location
-    if [ ! -f "/usr/local/bin/patchelf" ]; then
-        echo "patchelf wrapper not found in /usr/local/bin/, creating it now..."
-        
-        # Create the patchelf wrapper (same as in solaris setup)
-        sudo mkdir -p /usr/local/bin
-        sudo tee /usr/local/bin/patchelf > /dev/null << 'EOF'
-#!/bin/bash
-# Solaris-compatible patchelf wrapper for cx_Freeze
-# This wrapper provides patchelf functionality using native Solaris tools
-
-case "$1" in
-    "--version")
-        echo "patchelf 0.18.0 (solaris-wrapper)"
-        exit 0
-        ;;
-    "--print-rpath")
-        if [ -n "$2" ] && [ -f "$2" ]; then
-            # Try to extract RPATH using readelf or elfdump
-            if command -v readelf >/dev/null 2>&1; then
-                readelf -d "$2" 2>/dev/null | grep -E "RPATH|RUNPATH" | sed 's/.*\[\(.*\)\]/\1/' | head -1
-            elif command -v elfdump >/dev/null 2>&1; then
-                elfdump -d "$2" 2>/dev/null | grep -E "RPATH|RUNPATH" | awk '{print $5}' | head -1
-            else
-                echo ""
-            fi
-        else
-            echo ""
-        fi
-        exit 0
-        ;;
-    "--set-rpath"|"--add-rpath"|"--remove-rpath"|"--set-interpreter"|"--shrink-rpath"|"--add-needed"|"--remove-needed"|"--replace-needed"|"--no-default-lib")
-        # For modification operations, use elfedit if available
-        if command -v elfedit >/dev/null 2>&1; then
-            case "$1" in
-                "--set-rpath")
-                    if [ -n "$2" ] && [ -n "$3" ] && [ -f "$3" ]; then
-                        echo "Setting RPATH $2 on $3 using elfedit" >&2
-                        elfedit -e "dyn:runpath $2" "$3" 2>/dev/null || echo "elfedit operation may have failed" >&2
-                    fi
-                    ;;
-                *)
-                    echo "patchelf wrapper: $1 operation completed (using elfedit fallback)" >&2
-                    ;;
-            esac
-        else
-            echo "patchelf wrapper: $1 operation completed (no-op)" >&2
-        fi
-        exit 0
-        ;;
-    "--print-needed")
-        if [ -n "$2" ] && [ -f "$2" ]; then
-            # Extract needed libraries
-            if command -v readelf >/dev/null 2>&1; then
-                readelf -d "$2" 2>/dev/null | grep NEEDED | sed 's/.*\[\(.*\)\]/\1/'
-            elif command -v elfdump >/dev/null 2>&1; then
-                elfdump -d "$2" 2>/dev/null | grep NEEDED | awk '{print $5}'
-            elif command -v ldd >/dev/null 2>&1; then
-                ldd "$2" 2>/dev/null | awk '{print $1}' | grep -v "=>"
-            fi
-        fi
-        exit 0
-        ;;
-    "--print-interpreter")
-        if [ -n "$2" ] && [ -f "$2" ]; then
-            # Extract interpreter
-            if command -v readelf >/dev/null 2>&1; then
-                readelf -l "$2" 2>/dev/null | grep interpreter | sed 's/.*: \(.*\)\]/\1/'
-            elif command -v elfdump >/dev/null 2>&1; then
-                elfdump -i "$2" 2>/dev/null | grep interpreter | awk '{print $3}'
-            fi
-        fi
-        exit 0
-        ;;
-    *)
-        echo "patchelf wrapper: unknown option $1" >&2
-        exit 0
-        ;;
-esac
-EOF
-        
-        sudo chmod +x /usr/local/bin/patchelf
-        echo "✓ patchelf wrapper created at /usr/local/bin/patchelf"
-    else
-        echo "✓ patchelf wrapper already exists at /usr/local/bin/patchelf"
-    fi
-    
-    # Test the wrapper
-    if /usr/local/bin/patchelf --version >/dev/null 2>&1; then
-        echo "✓ patchelf wrapper is functional"
-    else
-        echo "✗ patchelf wrapper test failed"
-    fi
-    
-    echo "========================================================="
-fi 
 
 # Load platform-specific configurations (but skip their Python setup)
 export SKIP_PYTHON=1  # Tell platform scripts to skip Python installation
