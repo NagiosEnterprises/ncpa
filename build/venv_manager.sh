@@ -71,54 +71,44 @@ detect_python() {
     
     log "Detecting Python interpreter (preferred: $PYTHON_MAJOR_MINOR)..."
     
+
+    # Collect all valid Python candidates and their versions
+    declare -A python_found
+    newest_major=0
+    newest_minor=0
+    newest_cmd=""
+    newest_version=""
+
     for python_cmd in "${python_candidates[@]}"; do
         if command -v "$python_cmd" >/dev/null 2>&1; then
-            # Check if this Python is executable and get version
-            # Use a more robust version extraction method
             if version_output=$($python_cmd --version 2>&1); then
-                # Extract version using multiple methods for compatibility
                 py_version=""
-                
                 # Method 1: Extract from "Python X.Y.Z" format
                 if [ -z "$py_version" ]; then
                     py_version=$(echo "$version_output" | grep -o 'Python [0-9][0-9]*\.[0-9][0-9]*' | grep -o '[0-9][0-9]*\.[0-9][0-9]*' | head -1)
                 fi
-                
                 # Method 2: Fallback - extract any X.Y pattern
                 if [ -z "$py_version" ]; then
                     py_version=$(echo "$version_output" | grep -o '[0-9][0-9]*\.[0-9][0-9]*' | head -1)
                 fi
-                
                 # Method 3: Use awk if available
                 if [ -z "$py_version" ] && command -v awk >/dev/null 2>&1; then
                     py_version=$(echo "$version_output" | awk '{for(i=1;i<=NF;i++) if($i ~ /^[0-9]+\.[0-9]+/) {split($i,a,"."); print a[1]"."a[2]; break}}')
                 fi
-                
                 if [ -n "$py_version" ]; then
-                    local major=$(echo "$py_version" | cut -d. -f1)
-                    local minor=$(echo "$py_version" | cut -d. -f2)
-                    
-                    # Validate that major and minor are numeric
+                    major=$(echo "$py_version" | cut -d. -f1)
+                    minor=$(echo "$py_version" | cut -d. -f2)
                     if [ -n "$major" ] && [ -n "$minor" ] && [ "$major" -eq "$major" ] 2>/dev/null && [ "$minor" -eq "$minor" ] 2>/dev/null; then
-                        # Debug output to help troubleshoot
-                        log "Found $python_cmd: version_output='$version_output' -> parsed_version='$py_version' (major=$major, minor=$minor)"
-                        
-                        # Check if version is >= 3.8 (minimum for modern packages)
                         if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 8 ]); then
-                            PYTHON_EXECUTABLE="$python_cmd"
-                            PYTHON_VERSION="$py_version"
-                            
-                            # Check if this matches our preferred version
-                            if [ "$py_version" = "$PYTHON_MAJOR_MINOR" ]; then
-                                log "✓ Found preferred Python $py_version: $python_cmd"
-                                return 0
-                            elif [ "${py_version%.*}" = "${PYTHON_MAJOR_MINOR%.*}" ]; then
-                                log "✓ Found compatible Python $py_version: $python_cmd (close to preferred $PYTHON_MAJOR_MINOR)"
-                                return 0
-                            else
-                                log "✓ Found suitable Python $py_version: $python_cmd"
-                                return 0
+                            log "Found $python_cmd: version_output='$version_output' -> parsed_version='$py_version' (major=$major, minor=$minor)"
+                            # Track the newest version
+                            if [ "$major" -gt "$newest_major" ] || { [ "$major" -eq "$newest_major" ] && [ "$minor" -gt "$newest_minor" ]; }; then
+                                newest_major="$major"
+                                newest_minor="$minor"
+                                newest_cmd="$python_cmd"
+                                newest_version="$py_version"
                             fi
+                            python_found["$python_cmd"]="$py_version"
                         else
                             log "⚠ Python $py_version at $python_cmd is too old (need >= 3.8)"
                         fi
@@ -133,7 +123,27 @@ detect_python() {
             fi
         fi
     done
-    
+
+    # Prefer the configured version if available
+    if [ -n "$PYTHON_MAJOR_MINOR" ]; then
+        for cmd in "${!python_found[@]}"; do
+            if [ "${python_found[$cmd]}" = "$PYTHON_MAJOR_MINOR" ]; then
+                PYTHON_EXECUTABLE="$cmd"
+                PYTHON_VERSION="$PYTHON_MAJOR_MINOR"
+                log "✓ Found preferred Python $PYTHON_MAJOR_MINOR: $cmd"
+                return 0
+            fi
+        done
+    fi
+
+    # Otherwise, use the newest stable version found
+    if [ -n "$newest_cmd" ]; then
+        PYTHON_EXECUTABLE="$newest_cmd"
+        PYTHON_VERSION="$newest_version"
+        log "✓ Using newest available Python $newest_version: $newest_cmd"
+        return 0
+    fi
+
     error "No suitable Python 3.8+ interpreter found"
     error "Please install Python $PYTHON_MAJOR_MINOR or a compatible version"
     return 1
