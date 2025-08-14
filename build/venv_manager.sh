@@ -82,12 +82,17 @@ detect_python() {
 
     # If no suitable Python found, try to install latest Python with Homebrew on macOS
     if [ "$PLATFORM" = "macos" ]; then
-        if [ -f "$SCRIPT_DIR/macos/installers.sh" ]; then
-            source "$SCRIPT_DIR/macos/installers.sh"
-            if ! verify_or_install_python; then
-                error "Failed to verify or install Python on macOS"
-                return 1
-            fi
+        log "Ensuring latest Python 3 is installed via Homebrew..."
+        if command -v brew >/dev/null 2>&1; then
+            log "Running: brew update"
+            brew update
+            log "Running: brew install python"
+            brew install python
+            log "Homebrew Python installation/update complete."
+            # Add Homebrew Python to candidates
+            python_candidates+=("/opt/homebrew/bin/python3" "/usr/local/bin/python3")
+        else
+            error "Homebrew not found. Please install Homebrew and Python 3.8+ manually."
         fi
     fi
 
