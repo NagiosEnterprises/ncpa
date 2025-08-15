@@ -14,6 +14,11 @@ os_minor_version=$(echo $os_version | cut -f2 -d.)
 
 # Utility scripts
 
+clean_necessary_files() {
+    echo "    - Removing conflicting Homebrew libraries: readline, sqlite, expat..."
+    sudo rm -rf /usr/local/opt/readline /usr/local/opt/sqlite /usr/local/opt/expat
+}
+
 # Get the original user who ran sudo (if running as sudo)
 get_original_user() {
     if [[ $EUID -eq 0 ]]; then
