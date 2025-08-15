@@ -4,12 +4,12 @@
 # If Mac, route back to old no-venv build.sh for now
 # --------------------------
 
-UNAME=$(uname)
-if [ "$UNAME" == "Darwin" ]; then
-    # For macOS, route back to the old no-venv build.sh
-    exec ./novenvbuild.sh "$@"
-    exit 0
-fi
+# UNAME=$(uname)
+# if [ "$UNAME" == "Darwin" ]; then
+#     # For macOS, route back to the old no-venv build.sh
+#     exec ./novenvbuild.sh "$@"
+#     exit 0
+# fi
 
 # --------------------------
 # Initial setup
