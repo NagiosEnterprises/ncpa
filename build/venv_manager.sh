@@ -108,7 +108,11 @@ detect_python() {
             sudo rm -rf /usr/local/Cellar/python@3.13/
             run_as_user brew uninstall --ignore-dependencies openssl@3 || true
             sudo rm -rf /usr/local/etc/ca-certificates/
-            
+            log "Running: brew cleanup"
+            run_as_user brew cleanup || true
+            # Unset LDFLAGS/CPPFLAGS to avoid linking against missing Homebrew OpenSSL. These will be re-defined later
+            unset LDFLAGS
+            unset CPPFLAGS
             log "Running: brew update"
             if ! run_as_user brew update; then
                 error "brew update failed. Please check your Homebrew installation."
