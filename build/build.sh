@@ -73,36 +73,6 @@ clean_build_dir() {
     sudo rm -rf $BUILD_DIR/debbuild
 }
 
-if [ $UNAME == "Darwin" ]; then
-    get_original_user() {
-        if [[ $EUID -eq 0 ]]; then
-            echo ${SUDO_USER:-$USER}
-        else
-            echo $USER
-        fi
-    }
-
-    run_as_user() {
-        local original_user=$(get_original_user)
-        if [[ $EUID -eq 0 && -n "$SUDO_USER" ]]; then
-            sudo -u "$original_user" "$@"
-        else
-            "$@"
-        fi
-    }
-    clean_necessary_files() {
-        echo "    - Removing conflicting Homebrew libraries: readline, sqlite, expat..."
-        sudo rm -rf /usr/local/opt/readline /usr/local/opt/sqlite /usr/local/opt/expat
-        echo "    - Autoremoving Homebrew Python, OpenSSL, and ca-certificates to prevent SSL issues..."
-        run_as_user brew uninstall --ignore-dependencies python@3.13 || true
-        sudo rm -rf /usr/local/Cellar/python@3.13/
-        run_as_user brew uninstall --ignore-dependencies openssl@3 || true
-        sudo rm -rf /usr/local/etc/ca-certificates/
-        sudo rm ./prereqs.installed
-    }
-    clean_necessary_files;
-fi
-
 # --------------------------
 # Startup actions
 # --------------------------

@@ -101,6 +101,14 @@ detect_python() {
     if [ "$PLATFORM" = "macos" ]; then
         log "Ensuring latest Python 3 is installed via Homebrew..."
         if command -v brew >/dev/null 2>&1; then
+            echo "    - Removing conflicting Homebrew libraries: readline, sqlite, expat..."
+            sudo rm -rf /usr/local/opt/readline /usr/local/opt/sqlite /usr/local/opt/expat
+            echo "    - Autoremoving Homebrew Python, OpenSSL, and ca-certificates to prevent SSL issues..."
+            run_as_user brew uninstall --ignore-dependencies python@3.13 || true
+            sudo rm -rf /usr/local/Cellar/python@3.13/
+            run_as_user brew uninstall --ignore-dependencies openssl@3 || true
+            sudo rm -rf /usr/local/etc/ca-certificates/
+            
             log "Running: brew update"
             if ! run_as_user brew update; then
                 error "brew update failed. Please check your Homebrew installation."
