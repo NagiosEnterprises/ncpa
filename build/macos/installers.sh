@@ -53,18 +53,6 @@ os_minor_version=$(echo $os_version | cut -f2 -d.)
 
 # Utility scripts
 
-clean_necessary_files() {
-    echo "    - Removing conflicting Homebrew libraries: readline, sqlite, expat..."
-    sudo rm -rf /usr/local/opt/readline /usr/local/opt/sqlite /usr/local/opt/expat
-    echo "    - Autoremoving Homebrew Python, OpenSSL, and ca-certificates to prevent SSL issues..."
-    brew uninstall --ignore-dependencies python@3.13 || true
-    sudo rm -rf /usr/local/Cellar/python@3.13/
-    brew uninstall --ignore-dependencies openssl@3 || true
-    sudo rm -rf /usr/local/etc/ca-certificates/
-    sudo rm ./prereqs.installed
-}
-clean_necessary_files;
-
 check_python() {
     local python_cmd=$1
     if command -v $python_cmd &> /dev/null; then
