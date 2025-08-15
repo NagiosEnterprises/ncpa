@@ -102,9 +102,23 @@ detect_python() {
         log "Ensuring latest Python 3 is installed via Homebrew..."
         if command -v brew >/dev/null 2>&1; then
             log "Running: brew update"
-            run_as_user brew update
+            if ! run_as_user brew update; then
+                error "brew update failed. Please check your Homebrew installation."
+                return 1
+            fi
+
             log "Running: brew install python"
-            run_as_user brew install python
+            if ! run_as_user brew install python; then
+                error "brew install python failed. Please install Python 3.8+ manually."
+                return 1
+            fi
+
+            log "Running: brew install openssl@3"
+            if ! run_as_user brew install openssl@3; then
+                error "Failed to install openssl@3 via Homebrew."
+                return 1
+            fi
+
             log "Homebrew Python installation/update complete."
             # Add Homebrew Python to candidates
             python_candidates+=("/opt/homebrew/bin/python3" "/usr/local/bin/python3")
