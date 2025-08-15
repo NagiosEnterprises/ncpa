@@ -1,5 +1,21 @@
 #!/bin/bash -e
 
+# --------------------------
+# If Mac, route back to old no-venv build.sh for now
+# --------------------------
+
+UNAME=$(uname)
+if [ "$UNAME" == "Darwin" ]; then
+    # For macOS, route back to the old no-venv build.sh
+    exec ./novenvbuild.sh "$@"
+    exit 0
+fi
+
+# --------------------------
+# Initial setup
+# --------------------------
+
+
 echo -e "***** build/build.sh"
 
 # Source version configuration
@@ -114,7 +130,6 @@ done
 # Virtual Environment Setup
 # --------------------------
 
-UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
     # For systems without readlink -f, use a simpler, more reliable approach
     echo "=== Path Resolution Debug ==="
