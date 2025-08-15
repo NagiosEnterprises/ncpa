@@ -263,6 +263,12 @@ echo -e "\nRunning build for: $UNAME"
 setup_virtual_environment
 
 # Export all relevant environment variables for subshells
+echo "Exporting:"
+echo "PYTHONBIN: $PYTHONBIN"
+echo "VIRTUAL_ENV: $VIRTUAL_ENV"
+echo "VENV_NAME: $VENV_NAME"
+echo "BUILD_DIR: $BUILD_DIR"
+echo "AGENT_DIR: $AGENT_DIR"
 export PYTHONBIN
 export VIRTUAL_ENV
 export VENV_NAME
