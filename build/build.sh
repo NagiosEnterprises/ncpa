@@ -75,12 +75,11 @@ clean_build_dir() {
 
 if [ $UNAME == "Darwin" ]; then
     get_original_user() {
-            if [[ $EUID -eq 0 ]]; then
-                echo ${SUDO_USER:-$USER}
-            else
-                echo $USER
-            fi
-        }
+        if [[ $EUID -eq 0 ]]; then
+            echo ${SUDO_USER:-$USER}
+        else
+            echo $USER
+        fi
     }
 
     run_as_user() {
