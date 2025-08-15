@@ -104,7 +104,7 @@ done
 
 echo -e "\nRunning build for: $UNAME"
 if [ "$UNAME" == "Darwin" ]; then
-    . $BUILD_DIR/macos/setup.sh
+    . $BUILD_DIR/macos/novenvsetup.sh
 else
     echo "Not a supported system for our build script."
     exit 1
