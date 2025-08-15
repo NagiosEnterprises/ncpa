@@ -372,6 +372,8 @@ else
     echo "No git repository found or git not available, using default version info"
 fi
 
+echo "PYTHONBIN before Building Binaries Subshell"
+echo "PYTHONBIN: $PYTHONBIN"
 (
     echo -e "\nBuilding NCPA binaries..."
     echo "=== Subshell Environment Debug ==="
