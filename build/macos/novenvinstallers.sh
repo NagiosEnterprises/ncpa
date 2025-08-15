@@ -3,7 +3,7 @@
 # Scripts to install homebrew and dev tools, and update python libraries
 
 # Source version configuration
-BUILD_DIR_FOR_VERSION=$(dirname "$(dirname "$0")")
+BUILD_DIR_FOR_VERSION=$(dirname "$0")
 source "$BUILD_DIR_FOR_VERSION/version_config.sh"
 
 # Load utilities to fix dynamic libs
