@@ -2,6 +2,21 @@
 
 echo -e "***** macos/setup.sh"
 
+set -e
+trap 'echo "Error on line $LINENO"; exit 1' ERR
+
+# Dynamic OpenSSL path detection and version pinning
+REQUIRED_OPENSSL_VERSION="3"
+OPENSSL_PREFIX=$(brew --prefix openssl@${REQUIRED_OPENSSL_VERSION} 2>/dev/null || brew --prefix openssl)
+INSTALLED_OPENSSL_VERSION=$(brew list --versions openssl@${REQUIRED_OPENSSL_VERSION} | awk '{print $2}')
+if [[ -z "$INSTALLED_OPENSSL_VERSION" ]]; then
+    echo "Required OpenSSL version not found. Installing..."
+    brew install openssl@${REQUIRED_OPENSSL_VERSION}
+    OPENSSL_PREFIX=$(brew --prefix openssl@${REQUIRED_OPENSSL_VERSION})
+fi
+export LDFLAGS="-L$OPENSSL_PREFIX/lib"
+export CPPFLAGS="-I$OPENSSL_PREFIX/include"
+
 # Virtual environment integration
 VENV_MANAGER="$BUILD_DIR/venv_manager.sh"
 export VENV_NAME="${VENV_NAME:-ncpa-build-macos}"

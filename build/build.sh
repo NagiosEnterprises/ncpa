@@ -246,6 +246,7 @@ setup_virtual_environment() {
         echo "WARNING: Python SSL module is not available. Some features may not work."
     else
         echo "✓ Python SSL module is available."
+        echo "Python SSL version: $($PYTHONBIN -c 'import ssl; print(ssl.OPENSSL_VERSION)')"
     fi
 }
 
