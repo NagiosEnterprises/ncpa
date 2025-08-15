@@ -1,0 +1,12 @@
+cx_Freeze
+psutil
+requests
+Jinja2
+flask
+werkzeug
+docutils
+gevent
+gevent-websocket
+appdirs
+packaging
+kafka-python

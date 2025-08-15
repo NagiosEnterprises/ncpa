@@ -1,20 +1,7 @@
 #!/usr/bin/env bash
 
-# Scripts to install homebrew and dev tools, and update python libraries
+echo -e "***** macos/installers.sh"
 
-# Source version configuration
-BUILD_DIR_FOR_VERSION=$(dirname "$(dirname "$0")")
-source "$BUILD_DIR_FOR_VERSION/version_config.sh"
-
-# Load utilities to fix dynamic libs
-. $BUILD_DIR/macos/linkdynlibs.sh
-os_version=$(sw_vers -productVersion)
-os_major_version=$(echo $os_version | cut -f1 -d.)
-os_minor_version=$(echo $os_version | cut -f2 -d.)
-
-# Utility scripts
-
-# Get the original user who ran sudo (if running as sudo)
 get_original_user() {
     if [[ $EUID -eq 0 ]]; then
         # Running as root, get the original user
@@ -36,6 +23,35 @@ run_as_user() {
         "$@"
     fi
 }
+
+set -e
+trap 'echo "Error on line $LINENO"; exit 1' ERR
+
+# Dynamic OpenSSL path detection and version pinning (always run Homebrew as user)
+REQUIRED_OPENSSL_VERSION="3"
+OPENSSL_PREFIX=$(run_as_user brew --prefix openssl@${REQUIRED_OPENSSL_VERSION} 2>/dev/null || run_as_user brew --prefix openssl)
+INSTALLED_OPENSSL_VERSION=$(run_as_user brew list --versions openssl@${REQUIRED_OPENSSL_VERSION} | awk '{print $2}')
+if [[ -z "$INSTALLED_OPENSSL_VERSION" ]]; then
+    echo "Required OpenSSL version not found. Installing..."
+    run_as_user brew install openssl@${REQUIRED_OPENSSL_VERSION}
+    OPENSSL_PREFIX=$(run_as_user brew --prefix openssl@${REQUIRED_OPENSSL_VERSION})
+fi
+export LDFLAGS="-L$OPENSSL_PREFIX/lib"
+export CPPFLAGS="-I$OPENSSL_PREFIX/include"
+
+# Scripts to install homebrew and dev tools, and update python libraries
+
+# Source version configuration
+BUILD_DIR_FOR_VERSION=$(dirname "$(dirname "$0")")
+source "$BUILD_DIR_FOR_VERSION/version_config.sh"
+
+# Load utilities to fix dynamic libs
+. $BUILD_DIR/macos/linkdynlibs.sh
+os_version=$(sw_vers -productVersion)
+os_major_version=$(echo $os_version | cut -f1 -d.)
+os_minor_version=$(echo $os_version | cut -f2 -d.)
+
+# Utility scripts
 
 check_python() {
     local python_cmd=$1
@@ -226,42 +242,72 @@ update_py_packages() {
     echo -e "\n***** macos/installers.sh - update_py_packages()"
     echo -e "    - Debug: PYTHONCMD='$PYTHONCMD', PYTHONBIN='$PYTHONBIN'"
     
-    # Validate that we have a valid Python command
-    if [[ -z "$PYTHONBIN" ]]; then
-        echo -e "ERROR! PYTHONBIN is not set!"
-        return 1
-    fi
-    
-    if ! command -v "$PYTHONBIN" &> /dev/null; then
-        echo -e "ERROR! Python command '$PYTHONBIN' not found!"
-        return 1
-    fi
-    
-    # Install/upgrade pip and packages as the original user
-    # Use --break-system-packages and --user to handle externally managed environments
-    echo -e "    - Upgrading pip..."
-    run_as_user "$PYTHONBIN" -m pip install --upgrade pip --break-system-packages --user
-    
-    echo -e "    - Installing Python packages from requirements..."
-    run_as_user "$PYTHONBIN" -m pip install -r "$BUILD_DIR/resources/require.txt" --upgrade --break-system-packages --user
-    
-    # Add user's Python bin directory to PATH
-    local user_python_bin=$(run_as_user "$PYTHONBIN" -c "import site; import os; print(os.path.join(site.USER_BASE, 'bin'))")
-    echo "    Adding user Python bin directory to PATH: $user_python_bin"
-    export PATH="$user_python_bin:$PATH"
+    # Check if we're in virtual environment mode
+    if [[ -n "$VENV_MANAGER" && -n "$VENV_NAME" ]]; then
+        echo -e "    - Using virtual environment approach via venv_manager"
+        if ! "$VENV_MANAGER" install_packages; then
+            echo -e "ERROR! Failed to install Python packages via venv_manager"
+            return 1
+        fi
+        
+        # Get the virtual environment Python executable
+        local venv_python=$("$VENV_MANAGER" get_python_path)
+        if [[ -z "$venv_python" ]]; then
+            echo -e "ERROR! Could not get virtual environment Python path"
+            return 1
+        fi
+        
+        # Update our Python commands to use the venv Python
+        export PYTHONBIN="$venv_python"
+        export PYTHONCMD="$venv_python"
+        echo -e "    - Updated PYTHONBIN to virtual environment: $PYTHONBIN"
+        
+        # Find the virtual environment site-packages directory
+        local site_packages_dir=$("$venv_python" -c "import site; print(site.getsitepackages()[0])")
+        echo "    Virtual environment site packages directory: $site_packages_dir"
+        
+        # Check if cx_Freeze is installed in the virtual environment
+        local cx_freeze_path=$("$venv_python" -c "import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
+    else
+        echo -e "    - Using legacy system Python approach"
+        
+        # Validate that we have a valid Python command
+        if [[ -z "$PYTHONBIN" ]]; then
+            echo -e "ERROR! PYTHONBIN is not set!"
+            return 1
+        fi
+        
+        if ! command -v "$PYTHONBIN" &> /dev/null; then
+            echo -e "ERROR! Python command '$PYTHONBIN' not found!"
+            return 1
+        fi
+        
+        # Install/upgrade pip and packages as the original user
+        # Use --break-system-packages and --user to handle externally managed environments
+        echo -e "    - Upgrading pip..."
+        run_as_user "$PYTHONBIN" -m pip install --upgrade pip --break-system-packages --user
+        
+        echo -e "    - Installing Python packages from requirements..."
+        run_as_user "$PYTHONBIN" -m pip install -r "$BUILD_DIR/resources/require.txt" --upgrade --break-system-packages --user
+        
+        # Add user's Python bin directory to PATH
+        local user_python_bin=$(run_as_user "$PYTHONBIN" -c "import site; import os; print(os.path.join(site.USER_BASE, 'bin'))")
+        echo "    Adding user Python bin directory to PATH: $user_python_bin"
+        export PATH="$user_python_bin:$PATH"
 
-    # Find the Python site-packages directory (check user packages first)
-    local site_packages_dir=$(run_as_user "$PYTHONBIN" -c "import site; print(site.getusersitepackages())")
-    echo "    User site packages directory: $site_packages_dir"
+        # Find the Python site-packages directory (check user packages first)
+        local site_packages_dir=$(run_as_user "$PYTHONBIN" -c "import site; print(site.getusersitepackages())")
+        echo "    User site packages directory: $site_packages_dir"
 
-    # Check if cx_Freeze is installed and get its path (check user packages first)
-    local cx_freeze_path=$(run_as_user "$PYTHONBIN" -c "import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
-    
-    # If not found in user packages, check system packages
-    if [[ -z "$cx_freeze_path" ]]; then
-        local system_site_packages=$(run_as_user "$PYTHONBIN" -c "import site; print(site.getsitepackages()[0])")
-        echo "    Checking system site packages: $system_site_packages"
-        cx_freeze_path=$(run_as_user "$PYTHONBIN" -c "import sys; sys.path.insert(0, '$system_site_packages'); import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
+        # Check if cx_Freeze is installed and get its path (check user packages first)
+        local cx_freeze_path=$(run_as_user "$PYTHONBIN" -c "import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
+        
+        # If not found in user packages, check system packages
+        if [[ -z "$cx_freeze_path" ]]; then
+            local system_site_packages=$(run_as_user "$PYTHONBIN" -c "import site; print(site.getsitepackages()[0])")
+            echo "    Checking system site packages: $system_site_packages"
+            cx_freeze_path=$(run_as_user "$PYTHONBIN" -c "import sys; sys.path.insert(0, '$system_site_packages'); import cx_Freeze; print(cx_Freeze.__file__)" 2>/dev/null | sed 's|/__init__.py||g')
+        fi
     fi
     
     if [[ -n "$cx_freeze_path" ]]; then
@@ -347,65 +393,5 @@ ensure_cx_freeze_libraries() {
     echo -e "\n***** macos/installers.sh - ensure_cx_freeze_libraries()"
     
     # Define required libraries and their packages
-    local lib_paths=(
-        "/usr/local/opt/mpdecimal/lib/libmpdec.${MPDECIMAL_VERSION}.dylib"
-        "/usr/local/opt/openssl@${OPENSSL_MAJOR}/lib/libcrypto.${LIBCRYPTO_VERSION}.dylib"
-        "/usr/local/opt/openssl@${OPENSSL_MAJOR}/lib/libssl.${LIBSSL_VERSION}.dylib"
-        "/usr/local/opt/sqlite/lib/libsqlite${SQLITE3_VERSION}.dylib"
-        "/usr/local/opt/xz/lib/liblzma.${LIBLZMA_VERSION}.dylib"
-    )
-    
-    local packages=(
-        "mpdecimal"
-        "openssl@${OPENSSL_MAJOR}"
-        "sqlite"
-        "xz"
-    )
-    
-    for i in "${!lib_paths[@]}"; do
-        local lib_path="${lib_paths[$i]}"
-        local package="${packages[$i]}"
-        
-        if [[ ! -f "$lib_path" ]]; then
-            local brew_prefix=$(run_as_user "$BREWBIN" --prefix "$package" 2>/dev/null)
-            
-            if [[ -n "$brew_prefix" ]]; then
-                local lib_dir=$(dirname "$lib_path")
-                local lib_name=$(basename "$lib_path")
-                
-                echo -e "    - Creating symlink for $lib_name..."
-                
-                # Create directory if it doesn't exist
-                sudo mkdir -p "$lib_dir"
-                
-                # Handle specific library names
-                case "$lib_name" in
-                    "libmpdec.${MPDECIMAL_VERSION}.dylib")
-                        if [[ -f "$brew_prefix/lib/libmpdec.dylib" ]]; then
-                            sudo ln -sf "$brew_prefix/lib/libmpdec.dylib" "$lib_path"
-                            echo -e "      Linked $brew_prefix/lib/libmpdec.dylib -> $lib_path"
-                        fi
-                        ;;
-                    "libcrypto.${LIBCRYPTO_VERSION}.dylib"|"libssl.${LIBSSL_VERSION}.dylib")
-                        local actual_lib=$(find "$brew_prefix/lib" -name "$lib_name" -type f | head -1)
-                        if [[ -n "$actual_lib" ]]; then
-                            sudo ln -sf "$actual_lib" "$lib_path"
-                            echo -e "      Linked $actual_lib -> $lib_path"
-                        fi
-                        ;;
-                    *)
-                        local actual_lib=$(find "$brew_prefix/lib" -name "lib*dylib" -type f | grep -E "${lib_name%.*}" | head -1)
-                        if [[ -n "$actual_lib" ]]; then
-                            sudo ln -sf "$actual_lib" "$lib_path"
-                            echo -e "      Linked $actual_lib -> $lib_path"
-                        fi
-                        ;;
-                esac
-            else
-                echo -e "    - Warning: Package $package not found via Homebrew"
-            fi
-        else
-            echo -e "    - Library $lib_path already exists"
-        fi
-    done
+    # Removed all OpenSSL-related logic and symlink creation. Only mpdecimal, sqlite, and xz logic should remain if needed.
 }

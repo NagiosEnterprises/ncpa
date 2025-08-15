@@ -1,8 +1,27 @@
 
+#!/bin/bash
+
+# NCPA Pre-installation script for Solaris
+# NOTE: In Solaris, preinstall runs AFTER files are copied, not before
+
+echo "NCPA: Running pre-installation setup..."
+
 # Add nagios user/group if it doesn't exist
-if ! getent group nagios > /dev/null; then
+echo "NCPA: Setting up nagios user and group..."
+if ! getent group nagios >/dev/null 2>&1; then
+    echo "NCPA: Creating nagios group..."
     groupadd nagios
 fi
-if ! getent passwd nagios > /dev/null; then
-    useradd -g nagios nagios
+
+if ! getent passwd nagios >/dev/null 2>&1; then
+    echo "NCPA: Creating nagios user..."
+    useradd -g nagios -d /usr/local/ncpa -s /bin/false nagios
 fi
+
+# Create base directory structure
+echo "NCPA: Creating directory structure..."
+mkdir -p /usr/local/ncpa/var/log
+mkdir -p /usr/local/ncpa/var/run  
+mkdir -p /usr/local/ncpa/etc
+
+echo "NCPA: Pre-installation completed."

@@ -46,11 +46,11 @@ case "$UNAME" in
         OPENSSL_MAJOR="1"
         ;;
     "SunOS")
-        # Solaris versions
-        PYTHONVER="${SOLARIS_PYTHONVER:-3.9.13}"
-        SSLVER="${SOLARIS_SSLVER:-1.1.1}"
-        ZLIBVER="${SOLARIS_ZLIBVER:-1.2.11}"
-        OPENSSL_MAJOR="1"
+        # Solaris versions - updated to prefer Python 3.13
+        PYTHONVER="${SOLARIS_PYTHONVER:-3.13.5}"
+        SSLVER="${SOLARIS_SSLVER:-3.0.17}"
+        ZLIBVER="${SOLARIS_ZLIBVER:-1.3.1}"
+        OPENSSL_MAJOR="3"
         ;;
     *)
         # Default fallback

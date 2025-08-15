@@ -20,6 +20,7 @@ from cx_Freeze import setup, Executable
 # Import version configuration
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'build'))
 from version_config import *
+from version_config import get_solaris_lib_paths
 
 # Defined constants
 __ARCH__ = platform.architecture()[0].lower()
@@ -106,6 +107,10 @@ elif __SYSTEM__ == 'posix':
                           ('/usr/lib/libffi.a'                  , 'libffi.a'),
                           ('/opt/freeware/lib/libgcc_s.a'       , 'libgcc_s.a')]
 
+    # Special includes for Solaris systems
+    if 'sunos' in sys.platform.lower():
+        include_files += get_solaris_lib_paths()
+
     binary = Executable('ncpa.py', base=None)
 
 # Apply build options
@@ -118,6 +123,20 @@ buildOptions = dict(includes=includes,
                     zip_include_packages=['*'],
                     zip_exclude_packages=[],
                     include_msvcr=True)
+
+# Add Solaris-specific build options to avoid patchelf issues
+if 'sunos' in sys.platform.lower():
+    print("Applying Solaris-specific build options...")
+    # Disable automatic rpath modification for Solaris
+    buildOptions['silent'] = False
+    # These options may help avoid patchelf usage
+    buildOptions['replace_paths'] = []  # Disable path replacement
+    buildOptions['bin_path_includes'] = []  # Don't modify binary paths
+    # Try to avoid some cx_Freeze features that might use patchelf
+    if 'zip_include_packages' in buildOptions:
+        buildOptions['zip_include_packages'] = []  # Disable zip packaging
+    # Disable some optimization that might trigger patchelf
+    buildOptions['optimize'] = 0
 
 # Create setup for distutils
 setup(name = "NCPA",
