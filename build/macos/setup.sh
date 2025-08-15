@@ -5,14 +5,14 @@ echo -e "***** macos/setup.sh"
 set -e
 trap 'echo "Error on line $LINENO"; exit 1' ERR
 
-# Dynamic OpenSSL path detection and version pinning
+# Dynamic OpenSSL path detection and version pinning (always run Homebrew as user)
 REQUIRED_OPENSSL_VERSION="3"
-OPENSSL_PREFIX=$(brew --prefix openssl@${REQUIRED_OPENSSL_VERSION} 2>/dev/null || brew --prefix openssl)
-INSTALLED_OPENSSL_VERSION=$(brew list --versions openssl@${REQUIRED_OPENSSL_VERSION} | awk '{print $2}')
+OPENSSL_PREFIX=$(run_as_user brew --prefix openssl@${REQUIRED_OPENSSL_VERSION} 2>/dev/null || run_as_user brew --prefix openssl)
+INSTALLED_OPENSSL_VERSION=$(run_as_user brew list --versions openssl@${REQUIRED_OPENSSL_VERSION} | awk '{print $2}')
 if [[ -z "$INSTALLED_OPENSSL_VERSION" ]]; then
     echo "Required OpenSSL version not found. Installing..."
-    brew install openssl@${REQUIRED_OPENSSL_VERSION}
-    OPENSSL_PREFIX=$(brew --prefix openssl@${REQUIRED_OPENSSL_VERSION})
+    run_as_user brew install openssl@${REQUIRED_OPENSSL_VERSION}
+    OPENSSL_PREFIX=$(run_as_user brew --prefix openssl@${REQUIRED_OPENSSL_VERSION})
 fi
 export LDFLAGS="-L$OPENSSL_PREFIX/lib"
 export CPPFLAGS="-I$OPENSSL_PREFIX/include"
