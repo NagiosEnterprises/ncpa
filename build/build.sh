@@ -1,17 +1,6 @@
 #!/bin/bash -e
 
 # --------------------------
-# If Mac, route back to old no-venv build.sh for now
-# --------------------------
-
-# UNAME=$(uname)
-# if [ "$UNAME" == "Darwin" ]; then
-#     # For macOS, route back to the old no-venv build.sh
-#     exec ./novenvbuild.sh "$@"
-#     exit 0
-# fi
-
-# --------------------------
 # Initial setup
 # --------------------------
 
@@ -219,7 +208,6 @@ export VENV_NAME
 
 setup_virtual_environment() {
     echo "=== Setting up Virtual Environment ==="
-    
     # Clean venv if requested
     if [ $CLEAN_VENV -eq 1 ]; then
         echo "Cleaning existing virtual environment..."
@@ -227,35 +215,63 @@ setup_virtual_environment() {
             "$VENV_MANAGER" clean
         fi
     fi
-    
     # Check if venv manager exists
     if [ ! -x "$VENV_MANAGER" ]; then
         echo "ERROR: Virtual environment manager not found or not executable: $VENV_MANAGER"
         exit 1
     fi
-    
     # Setup virtual environment
     echo "Creating and setting up virtual environment: $VENV_NAME"
     if ! "$VENV_MANAGER" setup; then
         echo "ERROR: Failed to setup virtual environment"
         exit 1
     fi
-    
     # Export environment variables from venv manager
     echo "Configuring environment variables..."
     eval "$("$VENV_MANAGER" get-env-exports)"
-    
     # Verify venv is working
     if [ -z "$PYTHONBIN" ] || [ ! -x "$PYTHONBIN" ]; then
         echo "ERROR: Python executable not found after venv setup: $PYTHONBIN"
         exit 1
     fi
-    
     echo "✓ Virtual environment ready"
     echo "  Python: $PYTHONBIN"
     echo "  Version: $($PYTHONBIN --version 2>&1)"
     echo "  Virtual Env: $VIRTUAL_ENV"
     echo "=================================="
+
+    # Explicit SSL check
+    echo "Checking Python SSL support..."
+    if ! "$PYTHONBIN" -c "import ssl; print(ssl.OPENSSL_VERSION)" 2>/dev/null; then
+        echo "ERROR: Python SSL module is not available! Attempting to fix..."
+        # Try to fix symlinks and dynamic library paths (macOS only)
+        if [ "$UNAME" == "Darwin" ]; then
+            echo "Attempting to fix OpenSSL symlinks and dynamic library paths..."
+            # Run ensure_cx_freeze_libraries and linkdynlibs.sh if available
+            if [ -f "$BUILD_DIR/macos/installers.sh" ]; then
+                . "$BUILD_DIR/macos/installers.sh"
+                ensure_cx_freeze_libraries
+            fi
+            if [ -f "$BUILD_DIR/macos/linkdynlibs.sh" ]; then
+                . "$BUILD_DIR/macos/linkdynlibs.sh"
+                setPaths
+                fixLibs
+            fi
+            # Recheck SSL
+            if "$PYTHONBIN" -c "import ssl; print(ssl.OPENSSL_VERSION)" 2>/dev/null; then
+                echo "✓ Python SSL module fixed."
+            else
+                echo "✗ Python SSL module is still not available after attempted fixes."
+                echo "Please ensure Homebrew's openssl is installed and available, and recreate the venv."
+                exit 1
+            fi
+        else
+            echo "SSL module fix is only automated for macOS. Please check your Python and OpenSSL installation."
+            exit 1
+        fi
+    else
+        echo "✓ Python SSL module is available."
+    fi
 }
 
 
