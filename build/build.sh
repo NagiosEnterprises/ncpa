@@ -288,6 +288,9 @@ elif [ "$UNAME" == "AIX" ]; then
     . $BUILD_DIR/aix/setup.sh
 elif [ "$UNAME" == "Darwin" ]; then
     . $BUILD_DIR/macos/setup.sh
+    # Restore PYTHONBIN after macOS setup script, in case it was lost
+    eval "$($VENV_MANAGER get-env-exports)"
+    export PYTHONBIN
 else
     echo "Not a supported system for our build script."
     echo "If you're sure all pre-reqs are installed, try running the"
@@ -382,6 +385,10 @@ fi
 echo "PYTHONBIN before Building Binaries Subshell"
 echo "PYTHONBIN: $PYTHONBIN"
 (
+    # On macOS, explicitly export PYTHONBIN to subshell to avoid losing it
+    if [ "$UNAME" == "Darwin" ]; then
+        export PYTHONBIN
+    fi
     echo -e "\nBuilding NCPA binaries..."
     echo "=== Subshell Environment Debug ==="
     BUILD_DIR=$(pwd)
