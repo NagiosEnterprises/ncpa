@@ -244,26 +244,29 @@ setup_virtual_environment() {
     echo "Checking Python SSL support..."
     if ! "$PYTHONBIN" -c "import ssl; print(ssl.OPENSSL_VERSION)" 2>/dev/null; then
         echo "ERROR: Python SSL module is not available! Attempting to fix..."
-        # Try to fix symlinks and dynamic library paths (macOS only)
         if [ "$UNAME" == "Darwin" ]; then
-            echo "Attempting to fix OpenSSL symlinks and dynamic library paths..."
-            # Run ensure_cx_freeze_libraries and linkdynlibs.sh if available
-            if [ -f "$BUILD_DIR/macos/installers.sh" ]; then
-                . "$BUILD_DIR/macos/installers.sh"
-                ensure_cx_freeze_libraries
+            echo "Ensuring Homebrew's openssl@3 is installed..."
+            if ! brew list openssl@3 >/dev/null 2>&1; then
+                brew install openssl@3
             fi
-            if [ -f "$BUILD_DIR/macos/linkdynlibs.sh" ]; then
-                . "$BUILD_DIR/macos/linkdynlibs.sh"
-                setPaths
-                fixLibs
-            fi
-            # Recheck SSL
-            if "$PYTHONBIN" -c "import ssl; print(ssl.OPENSSL_VERSION)" 2>/dev/null; then
-                echo "✓ Python SSL module fixed."
-            else
-                echo "✗ Python SSL module is still not available after attempted fixes."
-                echo "Please ensure Homebrew's openssl is installed and available, and recreate the venv."
+            export LDFLAGS="-L$(brew --prefix openssl@3)/lib"
+            export CPPFLAGS="-I$(brew --prefix openssl@3)/include"
+            export PKG_CONFIG_PATH="$(brew --prefix openssl@3)/lib/pkgconfig"
+            echo "Reinstalling Python via Homebrew to ensure SSL support..."
+            brew reinstall python
+            echo "Cleaning and recreating virtual environment..."
+            "$VENV_MANAGER" clean
+            if ! "$VENV_MANAGER" setup; then
+                echo "ERROR: Failed to setup virtual environment after fixing OpenSSL/Python."
                 exit 1
+            fi
+            eval "$("$VENV_MANAGER" get-env-exports)"
+            if ! "$PYTHONBIN" -c "import ssl; print(ssl.OPENSSL_VERSION)" 2>/dev/null; then
+                echo "✗ Python SSL module is still not available after reinstalling Python and recreating venv."
+                echo "Please check your Homebrew and Python installation manually."
+                exit 1
+            else
+                echo "✓ Python SSL module fixed after reinstall."
             fi
         else
             echo "SSL module fix is only automated for macOS. Please check your Python and OpenSSL installation."
