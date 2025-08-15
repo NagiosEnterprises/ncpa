@@ -2,6 +2,28 @@
 
 echo -e "***** macos/installers.sh"
 
+get_original_user() {
+    if [[ $EUID -eq 0 ]]; then
+        # Running as root, get the original user
+        echo ${SUDO_USER:-$USER}
+    else
+        # Not running as root
+        echo $USER
+    fi
+}
+
+# Run command as the original user (not root)
+run_as_user() {
+    local original_user=$(get_original_user)
+    if [[ $EUID -eq 0 && -n "$SUDO_USER" ]]; then
+        # Running as root via sudo, run as original user
+        sudo -u "$original_user" "$@"
+    else
+        # Not running as root, run normally
+        "$@"
+    fi
+}
+
 set -e
 trap 'echo "Error on line $LINENO"; exit 1' ERR
 
@@ -34,29 +56,6 @@ os_minor_version=$(echo $os_version | cut -f2 -d.)
 clean_necessary_files() {
     echo "    - Removing conflicting Homebrew libraries: readline, sqlite, expat..."
     sudo rm -rf /usr/local/opt/readline /usr/local/opt/sqlite /usr/local/opt/expat
-}
-
-# Get the original user who ran sudo (if running as sudo)
-get_original_user() {
-    if [[ $EUID -eq 0 ]]; then
-        # Running as root, get the original user
-        echo ${SUDO_USER:-$USER}
-    else
-        # Not running as root
-        echo $USER
-    fi
-}
-
-# Run command as the original user (not root)
-run_as_user() {
-    local original_user=$(get_original_user)
-    if [[ $EUID -eq 0 && -n "$SUDO_USER" ]]; then
-        # Running as root via sudo, run as original user
-        sudo -u "$original_user" "$@"
-    else
-        # Not running as root, run normally
-        "$@"
-    fi
 }
 
 check_python() {

@@ -2,6 +2,23 @@
 
 echo -e "***** macos/setup.sh"
 
+get_original_user() {
+    if [[ $EUID -eq 0 ]]; then
+        echo ${SUDO_USER:-$USER}
+    else
+        echo $USER
+    fi
+}
+
+run_as_user() {
+    local original_user=$(get_original_user)
+    if [[ $EUID -eq 0 && -n "$SUDO_USER" ]]; then
+        sudo -u "$original_user" "$@"
+    else
+        "$@"
+    fi
+}
+
 set -e
 trap 'echo "Error on line $LINENO"; exit 1' ERR
 
