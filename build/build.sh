@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+# --------------------------
+# Initial setup
+# --------------------------
+
+
 echo -e "***** build/build.sh"
 
 # Source version configuration
@@ -68,7 +73,6 @@ clean_build_dir() {
     sudo rm -rf $BUILD_DIR/debbuild
 }
 
-
 # --------------------------
 # Startup actions
 # --------------------------
@@ -114,7 +118,6 @@ done
 # Virtual Environment Setup
 # --------------------------
 
-UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
     # For systems without readlink -f, use a simpler, more reliable approach
     echo "=== Path Resolution Debug ==="
@@ -204,7 +207,6 @@ export VENV_NAME
 
 setup_virtual_environment() {
     echo "=== Setting up Virtual Environment ==="
-    
     # Clean venv if requested
     if [ $CLEAN_VENV -eq 1 ]; then
         echo "Cleaning existing virtual environment..."
@@ -212,35 +214,39 @@ setup_virtual_environment() {
             "$VENV_MANAGER" clean
         fi
     fi
-    
     # Check if venv manager exists
     if [ ! -x "$VENV_MANAGER" ]; then
         echo "ERROR: Virtual environment manager not found or not executable: $VENV_MANAGER"
         exit 1
     fi
-    
     # Setup virtual environment
     echo "Creating and setting up virtual environment: $VENV_NAME"
     if ! "$VENV_MANAGER" setup; then
         echo "ERROR: Failed to setup virtual environment"
         exit 1
     fi
-    
     # Export environment variables from venv manager
     echo "Configuring environment variables..."
     eval "$("$VENV_MANAGER" get-env-exports)"
-    
     # Verify venv is working
     if [ -z "$PYTHONBIN" ] || [ ! -x "$PYTHONBIN" ]; then
         echo "ERROR: Python executable not found after venv setup: $PYTHONBIN"
         exit 1
     fi
-    
     echo "✓ Virtual environment ready"
     echo "  Python: $PYTHONBIN"
     echo "  Version: $($PYTHONBIN --version 2>&1)"
     echo "  Virtual Env: $VIRTUAL_ENV"
     echo "=================================="
+
+    # Explicit SSL check
+    echo "Checking Python SSL support..."
+    if ! "$PYTHONBIN" -c "import ssl; print(ssl.OPENSSL_VERSION)" 2>/dev/null; then
+        echo "WARNING: Python SSL module is not available. Some features may not work."
+    else
+        echo "✓ Python SSL module is available."
+        echo "Python SSL version: $($PYTHONBIN -c 'import ssl; print(ssl.OPENSSL_VERSION)')"
+    fi
 }
 
 
@@ -252,8 +258,22 @@ setup_virtual_environment() {
 # Load required things for different systems
 echo -e "\nRunning build for: $UNAME"
 
+
 # Always setup virtual environment first
 setup_virtual_environment
+
+# Export all relevant environment variables for subshells
+echo "Exporting:"
+echo "PYTHONBIN: $PYTHONBIN"
+echo "VIRTUAL_ENV: $VIRTUAL_ENV"
+echo "VENV_NAME: $VENV_NAME"
+echo "BUILD_DIR: $BUILD_DIR"
+echo "AGENT_DIR: $AGENT_DIR"
+export PYTHONBIN
+export VIRTUAL_ENV
+export VENV_NAME
+export BUILD_DIR
+export AGENT_DIR
 
 # Load platform-specific configurations (but skip their Python setup)
 export SKIP_PYTHON=1  # Tell platform scripts to skip Python installation
@@ -267,6 +287,9 @@ elif [ "$UNAME" == "AIX" ]; then
     . $BUILD_DIR/aix/setup.sh
 elif [ "$UNAME" == "Darwin" ]; then
     . $BUILD_DIR/macos/setup.sh
+    # Restore PYTHONBIN after macOS setup script, in case it was lost
+    eval "$($VENV_MANAGER get-env-exports)"
+    export PYTHONBIN
 else
     echo "Not a supported system for our build script."
     echo "If you're sure all pre-reqs are installed, try running the"
@@ -358,7 +381,13 @@ else
     echo "No git repository found or git not available, using default version info"
 fi
 
+echo "PYTHONBIN before Building Binaries Subshell"
+echo "PYTHONBIN: $PYTHONBIN"
 (
+    # On macOS, explicitly export PYTHONBIN to subshell to avoid losing it
+    if [ "$UNAME" == "Darwin" ]; then
+        export PYTHONBIN
+    fi
     echo -e "\nBuilding NCPA binaries..."
     echo "=== Subshell Environment Debug ==="
     BUILD_DIR=$(pwd)
@@ -739,6 +768,8 @@ esac'
             exit $BUILD_RESULT
         fi
     else
+        echo "Attempting to build cx_Freeze..."
+        echo "Python binary: $PYTHONBIN"
         $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
     fi
 

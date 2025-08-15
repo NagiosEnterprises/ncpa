@@ -36,6 +36,23 @@ error() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $*" | tee -a "$BUILD_LOG" >&2
 }
 
+get_original_user() {
+    if [ "$EUID" -eq 0 ]; then
+        echo "${SUDO_USER:-$USER}"
+    else
+        echo "$USER"
+    fi
+}
+
+run_as_user() {
+    local original_user=$(get_original_user)
+    if [ "$EUID" -eq 0 ] && [ -n "$SUDO_USER" ]; then
+        sudo -u "$original_user" "$@"
+    else
+        "$@"
+    fi
+}
+
 # Python version detection with preference for configured version
 detect_python() {
     local python_candidates=()
@@ -71,53 +88,95 @@ detect_python() {
     
     log "Detecting Python interpreter (preferred: $PYTHON_MAJOR_MINOR)..."
     
+
+    # Collect all valid Python candidates and their versions (Bash 3.x compatible)
+    python_cmds_found=()
+    python_versions_found=()
+    newest_major=0
+    newest_minor=0
+    newest_cmd=""
+    newest_version=""
+
+    # If no suitable Python found, try to install latest Python with Homebrew on macOS
+    if [ "$PLATFORM" = "macos" ]; then
+        log "Ensuring latest Python 3 is installed via Homebrew..."
+        if command -v brew >/dev/null 2>&1; then
+            echo "    - Removing conflicting Homebrew libraries: readline, sqlite, expat..."
+            sudo rm -rf /usr/local/opt/readline /usr/local/opt/sqlite /usr/local/opt/expat
+            echo "    - Autoremoving Homebrew Python, OpenSSL, and ca-certificates to prevent SSL issues..."
+            run_as_user brew uninstall --ignore-dependencies python@3.13 || true
+            sudo rm -rf /usr/local/Cellar/python@3.13/
+            run_as_user brew uninstall --ignore-dependencies openssl@3 || true
+            sudo rm -rf /usr/local/opt/openssl@3
+            sudo rm -rf /usr/local/etc/ca-certificates/
+
+            log "Running: brew cleanup"
+            run_as_user brew cleanup || true
+            # Unset LDFLAGS/CPPFLAGS to avoid linking against missing Homebrew OpenSSL. These will be re-defined later
+            unset LDFLAGS
+            unset CPPFLAGS
+            
+            log "Running: brew update"
+            if ! run_as_user brew update; then
+                error "brew update failed. Please check your Homebrew installation."
+                return 1
+            fi
+
+            log "Running: brew install --overwrite python"
+            if ! run_as_user brew install --overwrite python; then
+                error "brew install python failed. Please install Python 3.8+ manually."
+                return 1
+            fi
+
+            log "Running: brew install --overwrite openssl@3"
+            if ! run_as_user brew install --overwrite openssl@3; then
+                error "Failed to install openssl@3 via Homebrew."
+                return 1
+            fi
+            log "Running: brew link --overwrite openssl@3"
+            if ! run_as_user brew link --overwrite openssl@3; then
+                error "Failed to link openssl@3 via Homebrew."
+                return 1
+            fi
+
+            log "Homebrew Python installation/update complete."
+            # Add Homebrew Python to candidates
+            python_candidates+=("/opt/homebrew/bin/python3" "/usr/local/bin/python3")
+        else
+            error "Homebrew not found. Please install Homebrew and Python 3.8+ manually."
+        fi
+    fi
+
     for python_cmd in "${python_candidates[@]}"; do
         if command -v "$python_cmd" >/dev/null 2>&1; then
-            # Check if this Python is executable and get version
-            # Use a more robust version extraction method
             if version_output=$($python_cmd --version 2>&1); then
-                # Extract version using multiple methods for compatibility
                 py_version=""
-                
                 # Method 1: Extract from "Python X.Y.Z" format
                 if [ -z "$py_version" ]; then
                     py_version=$(echo "$version_output" | grep -o 'Python [0-9][0-9]*\.[0-9][0-9]*' | grep -o '[0-9][0-9]*\.[0-9][0-9]*' | head -1)
                 fi
-                
                 # Method 2: Fallback - extract any X.Y pattern
                 if [ -z "$py_version" ]; then
                     py_version=$(echo "$version_output" | grep -o '[0-9][0-9]*\.[0-9][0-9]*' | head -1)
                 fi
-                
                 # Method 3: Use awk if available
                 if [ -z "$py_version" ] && command -v awk >/dev/null 2>&1; then
                     py_version=$(echo "$version_output" | awk '{for(i=1;i<=NF;i++) if($i ~ /^[0-9]+\.[0-9]+/) {split($i,a,"."); print a[1]"."a[2]; break}}')
                 fi
-                
                 if [ -n "$py_version" ]; then
-                    local major=$(echo "$py_version" | cut -d. -f1)
-                    local minor=$(echo "$py_version" | cut -d. -f2)
-                    
-                    # Validate that major and minor are numeric
+                    major=$(echo "$py_version" | cut -d. -f1)
+                    minor=$(echo "$py_version" | cut -d. -f2)
                     if [ -n "$major" ] && [ -n "$minor" ] && [ "$major" -eq "$major" ] 2>/dev/null && [ "$minor" -eq "$minor" ] 2>/dev/null; then
-                        # Debug output to help troubleshoot
-                        log "Found $python_cmd: version_output='$version_output' -> parsed_version='$py_version' (major=$major, minor=$minor)"
-                        
-                        # Check if version is >= 3.8 (minimum for modern packages)
                         if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 8 ]); then
-                            PYTHON_EXECUTABLE="$python_cmd"
-                            PYTHON_VERSION="$py_version"
-                            
-                            # Check if this matches our preferred version
-                            if [ "$py_version" = "$PYTHON_MAJOR_MINOR" ]; then
-                                log "✓ Found preferred Python $py_version: $python_cmd"
-                                return 0
-                            elif [ "${py_version%.*}" = "${PYTHON_MAJOR_MINOR%.*}" ]; then
-                                log "✓ Found compatible Python $py_version: $python_cmd (close to preferred $PYTHON_MAJOR_MINOR)"
-                                return 0
-                            else
-                                log "✓ Found suitable Python $py_version: $python_cmd"
-                                return 0
+                            log "Found $python_cmd: version_output='$version_output' -> parsed_version='$py_version' (major=$major, minor=$minor)"
+                            python_cmds_found+=("$python_cmd")
+                            python_versions_found+=("$py_version")
+                            # Track the newest version
+                            if [ "$major" -gt "$newest_major" ] || { [ "$major" -eq "$newest_major" ] && [ "$minor" -gt "$newest_minor" ]; }; then
+                                newest_major="$major"
+                                newest_minor="$minor"
+                                newest_cmd="$python_cmd"
+                                newest_version="$py_version"
                             fi
                         else
                             log "⚠ Python $py_version at $python_cmd is too old (need >= 3.8)"
@@ -133,9 +192,15 @@ detect_python() {
             fi
         fi
     done
-    
-    error "No suitable Python 3.8+ interpreter found"
-    error "Please install Python $PYTHON_MAJOR_MINOR or a compatible version"
+
+    # Always use the newest stable version found (ignore PYTHON_MAJOR_MINOR preference)
+    if [ -n "$newest_cmd" ]; then
+        PYTHON_EXECUTABLE="$newest_cmd"
+        PYTHON_VERSION="$newest_version"
+        log "✓ Using newest available Python $newest_version: $newest_cmd"
+        return 0
+    fi
+    error "No suitable Python 3.8+ interpreter found and automatic installation failed."
     return 1
 }
 
