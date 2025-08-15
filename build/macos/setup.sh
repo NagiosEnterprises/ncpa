@@ -2,6 +2,38 @@
 
 echo -e "***** macos/setup.sh"
 
+get_original_user() {
+    if [[ $EUID -eq 0 ]]; then
+        echo ${SUDO_USER:-$USER}
+    else
+        echo $USER
+    fi
+}
+
+run_as_user() {
+    local original_user=$(get_original_user)
+    if [[ $EUID -eq 0 && -n "$SUDO_USER" ]]; then
+        sudo -u "$original_user" "$@"
+    else
+        "$@"
+    fi
+}
+
+set -e
+trap 'echo "Error on line $LINENO"; exit 1' ERR
+
+# Dynamic OpenSSL path detection and version pinning (always run Homebrew as user)
+REQUIRED_OPENSSL_VERSION="3"
+OPENSSL_PREFIX=$(run_as_user brew --prefix openssl@${REQUIRED_OPENSSL_VERSION} 2>/dev/null || run_as_user brew --prefix openssl)
+INSTALLED_OPENSSL_VERSION=$(run_as_user brew list --versions openssl@${REQUIRED_OPENSSL_VERSION} | awk '{print $2}')
+if [[ -z "$INSTALLED_OPENSSL_VERSION" ]]; then
+    echo "Required OpenSSL version not found. Installing..."
+    run_as_user brew install openssl@${REQUIRED_OPENSSL_VERSION}
+    OPENSSL_PREFIX=$(run_as_user brew --prefix openssl@${REQUIRED_OPENSSL_VERSION})
+fi
+export LDFLAGS="-L$OPENSSL_PREFIX/lib"
+export CPPFLAGS="-I$OPENSSL_PREFIX/include"
+
 # Virtual environment integration
 VENV_MANAGER="$BUILD_DIR/venv_manager.sh"
 export VENV_NAME="${VENV_NAME:-ncpa-build-macos}"

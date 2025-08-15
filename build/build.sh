@@ -1,15 +1,126 @@
 #!/bin/bash -e
 
+# --------------------------
+# Initial setup
+# --------------------------
+
+
 echo -e "***** build/build.sh"
 
 # Source version configuration
 BUILD_DIR_FOR_VERSION=$( cd "$(dirname "$0")" ; pwd -P )
 source "$BUILD_DIR_FOR_VERSION/version_config.sh"
 
-UNAME=$(uname)
+# User-defined variables
+SKIP_SETUP=0
+PACKAGE_ONLY=0
+BUILD_ONLY=0
+BUILD_TRAVIS=0
+NO_INTERACTION=0
+CLEAN_VENV=0
+
+
+# --------------------------
+# General functions
+# --------------------------
+
+
+usage() {
+    echo "Use the build.sh script to setup build environment, compile, "
+    echo "and package builds. Works with most common linux OS."
+    echo ""
+    echo "Example: ./build.sh"
+    echo ""
+    echo "Options:"
+    echo "  -h | --help         Show help/documentation"
+    echo "  -S | --skip-setup   Use this option if you have manually set up"
+    echo "                      the build environment (don't auto setup)"
+    echo "  -p | --package-only Bundle a package only (ncpa folder must exist"
+    echo "                      in the build directory)"
+    echo "  -b | --build-only   Build the ncpa binaries only (do not package)"
+    echo "  -T | --travis       Set up environment for Travis CI builds"
+    echo "  -c | --clean        Clean up the build directory"
+    echo "  -n | --no-interaction  Run without interactive prompts (auto-confirm)"
+    echo "  -C | --clean-venv   Clean virtual environment and recreate"
+    echo ""
+    echo "Operating Systems Supported:"
+    echo " - CentOS, RHEL, Oracle, CloudLinux"
+    echo " - Ubuntu, Debian"
+    echo " - OpenSUSE, SLES"
+    echo " - AIX *"
+    echo " - Solaris *"
+    echo ""
+    echo "* Some systems require extra initial setup, find out more:"
+    echo "https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst"
+    echo ""
+}
+
+
+clean_build_dir() {
+    echo -e "\n***** build/build.sh - Cleaning up build directory..."
+    # Remove directories named ncpa-* except for the current version, but do not delete .rpm files
+    for dir in "$BUILD_DIR"/ncpa-*; do
+        if [ -d "$dir" ]; then
+            sudo rm -rf "$dir"
+        fi
+    done
+    sudo rm -rf $AGENT_DIR/build
+    sudo rm -rf $BUILD_DIR/NCPA-INSTALL-*
+    # sudo rm -f $BUILD_DIR/*.rpm $BUILD_DIR/*.dmg $BUILD_DIR/*.deb
+    sudo rm -f $BUILD_DIR/ncpa.spec
+    sudo rm -f $BUILD_DIR/*.tar.gz
+    sudo rm -rf $BUILD_ROOT
+    sudo rm -rf $BUILD_DIR/debbuild
+}
+
+# --------------------------
+# Startup actions
+# --------------------------
+
+
+# Get the arguments passed to us
+
+while [ -n "$1" ]; do
+    case "$1" in
+        -h | --help)
+            usage
+            exit 0
+            ;;
+        -c | --clean)
+            clean_build_dir
+            exit 0
+            ;;
+        -S | --skip-setup)
+            SKIP_SETUP=1
+            ;;
+        -p | --package-only)
+            PACKAGE_ONLY=1
+            ;;
+        -b | --build-only)
+            BUILD_ONLY=1
+            ;;
+        -T | --travis)
+            BUILD_TRAVIS=1
+            ;;
+        -n | --no-interaction)
+            NO_INTERACTION=1
+            export NO_INTERACTION
+            ;;
+        -C | --clean-venv)
+            CLEAN_VENV=1
+            ;;
+    esac
+    shift
+done
+
+
+# --------------------------
+# Virtual Environment Setup
+# --------------------------
+
 if [ "$UNAME" == "Darwin" ] || [ "$UNAME" == "AIX" ] || [ "$UNAME" == "SunOS" ]; then
     # For systems without readlink -f, use a simpler, more reliable approach
-    echo "=== Solaris Path Resolution Debug ==="
+    echo "=== Path Resolution Debug ==="
     echo "Script invocation (\$0): '$0'"
     echo "Current working directory: $(pwd)"
     
@@ -94,117 +205,8 @@ VENV_MANAGER="$BUILD_DIR/venv_manager.sh"
 VENV_NAME="ncpa-build-$(echo "$UNAME" | tr '[:upper:]' '[:lower:]')"
 export VENV_NAME
 
-# User-defined variables
-SKIP_SETUP=0
-PACKAGE_ONLY=0
-BUILD_ONLY=0
-BUILD_TRAVIS=0
-NO_INTERACTION=0
-CLEAN_VENV=0
-
-
-# --------------------------
-# General functions
-# --------------------------
-
-
-usage() {
-    echo "Use the build.sh script to setup build environment, compile, "
-    echo "and package builds. Works with most common linux OS."
-    echo ""
-    echo "Example: ./build.sh"
-    echo ""
-    echo "Options:"
-    echo "  -h | --help         Show help/documentation"
-    echo "  -S | --skip-setup   Use this option if you have manually set up"
-    echo "                      the build environment (don't auto setup)"
-    echo "  -p | --package-only Bundle a package only (ncpa folder must exist"
-    echo "                      in the build directory)"
-    echo "  -b | --build-only   Build the ncpa binaries only (do not package)"
-    echo "  -T | --travis       Set up environment for Travis CI builds"
-    echo "  -c | --clean        Clean up the build directory"
-    echo "  -n | --no-interaction  Run without interactive prompts (auto-confirm)"
-    echo "  -C | --clean-venv   Clean virtual environment and recreate"
-    echo ""
-    echo "Operating Systems Supported:"
-    echo " - CentOS, RHEL, Oracle, CloudLinux"
-    echo " - Ubuntu, Debian"
-    echo " - OpenSUSE, SLES"
-    echo " - AIX *"
-    echo " - Solaris *"
-    echo ""
-    echo "* Some systems require extra initial setup, find out more:"
-    echo "https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst"
-    echo ""
-}
-
-
-clean_build_dir() {
-    echo -e "\n***** build/build.sh - Cleaning up build directory..."
-    # Remove directories named ncpa-* except for the current version, but do not delete .rpm files
-    for dir in "$BUILD_DIR"/ncpa-*; do
-        if [ -d "$dir" ]; then
-            sudo rm -rf "$dir"
-        fi
-    done
-    sudo rm -rf $AGENT_DIR/build
-    sudo rm -rf $BUILD_DIR/NCPA-INSTALL-*
-    # sudo rm -f $BUILD_DIR/*.rpm $BUILD_DIR/*.dmg $BUILD_DIR/*.deb
-    sudo rm -f $BUILD_DIR/ncpa.spec
-    sudo rm -f $BUILD_DIR/*.tar.gz
-    sudo rm -rf $BUILD_ROOT
-    sudo rm -rf $BUILD_DIR/debbuild
-}
-
-
-# --------------------------
-# Startup actions
-# --------------------------
-
-
-# Get the arguments passed to us
-
-while [ -n "$1" ]; do
-    case "$1" in
-        -h | --help)
-            usage
-            exit 0
-            ;;
-        -c | --clean)
-            clean_build_dir
-            exit 0
-            ;;
-        -S | --skip-setup)
-            SKIP_SETUP=1
-            ;;
-        -p | --package-only)
-            PACKAGE_ONLY=1
-            ;;
-        -b | --build-only)
-            BUILD_ONLY=1
-            ;;
-        -T | --travis)
-            BUILD_TRAVIS=1
-            ;;
-        -n | --no-interaction)
-            NO_INTERACTION=1
-            export NO_INTERACTION
-            ;;
-        -C | --clean-venv)
-            CLEAN_VENV=1
-            ;;
-    esac
-    shift
-done
-
-
-# --------------------------
-# Virtual Environment Setup
-# --------------------------
-
 setup_virtual_environment() {
     echo "=== Setting up Virtual Environment ==="
-    
     # Clean venv if requested
     if [ $CLEAN_VENV -eq 1 ]; then
         echo "Cleaning existing virtual environment..."
@@ -212,35 +214,39 @@ setup_virtual_environment() {
             "$VENV_MANAGER" clean
         fi
     fi
-    
     # Check if venv manager exists
     if [ ! -x "$VENV_MANAGER" ]; then
         echo "ERROR: Virtual environment manager not found or not executable: $VENV_MANAGER"
         exit 1
     fi
-    
     # Setup virtual environment
     echo "Creating and setting up virtual environment: $VENV_NAME"
     if ! "$VENV_MANAGER" setup; then
         echo "ERROR: Failed to setup virtual environment"
         exit 1
     fi
-    
     # Export environment variables from venv manager
     echo "Configuring environment variables..."
     eval "$("$VENV_MANAGER" get-env-exports)"
-    
     # Verify venv is working
     if [ -z "$PYTHONBIN" ] || [ ! -x "$PYTHONBIN" ]; then
         echo "ERROR: Python executable not found after venv setup: $PYTHONBIN"
         exit 1
     fi
-    
     echo "✓ Virtual environment ready"
     echo "  Python: $PYTHONBIN"
     echo "  Version: $($PYTHONBIN --version 2>&1)"
     echo "  Virtual Env: $VIRTUAL_ENV"
     echo "=================================="
+
+    # Explicit SSL check
+    echo "Checking Python SSL support..."
+    if ! "$PYTHONBIN" -c "import ssl; print(ssl.OPENSSL_VERSION)" 2>/dev/null; then
+        echo "WARNING: Python SSL module is not available. Some features may not work."
+    else
+        echo "✓ Python SSL module is available."
+        echo "Python SSL version: $($PYTHONBIN -c 'import ssl; print(ssl.OPENSSL_VERSION)')"
+    fi
 }
 
 
@@ -252,109 +258,22 @@ setup_virtual_environment() {
 # Load required things for different systems
 echo -e "\nRunning build for: $UNAME"
 
+
 # Always setup virtual environment first
 setup_virtual_environment
 
-# CRITICAL: Ensure patchelf wrapper is available for Solaris builds
-if [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
-    echo "=== Ensuring patchelf wrapper is available for Solaris ==="
-    
-    # Check if patchelf wrapper exists in system location
-    if [ ! -f "/usr/local/bin/patchelf" ]; then
-        echo "patchelf wrapper not found in /usr/local/bin/, creating it now..."
-        
-        # Create the patchelf wrapper (same as in solaris setup)
-        sudo mkdir -p /usr/local/bin
-        sudo tee /usr/local/bin/patchelf > /dev/null << 'EOF'
-#!/bin/bash
-# Solaris-compatible patchelf wrapper for cx_Freeze
-# This wrapper provides patchelf functionality using native Solaris tools
-
-case "$1" in
-    "--version")
-        echo "patchelf 0.18.0 (solaris-wrapper)"
-        exit 0
-        ;;
-    "--print-rpath")
-        if [ -n "$2" ] && [ -f "$2" ]; then
-            # Try to extract RPATH using readelf or elfdump
-            if command -v readelf >/dev/null 2>&1; then
-                readelf -d "$2" 2>/dev/null | grep -E "RPATH|RUNPATH" | sed 's/.*\[\(.*\)\]/\1/' | head -1
-            elif command -v elfdump >/dev/null 2>&1; then
-                elfdump -d "$2" 2>/dev/null | grep -E "RPATH|RUNPATH" | awk '{print $5}' | head -1
-            else
-                echo ""
-            fi
-        else
-            echo ""
-        fi
-        exit 0
-        ;;
-    "--set-rpath"|"--add-rpath"|"--remove-rpath"|"--set-interpreter"|"--shrink-rpath"|"--add-needed"|"--remove-needed"|"--replace-needed"|"--no-default-lib")
-        # For modification operations, use elfedit if available
-        if command -v elfedit >/dev/null 2>&1; then
-            case "$1" in
-                "--set-rpath")
-                    if [ -n "$2" ] && [ -n "$3" ] && [ -f "$3" ]; then
-                        echo "Setting RPATH $2 on $3 using elfedit" >&2
-                        elfedit -e "dyn:runpath $2" "$3" 2>/dev/null || echo "elfedit operation may have failed" >&2
-                    fi
-                    ;;
-                *)
-                    echo "patchelf wrapper: $1 operation completed (using elfedit fallback)" >&2
-                    ;;
-            esac
-        else
-            echo "patchelf wrapper: $1 operation completed (no-op)" >&2
-        fi
-        exit 0
-        ;;
-    "--print-needed")
-        if [ -n "$2" ] && [ -f "$2" ]; then
-            # Extract needed libraries
-            if command -v readelf >/dev/null 2>&1; then
-                readelf -d "$2" 2>/dev/null | grep NEEDED | sed 's/.*\[\(.*\)\]/\1/'
-            elif command -v elfdump >/dev/null 2>&1; then
-                elfdump -d "$2" 2>/dev/null | grep NEEDED | awk '{print $5}'
-            elif command -v ldd >/dev/null 2>&1; then
-                ldd "$2" 2>/dev/null | awk '{print $1}' | grep -v "=>"
-            fi
-        fi
-        exit 0
-        ;;
-    "--print-interpreter")
-        if [ -n "$2" ] && [ -f "$2" ]; then
-            # Extract interpreter
-            if command -v readelf >/dev/null 2>&1; then
-                readelf -l "$2" 2>/dev/null | grep interpreter | sed 's/.*: \(.*\)\]/\1/'
-            elif command -v elfdump >/dev/null 2>&1; then
-                elfdump -i "$2" 2>/dev/null | grep interpreter | awk '{print $3}'
-            fi
-        fi
-        exit 0
-        ;;
-    *)
-        echo "patchelf wrapper: unknown option $1" >&2
-        exit 0
-        ;;
-esac
-EOF
-        
-        sudo chmod +x /usr/local/bin/patchelf
-        echo "✓ patchelf wrapper created at /usr/local/bin/patchelf"
-    else
-        echo "✓ patchelf wrapper already exists at /usr/local/bin/patchelf"
-    fi
-    
-    # Test the wrapper
-    if /usr/local/bin/patchelf --version >/dev/null 2>&1; then
-        echo "✓ patchelf wrapper is functional"
-    else
-        echo "✗ patchelf wrapper test failed"
-    fi
-    
-    echo "========================================================="
-fi 
+# Export all relevant environment variables for subshells
+echo "Exporting:"
+echo "PYTHONBIN: $PYTHONBIN"
+echo "VIRTUAL_ENV: $VIRTUAL_ENV"
+echo "VENV_NAME: $VENV_NAME"
+echo "BUILD_DIR: $BUILD_DIR"
+echo "AGENT_DIR: $AGENT_DIR"
+export PYTHONBIN
+export VIRTUAL_ENV
+export VENV_NAME
+export BUILD_DIR
+export AGENT_DIR
 
 # Load platform-specific configurations (but skip their Python setup)
 export SKIP_PYTHON=1  # Tell platform scripts to skip Python installation
@@ -368,6 +287,9 @@ elif [ "$UNAME" == "AIX" ]; then
     . $BUILD_DIR/aix/setup.sh
 elif [ "$UNAME" == "Darwin" ]; then
     . $BUILD_DIR/macos/setup.sh
+    # Restore PYTHONBIN after macOS setup script, in case it was lost
+    eval "$($VENV_MANAGER get-env-exports)"
+    export PYTHONBIN
 else
     echo "Not a supported system for our build script."
     echo "If you're sure all pre-reqs are installed, try running the"
@@ -459,7 +381,13 @@ else
     echo "No git repository found or git not available, using default version info"
 fi
 
+echo "PYTHONBIN before Building Binaries Subshell"
+echo "PYTHONBIN: $PYTHONBIN"
 (
+    # On macOS, explicitly export PYTHONBIN to subshell to avoid losing it
+    if [ "$UNAME" == "Darwin" ]; then
+        export PYTHONBIN
+    fi
     echo -e "\nBuilding NCPA binaries..."
     echo "=== Subshell Environment Debug ==="
     BUILD_DIR=$(pwd)
@@ -840,6 +768,8 @@ esac'
             exit $BUILD_RESULT
         fi
     else
+        echo "Attempting to build cx_Freeze..."
+        echo "Python binary: $PYTHONBIN"
         $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
     fi
 

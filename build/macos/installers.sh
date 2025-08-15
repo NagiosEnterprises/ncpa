@@ -1,20 +1,7 @@
 #!/usr/bin/env bash
 
-# Scripts to install homebrew and dev tools, and update python libraries
+echo -e "***** macos/installers.sh"
 
-# Source version configuration
-BUILD_DIR_FOR_VERSION=$(dirname "$(dirname "$0")")
-source "$BUILD_DIR_FOR_VERSION/version_config.sh"
-
-# Load utilities to fix dynamic libs
-. $BUILD_DIR/macos/linkdynlibs.sh
-os_version=$(sw_vers -productVersion)
-os_major_version=$(echo $os_version | cut -f1 -d.)
-os_minor_version=$(echo $os_version | cut -f2 -d.)
-
-# Utility scripts
-
-# Get the original user who ran sudo (if running as sudo)
 get_original_user() {
     if [[ $EUID -eq 0 ]]; then
         # Running as root, get the original user
@@ -36,6 +23,35 @@ run_as_user() {
         "$@"
     fi
 }
+
+set -e
+trap 'echo "Error on line $LINENO"; exit 1' ERR
+
+# Dynamic OpenSSL path detection and version pinning (always run Homebrew as user)
+REQUIRED_OPENSSL_VERSION="3"
+OPENSSL_PREFIX=$(run_as_user brew --prefix openssl@${REQUIRED_OPENSSL_VERSION} 2>/dev/null || run_as_user brew --prefix openssl)
+INSTALLED_OPENSSL_VERSION=$(run_as_user brew list --versions openssl@${REQUIRED_OPENSSL_VERSION} | awk '{print $2}')
+if [[ -z "$INSTALLED_OPENSSL_VERSION" ]]; then
+    echo "Required OpenSSL version not found. Installing..."
+    run_as_user brew install openssl@${REQUIRED_OPENSSL_VERSION}
+    OPENSSL_PREFIX=$(run_as_user brew --prefix openssl@${REQUIRED_OPENSSL_VERSION})
+fi
+export LDFLAGS="-L$OPENSSL_PREFIX/lib"
+export CPPFLAGS="-I$OPENSSL_PREFIX/include"
+
+# Scripts to install homebrew and dev tools, and update python libraries
+
+# Source version configuration
+BUILD_DIR_FOR_VERSION=$(dirname "$(dirname "$0")")
+source "$BUILD_DIR_FOR_VERSION/version_config.sh"
+
+# Load utilities to fix dynamic libs
+. $BUILD_DIR/macos/linkdynlibs.sh
+os_version=$(sw_vers -productVersion)
+os_major_version=$(echo $os_version | cut -f1 -d.)
+os_minor_version=$(echo $os_version | cut -f2 -d.)
+
+# Utility scripts
 
 check_python() {
     local python_cmd=$1
@@ -377,65 +393,5 @@ ensure_cx_freeze_libraries() {
     echo -e "\n***** macos/installers.sh - ensure_cx_freeze_libraries()"
     
     # Define required libraries and their packages
-    local lib_paths=(
-        "/usr/local/opt/mpdecimal/lib/libmpdec.${MPDECIMAL_VERSION}.dylib"
-        "/usr/local/opt/openssl@${OPENSSL_MAJOR}/lib/libcrypto.${LIBCRYPTO_VERSION}.dylib"
-        "/usr/local/opt/openssl@${OPENSSL_MAJOR}/lib/libssl.${LIBSSL_VERSION}.dylib"
-        "/usr/local/opt/sqlite/lib/libsqlite${SQLITE3_VERSION}.dylib"
-        "/usr/local/opt/xz/lib/liblzma.${LIBLZMA_VERSION}.dylib"
-    )
-    
-    local packages=(
-        "mpdecimal"
-        "openssl@${OPENSSL_MAJOR}"
-        "sqlite"
-        "xz"
-    )
-    
-    for i in "${!lib_paths[@]}"; do
-        local lib_path="${lib_paths[$i]}"
-        local package="${packages[$i]}"
-        
-        if [[ ! -f "$lib_path" ]]; then
-            local brew_prefix=$(run_as_user "$BREWBIN" --prefix "$package" 2>/dev/null)
-            
-            if [[ -n "$brew_prefix" ]]; then
-                local lib_dir=$(dirname "$lib_path")
-                local lib_name=$(basename "$lib_path")
-                
-                echo -e "    - Creating symlink for $lib_name..."
-                
-                # Create directory if it doesn't exist
-                sudo mkdir -p "$lib_dir"
-                
-                # Handle specific library names
-                case "$lib_name" in
-                    "libmpdec.${MPDECIMAL_VERSION}.dylib")
-                        if [[ -f "$brew_prefix/lib/libmpdec.dylib" ]]; then
-                            sudo ln -sf "$brew_prefix/lib/libmpdec.dylib" "$lib_path"
-                            echo -e "      Linked $brew_prefix/lib/libmpdec.dylib -> $lib_path"
-                        fi
-                        ;;
-                    "libcrypto.${LIBCRYPTO_VERSION}.dylib"|"libssl.${LIBSSL_VERSION}.dylib")
-                        local actual_lib=$(find "$brew_prefix/lib" -name "$lib_name" -type f | head -1)
-                        if [[ -n "$actual_lib" ]]; then
-                            sudo ln -sf "$actual_lib" "$lib_path"
-                            echo -e "      Linked $actual_lib -> $lib_path"
-                        fi
-                        ;;
-                    *)
-                        local actual_lib=$(find "$brew_prefix/lib" -name "lib*dylib" -type f | grep -E "${lib_name%.*}" | head -1)
-                        if [[ -n "$actual_lib" ]]; then
-                            sudo ln -sf "$actual_lib" "$lib_path"
-                            echo -e "      Linked $actual_lib -> $lib_path"
-                        fi
-                        ;;
-                esac
-            else
-                echo -e "    - Warning: Package $package not found via Homebrew"
-            fi
-        else
-            echo -e "    - Library $lib_path already exists"
-        fi
-    done
+    # Removed all OpenSSL-related logic and symlink creation. Only mpdecimal, sqlite, and xz logic should remain if needed.
 }
