@@ -122,14 +122,14 @@ detect_python() {
                 return 1
             fi
 
-            log "Running: brew install python"
-            if ! run_as_user brew install python; then
+            log "Running: brew install --overwrite python"
+            if ! run_as_user brew install --overwrite python; then
                 error "brew install python failed. Please install Python 3.8+ manually."
                 return 1
             fi
 
-            log "Running: brew install openssl@3"
-            if ! run_as_user brew install openssl@3; then
+            log "Running: brew install --overwrite openssl@3"
+            if ! run_as_user brew install --overwrite openssl@3; then
                 error "Failed to install openssl@3 via Homebrew."
                 return 1
             fi
