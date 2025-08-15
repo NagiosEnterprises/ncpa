@@ -57,6 +57,7 @@ clean_necessary_files() {
     echo "    - Removing conflicting Homebrew libraries: readline, sqlite, expat..."
     sudo rm -rf /usr/local/opt/readline /usr/local/opt/sqlite /usr/local/opt/expat
 }
+clean_necessary_files()
 
 check_python() {
     local python_cmd=$1
