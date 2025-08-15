@@ -286,8 +286,16 @@ setup_virtual_environment() {
 # Load required things for different systems
 echo -e "\nRunning build for: $UNAME"
 
+
 # Always setup virtual environment first
 setup_virtual_environment
+
+# Export all relevant environment variables for subshells
+export PYTHONBIN
+export VIRTUAL_ENV
+export VENV_NAME
+export BUILD_DIR
+export AGENT_DIR
 
 # Load platform-specific configurations (but skip their Python setup)
 export SKIP_PYTHON=1  # Tell platform scripts to skip Python installation
