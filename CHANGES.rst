@@ -8,7 +8,7 @@ Changelog
 
 **Updates**
 
-- Rewrote the build process to use virtual environments for Python dependencies, improving compatibility and isolation. (Blake Bahner)
+- Rewrote the build process for Unix envrionments to use virtual environments for Python dependencies, improving compatibility and build reliability. (Blake Bahner)
 - Improved process killing logic on Unix and Windows systems to handle more edge cases and ensure all child processes are terminated. (Blake Bahner)
 - Updated passive check sending to attempt certificate verification when possible, falling back to legacy behavior if verification fails. (Blake Bahner)
 
