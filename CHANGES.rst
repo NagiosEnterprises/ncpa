@@ -12,6 +12,7 @@ Changelog
 
 **Bug Fixes**
 - Fixed an issue where the API form would not clear fields after certain actions. (Blake Bahner)
+- Fixed an issue where NCPA couldn't upgrade or uninstall on Windows due to a locked file. [GH:#1210,#1281,GL-NCPA:#17] (Blake Bahner)
 
 3.1.4 - 07/30/2025
 ==================
