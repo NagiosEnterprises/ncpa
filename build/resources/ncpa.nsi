@@ -150,11 +150,6 @@ Function CheckAndMigrateOldInstallation
     Goto endMigration
     CopyFiles /SILENT "$OLD_INSTALL_DIR\plugins\*" "$INSTDIR\plugins"
 
-    IfFileExists "$INSTDIR\lib\servicemanager.pyd" 0 +4
-        SetFileAttributes "$INSTDIR\lib\servicemanager.pyd" NORMAL
-        Rename "$INSTDIR\lib\servicemanager.pyd" "$INSTDIR\lib\servicemanager.pyd.preuninstall"
-        CopyFiles /SILENT "$INSTDIR\lib\servicemanager.pyd.preuninstall" "$INSTDIR\lib\servicemanager.pyd"
-
     RMDir /r "$OLD_INSTALL_DIR\listener"
     Goto endMigration
 
@@ -199,6 +194,21 @@ Function .onInit
     ; Default ip if not given
     ${If} $bind_ip == ''
         StrCpy $bind_ip "0.0.0.0"
+    ${EndIf}
+
+    ; --- Preserve existing handles to servicemanager.pyd during upgrade ---
+    ; If the old file exists, rename it aside so Windows handles (e.g., event log) keep pointing to it.
+    ${If} ${FileExists} "$INSTDIR\lib\servicemanager.pyd"
+        SetFileAttributes "$INSTDIR\lib\servicemanager.pyd" NORMAL
+        ${If} ${FileExists} "$INSTDIR\lib\servicemanager.pyd.preuninstall"
+            Delete "$INSTDIR\lib\servicemanager.pyd.preuninstall"
+        ${EndIf}
+        ClearErrors
+        Rename "$INSTDIR\lib\servicemanager.pyd" "$INSTDIR\lib\servicemanager.pyd.preuninstall"
+        ${If} ${Errors}
+            ; If locked, schedule the rename for next reboot (MOVEFILE_DELAY_UNTIL_REBOOT=0x4)
+            System::Call 'kernel32::MoveFileExW(w "$INSTDIR\lib\servicemanager.pyd", w "$INSTDIR\lib\servicemanager.pyd.preuninstall", i 0x4) i.r0'
+        ${EndIf}
     ${EndIf}
 
     
@@ -476,6 +486,20 @@ Section ""
 SectionEnd
 
 Section "Uninstall"
+    ; --- Preserve existing handles to servicemanager.pyd during upgrade ---
+    ; If the old file exists, rename it aside so Windows handles (e.g., event log) keep pointing to it.
+    ${If} ${FileExists} "$INSTDIR\lib\servicemanager.pyd"
+        SetFileAttributes "$INSTDIR\lib\servicemanager.pyd" NORMAL
+        ${If} ${FileExists} "$INSTDIR\lib\servicemanager.pyd.preuninstall"
+            Delete "$INSTDIR\lib\servicemanager.pyd.preuninstall"
+        ${EndIf}
+        ClearErrors
+        Rename "$INSTDIR\lib\servicemanager.pyd" "$INSTDIR\lib\servicemanager.pyd.preuninstall"
+        ${If} ${Errors}
+            ; If locked, schedule the rename for next reboot (MOVEFILE_DELAY_UNTIL_REBOOT=0x4)
+            System::Call 'kernel32::MoveFileExW(w "$INSTDIR\lib\servicemanager.pyd", w "$INSTDIR\lib\servicemanager.pyd.preuninstall", i 0x4) i.r0'
+        ${EndIf}
+    ${EndIf}
 
     Delete "$INSTDIR\uninstall.exe"
 
