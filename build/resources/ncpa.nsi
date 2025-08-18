@@ -150,6 +150,13 @@ Function CheckAndMigrateOldInstallation
     Goto endMigration
     CopyFiles /SILENT "$OLD_INSTALL_DIR\plugins\*" "$INSTDIR\plugins"
 
+    ; Prefer current install root if defined
+    IfFileExists "$INSTDIR\lib\servicemanager.pyd" 0 +4
+        SetFileAttributes "$INSTDIR\lib\servicemanager.pyd" NORMAL
+        Rename "$INSTDIR\lib\servicemanager.pyd" "$INSTDIR\lib\servicemanager.pyd.preuninstall"
+        CopyFiles /SILENT "$INSTDIR\lib\servicemanager.pyd.preuninstall" "$INSTDIR\lib\servicemanager.pyd"
+        Goto done
+
     RMDir /r "$OLD_INSTALL_DIR\listener"
     Goto endMigration
 
@@ -195,6 +202,8 @@ Function .onInit
     ${If} $bind_ip == ''
         StrCpy $bind_ip "0.0.0.0"
     ${EndIf}
+
+    
 
 FunctionEnd
 
