@@ -155,7 +155,6 @@ Function CheckAndMigrateOldInstallation
         SetFileAttributes "$INSTDIR\lib\servicemanager.pyd" NORMAL
         Rename "$INSTDIR\lib\servicemanager.pyd" "$INSTDIR\lib\servicemanager.pyd.preuninstall"
         CopyFiles /SILENT "$INSTDIR\lib\servicemanager.pyd.preuninstall" "$INSTDIR\lib\servicemanager.pyd"
-        Goto done
 
     RMDir /r "$OLD_INSTALL_DIR\listener"
     Goto endMigration
