@@ -473,31 +473,37 @@ Section "Uninstall"
     Delete "$INSTDIR\uninstall.exe"
 
     ReadEnvStr $9 COMSPEC
+    ; Stop and delete all NCPA-related services
+    nsExec::Exec '$9 /c sc stop ncpalistener'
+    nsExec::Exec '$9 /c sc stop ncpapassive'
+    nsExec::Exec '$9 /c sc stop ncpa'
     nsExec::Exec '$9 /c sc stop NCPA'
+    nsExec::Exec '$9 /c sc delete ncpalistener'
+    nsExec::Exec '$9 /c sc delete ncpapassive'
+    nsExec::Exec '$9 /c sc delete ncpa'
     nsExec::Exec '$9 /c sc delete NCPA'
+    Sleep 2000
+    ; Kill all known NCPA child processes
+    nsExec::Exec '$9 /c taskkill /F /IM ncpa.exe'
+    nsExec::Exec '$9 /c taskkill /F /IM ncpapassive.exe'
+    nsExec::Exec '$9 /c taskkill /F /IM ncpalistener.exe'
+    Sleep 1000
 
-    ; sleep until the service is stopped
-    nsExec::Exec '$9 /c sc query NCPA'
-    Pop $0
-    ${While} $0 != "1060"
-        Sleep 1000
-        nsExec::Exec '$9 /c sc query NCPA'
-        Pop $0
-    ${EndWhile}
+    ; Remove old log files and configs
+    Delete "$INSTDIR\ncpa_listener.log"
+    Delete "$INSTDIR\ncpa_passive.log"
+    RMDir /r "$INSTDIR\passive"
+    Delete "$PROGRAMFILES32\Nagios\NCPA\*.*"
+    RMDir /r "$INSTDIR\lib"
+    RMDir /r "$INSTDIR\listener"
+    Delete "$INSTDIR\python*.dll"
+    ; Remove lib directory from Program Files Nagios NCPA
+    RMDir /r "$PROGRAMFILES64\Nagios\NCPA\lib"
 
-    ; not sure why this is double, but I don't want to mess with it if it's needed
+    ; Remove registry keys
     DeleteRegKey SHCTX "${UNINST_KEY}"
     DeleteRegKey SHCTX "${UNINST_KEY}"
 
-    ; Ask the user if they want to delete the config files
-    ; MessageBox MB_YESNO|MB_ICONQUESTION "Would you like to delete your NCPA configuration files?" IDYES Deleteall IDNO SaveConfigFiles
-    ; ; if they don't want to delete the config files, save them
-    ; Deleteall:
-        RMDir /r "$INSTDIR"
-    ; SaveConfigFiles:
-    ;     ; Save the config files
-    ;     ExecWait "$9 /c move /Y $INSTDIR\etc $TEMP\ncpa_config"
-    ;     RMDir /r "$INSTDIR"
-    ;     CreateDirectory "$INSTDIR"
-    ;     ExecWait "$9 /c move /Y $TEMP\ncpa_config $INSTDIR\etc"
+    ; Remove all files
+    RMDir /r "$INSTDIR"
 SectionEnd
