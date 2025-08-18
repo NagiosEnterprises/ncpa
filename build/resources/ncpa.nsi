@@ -150,7 +150,6 @@ Function CheckAndMigrateOldInstallation
     Goto endMigration
     CopyFiles /SILENT "$OLD_INSTALL_DIR\plugins\*" "$INSTDIR\plugins"
 
-    ; Prefer current install root if defined
     IfFileExists "$INSTDIR\lib\servicemanager.pyd" 0 +4
         SetFileAttributes "$INSTDIR\lib\servicemanager.pyd" NORMAL
         Rename "$INSTDIR\lib\servicemanager.pyd" "$INSTDIR\lib\servicemanager.pyd.preuninstall"
