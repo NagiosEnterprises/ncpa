@@ -1045,7 +1045,10 @@ if __SYSTEM__ == 'nt':
                     self.ReportServiceStatus(win32service.SERVICE_STOPPED)
                 except Exception as e:
                     self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
+        except Exception as e:
+            pass
 
+        try:
             def SvcDoRun(self):
                 # log starting of service to windows event log
                 try:
@@ -1069,8 +1072,6 @@ if __SYSTEM__ == 'nt':
                                             servicemanager.PYS_SERVICE_STOPPED,
                                             (self._svc_name_, str(e)))
         except Exception as e:
-            import servicemanager
-            servicemanager.LogErrorMsg(f"Winservice - Failed to define SvcRun/SvcDoRun: {e}")
             pass
 
 
