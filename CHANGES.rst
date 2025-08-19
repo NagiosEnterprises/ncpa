@@ -3,8 +3,7 @@ Changelog
 3.2.0 - XX/XX/2025
 ==================
 **Added**
-
-- Added support for Solaris 11.4 builds. (Blake Bahner)
+- Added experimental support for Solaris 11.4 builds. (Blake Bahner)
 
 **Updates**
 
