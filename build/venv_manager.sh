@@ -193,12 +193,91 @@ detect_python() {
         fi
     done
 
-    # Always use the newest stable version found (ignore PYTHON_MAJOR_MINOR preference)
-    if [ -n "$newest_cmd" ]; then
-        PYTHON_EXECUTABLE="$newest_cmd"
-        PYTHON_VERSION="$newest_version"
-        log "✓ Using newest available Python $newest_version: $newest_cmd"
-        return 0
+    # Query the latest available Python version from the package manager
+    latest_pkg_version=""
+    if [ "$PLATFORM" = "linux" ]; then
+        if command -v apt-cache >/dev/null 2>&1; then
+            latest_pkg_version=$(apt-cache policy python3 | grep Candidate | awk '{print $2}' | cut -d. -f1,2)
+        elif command -v dnf >/dev/null 2>&1; then
+            latest_pkg_version=$(dnf info python3 | grep Version | awk '{print $3}' | cut -d. -f1,2)
+        elif command -v yum >/dev/null 2>&1; then
+            latest_pkg_version=$(yum info python3 | grep Version | awk '{print $3}' | cut -d. -f1,2)
+        elif command -v zypper >/dev/null 2>&1; then
+            latest_pkg_version=$(zypper info python3 | grep Version | awk '{print $3}' | cut -d. -f1,2)
+        fi
+    elif [ "$PLATFORM" = "macos" ]; then
+        if command -v brew >/dev/null 2>&1; then
+            latest_pkg_version=$(brew info python | grep -Eo 'python@[0-9]+\.[0-9]+' | head -1 | grep -Eo '[0-9]+\.[0-9]+')
+            if [ -z "$latest_pkg_version" ]; then
+                latest_pkg_version=$(brew info python | grep -Eo 'stable [0-9]+\.[0-9]+' | head -1 | grep -Eo '[0-9]+\.[0-9]+')
+            fi
+        fi
+    fi
+
+    # If we could not detect the latest available, fallback to installed
+    if [ -z "$latest_pkg_version" ]; then
+        latest_pkg_version="$newest_version"
+    fi
+
+    latest_major=$(echo "$latest_pkg_version" | cut -d. -f1)
+    latest_minor=$(echo "$latest_pkg_version" | cut -d. -f2)
+
+    # Compare installed vs latest available
+    if [ "$newest_major" -gt "$latest_major" ] || { [ "$newest_major" -eq "$latest_major" ] && [ "$newest_minor" -ge "$latest_minor" ]; }; then
+        # Installed Python is newer or equal to package manager's version
+        if [ "$newest_major" -ge 3 ] && [ "$newest_minor" -ge 8 ]; then
+            PYTHON_EXECUTABLE="$newest_cmd"
+            PYTHON_VERSION="$newest_version"
+            log "✓ Using newest installed Python $newest_version: $newest_cmd (newer or equal to package manager $latest_pkg_version)"
+            return 0
+        else
+            error "Newest installed Python ($newest_version) is too old (<3.8)."
+            return 1
+        fi
+    else
+        # Installed Python is older than package manager's version
+        log "Installed Python ($newest_version) is older than latest available ($latest_pkg_version). Attempting to install/upgrade..."
+        if [ "$PLATFORM" = "linux" ]; then
+            if command -v apt-get >/dev/null 2>&1; then
+                sudo apt-get update && sudo apt-get install -y python3 python3-venv
+            elif command -v dnf >/dev/null 2>&1; then
+                # Check if python3-venv is available
+                if dnf list python3-venv >/dev/null 2>&1; then
+                    sudo dnf install -y python3 python3-venv
+                else
+                    log "python3-venv not available in dnf. Installing python3 only."
+                    sudo dnf install -y python3
+                fi
+            elif command -v yum >/dev/null 2>&1; then
+                # Check if python3-venv is available
+                if yum list python3-venv >/dev/null 2>&1; then
+                    sudo yum install -y python3 python3-venv
+                else
+                    log "python3-venv not available in yum. Installing python3 only."
+                    sudo yum install -y python3
+                fi
+            elif command -v zypper >/dev/null 2>&1; then
+                sudo zypper install -y python3 python3-venv
+            else
+                error "No supported package manager found for Python installation. Please install Python 3.8+ manually."
+                return 1
+            fi
+        elif [ "$PLATFORM" = "macos" ]; then
+            if command -v brew >/dev/null 2>&1; then
+                run_as_user brew update
+                run_as_user brew install --overwrite python
+            else
+                error "Homebrew not found. Please install Homebrew and Python 3.8+ manually."
+                return 1
+            fi
+        else
+            error "Automatic Python installation not supported for platform: $PLATFORM. Please install Python 3.8+ manually."
+            return 1
+        fi
+        # Re-detect Python after installation
+        log "Re-detecting Python after installation..."
+        detect_python
+        return $?
     fi
     error "No suitable Python 3.8+ interpreter found and automatic installation failed."
     return 1
