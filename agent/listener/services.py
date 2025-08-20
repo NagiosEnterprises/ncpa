@@ -287,10 +287,13 @@ class ServiceNode(listener.nodes.LazyNode):
             ls = line.split()
 
             # Skip lrc items
-            if 'lrc:/' in ls[1]:
+            item = ls[1]
+            if isinstance(item, bytes):
+                item = item.decode()
+            if 'lrc:/' in item:
                 continue
 
-            sub = ls[1].replace('svc:/', '').replace('/', '|')
+            sub = item.replace('svc:/', '').replace('/', '|')
             status = ls[0]
             if status == 'online':
                 services[sub] = 'running'
