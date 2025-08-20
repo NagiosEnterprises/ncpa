@@ -295,6 +295,8 @@ class ServiceNode(listener.nodes.LazyNode):
 
             sub = item.replace('svc:/', '').replace('/', '|')
             status = ls[0]
+            if isinstance(status, bytes):
+                status = status.decode()
             if status == 'online':
                 services[sub] = 'running'
             elif 'offline' in status or status == 'maintenance' or status == 'disabled':
