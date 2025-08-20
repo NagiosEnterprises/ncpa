@@ -2,6 +2,9 @@ Changelog
 +++++++++
 3.2.1 - XX/XX/2025
 ==================
+**Bug Fixes** 
+
+- Fixed an issue where the services endpoint would break on Solaris. [GL-NCPA#18] - BB
 
 3.2.0 - 08/20/2025
 ==================
