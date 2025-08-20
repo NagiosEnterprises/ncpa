@@ -287,11 +287,16 @@ class ServiceNode(listener.nodes.LazyNode):
             ls = line.split()
 
             # Skip lrc items
-            if 'lrc:/' in ls[1]:
+            item = ls[1]
+            if isinstance(item, bytes):
+                item = item.decode()
+            if 'lrc:/' in item:
                 continue
 
-            sub = ls[1].replace('svc:/', '').replace('/', '|')
+            sub = item.replace('svc:/', '').replace('/', '|')
             status = ls[0]
+            if isinstance(status, bytes):
+                status = status.decode()
             if status == 'online':
                 services[sub] = 'running'
             elif 'offline' in status or status == 'maintenance' or status == 'disabled':
@@ -370,17 +375,25 @@ class ServiceNode(listener.nodes.LazyNode):
                     builder = '%s (should be %s)' % (builder, ''.join(target_status))
 
                 # Remove each service that has a status from the list of services the user provided
-                # so that we can display the services that can't be found ... this only works with
-                # exact match lists of services
-                if filtered_services:
-                    i = filtered_services.index(service)
-                    filtered_services.pop(i)
+                # decode line if it's bytes
+                if isinstance(line, bytes):
+                    line = line.decode()
+                ls = line.split()
+                if len(ls) < 2:
+                    continue
+                # Skip lrc items
+                item = ls[1]
+                if 'lrc:/' in item:
+                    continue
 
-                if priority > returncode:
-                    returncode = priority
-
-                stdout_builder.append({ 'info': builder, 'priority': priority })
-
+                sub = ls[1].replace('svc:/', '').replace('/', '|')
+                service_status = ls[0]
+                if service_status == 'online':
+                    services[sub] = 'running'
+                elif 'offline' in service_status or service_status == 'maintenance' or service_status == 'disabled':
+                    services[sub] = 'stopped'
+                else:
+                    services[sub] = 'unknown'
             if returncode > 0:
                 returncode = 2
 
