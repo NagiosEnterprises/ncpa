@@ -2,13 +2,52 @@
 
 echo -e "***** macos/setup.sh"
 
-# Globals - defined in build.sh
-#     PYTHONVER, SSLVER, ZLIBVER
+get_original_user() {
+    if [[ $EUID -eq 0 ]]; then
+        echo ${SUDO_USER:-$USER}
+    else
+        echo $USER
+    fi
+}
+
+run_as_user() {
+    local original_user=$(get_original_user)
+    if [[ $EUID -eq 0 && -n "$SUDO_USER" ]]; then
+        sudo -u "$original_user" "$@"
+    else
+        "$@"
+    fi
+}
+
+set -e
+trap 'echo "Error on line $LINENO"; exit 1' ERR
+
+# Dynamic OpenSSL path detection and version pinning (always run Homebrew as user)
+REQUIRED_OPENSSL_VERSION="3"
+OPENSSL_PREFIX=$(run_as_user brew --prefix openssl@${REQUIRED_OPENSSL_VERSION} 2>/dev/null || run_as_user brew --prefix openssl)
+INSTALLED_OPENSSL_VERSION=$(run_as_user brew list --versions openssl@${REQUIRED_OPENSSL_VERSION} | awk '{print $2}')
+if [[ -z "$INSTALLED_OPENSSL_VERSION" ]]; then
+    echo "Required OpenSSL version not found. Installing..."
+    run_as_user brew install openssl@${REQUIRED_OPENSSL_VERSION}
+    OPENSSL_PREFIX=$(run_as_user brew --prefix openssl@${REQUIRED_OPENSSL_VERSION})
+fi
+export LDFLAGS="-L$OPENSSL_PREFIX/lib"
+export CPPFLAGS="-I$OPENSSL_PREFIX/include"
+
+# Virtual environment integration
+VENV_MANAGER="$BUILD_DIR/venv_manager.sh"
+export VENV_NAME="${VENV_NAME:-ncpa-build-macos}"
+
+# Globals - defined in build.sh and version_config.sh
+#     PYTHONVER, SSLVER, ZLIBVER, SKIP_PYTHON
 
 # Load some installers and support functions
 . $BUILD_DIR/macos/installers.sh
 
-# Find system Python - will be set by verify_python function
+# Skip Python detection if using virtual environment (recommended)
+SKIP_PYTHON="${SKIP_PYTHON:-0}"
+
+# Find system Python - will be set by verify_python function (fallback mode)
 PYTHONCMD=""
 PYTHONBIN=""
 
@@ -17,25 +56,40 @@ if [[ -z "$AGENT_DIR" ]]; then
     AGENT_DIR="$BUILD_DIR/../agent"
 fi
 
+# Automatically install Python requirements in venv after setup
+if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
+    "$VENV_MANAGER" install-requirements
+fi
+
+echo -e "***** macos/setup.sh - SKIP_PYTHON: $SKIP_PYTHON"
+
 set +e
-SKIP_PYTHON=0
 
 install_prereqs() {
     echo -e "***** macos/setup.sh - install_prereqs()..."
-    # ---------------------
-    #  INSTALL SYSTEM REQS
-    # ---------------------
-
-    # Install proper version of python
-    if [ $SKIP_PYTHON -eq 0 ]; then
+    echo -e "***** macos/setup.sh - Installing system dependencies only (Python handled by venv)"
+    
+    # Skip Python installation if using virtual environment
+    if [ "$SKIP_PYTHON" -eq 1 ]; then
+        echo -e "***** macos/setup.sh - Using virtual environment Python: $PYTHONBIN"
+        echo -e "***** macos/setup.sh - Skipping system Python installation"
+        
+        # Only install essential development tools
         echo -e "    - Install dev tools..."
-        # if [[ -z $( which brew 2>/dev/null ) ]]; then
-            cd $BUILD_DIR/resources
-            install_devtools
+        cd $BUILD_DIR/resources
+        install_devtools
+        
+        export PATH=$PATH:$BUILD_DIR/bin
+    else
+        echo -e "***** macos/setup.sh - WARNING: Fallback mode - installing Python from source"
+        # ---------------------
+        #  INSTALL SYSTEM REQS
+        # ---------------------
 
-        # else
-        #     echo -e "Homebrew and dev tools already installed.\n"
-        # fi
+        # Install proper version of python (fallback mode)
+        echo -e "    - Install dev tools..."
+        cd $BUILD_DIR/resources
+        install_devtools
 
         echo -e "    - Verify or install Python..."
         if verify_or_install_python; then
@@ -52,9 +106,15 @@ install_prereqs() {
     #  INSTALL PYTHON MODULES
     # --------------------------
 
-    echo -e "    - Debug: Before update_py_packages - PYTHONCMD='$PYTHONCMD', PYTHONBIN='$PYTHONBIN'"
-    update_py_packages
-    local exit_code=$?
+    # Python packages are handled by venv_manager when using virtual environments
+    if [[ "$SKIP_PYTHON" != "1" ]]; then
+        echo -e "    - Debug: Before update_py_packages - PYTHONCMD='$PYTHONCMD', PYTHONBIN='$PYTHONBIN'"
+        update_py_packages
+        local exit_code=$?
+    else
+        echo -e "    - Skipping Python package installation (handled by venv_manager)"
+        local exit_code=0
+    fi
     
     # Ensure all required libraries exist for cx_Freeze
     ensure_cx_freeze_libraries

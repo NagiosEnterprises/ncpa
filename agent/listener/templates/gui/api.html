@@ -430,7 +430,7 @@ $(document).ready(function() {
     // Filter list filter selection
     $('.list').on('change', '.filter-name', function() {
         var input = $(this).parents('.filter-group').find('input');
-        if ($(this).val() != 'name' && $(this).val() != 'exe' && $(this).val() != 'cmd') {
+        if ($(this).val() != 'username' && $(this).val() != 'name' && $(this).val() != 'exe' && $(this).val() != 'cmd') {
             input.attr('placeholder', '>=');
         } else {
             input.attr('placeholder', '');

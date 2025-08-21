@@ -88,8 +88,20 @@ except:
 if buildtype == 'nightly':
     print("Looking for list of pip packages to install in %s" % os.path.join(basedir, 'build', 'resources', 'require.win.txt'))
     # subprocess.Popen(['git', 'pull']).wait()
-    subprocess.Popen([python_launcher, '-m', 'pip', 'install', '--upgrade', 'pip']).wait()
-    subprocess.Popen([python_launcher, '-m', 'pip', 'install', '--upgrade', '-r', os.path.join(basedir, 'build', 'resources', 'require.win.txt')]).wait()
+    
+    # Check if we're in a virtual environment (Python 3.3+)
+    in_venv = hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix)
+    
+    if in_venv:
+        print("Using virtual environment for package installation")
+        # In a virtual environment, use pip directly
+        subprocess.Popen([python_launcher, '-m', 'pip', 'install', '--upgrade', 'pip']).wait()
+        subprocess.Popen([python_launcher, '-m', 'pip', 'install', '--upgrade', '-r', os.path.join(basedir, 'build', 'resources', 'require.win.txt')]).wait()
+    else:
+        print("Using system Python for package installation")
+        # For system Python, use the original method
+        subprocess.Popen([python_launcher, '-m', 'pip', 'install', '--upgrade', 'pip']).wait()
+        subprocess.Popen([python_launcher, '-m', 'pip', 'install', '--upgrade', '-r', os.path.join(basedir, 'build', 'resources', 'require.win.txt')]).wait()
 
 # Remove old build
 print("Removing old build")
