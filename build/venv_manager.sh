@@ -199,7 +199,7 @@ detect_python() {
         if command -v apt-cache >/dev/null 2>&1; then
             latest_pkg_version=$(apt-cache policy python3 | grep Candidate | awk '{print $2}' | cut -d. -f1,2)
         elif command -v dnf >/dev/null 2>&1; then
-            latest_pkg_version=$(dnf info python3 | grep Version | awk '{print $3}' | cut -d. -f1,2)
+            latest_pkg_version=$(dnf repoquery --latest-limit 1 --qf '%{version}' python3 | cut -d. -f1,2)
         elif command -v yum >/dev/null 2>&1; then
             latest_pkg_version=$(yum info python3 | grep Version | awk '{print $3}' | cut -d. -f1,2)
         elif command -v zypper >/dev/null 2>&1; then

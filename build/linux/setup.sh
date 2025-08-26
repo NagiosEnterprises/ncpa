@@ -78,7 +78,7 @@ install_prereqs() {
             apt-get -y update
             apt-get -y install debian-builder --allow-unauthenticated
         fi
-    elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
+    elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ] || [ "$distro" == "Fedora" ]; then
         echo -e "***** linux/setup.sh - install_prereqs() - CentOS/RHEL"
 
         if [ "$distro" == "Oracle" ]; then
