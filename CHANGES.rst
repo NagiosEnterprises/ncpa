@@ -5,6 +5,7 @@ Changelog
 **Bug Fixes** 
 
 - Fixed an issue where the services endpoint would break on Solaris. [GL-NCPA#18] - BB
+- Fixed an issue where NCPA wouldn't build properly on Fedora per MrPippin66's instructions. [GH:#1148] - BB
 
 3.2.0 - 08/20/2025
 ==================
