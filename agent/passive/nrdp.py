@@ -66,7 +66,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
         check_result = Handler.make_tag('checkresult', tag_attr={'type': check_type})
         hostname = Handler.make_tag('hostname', check.hostname)
-        state = Handler.make_tag('state', returncode)
+        state = Handler.make_tag('state', str(returncode))
         output = Handler.make_tag('output', stdout)
 
         if not check_type == 'host':
