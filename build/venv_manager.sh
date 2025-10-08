@@ -90,6 +90,25 @@ detect_python() {
         "/opt/homebrew/bin/python3.11"
         "/opt/csw/bin/python3.11"
 
+        "python3.10"
+        "/usr/bin/python3.10"
+        "/usr/local/bin/python3.10"
+        "/opt/homebrew/bin/python3.10"
+        "/opt/csw/bin/python3.10"
+        "python3.9"
+
+        "python3.9"
+        "/usr/bin/python3.9"
+        "/usr/local/bin/python3.9"
+        "/opt/homebrew/bin/python3.9"
+        "/opt/csw/bin/python3.9"
+
+        "python3.8"
+        "/usr/bin/python3.8"
+        "/usr/local/bin/python3.8"
+        "/opt/homebrew/bin/python3.8"
+        "/opt/csw/bin/python3.8"
+
         "python3"
         "/usr/bin/python3"
         "/usr/local/bin/python3"
@@ -245,7 +264,7 @@ detect_python() {
     # Compare installed vs latest available
     if [ "$newest_major" -gt "$latest_major" ] || { [ "$newest_major" -eq "$latest_major" ] && [ "$newest_minor" -ge "$latest_minor" ]; }; then
         # Installed Python is newer or equal to package manager's version
-        if [ "$newest_major" -ge 3 ] && [ "$newest_minor" -ge 11 ]; then
+        if [ "$newest_major" -ge 3 ] && [ "$newest_minor" -ge 8 ]; then
             PYTHON_EXECUTABLE="$newest_cmd"
             PYTHON_VERSION="$newest_version"
             log "✓ Using newest installed Python $newest_version: $newest_cmd (newer or equal to package manager $latest_pkg_version)"
@@ -287,11 +306,11 @@ detect_python() {
                 run_as_user brew update
                 run_as_user brew install --overwrite python
             else
-                error "Homebrew not found. Please install Homebrew and Python 3.11+ manually."
+                error "Homebrew not found. Please install Homebrew and Python 3.8+ manually."
                 return 1
             fi
         else
-            error "Automatic Python installation not supported for platform: $PLATFORM. Please install Python 3.11+ manually."
+            error "Automatic Python installation not supported for platform: $PLATFORM. Please install Python 3.8+ manually."
             return 1
         fi
 
@@ -302,7 +321,7 @@ detect_python() {
         fi
         return $?
     fi
-    error "No suitable Python 3.11+ interpreter found and automatic installation failed."
+    error "No suitable Python 3.8+ interpreter found and automatic installation failed."
     return 1
 }
 
