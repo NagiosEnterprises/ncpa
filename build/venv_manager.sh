@@ -55,8 +55,10 @@ run_as_user() {
 
 # Python version detection with preference for configured version
 detect_python() {
+    local rerun="${1:-true}"
     local python_candidates=()
     
+    # Add configured Python version with highest priority
     # Add configured Python version with highest priority
     if [ -n "$PYTHON_MAJOR_MINOR" ]; then
         python_candidates+=(
@@ -70,15 +72,24 @@ detect_python() {
     
     # Add other common Python versions as fallbacks
     python_candidates+=(
-        "python3.13" "python3.12" "python3.11" "python3.10" "python3.9" "python3.8"
-        "/usr/bin/python3.13" "/usr/bin/python3.12" "/usr/bin/python3.11"
-        "/usr/bin/python3.10" "/usr/bin/python3.9" "/usr/bin/python3.8"
-        "/usr/local/bin/python3.13" "/usr/local/bin/python3.12" "/usr/local/bin/python3.11"
-        "/usr/local/bin/python3.10" "/usr/local/bin/python3.9" "/usr/local/bin/python3.8"
-        "/opt/homebrew/bin/python3.13" "/opt/homebrew/bin/python3.12" "/opt/homebrew/bin/python3.11"
-        "/opt/homebrew/bin/python3.10" "/opt/homebrew/bin/python3.9" "/opt/homebrew/bin/python3.8"
-        "/opt/csw/bin/python3.13" "/opt/csw/bin/python3.12" "/opt/csw/bin/python3.11"
-        "/opt/csw/bin/python3.10" "/opt/csw/bin/python3.9" "/opt/csw/bin/python3.8"
+        "python3.13"
+        "/usr/bin/python3.13"
+        "/usr/local/bin/python3.13"
+        "/opt/homebrew/bin/python3.13"
+        "/opt/csw/bin/python3.13"
+
+        "python3.12"
+        "/usr/bin/python3.12"
+        "/usr/local/bin/python3.12"
+        "/opt/homebrew/bin/python3.12"
+        "/opt/csw/bin/python3.12"
+
+        "python3.11"
+        "/usr/bin/python3.11"
+        "/usr/local/bin/python3.11"
+        "/opt/homebrew/bin/python3.11"
+        "/opt/csw/bin/python3.11"
+
         "python3"
         "/usr/bin/python3"
         "/usr/local/bin/python3"
@@ -197,19 +208,28 @@ detect_python() {
     latest_pkg_version=""
     if [ "$PLATFORM" = "linux" ]; then
         if command -v apt-cache >/dev/null 2>&1; then
-            latest_pkg_version=$(apt-cache policy python3 | grep Candidate | awk '{print $2}' | cut -d. -f1,2)
+            latest_pkg_version=$(apt-cache policy python3 2>/dev/null | awk '/Candidate:/ {print $2; exit}' | cut -d. -f1,2)
         elif command -v dnf >/dev/null 2>&1; then
-            latest_pkg_version=$(dnf repoquery --latest-limit 1 --qf '%{version}' python3 | cut -d. -f1,2)
+            latest_pkg_version=$(dnf -q repoquery --latest-limit=1 --qf '%{version}' python3 2>/dev/null | cut -d. -f1,2)
         elif command -v yum >/dev/null 2>&1; then
-            latest_pkg_version=$(yum info python3 | grep Version | awk '{print $3}' | cut -d. -f1,2)
+            if command -v repoquery >/dev/null 2>&1; then
+                latest_pkg_version=$(repoquery -q --latest-limit=1 --qf '%{version}' python3 2>/dev/null | cut -d. -f1,2)
+            else
+                latest_pkg_version=$(yum -q info python3 2>/dev/null | awk -F': *' '/^Version/ {print $2; exit}' | cut -d. -f1,2)
+            fi
         elif command -v zypper >/dev/null 2>&1; then
-            latest_pkg_version=$(zypper info python3 | grep Version | awk '{print $3}' | cut -d. -f1,2)
+            latest_pkg_version=$(zypper -q info python3 2>/dev/null | awk -F': *' '/^Version/ {print $2; exit}' | cut -d. -f1,2)
         fi
     elif [ "$PLATFORM" = "macos" ]; then
         if command -v brew >/dev/null 2>&1; then
-            latest_pkg_version=$(brew info python | grep -Eo 'python@[0-9]+\.[0-9]+' | head -1 | grep -Eo '[0-9]+\.[0-9]+')
+            # Homebrew: parse stable version from JSON, then trim to major.minor
+            latest_pkg_version=$(brew info --json=v2 python 2>/dev/null | sed -n 's/.*"stable":"\([0-9]\+\.[0-9]\+\).*/\1/p' | head -1)
             if [ -z "$latest_pkg_version" ]; then
-                latest_pkg_version=$(brew info python | grep -Eo 'stable [0-9]+\.[0-9]+' | head -1 | grep -Eo '[0-9]+\.[0-9]+')
+                # Fallbacks if JSON parsing fails
+                latest_pkg_version=$(brew info python 2>/dev/null | grep -Eo 'python@[0-9]+\.[0-9]+' | head -1 | grep -Eo '[0-9]+\.[0-9]+')
+                if [ -z "$latest_pkg_version" ]; then
+                    latest_pkg_version=$(brew info python 2>/dev/null | grep -Eo 'stable [0-9]+\.[0-9]+' | head -1 | grep -Eo '[0-9]+\.[0-9]+')
+                fi
             fi
         fi
     fi
@@ -225,7 +245,7 @@ detect_python() {
     # Compare installed vs latest available
     if [ "$newest_major" -gt "$latest_major" ] || { [ "$newest_major" -eq "$latest_major" ] && [ "$newest_minor" -ge "$latest_minor" ]; }; then
         # Installed Python is newer or equal to package manager's version
-        if [ "$newest_major" -ge 3 ] && [ "$newest_minor" -ge 8 ]; then
+        if [ "$newest_major" -ge 3 ] && [ "$newest_minor" -ge 11 ]; then
             PYTHON_EXECUTABLE="$newest_cmd"
             PYTHON_VERSION="$newest_version"
             log "✓ Using newest installed Python $newest_version: $newest_cmd (newer or equal to package manager $latest_pkg_version)"
@@ -267,19 +287,22 @@ detect_python() {
                 run_as_user brew update
                 run_as_user brew install --overwrite python
             else
-                error "Homebrew not found. Please install Homebrew and Python 3.8+ manually."
+                error "Homebrew not found. Please install Homebrew and Python 3.11+ manually."
                 return 1
             fi
         else
-            error "Automatic Python installation not supported for platform: $PLATFORM. Please install Python 3.8+ manually."
+            error "Automatic Python installation not supported for platform: $PLATFORM. Please install Python 3.11+ manually."
             return 1
         fi
-        # Re-detect Python after installation
-        log "Re-detecting Python after installation..."
-        detect_python
+
+        # Re-detect Python after installation if rerun != "false"
+        if [ "$rerun" = "true" ]; then
+            log "Re-detecting Python after installation..."
+            detect_python "false"
+        fi
         return $?
     fi
-    error "No suitable Python 3.8+ interpreter found and automatic installation failed."
+    error "No suitable Python 3.11+ interpreter found and automatic installation failed."
     return 1
 }
 
