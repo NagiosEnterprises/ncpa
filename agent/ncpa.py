@@ -1092,6 +1092,11 @@ if __SYSTEM__ == 'nt':
 
         def main(self):
             try:
+                ### TODO: Consider using gevent.threadpool.ThreadPoolExecutor or gipc for more compatible multiprocessing support
+                # https://github.com/gevent/gevent/blob/master/gevent/threadpool.py
+                # https://github.com/benjaminp/gipc
+                ### https://github.com/NagiosEnterprises/ncpa/issues/1291
+
                 # instantiate child processes
                 self.p, self.l = start_processes(self.options, self.config, self.has_error)
                 self.ReportServiceStatus(win32service.SERVICE_RUNNING)
