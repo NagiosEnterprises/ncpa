@@ -6,6 +6,7 @@ Changelog
 
 - Fixed an issue where the services endpoint would break on Solaris. [GL-NCPA#18] - BB
 - Fixed an issue where NCPA wouldn't build properly on Fedora per MrPippin66's instructions. [GH:#1148] - BB
+- Pulled in a fix from psutil to resolve an issue with non-ASCII/Unicode characters in service names on Windows. [GH:#1221, psutil:#2506]
 
 3.2.0 - 08/20/2025
 ==================
