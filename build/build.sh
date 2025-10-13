@@ -781,42 +781,7 @@ esac'
         # Clear command hash to ensure fresh lookups
         hash -r
 
-        # FINAL: Verify patchelf is available right before cx_Freeze
-        echo "=== FINAL PATCHELF VERIFICATION ==="
-        echo "Current PATH (first 5 entries): $(echo "$PATH" | cut -d: -f1-5)"
-        echo "VIRTUAL_ENV: $VIRTUAL_ENV"
-
-        if command -v patchelf >/dev/null 2>&1; then
-            patchelf_location=$(which patchelf)
-            echo "✓ patchelf found at: $patchelf_location"
-
-            # Test patchelf version
-            patchelf_version=$(patchelf --version 2>&1 || echo "version check failed")
-            echo "patchelf version: $patchelf_version"
-
-            # Verify it's executable
-            if [ -x "$patchelf_location" ]; then
-                echo "✓ patchelf is executable"
-            else
-                echo "✗ patchelf is not executable"
-            fi
-        else
-            echo "✗ CRITICAL: patchelf not found in PATH"
-            echo "Available commands in first PATH directory:"
-            first_path_dir=$(echo "$PATH" | cut -d: -f1)
-            if [ -d "$first_path_dir" ]; then
-                ls -la "$first_path_dir" | grep patchelf || echo "No patchelf found"
-            fi
-
-            # Emergency installation if needed
-            if [ -f "/usr/local/bin/patchelf" ]; then
-                echo "Emergency: Creating direct symlink to system patchelf wrapper"
-                ln -sf /usr/local/bin/patchelf /usr/bin/patchelf 2>/dev/null || true
-                hash -r
-            fi
-        fi
-        echo "==================================="
-
+        # Run the build
         echo "Attempting to build cx_Freeze..."
         echo "Python binary: $PYTHONBIN"
         $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
