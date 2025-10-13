@@ -815,6 +815,7 @@ esac'
                 hash -r
             fi
         fi
+        echo "==================================="
 
         echo "Attempting to build cx_Freeze..."
         echo "Python binary: $PYTHONBIN"
