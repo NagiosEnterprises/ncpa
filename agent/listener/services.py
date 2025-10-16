@@ -375,25 +375,16 @@ class ServiceNode(listener.nodes.LazyNode):
                     builder = '%s (should be %s)' % (builder, ''.join(target_status))
 
                 # Remove each service that has a status from the list of services the user provided
-                # decode line if it's bytes
-                if isinstance(line, bytes):
-                    line = line.decode()
-                ls = line.split()
-                if len(ls) < 2:
-                    continue
-                # Skip lrc items
-                item = ls[1]
-                if 'lrc:/' in item:
-                    continue
+                # so that we can display the services that can't be found ... this only works with
+                # exact match lists of services
+                if filtered_services:
+                    i = filtered_services.index(service)
+                    filtered_services.pop(i)
 
-                sub = ls[1].replace('svc:/', '').replace('/', '|')
-                service_status = ls[0]
-                if service_status == 'online':
-                    services[sub] = 'running'
-                elif 'offline' in service_status or service_status == 'maintenance' or service_status == 'disabled':
-                    services[sub] = 'stopped'
-                else:
-                    services[sub] = 'unknown'
+                if priority > returncode:
+                    returncode = priority
+
+                stdout_builder.append({ 'info': builder, 'priority': priority })
             if returncode > 0:
                 returncode = 2
 
