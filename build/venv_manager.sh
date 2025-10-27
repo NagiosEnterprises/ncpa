@@ -108,55 +108,6 @@ detect_python() {
     newest_cmd=""
     newest_version=""
 
-    # If no suitable Python found, try to install latest Python with Homebrew on macOS
-    if [ "$PLATFORM" = "macos" ]; then
-        log "Ensuring latest Python 3 is installed via Homebrew..."
-        if command -v brew >/dev/null 2>&1; then
-            echo "    - Removing conflicting Homebrew libraries: readline, sqlite, expat..."
-            sudo rm -rf /usr/local/opt/readline /usr/local/opt/sqlite /usr/local/opt/expat
-            echo "    - Autoremoving Homebrew Python, OpenSSL, and ca-certificates to prevent SSL issues..."
-            run_as_user brew uninstall --ignore-dependencies python@3.13 || true
-            sudo rm -rf /usr/local/Cellar/python@3.13/
-            run_as_user brew uninstall --ignore-dependencies openssl@3 || true
-            sudo rm -rf /usr/local/opt/openssl@3
-            sudo rm -rf /usr/local/etc/ca-certificates/
-
-            log "Running: brew cleanup"
-            run_as_user brew cleanup || true
-            # Unset LDFLAGS/CPPFLAGS to avoid linking against missing Homebrew OpenSSL. These will be re-defined later
-            unset LDFLAGS
-            unset CPPFLAGS
-            
-            log "Running: brew update"
-            if ! run_as_user brew update; then
-                error "brew update failed. Please check your Homebrew installation."
-                return 1
-            fi
-
-            log "Running: brew install --overwrite python"
-            if ! run_as_user brew install --overwrite python; then
-                error "brew install python failed. Please install Python 3.11+ manually."
-                return 1
-            fi
-
-            log "Running: brew install --overwrite openssl@3"
-            if ! run_as_user brew install --overwrite openssl@3; then
-                error "Failed to install openssl@3 via Homebrew."
-                return 1
-            fi
-            log "Running: brew link --overwrite openssl@3"
-            if ! run_as_user brew link --overwrite openssl@3; then
-                error "Failed to link openssl@3 via Homebrew."
-                return 1
-            fi
-
-            log "Homebrew Python installation/update complete."
-            # Add Homebrew Python to candidates
-            python_candidates+=("/opt/homebrew/bin/python3" "/usr/local/bin/python3")
-        else
-            error "Homebrew not found. Please install Homebrew and Python 3.11+ manually."
-        fi
-    fi
 
     log "Comparing available Python interpreters against latest version: $latest_pkg_version"
     for python_cmd in "${python_candidates[@]}"; do
