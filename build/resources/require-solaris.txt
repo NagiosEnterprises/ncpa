@@ -1,5 +1,5 @@
 cx_Freeze
-psutil
+psutil==7.0.0
 requests
 Jinja2
 flask

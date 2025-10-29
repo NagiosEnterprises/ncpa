@@ -1,5 +1,13 @@
 Changelog
 +++++++++
+3.2.1 - 10/29/2025
+==================
+**Bug Fixes** 
+
+- Fixed an issue where the services endpoint would break on Solaris. [GL-NCPA#18] - BB, CPD
+- Fixed an issue where NCPA wouldn't build properly on Fedora per MrPippin66's instructions. [GH:#1148] - BB
+- Fixed an issue where the build would fail because a venv directory was missing from the PATH with cyanarmadillo's help. [GH:#1295] - CPD
+
 3.2.0 - 08/21/2025
 ==================
 **Added**

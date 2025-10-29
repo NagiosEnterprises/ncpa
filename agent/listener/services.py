@@ -287,11 +287,16 @@ class ServiceNode(listener.nodes.LazyNode):
             ls = line.split()
 
             # Skip lrc items
-            if 'lrc:/' in ls[1]:
+            item = ls[1]
+            if isinstance(item, bytes):
+                item = item.decode()
+            if 'lrc:/' in item:
                 continue
 
-            sub = ls[1].replace('svc:/', '').replace('/', '|')
+            sub = item.replace('svc:/', '').replace('/', '|')
             status = ls[0]
+            if isinstance(status, bytes):
+                status = status.decode()
             if status == 'online':
                 services[sub] = 'running'
             elif 'offline' in status or status == 'maintenance' or status == 'disabled':
@@ -380,7 +385,6 @@ class ServiceNode(listener.nodes.LazyNode):
                     returncode = priority
 
                 stdout_builder.append({ 'info': builder, 'priority': priority })
-
             if returncode > 0:
                 returncode = 2
 
