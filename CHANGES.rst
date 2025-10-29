@@ -8,7 +8,7 @@ Changelog
 - Fixed an issue where NCPA wouldn't build properly on Fedora per MrPippin66's instructions. [GH:#1148] - BB
 - Fixed an issue where the build would fail because a venv directory was missing from the PATH with cyanarmadillo's help. [GH:#1295] - CPD
 
-3.2.0 - 08/20/2025
+3.2.0 - 08/21/2025
 ==================
 **Added**
 
