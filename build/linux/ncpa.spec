@@ -88,7 +88,7 @@ fi
 
 if ! getent passwd nagios &> /dev/null
 then
-    useradd -r -g nagios nagios
+    useradd -r -g nagios -s /sbin/nologin nagios 
 else
     %if 0%{?suse_version} && 0%{?suse_version} < 1210
         usermod -A nagios nagios
