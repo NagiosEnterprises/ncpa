@@ -1,5 +1,12 @@
 Changelog
 +++++++++
+3.2.2 - 12/xx/2025
+==================
+**Updates**
+
+- Update login shell for nagios user on linux systems to /sbin/nologin for improved security. [GH#:1289] - CPD
+- Update Python to 3.13.9 on Windows builds. [GH#1304] - CPD
+
 3.2.1 - 10/29/2025
 ==================
 **Bug Fixes** 
@@ -16,7 +23,7 @@ Changelog
 
 **Updates**
 
-- Rewrote the build process for Unix envrionments to use virtual environments for Python dependencies, improving compatibility and build reliability. (Blake Bahner)
+- Rewrote the build process for Unix environments to use virtual environments for Python dependencies, improving compatibility and build reliability. (Blake Bahner)
 - Improved process killing logic on Unix and Windows systems to handle more edge cases and ensure all child processes are terminated. (Blake Bahner)
 - Updated passive check sending to attempt certificate verification when possible, falling back to legacy behavior if verification fails. (Blake Bahner)
 
