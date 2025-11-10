@@ -1037,6 +1037,7 @@ if __SYSTEM__ == 'nt':
                     self.has_error.value = True
                     self.ReportServiceStatus(win32service.SERVICE_STOPPED)
                     return
+                self.logger.debug("SvcRun() - Start SvcDoRun()")
                 self.SvcDoRun()
                 # Once SvcDoRun returns, the service has stopped
         except Exception as e:
@@ -1056,6 +1057,7 @@ if __SYSTEM__ == 'nt':
                 except Exception as e:
                     self.logger.exception("SvcDoRun - Failed to set running event: %s", e)
                 try:
+                    self.logger.debug("SvcDoRun() - Start main()")
                     self.main()
                 except Exception as e:
                     self.logger.exception("SvcDoRun - Failed to run main: %s", e)
@@ -1085,6 +1087,7 @@ if __SYSTEM__ == 'nt':
                 self.logger.exception(f"Error force-killing {name} process: {e}")
 
         def main(self):
+            self.logger.debug("main() - Starting main function")
             try:
                 ### TODO: Consider using gevent.threadpool.ThreadPoolExecutor or gipc for more compatible multiprocessing support
                 # https://github.com/gevent/gevent/blob/master/gevent/threadpool.py
