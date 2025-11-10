@@ -1014,7 +1014,7 @@ if __SYSTEM__ == 'nt':
             Stop the service
             This triggers the stop event, which breaks the main loop
             """
-            self.logger.info("SvcStop - Service stop pending...")
+            self.logger.info("SvcStop() - Service stop pending...")
             self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
             self.running_event.clear()
             win32event.SetEvent(self.hWaitStop) # set stop event for main thread
@@ -1022,7 +1022,7 @@ if __SYSTEM__ == 'nt':
             servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
                             servicemanager.PYS_SERVICE_STOPPED,
                             (self._svc_name_, ''))
-            self.logger.info("Winservice.SvcStop() - Service stopped")
+            self.logger.info("SvcStop() - Service stopped")
 
         try:
             def SvcRun(self):
