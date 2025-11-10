@@ -1031,7 +1031,28 @@ if __SYSTEM__ == 'nt':
                     self.ReportServiceStatus(win32service.SERVICE_STOPPED)
                     return
                 self.SvcDoRun()
+
+                self.logger.debug("Svc status handle is: %s", self.serviceStatusHandle)
+
                 # Once SvcDoRun returns, the service has stopped
+                try:
+                    self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+                except Exception as e:
+                    self.logger.exception("SvcRun - Failed to report service stop pending: %s", e)
+                    
+                # log stopping of service to windows event log
+                try:
+                    servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+                                    servicemanager.PYS_SERVICE_STOPPED,
+                                    (self._svc_name_, ''))
+                except Exception as e:
+                    self.logger.exception("SvcRun - Failed to log service stop: %s", e)
+
+                # Finally report stopped status
+                try:
+                    self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                except Exception as e:
+                    self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
         except Exception as e:
             pass
 
@@ -1094,28 +1115,7 @@ if __SYSTEM__ == 'nt':
                     if result == win32event.WAIT_OBJECT_0:
                         break
                     time.sleep(0.1)
-            except Exception as e:
-                self.logger.exception("SvcRun - Exception in main loop: %s", e)
-                self.has_error.value = True
             finally:
-                # report service stopping
-                try:
-                    self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
-                except Exception as e:
-                    self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
-                # log stopping of service to windows event log
-                try:
-                    servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                    servicemanager.PYS_SERVICE_STOPPED,
-                                    (self._svc_name_, ''))
-                except Exception as e:
-                    self.logger.exception("SvcRun - Failed to log service stop: %s", e)
-                # report service stopped
-                try:
-                    self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-                except Exception as e:
-                    self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
-
                 # kill/clean up child processes
                 try:
                     if self.p:
