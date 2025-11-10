@@ -1014,13 +1014,8 @@ if __SYSTEM__ == 'nt':
             Stop the service
             This triggers the stop event, which breaks the main loop
             """
-            self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
             self.running_event.clear()
             win32event.SetEvent(self.hWaitStop) # set stop event for main thread
-            servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                    servicemanager.PYS_SERVICE_STOPPED,
-                                    (self._svc_name_, ''))
-            self.ReportServiceStatus(win32service.SERVICE_STOPPED)
 
         try:
             def SvcRun(self):
@@ -1099,7 +1094,28 @@ if __SYSTEM__ == 'nt':
                     if result == win32event.WAIT_OBJECT_0:
                         break
                     time.sleep(0.1)
+            except Exception as e:
+                self.logger.exception("SvcRun - Exception in main loop: %s", e)
+                self.has_error.value = True
             finally:
+                # report service stopping
+                try:
+                    self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+                except Exception as e:
+                    self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
+                # log stopping of service to windows event log
+                try:
+                    servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+                                    servicemanager.PYS_SERVICE_STOPPED,
+                                    (self._svc_name_, ''))
+                except Exception as e:
+                    self.logger.exception("SvcRun - Failed to log service stop: %s", e)
+                # report service stopped
+                try:
+                    self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                except Exception as e:
+                    self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
+
                 # kill/clean up child processes
                 try:
                     if self.p:
