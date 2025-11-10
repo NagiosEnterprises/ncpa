@@ -1024,24 +1024,21 @@ if __SYSTEM__ == 'nt':
                             (self._svc_name_, ''))
             self.logger.info("SvcStop() - Service stopped")
 
-        try:
-            def SvcRun(self):
-                """
-                Start the service
-                We need to override this method to prevent it reporting NCPA as started before the processes are started
-                """
-                try:
-                    self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
-                except Exception as e:
-                    self.logger.exception("SvcRun - Failed to report service start pending: %s", e)
-                    self.has_error.value = True
-                    self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-                    return
-                self.logger.debug("SvcRun() - Start SvcDoRun()")
-                self.SvcDoRun()
-                # Once SvcDoRun returns, the service has stopped
-        except Exception as e:
-            pass
+        def SvcRun(self):
+            """
+            Start the service
+            We need to override this method to prevent it reporting NCPA as started before the processes are started
+            """
+            try:
+                self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
+            except Exception as e:
+                self.logger.exception("SvcRun - Failed to report service start pending: %s", e)
+                self.has_error.value = True
+                self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                return
+            self.logger.debug("SvcRun() - Start SvcDoRun()")
+            self.SvcDoRun()
+            # Once SvcDoRun returns, the service has stopped
 
         try:
             def SvcDoRun(self):
