@@ -1094,6 +1094,9 @@ if __SYSTEM__ == 'nt':
                 # instantiate child processes
                 self.p, self.l = start_processes(self.options, self.config, self.has_error)
                 self.ReportServiceStatus(win32service.SERVICE_RUNNING)
+                self.logger.debug("self.p and self.l processes started")
+                self.logger.debug("value for self.p: %s", self.p)
+                self.logger.debug("value for self.l: %s", self.l)
 
                 # wait for stop event
                 while self.running_event.is_set(): # shouldn't loop, but just in case the event triggers without stop being called
