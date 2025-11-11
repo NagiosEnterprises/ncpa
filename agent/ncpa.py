@@ -1036,7 +1036,6 @@ if __SYSTEM__ == 'nt':
                 self.has_error.value = True
                 self.ReportServiceStatus(win32service.SERVICE_STOPPED)
                 return
-            self.logger.debug("SvcRun - SERVICE_STATUS_HANDLE: %s", self.hStatus)
             self.logger.debug("SvcRun() - Start SvcDoRun()")
             self.SvcDoRun()
             # Once SvcDoRun returns, the service has stopped
