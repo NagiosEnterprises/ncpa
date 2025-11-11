@@ -1119,6 +1119,8 @@ if __SYSTEM__ == 'nt':
                     self.logger.debug("self.p and self.l processes terminated")
                     self.logger.debug("value for self.p: %s", self.p)
                     self.logger.debug("value for self.l: %s", self.l)
+                    # stop logger
+                    logging.shutdown()
                     self.logger.info("Service cleanup complete. Exiting.")
                 except Exception as e:
                     self.logger.exception("Error during service cleanup: %s", e)
