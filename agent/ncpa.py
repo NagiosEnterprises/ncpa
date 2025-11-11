@@ -1019,6 +1019,8 @@ if __SYSTEM__ == 'nt':
             servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
                             servicemanager.PYS_SERVICE_STOPPED,
                             (self._svc_name_, ''))
+            self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+            self.logger.info("SvcStop() - Service stopped")
 
         def SvcRun(self):
             """
@@ -1036,33 +1038,29 @@ if __SYSTEM__ == 'nt':
             self.SvcDoRun()
             # Once SvcDoRun returns, the service has stopped
 
-        try:
-            def SvcDoRun(self):
-                # log starting of service to windows event log
-                try:
-                    servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                    servicemanager.PYS_SERVICE_STARTED,
-                                    (self._svc_name_, ''))
-                except Exception as e:
-                    self.logger.exception("SvcDoRun - Failed to log service start: %s", e)
-                try:
-                    self.running_event.set()
-                except Exception as e:
-                    self.logger.exception("SvcDoRun - Failed to set running event: %s", e)
-                try:
-                    self.logger.debug("SvcDoRun() - Start main()")
-                    self.main()
-                except Exception as e:
-                    self.logger.exception("SvcDoRun - Failed to run main: %s", e)
-                    self.has_error.value = True
-                    self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-                    # log error to windows event log
-                    servicemanager.LogErrorMsg(servicemanager.EVENTLOG_ERROR_TYPE,
-                                            servicemanager.PYS_SERVICE_STOPPED,
-                                            (self._svc_name_, str(e)))
-        except Exception as e:
-            pass
-
+        def SvcDoRun(self):
+            # log starting of service to windows event log
+            try:
+                servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+                                servicemanager.PYS_SERVICE_STARTED,
+                                (self._svc_name_, ''))
+            except Exception as e:
+                self.logger.exception("SvcDoRun - Failed to log service start: %s", e)
+            try:
+                self.running_event.set()
+            except Exception as e:
+                self.logger.exception("SvcDoRun - Failed to set running event: %s", e)
+            try:
+                self.logger.debug("SvcDoRun() - Start main()")
+                self.main()
+            except Exception as e:
+                self.logger.exception("SvcDoRun - Failed to run main: %s", e)
+                self.has_error.value = True
+                self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                # log error to windows event log
+                servicemanager.LogErrorMsg(servicemanager.EVENTLOG_ERROR_TYPE,
+                                        servicemanager.PYS_SERVICE_STOPPED,
+                                        (self._svc_name_, str(e)))
 
         def force_kill(self, proc, name):
             try:
@@ -1101,10 +1099,6 @@ if __SYSTEM__ == 'nt':
                         break
                     time.sleep(0.1)
             finally:
-                # Stop the service
-                self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-                self.logger.info("SvcStop() - Service stopped")
-
                 # kill/clean up child processes
                 try:
                     if self.p:
