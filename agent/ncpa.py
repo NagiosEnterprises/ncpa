@@ -248,6 +248,7 @@ class Listener(Base):
     def run(self):
         self.init_logger('listener')
         logger = self.logger
+        logger.info("Listener starting")
         logger.info("run()")
 
         try:
@@ -387,6 +388,7 @@ class Passive(Base):
     def run(self):
         self.init_logger('passive')
         logger = self.logger
+        logger.info("Passive starting")
         logger.info("run()")
 
         # Check if there is a start delay
