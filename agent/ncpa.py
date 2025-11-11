@@ -963,11 +963,6 @@ if __SYSTEM__ == 'nt':
             self.setup_plugins()
             self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
-            # self.init_logger('listener')
-            # for handler in self.logger.handlers:
-            #     handler.addFilter(tokenFilter)
-
-
         def init_logger(self, logger_name):
             self.logger = logging.getLogger(logger_name)
             logfile = get_filename(self.config.get(logger_name, 'logfile'))
@@ -1022,6 +1017,7 @@ if __SYSTEM__ == 'nt':
             servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
                             servicemanager.PYS_SERVICE_STOPPED,
                             (self._svc_name_, ''))
+            self.ReportServiceStatus(win32service.SERVICE_STOPPED)
             self.logger.info("SvcStop() - Service stopped")
 
         def SvcRun(self):
