@@ -1021,8 +1021,6 @@ if __SYSTEM__ == 'nt':
                             (self._svc_name_, ''))
             self.ReportServiceStatus(win32service.SERVICE_STOPPED)
             self.logger.info("SvcStop() - Service stopped")
-            # stop logger
-            logging.shutdown()
 
         def SvcRun(self):
             """
@@ -1098,7 +1096,7 @@ if __SYSTEM__ == 'nt':
                 while self.running_event.is_set(): # shouldn't loop, but just in case the event triggers without stop being called
                     result = win32event.WaitForSingleObject(self.hWaitStop, 1000)
                     if result == win32event.WAIT_OBJECT_0:
-                        break
+                        sys.exit(0)
                     time.sleep(0.1)
             finally:
                 # kill/clean up child processes
