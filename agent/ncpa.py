@@ -1045,12 +1045,12 @@ if __SYSTEM__ == 'nt':
                 except Exception as e:
                     self.logger.exception("SvcRun - Failed to log service stop: %s", e)
 
-                # Once SvcDoRun returns, the service has stopped
-                try:
-                    self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-                    self.logger.debug("SvcRun() - Service stopped")
-                except Exception as e:
-                    self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
+                # # Once SvcDoRun returns, the service has stopped
+                # try:
+                #     self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                #     self.logger.debug("SvcRun() - Service stopped")
+                # except Exception as e:
+                #     self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
         except Exception as e:
             pass
 
