@@ -1129,9 +1129,6 @@ if __SYSTEM__ == 'nt':
                 except Exception as e:
                     self.logger.exception("Error during service cleanup: %s", e)
 
-                import sys
-                sys.exit(0)
-
 
 # --------------------------
 # Utility Functions
