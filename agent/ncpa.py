@@ -1101,6 +1101,10 @@ if __SYSTEM__ == 'nt':
                         break
                     time.sleep(0.1)
             finally:
+                # Stop the service
+                self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                self.logger.info("SvcStop() - Service stopped")
+
                 # kill/clean up child processes
                 try:
                     if self.p:
@@ -1121,9 +1125,6 @@ if __SYSTEM__ == 'nt':
                     self.logger.debug("self.p and self.l processes terminated")
                     self.logger.debug("value for self.p: %s", self.p)
                     self.logger.debug("value for self.l: %s", self.l)
-                    # Stop the service
-                    self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-                    self.logger.info("SvcStop() - Service stopped")
                     self.logger.info("Service cleanup complete. Exiting.")
                 except Exception as e:
                     self.logger.exception("Error during service cleanup: %s", e)
