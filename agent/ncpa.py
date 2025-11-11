@@ -1022,12 +1022,20 @@ if __SYSTEM__ == 'nt':
                 """
                 try:
                     self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
+                    self.logger.debug("SvcRun() - Service start pending")
                 except Exception as e:
                     self.logger.exception("SvcRun - Failed to report service start pending: %s", e)
                     self.has_error.value = True
                     self.ReportServiceStatus(win32service.SERVICE_STOPPED)
                     return
+                self.logger.debug("SvcRun() - running SvcDoRun function")
                 self.SvcDoRun()
+
+                try:
+                    self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+                    self.logger.debug("SvcRun() - Service stop pending")
+                except Exception as e:
+                    self.logger.exception("SvcRun - Failed to report service stop pending: %s", e)
 
                 # log stopping of service to windows event log
                 try:
@@ -1040,6 +1048,7 @@ if __SYSTEM__ == 'nt':
                 # Once SvcDoRun returns, the service has stopped
                 try:
                     self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                    self.logger.debug("SvcRun() - Service stopped")
                 except Exception as e:
                     self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
         except Exception as e:
@@ -1059,6 +1068,7 @@ if __SYSTEM__ == 'nt':
                 except Exception as e:
                     self.logger.exception("SvcDoRun - Failed to set running event: %s", e)
                 try:
+                    self.logger.debug("SvcDoRun() - Running main function")
                     self.main()
                 except Exception as e:
                     self.logger.exception("SvcDoRun - Failed to run main: %s", e)
