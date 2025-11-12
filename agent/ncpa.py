@@ -1041,7 +1041,7 @@ if __SYSTEM__ == 'nt':
 
                 # Once SvcDoRun returns, the service has stopped
                 try:
-                    self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                    self.ReportServiceStatus(win32service.SERVICE_STOPPED, win32ExitCode=exit_code)
                     self.logger.debug("SvcRun() - Service stopped")
                 except Exception as e:
                     self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
@@ -1112,6 +1112,12 @@ if __SYSTEM__ == 'nt':
                         break
                     time.sleep(0.1)
             finally:
+                try:
+                    self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+                    self.logger.debug("SvcRun() - Service stop pending")
+                except Exception as e:
+                    self.logger.exception("SvcRun - Failed to report service stop pending: %s", e)
+
                 # kill/clean up child processes
                 try:
                     if self.p:
@@ -1132,13 +1138,6 @@ if __SYSTEM__ == 'nt':
                     self.logger.debug("self.p and self.l processes terminated")
                     self.logger.debug("value for self.p: %s", self.p)
                     self.logger.debug("value for self.l: %s", self.l)
-
-                    try:
-                        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
-                        self.logger.debug("SvcRun() - Service stop pending")
-                    except Exception as e:
-                        self.logger.exception("SvcRun - Failed to report service stop pending: %s", e)
-                        
                     self.logger.info("Service cleanup complete. Exiting.")
                 except Exception as e:
                     self.logger.exception("Error during service cleanup: %s", e)
