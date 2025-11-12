@@ -248,6 +248,7 @@ class Listener(Base):
     def run(self):
         self.init_logger('listener')
         logger = self.logger
+        logger.info("Starting Listener")
         logger.info("run()")
 
         try:
@@ -387,6 +388,7 @@ class Passive(Base):
     def run(self):
         self.init_logger('passive')
         logger = self.logger
+        logger.info("Starting Passive")
         logger.info("run()")
 
         # Check if there is a start delay
@@ -963,10 +965,6 @@ if __SYSTEM__ == 'nt':
             self.setup_plugins()
             self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
-            self.init_logger('listener')
-            for handler in self.logger.handlers:
-                handler.addFilter(tokenFilter)
-
 
         def init_logger(self, logger_name):
             self.logger = logging.getLogger(logger_name)
@@ -1128,9 +1126,6 @@ if __SYSTEM__ == 'nt':
                     self.logger.info("Service cleanup complete. Exiting.")
                 except Exception as e:
                     self.logger.exception("Error during service cleanup: %s", e)
-
-                import sys
-                sys.exit(0)
 
 
 # --------------------------
