@@ -962,6 +962,7 @@ if __SYSTEM__ == 'nt':
 
             self.setup_plugins()
             self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
+            
 
         def init_logger(self, logger_name):
             self.logger = logging.getLogger(logger_name)
