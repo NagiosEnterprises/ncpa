@@ -7,10 +7,6 @@ Changelog
 - Update login shell for nagios user on linux systems to /sbin/nologin for improved security. [GH#:1289] - CPD
 - Update Python to 3.13.9 on Windows builds. [GH#1304] - CPD
 
-**Bug Fixes**
-- Fixed multiple issues where stopping the NCPA service would cause event viewer errors on Windows systems. - CPD
-- Fixed an issue where some log lines were showing up twice on Windows systems. - CPD
-
 3.2.1 - 10/29/2025
 ==================
 **Bug Fixes** 
