@@ -1031,12 +1031,6 @@ if __SYSTEM__ == 'nt':
                 self.logger.debug("SvcRun() - running SvcDoRun function")
                 self.SvcDoRun()
 
-                try:
-                    self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
-                    self.logger.debug("SvcRun() - Service stop pending")
-                except Exception as e:
-                    self.logger.exception("SvcRun - Failed to report service stop pending: %s", e)
-
                 # log stopping of service to windows event log
                 try:
                     servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
@@ -1045,12 +1039,12 @@ if __SYSTEM__ == 'nt':
                 except Exception as e:
                     self.logger.exception("SvcRun - Failed to log service stop: %s", e)
 
-                # # Once SvcDoRun returns, the service has stopped
-                # try:
-                #     self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-                #     self.logger.debug("SvcRun() - Service stopped")
-                # except Exception as e:
-                #     self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
+                # Once SvcDoRun returns, the service has stopped
+                try:
+                    self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                    self.logger.debug("SvcRun() - Service stopped")
+                except Exception as e:
+                    self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
         except Exception as e:
             pass
 
@@ -1138,6 +1132,13 @@ if __SYSTEM__ == 'nt':
                     self.logger.debug("self.p and self.l processes terminated")
                     self.logger.debug("value for self.p: %s", self.p)
                     self.logger.debug("value for self.l: %s", self.l)
+
+                    try:
+                        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+                        self.logger.debug("SvcRun() - Service stop pending")
+                    except Exception as e:
+                        self.logger.exception("SvcRun - Failed to report service stop pending: %s", e)
+                        
                     self.logger.info("Service cleanup complete. Exiting.")
                 except Exception as e:
                     self.logger.exception("Error during service cleanup: %s", e)
