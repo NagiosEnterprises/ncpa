@@ -1011,6 +1011,7 @@ if __SYSTEM__ == 'nt':
             Stop the service
             This triggers the stop event, which breaks the main loop
             """
+            self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
             self.running_event.clear()
             win32event.SetEvent(self.hWaitStop) # set stop event for main thread
 
@@ -1031,6 +1032,7 @@ if __SYSTEM__ == 'nt':
                 self.logger.debug("SvcRun() - running SvcDoRun function")
                 self.SvcDoRun()
 
+                # Once SvcDoRun returns, the service has stopped
                 # log stopping of service to windows event log
                 try:
                     servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
@@ -1039,12 +1041,6 @@ if __SYSTEM__ == 'nt':
                 except Exception as e:
                     self.logger.exception("SvcRun - Failed to log service stop: %s", e)
 
-                # Once SvcDoRun returns, the service has stopped
-                try:
-                    self.ReportServiceStatus(win32service.SERVICE_STOPPED, win32ExitCode=exit_code)
-                    self.logger.debug("SvcRun() - Service stopped")
-                except Exception as e:
-                    self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
         except Exception as e:
             pass
 
@@ -1100,7 +1096,8 @@ if __SYSTEM__ == 'nt':
 
                 # instantiate child processes
                 self.p, self.l = start_processes(self.options, self.config, self.has_error)
-                self.ReportServiceStatus(win32service.SERVICE_RUNNING)
+                self.ReportServiceStatus(win32service.SERVICE_RUNNING,
+                                 win32service.SERVICE_ACCEPT_STOP | win32service.SERVICE_ACCEPT_SHUTDOWN)
                 self.logger.debug("self.p and self.l processes started")
                 self.logger.debug("value for self.p: %s", self.p)
                 self.logger.debug("value for self.l: %s", self.l)
