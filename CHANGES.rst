@@ -11,6 +11,7 @@ Changelog
 
 - Fixed an issue where stopping the NCPA service would cause errors in the scm and event viewer on Windows systems. - CPD
 - Fixed an issue where some log lines were showing up twice on Windows systems. - CPD
+- Fixed an issue where passive state xml element would not always return as string. [GH#1217] -  dembaca  
 
 3.2.1 - 10/29/2025
 ==================
