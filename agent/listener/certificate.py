@@ -198,7 +198,7 @@ subjectAltName = DNS:%s, DNS:localhost, IP:127.0.0.1
         ca_dir = "/usr/local/ncpa/var/ssl"
 
         # Ensure the directory exists (create it if necessary)
-        os.makedirs(specific_dir, exist_ok=True)
+        os.makedirs(ca_dir, exist_ok=True)
 
         # Create temporary config file
         with tempfile.NamedTemporaryFile(dir=ca_dir, mode='w', suffix='.conf', delete=False) as config_file:
