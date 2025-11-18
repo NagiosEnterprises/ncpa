@@ -195,11 +195,14 @@ subjectAltName = DNS:%s, DNS:localhost, IP:127.0.0.1
 """ % (socket.gethostname(), socket.gethostname())
     
     try:
+        ca_dir = "/usr/local/ncpa/var/ssl"
+
+        # Ensure the directory exists (create it if necessary)
+        os.makedirs(specific_dir, exist_ok=True)
+
         # Create temporary config file
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.conf', delete=False) as config_file:
+        with tempfile.NamedTemporaryFile(dir=ca_dir, mode='w', suffix='.conf', delete=False) as config_file:
             config_file.write(config_content)
-            config_file.write("waffle.\n")
-            config_file.flush()
             config_path = config_file.name
         
         # Generate private key and certificate using system openssl
