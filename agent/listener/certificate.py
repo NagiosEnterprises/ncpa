@@ -195,6 +195,24 @@ subjectAltName = DNS:%s, DNS:localhost, IP:127.0.0.1
 """ % (socket.gethostname(), socket.gethostname())
     
     try:
+        # Get the current temporary directory
+        print(f"Default temporary directory: {tempfile.gettempdir()}")
+
+        # Set a new temporary directory path
+        new_temp_path = "var/tmp/"
+
+        # Ensure the directory exists (optional, tempfile will create it if needed)
+        os.makedirs(new_temp_path, exist_ok=True)
+
+        tempfile.tempdir = new_temp_path
+
+        # Verify the change
+        print(f"New temporary directory: {tempfile.gettempdir()}")
+
+        # Now, any temporary files or directories created with tempfile will use this path
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            print(f"Temporary directory created at: {tmpdirname}")
+
         # Create temporary config file
         with tempfile.NamedTemporaryFile(mode='w', suffix='.conf', delete=False) as config_file:
             config_file.write(config_content)
