@@ -196,7 +196,7 @@ subjectAltName = DNS:%s, DNS:localhost, IP:127.0.0.1
     
     try:
         # Get the current temporary directory
-        print(f"Default temporary directory: {tempfile.gettempdir()}")
+        logger.info(f"Default temporary directory: {tempfile.gettempdir()}")
 
         # Set a new temporary directory path
         new_temp_path = "var/tmp/"
@@ -207,11 +207,11 @@ subjectAltName = DNS:%s, DNS:localhost, IP:127.0.0.1
         tempfile.tempdir = new_temp_path
 
         # Verify the change
-        print(f"New temporary directory: {tempfile.gettempdir()}")
+        logger.info(f"New temporary directory: {tempfile.gettempdir()}")
 
         # Now, any temporary files or directories created with tempfile will use this path
         with tempfile.TemporaryDirectory() as tmpdirname:
-            print(f"Temporary directory created at: {tmpdirname}")
+            logger.info(f"Temporary directory created at: {tmpdirname}")
 
         # Create temporary config file
         with tempfile.NamedTemporaryFile(mode='w', suffix='.conf', delete=False) as config_file:
