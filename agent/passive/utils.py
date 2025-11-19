@@ -34,7 +34,7 @@ def send_request(url, connection_timeout, **kwargs):
         except requests.exceptions.Timeout as e:
             logging.error("Connection Timeout: %s", e)
         except Exception as ex:
-            logging.debug("Other Exception detected during retry without SSL verification")
+            logging.debug("Exception detected during retry without SSL verification")
             logging.exception(ex)
     except requests.exceptions.HTTPError as e:
         logging.error("HTTP Error: %s", e)
@@ -51,6 +51,6 @@ def send_request(url, connection_timeout, **kwargs):
             logging.debug('Content response from URL (no verify): %s' % str(r.content))
             return r.content
         except Exception as ex:
-            logging.debug("Exception detected during retry without SSL verification")
+            logging.debug("Exception detected during fallback retry without SSL verification")
             logging.exception(ex)
     return None
