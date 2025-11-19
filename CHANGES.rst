@@ -12,7 +12,7 @@ Changelog
 - Fixed an issue where stopping the NCPA service would cause errors in the scm and event viewer on Windows systems. - CPD
 - Fixed an issue where some log lines were showing up twice on Windows systems. - CPD
 - Fixed an issue where passive state xml element would not always return as string. [GH#1217] - dembaca
-- Fixed a bug where passive checks error out if temp file is deleted while ncpa is still running with dxcas-elash's help. - CPD 
+- Fixed a bug where passive checks error out if temp file is deleted while ncpa is still running with dxcas-elash's help. [GH#1309] - CPD 
 
 3.2.1 - 10/29/2025
 ==================
