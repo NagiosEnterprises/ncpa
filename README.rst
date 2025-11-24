@@ -12,7 +12,7 @@ Downloads
 Current versions:
 
 +---------+-------------+-------------------------------------------------------+
-| Current | **3.1.4**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
+| Current | **3.2.1**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
 Note: If your nagios repo is outdated when installing NCPA, you must first update your GPG key using the following:
@@ -43,6 +43,7 @@ We currently build for the following operating systems on x86-64 architectures:
 - Windows 10+
 - Windows Server 2016+
 - MacOS Ventura+ (13+)
+- Solaris 11.4 SRU78+
 
 Older systems that have been supported by NCPA in the past:
 

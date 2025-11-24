@@ -2,17 +2,28 @@
 
 echo -e "***** linux/setup.sh"
 
-# Globals - defined in build.sh
-#     PYTHONVER, SSLVER, ZLIBVER
+# Virtual environment integration
+VENV_MANAGER="$BUILD_DIR/venv_manager.sh"
+export VENV_NAME="${VENV_NAME:-ncpa-build-linux}"
 
-# Make python command, e.g. python3.11
+# Globals - defined in build.sh and version_config.sh
+#     PYTHONVER, SSLVER, ZLIBVER, SKIP_PYTHON
+
+# Skip Python detection if using virtual environment (recommended)
+SKIP_PYTHON="${SKIP_PYTHON:-0}"
+
+# Legacy Python command for fallback compatibility
 PYTHONCMD="python$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')"
-echo -e "***** linux/setup.sh - PYTHONCMD: $PYTHONCMD"
+echo -e "***** linux/setup.sh - PYTHONCMD (fallback): $PYTHONCMD"
+echo -e "***** linux/setup.sh - SKIP_PYTHON: $SKIP_PYTHON"
 
 set +e
-PYTHONBIN=$(which $PYTHONCMD)
+if [ "$SKIP_PYTHON" -eq 0 ]; then
+    PYTHONBIN=$(which $PYTHONCMD)
+else
+    echo -e "***** linux/setup.sh - Using virtual environment Python: $PYTHONBIN"
+fi
 set -e
-SKIP_PYTHON=0
 
 # Get information about system
 . $BUILD_DIR/linux/init.sh
@@ -26,6 +37,7 @@ ssl_maj_ver=$(openssl version | egrep "[1-9].[0-9].[0-9]" | head -n1 | sed -e 's
 install_prereqs() {
     echo -e "***** linux/setup.sh - install_prereqs()"
     echo -e "***** linux/setup.sh - dist: $dist"
+    echo -e "***** linux/setup.sh - Installing system packages only (Python handled by venv)"
 
     # --------------------------
     #  INSTALL SYSTEM REQS - PACKAGES
@@ -42,15 +54,22 @@ install_prereqs() {
             cat /etc/apt/sources.list
         fi
 
-        # If we are going to build and install SSL from source, no need to install it here
+        # Install core system packages (no Python packages - handled by venv)
+        apt-get -y update
         if [[ "$ssl_maj_ver" -lt 3 ]]; then
-            echo -e "***** linux/setup.sh - apt-get install with excluding SSL pkgs"
-            apt-get -y update
-            apt-get -y install gcc g++ rpm libffi-dev sqlite3 libsqlite3-dev wget alien  --allow-unauthenticated
+            echo -e "***** linux/setup.sh - apt-get install (excluding SSL, including Python build deps)"
+            apt-get -y install gcc g++ rpm libffi-dev sqlite3 libsqlite3-dev wget alien \
+                               python3-dev python3-venv python3-pip build-essential \
+                               libbz2-dev libreadline-dev libsqlite3-dev libncurses5-dev \
+                               libncursesw5-dev tk-dev libgdbm-dev libc6-dev \
+                               --allow-unauthenticated
         else
-            echo -e "***** linux/setup.sh - apt-get install with SSL pkgs"
-            apt-get -y update
-            apt-get -y install gcc g++ zlib1g-dev openssl libssl-dev rpm libffi-dev sqlite3 libsqlite3-dev wget alien  --allow-unauthenticated
+            echo -e "***** linux/setup.sh - apt-get install (including SSL and Python build deps)"
+            apt-get -y install gcc g++ zlib1g-dev openssl libssl-dev rpm libffi-dev sqlite3 \
+                               libsqlite3-dev wget alien python3-dev python3-venv python3-pip \
+                               build-essential libbz2-dev libreadline-dev libncurses5-dev \
+                               libncursesw5-dev tk-dev libgdbm-dev libc6-dev \
+                               --allow-unauthenticated
         fi
 
         # debian-builder is not nessery anymore when Debian 12 or Ubuntu24
@@ -59,7 +78,7 @@ install_prereqs() {
             apt-get -y update
             apt-get -y install debian-builder --allow-unauthenticated
         fi
-    elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ]; then
+    elif [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ] || [ "$distro" == "CloudLinux" ] || [ "$distro" == "Fedora" ]; then
         echo -e "***** linux/setup.sh - install_prereqs() - CentOS/RHEL"
 
         if [ "$distro" == "Oracle" ]; then
@@ -85,16 +104,27 @@ install_prereqs() {
         else
             if [ "$distro" == "CentOS" ]; then
                 yum -y install epel-release
+                
+                # Enable CRB (CodeReady Builder) repository for development packages
+                # This provides gdbm-devel and other development libraries
+                if command -v dnf >/dev/null 2>&1; then
+                    echo -e "***** linux/setup.sh - enabling CRB repository for development packages"
+                    dnf config-manager --enable crb 2>/dev/null || true
+                fi
             fi
         fi
 
-        # If we are going to build and install SSL from source, no need to install it here
+        # Install core system packages (no Python packages - handled by venv)
         if [[ "$ssl_maj_ver" -lt 3 ]]; then
-            echo -e "***** linux/setup.sh - yum install excluding SSL pkgs"
-            yum -y install gcc gcc-c++ rpm-build libffi-devel sqlite sqlite-devel wget make
+            echo -e "***** linux/setup.sh - yum install (excluding SSL, including Python build deps)"
+            yum -y install gcc gcc-c++ rpm-build libffi-devel sqlite sqlite-devel wget make \
+                           python3-devel python3-pip bzip2-devel readline-devel \
+                           ncurses-devel gdbm-devel
         else
-            echo -e "***** linux/setup.sh - yum install with SSL pkgs"
-            yum -y install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build libffi-devel sqlite sqlite-devel wget make
+            echo -e "***** linux/setup.sh - yum install (including SSL and Python build deps)"
+            yum -y install gcc gcc-c++ zlib zlib-devel openssl openssl-devel rpm-build \
+                           libffi-devel sqlite sqlite-devel wget make python3-devel \
+                           python3-pip bzip2-devel readline-devel ncurses-devel gdbm-devel
         fi
 
     elif [ "$distro" == "SUSE LINUX" ] || [ "$distro" == "SLES" ] || [ "$distro" == "OpenSUSE" ]; then
@@ -104,13 +134,17 @@ install_prereqs() {
         if [ "$dist" == "sles15" ] || [ "$dist" == "sles12" ] || [ "$distro" == "OpenSUSE" ]; then
 
         if [[ "$ssl_maj_ver" -lt 3 ]]; then
-            echo -e "***** linux/setup.sh - apt-get install with excluding SSL pkgs"
+            echo -e "***** linux/setup.sh - zypper install (excluding SSL, including Python build deps)"
             zypper -n update
-            zypper -n install gcc gcc-c++ sqlite3 sqlite3-devel libffi-devel rpm-build wget
+            zypper -n install gcc gcc-c++ sqlite3 sqlite3-devel libffi-devel rpm-build wget \
+                              python3-devel python3-pip libbz2-devel readline-devel \
+                              ncurses-devel gdbm-devel
         else
-            echo -e "***** linux/setup.sh - apt-get install with SSL pkgs"
+            echo -e "***** linux/setup.sh - zypper install (including SSL and Python build deps)"
             zypper -n update
-            zypper -n install gcc gcc-c++ zlib zlib-devel openssl libopenssl-devel sqlite3 sqlite3-devel libffi-devel rpm-build wget
+            zypper -n install gcc gcc-c++ zlib zlib-devel openssl libopenssl-devel sqlite3 \
+                              sqlite3-devel libffi-devel rpm-build wget python3-devel \
+                              python3-pip libbz2-devel readline-devel ncurses-devel gdbm-devel
         fi
 
         elif [ "$dist" == "sles11" ]; then
@@ -164,14 +198,16 @@ install_prereqs() {
 
     fi
 
+    # Skip Python installation and package management - handled by virtual environment
+    if [ "$SKIP_PYTHON" -eq 1 ]; then
+        echo -e "***** linux/setup.sh - Skipping Python/package installation - handled by virtual environment"
+    else
+        echo -e "***** linux/setup.sh - WARNING: Fallback mode - installing Python from source"
+        # -----------------------------------------
+        #  INSTALL SYSTEM REQS - BUILD FROM SOURCE
+        # -----------------------------------------
 
-    # -----------------------------------------
-    #  INSTALL SYSTEM REQS - BUILD FROM SOURCE
-    # -----------------------------------------
-
-    # Install Python version from source
-    if [ $SKIP_PYTHON -eq 0 ]; then
-
+        # Install Python version from source (fallback mode)
         # First update OpenSSL if necessary
         if [[ "$ssl_maj_ver" -lt 3 ]]; then
             cd $BUILD_DIR/resources
@@ -186,26 +222,22 @@ install_prereqs() {
         PYTHONBIN=$(which $PYTHONCMD)
         echo -e "***** linux/setup.sh - after Py install PYTHONBIN: $PYTHONBIN"
         export PATH=$PATH:$BUILD_DIR/bin
+
+        # Install modules (fallback mode)
+        update_py_packages
     fi
-
-    # --------------------------
-    #  INSTALL MODULES
-    # --------------------------
-
-    # Install modules
-    update_py_packages
-
-
-    # --------------------------
-    #  MISC ADDITIONS
-    # --------------------------
-
 }
 
 # This must be outside of install_prereqs(), so it will be executed during workflow build.
+
 echo -e "***** linux/setup.sh - add users/groups"
 set +e
 useradd nagios
 groupadd nagios
 usermod -g nagios nagios
 set -e
+
+# Automatically install Python requirements in venv after setup
+if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
+    "$VENV_MANAGER" install-requirements
+fi

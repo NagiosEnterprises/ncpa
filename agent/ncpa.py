@@ -94,7 +94,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.1.4'
+__VERSION__ = '3.2.1'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -697,11 +697,13 @@ class Daemon():
             supplementary_groups_set = True
             self.logger.debug("Successfully set supplementary groups: %s", gids)
         except OSError as err:
-            if sys.platform == 'darwin' and err.errno == 1:  # Operation not permitted on macOS
-                self.logger.warning("setgroups failed on macOS (this is common due to security restrictions)")
-                self.logger.info("Attempting alternative permission setup for macOS...")
+            if (sys.platform == 'darwin' and err.errno == 1) or (sys.platform.startswith('sunos') and err.errno == 1):
+                # Operation not permitted on macOS or Solaris
+                platform_name = "macOS" if sys.platform == 'darwin' else "Solaris"
+                self.logger.warning("setgroups failed on %s (this is common due to security restrictions)", platform_name)
+                self.logger.info("Attempting alternative permission setup for %s...", platform_name)
                 
-                # On macOS, try to ensure the user is at least in the primary group
+                # On these platforms, try to ensure the user is at least in the primary group
                 # and warn about potential permission issues
                 try:
                     # Verify the user can access group-owned resources by checking the primary group
@@ -713,7 +715,7 @@ class Daemon():
                     # Warn about supplementary groups that couldn't be set
                     if len(gids) > 1:
                         missing_groups = [grp.getgrgid(gid).gr_name for gid in gids if gid != self.gid]
-                        self.logger.warning("Could not set supplementary groups on macOS: %s", missing_groups)
+                        self.logger.warning("Could not set supplementary groups on %s: %s", platform_name, missing_groups)
                         self.logger.warning("This may cause permission issues accessing resources owned by these groups")
                         self.logger.info("Consider adjusting file/directory permissions or group ownership if you encounter access issues")
                         
@@ -739,8 +741,9 @@ class Daemon():
             self.logger.info("Successfully dropped privileges to user '%s' (uid:%d, gid:%d)", 
                            current_user.pw_name, os.getuid(), os.getgid())
             
-            if not supplementary_groups_set and sys.platform == 'darwin':
-                self.logger.info("Note: Running with limited group membership due to macOS security restrictions")
+            if not supplementary_groups_set and (sys.platform == 'darwin' or sys.platform.startswith('sunos')):
+                platform_name = "macOS" if sys.platform == 'darwin' else "Solaris"
+                self.logger.info("Note: Running with limited group membership due to %s security restrictions", platform_name)
                 
         except Exception as verify_err:
             self.logger.debug("Could not verify final user/group state: %s", verify_err)
@@ -1014,59 +1017,86 @@ if __SYSTEM__ == 'nt':
             self.running_event.clear()
             win32event.SetEvent(self.hWaitStop) # set stop event for main thread
 
-        def SvcRun(self):
-            """
-            Start the service
-            We need to override this method to prevent it reporting NCPA as started before the processes are started
-            """
-            try:
-                self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
-            except Exception as e:
-                self.logger.exception("SvcRun - Failed to report service start pending: %s", e)
-                self.has_error.value = True
-                self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-                return
-            self.SvcDoRun()
+        try:
+            def SvcRun(self):
+                """
+                Start the service
+                We need to override this method to prevent it reporting NCPA as started before the processes are started
+                """
+                try:
+                    self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
+                except Exception as e:
+                    self.logger.exception("SvcRun - Failed to report service start pending: %s", e)
+                    self.has_error.value = True
+                    self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                    return
+                self.SvcDoRun()
 
-            # log stopping of service to windows event log
-            try:
-                servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                servicemanager.PYS_SERVICE_STOPPED,
-                                (self._svc_name_, ''))
-            except Exception as e:
-                self.logger.exception("SvcRun - Failed to log service stop: %s", e)
+                # log stopping of service to windows event log
+                try:
+                    servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+                                    servicemanager.PYS_SERVICE_STOPPED,
+                                    (self._svc_name_, ''))
+                except Exception as e:
+                    self.logger.exception("SvcRun - Failed to log service stop: %s", e)
 
-            # Once SvcDoRun returns, the service has stopped
-            try:
-                self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-            except Exception as e:
-                self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
+                # Once SvcDoRun returns, the service has stopped
+                try:
+                    self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                except Exception as e:
+                    self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
+        except Exception as e:
+            pass
 
-        def SvcDoRun(self):
-            # log starting of service to windows event log
+        try:
+            def SvcDoRun(self):
+                # log starting of service to windows event log
+                try:
+                    servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+                                    servicemanager.PYS_SERVICE_STARTED,
+                                    (self._svc_name_, ''))
+                except Exception as e:
+                    self.logger.exception("SvcDoRun - Failed to log service start: %s", e)
+                try:
+                    self.running_event.set()
+                except Exception as e:
+                    self.logger.exception("SvcDoRun - Failed to set running event: %s", e)
+                try:
+                    self.main()
+                except Exception as e:
+                    self.logger.exception("SvcDoRun - Failed to run main: %s", e)
+                    self.has_error.value = True
+                    self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+                    # log error to windows event log
+                    servicemanager.LogErrorMsg(servicemanager.EVENTLOG_ERROR_TYPE,
+                                            servicemanager.PYS_SERVICE_STOPPED,
+                                            (self._svc_name_, str(e)))
+        except Exception as e:
+            pass
+
+
+        def force_kill(self, proc, name):
             try:
-                servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                servicemanager.PYS_SERVICE_STARTED,
-                                (self._svc_name_, ''))
+                import os, signal, sys
+                if proc.is_alive():
+                    self.logger.warning(f"{name} process did not terminate cleanly. Attempting force kill...")
+                    if hasattr(proc, 'pid') and proc.pid:
+                        os.kill(proc.pid, signal.SIGTERM)
+                        proc.join(timeout=5)
+                        if proc.is_alive():
+                            self.logger.error(f"{name} process (PID {proc.pid}) could not be killed.")
+                    else:
+                        self.logger.error(f"{name} process has no PID; cannot force kill.")
             except Exception as e:
-                self.logger.exception("SvcDoRun - Failed to log service start: %s", e)
-            try:
-                self.running_event.set()
-            except Exception as e:
-                self.logger.exception("SvcDoRun - Failed to set running event: %s", e)
-            try:
-                self.main()
-            except Exception as e:
-                self.logger.exception("SvcDoRun - Failed to run main: %s", e)
-                self.has_error.value = True
-                self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-                # log error to windows event log
-                servicemanager.LogErrorMsg(servicemanager.EVENTLOG_ERROR_TYPE,
-                                           servicemanager.PYS_SERVICE_STOPPED,
-                                           (self._svc_name_, str(e)))
+                self.logger.exception(f"Error force-killing {name} process: {e}")
 
         def main(self):
             try:
+                ### TODO: Consider using gevent.threadpool.ThreadPoolExecutor or gipc for more compatible multiprocessing support
+                # https://github.com/gevent/gevent/blob/master/gevent/threadpool.py
+                # https://github.com/benjaminp/gipc
+                ### https://github.com/NagiosEnterprises/ncpa/issues/1291
+
                 # instantiate child processes
                 self.p, self.l = start_processes(self.options, self.config, self.has_error)
                 self.ReportServiceStatus(win32service.SERVICE_RUNNING)
@@ -1079,12 +1109,28 @@ if __SYSTEM__ == 'nt':
                     time.sleep(0.1)
             finally:
                 # kill/clean up child processes
-                if self.p:
-                    self.p.terminate()
-                    self.p.join() 
-                if self.l:
-                    self.l.terminate()
-                    self.l.join()
+                try:
+                    if self.p:
+                        self.logger.info("Terminating passive process...")
+                        self.p.terminate()
+                        self.p.join(timeout=10)
+                        if self.p.is_alive():
+                            self.logger.warning("Passive process did not terminate cleanly.")
+                            self.force_kill(self.p, "Passive")
+                    if self.l:
+                        self.logger.info("Terminating listener process...")
+                        self.l.terminate()
+                        self.l.join(timeout=10)
+                        if self.l.is_alive():
+                            self.logger.warning("Listener process did not terminate cleanly.")
+                            self.force_kill(self.l, "Listener")
+                    # Add any additional cleanup here (close files, sockets, etc.)
+                    self.logger.info("Service cleanup complete. Exiting.")
+                except Exception as e:
+                    self.logger.exception("Error during service cleanup: %s", e)
+
+                import sys
+                sys.exit(0)
 
 
 # --------------------------

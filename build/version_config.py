@@ -11,6 +11,8 @@ Different platforms may require different versions due to:
 
 import platform
 import os
+import sys
+import glob
 
 # Detect current platform
 system = platform.system()
@@ -45,10 +47,10 @@ PLATFORM_VERSIONS = {
         "openssl_major": "1"
     },
     "SunOS": {  # Solaris
-        "python": os.environ.get("SOLARIS_PYTHONVER", "3.9.13"),
-        "openssl": os.environ.get("SOLARIS_SSLVER", "1.1.1"),
-        "zlib": os.environ.get("SOLARIS_ZLIBVER", "1.2.11"),
-        "openssl_major": "1"
+        "python": os.environ.get("SOLARIS_PYTHONVER", "3.12.8"),
+        "openssl": os.environ.get("SOLARIS_SSLVER", "3.0.17"),
+        "zlib": os.environ.get("SOLARIS_ZLIBVER", "1.3.1"),
+        "openssl_major": "3"
     }
 }
 
@@ -107,3 +109,64 @@ def get_macos_libffi_path(os_major_version):
 def get_linux_lib_includes():
     """Return Linux library includes with proper versioning"""
     return [f'libffi.so', f'libssl.so.{LIBSSL_VERSION}', f'libcrypto.so.{LIBCRYPTO_VERSION}']
+
+def get_solaris_lib_paths():
+    """Return Solaris library paths with proper versioning"""
+    if system != "SunOS":
+        return []
+    
+    import sys
+    import glob
+    
+    # Detect the actual Python version being used
+    actual_python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
+    
+    paths = []
+    
+    # Try to find the Python library in IPS locations first (preferred)
+    python_lib_found = False
+    for python_lib_path in [
+        f'/usr/lib/python{actual_python_version}/config-{actual_python_version}*/libpython{actual_python_version}.so*',
+        f'/usr/lib/libpython{actual_python_version}.so*',
+        f'/usr/local/lib/libpython{actual_python_version}.so*'
+    ]:
+        matches = glob.glob(python_lib_path)
+        if matches:
+            # Use the first match found
+            paths.append((matches[0], f'libpython{actual_python_version}.so'))
+            python_lib_found = True
+            break
+    
+    # Fall back to OpenCSW Python if IPS version not found
+    if not python_lib_found:
+        csw_python_lib = f'/opt/csw/lib/libpython{actual_python_version}.so'
+        if os.path.exists(csw_python_lib):
+            paths.append((csw_python_lib, f'libpython{actual_python_version}.so'))
+    
+    # Add other libraries, preferring IPS locations over OpenCSW
+    lib_mappings = [
+        # (IPS_path, CSW_path, target_name)
+        ('/usr/lib/libsqlite3.so', '/opt/csw/lib/libsqlite3.so', 'libsqlite3.so'),
+        ('/usr/lib/libssl.so', '/opt/csw/lib/libssl.so', 'libssl.so'),
+        ('/usr/lib/libcrypto.so', '/opt/csw/lib/libcrypto.so', 'libcrypto.so'),
+        ('/usr/lib/libffi.so', '/opt/csw/lib/libffi.so', 'libffi.so'),
+        ('/usr/lib/libz.so', '/opt/csw/lib/libz.so', 'libz.so')
+    ]
+    
+    for ips_path, csw_path, target_name in lib_mappings:
+        # Check for versioned libraries in IPS locations
+        ips_matches = glob.glob(f'{ips_path}*')
+        if ips_matches:
+            paths.append((ips_matches[0], target_name))
+        elif os.path.exists(csw_path):
+            # Fall back to OpenCSW
+            paths.append((csw_path, target_name))
+        else:
+            # Try to find the library anywhere on the system
+            system_matches = []
+            for search_path in ['/lib', '/usr/lib', '/usr/local/lib', '/opt/csw/lib']:
+                system_matches.extend(glob.glob(f'{search_path}/{target_name}*'))
+            if system_matches:
+                paths.append((system_matches[0], target_name))
+    
+    return paths

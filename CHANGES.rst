@@ -1,18 +1,45 @@
 Changelog
 +++++++++
-3.2.0 - XX/XX/2025
+3.2.X - TBD
 ==================
 **Bug Fixes**
 - Fixed an issue where Windows Event log date formats were not being parsed properly, leading to crashes. [GH:#1194] (Blake Bahner)
 
-3.1.4 - XX/XX/2025
+3.2.1 - 10/29/2025
+==================
+**Bug Fixes** 
+
+- Fixed an issue where the services endpoint would break on Solaris. [GL-NCPA#18] - BB, CPD
+- Fixed an issue where NCPA wouldn't build properly on Fedora per MrPippin66's instructions. [GH:#1148] - BB
+- Fixed an issue where the build would fail because a venv directory was missing from the PATH with cyanarmadillo's help. [GH:#1295] - CPD
+
+3.2.0 - 08/21/2025
 ==================
 **Added**
+
+- Added experimental support for Solaris 11.4 builds. (Blake Bahner)
+
+**Updates**
+
+- Rewrote the build process for Unix envrionments to use virtual environments for Python dependencies, improving compatibility and build reliability. (Blake Bahner)
+- Improved process killing logic on Unix and Windows systems to handle more edge cases and ensure all child processes are terminated. (Blake Bahner)
+- Updated passive check sending to attempt certificate verification when possible, falling back to legacy behavior if verification fails. (Blake Bahner)
+
+**Bug Fixes**
+
+- Fixed an issue where the API form would not clear fields after certain actions. (Blake Bahner)
+- Fixed an issue where NCPA couldn't upgrade or uninstall on Windows due to a locked file. [GH:#1210,#1281,GL-NCPA:#17] (Blake Bahner)
+
+3.1.4 - 07/30/2025
+==================
+**Added**
+
 - Added support for ARM64 builds for Linux. (DevSysEngineer)
 - Added psutil version to the dashboard to help diagnose issues. (Blake Bahner)
 - Added the ability to disable NCPA's web UI in the configuration file. [GH:#1254] (Blake Bahner)
 
 **Updates**
+
 - Improved .deb build process to improve compatibility with various Debian-based distributions. (Blake Bahner)
 - Improved service handling on Windows to reduce/resolve startup/running issues, particularly around conflicts with Windows' Event Log process. (Blake Bahner)
 - Improved the efficiency of several API endpoints. (Blake Bahner)
