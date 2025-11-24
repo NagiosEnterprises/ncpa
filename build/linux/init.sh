@@ -29,7 +29,7 @@ if [ $unixtype == "Linux" ]; then
             distro="Oracle"
         elif rpm -q cloudlinux-release; then
             distro="CloudLinux"
-        elif rpm -q fedora-release; then
+        elif rpm -q fedora-release || rpm -q fedora-release-common; then
             distro="Fedora"
         elif rpm -q redhat-release || rpm -q redhat-release-server; then
             distro="RHEL"

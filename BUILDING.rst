@@ -29,7 +29,7 @@ in mind.*
 Install the Prerequisites/Build NCPA
 ------------------------------------
 
-From a command prompt with Administrative priveleges run::
+From a command prompt with Administrative privileges run::
 
   cd /path/to/ncpa/build/
   build_windows.bat
@@ -46,6 +46,11 @@ Building on Linux
 *Note: Updates that involve a new/updated dependency (i.e. Python or OpenSSL) version will require that you delete the `prereqs.installed` file. If your build fails, try deleting this file and trying again.*
 
 NCPA must be built on the family of distributions which it will ultimately be run on. i.e. a .deb built on Ubuntu 20 will work on Ubuntu 22/24 and should also work on Debian 10/11
+
+You will need to have python3.11+ (python3.13 is preferred) installed prior to building NCPA v3.x.
+
+If you are on a RHEL/Oracle/CentOS/Amazon/Rocky system you may need to enable additional repositories to get a newer version of python3.13.
+You may also need to install the CodeReady Builder repository specific to your distro and version to get all the required development packages.
 
 To start, clone the repository in your directory::
 
@@ -86,26 +91,31 @@ Copy the resulting ~/ncpa/build/ncpa-3.X.X-latest.x86_64.rpm or ncpa_3.X.X-lates
 Building on MacOS
 =================
 
-*Not updated for v3, yet.*
 It's basically the same as Linux, however you may need to
 install the libraries and python differently, due to it being macOS. You must have
-python3, wget and git installed prior to building NCPA v3.x.:
+python3.13, homebrew, and git installed prior to building NCPA v3.x.:
 
+**Install the xcode command line tools**::
+
+  xcode-select --install
 
 **Clone the repository into your directory**::
 
   cd ~
   git clone https://github.com/NagiosEnterprises/ncpa
 
-**Make your user root, and install the xcode command line tools**::
+**Make sure you have homebrew installed**::
 
-  sudo su -
-  xcode-select --install
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-**Execute the build script**::
+**Install python3.13 using homebrew**::
+
+  brew install python@3.13
+
+**Execute the build script with sudo**::
 
   cd ~/ncpa/build
-  ./build.sh
+  sudo ./build.sh
 
 Note that there may be some difficulty with installing this on other machines without Apple Developer credentials, and with the enhanced system security in newer versions. Please see `Installing on Nagios NCPA v 2.4 Agent on MacOS <https://nagiosenterprises.my.site.com/support/s/article/Installing-the-Nagios-NCPA-v-2-4-Agent-on-MacOS-7ec3e7de>`_ for more information.
 

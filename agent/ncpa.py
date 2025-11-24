@@ -94,7 +94,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.2.0'
+__VERSION__ = '3.2.1'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -1092,6 +1092,11 @@ if __SYSTEM__ == 'nt':
 
         def main(self):
             try:
+                ### TODO: Consider using gevent.threadpool.ThreadPoolExecutor or gipc for more compatible multiprocessing support
+                # https://github.com/gevent/gevent/blob/master/gevent/threadpool.py
+                # https://github.com/benjaminp/gipc
+                ### https://github.com/NagiosEnterprises/ncpa/issues/1291
+
                 # instantiate child processes
                 self.p, self.l = start_processes(self.options, self.config, self.has_error)
                 self.ReportServiceStatus(win32service.SERVICE_RUNNING)

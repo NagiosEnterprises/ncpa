@@ -55,8 +55,10 @@ run_as_user() {
 
 # Python version detection with preference for configured version
 detect_python() {
+    local rerun="${1:-true}"
     local python_candidates=()
     
+    # Add configured Python version with highest priority
     # Add configured Python version with highest priority
     if [ -n "$PYTHON_MAJOR_MINOR" ]; then
         python_candidates+=(
@@ -70,15 +72,24 @@ detect_python() {
     
     # Add other common Python versions as fallbacks
     python_candidates+=(
-        "python3.13" "python3.12" "python3.11" "python3.10" "python3.9" "python3.8"
-        "/usr/bin/python3.13" "/usr/bin/python3.12" "/usr/bin/python3.11"
-        "/usr/bin/python3.10" "/usr/bin/python3.9" "/usr/bin/python3.8"
-        "/usr/local/bin/python3.13" "/usr/local/bin/python3.12" "/usr/local/bin/python3.11"
-        "/usr/local/bin/python3.10" "/usr/local/bin/python3.9" "/usr/local/bin/python3.8"
-        "/opt/homebrew/bin/python3.13" "/opt/homebrew/bin/python3.12" "/opt/homebrew/bin/python3.11"
-        "/opt/homebrew/bin/python3.10" "/opt/homebrew/bin/python3.9" "/opt/homebrew/bin/python3.8"
-        "/opt/csw/bin/python3.13" "/opt/csw/bin/python3.12" "/opt/csw/bin/python3.11"
-        "/opt/csw/bin/python3.10" "/opt/csw/bin/python3.9" "/opt/csw/bin/python3.8"
+        "python3.13"
+        "/usr/bin/python3.13"
+        "/usr/local/bin/python3.13"
+        "/opt/homebrew/bin/python3.13"
+        "/opt/csw/bin/python3.13"
+
+        "python3.12"
+        "/usr/bin/python3.12"
+        "/usr/local/bin/python3.12"
+        "/opt/homebrew/bin/python3.12"
+        "/opt/csw/bin/python3.12"
+
+        "python3.11"
+        "/usr/bin/python3.11"
+        "/usr/local/bin/python3.11"
+        "/opt/homebrew/bin/python3.11"
+        "/opt/csw/bin/python3.11"
+
         "python3"
         "/usr/bin/python3"
         "/usr/local/bin/python3"
@@ -97,56 +108,8 @@ detect_python() {
     newest_cmd=""
     newest_version=""
 
-    # If no suitable Python found, try to install latest Python with Homebrew on macOS
-    if [ "$PLATFORM" = "macos" ]; then
-        log "Ensuring latest Python 3 is installed via Homebrew..."
-        if command -v brew >/dev/null 2>&1; then
-            echo "    - Removing conflicting Homebrew libraries: readline, sqlite, expat..."
-            sudo rm -rf /usr/local/opt/readline /usr/local/opt/sqlite /usr/local/opt/expat
-            echo "    - Autoremoving Homebrew Python, OpenSSL, and ca-certificates to prevent SSL issues..."
-            run_as_user brew uninstall --ignore-dependencies python@3.13 || true
-            sudo rm -rf /usr/local/Cellar/python@3.13/
-            run_as_user brew uninstall --ignore-dependencies openssl@3 || true
-            sudo rm -rf /usr/local/opt/openssl@3
-            sudo rm -rf /usr/local/etc/ca-certificates/
 
-            log "Running: brew cleanup"
-            run_as_user brew cleanup || true
-            # Unset LDFLAGS/CPPFLAGS to avoid linking against missing Homebrew OpenSSL. These will be re-defined later
-            unset LDFLAGS
-            unset CPPFLAGS
-            
-            log "Running: brew update"
-            if ! run_as_user brew update; then
-                error "brew update failed. Please check your Homebrew installation."
-                return 1
-            fi
-
-            log "Running: brew install --overwrite python"
-            if ! run_as_user brew install --overwrite python; then
-                error "brew install python failed. Please install Python 3.8+ manually."
-                return 1
-            fi
-
-            log "Running: brew install --overwrite openssl@3"
-            if ! run_as_user brew install --overwrite openssl@3; then
-                error "Failed to install openssl@3 via Homebrew."
-                return 1
-            fi
-            log "Running: brew link --overwrite openssl@3"
-            if ! run_as_user brew link --overwrite openssl@3; then
-                error "Failed to link openssl@3 via Homebrew."
-                return 1
-            fi
-
-            log "Homebrew Python installation/update complete."
-            # Add Homebrew Python to candidates
-            python_candidates+=("/opt/homebrew/bin/python3" "/usr/local/bin/python3")
-        else
-            error "Homebrew not found. Please install Homebrew and Python 3.8+ manually."
-        fi
-    fi
-
+    log "Comparing available Python interpreters against latest version: $latest_pkg_version"
     for python_cmd in "${python_candidates[@]}"; do
         if command -v "$python_cmd" >/dev/null 2>&1; then
             if version_output=$($python_cmd --version 2>&1); then
@@ -167,7 +130,7 @@ detect_python() {
                     major=$(echo "$py_version" | cut -d. -f1)
                     minor=$(echo "$py_version" | cut -d. -f2)
                     if [ -n "$major" ] && [ -n "$minor" ] && [ "$major" -eq "$major" ] 2>/dev/null && [ "$minor" -eq "$minor" ] 2>/dev/null; then
-                        if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 8 ]); then
+                        if [ "$major" -gt 3 ] || ([ "$major" -eq 3 ] && [ "$minor" -ge 11 ]); then
                             log "Found $python_cmd: version_output='$version_output' -> parsed_version='$py_version' (major=$major, minor=$minor)"
                             python_cmds_found+=("$python_cmd")
                             python_versions_found+=("$py_version")
@@ -179,7 +142,7 @@ detect_python() {
                                 newest_version="$py_version"
                             fi
                         else
-                            log "⚠ Python $py_version at $python_cmd is too old (need >= 3.8)"
+                            log "⚠ Python $py_version at $python_cmd is too old (need >= 3.11)"
                         fi
                     else
                         log "⚠ Failed to parse version for $python_cmd (output: '$version_output', parsed: '$py_version')"
@@ -197,19 +160,28 @@ detect_python() {
     latest_pkg_version=""
     if [ "$PLATFORM" = "linux" ]; then
         if command -v apt-cache >/dev/null 2>&1; then
-            latest_pkg_version=$(apt-cache policy python3 | grep Candidate | awk '{print $2}' | cut -d. -f1,2)
+            latest_pkg_version=$(apt-cache policy python3 2>/dev/null | awk '/Candidate:/ {print $2; exit}' | cut -d. -f1,2)
         elif command -v dnf >/dev/null 2>&1; then
-            latest_pkg_version=$(dnf info python3 | grep Version | awk '{print $3}' | cut -d. -f1,2)
+            latest_pkg_version=$(dnf -q repoquery --latest-limit=1 --qf '%{version}' python3 2>/dev/null | cut -d. -f1,2)
         elif command -v yum >/dev/null 2>&1; then
-            latest_pkg_version=$(yum info python3 | grep Version | awk '{print $3}' | cut -d. -f1,2)
+            if command -v repoquery >/dev/null 2>&1; then
+                latest_pkg_version=$(repoquery -q --latest-limit=1 --qf '%{version}' python3 2>/dev/null | cut -d. -f1,2)
+            else
+                latest_pkg_version=$(yum -q info python3 2>/dev/null | awk -F': *' '/^Version/ {print $2; exit}' | cut -d. -f1,2)
+            fi
         elif command -v zypper >/dev/null 2>&1; then
-            latest_pkg_version=$(zypper info python3 | grep Version | awk '{print $3}' | cut -d. -f1,2)
+            latest_pkg_version=$(zypper -q info python3 2>/dev/null | awk -F': *' '/^Version/ {print $2; exit}' | cut -d. -f1,2)
         fi
     elif [ "$PLATFORM" = "macos" ]; then
         if command -v brew >/dev/null 2>&1; then
-            latest_pkg_version=$(brew info python | grep -Eo 'python@[0-9]+\.[0-9]+' | head -1 | grep -Eo '[0-9]+\.[0-9]+')
+            # Homebrew: parse stable version from JSON, then trim to major.minor
+            latest_pkg_version=$(brew info --json=v2 python 2>/dev/null | sed -n 's/.*"stable":"\([0-9]\+\.[0-9]\+\).*/\1/p' | head -1)
             if [ -z "$latest_pkg_version" ]; then
-                latest_pkg_version=$(brew info python | grep -Eo 'stable [0-9]+\.[0-9]+' | head -1 | grep -Eo '[0-9]+\.[0-9]+')
+                # Fallbacks if JSON parsing fails
+                latest_pkg_version=$(brew info python 2>/dev/null | grep -Eo 'python@[0-9]+\.[0-9]+' | head -1 | grep -Eo '[0-9]+\.[0-9]+')
+                if [ -z "$latest_pkg_version" ]; then
+                    latest_pkg_version=$(brew info python 2>/dev/null | grep -Eo 'stable [0-9]+\.[0-9]+' | head -1 | grep -Eo '[0-9]+\.[0-9]+')
+                fi
             fi
         fi
     fi
@@ -225,61 +197,146 @@ detect_python() {
     # Compare installed vs latest available
     if [ "$newest_major" -gt "$latest_major" ] || { [ "$newest_major" -eq "$latest_major" ] && [ "$newest_minor" -ge "$latest_minor" ]; }; then
         # Installed Python is newer or equal to package manager's version
-        if [ "$newest_major" -ge 3 ] && [ "$newest_minor" -ge 8 ]; then
+        if [ "$newest_major" -ge 3 ] && [ "$newest_minor" -ge 11 ]; then
             PYTHON_EXECUTABLE="$newest_cmd"
             PYTHON_VERSION="$newest_version"
             log "✓ Using newest installed Python $newest_version: $newest_cmd (newer or equal to package manager $latest_pkg_version)"
             return 0
         else
-            error "Newest installed Python ($newest_version) is too old (<3.8)."
+            error "Newest installed Python ($newest_version) is too old (<3.11)."
             return 1
         fi
     else
         # Installed Python is older than package manager's version
         log "Installed Python ($newest_version) is older than latest available ($latest_pkg_version). Attempting to install/upgrade..."
-        if [ "$PLATFORM" = "linux" ]; then
-            if command -v apt-get >/dev/null 2>&1; then
-                sudo apt-get update && sudo apt-get install -y python3 python3-venv
-            elif command -v dnf >/dev/null 2>&1; then
-                # Check if python3-venv is available
-                if dnf list python3-venv >/dev/null 2>&1; then
-                    sudo dnf install -y python3 python3-venv
-                else
-                    log "python3-venv not available in dnf. Installing python3 only."
-                    sudo dnf install -y python3
-                fi
-            elif command -v yum >/dev/null 2>&1; then
-                # Check if python3-venv is available
-                if yum list python3-venv >/dev/null 2>&1; then
-                    sudo yum install -y python3 python3-venv
-                else
-                    log "python3-venv not available in yum. Installing python3 only."
-                    sudo yum install -y python3
-                fi
-            elif command -v zypper >/dev/null 2>&1; then
-                sudo zypper install -y python3 python3-venv
+        log "Installed Python ($newest_version) is older than required (3.13). Installing/upgrading Python 3.13 from package manager…"
+
+    PY_REQ_MAJOR=3
+    PY_REQ_MINOR=13
+    PY_DOT="${PY_REQ_MAJOR}.${PY_REQ_MINOR}"
+    PY_PKG_VER="python${PY_REQ_MAJOR}.${PY_REQ_MINOR}"
+    PY_VENV_PKG="${PY_PKG_VER}-venv"     # apt/zypper naming
+    PY_CMD="python${PY_REQ_MAJOR}.${PY_REQ_MINOR}"
+
+    if [ "$PLATFORM" = "linux" ]; then
+        if command -v apt-get >/dev/null 2>&1; then
+            # Debian/Ubuntu
+            sudo apt-get update
+            if ! apt-cache policy "${PY_PKG_VER}" 2>/dev/null | grep -q Candidate; then
+                log "Package ${PY_PKG_VER} not found in default repos. Adding deadsnakes PPA…"
+                sudo apt-get install -y software-properties-common || true
+                sudo add-apt-repository -y ppa:deadsnakes/ppa
+                sudo apt-get update
+            fi
+            # Install exact 3.13 and its venv package if available
+            sudo apt-get install -y "${PY_PKG_VER}" "${PY_VENV_PKG}" || {
+                log "${PY_VENV_PKG} not available; proceeding with ${PY_PKG_VER} only."
+                sudo apt-get install -y "${PY_PKG_VER}"
+            }
+
+        elif command -v dnf >/dev/null 2>&1; then
+            # Fedora/RHEL (dnf)
+            sudo dnf clean all -y >/dev/null 2>&1 || true
+            if ! dnf list "${PY_PKG_VER}" >/dev/null 2>&1; then
+                log "${PY_PKG_VER} not found. Enabling CRB/EPEL and retrying…"
+                # Enable CRB (RHEL 9 / Rocky/Alma) if present
+                sudo dnf config-manager --set-enabled crb >/dev/null 2>&1 || true
+                # Install EPEL (RHEL/Rocky/Alma)
+                sudo dnf install -y epel-release >/dev/null 2>&1 || true
+            fi
+            if dnf list "${PY_PKG_VER}" >/dev/null 2>&1; then
+                sudo dnf install -y "${PY_PKG_VER}"
+                # Some distros split venv as python3.13-venv; if present, install
+                dnf list "${PY_VENV_PKG}" >/dev/null 2>&1 && sudo dnf install -y "${PY_VENV_PKG}" || true
             else
-                error "No supported package manager found for Python installation. Please install Python 3.8+ manually."
+                error "Could not find ${PY_PKG_VER} in enabled repos. Consider enabling appropriate vendor repos."
                 return 1
             fi
-        elif [ "$PLATFORM" = "macos" ]; then
-            if command -v brew >/dev/null 2>&1; then
-                run_as_user brew update
-                run_as_user brew install --overwrite python
+
+        elif command -v yum >/dev/null 2>&1; then
+            # Older RHEL/CentOS (yum)
+            if ! yum list "${PY_PKG_VER}" >/dev/null 2>&1; then
+                log "${PY_PKG_VER} not found. Installing EPEL and retrying…"
+                sudo yum install -y epel-release || true
+            fi
+            if yum list "${PY_PKG_VER}" >/dev/null 2>&1; then
+                sudo yum install -y "${PY_PKG_VER}"
+                yum list "${PY_VENV_PKG}" >/dev/null 2>&1 && sudo yum install -y "${PY_VENV_PKG}" || true
             else
-                error "Homebrew not found. Please install Homebrew and Python 3.8+ manually."
+                error "Could not find ${PY_PKG_VER} in enabled repos."
                 return 1
             fi
+
+        elif command -v zypper >/dev/null 2>&1; then
+            # openSUSE/SLES
+            sudo zypper refresh
+            if ! zypper se -x "${PY_PKG_VER}" | grep -q "${PY_PKG_VER}"; then
+                log "${PY_PKG_VER} not in current repos. Adding devel:languages:python…"
+                sudo zypper -n ar -f https://download.opensuse.org/repositories/devel:/languages:/python/standard/ devel_languages_python || true
+                sudo zypper refresh
+            fi
+            if zypper se -x "${PY_PKG_VER}" | grep -q "${PY_PKG_VER}"; then
+                sudo zypper install -y "${PY_PKG_VER}" "${PY_VENV_PKG}" || {
+                    log "${PY_VENV_PKG} not available; proceeding with ${PY_PKG_VER} only."
+                    sudo zypper install -y "${PY_PKG_VER}"
+                }
+            else
+                error "Could not find ${PY_PKG_VER} in enabled repos."
+                return 1
+            fi
+
         else
-            error "Automatic Python installation not supported for platform: $PLATFORM. Please install Python 3.8+ manually."
+            error "No supported package manager found for Python installation. Please install Python ${PY_DOT}+ manually."
             return 1
         fi
-        # Re-detect Python after installation
-        log "Re-detecting Python after installation..."
-        detect_python
+
+    elif [ "$PLATFORM" = "macos" ]; then
+        if command -v brew >/dev/null 2>&1; then
+            run_as_user brew update
+            # Explicitly install/link the 3.13 formula
+            run_as_user brew install python@${PY_DOT} || true
+            run_as_user brew unlink python@3.12 >/dev/null 2>&1 || true
+            run_as_user brew link --overwrite --force python@${PY_DOT}
+            PY_CMD="/usr/local/bin/python${PY_REQ_MAJOR}" # Brew shims python3 -> newest
+            # Prefer the exact binary:
+            [ -x "/usr/local/opt/python@${PY_DOT}/bin/python${PY_REQ_MAJOR}.${PY_REQ_MINOR}" ] && \
+                PY_CMD="/usr/local/opt/python@${PY_DOT}/bin/python${PY_REQ_MAJOR}.${PY_REQ_MINOR}"
+        else
+            error "Homebrew not found. Please install Homebrew and Python ${PY_DOT}+ manually."
+            return 1
+        fi
+
+    else
+        error "Automatic Python installation not supported for platform: $PLATFORM. Please install Python ${PY_DOT}+ manually."
+        return 1
+    fi
+
+    # Resolve the python3.13 binary path
+    if [ -z "${PY_CMD}" ]; then
+        if command -v "${PY_PKG_VER}" >/dev/null 2>&1; then
+            PY_CMD="$(command -v ${PY_PKG_VER})"
+        elif command -v "python${PY_DOT}" >/dev/null 2>&1; then
+            PY_CMD="$(command -v python${PY_DOT})"
+        elif command -v "python${PY_REQ_MAJOR}" >/dev/null 2>&1 && [ "$("$(
+            command -v python${PY_REQ_MAJOR}
+        )" -V 2>&1 | awk '{print $2}' | cut -d. -f1-2)" = "${PY_DOT}" ]; then
+            PY_CMD="$(command -v python${PY_REQ_MAJOR})"
+        fi
+    fi
+
+    if [ -z "${PY_CMD}" ]; then
+        error "Python ${PY_DOT} installed but binary not found in PATH. Please check installation."
+        return 1
+    fi
+
+        # Re-detect Python after installation if rerun != "false"
+        if [ "$rerun" = "true" ]; then
+            log "Re-detecting Python after installation..."
+            detect_python "false"
+        fi
         return $?
     fi
-    error "No suitable Python 3.8+ interpreter found and automatic installation failed."
+    error "No suitable Python 3.11+ interpreter found and automatic installation failed."
     return 1
 }
 

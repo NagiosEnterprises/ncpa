@@ -768,6 +768,20 @@ esac'
             exit $BUILD_RESULT
         fi
     else
+
+        # CRITICAL: Ensure virtual environment bin is FIRST in PATH
+        if [ -n "$VIRTUAL_ENV" ] && [ -d "$VIRTUAL_ENV/bin" ]; then
+            # Remove any existing venv paths from PATH to avoid duplicates
+            PATH_WITHOUT_VENV=$(echo "$PATH" | sed "s|$VIRTUAL_ENV/bin:||g" | sed "s|:$VIRTUAL_ENV/bin||g" | sed "s|$VIRTUAL_ENV/bin$||g")
+            export PATH="$VIRTUAL_ENV/bin:$PATH_WITHOUT_VENV"
+            echo "✓ Virtual environment bin directory prioritized in PATH"
+            echo "PATH (first 3 entries): $(echo "$PATH" | cut -d: -f1-3)"
+        fi
+
+        # Clear command hash to ensure fresh lookups
+        hash -r
+
+        # Run the build
         echo "Attempting to build cx_Freeze..."
         echo "Python binary: $PYTHONBIN"
         $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
