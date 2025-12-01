@@ -317,7 +317,7 @@ if [ $BUILD_TRAVIS -eq 0 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; 
 
 elif [ $BUILD_TRAVIS -eq 1 ]; then
     # Set up travis environment
-    sudo useradd nagios
+    sudo useradd -s /sbin/nologin nagios
     cd $BUILD_DIR
     
     # Use virtual environment if available, otherwise fall back to system pip
