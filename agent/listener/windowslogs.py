@@ -104,7 +104,7 @@ class WindowsLogsNode(listener.nodes.LazyNode):
             logs = self.walk(*args, **kwargs)['logs'][0]
             log_names = sorted(logs.keys())
         except Exception as exc:
-            return { 'stdout': 'UNKNOWN: %s, cannot continue meaningfully.' % exc.message,
+            return { 'stdout': 'UNKNOWN: %s, cannot continue meaningfully.' % str(exc),
                      'returncode': 3 }
 
         log_counts = [len(logs[x]) for x in log_names]
@@ -319,31 +319,84 @@ def get_datetime_from_date_input(date_input):
         logging.error('Date input was invalid, Given: %r, %r', date_input, exc)
         t_delta = datetime.timedelta(days=1)
     return t_delta
+def format_datetime_flexible(dt):
+    """
+    Format a datetime object to string, preferring microsecond precision when available.
+    
+    Returns a string representation of the datetime.
+    """
+    try:
+        # Try to format with microseconds first
+        if dt.microsecond > 0:
+            return dt.strftime('%Y-%m-%d %H:%M:%S.%f')
+        else:
+            return dt.strftime('%Y-%m-%d %H:%M:%S')
+    except (AttributeError, ValueError):
+        # Fallback to basic string conversion
+        return str(dt)
+
+def parse_datetime_flexible(date_string):
+    """
+    Dynamically parse datetime strings that may or may not contain microseconds.
+    Handles various Windows log date formats safely.
+    
+    Returns a datetime object or raises ValueError if no format matches.
+    """
+    # Common date formats for Windows logs
+    formats_to_try = [
+        '%Y-%m-%d %H:%M:%S.%f',     # With microseconds
+        '%Y-%m-%d %H:%M:%S',        # Without microseconds
+        '%m/%d/%y %H:%M:%S',        # Alternative format from some logs
+        '%m/%d/%Y %H:%M:%S',        # Alternative format with full year
+        '%Y-%m-%dT%H:%M:%S.%f',     # ISO format with microseconds
+        '%Y-%m-%dT%H:%M:%S',        # ISO format without microseconds
+    ]
+    
+    # Clean the input string
+    date_string = str(date_string).strip()
+    
+    # Try each format until one works
+    for date_format in formats_to_try:
+        try:
+            return datetime.datetime.strptime(date_string, date_format)
+        except ValueError:
+            continue
+    
+    # If no format worked, raise an error with helpful information
+    raise ValueError(f"Unable to parse date string '{date_string}' with any known format")
+
 def check_date_format(date_string, date_format):
-    #formats_to_check = ["%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M:%S"]
+    """
+    Check if a date string matches a specific format.
+    """
     try:
         datetime.datetime.strptime(date_string, date_format)
         return True 
     except ValueError:
         pass 
-
     return False 														 
 
 def datetime_from_event_date(evt_date):
     """
-    This function converts dates with format '12/23/99 15:54:09' to seconds since 1970.
+    This function converts dates with various formats to datetime objects.
+    Now handles dates with and without microseconds dynamically.
 
     Note - NS:
     The fact that this is required is really dubious. Not sure why the win32 API
     doesn't take care of this, but alas, here we are.
     """
-    date_string = str(evt_date)
-
-    if check_date_format(date_string,date_format1):
-         time_generated = datetime.datetime.strptime(date_string, date_format1)    
-    else:
-         time_generated = datetime.datetime.strptime(date_string, date_format2)
-    return time_generated
+    try:
+        return parse_datetime_flexible(evt_date)
+    except ValueError as e:
+        # Log the error and try fallback parsing
+        logging.warning(f"Failed to parse event date '{evt_date}': {e}")
+        
+        # Fallback: try the original method as last resort
+        date_string = str(evt_date)
+        if check_date_format(date_string, date_format1):
+            return datetime.datetime.strptime(date_string, date_format1)    
+        else:
+            return datetime.datetime.strptime(date_string, date_format2)
 
 
 def parseEvt(result,event):
@@ -522,15 +575,55 @@ def normalize_xml_event(row, name):
     safe_log['application'] = row['SourceName']
     safe_log['utc_time_generated'] = row['TimeCreated SystemTime']
     s1 = str(row['TimeCreated SystemTime'])
-    date_part, offset_part = s1.rsplit('+', 1)
-    rDate=datetime.datetime.strptime(str(date_part),date_format1)
+    
+    try:
+        date_part, offset_part = s1.rsplit('+', 1)
+    except ValueError:
+        # Handle cases where there might be no timezone offset or different format
+        try:
+            date_part, offset_part = s1.rsplit('-', 1)
+            # Mark that this is a negative offset
+            offset_part = '-' + offset_part
+        except ValueError:
+            # No timezone information, treat as local time
+            date_part = s1
+            offset_part = '+00:00'
+    
+    # Use flexible date parsing instead of hardcoded format
+    try:
+        rDate = parse_datetime_flexible(date_part)
+    except ValueError:
+        # Fallback to original method if flexible parsing fails
+        try:
+            rDate = datetime.datetime.strptime(str(date_part), date_format1)
+        except ValueError:
+            rDate = datetime.datetime.strptime(str(date_part), date_format2)
   
-    hours_offset = int(offset_part[:2])
-    minutes_offset = int(offset_part[3:])
-    timezone_offset = datetime.timedelta(hours=hours_offset, minutes=minutes_offset)
-    if offset_part[0] == '-':
-	    timezone_offset = -timezone_offset
-    rDate -=timezone_offset
+    # Parse timezone offset safely
+    try:
+        if offset_part.startswith('-'):
+            sign = -1
+            offset_part = offset_part[1:]  # Remove the '-' sign
+        else:
+            sign = 1
+            if offset_part.startswith('+'):
+                offset_part = offset_part[1:]  # Remove the '+' sign
+        
+        # Handle different offset formats (HH:MM or HHMM)
+        if ':' in offset_part:
+            hours_offset = int(offset_part.split(':')[0])
+            minutes_offset = int(offset_part.split(':')[1])
+        else:
+            hours_offset = int(offset_part[:2])
+            minutes_offset = int(offset_part[2:4]) if len(offset_part) >= 4 else 0
+            
+        timezone_offset = datetime.timedelta(hours=hours_offset, minutes=minutes_offset) * sign
+    except (ValueError, IndexError) as e:
+        # If timezone parsing fails, assume UTC
+        logging.warning(f"Failed to parse timezone offset '{offset_part}': {e}")
+        timezone_offset = datetime.timedelta(0)
+    
+    rDate -= timezone_offset
     timeDiffSec=(datetime.datetime.utcnow() - datetime.datetime.now()).total_seconds()
     timeLocal = str(rDate+datetime.timedelta(seconds=-timeDiffSec))
     safe_log['time_generated'] = timeLocal
@@ -568,7 +661,7 @@ def get_event_logs(server, name, filters):
     else:
         if not checkPlatform('6.1.7601'):
             raise versionError('OS is too old for log:'+name) #system too old for non standard logs
-        pathLogs = 'C:\Windows\System32\winevt\Logs\\'
+        pathLogs = r'C:\Windows\System32\winevt\Logs\\'
         flags = win32evtlog.EvtQueryReverseDirection | win32evtlog.EvtQueryFilePath | win32evtlog.EvtQueryTolerateQueryErrors
         handle = win32evtlog.EvtQuery(pathLogs + name +'.evtx',flags)
         logs = []
@@ -592,17 +685,56 @@ def get_event_logs(server, name, filters):
                         if time_created_variant == win32evtlog.EvtVarTypeNull:
                             raise StopIteration
                         s1 = str(time_created_value)
-                        date_part, offset_part = s1.rsplit('+', 1)
-                        temp_date=datetime.datetime.strptime(str(date_part),date_format1)
-						
-                        # Parse and adjust the timezone offset
-                        hours_offset = int(offset_part[:2])
-                        minutes_offset = int(offset_part[3:])
-                        timezone_offset = datetime.timedelta(hours=hours_offset, minutes=minutes_offset)
-                        if offset_part[0] == '-':
-                            timezone_offset = -timezone_offset
-                        temp_date -=timezone_offset
-                        time_from_event=temp_date.strftime(date_format1)
+                        
+                        try:
+                            date_part, offset_part = s1.rsplit('+', 1)
+                        except ValueError:
+                            # Handle cases where there might be no timezone offset or different format
+                            try:
+                                date_part, offset_part = s1.rsplit('-', 1)
+                                # Mark that this is a negative offset
+                                offset_part = '-' + offset_part
+                            except ValueError:
+                                # No timezone information, treat as local time
+                                date_part = s1
+                                offset_part = '+00:00'
+                        
+                        # Use flexible date parsing instead of hardcoded format
+                        try:
+                            temp_date = parse_datetime_flexible(date_part)
+                        except ValueError:
+                            # Fallback to original method if flexible parsing fails
+                            try:
+                                temp_date = datetime.datetime.strptime(str(date_part), date_format1)
+                            except ValueError:
+                                temp_date = datetime.datetime.strptime(str(date_part), date_format2)
+                        
+                        # Parse timezone offset safely
+                        try:
+                            if offset_part.startswith('-'):
+                                sign = -1
+                                offset_part = offset_part[1:]  # Remove the '-' sign
+                            else:
+                                sign = 1
+                                if offset_part.startswith('+'):
+                                    offset_part = offset_part[1:]  # Remove the '+' sign
+                            
+                            # Handle different offset formats (HH:MM or HHMM)
+                            if ':' in offset_part:
+                                hours_offset = int(offset_part.split(':')[0])
+                                minutes_offset = int(offset_part.split(':')[1])
+                            else:
+                                hours_offset = int(offset_part[:2])
+                                minutes_offset = int(offset_part[2:4]) if len(offset_part) >= 4 else 0
+                                
+                            timezone_offset = datetime.timedelta(hours=hours_offset, minutes=minutes_offset) * sign
+                        except (ValueError, IndexError) as e:
+                            # If timezone parsing fails, assume UTC
+                            logging.warning(f"Failed to parse timezone offset '{offset_part}': {e}")
+                            timezone_offset = datetime.timedelta(0)
+                        
+                        temp_date -= timezone_offset
+                        time_from_event = format_datetime_flexible(temp_date)
                         time_generated = datetime_from_event_date(time_from_event)          
                         if time_generated < logged_after:
                             raise StopIteration
