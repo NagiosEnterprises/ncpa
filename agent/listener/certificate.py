@@ -41,18 +41,18 @@ def create_self_signed_cert(cert_dir, cert_file, key_file):
     # Create cert if it does not exist
     if not os.path.exists(target_cert) or not os.path.exists(target_key):
         
-        if HAS_CRYPTOGRAPHY:
-            # Use the modern cryptography library
-            _create_cert_with_cryptography(target_cert, target_key)
-        elif HAS_OPENSSL:
-            # Fallback to pyOpenSSL
-            _create_cert_with_openssl(target_cert, target_key)
-        else:
+        # if HAS_CRYPTOGRAPHY:
+        #     # Use the modern cryptography library
+        #     _create_cert_with_cryptography(target_cert, target_key)
+        # elif HAS_OPENSSL:
+        #     # Fallback to pyOpenSSL
+        #     _create_cert_with_openssl(target_cert, target_key)
+        # else:
             # Final fallback - try to use system openssl command
-            try:
-                _create_cert_with_system_openssl(target_cert, target_key)
-            except Exception as e:
-                raise ImportError("Neither cryptography nor pyOpenSSL libraries are available, and system openssl command failed: %s" % str(e))
+        try:
+            _create_cert_with_system_openssl(target_cert, target_key)
+        except Exception as e:
+            raise ImportError("Neither cryptography nor pyOpenSSL libraries are available, and system openssl command failed: %s" % str(e))
 
     return target_cert, target_key
 
