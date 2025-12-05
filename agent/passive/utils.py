@@ -11,14 +11,14 @@ def send_request(url, connection_timeout, **kwargs):
     :param kwargs: Extra keywords to be passed to requests.post
     :rtype: requests.models.Response
     """
+    ca_bundle_path = "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
 
-    
     if url == "/":
         logging.error("Invalid URL: '/' is not a valid URL")
         return None
 
     try:
-        r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=True, allow_redirects=True)
+        r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=ca_bundle_path, allow_redirects=True)
         logging.debug('Content response from URL: %s' % str(r.content))
         return r.content
     except requests.exceptions.SSLError as ssl_err:

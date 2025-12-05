@@ -4,8 +4,6 @@ import time
 from datetime import datetime, timedelta
 from ipaddress import IPv4Address
 
-os.environ['REQUESTS_CA_BUNDLE'] = "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
-
 try:
     # Try to use the cryptography library (preferred)
     from cryptography import x509
