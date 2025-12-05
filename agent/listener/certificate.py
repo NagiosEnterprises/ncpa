@@ -59,6 +59,8 @@ def create_self_signed_cert(cert_dir, cert_file, key_file):
 def _create_cert_with_cryptography(target_cert, target_key):
     """Create self-signed certificate using the cryptography library"""
     
+    print("Creating self-signed certificate using cryptography library...")
+
     # Generate private key
     private_key = rsa.generate_private_key(
         public_exponent=65537,
@@ -129,6 +131,8 @@ def _create_cert_with_cryptography(target_cert, target_key):
 def _create_cert_with_openssl(target_cert, target_key):
     """Create self-signed certificate using pyOpenSSL (fallback)"""
     
+    print("Creating self-signed certificate using pyOpenSSL...")
+
     # Create a key pair
     k = crypto.PKey()
     k.generate_key(crypto.TYPE_RSA, 2048)
@@ -173,6 +177,8 @@ def _create_cert_with_system_openssl(target_cert, target_key):
     """Create self-signed certificate using system openssl command (final fallback)"""
     import subprocess
     import tempfile
+
+    print("Creating self-signed certificate using system openssl command...")
     
     # Create a temporary config file for OpenSSL
     config_content = """[req]
