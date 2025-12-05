@@ -101,6 +101,14 @@ __STARTED__ = datetime.datetime.now()
 
 options = {}
 
+try:
+    import requests.certs
+    ca_bundle_path = requests.certs.where()
+    print("Using certs from requests library: %s" % ca_bundle_path)
+except ImportError:
+    # Fallback if requests is not used or cacert.pem is in a custom location
+    ca_bundle_path = os.path.join(os.path.dirname(__file__), 'path', 'to', 'your', 'cacert.pem')
+
 # About Logging
 # Asynchronous processes require separate loggers. Additionally, the parent process
 # gets a logger to cover the startup code, global functions and the Daemon or Winservice classes used
