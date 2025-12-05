@@ -215,7 +215,7 @@ subjectAltName = DNS:%s, DNS:localhost, IP:127.0.0.1
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
         # Clean up temp file if it exists
         try:
-            os.unlink(config_path)
+            # os.unlink(config_path)
         except:
             pass
         raise Exception("System openssl command failed: %s" % str(e))
