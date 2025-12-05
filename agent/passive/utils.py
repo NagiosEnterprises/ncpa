@@ -18,14 +18,6 @@ def send_request(url, connection_timeout, **kwargs):
         return None
 
     try:
-        import requests.certs
-        ca_bundle_path = requests.certs.where()
-        print("Using certs from requests library: %s" % ca_bundle_path)
-    except ImportError:
-        # Fallback if requests is not used or cacert.pem is in a custom location
-        ca_bundle_path = os.path.join(os.path.dirname(__file__), 'path', 'to', 'your', 'cacert.pem')
-
-    try:
         r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=ca_bundle_path, allow_redirects=True)
         logging.debug('Content response from URL: %s' % str(r.content))
         return r.content

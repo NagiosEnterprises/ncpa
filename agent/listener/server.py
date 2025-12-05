@@ -1095,12 +1095,13 @@ def nrdp():
 
     :rtype: flask.Response
     """
+    ca_bundle_path = "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
     try:
         forward_to = listener.config['iconfig'].get('nrdp', 'parent')
         if request.method == 'get':
-            response = requests.get(forward_to, params=request.args)
+            response = requests.get(forward_to, params=request.args, verify=ca_bundle_path)
         else:
-            response = requests.post(forward_to, params=request.form)
+            response = requests.post(forward_to, params=request.form, verify=ca_bundle_path)
         resp = Response(response.content, 200, mimetype=response.headers['content-type'])
         return resp
     except Exception as exc:
