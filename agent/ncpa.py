@@ -101,8 +101,6 @@ __STARTED__ = datetime.datetime.now()
 
 options = {}
 
-print("***** Starting NCPA version: ", __VERSION__)
-
 # About Logging
 # Asynchronous processes require separate loggers. Additionally, the parent process
 # gets a logger to cover the startup code, global functions and the Daemon or Winservice classes used
