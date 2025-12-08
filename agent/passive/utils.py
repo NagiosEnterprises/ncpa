@@ -1,5 +1,6 @@
 import requests
 import requests.exceptions
+import os
 from ncpa import passive_logger as logging
 
 
@@ -12,13 +13,14 @@ def send_request(url, connection_timeout, **kwargs):
     :rtype: requests.models.Response
     """
     ca_bundle_path = "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
+    os.environ['REQUESTS_CA_BUNDLE'] = ca_bundle_path
 
     if url == "/":
         logging.error("Invalid URL: '/' is not a valid URL")
         return None
 
     try:
-        r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=ca_bundle_path, allow_redirects=True)
+        r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=True, allow_redirects=True)
         logging.debug('Content response from URL: %s' % str(r.content))
         return r.content
     except requests.exceptions.SSLError as ssl_err:
