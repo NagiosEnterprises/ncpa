@@ -14,7 +14,7 @@ Changelog
 - Fixed an issue where passive state xml element would not always return as string. [GH#1217] - dembaca
 - Fixed a bug where passive checks error out if temp file is deleted while ncpa is still running with dxcas-elash's help. [GH#1309] - CPD 
 - Fixed an issue where Windows Event log date formats were not being parsed properly, leading to crashes. [GH:#878,#1194] - BB
-- Fixed an issue where non-ASCII/Unicode characters in service names would break the services endpoint by updating psutil version to 7.1.0. [GH:#439,#608,#770,#1221]
+- Fixed an issue where non-ASCII/Unicode characters in service names would break the services endpoint by updating psutil version to 7.1.0. [GH:#439,#608,#770,#1221] - BB, CPD
 
 3.2.1 - 10/29/2025
 ==================
