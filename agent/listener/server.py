@@ -178,9 +178,8 @@ def is_network(ip):
 def secure_compare(item1, item2):
     item1 = '' if item1 is None else str(item1)
     item2 = '' if item2 is None else str(item2)
-    quoted_item1 = '"{}"'.format(item1)
-    quoted_item2 = '"{}"'.format(item2)
-    return compare_digest(quoted_item1, quoted_item2)   
+    return compare_digest(item1, item2)
+
 
 # ------------------------------
 # Authentication Wrappers
