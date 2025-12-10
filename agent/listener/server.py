@@ -178,8 +178,9 @@ def is_network(ip):
 def secure_compare(item1, item2):
     item1 = '' if item1 is None else str(item1)
     item2 = '' if item2 is None else str(item2)
-    return compare_digest(item1, item2)
-
+    quoted_item1 = '"{}"'.format(item1)
+    quoted_item2 = '"{}"'.format(item2)
+    return compare_digest(quoted_item1, quoted_item2)   
 
 # ------------------------------
 # Authentication Wrappers
@@ -317,6 +318,8 @@ def requires_token_or_auth(f):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
         token = request.values.get('token', None)
         token_valid = secure_compare(token, ncpa_token)
+        listener_logger.debug("    requires_token_or_auth() - token: %s", token)
+        listener_logger.debug("    requires_token_or_auth() - token_valid: %s", token_valid)
 
         # This is an internal call, we don't check
         if __INTERNAL__ is True:
