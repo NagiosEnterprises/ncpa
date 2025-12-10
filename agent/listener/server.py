@@ -318,6 +318,7 @@ def requires_token_or_auth(f):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
         token = request.values.get('token', None)
         token_valid = secure_compare(token, ncpa_token)
+        listener_logger.debug("    requires_token_or_auth() - ncpa_token: %s", ncpa_token)
         listener_logger.debug("    requires_token_or_auth() - token: %s", token)
         listener_logger.debug("    requires_token_or_auth() - token_valid: %s", token_valid)
 
