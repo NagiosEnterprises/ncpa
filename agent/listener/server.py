@@ -178,9 +178,7 @@ def is_network(ip):
 def secure_compare(item1, item2):
     item1 = '' if item1 is None else str(item1)
     item2 = '' if item2 is None else str(item2)
-    quoted_item1 = '"{}"'.format(item1)
-    quoted_item2 = '"{}"'.format(item2)
-    return compare_digest(quoted_item1, quoted_item2)   
+    return compare_digest(item1, item2)   
 
 # ------------------------------
 # Authentication Wrappers
@@ -317,14 +315,14 @@ def requires_token_or_auth(f):
     def token_auth_decoration(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
         token = request.values.get('token', None)
-        token_valid = secure_compare(token, ncpa_token)
+        stripped_token = token.strip('\'"')
+        token_valid = secure_compare(stripped_token, ncpa_token)
+
         listener_logger.debug("    requires_token_or_auth() - ncpa_token: %s", ncpa_token)
         listener_logger.debug("    requires_token_or_auth() - token: %s", token)
+        listener_logger.debug("    requires_token_or_auth() - quoted_token_concat: %s", stripped_token)
         listener_logger.debug("    requires_token_or_auth() - token_valid: %s", token_valid)
 
-        unquoted_token = token.strip('\'"')
-        listener_logger.debug("    requires_token_or_auth() - quoted_token_concat: %s", unquoted_token)
-    
 
 
         # This is an internal call, we don't check
