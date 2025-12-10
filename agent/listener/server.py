@@ -321,10 +321,10 @@ def requires_token_or_auth(f):
         listener_logger.debug("    requires_token_or_auth() - ncpa_token: %s", ncpa_token)
         listener_logger.debug("    requires_token_or_auth() - token: %s", token)
         listener_logger.debug("    requires_token_or_auth() - token_valid: %s", token_valid)
-        quoted_token_concat = '"' + token + '"'
-        quoted_token_concat_single = "'" + token + "'"
-        listener_logger.debug("    requires_token_or_auth() - quoted_token_concat: %s", quoted_token_concat)
-        listener_logger.debug("    requires_token_or_auth() - quoted_token_concat_single: %s", quoted_token_concat_single)
+
+        unquoted_token = token.strip('\'"')
+        listener_logger.debug("    requires_token_or_auth() - quoted_token_concat: %s", unquoted_token)
+    
 
 
         # This is an internal call, we don't check
