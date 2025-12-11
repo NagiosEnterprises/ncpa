@@ -14,6 +14,7 @@ def send_request(url, connection_timeout, **kwargs):
     """
     ca_bundle_path = "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
     os.environ['REQUESTS_CA_BUNDLE'] = ca_bundle_path
+    logging.debug('REQUESTS CA_BUNDLE set to: %s' % ca_bundle_path)
 
     if url == "/":
         logging.error("Invalid URL: '/' is not a valid URL")
