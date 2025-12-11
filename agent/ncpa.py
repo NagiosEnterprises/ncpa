@@ -94,7 +94,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.2.1'
+__VERSION__ = '3.2.2'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -248,6 +248,7 @@ class Listener(Base):
     def run(self):
         self.init_logger('listener')
         logger = self.logger
+        logger.info("Starting Listener")
         logger.info("run()")
 
         try:
@@ -387,6 +388,7 @@ class Passive(Base):
     def run(self):
         self.init_logger('passive')
         logger = self.logger
+        logger.info("Starting Passive")
         logger.info("run()")
 
         # Check if there is a start delay
@@ -963,10 +965,6 @@ if __SYSTEM__ == 'nt':
             self.setup_plugins()
             self.logger.debug("Looking for plugins at: %s" % self.abs_plugin_path)
 
-            self.init_logger('listener')
-            for handler in self.logger.handlers:
-                handler.addFilter(tokenFilter)
-
 
         def init_logger(self, logger_name):
             self.logger = logging.getLogger(logger_name)
@@ -1014,6 +1012,7 @@ if __SYSTEM__ == 'nt':
             Stop the service
             This triggers the stop event, which breaks the main loop
             """
+            self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
             self.running_event.clear()
             win32event.SetEvent(self.hWaitStop) # set stop event for main thread
 
@@ -1025,13 +1024,16 @@ if __SYSTEM__ == 'nt':
                 """
                 try:
                     self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
+                    self.logger.debug("SvcRun() - Service start pending")
                 except Exception as e:
                     self.logger.exception("SvcRun - Failed to report service start pending: %s", e)
                     self.has_error.value = True
                     self.ReportServiceStatus(win32service.SERVICE_STOPPED)
                     return
+                self.logger.debug("SvcRun() - running SvcDoRun function")
                 self.SvcDoRun()
 
+                # Once SvcDoRun returns, the service has stopped
                 # log stopping of service to windows event log
                 try:
                     servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
@@ -1040,11 +1042,6 @@ if __SYSTEM__ == 'nt':
                 except Exception as e:
                     self.logger.exception("SvcRun - Failed to log service stop: %s", e)
 
-                # Once SvcDoRun returns, the service has stopped
-                try:
-                    self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-                except Exception as e:
-                    self.logger.exception("SvcRun - Failed to report service stopped: %s", e)
         except Exception as e:
             pass
 
@@ -1062,6 +1059,7 @@ if __SYSTEM__ == 'nt':
                 except Exception as e:
                     self.logger.exception("SvcDoRun - Failed to set running event: %s", e)
                 try:
+                    self.logger.debug("SvcDoRun() - Running main function")
                     self.main()
                 except Exception as e:
                     self.logger.exception("SvcDoRun - Failed to run main: %s", e)
@@ -1073,7 +1071,6 @@ if __SYSTEM__ == 'nt':
                                             (self._svc_name_, str(e)))
         except Exception as e:
             pass
-
 
         def force_kill(self, proc, name):
             try:
@@ -1091,6 +1088,7 @@ if __SYSTEM__ == 'nt':
                 self.logger.exception(f"Error force-killing {name} process: {e}")
 
         def main(self):
+            self.logger.debug("main() - Starting main function")
             try:
                 ### TODO: Consider using gevent.threadpool.ThreadPoolExecutor or gipc for more compatible multiprocessing support
                 # https://github.com/gevent/gevent/blob/master/gevent/threadpool.py
@@ -1099,7 +1097,11 @@ if __SYSTEM__ == 'nt':
 
                 # instantiate child processes
                 self.p, self.l = start_processes(self.options, self.config, self.has_error)
-                self.ReportServiceStatus(win32service.SERVICE_RUNNING)
+                self.ReportServiceStatus(win32service.SERVICE_RUNNING,
+                                 win32service.SERVICE_ACCEPT_STOP | win32service.SERVICE_ACCEPT_SHUTDOWN)
+                self.logger.debug("self.p and self.l processes started")
+                self.logger.debug("value for self.p: %s", self.p)
+                self.logger.debug("value for self.l: %s", self.l)
 
                 # wait for stop event
                 while self.running_event.is_set(): # shouldn't loop, but just in case the event triggers without stop being called
@@ -1108,6 +1110,12 @@ if __SYSTEM__ == 'nt':
                         break
                     time.sleep(0.1)
             finally:
+                try:
+                    self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+                    self.logger.debug("SvcRun() - Service stop pending")
+                except Exception as e:
+                    self.logger.exception("SvcRun - Failed to report service stop pending: %s", e)
+
                 # kill/clean up child processes
                 try:
                     if self.p:
@@ -1125,12 +1133,12 @@ if __SYSTEM__ == 'nt':
                             self.logger.warning("Listener process did not terminate cleanly.")
                             self.force_kill(self.l, "Listener")
                     # Add any additional cleanup here (close files, sockets, etc.)
+                    self.logger.debug("self.p and self.l processes terminated")
+                    self.logger.debug("value for self.p: %s", self.p)
+                    self.logger.debug("value for self.l: %s", self.l)
                     self.logger.info("Service cleanup complete. Exiting.")
                 except Exception as e:
                     self.logger.exception("Error during service cleanup: %s", e)
-
-                import sys
-                sys.exit(0)
 
 
 # --------------------------
