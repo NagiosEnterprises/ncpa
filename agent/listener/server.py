@@ -178,7 +178,7 @@ def is_network(ip):
 def secure_compare(item1, item2):
     item1 = '' if item1 is None else str(item1)
     item2 = '' if item2 is None else str(item2)
-    return compare_digest(item1, item2)   
+    return compare_digest(item1, item2)
 
 
 # ------------------------------
