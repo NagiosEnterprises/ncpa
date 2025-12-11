@@ -315,15 +315,9 @@ def requires_token_or_auth(f):
     def token_auth_decoration(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
         token = request.values.get('token', None)
+        # Remove any surrounding quotes
         stripped_token = token.strip('\'"')
         token_valid = secure_compare(stripped_token, ncpa_token)
-
-        listener_logger.debug("    requires_token_or_auth() - ncpa_token: %s", ncpa_token)
-        listener_logger.debug("    requires_token_or_auth() - token: %s", token)
-        listener_logger.debug("    requires_token_or_auth() - quoted_token_concat: %s", stripped_token)
-        listener_logger.debug("    requires_token_or_auth() - token_valid: %s", token_valid)
-
-
 
         # This is an internal call, we don't check
         if __INTERNAL__ is True:

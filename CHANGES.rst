@@ -1,5 +1,11 @@
 Changelog
 +++++++++
+3.2.3 - 1/xx/2025
+==================
+**Updates**
+
+- Update community_strings to support quote wrapping for improved security. [GH#:1319] - CPD
+
 3.2.2 - 12/11/2025
 ==================
 **Updates**
