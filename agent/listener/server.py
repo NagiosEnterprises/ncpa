@@ -181,6 +181,19 @@ def secure_compare(item1, item2):
     return compare_digest(item1, item2)
 
 
+def strip_if_quoted(s):
+    """
+    Strips the outer layer of quotes from a string if it is fully wrapped 
+    in a matching pair of single or double quotes.
+    """
+    if len(s) >= 2:
+        if (s.startswith('\'') and s.endswith('\'')) or \
+           (s.startswith('"') and s.endswith('"')):
+            # Slice the string to remove the first and last characters
+            return s[1:-1]
+    return s
+
+
 # ------------------------------
 # Authentication Wrappers
 # ------------------------------
@@ -316,7 +329,9 @@ def requires_token_or_auth(f):
     def token_auth_decoration(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
         token = request.values.get('token', None)
-        token_valid = secure_compare(token, ncpa_token)
+        # Remove any surrounding quotes
+        stripped_token = strip_if_quoted(token)
+        token_valid = secure_compare(stripped_token, ncpa_token)
 
         # This is an internal call, we don't check
         if __INTERNAL__ is True:
