@@ -6,6 +6,11 @@ Changelog
 
 - Update community_strings to support quote wrapping for improved security. [GH#:1319] - CPD
 
+**Bug Fixes** 
+
+- Fixed a Solaris incorrect directory permission for NCPA configuration files. [GH#1323] - chrisdeubank, CPD
+- Fixed a Solaris issue where NCPA service removal would leave behind masked services. [GH#1298] - chrisdeubank, CPD
+
 3.2.2 - 12/11/2025
 ==================
 **Updates**
