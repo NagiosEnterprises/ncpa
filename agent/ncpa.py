@@ -94,7 +94,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.2.2'
+__VERSION__ = '3.2.3'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -205,7 +205,7 @@ cfg_defaults = {
 class Base():
     """
     The base class for the Listener and Passive classes, which sets things
-    like options, config, autostart, etc so that they can be accesssed inside
+    like options, config, autostart, etc so that they can be accessed inside
     the other classes
     """
     def __init__(self, options, config, has_error, autostart=False):
@@ -238,7 +238,7 @@ class Base():
 class Listener(Base):
     """
     The listener, which serves the web GUI and API - starting in NCPA 3
-    we will be using a seperate process that is forked off the main process
+    we will be using a separate process that is forked off the main process
     to run the listener so all of NCPA is bundled in a single service
     """
     def __init__(self, options, config, has_error, autostart=False):
@@ -502,14 +502,14 @@ class Daemon():
 
     # This (ongoing NCPA) process is normally terminated by a different instance of this code launched with the '--stop' option.
     # The 'stop' instance reads the PID of the parent NCPA process and kills it by sending it SIGTERM. When SIGTERM is received, this
-    # function handels it by exiting, which also closes the subordinate processes.
+    # function handles it by exiting, which also closes the subordinate processes.
     def on_sigterm(self, signalnum, frame):
         global has_error
         """Handle sigterm and sigint"""
         self.logger.debug("on_sigterm(%s)", signalnum)
 
         # Forcing exit while in loop's sleep, doesn't always exit cleanly, so
-        # on first occurence (system always sends multiples for sigint), set has_error=True to break main loop
+        # on first occurrence (system always sends multiples for sigint), set has_error=True to break main loop
         if not self.has_error.value:
             self.has_error.value = True
             self.logger.debug("on_sigterm - set has_error = True")
