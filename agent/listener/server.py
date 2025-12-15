@@ -186,11 +186,12 @@ def strip_if_quoted(s):
     Strips the outer layer of quotes from a string if it is fully wrapped 
     in a matching pair of single or double quotes.
     """
-    if len(s) >= 2:
-        if (s.startswith('\'') and s.endswith('\'')) or \
-           (s.startswith('"') and s.endswith('"')):
-            # Slice the string to remove the first and last characters
-            return s[1:-1]
+    if isinstance(s, str):
+        if len(s) >= 2:
+            if (s.startswith('\'') and s.endswith('\'')) or \
+            (s.startswith('"') and s.endswith('"')):
+                # Slice the string to remove the first and last characters
+                return s[1:-1]
     return s
 
 
