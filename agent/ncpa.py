@@ -101,8 +101,6 @@ __STARTED__ = datetime.datetime.now()
 
 options = {}
 
-print("***** Starting NCPA version: ", __VERSION__)
-
 # About Logging
 # Asynchronous processes require separate loggers. Additionally, the parent process
 # gets a logger to cover the startup code, global functions and the Daemon or Winservice classes used
@@ -483,10 +481,16 @@ class Daemon():
         # to the currently set user and group so checks don't error out
         try:
             tmpdir = os.path.join(tempfile.gettempdir())
+            self.logger.debug("Checking temp dir for chown: %s", tmpdir)
             for file in os.listdir(tmpdir):
-                if os.path.isfile(file):
-                    if 'ncpa-' in file:
-                        self.chown(os.path.join(tmpdir, file))
+                full_path = os.path.join(tmpdir, file)
+                self.logger.debug("Checking temp file for chown: %s", full_path)
+                self.logger.debug("Temp file is a file: %s", os.path.isfile(full_path))
+
+                if os.path.isfile(full_path):
+                    if 'ncpa-' or 'pem' in file:
+                        self.logger.debug("Chowning temp file: %s", file)
+                        self.chown(full_path)
         except OSError as e:
             self.logger.exception(e)
             pass
