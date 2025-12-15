@@ -65,7 +65,7 @@ chown -R nagios:nagios /usr/local/ncpa/var
 chown nagios:nagios /usr/local/ncpa/etc /usr/local/ncpa/etc/*.cfg*
 chmod -R 755 /usr/local/ncpa/var
 chmod 755 /usr/local/ncpa/etc
-chmod 644 /usr/local/ncpa/etc/*.cfg*
+chmod -R 644 /usr/local/ncpa/etc/*.cfg
 
 # Create run directory
 mkdir -p /usr/local/ncpa/var/run
