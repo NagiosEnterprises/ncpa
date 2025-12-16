@@ -488,7 +488,7 @@ class Daemon():
                 self.logger.debug("Temp file is a file: %s", os.path.isfile(full_path))
 
                 if os.path.isfile(full_path):
-                    if 'ncpa-' or 'pem' in file:
+                    if file.startswith('ncpa-') or file.endswith('.pem'):
                         self.logger.debug("Chowning temp file: %s", file)
                         self.chown(full_path)
         except OSError as e:
