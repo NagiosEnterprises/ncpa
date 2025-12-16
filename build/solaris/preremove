@@ -50,6 +50,10 @@ rm -f /etc/init.d/ncpa 2>/dev/null || true
 rm -f /var/svc/manifest/site/ncpa.xml
 rm -f /var/svc/manifest/application/ncpa.xml
 
+# Restart manifest-import to clear cached state and remove masked entries
+echo "NCPA: Restarting manifest-import service to clear cached state..."
+timeout 10 svcadm restart manifest-import 2>/dev/null || true
+
 # Clean up any remaining NCPA processes
 echo "NCPA: Performing comprehensive process cleanup..."
 timeout 120 bash -c '
