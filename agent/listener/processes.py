@@ -373,6 +373,7 @@ class ProcessNode(nodes.LazyNode):
 
     def run_check(self, *args, **kwargs):
         procs = self.walk(first=True, *args, **kwargs)
+        short_output = kwargs.get("short_output", False)
 
         def process_check_method():
             count = len(procs["processes"])
@@ -397,8 +398,13 @@ class ProcessNode(nodes.LazyNode):
             tmem_rss = 0
             mem_unit = ""
 
-            # Generate long output for service
-            extra = "\nProcesses Matched\nPID: Name: Username: Exe: Memory: CPU\n-----------------------------------\n"
+            # Output header for process details
+            if short_output:
+                extra = "\nShort output enabled, skipping process details.\n"
+            else:
+                extra = "\nProcesses Matched\nPID: Name: Username: Exe: Memory: CPU\n-----------------------------------\n"
+
+            # Loop through each process to calculate totals and add to output
             for proc in procs["processes"]:
                 tmem += proc["mem_percent"][0]
                 tcpu += proc["cpu_percent"][0]
@@ -413,14 +419,17 @@ class ProcessNode(nodes.LazyNode):
                     proc["mem_rss"][0],
                     proc["mem_rss"][1],
                 )
-                extra += "%s: %s: %s: %s: %.2f %s\n" % (
-                    proc["pid"],
-                    proc["name"],
-                    proc["username"],
-                    memory,
-                    proc["cpu_percent"][0],
-                    "%",
-                )
+
+                # Add individual process info to output
+                if not short_output:
+                    extra += "%s: %s: %s: %s: %.2f %s\n" % (
+                        proc["pid"],
+                        proc["name"],
+                        proc["username"],
+                        memory,
+                        proc["cpu_percent"][0],
+                        "%",
+                    )
 
             # Add totals to the output
             extra += "\nTotal Memory: %.2f %s (VMS %.2f %s, RSS %.2f %s)\n" % (
