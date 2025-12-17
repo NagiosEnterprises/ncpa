@@ -4,7 +4,7 @@ Changelog
 ==================
 **Added**
 
-- Added option to hide running processes from output of process check command for improved performance and security. [GH#:933,GL-XI:#1328] - CPD
+- Added option to hide running processes from output of process check command for improved performance and security. [GH#:933,#GH:#750,GL-XI:#1328] - CPD
 
 **Updates**
 
