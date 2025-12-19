@@ -84,6 +84,14 @@ class ProcessNode(nodes.LazyNode):
         return mem_vms
 
     @staticmethod
+    def get_short_output(request_args):
+        short_output = request_args.get("short_output", False)
+        if short_output:
+            if isinstance(short_output, bool):
+                short_output = bool(short_output[0])
+        return short_output
+
+    @staticmethod
     def get_combiner(request_args):
         combiner = request_args.get("combiner", "and")
         if isinstance(combiner, list):
@@ -112,6 +120,7 @@ class ProcessNode(nodes.LazyNode):
         mem_rss = self.get_mem_rss(kwargs)
         mem_vms = self.get_mem_vms(kwargs)
         match = self.get_match(kwargs)
+        short_output = self.get_short_output(kwargs)
 
         def proc_filter(process):
             comp = []
@@ -373,7 +382,7 @@ class ProcessNode(nodes.LazyNode):
 
     def run_check(self, *args, **kwargs):
         procs = self.walk(first=True, *args, **kwargs)
-        short_output = kwargs.get("short_output", False)
+        short_output = self.get_short_output(kwargs)
 
         def process_check_method():
             count = len(procs["processes"])
