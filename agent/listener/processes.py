@@ -87,8 +87,14 @@ class ProcessNode(nodes.LazyNode):
     def get_short_output(request_args):
         short_output = request_args.get("short_output", False)
         if short_output:
-            if isinstance(short_output, bool):
-                short_output = bool(short_output[0])
+            if isinstance(short_output, list):
+                short_output = short_output[0]
+                # Convert to boolean since python treats any non-empty string as True
+                short_output = short_output.strip().lower()
+                if not None and short_output in ('yes', 'true', 't', 'on', '1'):
+                    short_output = True
+                else:
+                    short_output = False
         return short_output
 
     @staticmethod
