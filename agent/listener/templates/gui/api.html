@@ -430,7 +430,7 @@ $(document).ready(function() {
     // Filter list filter selection
     $('.list').on('change', '.filter-name', function() {
         var input = $(this).parents('.filter-group').find('input');
-        if ($(this).val() != 'username' && $(this).val() != 'name' && $(this).val() != 'exe' && $(this).val() != 'cmd') {
+        if ($(this).val() != 'username' && $(this).val() != 'name' && $(this).val() != 'exe' && $(this).val() != 'cmd' && $(this).val() != 'short_output') {
             input.attr('placeholder', '>=');
         } else {
             input.attr('placeholder', '');
@@ -474,7 +474,7 @@ function add_service_selector() {
 }
 
 function add_filter_selector() {
-    var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 45%; border-right: 0;"><option value="username">username</option><option value="name">name</option><option value="exe">exe</option><option value="cmd">cmd</option><option value="mem_percent">mem_percent</option><option value="cpu_percent">cpu_percent</option><option value="mem_vms">mem_vms</option><option value="mem_rss">mem_rss</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 55%;"></div>';
+    var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 45%; border-right: 0;"><option value="username">username</option><option value="name">name</option><option value="exe">exe</option><option value="cmd">cmd</option><option value="mem_percent">mem_percent</option><option value="cpu_percent">cpu_percent</option><option value="mem_vms">mem_vms</option><option value="mem_rss">mem_rss</option><option value="short_output">short_output</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 55%;"></div>';
     $('.proc-filters .list').append(filter);
 }
 
@@ -1048,7 +1048,7 @@ function generate_passive_check() {
                     </div>
                 </div>
                 <div class="settings proc-filters">
-                    <label>Process Filter(s) <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" title="Process Filtering Options" data-content="<p>You can add multiple filters of the same type and they will be combined using the <b>combiner</b> variable that you can set in <i>Filter Settings</i> below.</p><p><b>name</b> and <b>exe</b> - Value will be matched using the <i>search type</i> setting in <i>Filter Settings</i>. Defaults to exact match.</p><p><b>cpu_percent</b>, <b>mem_percent</b>, <b>mem_rss</b>, <b>mem_vms</b> - These filters can be floats, and will match anything less than or equal to (&lt;=) the value.</p>"></i></label>
+                    <label>Process Filter(s) <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" title="Process Filtering Options" data-content="<p>You can add multiple filters of the same type and they will be combined using the <b>combiner</b> variable that you can set in <i>Filter Settings</i> below.</p><p><b>name</b> and <b>exe</b> - Value will be matched using the <i>search type</i> setting in <i>Filter Settings</i>. Defaults to exact match.</p><p><b>cpu_percent</b>, <b>mem_percent</b>, <b>mem_rss</b>, <b>mem_vms</b> - These filters can be floats, and will match anything less than or equal to (&lt;=) the value.</p><p><b>short_output</b> - This filter is a bool. Shortens process output to not include a line for each running process. Defaults to False.</p>"></i></label>
                     <div class="list"></div>
                     <div>
                         <button type="button" class="btn btn-xs btn-default add-filter">
