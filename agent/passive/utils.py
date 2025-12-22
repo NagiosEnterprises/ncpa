@@ -11,6 +11,8 @@ def send_request(url, connection_timeout, **kwargs):
     :param kwargs: Extra keywords to be passed to requests.post
     :rtype: requests.models.Response
     """
+    requests_ca_bundle_path = requests.certs.where()
+    logging.info("utils.py -- Using CA bundle path: %s", requests_ca_bundle_path)
 
     
     if url == "/":

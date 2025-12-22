@@ -1111,6 +1111,9 @@ def nrdp():
 
     :rtype: flask.Response
     """
+    requests_ca_bundle_path = requests.certs.where()
+    logging.info("server.py -- Using CA bundle path: %s", requests_ca_bundle_path)
+
     try:
         forward_to = listener.config['iconfig'].get('nrdp', 'parent')
         if request.method == 'get':
