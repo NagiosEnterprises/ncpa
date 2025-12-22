@@ -1097,7 +1097,7 @@ def testconnect():
     real_token = listener.config['iconfig'].get('api', 'community_string')
     real_token_sanitized = remove_reserved_char(real_token)
     test_token = request.values.get('token', None)
-    if real_token != test_token:
+    if real_token_sanitized != test_token:
         return jsonify({'error': 'Bad token.'})
     else:
         return jsonify({'value': 'Success.'})
