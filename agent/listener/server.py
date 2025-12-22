@@ -181,6 +181,16 @@ def secure_compare(item1, item2):
     return compare_digest(item1, item2)
 
 
+def remove_reserved_char(s):
+    """
+    Removes reserved characters from community strings
+    """
+    if isinstance(s, str) and '!' in s:
+        sanitized_string = s.replace("!", "")
+        return sanitized_string
+    return s
+
+
 # ------------------------------
 # Authentication Wrappers
 # ------------------------------
@@ -315,8 +325,16 @@ def requires_token_or_auth(f):
     @functools.wraps(f)
     def token_auth_decoration(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
+        ncpa_token_sanitized = remove_reserved_char(ncpa_token)
         token = request.values.get('token', None)
-        token_valid = secure_compare(token, ncpa_token)
+
+        # If token contains reserved characters, display error
+        if token is not None:
+            token_reserved_chars = re.findall(r'[!]', token)
+            if len(token_reserved_chars) > 0:
+                return error(msg='Token contains reserved characters: %s' % ', '.join(set(token_reserved_chars)))
+
+        token_valid = secure_compare(token, ncpa_token_sanitized)
 
         # This is an internal call, we don't check
         if __INTERNAL__ is True:
@@ -397,6 +415,7 @@ def login():
         return redirect(url_for('index'))
 
     ncpa_token = listener.config['iconfig'].get('api', 'community_string')
+    ncpa_token_sanitized = remove_reserved_char(ncpa_token)
 
     # Admin password
     has_admin_password = False
@@ -411,7 +430,7 @@ def login():
     url = session.get('redirect', None)
     token = request.values.get('token', None)
 
-    token_valid = secure_compare(token, ncpa_token)
+    token_valid = secure_compare(token, ncpa_token_sanitized)
     token_is_admin = secure_compare(token, admin_password)
 
     template_args = { 'hide_page_links': True,
@@ -1076,6 +1095,7 @@ def testconnect():
     :rtype: flask.Response
     """
     real_token = listener.config['iconfig'].get('api', 'community_string')
+    real_token_sanitized = remove_reserved_char(real_token)
     test_token = request.values.get('token', None)
     if real_token != test_token:
         return jsonify({'error': 'Bad token.'})
