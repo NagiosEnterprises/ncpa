@@ -6,6 +6,9 @@ Changelog
 
 - Added option to hide running processes from output of process check command for improved performance and security. [GH#:933,#GH:#750,GL-XI:#1328] - CPD
 
+**Updates**
+- Disallowed the use of reserved characters in tokens to prevent issues with Nagios Core and improve security [GH#1329] - CPD
+
 **Bug Fixes** 
 
 - Fixed a Solaris incorrect directory permission preventing passive checks from working. [GH#1323] - chrisdeubank, CPD
