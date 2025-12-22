@@ -2,6 +2,10 @@ Changelog
 +++++++++
 3.2.3 - 1/xx/2025
 ==================
+**Added**
+
+- Added option to hide running processes from output of process check command for improved performance and security. [GH#:933,#GH:#750,GL-XI:#1328] - CPD
+
 **Updates**
 
 - Update community_strings to support quote wrapping for improved security. [GH#:1319] - CPD

@@ -84,6 +84,20 @@ class ProcessNode(nodes.LazyNode):
         return mem_vms
 
     @staticmethod
+    def get_short_output(request_args):
+        short_output = request_args.get("short_output", False)
+        if short_output:
+            if isinstance(short_output, list):
+                short_output = short_output[0]
+                # Convert to boolean since python treats any non-empty string as True
+                short_output = short_output.strip().lower()
+                if not None and short_output in ('yes', 'true', 't', 'on', '1'):
+                    short_output = True
+                else:
+                    short_output = False
+        return short_output
+
+    @staticmethod
     def get_combiner(request_args):
         combiner = request_args.get("combiner", "and")
         if isinstance(combiner, list):
@@ -112,6 +126,7 @@ class ProcessNode(nodes.LazyNode):
         mem_rss = self.get_mem_rss(kwargs)
         mem_vms = self.get_mem_vms(kwargs)
         match = self.get_match(kwargs)
+        short_output = self.get_short_output(kwargs)
 
         def proc_filter(process):
             comp = []
@@ -373,6 +388,7 @@ class ProcessNode(nodes.LazyNode):
 
     def run_check(self, *args, **kwargs):
         procs = self.walk(first=True, *args, **kwargs)
+        short_output = self.get_short_output(kwargs)
 
         def process_check_method():
             count = len(procs["processes"])
@@ -397,8 +413,13 @@ class ProcessNode(nodes.LazyNode):
             tmem_rss = 0
             mem_unit = ""
 
-            # Generate long output for service
-            extra = "\nProcesses Matched\nPID: Name: Username: Exe: Memory: CPU\n-----------------------------------\n"
+            # Output header for process details
+            if short_output:
+                extra = "\nShort output enabled, skipping process details.\n"
+            else:
+                extra = "\nProcesses Matched\nPID: Name: Username: Exe: Memory: CPU\n-----------------------------------\n"
+
+            # Loop through each process to calculate totals and add to output
             for proc in procs["processes"]:
                 tmem += proc["mem_percent"][0]
                 tcpu += proc["cpu_percent"][0]
@@ -413,14 +434,17 @@ class ProcessNode(nodes.LazyNode):
                     proc["mem_rss"][0],
                     proc["mem_rss"][1],
                 )
-                extra += "%s: %s: %s: %s: %.2f %s\n" % (
-                    proc["pid"],
-                    proc["name"],
-                    proc["username"],
-                    memory,
-                    proc["cpu_percent"][0],
-                    "%",
-                )
+
+                # Add individual process info to output
+                if not short_output:
+                    extra += "%s: %s: %s: %s: %.2f %s\n" % (
+                        proc["pid"],
+                        proc["name"],
+                        proc["username"],
+                        memory,
+                        proc["cpu_percent"][0],
+                        "%",
+                    )
 
             # Add totals to the output
             extra += "\nTotal Memory: %.2f %s (VMS %.2f %s, RSS %.2f %s)\n" % (
