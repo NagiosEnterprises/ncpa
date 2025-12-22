@@ -17,7 +17,7 @@ def send_request(url, connection_timeout, **kwargs):
 
     ca_bundle_path = "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
     os.environ['REQUESTS_CA_BUNDLE'] = ca_bundle_path
-    logging.debug('utils.py - REQUESTS CA_BUNDLE set to: %s' % ca_bundle_path)
+    logging.info('utils.py - REQUESTS CA_BUNDLE set to: %s' % ca_bundle_path)
 
     new_requests_ca_bundle_path = requests.certs.where()
     logging.info("utils.py - Has CA bundle path changed after setting env variable: %s", new_requests_ca_bundle_path)
