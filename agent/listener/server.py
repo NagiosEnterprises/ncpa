@@ -1102,8 +1102,9 @@ def testconnect():
     if test_token is not None:
         token_reserved_chars = re.findall(r'[!]', test_token)
         if len(token_reserved_chars) > 0:
-            return jsonify({'error': 'Token contains reserved characters: %s' % ', '.join(set(token_reserved_chars))})
-    elif real_token_sanitized != test_token:
+            return jsonify({'error': 'Token contains reserved characters.'})
+
+    if real_token_sanitized != test_token:
         return jsonify({'error': 'Bad token.'})
     else:
         return jsonify({'value': 'Success.'})
