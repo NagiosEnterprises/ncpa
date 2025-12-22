@@ -93,6 +93,10 @@ def make_info_dict():
     if proc_type == '':
         proc_type = uname[4];
 
+    token = listener.config['iconfig'].get('api', 'community_string')
+    token_sanitized = remove_reserved_char(token)
+    valid_token = secure_compare(token, token_sanitized)
+
     return { 'agent_version': __VERSION__,
              'uptime': uptime,
              'python_version': sys.version,
@@ -105,7 +109,8 @@ def make_info_dict():
              'release': uname[2],
              'version': uname[3],
              'total_checks': format(total_checks, ",d"),
-             'check_logging_time': check_logging_time }
+             'check_logging_time': check_logging_time,
+             'valid_token': valid_token }
 
 
 def get_unmapped_ip(ip):

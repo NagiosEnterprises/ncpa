@@ -69,6 +69,15 @@ $(document).ready(function() {
                             <td>Agent Uptime</td>
                             <td>{{ uptime }}</td>
                         </tr>
+                        <tr>
+                            <td>API Token Status</td>
+                            <td>
+                                {% if valid_token %}
+                                    <span class="label label-success">Valid</span>
+                                {% else %}
+                                    <span class="label label-danger">Invalid</span>
+                                {% endif %}
+                            </td>
                     </tbody>
                 </table>
                 <table class="table table-striped table-border">
