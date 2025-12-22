@@ -6,10 +6,6 @@ Changelog
 
 - Added option to hide running processes from output of process check command for improved performance and security. [GH#:933,#GH:#750,GL-XI:#1328] - CPD
 
-**Updates**
-
-- Update community_strings to support quote wrapping for improved security. [GH#:1319] - CPD
-
 **Bug Fixes** 
 
 - Fixed a Solaris incorrect directory permission preventing passive checks from working. [GH#1323] - chrisdeubank, CPD
