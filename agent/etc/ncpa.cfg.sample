@@ -207,6 +207,7 @@ allow_config_edit = 1
 #
 # The token that will be used to log into the basic web GUI (API browser, graphs, top charts, etc)
 # and to authenticate requests to the API and requests through check_ncpa.py
+# Disallowed characters: !
 #
 community_string = mytoken
 
