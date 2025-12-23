@@ -330,16 +330,18 @@ def requires_token_or_auth(f):
     @functools.wraps(f)
     def token_auth_decoration(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
-        ncpa_token_sanitized = remove_reserved_char(ncpa_token)
         token = request.values.get('token', None)
+        # Sanitize tokens for comparison
+        ncpa_token_sanitized = remove_reserved_char(ncpa_token)
+        token_sanitized = remove_reserved_char(token)
 
         # If token contains reserved characters, display error
-        # if token is not None:
+        # if token_sanitized is not None:
         #     token_reserved_chars = re.findall(r'[!]', token)
         #     if len(token_reserved_chars) > 0:
         #         return error(msg='Token contains reserved characters: %s' % ', '.join(set(token_reserved_chars)))
 
-        token_valid = secure_compare(token, ncpa_token_sanitized)
+        token_valid = secure_compare(token_sanitized, ncpa_token_sanitized)
 
         # This is an internal call, we don't check
         if __INTERNAL__ is True:
@@ -1100,8 +1102,10 @@ def testconnect():
     :rtype: flask.Response
     """
     real_token = listener.config['iconfig'].get('api', 'community_string')
-    real_token_sanitized = remove_reserved_char(real_token)
     test_token = request.values.get('token', None)
+    # Sanitize tokens for comparison
+    real_token_sanitized = remove_reserved_char(real_token)
+    test_token_sanitized = remove_reserved_char(test_token)
 
     # If token contains reserved characters, display error
     # if test_token is not None:
@@ -1109,7 +1113,7 @@ def testconnect():
     #     if len(token_reserved_chars) > 0:
     #         return jsonify({'error': 'Token contains reserved characters.'})
 
-    if real_token_sanitized != test_token:
+    if real_token_sanitized != test_token_sanitized:
         return jsonify({'error': 'Bad token.'})
     else:
         return jsonify({'value': 'Success.'})
