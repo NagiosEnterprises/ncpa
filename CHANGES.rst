@@ -536,7 +536,7 @@ Changelog
 
 **Deprecated**
 
-- Both API endoints api/service/<servicename> and api/process/<processname> will be removed in version 3 and should be replaced by api/services?service=<servicename> and api/processes?name=<processname> instead
+- Both API endpoints api/service/<servicename> and api/process/<processname> will be removed in version 3 and should be replaced by api/services?service=<servicename> and api/processes?name=<processname> instead
 - The API endpoint api/agent/plugin/<pluginname> will be removed in version 3 in favor of api/plugins/<pluginname> which better matches the current API node naming conventions and is a less confusing name
 
 1.8.1 - 04/09/2015
@@ -574,7 +574,7 @@ Changelog
 
 1.7.1 - 08/19/2014
 ==================
-- Added backwards compatability with the api/service(s) call to work with old plugins/checks
+- Added backwards compatibility with the api/service(s) call to work with old plugins/checks
 - Added log rotation to all clients, logs rotate at 20MB and will rotate once before overwriting old logs
 - Added safeguards when importing disk nodes that prevented the listener from starting in certain circumstances
 - Added link to the /top service in the web UI

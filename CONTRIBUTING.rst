@@ -63,12 +63,12 @@ Test Your Code
 
 Be sure to thoroughly test your code. We do not have full tests set up yet and without them, we need to 
 be sure that each pull request does not break functionality. We can help you with this, and will test it
-ourselves too, but please make sure to verify your code before submitting your pull requst.
+ourselves too, but please make sure to verify your code before submitting your pull request.
 
 Send A Pull Request
 ~~~~~~~~~~~~~~~~~~~
 
 Once your code changes are completed, tested, and verified, send the pull request.
 
-The easist way to do this is `from inside GitHub <https://help.github.com/articles/creating-a-pull-request/>`_ 
+The easiest way to do this is `from inside GitHub <https://help.github.com/articles/creating-a-pull-request/>`_ 
 but you can also run it from the command line. 

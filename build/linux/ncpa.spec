@@ -145,7 +145,7 @@ fi
 
 %preun
 # Only stop on actual uninstall not upgrades
-# TODO: Make upgrades from NCPA 2 -> 3 seemless (stop old services)
+# TODO: Make upgrades from NCPA 2 -> 3 seamless (stop old services)
 if [ "$1" != "1" ]; then
     if which chkconfig &> /dev/null; then
         if [ -f /usr/local/ncpa/ncpa_listener ]; then
