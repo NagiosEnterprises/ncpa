@@ -7,7 +7,7 @@ Changelog
 - Added option to hide running processes from output of process check command for improved performance and security. [GH#:933,#GH:#750,GL-XI:#1328] - CPD
 
 **Updates**
-- Disallowed the use of reserved characters in tokens to prevent issues with Nagios Core and improve security [GH#1329] - CPD
+- Disallowed the use of reserved ! character in tokens to prevent issues with Nagios Core and improve security [GH#1329] - CPD
 
 **Bug Fixes** 
 
