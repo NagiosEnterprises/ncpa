@@ -3,7 +3,7 @@ Changelog
 
 2.0.0
 -----
-- Added compatability for NCPA 1.x, 2.x, and 3.x
+- Added compatibility for NCPA 1.x, 2.x, and 3.x
 - Added --sleep or -S variable for setting the sleep value for counters and certain endpoints 
 
 1.2.5
@@ -39,7 +39,7 @@ Changelog
 
 1.1.5
 -----
-- Fixed incompatability with Python 3 when using certain options
+- Fixed incompatibility with Python 3 when using certain options
 
 1.1.4
 -----
@@ -73,7 +73,7 @@ Changelog
 
 1.0.0
 -----
-- Added backwards compatability for 1.7.x and 1.8.x
+- Added backwards compatibility for 1.7.x and 1.8.x
 - Added -s, --secure flag on Python 2.7.9+ client systems to force verify SSL certificate (does not verify by default since most SSL certs are self-signed)
 - Updated default timeout to 60 seconds
 - Updated -s, --super-verbose flag to be -d, --debug so that secure flag can be added

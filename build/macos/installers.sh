@@ -80,10 +80,10 @@ install_devtools() {
     echo -e "    - Installing Homebrew and dev tools on MacOS $os_version..."
 
     if [[ -z $(xcode-select --version 2>/dev/null) ]]; then
-        echo -e "\n    - Installing xcode commmand line tools..."
+        echo -e "\n    - Installing xcode command line tools..."
         xcode-select --install
     else
-        echo -e "\n    - Xcode commmand line tools already installed"
+        echo -e "\n    - Xcode command line tools already installed"
     fi
 
     local original_user=$(get_original_user)

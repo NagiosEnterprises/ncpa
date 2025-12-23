@@ -279,7 +279,7 @@ def get_json(options):
             arr['returncode'] = arr['stdout']
             arr['stdout'] = tmp
 
-    # If we recieve and error, return critical and give out error text
+    # If we receive and error, return critical and give out error text
     elif 'error' in arr:
         arr['stdout'] = 'CRITICAL: %s' % arr['error']
         arr['returncode'] = 2

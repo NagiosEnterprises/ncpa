@@ -7,7 +7,7 @@
 #
 # install_ssl_and_zlib installs both items.
 
-#Returns distibution in form like "ubuntu22, or "centos9"
+#Returns distribution in form like "ubuntu22, or "centos9"
 get_distro() {
     if [ -f "/etc/os-release" ]; then
         source /etc/os-release
@@ -230,7 +230,7 @@ install_python() {
     #rm -rf $pythontar
 }
 
-# Can take an OpenSSL version and a zLib verions number number as args
+# Can take an OpenSSL version and a zLib version number as args
 install_ssl_and_zlib() {
     local ssl_new_version=""
     local zLib_new_version=""

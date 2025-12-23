@@ -34,7 +34,7 @@ ARCH=$(uname -m)
 
     # Removed all OpenSSL-related entries from fixlibs and any code that attempts to fix or reference OpenSSL libraries.
 
-    # Uncomment otool comands to have updated dynamic lib dependencies dispayed
+    # Uncomment otool commands to have updated dynamic lib dependencies displayed
     echo -e "\n\n    Dependencies updated to use @loader_path:"
     otool -L $NCPAdir/lib/* | grep "loader"
     echo -e "\nDone"
