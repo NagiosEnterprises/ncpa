@@ -51,7 +51,7 @@ if(-not (Get-Command nasm   -ErrorAction SilentlyContinue)){ choco install nasm 
 if(-not (Get-Command nsis   -ErrorAction SilentlyContinue)){ choco install nsis -y }
 
 # Use environment variable or default Python version
-$pythonVersion = if ($env:WINDOWS_PYTHONVER) { $env:WINDOWS_PYTHONVER } else { "3.13.9" }
+$pythonVersion = if ($env:WINDOWS_PYTHONVER) { $env:WINDOWS_PYTHONVER } else { "3.13.11" }
 choco install python --version=$pythonVersion -y --force
 #choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools;includeRecommended" -y
 choco install visualstudio2022buildtools -y --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK.19041 --add Microsoft.VisualStudio.Component.Windows10SDK.18362"
