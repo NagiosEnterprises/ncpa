@@ -150,7 +150,7 @@ try:
     GIT_SHORT       = run_cmd("git rev-parse --short HEAD")
     GIT_UNCOMMITTED = run_cmd("git status --untracked-files=no --porcelain")
 
-    print("GIT_UNCOMMITED:\n", GIT_UNCOMMITTED)
+    print("GIT_UNCOMMITTED:\n", GIT_UNCOMMITTED)
 
     if GIT_UNCOMMITTED:
          GIT_LONG  = f"{GIT_LONG}++ compiled with uncommitted changes"

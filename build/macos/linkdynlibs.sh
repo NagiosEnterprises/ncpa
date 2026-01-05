@@ -86,7 +86,7 @@ listBadLibs() {
 }
 
 # Find the python dynamic libraries with relative paths, and convert them to
-# a string consumable as an array of tilda delimited so:dylib pairs.
+# a string consumable as an array of tilde delimited so:dylib pairs.
 # E.g., _ssl.cpython-311-darwin.so~openssl@3/lib/libcrypto.3.dylib
 getBadLibs() {
     if setupOK; then
@@ -94,7 +94,7 @@ getBadLibs() {
         # Strip everything but .so and .dylib names
         badlibs=$(listBadLibs | sed -e 's~(compat.*)~~g' | sed -e "s~:~~g" | sed -e 's~/\.\.~~g' | sed -e 's~\t@loader_path/opt/~~' | sed -e 's~/.*/_~_~g' | sed -e 's~:~~g')
 
-        # Format so that list can be consumed as an array of tilda delimited pairs
+        # Format so that list can be consumed as an array of tilde delimited pairs
         badlibs=$(echo $badlibs | sed -e 's/ -- /|/g' | sed -e 's/ /~/g' | sed -e 's/|/ /'g)
         echo $badlibs
     fi

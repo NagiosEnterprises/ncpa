@@ -777,7 +777,7 @@ function generate_active_check() {
     }
     active += " -t '&lt;your token&gt;'";
 
-    // Run the active checck and get the result
+    // Run the active check and get the result
     var url = generate_url();
     $.get(url, { }, function(data) {
         if (data) {
