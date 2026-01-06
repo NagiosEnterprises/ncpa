@@ -4,11 +4,12 @@ Changelog
 ==================
 **Added**
 
-- Added filter option to hide running processes from output of processes module for improved performance and security. [GH#:933,#GH:#750,GL-XI:#1328] - CPD
+- Added option to hide running processes from output of process check command for improved performance and security. [GH#:933,#GH:#750,GL-XI:#1328] - CPD
 
 **Updates**
 
-- Update Python to 3.13.11 on Windows builds. [GH#1327] - CPD
+- Update Python to version 3.13.11 on Windows builds. [GH#1327] - CPD
+- Update psutil to version 7.2.1. - CPD
 
 **Bug Fixes** 
 
