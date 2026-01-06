@@ -729,6 +729,10 @@ function toggle_check_ncpa_btn() {
 
 function clear_settings() {
     $('.settings input[type="checkbox"]').attr('checked', false);
+    if ($('input.check').is(':checked')) {
+        // uncheck the check box
+        $('input.check').prop('checked', false);
+    } 
     $('.settings input').val('');
     $('.data-settings select.aggregate').val('');
     $('.data-settings select.units').val('');
