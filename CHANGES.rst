@@ -6,6 +6,11 @@ Changelog
 
 - Added option to hide running processes from output of process check command for improved performance and security. [GH#:933,#GH:#750,GL-XI:#1328] - CPD
 
+**Updates**
+
+- Update Python to version 3.13.11 on Windows builds. [GH#1327] - CPD
+- Update psutil to version 7.2.1. - CPD
+
 **Bug Fixes** 
 
 - Fixed a Solaris incorrect directory permission preventing passive checks from working. [GH#1323] - chrisdeubank, CPD
