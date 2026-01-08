@@ -15,7 +15,7 @@ Changelog
 
 - Fixed a Solaris incorrect directory permission preventing passive checks from working. [GH#1323] - chrisdeubank, CPD
 - Fixed a Solaris issue where NCPA service removal would leave behind masked services. [GH#1298] - chrisdeubank, CPD
-- Fixed a Linux permission issue preventing passive SSL certificate verification from working. [GH#1321, GH#1279] - CPD
+- Fixed a Linux permission issue preventing passive SSL certificate verification from working. [GH#1172, GH#1279] - CPD
 - Fixed an issue where the run as nagios checkbox in the API browser would not clear when changing endpoints in the dropdown. [GH#1332] - CPD
 
 3.2.2 - 12/11/2025
