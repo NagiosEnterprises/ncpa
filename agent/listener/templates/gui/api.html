@@ -729,6 +729,10 @@ function toggle_check_ncpa_btn() {
 
 function clear_settings() {
     $('.settings input[type="checkbox"]').attr('checked', false);
+    // Uncheck run as nagios check box when clearing settings
+    if ($('input.check').is(':checked')) {
+        $('input.check').prop('checked', false);
+    } 
     $('.settings input').val('');
     $('.data-settings select.aggregate').val('');
     $('.data-settings select.units').val('');
