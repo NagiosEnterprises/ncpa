@@ -409,7 +409,7 @@ activate_venv() {
     export PYTHONCMD="$VENV_PYTHON"
     export PYTHON_EXECUTABLE="$VENV_PYTHON"
     export PIP_EXECUTABLE="$VENV_PIP"
-    export PATH="$(dirname "$VENV_PYTHON"):/opt/freeware/bin:$PATH"
+    export PATH="$(dirname "$VENV_PYTHON"):$PATH"
     
     # Verify activation
     if ! "$VENV_PYTHON" -c "import sys; assert sys.prefix != sys.base_prefix" 2>/dev/null; then
