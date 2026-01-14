@@ -43,6 +43,6 @@ update_py_packages() {
     else
         echo "    - Using legacy system Python approach"
         echo "Skipping update packages, manually update them with:"
-        echo "$PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade"
+        echo "$PYTHONBIN -m pip3.12 install -r $BUILD_DIR/resources/require.txt --upgrade"
     fi
 }
