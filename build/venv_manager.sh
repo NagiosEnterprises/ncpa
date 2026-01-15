@@ -422,7 +422,7 @@ activate_venv() {
     log "  Pip: $VENV_PIP"
     log "  Version: $("$VENV_PYTHON" --version 2>&1)"
     log "  Path: $PATH"
-    log "  Pip modules installed: $("$VENV_PIP" list --format=columns | wc -l | tr -d ' ')"
+    log "  Pip modules currently installed: $("$VENV_PIP" list --format=columns)"
     
     return 0
 }
@@ -449,6 +449,7 @@ setup_build_tools() {
         "setuptools"
         "wheel"
         "build"
+        "cython"
     )
     
     for tool in "${build_tools[@]}"; do
