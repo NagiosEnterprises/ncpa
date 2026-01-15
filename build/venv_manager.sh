@@ -409,7 +409,7 @@ activate_venv() {
     export PYTHONCMD="$VENV_PYTHON"
     export PYTHON_EXECUTABLE="$VENV_PYTHON"
     export PIP_EXECUTABLE="$VENV_PIP"
-    export PATH="$(dirname "$VENV_PYTHON"):$PATH"
+    export PATH="$(dirname "$VENV_PYTHON"):/opt/freeware/include/python3.12/cpython:$PATH"
     
     # Verify activation
     if ! "$VENV_PYTHON" -c "import sys; assert sys.prefix != sys.base_prefix" 2>/dev/null; then
@@ -421,6 +421,7 @@ activate_venv() {
     log "  Python: $VENV_PYTHON"
     log "  Pip: $VENV_PIP"
     log "  Version: $("$VENV_PYTHON" --version 2>&1)"
+    log "  Path: $PATH"
     
     return 0
 }
