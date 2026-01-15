@@ -3,6 +3,7 @@ psutil==7.0.0
 requests
 Jinja2
 flask
+cython
 werkzeug
 docutils
 pyOpenSSL==16.2.0

@@ -422,6 +422,7 @@ activate_venv() {
     log "  Pip: $VENV_PIP"
     log "  Version: $("$VENV_PYTHON" --version 2>&1)"
     log "  Path: $PATH"
+    log "  Pip modules installed: $("$VENV_PIP" list --format=columns | wc -l | tr -d ' ')"
     
     return 0
 }
