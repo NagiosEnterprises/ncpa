@@ -413,7 +413,7 @@ activate_venv() {
 
     # AIX Compiler exports
     if [ "$PLATFORM" = "aix" ]; then
-        echo "    - Setting AIX compiler environment variables"
+        log "Setting AIX compiler environment variables"
         export CC=xlc_r
         export CXX=xlC_r
         export LD=xlc_r
