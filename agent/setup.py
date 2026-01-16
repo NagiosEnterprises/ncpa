@@ -103,13 +103,14 @@ elif __SYSTEM__ == 'posix':
                           ('/usr/lib/libsqlite3.a'              , 'build_resources/libsqlite3.a'),
                           ('/usr/lib/libssl3.so'                 , 'build_resources/libssl3.so'),
                           ('/usr/lib/libcrypto.a'               , 'build_resources/libcrypto.a'),
+                          ('/usr/lib/libffi.a'                  , 'build_resources/libffi.a'),
                           ('/opt/freeware/lib/libgcc_s.a'       , 'build_resources/libgcc_s.a')]
 
     # Special includes for Solaris systems
     if 'sunos' in sys.platform.lower():
         include_files += get_solaris_lib_paths()
 
-    binary = Executable('ncpa.py', base="console")
+    binary = Executable('ncpa.py', base=None)
 
 # Apply build options
 buildOptions = dict(includes=includes,
