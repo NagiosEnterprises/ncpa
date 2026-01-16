@@ -449,7 +449,6 @@ setup_build_tools() {
         "setuptools"
         "wheel"
         "build"
-        "cython"
     )
     
     for tool in "${build_tools[@]}"; do
