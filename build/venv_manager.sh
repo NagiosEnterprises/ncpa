@@ -497,6 +497,7 @@ install_requirements() {
     while [ $retry_count -lt $max_retries ]; do
         if "$PIP_EXECUTABLE" install -r "$req_file"; then
             log "✓ Requirements installed successfully"
+            log "############# Installed packages after requirements installation #############"
             return 0
         else
             retry_count=$((retry_count + 1))
