@@ -1,5 +1,4 @@
 cx_Freeze
-patchelf
 psutil==7.0.0
 requests
 Jinja2
