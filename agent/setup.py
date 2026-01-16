@@ -99,13 +99,11 @@ elif __SYSTEM__ == 'posix':
 
     # Special includes for AIX systems
     if 'aix' in sys.platform:
-        include_files += [('/opt/freeware/lib/libpython3.6.so'  , 'libpython3.6.so'),
-                          ('/usr/lib/libsqlite3.a'              , 'libsqlite3.a'),
-                          ('/usr/lib/libssl.so'                 , 'libssl.so'),
-                          ('/usr/lib/libcrypto.so'              , 'libcrypto.so'),
-                          ('/usr/lib/libcrypto.a'               , 'libcrypto.a'),
-                          ('/usr/lib/libffi.a'                  , 'libffi.a'),
-                          ('/opt/freeware/lib/libgcc_s.a'       , 'libgcc_s.a')]
+        include_files += [('/opt/freeware/lib/libpython3.12.a'  , 'build_resources/libpython3.12.a'),
+                          ('/usr/lib/libsqlite3.a'              , 'build_resources/libsqlite3.a'),
+                          ('/usr/lib/libssl3.so'                 , 'build_resources/libssl3.so'),
+                          ('/usr/lib/libcrypto.a'               , 'build_resources/libcrypto.a'),
+                          ('/opt/freeware/lib/libgcc_s.a'       , 'build_resources/libgcc_s.a')]
 
     # Special includes for Solaris systems
     if 'sunos' in sys.platform.lower():
