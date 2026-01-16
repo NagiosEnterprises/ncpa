@@ -508,6 +508,10 @@ install_requirements() {
         fi
     done
     
+    # log platform-specific workaround
+    log "Applying platform-specific workarounds if necessary..."
+    log "Platform detected: $PLATFORM"
+
     # On AIX systems install cx_Freeze separately due to known issues
     if [ "$PLATFORM" = "aix" ]; then
         log "Installing cx_Freeze separately for AIX..."
