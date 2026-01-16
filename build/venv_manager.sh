@@ -497,29 +497,6 @@ install_requirements() {
     while [ $retry_count -lt $max_retries ]; do
         if "$PIP_EXECUTABLE" install -r "$req_file"; then
             log "✓ Requirements installed successfully"
-
-        # log platform-specific workaround
-        log "Applying platform-specific workarounds if necessary..."
-        log "Platform detected: $PLATFORM"
-
-        # On AIX systems install cx_Freeze separately due to known issues
-        if [ "$PLATFORM" = "aix" ]; then
-            log "Installing cx_Freeze separately for AIX..."
-            # Remove any existing cx_Freeze installation first
-            if "$PIP_EXECUTABLE" uninstall -y cx_Freeze; then
-                log "✓ Existing cx_Freeze uninstalled"
-            else
-                log "No existing cx_Freeze installation found"
-            fi
-            # Now install cx_Freeze
-            if "$PIP_EXECUTABLE" install cx_Freeze --no-cache --force-reinstall; then
-                log "✓ cx_Freeze installed successfully"
-                return 0
-            else
-                error "Failed to install cx_Freeze on AIX"
-                return 1
-            fi
-        fi
             return 0
         else
             retry_count=$((retry_count + 1))
@@ -529,8 +506,6 @@ install_requirements() {
             fi
         fi
     done
-    
-
 
     error "Failed to install requirements after $max_retries attempts"
     return 1
