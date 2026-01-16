@@ -507,6 +507,18 @@ install_requirements() {
         fi
     done
     
+    # On AIX systems install cx_Freeze separately due to known issues
+    if [ "$PLATFORM" = "aix" ]; then
+        log "Installing cx_Freeze separately for AIX..."
+        if "$PIP_EXECUTABLE" install cx_Freeze --no-cache --force-reinstall; then
+            log "✓ cx_Freeze installed successfully"
+            return 0
+        else
+            error "Failed to install cx_Freeze on AIX"
+            return 1
+        fi
+    fi
+
     error "Failed to install requirements after $max_retries attempts"
     return 1
 }
