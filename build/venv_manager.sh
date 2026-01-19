@@ -362,8 +362,7 @@ create_venv() {
     
     # Create the virtual environment
     log "Creating virtual environment with Python $PYTHON_VERSION..."
-    # if ! "$PYTHON_EXECUTABLE" -m venv --system-site-packages "$VENV_PATH"; then
-    if ! "$PYTHON_EXECUTABLE" -m venv "$VENV_PATH"; then
+    if ! "$PYTHON_EXECUTABLE" -m venv --system-site-packages "$VENV_PATH"; then
         error "Failed to create virtual environment"
         return 1
     fi
