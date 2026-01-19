@@ -15,8 +15,7 @@ import sys
 import shutil
 import os
 import platform
-from setuptools import setup
-from cx_Freeze import Executable
+from cx_Freeze import setup, Executable
 
 # Import version configuration
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'build'))
