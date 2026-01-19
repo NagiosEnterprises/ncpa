@@ -310,7 +310,7 @@ if [ $BUILD_TRAVIS -eq 0 ] && [ $PACKAGE_ONLY -eq 0 ] && [ $BUILD_ONLY -eq 0 ]; 
     if [ $SKIP_SETUP -eq 0 ] && [ ! -f $BUILD_DIR/prereqs.installed ]; then
         echo "** WARNING: This should not be done on a production system. **"
         if [ $NO_INTERACTION -eq 1 ] || { read -r -p "Automatically install system pre-reqs? [Y/n] " resp && [[ $resp =~ ^(yes|y|Y| ) ]] || [[ -z $resp ]]; }; then
-            install_prereqs
+            #install_prereqs
             sudo touch $BUILD_DIR/prereqs.installed
         fi
     fi
