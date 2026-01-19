@@ -1,3 +1,4 @@
+patchelf
 cx_Freeze
 psutil==7.0.0
 requests
