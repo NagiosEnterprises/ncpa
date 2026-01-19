@@ -21,7 +21,7 @@ if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     "$VENV_MANAGER" install-requirements
 fi
 
-install_requirements() {
+install_prereqs() {
     echo "***** aix/setup.sh - Installing Python requirements"
     if [[ -n "$VENV_MANAGER" && -n "$VENV_NAME" && "$SKIP_PYTHON" == "1" ]]; then
         echo "    - Using virtual environment approach via venv_manager"
