@@ -110,7 +110,7 @@ elif __SYSTEM__ == 'posix':
     if 'sunos' in sys.platform.lower():
         include_files += get_solaris_lib_paths()
 
-    binary = Executable('ncpa.py', base=None)
+    binary = Executable('ncpa.py', base='console')
 
 # Apply build options
 buildOptions = dict(includes=includes,
