@@ -21,6 +21,17 @@ if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     "$VENV_MANAGER" install-requirements
 fi
 
+install_prereqs() {
+    echo "***** aix/setup.sh - Installing Python requirements"
+    if [[ -n "$VENV_MANAGER" && -n "$VENV_NAME" && "$SKIP_PYTHON" == "1" ]]; then
+        echo "    - Using virtual environment approach via venv_manager"
+        # Remove existing cx_Freeze if present
+        "$VENV_MANAGER" remove_package cx_Freeze
+        # Install cx_freeze with pip in the virtual environment
+        "$PYTHONBIN" -m pip install --no-binary=cx_Freeze cx_Freeze
+    fi
+}
+
 update_py_packages() {
     # Check if we're in virtual environment mode
     if [[ -n "$VENV_MANAGER" && -n "$VENV_NAME" && "$SKIP_PYTHON" == "1" ]]; then
