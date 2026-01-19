@@ -6,7 +6,7 @@ flask
 werkzeug
 docutils
 pyOpenSSL
-cryptography
+cryptography==44.0.2
 gevent
 gevent-websocket
 cffi

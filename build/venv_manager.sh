@@ -196,14 +196,6 @@ detect_python() {
 
     # Compare installed vs latest available
     if [ "$newest_major" -gt "$latest_major" ] || { [ "$newest_major" -eq "$latest_major" ] && [ "$newest_minor" -ge "$latest_minor" ]; }; then
-        # Set python executable to 3.9 if AIX
-        if [ "$PLATFORM" = "aix" ]; then
-            PYTHON_EXECUTABLE="python3.9"
-            PYTHON_VERSION="3.9"
-            log "✓ Using Python 3.9 on AIX: $PYTHON_EXECUTABLE"
-            return 0
-        fi
-
         # Installed Python is newer or equal to package manager's version
         if [ "$newest_major" -ge 3 ] && [ "$newest_minor" -ge 11 ]; then
             PYTHON_EXECUTABLE="$newest_cmd"
