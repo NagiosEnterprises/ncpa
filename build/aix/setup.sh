@@ -26,7 +26,7 @@ install_prereqs() {
     if [[ -n "$VENV_MANAGER" && -n "$VENV_NAME" && "$SKIP_PYTHON" == "1" ]]; then
         echo "    - Using virtual environment approach via venv_manager"
         # Remove existing cx_Freeze if present
-        "$PYTHONBIN" -m pip remove cx_Freeze
+        "$PYTHONBIN" -m pip uninstall cx_Freeze
         # Install cx_freeze with pip in the virtual environment
         "$PYTHONBIN" -m pip install --no-binary=cx_Freeze cx_Freeze
     fi
