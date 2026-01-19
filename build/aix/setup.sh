@@ -27,6 +27,7 @@ install_prereqs() {
         echo "    - Using virtual environment approach via venv_manager"
         # Install cx_freeze with pip in the virtual environment
         "$PYTHONBIN" -m pip install --no-binary=cx_Freeze cx_Freeze
+    fi
 }
 
 update_py_packages() {
