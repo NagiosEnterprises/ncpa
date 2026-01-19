@@ -1,4 +1,4 @@
-cx_Freeze
+cx_Freeze==8.5.0
 psutil==7.0.0
 requests
 Jinja2
