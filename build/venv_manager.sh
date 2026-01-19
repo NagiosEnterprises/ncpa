@@ -196,6 +196,23 @@ detect_python() {
 
     # Compare installed vs latest available
     if [ "$newest_major" -gt "$latest_major" ] || { [ "$newest_major" -eq "$latest_major" ] && [ "$newest_minor" -ge "$latest_minor" ]; }; then
+        # Set python executable to 3.11 if AIX
+        if [ "$PLATFORM" = "aix" ] && [ "$newest_major" -ge 3 ] && [ "$newest_minor" -ge 11 ]; then
+            for cmd in "${python_cmds_found[@]}"; do
+                ver=$($cmd --version 2>&1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*' | head -1)
+                maj=$(echo "$ver" | cut -d. -f1)
+                min=$(echo "$ver" | cut -d. -f2)
+                if [ "$maj" -eq 3 ] && [ "$min" -eq 11 ]; then
+                    PYTHON_EXECUTABLE="$cmd"
+                    PYTHON_VERSION="$ver"
+                    log "✓ Using Python 3.11 on AIX: $cmd (version $ver)"
+                    return 0
+                fi
+            done
+            error "Python 3.11 not found on AIX, found only newer version ($newest_version). Please install Python 3.11 specifically."
+            return 1
+        fi
+
         # Installed Python is newer or equal to package manager's version
         if [ "$newest_major" -ge 3 ] && [ "$newest_minor" -ge 11 ]; then
             PYTHON_EXECUTABLE="$newest_cmd"
