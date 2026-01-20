@@ -964,6 +964,7 @@ esac'
     fi
 
     # Set permissions (original working approach)
+    echo -e "\nSetting permissions..."
     sudo chmod -R g+r $BUILD_DIR/ncpa
     sudo chmod -R a+r $BUILD_DIR/ncpa
     sudo chown -R nagios:nagios $BUILD_DIR/ncpa/var

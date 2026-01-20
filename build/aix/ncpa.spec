@@ -112,13 +112,14 @@ fi
 /usr/local/ncpa/ncpa
 
 %defattr(0755,root,root,0755)
-/usr/local/ncpa/*.so*
+/usr/local/ncpa/lib/*.so*
 
 %defattr(0644,root,root,0755)
-/usr/local/ncpa/*.a
-/usr/local/ncpa/*.py
-/usr/local/ncpa/*.dat
-/usr/local/ncpa/*.zip
+/usr/local/ncpa/*.githash
+/usr/local/ncpa/frozen_application_license.txt
+#/usr/local/ncpa/lib/*.py
+/usr/local/ncpa/lib/*.dat
+/usr/local/ncpa/lib/*.zip
 /usr/local/ncpa/build_resources
 /usr/local/ncpa/listener
 /usr/local/ncpa/plugins
