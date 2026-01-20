@@ -803,7 +803,7 @@ esac'
     
     # Find the cx_Freeze build directory (it varies by platform)
     echo "Looking for cx_Freeze build directory in: $AGENT_DIR/build"
-    if [ "$UNAME" == "SunOS" ]; then
+    if [ "$UNAME" == "SunOS" ] or [ "$UNAME" == "AIX" ]; then
         # Solaris find doesn't support -maxdepth, use alternative approach
         BUILD_EXE_DIR=$(find "$AGENT_DIR/build" -type d -name "exe.*" | head -1)
     else
