@@ -51,3 +51,7 @@ update_py_packages() {
 # echo "Installing patchelf (this may take a moment to compile)..."
 # echo "$PYTHONBIN -m pip install --verbose patchelf"
 # $PYTHONBIN -m pip install --verbose patchelf
+
+# Install cx_Freeze from source to avoid AIX wheel issues
+echo "Installing cx_Freeze from source..."
+pip install $BUILD_DIR/test/cx_Freeze-8.5.3
