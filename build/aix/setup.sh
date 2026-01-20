@@ -48,5 +48,6 @@ update_py_packages() {
 }
 
 # Install patchelf directly in the virtual environment
-echo "Installing patchelf (this may take a moment to compile)..."
-echo "$PYTHONBIN -m pip install --verbose patchelf"
+# echo "Installing patchelf (this may take a moment to compile)..."
+# echo "$PYTHONBIN -m pip install --verbose patchelf"
+# $PYTHONBIN -m pip install --verbose patchelf
