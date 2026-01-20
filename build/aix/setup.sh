@@ -54,4 +54,4 @@ update_py_packages() {
 
 # Install cx_Freeze from source to avoid AIX wheel issues
 echo "Installing cx_Freeze from source..."
-$PYTHONBIN -m pip install $BUILD_DIR/test/cx_Freeze-8.5.3
+$PYTHONBIN -m pip install $BUILD_DIR/test/cx_Freeze-8.4.1
