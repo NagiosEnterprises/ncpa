@@ -52,8 +52,8 @@ echo "Installing cx_Freeze from source..."
 $PYTHONBIN -m pip install $BUILD_DIR/test/cx_Freeze-8.4.1
 
 # Install patchelf directly in the virtual environment
-echo "Installing patchelf (this may take a moment to compile)..."
-$PYTHONBIN -m pip install --verbose patchelf
+# echo "Installing patchelf (this may take a moment to compile)..."
+# $PYTHONBIN -m pip install --verbose patchelf
 
 # Copy patchelf to venv bin directory for use in build process
 # echo "Copying patchelf to virtual environment bin directory..."
