@@ -284,6 +284,7 @@ if [ "$UNAME" == "Linux" ]; then
 elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
     . $BUILD_DIR/solaris/setup.sh
 elif [ "$UNAME" == "AIX" ]; then
+    export PATH=/usr/local/bin:$PATH
     . $BUILD_DIR/aix/setup.sh
 elif [ "$UNAME" == "Darwin" ]; then
     . $BUILD_DIR/macos/setup.sh
