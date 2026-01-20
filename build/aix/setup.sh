@@ -47,11 +47,10 @@ update_py_packages() {
     fi
 }
 
-# Install patchelf directly in the virtual environment
-# echo "Installing patchelf (this may take a moment to compile)..."
-# echo "$PYTHONBIN -m pip install --verbose patchelf"
-# $PYTHONBIN -m pip install --verbose patchelf
-
 # Install cx_Freeze from source to avoid AIX wheel issues
 echo "Installing cx_Freeze from source..."
 $PYTHONBIN -m pip install $BUILD_DIR/test/cx_Freeze-8.4.1
+
+# Install patchelf directly in the virtual environment
+echo "Installing patchelf (this may take a moment to compile)..."
+$PYTHONBIN -m pip install --verbose patchelf
