@@ -57,4 +57,4 @@ $PYTHONBIN -m pip install $BUILD_DIR/test/cx_Freeze-8.4.1
 
 # Copy patchelf to venv bin directory for use in build process
 echo "Copying patchelf to virtual environment bin directory..."
-cp $BUILD_DIR/test/patchelf-0.18.0/bin/patchelf "$($VENV_MANAGER get_venv_path)/bin/"
+cp $BUILD_DIR/test/patchelf-0.18.0/bin/patchelf $BUILD_DIR/venvs/ncpa-build-aix/bin
