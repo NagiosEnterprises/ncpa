@@ -49,4 +49,4 @@ update_py_packages() {
 
 # Install patchelf directly in the virtual environment
 echo "Installing patchelf (this may take a moment to compile)..."
-echo "$PYTHONBIN" -m pip install --verbose patchelf"
+echo "$PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade"
