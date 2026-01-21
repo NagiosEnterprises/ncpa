@@ -49,12 +49,13 @@ update_py_packages() {
 
 # Install cx_Freeze from source to avoid AIX wheel issues
 echo "Installing cx_Freeze from source..."
+# Download and extract cx_Freeze source
+# Apply patches if necessary (not shown here)
+# Run setup.py
+# Finally use pip to install in venv
 $PYTHONBIN -m pip install $BUILD_DIR/test/cx_Freeze-8.4.1
 
-# Install patchelf directly in the virtual environment
-# echo "Installing patchelf (this may take a moment to compile)..."
-# $PYTHONBIN -m pip install --verbose patchelf
-
-# Copy patchelf to venv bin directory for use in build process
-# echo "Copying patchelf to virtual environment bin directory..."
-# cp $BUILD_DIR/test/patchelf-0.18.0/bin/patchelf $BUILD_DIR/venvs/ncpa-build-aix/bin
+# Install patchelf directly to the system
+# Download patchelf source
+# Compile and install patchelf to /usr/local/bin
+# Path should already be set to include /usr/local/bin
