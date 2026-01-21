@@ -101,7 +101,7 @@ elif __SYSTEM__ == 'posix':
     if 'aix' in sys.platform:
         include_files += [('/opt/freeware/lib/libpython3.12.a'  , 'build_resources/libpython3.12.a'),
                           ('/usr/lib/libsqlite3.a'              , 'build_resources/libsqlite3.a'),
-                          ('/opt/freeware/lib/libssl3.so'       , 'build_resources/libssl3.so'),
+                          ('/usr/opt/rpm/lib/libssl3.so'       , 'build_resources/libssl3.so'),
                           ('/usr/lib/libcrypto.a'               , 'build_resources/libcrypto.a'),
                           ('/opt/freeware/lib/libffi.a'         , 'build_resources/libffi.a'),
                           ('/opt/freeware/lib/libgcc_s.a'       , 'build_resources/libgcc_s.a')]
