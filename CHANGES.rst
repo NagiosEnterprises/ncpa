@@ -1,5 +1,11 @@
 Changelog
 +++++++++
+3.3.0 - 2/xx/2026
+==================
+**Added**
+
+- Plaseholder for upcoming 3.3.0 release notes.
+
 3.2.3 - 1/22/2026
 ==================
 **Added**
