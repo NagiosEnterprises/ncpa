@@ -255,13 +255,15 @@ class ServiceNode(listener.nodes.LazyNode):
         service.wait()
         status.seek(0)
         status.readline() # Read first line (header)
-        status.read().decode()
+        decoded_status = status.read().decode()
 
         # Logging debug info
-        # logging.debug("AIX lssrc -a output:")
+        logging.debug("AIX lssrc -a output:")
+        logging.debug('decoded_status')
+        logging.debug(decoded_status)
         # logging.debug(status.read().decode())
         
-        for line in status.readlines():
+        for line in decoded_status.readlines():
             ls = line.split()
             sub = ls[0]
             service_status = ls[-1]
