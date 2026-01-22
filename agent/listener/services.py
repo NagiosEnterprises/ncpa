@@ -254,9 +254,11 @@ class ServiceNode(listener.nodes.LazyNode):
         service = subprocess.Popen(['lssrc', '-a'], stdout=status)
         service.wait()
         status.seek(0)
+        
 
         # The first line is the header
         status.readline()
+        status.read().decode()
 
         for line in status.readlines():
             ls = line.split()
