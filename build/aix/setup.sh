@@ -21,6 +21,30 @@ if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     "$VENV_MANAGER" install-requirements
 fi
 
+install_prereqs() {
+    echo "***** aix/setup.sh - install_prereqs()"
+    echo "Installing AIX system prerequisites..."
+
+    # --------------------------
+    #  INSTALL SYSTEM REQS - PACKAGES
+    # --------------------------
+
+    echo "    - Installing required build packages via dnf..."
+    dnf -y update
+    dnf -y install sudo gcc gcc-c++ gcc-cpp make cmake automake libffi-devel
+
+    echo "    - Assuming Python 3.12 is the target version for NCPA build"
+    dnf -y install python3.12-pip python3.12-devel 
+
+    echo "System prerequisites installation complete."
+
+    echo "----------------------------------------"
+    echo " You will need to download and compile the following manually:"
+    echo " - patchelf (download source, compile, insall to /usr/local/bin)"
+    echo " - cx_Freeze (download source, apply AIX patches if needed, run setup.py)"
+    echo "----------------------------------------"
+}
+
 update_py_packages() {
     # Check if we're in virtual environment mode
     if [[ -n "$VENV_MANAGER" && -n "$VENV_NAME" && "$SKIP_PYTHON" == "1" ]]; then
@@ -43,7 +67,7 @@ update_py_packages() {
     else
         echo "    - Using legacy system Python approach"
         echo "Skipping update packages, manually update them with:"
-        echo "$PYTHONBIN -m pip install -r $BUILD_DIR/resources/require.txt --upgrade"
+        echo "$PYTHONBIN -m pip install -r $BUILD_DIR/resources/require-aix.txt --upgrade"
     fi
 }
 
