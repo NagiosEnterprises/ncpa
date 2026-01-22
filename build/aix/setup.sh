@@ -90,14 +90,14 @@ $PYTHONBIN -m pip install $BUILD_DIR/test/cx_Freeze-8.4.1
 
 # This must be outside of install_prereqs(), so it will be executed during workflow build.
 
-# echo -e "***** linux/setup.sh - add users/groups"
-# set +e
-# useradd -s /sbin/nologin nagios 
-# groupadd nagios
-# usermod -g nagios nagios
-# set -e
+echo -e "***** aix/setup.sh - add users/groups"
+set +e
+mkgroup nagios
+mkuser pgrp='nagios' groups='nagios' home='/home/nagios' nagios
+set -e
 
 # Automatically install Python requirements in venv after setup
+echo "***** aix/setup.sh - Installing Python requirements in virtual environment if applicable"
 if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     "$VENV_MANAGER" install-requirements
 fi
