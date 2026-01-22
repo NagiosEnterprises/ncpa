@@ -16,10 +16,6 @@ else
     PYTHONBIN=$(which python3)
 fi
 
-# Automatically install Python requirements in venv after setup
-if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
-    "$VENV_MANAGER" install-requirements
-fi
 
 install_prereqs() {
     echo "***** aix/setup.sh - install_prereqs()"
@@ -29,6 +25,13 @@ install_prereqs() {
     #  INSTALL SYSTEM REQS - PACKAGES
     # --------------------------
 
+    if command -v dnf >/dev/null 2>&1; then
+        echo "    - Detected dnf package manager."
+    else
+        echo "ERROR! dnf package manager not found. Please install dnf and try again."
+        return 1
+    fi
+    
     echo "    - Installing required build packages via dnf..."
     dnf -y update
     dnf -y install sudo gcc gcc-c++ gcc-cpp make cmake automake libffi-devel
@@ -83,3 +86,18 @@ $PYTHONBIN -m pip install $BUILD_DIR/test/cx_Freeze-8.4.1
 # Download patchelf source
 # Compile and install patchelf to /usr/local/bin
 # Path should already be set to include /usr/local/bin
+
+
+# This must be outside of install_prereqs(), so it will be executed during workflow build.
+
+# echo -e "***** linux/setup.sh - add users/groups"
+# set +e
+# useradd -s /sbin/nologin nagios 
+# groupadd nagios
+# usermod -g nagios nagios
+# set -e
+
+# Automatically install Python requirements in venv after setup
+if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
+    "$VENV_MANAGER" install-requirements
+fi
