@@ -477,6 +477,9 @@ install_requirements() {
             "solaris")
                 req_file="$REQUIREMENTS_DIR/require-solaris.txt"
                 ;;
+            "aix")
+                req_file="$REQUIREMENTS_DIR/require-aix.txt"
+                ;;
             *)
                 req_file="$REQUIREMENTS_DIR/require.txt"
                 ;;
