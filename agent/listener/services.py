@@ -254,24 +254,20 @@ class ServiceNode(listener.nodes.LazyNode):
         service = subprocess.Popen(['lssrc', '-a'], stdout=status)
         service.wait()
         status.seek(0)
-        
-        # The first line is the header
-        status.readline()
-        # status.read().decode()
+        status.readline() # Read first line (header)
+        status.read().decode()
 
         # Logging debug info
-        logging.debug("AIX lssrc -a output:")
-        logging.debug(status.read().decode())
-        logging.debug(status.readline())  # Read first line (header)
+        # logging.debug("AIX lssrc -a output:")
+        # logging.debug(status.read().decode())
         
-  
         for line in status.readlines():
             ls = line.split()
             sub = ls[0]
-            status = ls[-1]
-            if status == 'active':
+            service_status = ls[-1]
+            if service_status == 'active':
                 services[sub] = 'running'
-            elif status == 'inoperative':
+            elif service_status == 'inoperative':
                 services[sub] = 'stopped'
             else:
                 services[sub] = 'unknown'
