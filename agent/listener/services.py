@@ -255,11 +255,16 @@ class ServiceNode(listener.nodes.LazyNode):
         service.wait()
         status.seek(0)
         
-
         # The first line is the header
         status.readline()
-        status.read().decode()
+        # status.read().decode()
 
+        # Logging debug info
+        logging.debug("AIX lssrc -a output:")
+        logging.debug(status.read().decode())
+        logging.debug(status.readline())  # Read first line (header)
+        
+  
         for line in status.readlines():
             ls = line.split()
             sub = ls[0]
