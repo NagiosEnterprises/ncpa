@@ -61,7 +61,7 @@ fi
 
 # Install/update SRC and add entries into inittab and remove blank files on install
 if [ "$1" == "1" ]; then
-    mkssys -s ncpa -p $RPM_INSTALL_PREFIX/ncpa/ncpa -u 0 -S -n 15 -f 9 -a '-n' >/dev/null 2>&1
+    mkssys -s ncpa -p $RPM_INSTALL_PREFIX/ncpa/ncpa -u 0 -S -n 15 -f 9 >/dev/null 2>&1
     
     mkitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
     rm -rf $RPM_INSTALL_PREFIX/ncpa/var/ncpa.*
