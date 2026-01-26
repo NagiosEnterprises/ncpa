@@ -461,7 +461,7 @@ class Daemon():
 
         if action == 'start':
             self.start()
-        elif action == 'stop' or action == 15:
+        elif action == 'stop' or action == '15':
             self.stop()
         elif action == 'status':
             self.status()
