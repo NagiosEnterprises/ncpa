@@ -511,10 +511,6 @@ class Daemon():
         self.logger.info("Daemon - Received signal %s", signalnum)
         self.logger.debug("on_sigterm(%s)", signalnum)
 
-        # Attempt to use stop method to end processes cleanly
-        self.logger.debug("on_sigterm - calling self.stop()")
-        self.stop()
-
         # Forcing exit while in loop's sleep, doesn't always exit cleanly, so
         # on first occurrence (system always sends multiples for sigint), set has_error=True to break main loop
         if not self.has_error.value:
@@ -526,7 +522,7 @@ class Daemon():
             self.logger.info("on_sigterm - sys.exit")
 
             # If SIGINT (CTL-C), make sure to remove PID file
-            if signalnum == 2:
+            if signalnum == 2 or signalnum == 15:
                 self.remove_pid()
 
             sys.exit()
