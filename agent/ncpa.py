@@ -508,7 +508,6 @@ class Daemon():
     def on_sigterm(self, signalnum, frame):
         global has_error
         """Handle sigterm and sigint"""
-        self.logger.info("Daemon - Received signal %s", signalnum)
         self.logger.debug("on_sigterm(%s)", signalnum)
 
         # Forcing exit while in loop's sleep, doesn't always exit cleanly, so
@@ -522,7 +521,7 @@ class Daemon():
             self.logger.info("on_sigterm - sys.exit")
 
             # If SIGINT (CTL-C), make sure to remove PID file
-            if signalnum == 2 or signalnum == 15:
+            if signalnum == 2:
                 self.remove_pid()
 
             sys.exit()
