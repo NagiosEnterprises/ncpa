@@ -461,7 +461,7 @@ class Daemon():
 
         if action == 'start':
             self.start()
-        elif action == 'stop' or action == '15':
+        elif action == 'stop':
             self.stop()
         elif action == 'status':
             self.status()
@@ -508,7 +508,12 @@ class Daemon():
     def on_sigterm(self, signalnum, frame):
         global has_error
         """Handle sigterm and sigint"""
+        self.logger.info("Daemon - Received signal %s", signalnum)
         self.logger.debug("on_sigterm(%s)", signalnum)
+
+        # Attempt to use stop method to end processes cleanly
+        self.logger.debug("on_sigterm - calling self.stop()")
+        self.stop()
 
         # Forcing exit while in loop's sleep, doesn't always exit cleanly, so
         # on first occurrence (system always sends multiples for sigint), set has_error=True to break main loop
