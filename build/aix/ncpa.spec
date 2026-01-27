@@ -61,17 +61,20 @@ fi
 
 # Install/update SRC and add entries into inittab and remove blank files on install
 if [ "$1" == "1" ]; then
-    mkssys -s ncpa -p $RPM_INSTALL_PREFIX/ncpa/ncpa -u 0 -R -G nagios -a '--start' >/dev/null 2>&1
-    
-    mkitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
-    # mkitab "ncpa:2:once:/usr/local/bin/cleanup.sh --start >/dev/null 2>&1"
+    # mkssys -s ncpa -p $RPM_INSTALL_PREFIX/ncpa/ncpa -u 0 -R -G nagios -a '--start' >/dev/null 2>&1
+    mkssys -s ncpa -p $RPM_INSTALL_PREFIX/ncpa/ncpa -u 0 -R -S -G nagios >/dev/null 2>&1
+
+    # mkitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
+    mkitab "ncpa:2:once:$RPM_INSTALL_PREFIX/bin/aix-ncpa-service.sh --start >/dev/null 2>&1"
     rm -rf $RPM_INSTALL_PREFIX/ncpa/var/ncpa.*
 elif [ "$1" == "2" ]; then
+    # chitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
     chitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
 fi
 
 # Start the daemons using SRC
-startsrc -s ncpa >/dev/null 2>&1
+# startsrc -s ncpa >/dev/null 2>&1
+startsrc -s ncpa [-a "--start"] >/dev/null 2>&1
 
 %preun
 if [ -z $RPM_INSTALL_PREFIX ]; then
@@ -114,6 +117,7 @@ fi
 
 %defattr(0755,root,root,0755)
 /usr/local/ncpa/lib/*.so*
+/usr/local/ncpa/bin/aix-ncpa-service.sh
 
 %defattr(0644,root,root,0755)
 /usr/local/ncpa/*.githash
@@ -136,4 +140,3 @@ fi
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
 /usr/local/ncpa/etc/ncpa.cfg.d/README.txt
-/usr/local/ncpa/bin/aix-ncpa-service.sh
