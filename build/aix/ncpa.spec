@@ -62,7 +62,7 @@ fi
 # Install/update SRC and add entries into inittab and remove blank files on install
 if [ "$1" == "1" ]; then
     # mkssys -s ncpa -p $RPM_INSTALL_PREFIX/ncpa/ncpa -u 0 -S -R -G nagios -n 15 -f 9 >/dev/null 2>&1
-    mkssys -s ncpa -p $RPM_INSTALL_PREFIX/ncpa/bin/aix-ncpa-service.sh -a "start" -u 0 -S >/dev/null 2>&1
+    mkssys -s ncpa -p $RPM_INSTALL_PREFIX/ncpa/bin/aix-ncpa-service.sh -a "start" -u 0 >/dev/null 2>&1
 
     mkitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
     # mkitab "ncpa:2:once:/usr/bin/startsrc -s ncpa -a "start" >/dev/null 2>&1"
@@ -122,7 +122,7 @@ fi
 /usr/local/ncpa/lib/*.so*
 /usr/local/ncpa/bin/aix-ncpa-service.sh
 
-%defattr(0664,nagios,nagios,0664)
+%defattr(0664,nagios,nagios,0755)
 /usr/local/ncpa/var/log/ncpa_listener.log
 /usr/local/ncpa/var/log/ncpa_passive.log
 
