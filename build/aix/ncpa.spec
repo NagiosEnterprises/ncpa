@@ -122,6 +122,10 @@ fi
 /usr/local/ncpa/lib/*.so*
 /usr/local/ncpa/bin/aix-ncpa-service.sh
 
+%defattr(0664,nagios,nagios,0664)
+/usr/local/ncpa/var/log/ncpa_listener.log
+/usr/local/ncpa/var/log/ncpa_passive.log
+
 %defattr(0644,root,root,0755)
 /usr/local/ncpa/*.githash
 /usr/local/ncpa/frozen_application_license.txt
