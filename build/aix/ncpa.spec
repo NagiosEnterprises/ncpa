@@ -65,7 +65,7 @@ if [ "$1" == "1" ]; then
     # mkssys -s ncpa -p $RPM_INSTALL_PREFIX/bin/aix-ncpa-service.sh -a "start" -u 0 -S -n 15 -f 9 -R >/dev/null 2>&1
 
     # mkitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
-    mkitab "ncpa:2:once:$RPM_INSTALL_PREFIX/bin/aix-ncpa-service.sh --start >/dev/null 2>&1"
+    mkitab "ncpa:2:once:$RPM_INSTALL_PREFIX/bin/aix-ncpa-service.sh start >/dev/null 2>&1"
     # mkitab "ncpa:2:once:/usr/bin/startsrc -s ncpa -a "start" >/dev/null 2>&1"
     rm -rf $RPM_INSTALL_PREFIX/ncpa/var/ncpa.*
 elif [ "$1" == "2" ]; then
@@ -77,7 +77,7 @@ fi
 # startsrc -s ncpa -a "start" >/dev/null 2>&1
 
 # Start the service script
-$RPM_INSTALL_PREFIX/bin/aix-ncpa-service.sh --start >/dev/null 2>&1
+$RPM_INSTALL_PREFIX/bin/aix-ncpa-service.sh start >/dev/null 2>&1
 
 %preun
 if [ -z $RPM_INSTALL_PREFIX ]; then
