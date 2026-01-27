@@ -64,6 +64,7 @@ if [ "$1" == "1" ]; then
     mkssys -s ncpa -p $RPM_INSTALL_PREFIX/ncpa/ncpa -u 0 -R -G nagios -a '--start' >/dev/null 2>&1
     
     mkitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
+    # mkitab "ncpa:2:once:/usr/local/bin/cleanup.sh --start >/dev/null 2>&1"
     rm -rf $RPM_INSTALL_PREFIX/ncpa/var/ncpa.*
 elif [ "$1" == "2" ]; then
     chitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
@@ -127,6 +128,7 @@ fi
 %defattr(0664,root,nagios,0775)
 %dir /usr/local/ncpa/etc
 %dir /usr/local/ncpa/etc/ncpa.cfg.d
+%dir /usr/local/ncpa/bin
 /usr/local/ncpa/var
 
 %defattr(0640,root,nagios,0755)
@@ -134,3 +136,4 @@ fi
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
 /usr/local/ncpa/etc/ncpa.cfg.d/README.txt
+/usr/local/ncpa/bin/aix-ncpa-service.sh

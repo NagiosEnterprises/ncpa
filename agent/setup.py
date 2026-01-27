@@ -103,7 +103,7 @@ elif __SYSTEM__ == 'posix':
                           ('/usr/lib/libsqlite3.a'              , 'build_resources/libsqlite3.a'),
                           ('/usr/lib/libcrypto.a'               , 'build_resources/libcrypto.a'),
                           ('/opt/freeware/lib/libgcc_s.a'       , 'build_resources/libgcc_s.a'),
-                          ('../build/aix/aix-ncpa-service.sh'   , 'build_resources/aix-ncpa-service.sh')]
+                          ('../build/aix/aix-ncpa-service.sh'   , 'bin/aix-ncpa-service.sh')]
 
     # Special includes for Solaris systems
     if 'sunos' in sys.platform.lower():
