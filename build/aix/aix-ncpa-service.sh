@@ -159,31 +159,20 @@ killall_ncpa() {
     fi
 }
 
-case "$1" in
-    start)
-        start_ncpa
-        ;;
-    stop)
-        stop_ncpa
-        ;;
-    restart)
-        stop_ncpa
-        sleep 2
-        start_ncpa
-        ;;
-    status)
-        status_ncpa
-        ;;
-    killall)
-        killall_ncpa
-        ;;
-    *)
-        echo "Usage: $0 {start|stop|restart|status|killall}"
-        echo "  start   - Start NCPA service"
-        echo "  stop    - Stop NCPA service gracefully"
-        echo "  restart - Restart NCPA service"
-        echo "  status  - Show NCPA service status"
-        echo "  killall - Aggressively terminate all NCPA processes"
-        exit 1
-        ;;
-esac
+# Trap signals
+# Trap SIGTERM (standard termination signal)
+# to call the stop_process function.
+trap 'stop_ncpa' 15
+
+# Trap SIGKILL to perform a forced stop
+trap 'killall_ncp' 9
+
+# Start the process initially
+start_ncpa
+
+# Wait in a loop for signals to be received
+# The trap commands above will interrupt this wait.
+echo "Manager is now waiting for signals. PID: $$"
+while true; do
+    sleep 60
+done
