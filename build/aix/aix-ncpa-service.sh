@@ -37,7 +37,7 @@ start_ncpa() {
     cd "$NCPA_DIR"
     
     # Start NCPA as nagios user
-    nohup sudo -u $NCPA_USER -g $NCPA_GROUP "$NCPA_DIR/ncpa" --start
+    sudo -u $NCPA_USER -g $NCPA_GROUP "$NCPA_DIR/ncpa" --start
     
     if [ $? -eq 0 ]; then
         echo "NCPA started successfully"
@@ -172,14 +172,14 @@ echo "Manager is now waiting for signals. PID: $$"
 # Monitor NCPA processes
 ncpa_running=true
 while ncpa_running; do
-    ncpa_process_count=$(ps -ef | grep ncpa | grep start | wc -l)
-    
-    # Ensure NCPA processes are still running
-    if [ ncpa_process_count -ne 3 ]; then
-        echo "NCPA process has stopped unexpectedly, exiting manager."
-        ncpa_running=false
-        exit 1
-    fi
+
+    # Optional: Check if NCPA process is still running
+    # ncpa_process_count=$(ps -ef | grep ncpa | grep start | wc -l)
+    # if [ ncpa_process_count -ne 3 ]; then
+    #     echo "NCPA process has stopped unexpectedly, exiting manager."
+    #     ncpa_running=false
+    #     exit 1
+    # fi
 
     sleep 60
 done
