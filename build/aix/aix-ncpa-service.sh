@@ -133,7 +133,6 @@ killall_ncpa() {
     # Clean up all PID files
     rm -f "$PID_FILE" 2>/dev/null
     rm -f "$NCPA_DIR/var/run"/*.pid 2>/dev/null
-    rm -f /var/lock/subsys/ncpa 2>/dev/null
     
     sleep 1
     
@@ -152,12 +151,9 @@ killall_ncpa() {
 }
 
 # Trap signals
-# Trap SIGTERM (standard termination signal)
-# to call the stop_process function.
-trap 'stop_ncpa' 15
-
-# Trap SIGKILL to perform a forced stop
-trap 'killall_ncpa' 9
+# to call the stop_process functions.
+trap 'stop_ncpa' 15 # Trap SIGTERM (standard termination signal)
+trap 'killall_ncpa' 9 # Trap SIGKILL
 
 # Start the process initially
 start_ncpa
@@ -172,7 +168,6 @@ echo "Manager is now waiting for signals. PID: $$"
 # Monitor NCPA processes
 ncpa_running=true
 while $ncpa_running; do
-
     # Check if NCPA process is still running
     ncpa_process_count=$(ps -ef | grep ncpa | grep start | wc -l)
     if [ $ncpa_process_count -ne 3 ]; then
