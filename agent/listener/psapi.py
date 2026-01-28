@@ -20,14 +20,11 @@ __SYSTEM__ = os.name
 __VERSION__ = ncpa.__VERSION__
 
 def get_uptime():
+    # known issue: psutil.boot_time() broken on aix 7.3
+    # see https://community.ibm.com/community/user/discussion/psutilboot-time-stopped-working-after-an-update-to-aix-73-tl3
     current_time = time.time()
     epoch_boot = int(current_time)
-    logging.debug('current_time: %s', current_time)
-    logging.debug('epoch_boot: %s', epoch_boot)
-    # logging.debug('ps.boot_time(): %s', ps.boot_time())
-    logging.debug('epoch_boot - ps.boot_time(): %s', epoch_boot - current_time)
-    return (epoch_boot - current_time, "s")
-
+    return (epoch_boot - ps.boot_time(), "s")
 
 def make_disk_nodes(disk_name):
     disk_counters = ps.disk_io_counters(perdisk=True)
