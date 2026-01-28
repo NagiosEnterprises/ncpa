@@ -37,7 +37,7 @@ start_ncpa() {
     cd "$NCPA_DIR"
     
     # Start NCPA as nagios user
-    sudo -u $NCPA_USER -g $NCPA_GROUP "$NCPA_DIR/ncpa" --start
+    sudo -u $NCPA_USER -g $NCPA_GROUP "$NCPA_DIR/ncpa" --start &
     
     if [ $? -eq 0 ]; then
         echo "NCPA started successfully"
@@ -184,5 +184,5 @@ while $ncpa_running; do
         exit 1
     fi
 
-    sleep 60
+    sleep 5
 done
