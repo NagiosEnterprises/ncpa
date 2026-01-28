@@ -182,3 +182,6 @@ while $ncpa_running; do
 
     sleep 5
 done
+
+# Ensure cleanup on exit
+stop_ncpa
