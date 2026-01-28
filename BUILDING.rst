@@ -397,7 +397,7 @@ You will need the following prerequisites installed on your AIX system before bu
 * python3.12 (installed from IBM AIX Toolbox)
 * patchelf (compiled from source for AIX and binary installed to /usr/local/bin/patchelf)
 * cx_Freeze 8.4.1 (compiled from source for AIX and directory copied to /usr/local/lib/python3.12/site-packages/cx_Freeze-8.4.1) 
-* There is also a cx_Freeze patch required to make cx_Freeze work on AIX, see [here](https://community.ibm.com/community/user/discussion/how-to-install-cx-freeze-on-aix)
+* There is also a cx_Freeze patch required to make cx_Freeze work on AIX, see https://community.ibm.com/community/user/discussion/how-to-install-cx-freeze-on-aix
 
 **Clone the repository**::
 
