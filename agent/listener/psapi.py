@@ -22,6 +22,9 @@ __VERSION__ = ncpa.__VERSION__
 def get_uptime():
     current_time = time.time()
     epoch_boot = int(current_time)
+    logging.debug('current_time: %s', current_time)
+    logging.debug('ps.boot_time(): %s', ps.boot_time())
+    logging.debug('epoch_boot - ps.boot_time(): %s', epoch_boot - ps.boot_time())
     return (epoch_boot - ps.boot_time(), "s")
 
 
