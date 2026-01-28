@@ -37,7 +37,7 @@ start_ncpa() {
     cd "$NCPA_DIR"
     
     # Start NCPA as nagios user
-    sudo -u $NCPA_USER -g $NCPA_GROUP "$NCPA_DIR/ncpa" --start
+    nohup sudo -u $NCPA_USER -g $NCPA_GROUP "$NCPA_DIR/ncpa" --start
     
     if [ $? -eq 0 ]; then
         echo "NCPA started successfully"
@@ -107,24 +107,9 @@ stop_ncpa() {
     rm -f "$PID_FILE" 2>/dev/null
     rm -f "$NCPA_DIR/var/run"/*.pid 2>/dev/null
 
+    # Exit after stopping
     echo "Process stopped."
     exit 0
-}
-
-status_ncpa() {
-    if [ -f "$PID_FILE" ]; then
-        pid=$(cat "$PID_FILE")
-        if ps -p $pid > /dev/null 2>&1; then
-            echo "NCPA is running (PID: $pid)"
-            return 0
-        else
-            echo "NCPA is not running (stale PID file)"
-            return 1
-        fi
-    else
-        echo "NCPA is not running"
-        return 1
-    fi
 }
 
 killall_ncpa() {
@@ -160,6 +145,10 @@ killall_ncpa() {
         echo "Warning: Some NCPA processes may still be running:"
         ps -ef | grep -i ncpa | grep -v grep
     fi
+
+    # Exit after stopping
+    echo "Process stopped."
+    exit 0
 }
 
 # Trap signals
@@ -173,9 +162,24 @@ trap 'killall_ncpa' 9
 # Start the process initially
 start_ncpa
 
+# Allow some time for NCPA to initialize
+sleep 15
+
 # Wait in a loop for signals to be received
 # The trap commands above will interrupt this wait.
 echo "Manager is now waiting for signals. PID: $$"
-while true; do
+
+# Monitor NCPA processes
+ncpa_running=true
+while ncpa_running; do
+    ncpa_process_count=$(ps -ef | grep ncpa | grep start | wc -l)
+    
+    # Ensure NCPA processes are still running
+    if [ ncpa_process_count -ne 3 ]; then
+        echo "NCPA process has stopped unexpectedly, exiting manager."
+        ncpa_running=false
+        exit 1
+    fi
+
     sleep 60
 done
