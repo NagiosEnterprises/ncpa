@@ -80,7 +80,7 @@ echo "Installing cx_Freeze from source..."
 # Apply patches if necessary (not shown here)
 # Run setup.py
 # Finally use pip to install in venv
-$PYTHONBIN -m pip install $BUILD_DIR/test/cx_Freeze-8.4.1
+$PYTHONBIN -m pip install /usr/local/lib/python3.12/site-packages/cx_Freeze-8.4.1
 
 # Install patchelf directly to the system
 # Download patchelf source
