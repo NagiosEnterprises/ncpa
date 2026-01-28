@@ -171,15 +171,18 @@ echo "Manager is now waiting for signals. PID: $$"
 
 # Monitor NCPA processes
 ncpa_running=true
-while ncpa_running; do
+while $ncpa_running; do
 
-    # Optional: Check if NCPA process is still running
-    # ncpa_process_count=$(ps -ef | grep ncpa | grep start | wc -l)
-    # if [ ncpa_process_count -ne 3 ]; then
-    #     echo "NCPA process has stopped unexpectedly, exiting manager."
-    #     ncpa_running=false
-    #     exit 1
-    # fi
+    # Check if NCPA process is still running
+    ncpa_process_count=$(ps -ef | grep ncpa | grep start | wc -l)
+    if [ $ncpa_process_count -ne 3 ]; then
+        echo "NCPA process has stopped unexpectedly, exiting manager."
+        ncpa_running=false
+
+        # Stop remaining NCPA processes before exiting
+        #stop_ncpa
+        exit 1
+    fi
 
     sleep 60
 done
