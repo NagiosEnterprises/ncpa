@@ -106,6 +106,9 @@ stop_ncpa() {
     # Clean up any remaining PID files
     rm -f "$PID_FILE" 2>/dev/null
     rm -f "$NCPA_DIR/var/run"/*.pid 2>/dev/null
+
+    echo "Process stopped."
+    exit 0
 }
 
 status_ncpa() {
@@ -165,7 +168,7 @@ killall_ncpa() {
 trap 'stop_ncpa' 15
 
 # Trap SIGKILL to perform a forced stop
-trap 'killall_ncp' 9
+trap 'killall_ncpa' 9
 
 # Start the process initially
 start_ncpa
