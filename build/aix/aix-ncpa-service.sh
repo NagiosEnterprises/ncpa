@@ -166,20 +166,8 @@ sleep 15
 # The trap commands above will interrupt this wait.
 echo "Manager is now waiting for signals. PID: $$"
 
-# Monitor NCPA processes
-ncpa_running=true
-while $ncpa_running; do
-    # Check if NCPA processes are still running
-    ncpa_process_count=$(ps -ef | grep ncpa | grep start | wc -l)
-    if [ $ncpa_process_count -ne 3 ]; then
-        echo "NCPA process has stopped unexpectedly, exiting manager."
-        ncpa_running=false
-
-        # Stop remaining NCPA processes before exiting
-        #stop_ncpa
-        exit 1
-    fi
-
+# Loop and await signal to stop
+while true; do
     sleep 5
 done
 
