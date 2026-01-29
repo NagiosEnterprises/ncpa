@@ -172,4 +172,4 @@ while true; do
 done
 
 # Ensure cleanup on exit
-stop_ncpa
+# stop_ncpa
