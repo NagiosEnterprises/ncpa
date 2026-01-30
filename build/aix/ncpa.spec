@@ -44,7 +44,7 @@ if [ "$1" == "1" ]; then
     fi
     if ! lsuser nagios >/dev/null 2>&1;
     then
-        mkuser groups=nagios nagios
+        mkuser pgrp=nagios groups=nagios nagios
     fi
 elif [ "$1" = "2" ]; then
     # Upgrades require the daemons to be stopped
