@@ -14,6 +14,12 @@ def send_request(url, connection_timeout, **kwargs):
 
     # This will print the path to the CA bundle file
     logging.info(f"Requests CA bundle path: {requests.certs.where()}")
+
+    # Path to your custom CA bundle file
+    custom_ca_bundle_path = '/root/ca-bundle.pem'
+
+    # Verify using custom CA bundle if it exists
+    logging.info(f"Updated CA bundle path: {requests.certs.where()}")
     
     if url == "/":
         logging.error("Invalid URL: '/' is not a valid URL")
