@@ -4,7 +4,7 @@ Changelog
 ==================
 **Added**
 
-- Plaseholder for upcoming 3.3.0 release notes.
+- Added experimental support for AIX. - CPD
 
 3.2.3 - 1/22/2026
 ==================
