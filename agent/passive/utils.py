@@ -12,6 +12,8 @@ def send_request(url, connection_timeout, **kwargs):
     :rtype: requests.models.Response
     """
 
+    # This will print the path to the CA bundle file
+    logging.info(f"Requests CA bundle path: {requests.certs.where()}")
     
     if url == "/":
         logging.error("Invalid URL: '/' is not a valid URL")
