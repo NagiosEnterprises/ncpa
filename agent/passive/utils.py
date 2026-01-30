@@ -25,8 +25,9 @@ def send_request(url, connection_timeout, **kwargs):
 
     # Path to your custom CA bundle file
     custom_ca_bundle_path = '/root/ca-bundle.pem'
+    os.environ['REQUESTS_CA_BUNDLE'] = custom_ca_bundle_path
 
-    # Verify using custom CA bundle if it exists
+    # Verify using custom CA bundle if it existsS
     logging.info(f"Updated CA bundle path: {requests.certs.where()}")
     
     if url == "/":
