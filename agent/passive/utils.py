@@ -28,7 +28,7 @@ def send_request(url, connection_timeout, **kwargs):
     os.environ['REQUESTS_CA_BUNDLE'] = custom_ca_bundle_path
 
     # Verify using custom CA bundle
-    logging.info(f"Updated CA bundle path: {requests.certs.where()}")
+    logging.info(f"certifi updated CA path: {certifi.where()}")
 
     # Verify os.environ is set correctly
     logging.info(f"Updated REQUESTS_CA_BUNDLE env var: {os.environ.get('REQUESTS_CA_BUNDLE')}")
