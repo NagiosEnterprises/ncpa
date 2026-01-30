@@ -484,8 +484,6 @@ class Daemon():
             self.logger.debug("Checking temp dir for chown: %s", tmpdir)
             for file in os.listdir(tmpdir):
                 full_path = os.path.join(tmpdir, file)
-                self.logger.debug("Checking temp file for chown: %s", full_path)
-                self.logger.debug("Temp file is a file: %s", os.path.isfile(full_path))
 
                 if os.path.isfile(full_path):
                     if file.startswith('ncpa-') or file.endswith('.pem'):
@@ -866,10 +864,13 @@ class Daemon():
         self.logger.debug("Daemon - check_pid_writable()")
 
         if not self.pidfile:
+            self.logger.debug("Daemon - check_pid_writable() - No pidfile specified, skipping check")
             return
         if os.path.exists(self.pidfile):
+            self.logger.debug("Daemon - check_pid_writable() - Pidfile exists, checking file itself: %s", self.pidfile)
             check = self.pidfile
         else:
+            self.logger.debug("Daemon - check_pid_writable() - Pidfile does not exist, checking directory: %s", self.pidfile)
             check = os.path.dirname(self.pidfile)
         if not os.access(check, os.W_OK):
             msg = 'Daemon - check_pid_writable() - unable to write to pidfile %s' % self.pidfile

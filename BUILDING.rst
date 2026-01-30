@@ -384,6 +384,49 @@ The Solaris build requires the NCPA source to already be built (frozen) before p
 
 This will automatically stop all NCPA processes and clean up service configurations.
 
+Building on AIX
+===================
+
+NCPA can be built on AIX 7.4 TL4 or higher systems. The build process creates a ppc rpm package (.rpm) that can be installed using the standard AIX dnf package management tools.
+
+Prerequisites
+------------
+
+You will need the following prerequisites installed on your AIX system before building NCPA:
+
+* python3.12 (installed from IBM AIX Toolbox)
+* patchelf (compiled from source for AIX and binary installed to /usr/local/bin/patchelf)
+* cx_Freeze 8.4.1 (compiled from source for AIX and directory copied to /usr/local/lib/python3.12/site-packages/cx_Freeze-8.4.1) 
+* There is also a cx_Freeze patch required to make cx_Freeze work on AIX, see https://community.ibm.com/community/user/discussion/how-to-install-cx-freeze-on-aix
+
+**Clone the repository**::
+
+  cd ~
+  git clone https://github.com/NagiosEnterprises/ncpa
+
+**Execute the build script with sudo**::
+
+  cd ~/ncpa/build
+  sudo ./build.sh
+
+**Service Management**
+
+NCPA should install an AIX SRC service that can be managed using the following commands:
+
+**Start NCPA**::
+
+  startsrc -s ncpa
+
+**Stop NCPA**::
+
+  stopsrc -s ncpa
+
+**Check NCPA status**::
+
+  lssrc -s ncpa
+
+
+
 Building Tips
 =============
 

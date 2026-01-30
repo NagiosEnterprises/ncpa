@@ -410,7 +410,7 @@ activate_venv() {
     export PYTHON_EXECUTABLE="$VENV_PYTHON"
     export PIP_EXECUTABLE="$VENV_PIP"
     export PATH="$(dirname "$VENV_PYTHON"):$PATH"
-    
+
     # Verify activation
     if ! "$VENV_PYTHON" -c "import sys; assert sys.prefix != sys.base_prefix" 2>/dev/null; then
         error "Virtual environment activation failed"
@@ -421,6 +421,8 @@ activate_venv() {
     log "  Python: $VENV_PYTHON"
     log "  Pip: $VENV_PIP"
     log "  Version: $("$VENV_PYTHON" --version 2>&1)"
+    log "  Path: $PATH"
+    log "  Pip modules currently installed: $("$VENV_PIP" list --format=columns)"
     
     return 0
 }
@@ -475,6 +477,9 @@ install_requirements() {
             "solaris")
                 req_file="$REQUIREMENTS_DIR/require-solaris.txt"
                 ;;
+            "aix")
+                req_file="$REQUIREMENTS_DIR/require-aix.txt"
+                ;;
             *)
                 req_file="$REQUIREMENTS_DIR/require.txt"
                 ;;
@@ -504,7 +509,7 @@ install_requirements() {
             fi
         fi
     done
-    
+
     error "Failed to install requirements after $max_retries attempts"
     return 1
 }

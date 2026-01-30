@@ -41,7 +41,7 @@ PLATFORM_VERSIONS = {
         "openssl_major": "3"
     },
     "AIX": {
-        "python": os.environ.get("AIX_PYTHONVER", "3.6.15"),
+        "python": os.environ.get("AIX_PYTHONVER", "3.12.12"),
         "openssl": os.environ.get("AIX_SSLVER", "1.1.1"),
         "zlib": os.environ.get("AIX_ZLIBVER", "1.2.11"),
         "openssl_major": "1"

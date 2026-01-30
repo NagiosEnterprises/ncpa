@@ -284,6 +284,7 @@ if [ "$UNAME" == "Linux" ]; then
 elif [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "Solaris" ]; then
     . $BUILD_DIR/solaris/setup.sh
 elif [ "$UNAME" == "AIX" ]; then
+    export PATH=/usr/local/bin:$PATH
     . $BUILD_DIR/aix/setup.sh
 elif [ "$UNAME" == "Darwin" ]; then
     . $BUILD_DIR/macos/setup.sh
@@ -785,6 +786,7 @@ esac'
         echo "Attempting to build cx_Freeze..."
         echo "Python binary: $PYTHONBIN"
         $PYTHONBIN setup.py build_exe | sudo tee $BUILD_DIR/build.log
+        echo "cx_Freeze build completed with exit code: $?"
     fi
 
 
@@ -801,7 +803,7 @@ esac'
     
     # Find the cx_Freeze build directory (it varies by platform)
     echo "Looking for cx_Freeze build directory in: $AGENT_DIR/build"
-    if [ "$UNAME" == "SunOS" ]; then
+    if [ "$UNAME" == "SunOS" ] || [ "$UNAME" == "AIX" ]; then
         # Solaris find doesn't support -maxdepth, use alternative approach
         BUILD_EXE_DIR=$(find "$AGENT_DIR/build" -type d -name "exe.*" | head -1)
     else
@@ -962,6 +964,7 @@ esac'
     fi
 
     # Set permissions (original working approach)
+    echo -e "\nSetting permissions..."
     sudo chmod -R g+r $BUILD_DIR/ncpa
     sudo chmod -R a+r $BUILD_DIR/ncpa
     sudo chown -R nagios:nagios $BUILD_DIR/ncpa/var

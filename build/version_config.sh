@@ -40,7 +40,7 @@ case "$UNAME" in
         ;;
     "AIX")
         # AIX versions (may need older versions for compatibility)
-        PYTHONVER="${AIX_PYTHONVER:-3.6.15}"
+        PYTHONVER="${AIX_PYTHONVER:-3.12.12}"
         SSLVER="${AIX_SSLVER:-1.1.1}"
         ZLIBVER="${AIX_ZLIBVER:-1.2.11}"
         OPENSSL_MAJOR="1"
