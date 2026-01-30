@@ -1,5 +1,11 @@
 Changelog
 +++++++++
+3.3.0 - 2/xx/2026
+==================
+**Added**
+
+- Added experimental support for AIX. - CPD
+
 3.2.3 - 1/22/2026
 ==================
 **Added**
