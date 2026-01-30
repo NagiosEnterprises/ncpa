@@ -1,6 +1,7 @@
 import requests
 import requests.exceptions
 import os
+import certifi
 from ncpa import passive_logger as logging
 
 
@@ -18,6 +19,9 @@ def send_request(url, connection_timeout, **kwargs):
 
     # Print the value of the environment variable (might be None if not set)
     logging.info(f"REQUESTS_CA_BUNDLE env var: {os.environ.get('REQUESTS_CA_BUNDLE')}")
+
+    # Print the path to certifi's CA bundle
+    logging.info(f"Certifi CA bundle path: {certifi.where()}")
 
     # Path to your custom CA bundle file
     custom_ca_bundle_path = '/root/ca-bundle.pem'
