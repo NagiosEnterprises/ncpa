@@ -1,7 +1,6 @@
 import requests
 import requests.exceptions
 import os
-import certifi
 from ncpa import passive_logger as logging
 
 
@@ -14,31 +13,23 @@ def send_request(url, connection_timeout, **kwargs):
     :rtype: requests.models.Response
     """
 
-    # This will print the path to the CA bundle file
-    logging.info(f"Requests CA bundle path: {requests.certs.where()}")
-
-    # Print the value of the environment variable (might be None if not set)
-    logging.info(f"REQUESTS_CA_BUNDLE env var: {os.environ.get('REQUESTS_CA_BUNDLE')}")
-
-    # Print the path to certifi's CA bundle
-    logging.info(f"Certifi CA bundle path: {certifi.where()}")
-
     # Path to your custom CA bundle file
-    custom_ca_bundle_path = '/tmp/ca-bundle.pem'
-    os.environ['REQUESTS_CA_BUNDLE'] = custom_ca_bundle_path
+    CUSTOM_CA_BUNDLE = '/tmp/ca-bundle.pem'
 
-    # Verify using custom CA bundle
-    logging.info(f"certifi updated CA path: {certifi.where()}")
 
-    # Verify os.environ is set correctly
-    logging.info(f"Updated REQUESTS_CA_BUNDLE env var: {os.environ.get('REQUESTS_CA_BUNDLE')}")
-    
     if url == "/":
         logging.error("Invalid URL: '/' is not a valid URL")
         return None
 
     try:
-        r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=True, allow_redirects=True)
+        # Verify if custom CA bundle exists and is readable
+        if os.path.isfile(CUSTOM_CA_BUNDLE) and os.access(CUSTOM_CA_BUNDLE, os.R_OK):
+            logging.debug("Using custom CA bundle for SSL verification: %s", CUSTOM_CA_BUNDLE)
+            r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=CUSTOM_CA_BUNDLE, allow_redirects=True)
+        else:
+            logging.debug("Using default certifi CA bundle for SSL verification")
+            r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=True, allow_redirects=True)
+
         logging.debug('Content response from URL: %s' % str(r.content))
         return r.content
     except requests.exceptions.SSLError as ssl_err:
