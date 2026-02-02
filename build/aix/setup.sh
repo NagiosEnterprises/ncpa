@@ -48,7 +48,7 @@ install_prereqs() {
     dnf -y install python3.12-pip python3.12-devel 
 
     echo "----------------------------------------"
-    echo "Building and installing additional tools from source..."
+    echo "Adding additional tools from source..."
     build_cxFreeze
     build_patchelf
     echo "----------------------------------------"
@@ -58,7 +58,7 @@ install_prereqs() {
 
 build_cxFreeze() {
     # Install cx_Freeze from source to avoid AIX wheel issues
-    echo "Installing cx_Freeze from source..."
+    echo "Building cx_Freeze from source..."
 
     # Check if cx_Freeze has already completed build
     if [ -d "$BUILD_DIR/cx_Freeze-8.4.1" ]; then
