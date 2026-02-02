@@ -39,51 +39,18 @@ install_prereqs() {
     echo "    - Assuming Python 3.12 is the target version for NCPA build"
     dnf -y install python3.12-pip python3.12-devel 
 
-    echo "System prerequisites installation complete."
-
     echo "----------------------------------------"
-    echo " You will need to download and compile the following manually:"
-    echo " - patchelf (download source, compile, install to /usr/local/bin)"
-    echo " - cx_Freeze (download source, apply AIX patches if needed, run setup.py)"
-    echo "----------------------------------------"
-
     echo "Building and installing additional tools from source..."
     build_cxFreeze
     build_patchelf
+    echo "----------------------------------------"
 
-    echo "AIX system prerequisites installation finished."
+    echo "AIX system prerequisites installation finished successfully."
 }
-
-#
-# update_py_packages() {
-#     # Check if we're in virtual environment mode
-#     if [[ -n "$VENV_MANAGER" && -n "$VENV_NAME" && "$SKIP_PYTHON" == "1" ]]; then
-#         echo "    - Using virtual environment approach via venv_manager"
-#         if ! "$VENV_MANAGER" install_packages; then
-#             echo "ERROR! Failed to install Python packages via venv_manager"
-#             return 1
-#         fi
-        
-#         # Get the virtual environment Python executable
-#         local venv_python=$("$VENV_MANAGER" get_python_path)
-#         if [[ -z "$venv_python" ]]; then
-#             echo "ERROR! Could not get virtual environment Python path"
-#             return 1
-#         fi
-        
-#         # Update our Python commands to use the venv Python
-#         export PYTHONBIN="$venv_python"
-#         echo "    - Updated PYTHONBIN to virtual environment: $PYTHONBIN"
-#     else
-#         echo "    - Using legacy system Python approach"
-#         echo "Skipping update packages, manually update them with:"
-#         echo "$PYTHONBIN -m pip install -r $BUILD_DIR/resources/require-aix.txt --upgrade"
-#     fi
-# }
 
 build_cxFreeze() {
     # Install cx_Freeze from source to avoid AIX wheel issues
-    echo "Installing cx_Freeze from source..."
+    echo "**************** Installing cx_Freeze from source ****************"
 
     # Check if cx_Freeze has already been patched and built
     # NEEDS MORE WORK HERE TO VERIFY BUILD
@@ -151,7 +118,7 @@ build_cxFreeze() {
 }
 
 build_patchelf() {
-    echo "Building and installing patchelf from source..."
+    echo "**************** Building and installing patchelf from source ****************"
 
     # Check if patchelf is already installed
     if command -v /usr/local/bin/patchelf >/dev/null 2>&1; then
@@ -202,10 +169,6 @@ build_patchelf() {
     echo "Changing to patchelf source directory..."
     cd patchelf-0.18.0
 
-    # Configure, compile, and install patchelf
-    # echo "bootstrapping patchelf..."
-    # ./bootstrap.sh
-
     echo "Configuring patchelf..."
     ./configure --prefix=/usr/local
 
@@ -248,5 +211,4 @@ if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     # Use pip to install cx_Freeze into the environment
     echo "***** aix/setup.sh - Installing cx_Freeze into the environment"
     $PYTHONBIN -m pip install $BUILD_DIR/cx_Freeze-8.4.1
-
 fi
