@@ -227,6 +227,8 @@ build_patchelf() {
     echo "patchelf build and installation complete."
 }
 
+# Execute the prerequisite installation during setup
+install_prereqs
 
 # This must be outside of install_prereqs(), so it will be executed during workflow build.
 
@@ -240,8 +242,9 @@ set -e
 echo "***** aix/setup.sh - Installing Python requirements in virtual environment if applicable"
 if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     "$VENV_MANAGER" install-requirements
-
+    
     # Use pip to install cx_Freeze into the environment
     echo "***** aix/setup.sh - Installing cx_Freeze into the environment"
     $PYTHONBIN -m pip install $BUILD_DIR/cx_Freeze-8.4.1
+
 fi
