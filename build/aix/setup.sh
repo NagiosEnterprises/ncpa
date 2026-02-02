@@ -86,9 +86,8 @@ build_cxFreeze() {
     echo "Installing cx_Freeze from source..."
 
     # Check if cx_Freeze has already been patched and built
+    # NEEDS MORE WORK HERE TO VERIFY BUILD
     if [ -d "$BUILD_DIR/cx_Freeze-8.4.1" ]; then
-        echo "cx_Freeze source directory already exists. Skipping build."
-
         # Verify if setup.py has the AIX patch applied
         if cmp -s "$BUILD_DIR/aix/setup_cxFreeze_aix.py" "$BUILD_DIR/cx_Freeze-8.4.1/setup.py"; then
             echo "cx_Freeze already built. Skipping build."
@@ -148,7 +147,7 @@ build_cxFreeze() {
     # Return to original directory
     cd ..
 
-    echo "cx_Freeze installation complete."
+    echo "**************** cx_Freeze build completed successfully. ****************"
 }
 
 build_patchelf() {
@@ -201,8 +200,8 @@ build_patchelf() {
     cd patchelf-0.18.0
 
     # Configure, compile, and install patchelf
-    echo "bootstrapping patchelf..."
-    ./bootstrap.sh
+    # echo "bootstrapping patchelf..."
+    # ./bootstrap.sh
 
     echo "Configuring patchelf..."
     ./configure --prefix=/usr/local
@@ -224,7 +223,7 @@ build_patchelf() {
     # Return to original directory
     cd ..
 
-    echo "patchelf build and installation complete."
+    echo "**************** patchelf build and installation completed successfully. ****************"
 }
 
 # Execute the prerequisite installation during setup
