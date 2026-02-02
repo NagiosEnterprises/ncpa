@@ -43,7 +43,7 @@ install_prereqs() {
 
     echo "----------------------------------------"
     echo " You will need to download and compile the following manually:"
-    echo " - patchelf (download source, compile, insall to /usr/local/bin)"
+    echo " - patchelf (download source, compile, install to /usr/local/bin)"
     echo " - cx_Freeze (download source, apply AIX patches if needed, run setup.py)"
     echo "----------------------------------------"
 
@@ -86,32 +86,49 @@ build_cxFreeze() {
     echo "Installing cx_Freeze from source..."
 
     # Check if cx_Freeze is already installed
-    if $PYTHONBIN -m pip show cx_Freeze >/dev/null 2>&1; then
-        echo "cx_Freeze is already installed. Skipping build."
-        return 0
-    fi
+    # if $PYTHONBIN -m pip show cx_Freeze >/dev/null 2>&1; then
+    #     echo "cx_Freeze is already installed. Skipping build."
+    #     return 0
+    # fi
 
     # Otherwise, proceed to download and build cx_Freeze
 
-    # Download and extract cx_Freeze source
-    wget https://github.com/marcelotduarte/cx_Freeze/archive/refs/tags/8.4.1.tar.gz -O /tmp/cx_Freeze-8.4.1.tar.gz
-
-    if [ ! -f "/tmp/cx_Freeze-8.4.1.tar.gz" ]; then
-        echo "ERROR! cx_Freeze source tarball not found."
-        return 1
+    # Check if cx_Freeze source tarball is already downloaded
+    echo "Checking for existing cx_Freeze source tarball..."
+    if [ -d "/tmp/cx_Freeze-8.4.1.tar.gz" ]; then
+        echo "cx_Freeze download archive already exists. Skipping download."
     else
-        echo "cx_Freeze source tarball downloaded."
+        # Download cx_Freeze source
+        echo "Downloading cx_Freeze source..."
+        wget https://github.com/marcelotduarte/cx_Freeze/archive/refs/tags/8.4.1.tar.gz -O /tmp/cx_Freeze-8.4.1.tar.gz
+
+        # Verify download
+        if [ ! -f "/tmp/cx_Freeze-8.4.1.tar.gz" ]; then
+            echo "ERROR! cx_Freeze source tarball not found."
+            return 1
+        else
+            echo "cx_Freeze source tarball downloaded successfully."
+        fi
     fi
 
-    gunzip -c /tmp/cx_Freeze-8.4.1.tar.gz | tar -xvf -
-
-    if [ ! -d "cx_Freeze-8.4.1" ]; then
-        echo "ERROR! cx_Freeze source directory not found after extraction."
-        return 1
+    # Check if cx_Freeze source is already extracted
+    echo "Checking for existing cx_Freeze source directory..."
+    if [ -d "$BUILD_DIR/cx_Freeze-8.4.1" ]; then
+        echo "cx_Freeze source directory already exists. Skipping extraction."
     else
-        echo "cx_Freeze source directory found."
+        echo "Extracting cx_Freeze source..."
+        gunzip -c /tmp/cx_Freeze-8.4.1.tar.gz | tar -xvf -
+
+        # Verify extraction
+        if [ ! -d "cx_Freeze-8.4.1" ]; then
+            echo "ERROR! cx_Freeze source directory not found after extraction."
+            return 1
+        else
+            echo "cx_Freeze source extracted successfully."
+        fi
     fi
 
+    # Change to cx_Freeze source directory
     echo "Changing to cx_Freeze source directory..."
     cd cx_Freeze-8.4.1
 
@@ -129,6 +146,8 @@ build_cxFreeze() {
 
     # Return to original directory
     cd ..
+
+    echo "cx_Freeze installation complete."
 }
 
 build_patchelf() {
@@ -142,30 +161,46 @@ build_patchelf() {
 
     # Otherwise, proceed to download and build patchelf
 
-    # Download patchelf source
-    wget https://github.com/NixOS/patchelf/releases/download/0.18.0/patchelf-0.18.0.tar.gz -O /tmp/patchelf-0.18.0.tar.gz
-
-    if [ ! -f "/tmp/patchelf-0.18.0.tar.gz" ]; then
-        echo "ERROR! patchelf source tarball not found."
-        return 1
+    # Check if patchelf source tarball is already downloaded
+    echo "Checking for existing patchelf source tarball..."
+    if [ -d "/tmp/patchelf-0.18.0.tar.gz" ]; then
+        echo "patchelf download archive already exists. Skipping download."
     else
-        echo "patchelf source tarball downloaded."
+        # Download patchelf source
+        echo "Downloading patchelf source..."
+        wget https://github.com/NixOS/patchelf/releases/download/0.18.0/patchelf-0.18.0.tar.gz -O /tmp/patchelf-0.18.0.tar.gz
+
+        # Verify download
+        if [ ! -f "/tmp/patchelf-0.18.0.tar.gz" ]; then
+            echo "ERROR! patchelf source tarball not found."
+            return 1
+        else
+            echo "patchelf source tarball downloaded."
+        fi
     fi
 
-    gunzip -c /tmp/patchelf-0.18.0.tar.gz | tar -xvf -
-
-    if [ ! -d "patchelf-0.18.0" ]; then
-        echo "ERROR! patchelf source directory not found after extraction."
-        return 1
+    # Check if patchelf source is already extracted
+    echo "Checking for existing patchelf source directory..."
+    if [ -d "$BUILD_DIR/patchelf-0.18.0" ]; then
+        echo "patchelf source directory already exists. Skipping extraction."
     else
-        echo "patchelf source directory found."
+        echo "Extracting patchelf source..."
+        gunzip -c /tmp/patchelf-0.18.0.tar.gz | tar -xvf -
+
+        if [ ! -d "patchelf-0.18.0" ]; then
+            echo "ERROR! patchelf source directory not found after extraction."
+            return 1
+        else
+            echo "patchelf source directory found."
+        fi
     fi
 
+    # Change to patchelf source directory
     echo "Changing to patchelf source directory..."
     cd patchelf-0.18.0
 
     # Configure, compile, and install patchelf
-    echo "bootstraping patchelf..."
+    echo "bootstrapping patchelf..."
     ./bootstrap.sh
 
     echo "Configuring patchelf..."
@@ -187,6 +222,8 @@ build_patchelf() {
 
     # Return to original directory
     cd ..
+
+    echo "patchelf build and installation complete."
 }
 
 
