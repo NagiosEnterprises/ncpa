@@ -91,6 +91,17 @@ build_cxFreeze() {
     #     return 0
     # fi
 
+    # Check if cx_Freeze has already been patched and built
+    if [ -d "$BUILD_DIR/cx_Freeze-8.4.1" ]; then
+        echo "cx_Freeze source directory already exists. Skipping build."
+
+        # Verify if setup.py has the AIX patch applied
+        if cmp -s "$BUILD_DIR/aix/setup_cxFreeze_aix.py" "$BUILD_DIR/cx_Freeze-8.4.1/setup.py"; then
+            echo "cx_Freeze already built. Skipping build."
+            return 0
+        fi
+    fi
+
     # Otherwise, proceed to download and build cx_Freeze
 
     # Check if cx_Freeze source tarball is already downloaded
@@ -139,10 +150,6 @@ build_cxFreeze() {
     # Build cx_Freeze, we should be in the venv
     echo "Building cx_Freeze with AIX patch..."
     $PYTHONBIN setup.py build
-
-    # Finally use pip to install in venv
-    echo "Installing cx_Freeze into the environment..."
-    $PYTHONBIN -m pip install $BUILD_DIR/cx_Freeze-8.4.1
 
     # Return to original directory
     cd ..
@@ -206,13 +213,13 @@ build_patchelf() {
     echo "Configuring patchelf..."
     ./configure --prefix=/usr/local
 
-    # Compile patchelf
+    # Compile and install patchelf
     echo "Compiling patchelf..."
     make
     echo "Installing patchelf to /usr/local/bin..."
     make install
 
-    # verify installation
+    # Verify installation
     if command -v /usr/local/bin/patchelf >/dev/null 2>&1; then
         echo "patchelf installed successfully."
     else
@@ -226,6 +233,10 @@ build_patchelf() {
     echo "patchelf build and installation complete."
 }
 
+
+# Use pip to install cx_Freeze into the environment
+echo "***** aix/setup.sh - Installing cx_Freeze into the environment"
+$PYTHONBIN -m pip install $BUILD_DIR/cx_Freeze-8.4.1
 
 # This must be outside of install_prereqs(), so it will be executed during workflow build.
 
