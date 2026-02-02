@@ -404,10 +404,10 @@ You will need the following prerequisites installed on your AIX system before bu
   cd ~
   git clone https://github.com/NagiosEnterprises/ncpa
 
-**Execute the build script with sudo**::
+**Execute the build script as root**::
 
   cd ~/ncpa/build
-  sudo ./build.sh
+  ./build.sh
 
 **Service Management**
 
