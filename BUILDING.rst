@@ -12,6 +12,8 @@ This document contains instructions for:
 
 * `Building on Solaris <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-solaris>`_
 
+* `Building on AIX <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-aix>`_
+
 *WARNING*: DO THIS ON A DEDICATED VM OR A NON-PRODUCTION SYSTEM!
 
 THE BUILD SCRIPT WILL MAKE CHANGES TO THE SYSTEM THAT MAY BE INCOMPATIBLE WITH OTHER SOFTWARE
