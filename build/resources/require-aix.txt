@@ -12,3 +12,4 @@ cffi
 appdirs
 packaging
 kafka-python
+filelock
