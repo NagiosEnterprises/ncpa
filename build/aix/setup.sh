@@ -58,13 +58,13 @@ install_prereqs() {
 
 build_cxFreeze() {
     # Install cx_Freeze from source to avoid AIX wheel issues
-    echo "**************** Installing cx_Freeze from source ****************"
+    echo "Installing cx_Freeze from source..."
 
     # Check if cx_Freeze has already completed build
     if [ -d "$BUILD_DIR/cx_Freeze-8.4.1" ]; then
         # Verify that the AIX build output exists
         if [ -f "$BUILD_DIR/cx_Freeze-8.4.1/build/lib.aix-ppc64-cpython-312/cx_Freeze/bases/console-cpython-312" ]; then
-            echo "cx_Freeze bases already completed build. Skipping build step."
+            echo "cx_Freeze has already completed the build. Skipping build."
             echo "If something is wrong with cx_Freeze, please delete the $BUILD_DIR/cx_Freeze-8.4.1 directory to build again."
             return 0
         fi
@@ -122,11 +122,11 @@ build_cxFreeze() {
     # Return to original directory
     cd ..
 
-    echo "**************** cx_Freeze build completed successfully. ****************"
+    echo "cx_Freeze build completed successfully."
 }
 
 build_patchelf() {
-    echo "**************** Building and installing patchelf from source ****************"
+    echo "Building and installing patchelf from source..."
 
     # Check if patchelf is already installed
     if command -v /usr/local/bin/patchelf >/dev/null 2>&1; then
@@ -197,7 +197,7 @@ build_patchelf() {
     # Return to original directory
     cd ..
 
-    echo "**************** patchelf build and installation completed successfully. ****************"
+    echo "patchelf build and installation completed successfully."
 }
 
 # Execute the prerequisite installation during setup
