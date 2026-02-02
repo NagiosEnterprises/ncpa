@@ -99,7 +99,7 @@ build_cxFreeze() {
 
     # Check if cx_Freeze source tarball is already downloaded
     echo "Checking for existing cx_Freeze source tarball..."
-    if [ -d "/tmp/cx_Freeze-8.4.1.tar.gz" ]; then
+    if [ -f "/tmp/cx_Freeze-8.4.1.tar.gz" ]; then
         echo "cx_Freeze download archive already exists. Skipping download."
     else
         # Download cx_Freeze source
@@ -163,7 +163,7 @@ build_patchelf() {
 
     # Check if patchelf source tarball is already downloaded
     echo "Checking for existing patchelf source tarball..."
-    if [ -d "/tmp/patchelf-0.18.0.tar.gz" ]; then
+    if [ -f "/tmp/patchelf-0.18.0.tar.gz" ]; then
         echo "patchelf download archive already exists. Skipping download."
     else
         # Download patchelf source
@@ -194,6 +194,9 @@ build_patchelf() {
             echo "patchelf source directory found."
         fi
     fi
+
+    # Export necessary build environment variables
+    export MAKE="gmake"
 
     # Change to patchelf source directory
     echo "Changing to patchelf source directory..."
