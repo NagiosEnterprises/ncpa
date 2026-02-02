@@ -36,6 +36,14 @@ install_prereqs() {
     dnf -y update
     dnf -y install sudo gcc gcc-c++ gcc-cpp make cmake automake libffi-devel
 
+    # Ensure Python 3.12 is installed
+    if command -v python3.12 >/dev/null 2>&1; then
+        echo "    - Detected Python 3.12 installation."
+    else
+        echo "ERROR! Python 3.12 not found. Please install Python 3.12 from IBM AIX Toolbox and try again."
+        return 1
+    fi
+
     echo "    - Assuming Python 3.12 is the target version for NCPA build"
     dnf -y install python3.12-pip python3.12-devel 
 
@@ -52,12 +60,12 @@ build_cxFreeze() {
     # Install cx_Freeze from source to avoid AIX wheel issues
     echo "**************** Installing cx_Freeze from source ****************"
 
-    # Check if cx_Freeze has already been patched and built
-    # NEEDS MORE WORK HERE TO VERIFY BUILD
+    # Check if cx_Freeze has already completed build
     if [ -d "$BUILD_DIR/cx_Freeze-8.4.1" ]; then
-        # Verify if setup.py has the AIX patch applied
-        if cmp -s "$BUILD_DIR/aix/setup_cxFreeze_aix.py" "$BUILD_DIR/cx_Freeze-8.4.1/setup.py"; then
-            echo "cx_Freeze already built. Skipping build."
+        # Verify that the AIX build output exists
+        if [ -f "$BUILD_DIR/cx_Freeze-8.4.1/build/lib.aix-ppc64-cpython-312/cx_Freeze/bases/console-cpython-312" ]; then
+            echo "cx_Freeze bases already completed build. Skipping build step."
+            echo "If something is wrong with cx_Freeze, please delete the $BUILD_DIR/cx_Freeze-8.4.1 directory to build again."
             return 0
         fi
     fi
