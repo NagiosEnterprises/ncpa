@@ -135,6 +135,10 @@ class ServiceNode(listener.nodes.LazyNode):
             if isinstance(label, bytes):
                 label = label.decode()
 
+
+            # log variables and types for debugging
+            logging.debug('pid: %s (%s), status: %s (%s), label: %s (%s)' % (pid, type(pid), status, type(status), label, type(label)))
+
             if pid == '-':
                 services[label] = 'stopped'
             elif isinstance(pid, int): # pid is a number
