@@ -126,13 +126,19 @@ class ServiceNode(listener.nodes.LazyNode):
         status.readline()
 
         # Logging debug info
-        logging.debug("macOS launchctl list output:")
-        logging.debug(status.read().decode())
-        status.seek(0)
-        status.readline()  # Skip header again
+        # logging.debug("macOS launchctl list output:")
+        # logging.debug(status.read().decode())
 
         for line in status.readlines():
             pid, status, label = line.split()
+
+            if isinstance(pid, bytes):
+                pid = pid.decode()
+            if isinstance(status, bytes):
+                status = status.decode()
+            if isinstance(label, bytes):
+                label = label.decode()
+
             if pid == '-':
                 services[label] = 'stopped'
             elif status == '-':
