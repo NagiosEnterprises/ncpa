@@ -12,6 +12,8 @@ This document contains instructions for:
 
 * `Building on Solaris <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-solaris>`_
 
+* `Building on AIX <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-aix>`_
+
 *WARNING*: DO THIS ON A DEDICATED VM OR A NON-PRODUCTION SYSTEM!
 
 THE BUILD SCRIPT WILL MAKE CHANGES TO THE SYSTEM THAT MAY BE INCOMPATIBLE WITH OTHER SOFTWARE
@@ -394,20 +396,28 @@ Prerequisites
 
 You will need the following prerequisites installed on your AIX system before building NCPA:
 
+* dnf (AIX package manager)
 * python3.12 (installed from IBM AIX Toolbox)
-* patchelf (compiled from source for AIX and binary installed to /usr/local/bin/patchelf)
-* cx_Freeze 8.4.1 (compiled from source for AIX and directory copied to /usr/local/lib/python3.12/site-packages/cx_Freeze-8.4.1) 
-* There is also a cx_Freeze patch required to make cx_Freeze work on AIX, see https://community.ibm.com/community/user/discussion/how-to-install-cx-freeze-on-aix
+* git
 
 **Clone the repository**::
 
   cd ~
   git clone https://github.com/NagiosEnterprises/ncpa
 
-**Execute the build script with sudo**::
+**Execute the build script as root**::
 
   cd ~/ncpa/build
-  sudo ./build.sh
+  ./build.sh
+
+**Install on the target AIX server**
+Copy the resulting ``~/ncpa/build/ncpa-3.X.X-latest.ppc.rpm`` to the desired server and install using::
+
+  dnf localinstall ncpa-3.X.X-latest.ppc.rpm
+
+**Upgrading Note**
+
+Upgrades from NCPA 2.x to 3.x on AIX are not supported at this time. Please uninstall NCPA 2.x before installing NCPA 3.x.  
 
 **Service Management**
 
