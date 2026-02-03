@@ -8,7 +8,7 @@ Changelog
 
 **Bug Fixes** 
 
-- Fixed an issue on MacOS systems where the services endpoint was not working correctly. - CPD
+- Fixed an issue on MacOS systems where the services endpoint was not working correctly. [GH#669] - CPD
 
 3.2.3 - 1/22/2026
 ==================
