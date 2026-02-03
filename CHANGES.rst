@@ -4,7 +4,7 @@ Changelog
 ==================
 **Added**
 
-- Added experimental support for AIX. - CPD
+- Added experimental support for AIX 7.3 builds. [GH#923]- CPD
 
 3.2.3 - 1/22/2026
 ==================
