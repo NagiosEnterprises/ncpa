@@ -125,6 +125,12 @@ class ServiceNode(listener.nodes.LazyNode):
         # The first line is the header
         status.readline()
 
+        # Logging debug info
+        logging.debug("macOS launchctl list output:")
+        logging.debug(status.read().decode())
+        status.seek(0)
+        status.readline()  # Skip header again
+
         for line in status.readlines():
             pid, status, label = line.split()
             if pid == '-':
