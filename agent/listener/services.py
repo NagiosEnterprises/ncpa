@@ -125,10 +125,6 @@ class ServiceNode(listener.nodes.LazyNode):
         # The first line is the header
         status.readline()
 
-        # Logging debug info
-        # logging.debug("macOS launchctl list output:")
-        # logging.debug(status.read().decode())
-
         for line in status.readlines():
             pid, status, label = line.split()
 
@@ -141,7 +137,7 @@ class ServiceNode(listener.nodes.LazyNode):
 
             if pid == '-':
                 services[label] = 'stopped'
-            elif status == '-':
+            elif isinstance(pid, int): # pid is a number
                 services[label] = 'running'
         return services
 
@@ -267,10 +263,6 @@ class ServiceNode(listener.nodes.LazyNode):
         service.wait()
         status.seek(0)
         status.readline()  # Read first line (header)
-
-        # Logging debug info
-        # logging.debug("AIX lssrc -a output:")
-        # logging.debug(status.read().decode())
 
         for line in status.readlines():
             ls = line.split()
