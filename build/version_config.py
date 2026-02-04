@@ -152,7 +152,7 @@ def get_solaris_lib_paths():
         ('/usr/lib/libcrypto.so', '/opt/csw/lib/libcrypto.so', 'lib/libcrypto.so'),
         ('/usr/lib/libffi.so', '/opt/csw/lib/libffi.so', 'lib/libffi.so'),
         ('/usr/lib/libz.so', '/opt/csw/lib/libz.so', 'lib/libz.so'),
-        ('/usr/lib/amd64/libstdc++.so.6', '/opt/csw/lib/libstdc++.so.6', 'lib/libstdc++.so.6')
+        ('/usr/lib/amd64/libstdc++.so.6', '/opt/csw/lib/libstdc++.so.6', 'libstdc++.so.6')
     ]
     
     for ips_path, csw_path, target_name in lib_mappings:
