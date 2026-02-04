@@ -948,16 +948,16 @@ esac'
 
     # Handle problematic symlinks created by cx_Freeze
     echo "Checking for broken SSL library symlinks..."
-    if [ -L "$BUILD_DIR/ncpa/libcrypto.so" ]; then
-        crypto_target=$(readlink "$BUILD_DIR/ncpa/libcrypto.so" 2>/dev/null || echo "")
-        if [ ! -e "$BUILD_DIR/ncpa/libcrypto.so" ]; then
+    if [ -L "$BUILD_DIR/ncpa/lib/libcrypto.so" ]; then
+        crypto_target=$(readlink "$BUILD_DIR/ncpa/lib/libcrypto.so" 2>/dev/null || echo "")
+        if [ ! -e "$BUILD_DIR/ncpa/lib/libcrypto.so" ]; then
             echo "INFO: Removing broken libcrypto.so symlink (pointed to: $crypto_target)"
             sudo rm -f "$BUILD_DIR/ncpa/lib/libcrypto.so"
         fi
     fi
-    if [ -L "$BUILD_DIR/ncpa/libssl.so" ]; then
-        ssl_target=$(readlink "$BUILD_DIR/ncpa/libssl.so" 2>/dev/null || echo "")
-        if [ ! -e "$BUILD_DIR/ncpa/libssl.so" ]; then
+    if [ -L "$BUILD_DIR/ncpa/lib/libssl.so" ]; then
+        ssl_target=$(readlink "$BUILD_DIR/ncpa/lib/libssl.so" 2>/dev/null || echo "")
+        if [ ! -e "$BUILD_DIR/ncpa/lib/libssl.so" ]; then
             echo "INFO: Removing broken libssl.so symlink (pointed to: $ssl_target)"
             sudo rm -f "$BUILD_DIR/ncpa/lib/libssl.so"
         fi
