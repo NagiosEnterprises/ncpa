@@ -127,9 +127,17 @@ class ServiceNode(listener.nodes.LazyNode):
 
         for line in status.readlines():
             pid, status, label = line.split()
+
+            if isinstance(pid, bytes):
+                pid = pid.decode()
+            if isinstance(status, bytes):
+                status = status.decode()
+            if isinstance(label, bytes):
+                label = label.decode()
+
             if pid == '-':
                 services[label] = 'stopped'
-            elif status == '-':
+            elif pid.isnumeric():
                 services[label] = 'running'
         return services
 
@@ -255,10 +263,6 @@ class ServiceNode(listener.nodes.LazyNode):
         service.wait()
         status.seek(0)
         status.readline()  # Read first line (header)
-
-        # Logging debug info
-        # logging.debug("AIX lssrc -a output:")
-        # logging.debug(status.read().decode())
 
         for line in status.readlines():
             ls = line.split()
