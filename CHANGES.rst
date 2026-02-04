@@ -4,7 +4,11 @@ Changelog
 ==================
 **Added**
 
-- Added experimental support for AIX 7.3 builds. [GH#923]- CPD
+- Added experimental support for AIX 7.3 builds. [GH#923] - CPD
+
+**Bug Fixes** 
+
+- Fixed an issue on MacOS systems where the services endpoint was not working correctly. [GH#669] - CPD
 
 3.2.3 - 1/22/2026
 ==================
