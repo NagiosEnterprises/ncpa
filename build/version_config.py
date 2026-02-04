@@ -134,7 +134,7 @@ def get_solaris_lib_paths():
         matches = glob.glob(python_lib_path)
         if matches:
             # Use the first match found
-            paths.append((matches[0], f'libpython{actual_python_version}.so'))
+            paths.append((matches[0], f'lib/libpython{actual_python_version}.so'))
             python_lib_found = True
             break
     
