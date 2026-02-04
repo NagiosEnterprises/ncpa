@@ -146,11 +146,11 @@ def get_solaris_lib_paths():
     # Add other libraries, preferring IPS locations over OpenCSW
     lib_mappings = [
         # (IPS_path, CSW_path, target_name)
-        ('/usr/lib/libsqlite3.so', '/opt/csw/lib/libsqlite3.so', 'lib/libsqlite3.so'),
-        ('/usr/lib/libssl.so', '/opt/csw/lib/libssl.so', 'lib/libssl.so'),
-        ('/usr/lib/libcrypto.so', '/opt/csw/lib/libcrypto.so', 'lib/libcrypto.so'),
-        ('/usr/lib/libffi.so', '/opt/csw/lib/libffi.so', 'lib/libffi.so'),
-        ('/usr/lib/libz.so', '/opt/csw/lib/libz.so', 'lib/libz.so')
+        ('/usr/lib/libsqlite3.so', '/opt/csw/lib/libsqlite3.so', 'libsqlite3.so'),
+        ('/usr/lib/libssl.so', '/opt/csw/lib/libssl.so', 'libssl.so'),
+        ('/usr/lib/libcrypto.so', '/opt/csw/lib/libcrypto.so', 'libcrypto.so'),
+        ('/usr/lib/libffi.so', '/opt/csw/lib/libffi.so', 'libffi.so'),
+        ('/usr/lib/libz.so', '/opt/csw/lib/libz.so', 'libz.so')
     ]
     
     for ips_path, csw_path, target_name in lib_mappings:
