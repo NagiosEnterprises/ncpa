@@ -952,27 +952,27 @@ esac'
         crypto_target=$(readlink "$BUILD_DIR/ncpa/libcrypto.so" 2>/dev/null || echo "")
         if [ ! -e "$BUILD_DIR/ncpa/libcrypto.so" ]; then
             echo "INFO: Removing broken libcrypto.so symlink (pointed to: $crypto_target)"
-            sudo rm -f "$BUILD_DIR/ncpa/libcrypto.so"
+            sudo rm -f "$BUILD_DIR/ncpa/lib/libcrypto.so"
         fi
     fi
     if [ -L "$BUILD_DIR/ncpa/libssl.so" ]; then
         ssl_target=$(readlink "$BUILD_DIR/ncpa/libssl.so" 2>/dev/null || echo "")
         if [ ! -e "$BUILD_DIR/ncpa/libssl.so" ]; then
             echo "INFO: Removing broken libssl.so symlink (pointed to: $ssl_target)"
-            sudo rm -f "$BUILD_DIR/ncpa/libssl.so"
+            sudo rm -f "$BUILD_DIR/ncpa/lib/libssl.so"
         fi
     fi
 
     # Set permissions (original working approach)
     echo -e "\nSetting permissions..."
-    sudo chmod -v -R g+r $BUILD_DIR/ncpa
-    sudo chmod -v -R a+r $BUILD_DIR/ncpa
-    sudo chown -v -R nagios:nagios $BUILD_DIR/ncpa/var
-    sudo chown -v nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
-    sudo chown -v nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
-    sudo chmod -v 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
-    sudo chmod -v -R 755 $BUILD_DIR/ncpa/var
-    sudo chmod -v 755 $BUILD_DIR/ncpa
+    sudo chmod -R g+r $BUILD_DIR/ncpa
+    sudo chmod -R a+r $BUILD_DIR/ncpa
+    sudo chown -R nagios:nagios $BUILD_DIR/ncpa/var
+    sudo chown nagios:nagios $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/*.cfg*
+    sudo chown nagios:nagios $BUILD_DIR/ncpa/etc/ncpa.cfg.d $BUILD_DIR/ncpa/etc/ncpa.cfg.d/*
+    sudo chmod 755 $BUILD_DIR/ncpa/etc $BUILD_DIR/ncpa/etc/ncpa.cfg.d
+    sudo chmod -R 755 $BUILD_DIR/ncpa/var
+    sudo chmod 755 $BUILD_DIR/ncpa
 
     # Build tarball (original working approach)
     echo -e "\nBuilding tarball..."
