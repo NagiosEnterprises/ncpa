@@ -498,7 +498,7 @@ install_requirements() {
     local retry_count=0
     
     while [ $retry_count -lt $max_retries ]; do
-        if "$PIP_EXECUTABLE" install --no-cache-dir -r "$req_file"; then
+        if "$PIP_EXECUTABLE" install -r "$req_file"; then
             log "✓ Requirements installed successfully"
             return 0
         else
