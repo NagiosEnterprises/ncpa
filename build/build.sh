@@ -745,6 +745,8 @@ esac'
         
         # Run the build
         echo "Starting cx_Freeze build with enhanced error handling..."
+        # Show python binary
+        echo "Python binary: $PYTHONBIN"
         $PYTHONBIN setup.py build_exe 2>&1 | sudo tee $BUILD_DIR/build.log
         BUILD_RESULT=$?
         
