@@ -225,11 +225,6 @@ install_prereqs() {
 
         # Install modules (fallback mode)
         update_py_packages
-
-        echo "----------------------------------------"
-        echo "Adding additional tools from source..."
-        build_cxFreeze
-        echo "----------------------------------------"
     fi
 }
 
@@ -316,6 +311,11 @@ set -e
 if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     "$VENV_MANAGER" install-requirements
 
+    echo "----------------------------------------"
+    echo "Adding additional tools from source..."
+    build_cxFreeze
+    echo "----------------------------------------"
+    
     # Use pip to install cx_Freeze into the environment
     echo "***** aix/setup.sh - Installing cx_Freeze into the environment"
     $PYTHONBIN -m pip install $BUILD_DIR/cx_Freeze-8.4.1
