@@ -350,6 +350,9 @@ create_venv() {
     fi
     
     log "Using Python: $PYTHON_EXECUTABLE (version $PYTHON_VERSION)"
+    log "begin python info"
+    $PYTHON_EXECUTABLE -VV
+    log "end of python info"
     
     # Remove existing venv if it exists
     if [ -d "$VENV_PATH" ]; then
