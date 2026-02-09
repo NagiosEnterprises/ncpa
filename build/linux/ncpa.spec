@@ -100,6 +100,15 @@ if ! getent passwd nagios &> /dev/null
 then
     useradd -r -g nagios -s $NOLOGIN nagios 
 else
+    # If the user already exists, verify they have the correct shell
+    if [[ "$(getent passwd nagios | cut -d: -f7)" != *"/sbin/nologin"* ]]; then
+        # usermod -s $NOLOGIN nagios
+        echo "Warning: nagios user exists and appears to have an interactive shell."
+        echo "Current shell for nagios user: $(getent passwd nagios | cut -d: -f7)"
+        echo "You may want to run the following command to set the correct shell for the nagios user:"
+        echo "usermod -s $NOLOGIN nagios"
+    fi
+
     %if 0%{?suse_version} && 0%{?suse_version} < 1210
         usermod -A nagios nagios
     %else
