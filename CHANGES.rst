@@ -9,6 +9,7 @@ Changelog
 **Updates**
 
 - Update Python to version 3.13.12 on Windows builds to resolve CVEs and improve compatibility. [GH#1341] - CPD
+- Update to determine which nologin path to use on Linux builds for improved compatibility. [GH#1336] - CPD
 
 **Bug Fixes** 
 

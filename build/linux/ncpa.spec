@@ -86,9 +86,19 @@ then
     groupadd -r nagios
 fi
 
+# Determine the correct nologin path
+if [ -f /usr/sbin/nologin ]; then
+    NOLOGIN=/usr/sbin/nologin
+elif [ -f /sbin/nologin ]; then
+    NOLOGIN=/sbin/nologin
+else
+    # Fallback to /bin/false
+    NOLOGIN=/bin/false
+fi
+
 if ! getent passwd nagios &> /dev/null
 then
-    useradd -r -g nagios -s /sbin/nologin nagios 
+    useradd -r -g nagios -s $NOLOGIN nagios 
 else
     %if 0%{?suse_version} && 0%{?suse_version} < 1210
         usermod -A nagios nagios
