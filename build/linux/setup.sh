@@ -232,7 +232,17 @@ install_prereqs() {
 
 echo -e "***** linux/setup.sh - add users/groups"
 set +e
-useradd -s /sbin/nologin nagios 
+# Determine the correct nologin path
+if [ -f /usr/sbin/nologin ]; then
+    NOLOGIN=/usr/sbin/nologin
+elif [ -f /sbin/nologin ]; then
+    NOLOGIN=/sbin/nologin
+else
+    # Fallback to /bin/false
+    NOLOGIN=/bin/false
+fi
+
+useradd -s $NOLOGIN nagios 
 groupadd nagios
 usermod -g nagios nagios
 set -e

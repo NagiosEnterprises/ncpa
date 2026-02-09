@@ -89,14 +89,11 @@ fi
 # Determine the correct nologin path
 if [ -f /usr/sbin/nologin ]; then
     NOLOGIN=/usr/sbin/nologin
-    echo "Using /usr/sbin/nologin for nagios user shell"
 elif [ -f /sbin/nologin ]; then
     NOLOGIN=/sbin/nologin
-    echo "Using /sbin/nologin for nagios user shell"
 else
     # Fallback to /bin/false
     NOLOGIN=/bin/false
-    echo "No nologin shell found, using /bin/false for nagios user shell"
 fi
 
 if ! getent passwd nagios &> /dev/null
