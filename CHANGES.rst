@@ -6,6 +6,10 @@ Changelog
 
 - Added experimental support for AIX 7.3 builds. [GH#923] - CPD
 
+**Updates**
+
+- Update Python to version 3.13.12 on Windows builds to resolve CVEs and improve compatibility. [GH#1341] - CPD
+
 **Bug Fixes** 
 
 - Fixed an issue on MacOS systems where the services endpoint was not working correctly. [GH#669] - CPD
