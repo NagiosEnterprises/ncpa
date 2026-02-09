@@ -86,7 +86,7 @@ else
         # usermod -s $NOLOGIN nagios
         echo "Warning: nagios user exists and appears to have an interactive shell."
         echo "Current shell for nagios user: $(getent passwd nagios | cut -d: -f7)"
-        echo "You may want to run the following command to set the correct shell for the nagios user:"
+        echo "You may want to run the following command to remove the login shell for the nagios user:"
         echo ""
         echo "usermod -s $NOLOGIN nagios"
         echo ""
