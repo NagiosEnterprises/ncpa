@@ -14,7 +14,7 @@ UNAME=$(uname)
 
 # Default versions (can be overridden per platform)
 DEFAULT_PYTHONVER="3.13.5"
-DEFAULT_SSLVER="3.0.17"
+DEFAULT_SSLVER="3.0.19"
 DEFAULT_ZLIBVER="1.3.1"
 
 # Platform-specific version overrides
