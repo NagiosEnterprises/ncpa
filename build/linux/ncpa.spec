@@ -193,8 +193,8 @@ then
         systemctl daemon-reload
     fi
 
-    # Remove dead systemd symlinks
-    LINK_PATH="/etc/systemd/system/multi-user.target.wants/"
+    # Cleanup dead systemd symlinks
+    LINK_PATH="/etc/systemd/system/multi-user.target.wants"
 
     # Check if the link exists AND its target does not exist
     if [[ -L "$LINK_PATH/ncpa_listener.service" && ! -e "$LINK_PATH/ncpa_listener.service" ]]; then
