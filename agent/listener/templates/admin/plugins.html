@@ -22,121 +22,67 @@ $(document).ready(function() {
 {% block content %}
 
 <div class="alert alert-info">
-    This section is <b>read-only</b> and any setting changes will not be saved for security. If you need to make changes, please contact your administrator or support team for assistance.
+    This section is <b>read-only</b> for security reasons. Any changes made here will not be saved. You can change these settings in the configuration file /usr/local/ncpa/etc/ncpa.cfg.
 </div>
 
 <div style="padding: 3rem;">
 
     <h3>Plugin Directives</h3>
-    <p>View the general settings for the Listener service and a few settings for the GUI auth and admin section.</p>
+    <p>View of the plugin settings and the types of custom plugins that NCPA can run.</p>
 
     <div class="container-fluid" style="margin-top: 3rem; padding: 0;">
         <div class="row">
             <div class="col-lg-12">
                 <div class="form-horizontal">
 
-                    <input type="hidden" name="section" value="listener">
-
                     <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">IP Address</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                            <input type="text" class="form-control" name="ip" value="{{ sectioncfg['ip'] }}" readonly>
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">Plugin Path</label>
+                        <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3">
+                            <input type="text" class="form-control" name="plugin_path" value="{{ sectioncfg['plugin_path'] }}" readonly>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Port</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <input type="text" class="form-control" name="port" value="{{ sectioncfg['port'] }}" readonly>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">SSL Version</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <select class="form-control" name="ssl_version">
-                                <option value="TLSv1"{% if sectioncfg['ssl_version'] == 'TLSv1' %} selected{% endif %}>TLSv1.0</option>
-                                <option value="TLSv1_1"{% if sectioncfg['ssl_version'] == 'TLSv1_1' %} selected{% endif %}>TLSv1.1</option>
-                                <option value="TLSv1_2"{% if sectioncfg['ssl_version'] == 'TLSv1_2' %} selected{% endif %}>TLSv1.2</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Certificate</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <select class="form-control" name="certificate">
-                                <option value="adhoc"{% if sectioncfg['certificate'] == 'adhoc' %} selected{% endif %}>Adhoc</option>
-                                <!--<option value="custom"{% if sectioncfg['certificate'] != 'adhoc' %} selected{% endif %}>Custom</option>-->
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log File</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                            <input type="text" class="form-control" name="logfile" value="{{ sectioncfg['logfile'] }}" readonly>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Admin GUI Access</label>
-                        <div class="col-sm-6">
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if sectioncfg['admin_gui_access'] %} active{% endif %}">
-                                    <input type="radio" name="admin_gui_access" value="1" autocomplete="off"{% if sectioncfg['admin_gui_access'] %} checked{% endif %}> Enabled
-                                </label>
-                                <label class="btn btn-sm btn-default{% if not sectioncfg['admin_gui_access'] %} active{% endif %}">
-                                    <input type="radio" name="admin_gui_access" value="0" autocomplete="off"{% if not sectioncfg['admin_gui_access'] %} checked{% endif %}> Disabled
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Admin Auth Only</label>
-                        <div class="col-sm-6">
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if sectioncfg['admin_auth_only'] %} active{% endif %}">
-                                    <input type="radio" name="admin_auth_only" value="1" autocomplete="off"{% if sectioncfg['admin_auth_only'] %} checked{% endif %}> Enabled
-                                </label>
-                                <label class="btn btn-sm btn-default{% if not sectioncfg['admin_auth_only'] %} active{% endif %}">
-                                    <input type="radio" name="admin_auth_only" value="0" autocomplete="off"{% if not sectioncfg['admin_auth_only'] %} checked{% endif %}> Disabled
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Delayed Start</label>
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">Plugin Timeout</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="delay_start" value="{{ sectioncfg['delay_start'] }}" readonly>
+                                <input type="text" class="form-control" name="plugin_timeout" value="{{ sectioncfg['plugin_timeout'] }}" readonly>
                                 <div class="input-group-addon">Secs</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Allowed Hosts</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                            <input type="text" class="form-control" name="allowed_hosts" value="{{ sectioncfg['allowed_hosts'] }}" readonly>
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">Follow Symlinks</label>
+                        <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-sm btn-default{% if follow_symlinks %} active{% endif %}">
+                                    <input type="radio" name="follow_symlinks" value="1" autocomplete="off"{% if follow_symlinks %} checked{% endif %}> Enabled
+                                </label>
+                                <label class="btn btn-sm btn-default{% if not follow_symlinks %} active{% endif %}">
+                                    <input type="radio" name="follow_symlinks" value="0" autocomplete="off"{% if not follow_symlinks %} checked{% endif %}> Disabled
+                                </label>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Allowed Sources</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                            <input type="text" class="form-control" name="allowed_sources" value="{{ sectioncfg['allowed_sources'] }}" readonly>
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">Run With Sudo</label>
+                        <div class="col-sm-6 col-md-4 col-lg-4 col-xl-5">
+                            <input type="text" class="form-control" name="run_with_sudo" value="{{ sectioncfg['run_with_sudo'] }}" readonly>
                         </div>
                     </div>
 
+                    {% for directive in directives %}
+                    {% if directive[0] != 'plugin_path' and directive[0] != 'plugin_timeout' and directive[0] != 'follow_symlinks' and directive[0] != 'run_with_sudo' %}
                     <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Max Connections</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <input type="text" class="form-control" name="max_connections" value="{{ sectioncfg['max_connections'] }}" readonly>
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">{{ directive[0] }}</label>
+                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-5">
+                            <input type="text" class="form-control" style="display: inline-block; width: 100%;" name="directive[]" value="{{ directive[1] }}" readonly>
                         </div>
                     </div>
+                    {% endif %}
+                    {% endfor %}
 
                 </div>
             </div>
