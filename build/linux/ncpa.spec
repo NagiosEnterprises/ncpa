@@ -167,6 +167,7 @@ if [ "$1" != "1" ]; then
         fi
         if systemctl is-active --quiet ncpa; then
             systemctl stop ncpa
+            systemctl disable ncpa
         fi
     fi
     if command -v service &> /dev/null
