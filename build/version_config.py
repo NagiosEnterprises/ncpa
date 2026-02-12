@@ -126,11 +126,11 @@ def get_solaris_lib_paths():
     # Try to find the Python library in IPS locations first (preferred)
     python_lib_found = False
     for python_lib_path in [
+        f'/usr/lib/amd64/libpython{actual_python_version}.so*',
+        f'/usr/lib/sparcv9/libpython{actual_python_version}.so*',
         f'/usr/lib/python{actual_python_version}/config-{actual_python_version}*/libpython{actual_python_version}.so*',
         f'/usr/lib/libpython{actual_python_version}.so*',
-        f'/usr/local/lib/libpython{actual_python_version}.so*',
-        f'/usr/lib/amd64/libpython{actual_python_version}.so*',
-        f'/usr/lib/sparcv9/libpython{actual_python_version}.so*'
+        f'/usr/local/lib/libpython{actual_python_version}.so*'
     ]:
         matches = glob.glob(python_lib_path)
         if matches:
