@@ -794,7 +794,7 @@ def admin_plugin_config():
     section = 'plugin directives'
     config = listener.config['iconfig']
     sectioncfg = dict(config.items(section, 1))
-    tmp_args = {}
+    tmp_args = { 'no_nav': True }
     tmp_args['sectioncfg'] = sectioncfg
 
     try:
