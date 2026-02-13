@@ -172,6 +172,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
         try:
             server = self.config.get('nrdp', 'parent')
             token = self.config.get('nrdp', 'token')
+            ca_bundle = self.config.get('nrdp', 'ca_bundle')
+            # log ca_bundle value for debugging
+            logging.debug("CA Bundle value from config: %s", ca_bundle)
         except Exception as ex:
             logging.exception(ex)
 

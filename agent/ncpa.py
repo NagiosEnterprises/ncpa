@@ -172,6 +172,7 @@ cfg_defaults = {
                 'token': '',
                 'hostname': 'NCPA',
                 'connection_timeout': '10',
+                'ca_bundle': 'None',
             },
             'kafkaproducer': {
                 'hostname': 'None',
