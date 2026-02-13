@@ -14,17 +14,26 @@ def send_request(url, connection_timeout, **kwargs):
     """
 
     # Path to your custom CA bundle file
-    CUSTOM_CA_BUNDLE = '/tmp/ca-bundle.pem'
+    # CUSTOM_CA_BUNDLE = '/tmp/ca-bundle.pem'
+
+    if 'ca_bundle' in kwargs:
+        logging.info("CA Bundle value from kwargs: %s", kwargs['ca_bundle'])
+        # Verify if custom CA bundle exists and is readable
+        if os.path.isfile(kwargs['ca_bundle']) and os.access(kwargs['ca_bundle'], os.R_OK):
+            logging.info("Using CA bundle from kwargs: %s", kwargs['ca_bundle'])
+            custom_ca_bundle = kwargs['ca_bundle']
+        else:
+            logging.warning("CA bundle specified in kwargs is not valid or not readable: %s", kwargs['ca_bundle'])
+            custom_ca_bundle = None
 
     if url == "/":
         logging.error("Invalid URL: '/' is not a valid URL")
         return None
 
     try:
-        # Verify if custom CA bundle exists and is readable
-        if os.path.isfile(CUSTOM_CA_BUNDLE) and os.access(CUSTOM_CA_BUNDLE, os.R_OK):
-            logging.info("Using custom CA bundle for SSL verification: %s", CUSTOM_CA_BUNDLE)
-            r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=CUSTOM_CA_BUNDLE, allow_redirects=True)
+        if custom_ca_bundle:
+            logging.info("Using custom CA bundle for SSL verification: %s", custom_ca_bundle)
+            r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=custom_ca_bundle, allow_redirects=True)
         else:
             logging.info("Using default certifi CA bundle for SSL verification")
             r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=True, allow_redirects=True)
