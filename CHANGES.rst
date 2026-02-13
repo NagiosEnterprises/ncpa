@@ -14,7 +14,6 @@ Changelog
 **Bug Fixes** 
 
 - Fixed an issue on MacOS systems where the services endpoint was not working correctly. [GH#669] - CPD
-- Fixed missing python shared library on Solaris builds causing NCPA to not start without python-313 installed. [GH#1308] - CPD
 - Fixed an issue where a duplicate navbar would render on the admin/plugin-directives page. [GH#1167] - CPD
 
 3.2.3 - 1/22/2026
