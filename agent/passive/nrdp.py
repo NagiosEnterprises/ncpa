@@ -204,7 +204,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
             logging.debug("Submitting NRDP check results to server: %s", server)
             logging.debug("CA Bundle value from config: %s", ca_bundle)
             logging.debug('XML to be submitted: %s', checkresults)
-            ret_xml = passive.utils.send_request(url=server, connection_timeout=timeout, token=token, XMLDATA=checkresults, cmd='submitcheck')
+            ret_xml = passive.utils.send_request(url=server, connection_timeout=timeout, token=token, XMLDATA=checkresults, cmd='submitcheck', ca_bundle=ca_bundle)
 
             if ret_xml is not None:
                 try:
