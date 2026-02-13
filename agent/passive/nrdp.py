@@ -173,8 +173,6 @@ class Handler(passive.nagioshandler.NagiosHandler):
             server = self.config.get('nrdp', 'parent')
             token = self.config.get('nrdp', 'token')
             ca_bundle = self.config.get('nrdp', 'ca_bundle')
-            # log ca_bundle value for debugging
-            logging.debug("CA Bundle value from config: %s", ca_bundle)
         except Exception as ex:
             logging.exception(ex)
 
@@ -202,6 +200,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
             if not server.endswith('/'):
                 server += '/'
 
+            # log ca_bundle value for debugging
+            logging.debug("Submitting NRDP check results to server: %s", server)
+            logging.debug("CA Bundle value from config: %s", ca_bundle)
             logging.debug('XML to be submitted: %s', checkresults)
             ret_xml = passive.utils.send_request(url=server, connection_timeout=timeout, token=token, XMLDATA=checkresults, cmd='submitcheck')
 
