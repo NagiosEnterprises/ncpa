@@ -1,8 +1,11 @@
 import requests
 import requests.exceptions
 import os
+import urllib3.exceptions
 from ncpa import passive_logger as logging
 
+# Disable InsecureRequestWarning from urllib3 when SSL verification fails
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def send_request(url, connection_timeout, **kwargs):
     """
