@@ -15,15 +15,16 @@ def send_request(url, connection_timeout, **kwargs):
 
     # Check for a custom CA bundle in kwargs and verify it before use
     custom_ca_bundle = None
+    temp_ca_bundle = kwargs.get('ca_bundle')
 
-    if 'ca_bundle' in kwargs:
-        logging.info("CA Bundle value from kwargs: %s", kwargs['ca_bundle'])
+    if temp_ca_bundle:
+        logging.info("CA Bundle value from kwargs: %s", temp_ca_bundle)
         # Verify if custom CA bundle exists and is readable
-        if os.path.isfile(kwargs['ca_bundle']) and os.access(kwargs['ca_bundle'], os.R_OK):
-            logging.info("Using CA bundle from kwargs: %s", kwargs['ca_bundle'])
-            custom_ca_bundle = kwargs['ca_bundle']
+        if os.path.isfile(temp_ca_bundle) and os.access(temp_ca_bundle, os.R_OK):
+            logging.info("Using CA bundle from kwargs: %s", temp_ca_bundle)
+            custom_ca_bundle = temp_ca_bundle
         else:
-            logging.warning("CA bundle specified in kwargs is not valid or not readable: %s", kwargs['ca_bundle'])
+            logging.warning("CA bundle specified in kwargs is not valid or not readable: %s", temp_ca_bundle)
 
     if url == "/":
         logging.error("Invalid URL: '/' is not a valid URL")
