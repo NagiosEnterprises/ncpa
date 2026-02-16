@@ -7,6 +7,8 @@ import listener.database as database
 import shlex
 from ncpa import passive_logger as logging
 
+# Disable InsecureRequestWarning from urllib when SSL verification fails
+urllib.disable_warnings(urllib.exceptions.InsecureRequestWarning)
 
 # Constants to keep track of the passive check runs
 NEXT_RUN = { }
