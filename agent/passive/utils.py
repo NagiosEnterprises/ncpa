@@ -13,12 +13,10 @@ def send_request(url, connection_timeout, **kwargs):
     :rtype: requests.models.Response
     """
 
-    # Path to your custom CA bundle file
-    # CUSTOM_CA_BUNDLE = '/tmp/ca-bundle.pem'
-
+    # Check for a custom CA bundle in kwargs and verify it before use
     custom_ca_bundle = None
 
-    if 'ca_bundle' in kwargs:
+    if 'ca_bundle' in kwargs is not None:
         logging.info("CA Bundle value from kwargs: %s", kwargs['ca_bundle'])
         # Verify if custom CA bundle exists and is readable
         if os.path.isfile(kwargs['ca_bundle']) and os.access(kwargs['ca_bundle'], os.R_OK):
@@ -32,7 +30,7 @@ def send_request(url, connection_timeout, **kwargs):
         return None
 
     try:
-        if custom_ca_bundle:
+        if custom_ca_bundle is not None:
             logging.info("Using custom CA bundle for SSL verification: %s", custom_ca_bundle)
             r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=custom_ca_bundle, allow_redirects=True)
         else:
