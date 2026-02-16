@@ -16,6 +16,8 @@ def send_request(url, connection_timeout, **kwargs):
     # Path to your custom CA bundle file
     # CUSTOM_CA_BUNDLE = '/tmp/ca-bundle.pem'
 
+    custom_ca_bundle = None
+
     if 'ca_bundle' in kwargs:
         logging.info("CA Bundle value from kwargs: %s", kwargs['ca_bundle'])
         # Verify if custom CA bundle exists and is readable
@@ -24,7 +26,6 @@ def send_request(url, connection_timeout, **kwargs):
             custom_ca_bundle = kwargs['ca_bundle']
         else:
             logging.warning("CA bundle specified in kwargs is not valid or not readable: %s", kwargs['ca_bundle'])
-            custom_ca_bundle = None
 
     if url == "/":
         logging.error("Invalid URL: '/' is not a valid URL")
