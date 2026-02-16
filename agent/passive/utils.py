@@ -18,10 +18,8 @@ def send_request(url, connection_timeout, **kwargs):
     temp_ca_bundle = kwargs.get('ca_bundle')
 
     if temp_ca_bundle:
-        logging.info("CA Bundle value from kwargs: %s", temp_ca_bundle)
         # Verify if custom CA bundle exists and is readable
         if os.path.isfile(temp_ca_bundle) and os.access(temp_ca_bundle, os.R_OK):
-            logging.info("Using CA bundle from kwargs: %s", temp_ca_bundle)
             custom_ca_bundle = temp_ca_bundle
         else:
             logging.warning("CA bundle specified in kwargs is not valid or not readable: %s", temp_ca_bundle)
