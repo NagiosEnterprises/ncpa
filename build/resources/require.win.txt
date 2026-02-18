@@ -15,3 +15,5 @@ kafka-python
 packaging
 pywin32
 msvc-runtime
+pip-system-certs
+
