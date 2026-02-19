@@ -245,16 +245,6 @@ build_cxFreeze() {
 
     # Otherwise, proceed to download and build cx_Freeze
 
-    # Install build dependencies for cx_Freeze
-    echo "Installing build dependencies for cx_Freeze..."
-    # If redhat-based, we need to install python3-devel for the Python.h header for cx_Freeze
-    if [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ]; then
-        dnf -y install python3.13-devel gcc
-    # For debian-based, we need to install python3-dev for the Python.h header for cx_Freeze
-    elif [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
-        apt -y install build-essential
-    fi
-
     # Check if cx_Freeze source tarball is already downloaded
     echo "Checking for existing cx_Freeze source tarball..."
     if [ -f "/tmp/cx_Freeze-8.4.1.tar.gz" ]; then
