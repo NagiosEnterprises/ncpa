@@ -252,7 +252,7 @@ build_cxFreeze() {
         dnf -y install python3.13-devel gcc
     # For debian-based, we need to install python3-dev for the Python.h header for cx_Freeze
     elif [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
-        apt -y install python3.13-dev build-essential
+        apt -y install build-essential
     fi
 
     # Check if cx_Freeze source tarball is already downloaded
