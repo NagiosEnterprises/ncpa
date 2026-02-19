@@ -249,7 +249,7 @@ build_cxFreeze() {
     echo "Installing build dependencies for cx_Freeze..."
     # If redhat-based, we need to install python3-devel for the Python.h header for cx_Freeze
     if [ "$distro" == "CentOS" ] || [ "$distro" == "RHEL" ] || [ "$distro" == "Oracle" ]; then
-        dnf -y install python3-devel
+        dnf -y install python3.13-devel
     # For debian-based, we need to install python3-dev for the Python.h header for cx_Freeze
     elif [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
         apt -y install python3-dev
