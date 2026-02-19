@@ -59,7 +59,6 @@ detect_python() {
     local python_candidates=()
     
     # Add configured Python version with highest priority
-    # Add configured Python version with highest priority
     if [ -n "$PYTHON_MAJOR_MINOR" ]; then
         python_candidates+=(
             "python$PYTHON_MAJOR_MINOR"
@@ -75,6 +74,7 @@ detect_python() {
         "python3.13"
         "/usr/bin/python3.13"
         "/usr/local/bin/python3.13"
+        "/usr/local/python_3.13.12/bin/python3.13"
         "/opt/homebrew/bin/python3.13"
         "/opt/csw/bin/python3.13"
 
