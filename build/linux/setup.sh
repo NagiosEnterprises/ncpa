@@ -252,7 +252,7 @@ build_cxFreeze() {
         dnf -y install python3.13-devel
     # For debian-based, we need to install python3-dev for the Python.h header for cx_Freeze
     elif [ "$distro" == "Debian" ] || [ "$distro" == "Ubuntu" ]; then
-        apt -y install python3-dev
+        apt -y install python3.13-dev
     fi
 
     # Check if cx_Freeze source tarball is already downloaded
@@ -294,12 +294,8 @@ build_cxFreeze() {
     echo "Changing to cx_Freeze source directory..."
     cd cx_Freeze-8.4.1
 
-    # Copy cx_Freeze AIX setup patch
-    echo "Applying AIX-specific setup patch for cx_Freeze..."
-    cp -f "$BUILD_DIR/aix/setup_cxFreeze_aix.py" "$BUILD_DIR/cx_Freeze-8.4.1/setup.py"
-    
     # Build cx_Freeze, we should be in the venv
-    echo "Building cx_Freeze with AIX patch..."
+    echo "Building cx_Freeze..."
     $PYTHONBIN setup.py build
 
     # Return to original directory
