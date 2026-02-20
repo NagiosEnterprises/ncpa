@@ -39,6 +39,7 @@ if [ "$PKG_MANAGER" = "apt" ] || [ "$PKG_MANAGER" = "apt-get" ]; then
 elif [ "$PKG_MANAGER" = "dnf" ] || [ "$PKG_MANAGER" = "yum" ]; then
     echo "This is a RedHat-based system."
     sudo $PKG_MANAGER install -y gcc make perl perl-core autoconf automake libtool tar gzip
+fi
 
 echo "Build dependencies installed successfully."
 
