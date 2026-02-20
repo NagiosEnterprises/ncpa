@@ -38,9 +38,7 @@ if [ "$PKG_MANAGER" = "apt" ] || [ "$PKG_MANAGER" = "apt-get" ]; then
     sudo $PKG_MANAGER install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl wget tar make perl
 elif [ "$PKG_MANAGER" = "dnf" ] || [ "$PKG_MANAGER" = "yum" ]; then
     echo "This is a RedHat-based system."
-    sudo $PKG_MANAGER group install -y "Development Tools"
-    sudo $PKG_MANAGER install -y openssl-devel bzip2-devel libffi-devel xz-devel sqlite-devel ncurses-devel readline-devel gdbm-devel tk-devel
-fi
+    sudo $PKG_MANAGER install -y gcc make perl perl-core autoconf automake libtool tar gzip
 
 echo "Build dependencies installed successfully."
 
