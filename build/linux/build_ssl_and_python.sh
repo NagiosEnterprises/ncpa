@@ -4,7 +4,7 @@ OPENSSL_VERSION="3.5.5"
 PYTHON_VERSION="3.13.12"
 PYTHON_VERSION_SHORT=$(echo $PYTHON_VERSION | cut -d. -f1,2) # Extract major.minor for symlink  
 
-INSTALL_DIR_OPENSSL="/usr/local/openssl"
+INSTALL_DIR_OPENSSL="/usr/local/openssl_${OPENSSL_VERSION}"
 INSTALL_DIR_PYTHON="/usr/local/python_${PYTHON_VERSION}"
 
 # Update package lists and install build dependencies
@@ -56,14 +56,12 @@ cd Python-${PYTHON_VERSION}
 # Configure Python to use the newly installed OpenSSL version and enable optimizations
 echo "Configuring Python with custom OpenSSL..."
 ./configure --prefix=$INSTALL_DIR_PYTHON --with-openssl=$INSTALL_DIR_OPENSSL --enable-optimizations --enable-shared
-#./configure --enable-shared --enable-optimizations --prefix=/usr/local LDFLAGS="-Wl,-rpath /usr/local/lib"
 
 echo "Compiling and installing Python..."
 make -j$(nproc)
 sudo make altinstall # Use altinstall to avoid overwriting the system python3 binary
 
 echo "Configuring dynamic linker for Python..."
-# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$INSTALL_DIR_PYTHON/lib
 echo "$INSTALL_DIR_PYTHON/lib" | sudo tee /etc/ld.so.conf.d/python-custom.conf
 sudo ldconfig -v
 
