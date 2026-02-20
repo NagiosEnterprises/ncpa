@@ -1,16 +1,48 @@
 #!/bin/bash
+#
+# This script compiles and installs OpenSSL and Python from source on a Linux system.
+# It ensures that Python is linked against the newly installed OpenSSL version.
+# Note: This script requires sudo privileges to install software and configure the system.
+#
 
+# Set versions and installation directories
 OPENSSL_VERSION="3.5.5" 
 PYTHON_VERSION="3.13.12"
-PYTHON_VERSION_SHORT=$(echo $PYTHON_VERSION | cut -d. -f1,2) # Extract major.minor for symlink  
-
+PYTHON_VERSION_SHORT=$(echo $PYTHON_VERSION | cut -d. -f1,2) # Extract major.minor
 INSTALL_DIR_OPENSSL="/usr/local/openssl_${OPENSSL_VERSION}"
 INSTALL_DIR_PYTHON="/usr/local/python_${PYTHON_VERSION}"
 
+# Determine the package manager and install necessary build dependencies
+if command -v dnf >/dev/null 2>&1; then
+    PKG_MANAGER="dnf"
+# Check if 'apt' command is available
+elif command -v apt >/dev/null 2>&1; then
+    PKG_MANAGER="apt"
+# Check if 'apt-get' command is available (preferred for scripting over 'apt')
+elif command -v apt-get >/dev/null 2>&1; then
+    PKG_MANAGER="apt-get"
+# Check for 'yum' as an alternative to 'dnf' for older systems
+elif command -v yum >/dev/null 2>&1; then
+    PKG_MANAGER="yum"
+else
+    echo "Error: No supported package manager (apt or dnf/yum) found." >&2
+    exit 1
+fi
+
+echo "Detected package manager: $PKG_MANAGER"
+
 # Update package lists and install build dependencies
-echo "Installing build dependencies..."
-sudo apt update
-sudo apt install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl wget tar make perl
+if [ "$PKG_MANAGER" = "apt" ] || [ "$PKG_MANAGER" = "apt-get" ]; then
+    echo "This is a Debian-based system."
+    sudo $PKG_MANAGER update
+    sudo $PKG_MANAGER install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl wget tar make perl
+elif [ "$PKG_MANAGER" = "dnf" ] || [ "$PKG_MANAGER" = "yum" ]; then
+    echo "This is a RedHat-based system."
+    sudo $PKG_MANAGER group install "Development Tools"
+    sudo $PKG_MANAGER install -y openssl-devel bzip2-devel libffi-devel xz-devel sqlite-devel ncurses-devel readline-devel gdbm-devel tk-devel
+fi
+
+echo "Build dependencies installed successfully."
 
 # Create source directory
 mkdir -p /usr/local/src
@@ -74,6 +106,6 @@ echo "Installation complete."
 echo "New OpenSSL version:"
 $INSTALL_DIR_OPENSSL/bin/openssl version
 echo "New Python version:"
-$INSTALL_DIR_PYTHON/bin/python${PYTHON_VERSION_SHORT} --version
+$INSTALL_DIR_PYTHON/bin/python${PYTHON_VERSION_SHORT} -VV
 
 echo "You may need to add $INSTALL_DIR_PYTHON/bin to your PATH environment variable to use it easily."
