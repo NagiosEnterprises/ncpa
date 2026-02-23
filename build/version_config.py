@@ -18,8 +18,8 @@ import glob
 system = platform.system()
 
 # Default versions (can be overridden per platform)
-DEFAULT_PYTHON_VERSION = "3.13.11"
-DEFAULT_OPENSSL_VERSION = "3.0.19"
+DEFAULT_PYTHON_VERSION = "3.13.5"
+DEFAULT_OPENSSL_VERSION = "3.0.17"
 DEFAULT_ZLIB_VERSION = "1.3.1"
 
 # Platform-specific version configurations
