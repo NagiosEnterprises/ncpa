@@ -235,12 +235,8 @@ build_cxFreeze() {
 
     # Check if cx_Freeze has already completed build
     if [ -d "$BUILD_DIR/cx_Freeze-8.4.1" ]; then
-        # Verify that the AIX build output exists
-        if [ -f "$BUILD_DIR/cx_Freeze-8.4.1/build/lib.aix-ppc64-cpython-312/cx_Freeze/bases/console-cpython-312" ]; then
-            echo "cx_Freeze has already completed the build. Skipping build."
-            echo "If something is wrong with cx_Freeze, please delete the $BUILD_DIR/cx_Freeze-8.4.1 directory to build again."
-            return 0
-        fi
+        echo "cx_Freeze source directory already exists. Assuming build is complete. Skipping build."
+        return
     fi
 
     # Otherwise, proceed to download and build cx_Freeze

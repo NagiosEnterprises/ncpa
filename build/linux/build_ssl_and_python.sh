@@ -142,8 +142,8 @@ verification() {
 
 cleanup() {
     echo "Cleaning up source files..."
-    rm -rf /usr/local/src/openssl-${OPENSSL_VERSION} /usr/local/src/openssl-${OPENSSL_VERSION}.tar.gz
-    rm -rf /usr/local/src/Python-${PYTHON_VERSION} /usr/local/src/Python-${PYTHON_VERSION}.tgz
+    rm -rfv /usr/local/src/openssl-${OPENSSL_VERSION} /usr/local/src/openssl-${OPENSSL_VERSION}.tar.gz
+    rm -rfv /usr/local/src/Python-${PYTHON_VERSION} /usr/local/src/Python-${PYTHON_VERSION}.tgz
 }   
 
 # Create source directory
