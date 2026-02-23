@@ -5,9 +5,27 @@
 # Note: This script requires sudo privileges to install software and configure the system.
 #
 
+echo "Make sure to run this script from the 'ncpa/build' directory where version_config.sh is located, as it sources that file for version information."
+echo ""
+echo "ex: # ./build_ssl_and_python.sh"
+echo ""
+echo "Checking to see if version_config.sh file is available..."
+
+if [ -f "version_config.sh" ]; then
+    # Source the file to import variables
+    echo "File version_config.sh found, sourcing"
+    source version_config.sh
+else
+    echo "Error: version_config.sh not found!"
+    exit 1
+fi
+
+echo "Using OpenSSL version: $SSLVER"
+echo "Using Python version: $PYTHONVER"
+
 # Set versions and installation directories
-OPENSSL_VERSION="3.5.5" 
-PYTHON_VERSION="3.13.12"
+OPENSSL_VERSION=$DEFAULT_SSLVER
+PYTHON_VERSION=$DEFAULT_PYTHONVER
 PYTHON_VERSION_SHORT=$(echo $PYTHON_VERSION | cut -d. -f1,2) # Extract major.minor
 INSTALL_DIR_OPENSSL="/usr/local/openssl_${OPENSSL_VERSION}"
 INSTALL_DIR_PYTHON="/usr/local/python_${PYTHON_VERSION}"
