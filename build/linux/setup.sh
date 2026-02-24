@@ -230,11 +230,11 @@ install_prereqs() {
 
 
 build_cxFreeze() {
-    # Install cx_Freeze from source to avoid AIX wheel issues
+    # Install cx_Freeze from source
     echo "Building cx_Freeze from source..."
 
     # Check if cx_Freeze has already completed build
-    if [ -d "$BUILD_DIR/cx_Freeze-8.4.1" ]; then
+    if [ -d "$BUILD_DIR/cx_Freeze-${DEFAULT_CXFREEZEVER}" ]; then
         echo "cx_Freeze source directory already exists. Assuming build is complete. Skipping build."
         return
     fi
@@ -243,15 +243,15 @@ build_cxFreeze() {
 
     # Check if cx_Freeze source tarball is already downloaded
     echo "Checking for existing cx_Freeze source tarball..."
-    if [ -f "/tmp/cx_Freeze-8.4.1.tar.gz" ]; then
+    if [ -f "/tmp/cx_Freeze-${DEFAULT_CXFREEZEVER}.tar.gz" ]; then
         echo "cx_Freeze download archive already exists. Skipping download."
     else
         # Download cx_Freeze source
         echo "Downloading cx_Freeze source..."
-        wget https://github.com/marcelotduarte/cx_Freeze/archive/refs/tags/8.4.1.tar.gz -O /tmp/cx_Freeze-8.4.1.tar.gz
+        wget https://github.com/marcelotduarte/cx_Freeze/archive/refs/tags/${DEFAULT_CXFREEZEVER}.tar.gz -O /tmp/cx_Freeze-${DEFAULT_CXFREEZEVER}.tar.gz
 
         # Verify download
-        if [ ! -f "/tmp/cx_Freeze-8.4.1.tar.gz" ]; then
+        if [ ! -f "/tmp/cx_Freeze-${DEFAULT_CXFREEZEVER}.tar.gz" ]; then
             echo "ERROR! cx_Freeze source tarball not found."
             return 1
         else
@@ -261,14 +261,14 @@ build_cxFreeze() {
 
     # Check if cx_Freeze source is already extracted
     echo "Checking for existing cx_Freeze source directory..."
-    if [ -d "$BUILD_DIR/cx_Freeze-8.4.1" ]; then
+    if [ -d "$BUILD_DIR/cx_Freeze-${DEFAULT_CXFREEZEVER}" ]; then
         echo "cx_Freeze source directory already exists. Skipping extraction."
     else
         echo "Extracting cx_Freeze source..."
-        gunzip -c /tmp/cx_Freeze-8.4.1.tar.gz | tar -xvf -
+        gunzip -c /tmp/cx_Freeze-${DEFAULT_CXFREEZEVER}.tar.gz | tar -xvf -
 
         # Verify extraction
-        if [ ! -d "cx_Freeze-8.4.1" ]; then
+        if [ ! -d "cx_Freeze-${DEFAULT_CXFREEZEVER}" ]; then
             echo "ERROR! cx_Freeze source directory not found after extraction."
             return 1
         else
@@ -278,11 +278,13 @@ build_cxFreeze() {
 
     # Change to cx_Freeze source directory
     echo "Changing to cx_Freeze source directory..."
-    cd cx_Freeze-8.4.1
+    cd cx_Freeze-${DEFAULT_CXFREEZEVER}
 
     # Build cx_Freeze, we should be in the venv
     echo "Building cx_Freeze..."
-    $PYTHONBIN setup.py build
+    # $PYTHONBIN setup.py build
+    make install
+    make wheel
 
     # Return to original directory
     cd ..
@@ -309,6 +311,6 @@ if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     echo "----------------------------------------"
     
     # Use pip to install cx_Freeze into the environment
-    echo "***** aix/setup.sh - Installing cx_Freeze into the environment"
-    $PYTHONBIN -m pip install $BUILD_DIR/cx_Freeze-8.4.1
+    echo "***** linux/setup.sh - Installing cx_Freeze into the environment"
+    $PYTHONBIN -m pip install $BUILD_DIR/cx_Freeze-${DEFAULT_CXFREEZEVER}
 fi
