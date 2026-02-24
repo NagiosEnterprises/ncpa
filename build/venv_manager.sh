@@ -71,6 +71,13 @@ detect_python() {
     
     # Add other common Python versions as fallbacks
     python_candidates+=(
+        "python3.14"
+        "/usr/bin/python3.14"
+        "/usr/local/bin/python3.14"
+        "/usr/local/python_3.14.3/bin/python3.14"
+        "/opt/homebrew/bin/python3.14"
+        "/opt/csw/bin/python3.14"
+
         "python3.13"
         "/usr/bin/python3.13"
         "/usr/local/bin/python3.13"

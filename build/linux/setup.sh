@@ -283,8 +283,6 @@ build_cxFreeze() {
     # Build cx_Freeze, we should be in the venv
     echo "Building cx_Freeze..."
     $PYTHONBIN setup.py build
-    # make install
-    # make wheel
 
     # Return to original directory
     cd ..
