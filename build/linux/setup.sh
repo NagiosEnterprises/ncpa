@@ -282,9 +282,9 @@ build_cxFreeze() {
 
     # Build cx_Freeze, we should be in the venv
     echo "Building cx_Freeze..."
-    # $PYTHONBIN setup.py build
-    make install
-    make wheel
+    $PYTHONBIN setup.py build
+    # make install
+    # make wheel
 
     # Return to original directory
     cd ..
@@ -306,7 +306,7 @@ if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     "$VENV_MANAGER" install-requirements
 
     echo "----------------------------------------"
-    echo "Adding additional tools from source..."
+    echo "Adding cx_Freeze from source..."
     build_cxFreeze
     echo "----------------------------------------"
     
