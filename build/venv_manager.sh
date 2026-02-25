@@ -242,11 +242,12 @@ detect_python() {
                 log "${PY_VENV_PKG} not available; proceeding with ${PY_PKG_VER} only."
                 sudo apt-get install -y "${PY_PKG_VER}"
             }
+
             # We need the dev headers and gcc for building freeze-core, so ensure those are installed
-            if ! dpkg -s "${PY_DEV_PKG_DEB}" >/dev/null 2>&1; then
-                log "Installing ${PY_DEV_PKG_DEB} for Python C extensions build..."
-                sudo apt-get install -y "${PY_DEV_PKG_DEB}" gcc
-            fi
+            log "Installing ${PY_DEV_PKG_DEB} and gcc for Python C extensions build..."
+            sudo apt-get install -y "${PY_DEV_PKG_DEB}" gcc || {
+                log "Failed to install ${PY_DEV_PKG_DEB} or gcc. Attempting to continue, but build may fail."
+            }
 
         elif command -v dnf >/dev/null 2>&1; then
             # Fedora/RHEL (dnf)
@@ -264,7 +265,7 @@ detect_python() {
                 # Some distros split venv as python3.13-venv; if present, install
                 dnf list "${PY_VENV_PKG}" >/dev/null 2>&1 && sudo dnf install -y "${PY_VENV_PKG}" || true
 
-                # Ensure devel package is installed for building freeze-core
+                # Ensure devel package and gcc are installed for building freeze-core
                 log "Installing ${PY_DEV_PKG_RHEL} and gcc for Python C extensions build..."
                 dnf list "${PY_DEV_PKG_RHEL}" >/dev/null 2>&1 && sudo dnf install -y "${PY_DEV_PKG_RHEL}" gcc || true
             else
@@ -282,11 +283,9 @@ detect_python() {
                 sudo yum install -y "${PY_PKG_VER}"
                 yum list "${PY_VENV_PKG}" >/dev/null 2>&1 && sudo yum install -y "${PY_VENV_PKG}" || true
 
-                # Ensure devel package is installed for building freeze-core
-                if ! yum list "${PY_DEV_PKG_RHEL}" >/dev/null 2>&1; then
-                    log "Installing ${PY_DEV_PKG_RHEL} for Python C extensions build..."
-                    sudo yum install -y "${PY_DEV_PKG_RHEL}" gcc
-                fi
+                # Ensure devel package and gcc are installed for building freeze-core
+                log "Installing ${PY_DEV_PKG_RHEL} and gcc for Python C extensions build..."
+                yum list "${PY_DEV_PKG_RHEL}" >/dev/null 2>&1 && sudo yum install -y "${PY_DEV_PKG_RHEL}" gcc || true
             else
                 error "Could not find ${PY_PKG_VER} in enabled repos."
                 return 1
