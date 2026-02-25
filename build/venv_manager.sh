@@ -265,8 +265,8 @@ detect_python() {
                 dnf list "${PY_VENV_PKG}" >/dev/null 2>&1 && sudo dnf install -y "${PY_VENV_PKG}" || true
 
                 # Ensure devel package is installed for building freeze-core
-                log "Installing ${PY_DEV_PKG_RHEL} for Python C extensions build..."
-                dnf list "${PY_DEV_PKG_RHEL}" >/dev/null 2>&1 && sudo dnf install -y "${PY_DEV_PKG_RHEL}" || true
+                log "Installing ${PY_DEV_PKG_RHEL} and gcc for Python C extensions build..."
+                dnf list "${PY_DEV_PKG_RHEL}" >/dev/null 2>&1 && sudo dnf install -y "${PY_DEV_PKG_RHEL}" gcc || true
             else
                 error "Could not find ${PY_PKG_VER} in enabled repos. Consider enabling appropriate vendor repos."
                 return 1
