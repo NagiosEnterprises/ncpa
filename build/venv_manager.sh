@@ -351,12 +351,12 @@ detect_python() {
 
 # Install system dependencies for freeze-core build (Python dev headers and gcc)
 install_build_dependencies() {
-    PY_DEV_PKG_DEB="python-${PYTHON_VERSION}-dev"         # apt/zypper naming
-    PY_DEV_PKG_RHEL="python-${PYTHON_VERSION}-devel"   # dnf/yum naming
+    PY_DEV_PKG_DEB="python${PYTHON_VERSION}-dev"         # apt/zypper naming
+    PY_DEV_PKG_RHEL="python${PYTHON_VERSION}-devel"   # dnf/yum naming
 
     echo "Installing build dependencies for freeze-core (Python dev headers and gcc)..."
     echo "Detected python version: $PYTHON_VERSION"
-    echo "Attempting to install ${PY_DEV_PKG_DEB} and gcc for Python C extensions build on $PLATFORM..."
+    echo "Attempting to install ${PY_DEV_PKG_DEB} or ${PY_DEV_PKG_RHEL} and gcc for Python C extensions build on $PLATFORM..."
 
     if [ "$PLATFORM" = "linux" ]; then
         if command -v apt-get >/dev/null 2>&1; then
