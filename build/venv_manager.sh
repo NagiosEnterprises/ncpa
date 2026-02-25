@@ -355,6 +355,7 @@ install_build_dependencies() {
     PY_DEV_PKG_RHEL="${PYTHON_VERSION}-devel"   # dnf/yum naming
 
     echo "Installing build dependencies for freeze-core (Python dev headers and gcc)..."
+    echo "Detected python version: $PYTHON_VERSION"
 
     if [ "$PLATFORM" = "linux" ]; then
         if command -v apt-get >/dev/null 2>&1; then
