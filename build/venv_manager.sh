@@ -259,6 +259,7 @@ detect_python() {
                 sudo dnf install -y epel-release >/dev/null 2>&1 || true
             fi
             if dnf list "${PY_PKG_VER}" >/dev/null 2>&1; then
+                log "Installing ${PY_PKG_VER} and ${PY_VENV_PKG} (if available) from enabled repos…"
                 sudo dnf install -y "${PY_PKG_VER}"
                 # Some distros split venv as python3.13-venv; if present, install
                 dnf list "${PY_VENV_PKG}" >/dev/null 2>&1 && sudo dnf install -y "${PY_VENV_PKG}" || true
