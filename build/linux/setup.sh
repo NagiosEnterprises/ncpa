@@ -242,6 +242,7 @@ if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     "$VENV_MANAGER" install-requirements
 
     # Install freeze-core without prebuilt binary wheel to ensure it builds a new one against the correct Python and OpenSSL versions in the venv
-    echo "***** linux/setup.sh - Installing cx_Freeze into the environment"
+    echo "***** linux/setup.sh - Installing freeze-core and cx_Freeze into the environment"
+    echo "Ensuring freeze-core builds a new wheel against the correct Python and OpenSSL versions"
     $PYTHONBIN -m pip install freeze-core cx_Freeze --no-binary freeze-core
 fi
