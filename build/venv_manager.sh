@@ -218,6 +218,7 @@ detect_python() {
         log "Installed Python ($newest_version) is older than latest available ($latest_pkg_version). Attempting to install/upgrade..."
         log "Installed Python ($newest_version) is older than required (3.13). Installing/upgrading Python 3.13 from package manager…"
 
+    # Attempt to install the preferred Python version using the package manager
     PY_REQ_MAJOR=3
     PY_REQ_MINOR=13
     PY_DOT="${PY_REQ_MAJOR}.${PY_REQ_MINOR}"
@@ -362,6 +363,45 @@ detect_python() {
     fi
     error "No suitable Python 3.11+ interpreter found and automatic installation failed."
     return 1
+}
+
+# Install system dependencies for freeze-core build (Python dev headers and gcc)
+install_build_dependencies() {
+    PY_DEV_PKG_DEB="${PYTHON_VERSION}-dev"         # apt/zypper naming
+    PY_DEV_PKG_RHEL="${PYTHON_VERSION}-devel"   # dnf/yum naming
+
+    echo "Installing build dependencies for freeze-core (Python dev headers and gcc)..."
+
+    if [ "$PLATFORM" = "linux" ]; then
+        if command -v apt-get >/dev/null 2>&1; then
+            # Debian/Ubuntu
+            sudo apt-get update
+            sudo apt-get install -y "${PY_DEV_PKG_DEB}" gcc || {
+                log "Failed to install ${PY_DEV_PKG_DEB} or gcc. Attempting to continue, but build may fail."
+            }
+        elif command -v dnf >/dev/null 2>&1; then
+            # Fedora/RHEL (dnf)
+            sudo dnf clean all -y >/dev/null 2>&1 || true
+            sudo dnf install -y "${PY_DEV_PKG_RHEL}" gcc || {
+                log "Failed to install ${PY_DEV_PKG_RHEL} or gcc. Attempting to continue, but build may fail."
+            }
+        elif command -v yum >/dev/null 2>&1; then
+            # Older RHEL/CentOS (yum)
+            sudo yum install -y "${PY_DEV_PKG_RHEL}" gcc || {
+                log "Failed to install ${PY_DEV_PKG_RHEL} or gcc. Attempting to continue, but build may fail."
+            }
+        elif command -v zypper >/dev/null 2>&1; then
+            # openSUSE/SLES
+            sudo zypper refresh
+            sudo zypper install -y "${PY_DEV_PKG_DEB}" gcc || {
+                log "Failed to install ${PY_DEV_PKG_DEB} or gcc. Attempting to continue, but build may fail."
+            }
+        else
+            log "No supported package manager found for installing build dependencies. Please ensure Python development headers and gcc are installed for Python ${PY_DOT}."
+        fi
+    fi
+
+    echo "✓ Build dependencies installation attempted (check logs for success/failure)"
 }
 
 # Create virtual environment
@@ -735,7 +775,7 @@ main() {
             activate_venv
             ;;
         "setup")
-            create_venv && activate_venv && setup_build_tools
+            create_venv && activate_venv && setup_build_tools && install_build_dependencies
             ;;
         "install-requirements")
             activate_venv && install_requirements "$1"
