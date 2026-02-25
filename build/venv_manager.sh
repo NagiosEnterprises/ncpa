@@ -354,9 +354,10 @@ install_build_dependencies() {
     PY_DEV_PKG_DEB="python${PYTHON_VERSION}-dev"         # apt/zypper naming
     PY_DEV_PKG_RHEL="python${PYTHON_VERSION}-devel"   # dnf/yum naming
 
-    echo "Installing build dependencies for freeze-core (Python dev headers and gcc)..."
-    echo "Detected python version: $PYTHON_VERSION"
-    echo "Attempting to install ${PY_DEV_PKG_DEB} or ${PY_DEV_PKG_RHEL} and gcc for Python C extensions build on $PLATFORM..."
+    log "Installing build dependencies for freeze-core (Python dev headers and gcc)..."
+    log "Detected python version: $PYTHON_VERSION"
+    log "Attempting to install ${PY_DEV_PKG_DEB} or ${PY_DEV_PKG_RHEL} and gcc for Python C extensions build on $PLATFORM..."
+    log "Note: If you compiled Python from source, ensure you have the appropriate dev headers and gcc installed for that Python version."
 
     if [ "$PLATFORM" = "linux" ]; then
         if command -v apt-get >/dev/null 2>&1; then
@@ -387,7 +388,7 @@ install_build_dependencies() {
         fi
     fi
 
-    echo "✓ Build dependencies installation attempted (check logs for success/failure)"
+    log "✓ Build dependencies installation attempted (check logs for success/failure)"
 }
 
 # Create virtual environment
