@@ -224,7 +224,7 @@ detect_python() {
     PY_PKG_VER="python${PY_REQ_MAJOR}.${PY_REQ_MINOR}"
     PY_VENV_PKG="${PY_PKG_VER}-venv"     # apt/zypper naming
     PY_DEV_PKG_DEB="${PY_PKG_VER}-dev"         # apt/zypper naming
-    PY_DEV_PKG_RHEL="python${PY_REQ_MAJOR}.${PY_REQ_MINOR}-devel" # dnf/yum naming
+    PY_DEV_PKG_RHEL="${PY_PKG_VER}-devel"   # dnf/yum naming
     PY_CMD="python${PY_REQ_MAJOR}.${PY_REQ_MINOR}"
 
     if [ "$PLATFORM" = "linux" ]; then
