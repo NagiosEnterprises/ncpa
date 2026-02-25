@@ -228,68 +228,6 @@ install_prereqs() {
     fi
 }
 
-
-build_cxFreeze() {
-    # Install cx_Freeze from source
-    echo "Building cx_Freeze from source..."
-
-    # Check if cx_Freeze has already completed build
-    if [ -d "$BUILD_DIR/cx_Freeze-${DEFAULT_CXFREEZEVER}" ]; then
-        echo "cx_Freeze source directory already exists. Assuming build is complete. Skipping build."
-        return
-    fi
-
-    # Otherwise, proceed to download and build cx_Freeze
-
-    # Check if cx_Freeze source tarball is already downloaded
-    echo "Checking for existing cx_Freeze source tarball..."
-    if [ -f "/tmp/cx_Freeze-${DEFAULT_CXFREEZEVER}.tar.gz" ]; then
-        echo "cx_Freeze download archive already exists. Skipping download."
-    else
-        # Download cx_Freeze source
-        echo "Downloading cx_Freeze source..."
-        wget https://github.com/marcelotduarte/cx_Freeze/archive/refs/tags/${DEFAULT_CXFREEZEVER}.tar.gz -O /tmp/cx_Freeze-${DEFAULT_CXFREEZEVER}.tar.gz
-
-        # Verify download
-        if [ ! -f "/tmp/cx_Freeze-${DEFAULT_CXFREEZEVER}.tar.gz" ]; then
-            echo "ERROR! cx_Freeze source tarball not found."
-            return 1
-        else
-            echo "cx_Freeze source tarball downloaded successfully."
-        fi
-    fi
-
-    # Check if cx_Freeze source is already extracted
-    echo "Checking for existing cx_Freeze source directory..."
-    if [ -d "$BUILD_DIR/cx_Freeze-${DEFAULT_CXFREEZEVER}" ]; then
-        echo "cx_Freeze source directory already exists. Skipping extraction."
-    else
-        echo "Extracting cx_Freeze source..."
-        gunzip -c /tmp/cx_Freeze-${DEFAULT_CXFREEZEVER}.tar.gz | tar -xvf -
-
-        # Verify extraction
-        if [ ! -d "cx_Freeze-${DEFAULT_CXFREEZEVER}" ]; then
-            echo "ERROR! cx_Freeze source directory not found after extraction."
-            return 1
-        else
-            echo "cx_Freeze source extracted successfully."
-        fi
-    fi
-
-    # Change to cx_Freeze source directory
-    echo "Changing to cx_Freeze source directory..."
-    cd cx_Freeze-${DEFAULT_CXFREEZEVER}
-
-    # Build cx_Freeze, we should be in the venv
-    echo "Building cx_Freeze..."
-    $PYTHONBIN setup.py build
-
-    # Return to original directory
-    cd ..
-
-    echo "cx_Freeze build completed successfully."
-}
-
 # This must be outside of install_prereqs(), so it will be executed during workflow build.
 
 echo -e "***** linux/setup.sh - add users/groups"
@@ -303,12 +241,7 @@ set -e
 if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     "$VENV_MANAGER" install-requirements
 
-    echo "----------------------------------------"
-    echo "Adding cx_Freeze from source..."
-    build_cxFreeze
-    echo "----------------------------------------"
-    
-    # Use pip to install cx_Freeze into the environment
+    # Install freeze-core without prebuilt binary wheel to ensure it builds a new one against the correct Python and OpenSSL versions in the venv
     echo "***** linux/setup.sh - Installing cx_Freeze into the environment"
-    $PYTHONBIN -m pip install $BUILD_DIR/cx_Freeze-${DEFAULT_CXFREEZEVER}
+    $PYTHONBIN -m pip install freeze-core cx_Freeze --no-binary freeze-core
 fi

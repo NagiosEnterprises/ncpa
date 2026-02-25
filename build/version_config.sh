@@ -16,7 +16,6 @@ UNAME=$(uname)
 DEFAULT_PYTHONVER="3.13.12"
 DEFAULT_SSLVER="3.5.5"
 DEFAULT_ZLIBVER="1.3.1"
-DEFAULT_CXFREEZEVER="8.4.1"
 
 # Platform-specific version overrides
 case "$UNAME" in
