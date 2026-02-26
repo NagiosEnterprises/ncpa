@@ -471,7 +471,7 @@ def admin_login():
 
     if admin_password is not None and password_valid:
         session['admin_logged'] = True
-        return redirect(url_for('admin_global'))
+        return redirect(url_for('admin_login'))
     elif password is not None:
         template_args['error'] = 'Password was invalid.'
 
@@ -688,11 +688,7 @@ def admin_global():
     config = listener.config['iconfig']
     sectioncfg = dict(config.items(section, 1))
     print("sectioncfg: ", sectioncfg)
-    # Check session for admin_logged and hide navigation if not admin_logged
-    has_admin_password = session.get('admin_logged', False)
-    if not has_admin_password:
-        tmp_args = tmp_args = { 'no_nav': True }
-    # tmp_args = { 'no_nav': True }
+    tmp_args = { 'no_nav': True }
     tmp_args['sectioncfg'] = sectioncfg
 
     # Check session for flash message
