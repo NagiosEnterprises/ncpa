@@ -127,9 +127,17 @@ class ServiceNode(listener.nodes.LazyNode):
 
         for line in status.readlines():
             pid, status, label = line.split()
+
+            if isinstance(pid, bytes):
+                pid = pid.decode()
+            if isinstance(status, bytes):
+                status = status.decode()
+            if isinstance(label, bytes):
+                label = label.decode()
+
             if pid == '-':
                 services[label] = 'stopped'
-            elif status == '-':
+            elif pid.isnumeric():
                 services[label] = 'running'
         return services
 
@@ -254,14 +262,17 @@ class ServiceNode(listener.nodes.LazyNode):
         service = subprocess.Popen(['lssrc', '-a'], stdout=status)
         service.wait()
         status.seek(0)
-
-        # The first line is the header
-        status.readline()
+        status.readline()  # Read first line (header)
 
         for line in status.readlines():
             ls = line.split()
             sub = ls[0]
+            if isinstance(sub, bytes):
+                sub = sub.decode()
             status = ls[-1]
+            if isinstance(status, bytes):
+                status = status.decode()
+
             if status == 'active':
                 services[sub] = 'running'
             elif status == 'inoperative':

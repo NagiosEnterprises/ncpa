@@ -1,5 +1,21 @@
 Changelog
 +++++++++
+3.3.0 - 2/26/2026
+==================
+**Added**
+
+- Added experimental support for AIX 7.3 builds. [GH#923] - CPD
+
+**Updates**
+
+- Update Python to version 3.13.12 on Windows builds to resolve CVEs and improve compatibility. [GH#1341] - CPD
+- Update to determine which nologin path to use on Linux builds for improved compatibility. [GH#1336] - CPD
+
+**Bug Fixes** 
+
+- Fixed an issue on MacOS systems where the services endpoint was not working correctly. [GH#669] - CPD
+- Fixed an issue where a duplicate navbar would render on the admin/plugin-directives page. [GH#1167] - CPD
+
 3.2.3 - 1/22/2026
 ==================
 **Added**

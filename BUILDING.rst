@@ -12,6 +12,8 @@ This document contains instructions for:
 
 * `Building on Solaris <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-solaris>`_
 
+* `Building on AIX <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-aix>`_
+
 *WARNING*: DO THIS ON A DEDICATED VM OR A NON-PRODUCTION SYSTEM!
 
 THE BUILD SCRIPT WILL MAKE CHANGES TO THE SYSTEM THAT MAY BE INCOMPATIBLE WITH OTHER SOFTWARE
@@ -383,6 +385,57 @@ The Solaris build requires the NCPA source to already be built (frozen) before p
   sudo ./build.sh              # Build the frozen NCPA binary and Solaris package
 
 This will automatically stop all NCPA processes and clean up service configurations.
+
+Building on AIX
+===================
+
+NCPA can be built on AIX 7.4 TL4 or higher systems. The build process creates a ppc rpm package (.rpm) that can be installed using the standard AIX dnf package management tools.
+
+Prerequisites
+------------
+
+You will need the following prerequisites installed on your AIX system before building NCPA:
+
+* dnf (AIX package manager)
+* python3.12 (installed from IBM AIX Toolbox)
+* git
+
+**Clone the repository**::
+
+  cd ~
+  git clone https://github.com/NagiosEnterprises/ncpa
+
+**Execute the build script as root**::
+
+  cd ~/ncpa/build
+  ./build.sh
+
+**Install on the target AIX server**
+Copy the resulting ``~/ncpa/build/ncpa-3.X.X-latest.ppc.rpm`` to the desired server and install using::
+
+  dnf localinstall ncpa-3.X.X-latest.ppc.rpm
+
+**Upgrading Note**
+
+Upgrades from NCPA 2.x to 3.x on AIX are not supported at this time. Please uninstall NCPA 2.x before installing NCPA 3.x.  
+
+**Service Management**
+
+NCPA should install an AIX SRC service that can be managed using the following commands:
+
+**Start NCPA**::
+
+  startsrc -s ncpa
+
+**Stop NCPA**::
+
+  stopsrc -s ncpa
+
+**Check NCPA status**::
+
+  lssrc -s ncpa
+
+
 
 Building Tips
 =============

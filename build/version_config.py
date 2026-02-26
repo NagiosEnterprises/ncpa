@@ -19,7 +19,7 @@ system = platform.system()
 
 # Default versions (can be overridden per platform)
 DEFAULT_PYTHON_VERSION = "3.13.5"
-DEFAULT_OPENSSL_VERSION = "3.0.17"
+DEFAULT_OPENSSL_VERSION = "3.0.19"
 DEFAULT_ZLIB_VERSION = "1.3.1"
 
 # Platform-specific version configurations
@@ -41,7 +41,7 @@ PLATFORM_VERSIONS = {
         "openssl_major": "3"
     },
     "AIX": {
-        "python": os.environ.get("AIX_PYTHONVER", "3.6.15"),
+        "python": os.environ.get("AIX_PYTHONVER", "3.12.12"),
         "openssl": os.environ.get("AIX_SSLVER", "1.1.1"),
         "zlib": os.environ.get("AIX_ZLIBVER", "1.2.11"),
         "openssl_major": "1"
@@ -133,7 +133,7 @@ def get_solaris_lib_paths():
         matches = glob.glob(python_lib_path)
         if matches:
             # Use the first match found
-            paths.append((matches[0], f'libpython{actual_python_version}.so'))
+            paths.append((matches[0], f'lib/libpython{actual_python_version}.so'))
             python_lib_found = True
             break
     
@@ -146,11 +146,11 @@ def get_solaris_lib_paths():
     # Add other libraries, preferring IPS locations over OpenCSW
     lib_mappings = [
         # (IPS_path, CSW_path, target_name)
-        ('/usr/lib/libsqlite3.so', '/opt/csw/lib/libsqlite3.so', 'libsqlite3.so'),
-        ('/usr/lib/libssl.so', '/opt/csw/lib/libssl.so', 'libssl.so'),
-        ('/usr/lib/libcrypto.so', '/opt/csw/lib/libcrypto.so', 'libcrypto.so'),
-        ('/usr/lib/libffi.so', '/opt/csw/lib/libffi.so', 'libffi.so'),
-        ('/usr/lib/libz.so', '/opt/csw/lib/libz.so', 'libz.so')
+        ('/usr/lib/libsqlite3.so', '/opt/csw/lib/libsqlite3.so', 'lib/libsqlite3.so'),
+        ('/usr/lib/libssl.so', '/opt/csw/lib/libssl.so', 'lib/libssl.so'),
+        ('/usr/lib/libcrypto.so', '/opt/csw/lib/libcrypto.so', 'lib/libcrypto.so'),
+        ('/usr/lib/libffi.so', '/opt/csw/lib/libffi.so', 'lib/libffi.so'),
+        ('/usr/lib/libz.so', '/opt/csw/lib/libz.so', 'lib/libz.so')
     ]
     
     for ips_path, csw_path, target_name in lib_mappings:

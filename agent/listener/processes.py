@@ -326,6 +326,11 @@ class ProcessNode(nodes.LazyNode):
             procs.wait()
             ps_out.seek(0)
             ps_out.readline()  # Read first line (header)
+            ps_out.read().decode()
+
+            # Logging debug info
+            # logging.debug("AIX ps auxwww output:")
+            # logging.debug(ps_out.read().decode())
 
             # Loop through each line and grab the proc information from ps auxwww
             # so that we get the proper command line arguments on AIX (psutil problem)

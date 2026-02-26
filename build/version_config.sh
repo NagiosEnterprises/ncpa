@@ -14,7 +14,7 @@ UNAME=$(uname)
 
 # Default versions (can be overridden per platform)
 DEFAULT_PYTHONVER="3.13.5"
-DEFAULT_SSLVER="3.0.17"
+DEFAULT_SSLVER="3.0.19"
 DEFAULT_ZLIBVER="1.3.1"
 
 # Platform-specific version overrides
@@ -40,7 +40,7 @@ case "$UNAME" in
         ;;
     "AIX")
         # AIX versions (may need older versions for compatibility)
-        PYTHONVER="${AIX_PYTHONVER:-3.6.15}"
+        PYTHONVER="${AIX_PYTHONVER:-3.12.12}"
         SSLVER="${AIX_SSLVER:-1.1.1}"
         ZLIBVER="${AIX_ZLIBVER:-1.2.11}"
         OPENSSL_MAJOR="1"
