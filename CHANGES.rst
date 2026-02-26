@@ -1,5 +1,11 @@
 Changelog
 +++++++++
+3.3.1 - 3/xx/2026
+==================
+**Bug Fixes**
+
+- Placeholder for bug fixes in 3.3.1 - CPD
+
 3.3.0 - 2/26/2026
 ==================
 **Added**
