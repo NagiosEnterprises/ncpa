@@ -389,7 +389,7 @@ This will automatically stop all NCPA processes and clean up service configurati
 Building on AIX
 ===================
 
-NCPA can be built on AIX 7.4 TL4 or higher systems. The build process creates a ppc rpm package (.rpm) that can be installed using the standard AIX dnf package management tools.
+NCPA can be built on AIX 7.3 TL4 or higher systems. The build process creates a ppc rpm package (.rpm) that can be installed using the standard AIX dnf package management tools.
 
 Prerequisites
 ------------
