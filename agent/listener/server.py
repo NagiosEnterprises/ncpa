@@ -471,7 +471,7 @@ def admin_login():
 
     if admin_password is not None and password_valid:
         session['admin_logged'] = True
-        return redirect(url_for('admin'))
+        return redirect(url_for('admin_global'))
     elif password is not None:
         template_args['error'] = 'Password was invalid.'
 
