@@ -691,6 +691,9 @@ def admin_global():
     tmp_args = { 'no_nav': True }
     tmp_args['sectioncfg'] = sectioncfg
 
+    # If admin password is set and admin is logged in
+    if get_config_value('listener', 'admin_password', None) is not None and session.get('admin_logged', False):
+        tmp_args = { }
     # Check session for flash message
     flash_msg_text = session.get('flash_msg_text', '')
     if flash_msg_text != '':
