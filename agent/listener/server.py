@@ -694,8 +694,9 @@ def admin_global():
         tmp_args = { }
     else:
         tmp_args = { 'no_nav': True }
-        tmp_args['sectioncfg'] = sectioncfg
-        
+    
+    tmp_args['sectioncfg'] = sectioncfg
+
     # Check session for flash message
     flash_msg_text = session.get('flash_msg_text', '')
     if flash_msg_text != '':
