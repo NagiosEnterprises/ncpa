@@ -672,6 +672,7 @@ def help_section():
 
 @listener.route('/gui/admin', methods=['GET', 'POST'], provide_automatic_options = False)
 @listener.route('/gui/admin/', methods=['GET', 'POST'], provide_automatic_options = False)
+@listener.route('/gui/admin/admin', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 @gui_enabled_required
 def admin():
@@ -688,12 +689,7 @@ def admin_global():
     config = listener.config['iconfig']
     sectioncfg = dict(config.items(section, 1))
     print("sectioncfg: ", sectioncfg)
-    tmp_args = {}
-
-    # If admin password is set and admin is logged in
-    if not get_config_value('listener', 'admin_password', None) is not None and session.get('admin_logged', False):
-        tmp_args = { 'no_nav': True }
-    
+    tmp_args = { 'no_nav': True }
     tmp_args['sectioncfg'] = sectioncfg
 
     # Check session for flash message
