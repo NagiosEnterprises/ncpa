@@ -188,6 +188,7 @@ if [ "$1" != "1" ]; then
         fi
         if systemctl is-active --quiet ncpa; then
             systemctl stop ncpa
+            systemctl disable ncpa
         fi
     fi
     if command -v service &> /dev/null
@@ -211,6 +212,25 @@ then
     if command -v systemctl &> /dev/null
     then
         systemctl daemon-reload
+    fi
+
+    # Cleanup dead systemd symlinks
+    LINK_PATH="/etc/systemd/system/multi-user.target.wants"
+
+    # Check if the link exists AND its target does not exist
+    if [[ -L "$LINK_PATH/ncpa_listener.service" && ! -e "$LINK_PATH/ncpa_listener.service" ]]; then
+        echo "'$LINK_PATH/ncpa_listener.service' is a broken symbolic link."
+        rm -f "$LINK_PATH/ncpa_listener.service"
+    fi
+
+    if [[ -L "$LINK_PATH/ncpa_passive.service" && ! -e "$LINK_PATH/ncpa_passive.service" ]]; then
+        echo "'$LINK_PATH/ncpa_passive.service' is a broken symbolic link."
+        rm -f "$LINK_PATH/ncpa_passive.service"
+    fi
+
+    if [[ -L "$LINK_PATH/ncpa.service" && ! -e "$LINK_PATH/ncpa.service" ]]; then
+        echo "'$LINK_PATH/ncpa.service' is a broken symbolic link."
+        rm -f "$LINK_PATH/ncpa.service"
     fi
 fi
 

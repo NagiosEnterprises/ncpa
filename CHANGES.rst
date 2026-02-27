@@ -4,7 +4,7 @@ Changelog
 ==================
 **Bug Fixes**
 
-- Placeholder for bug fixes in 3.3.1 - CPD
+- Fixed a Linux issue where service files were being left behind after an uninstall. [GH#1063] - CPD
 
 3.3.0 - 2/26/2026
 ==================
