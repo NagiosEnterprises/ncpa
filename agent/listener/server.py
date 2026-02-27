@@ -471,7 +471,7 @@ def admin_login():
 
     if admin_password is not None and password_valid:
         session['admin_logged'] = True
-        return redirect(url_for('admin'))
+        return redirect(url_for('admin_global'))
     elif password is not None:
         template_args['error'] = 'Password was invalid.'
 
@@ -699,10 +699,6 @@ def admin_global():
         tmp_args['flash_msg_type'] = flash_msg_type
         tmp_args['flash_msg'] = True
         session['flash_msg_text'] = ''
-
-    # Check if session has admin_logged
-    if session.get('admin_logged', False):
-        return render_template('global.html', **tmp_args)
 
     return render_template('admin/global.html', **tmp_args)
 
