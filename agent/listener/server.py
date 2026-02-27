@@ -372,8 +372,8 @@ def requires_admin_auth(f):
         if admin_password is None:
             session['admin_logged'] = True
 
-        # if not session.get('admin_logged', False):
-        #     return redirect(url_for('admin_login'))
+        if not session.get('admin_logged', False):
+            return redirect(url_for('admin_login'))
 
         return f(*args, **kwargs)
 
@@ -471,7 +471,7 @@ def admin_login():
 
     if admin_password is not None and password_valid:
         session['admin_logged'] = True
-        return redirect(url_for('admin'))
+        return redirect(url_for('admin_login'))
     elif password is not None:
         template_args['error'] = 'Password was invalid.'
 
