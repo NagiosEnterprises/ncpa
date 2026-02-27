@@ -672,7 +672,6 @@ def help_section():
 
 @listener.route('/gui/admin', methods=['GET', 'POST'], provide_automatic_options = False)
 @listener.route('/gui/admin/', methods=['GET', 'POST'], provide_automatic_options = False)
-@listener.route('/gui/admin/admin', methods=['GET', 'POST'], provide_automatic_options = False)
 @requires_admin_auth
 @gui_enabled_required
 def admin():
