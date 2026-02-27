@@ -471,7 +471,7 @@ def admin_login():
 
     if admin_password is not None and password_valid:
         session['admin_logged'] = True
-        return redirect(url_for('admin'))
+        return redirect(url_for('admin_global'))
     elif password is not None:
         template_args['error'] = 'Password was invalid.'
 
@@ -690,9 +690,7 @@ def admin_global():
     print("sectioncfg: ", sectioncfg)
 
     # If admin password is set and admin is logged in
-    if get_config_value('listener', 'admin_password', None) is not None and session.get('admin_logged', False):
-        tmp_args = { }
-    else:
+    if not get_config_value('listener', 'admin_password', None) is not None and session.get('admin_logged', False):
         tmp_args = { 'no_nav': True }
     
     tmp_args['sectioncfg'] = sectioncfg
