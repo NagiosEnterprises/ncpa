@@ -689,6 +689,7 @@ def admin_global():
     sectioncfg = dict(config.items(section, 1))
     print("sectioncfg: ", sectioncfg)
     # tmp_args = { 'no_nav': True }
+    tmp_args = {}
     tmp_args['sectioncfg'] = sectioncfg
 
     # Check session for flash message
