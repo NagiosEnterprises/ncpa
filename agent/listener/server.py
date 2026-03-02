@@ -677,6 +677,9 @@ def help_section():
 def admin():
     tmp_args = {}
     tmp_args['config'] = listener.config['iconfig']
+
+    # Debug logging
+    listener_logger.info('Admin GUI accessed by %s', request.remote_addr)
     return render_template('admin/index.html', **tmp_args)
 
 
