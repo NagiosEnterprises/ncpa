@@ -5,6 +5,7 @@ Changelog
 **Bug Fixes**
 
 - Fixed a Linux issue where service files were being left behind after an uninstall. [GH#1063] - CPD
+- Fixed a routing issue after admin authentication that was causing the admin section to not work properly. [GH#898] - CPD
 
 3.3.0 - 2/26/2026
 ==================
