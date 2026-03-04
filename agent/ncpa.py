@@ -684,6 +684,9 @@ class Daemon():
         self.logger.debug("Daemon - set_uid_gid()")
         # Get set of gids to set for OS groups
         gids = [ self.gid ]
+        # log gids for debugging
+        self.logger.debug("Primary GID: %d", self.gid)
+
         if self.username:
             gids = [ g.gr_gid for g in grp.getgrall() if self.username in g.gr_mem ]
 
