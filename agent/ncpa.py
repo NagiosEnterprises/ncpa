@@ -298,6 +298,7 @@ class Listener(Base):
             ssl_context['certfile'] = cert
             ssl_context['keyfile'] = key
             ssl_context['ssl_version'] = ssl_version
+            ssl_context.options |= ssl.OP_NO_RENEGOTIATION
 
             # Pass config to Flask instance
             listener.server.listener.config['iconfig'] = self.config
