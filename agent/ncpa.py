@@ -305,9 +305,12 @@ class Listener(Base):
             else:
                 cert, key = user_cert.split(',')
 
-            ssl_context['certfile'] = cert
-            ssl_context['keyfile'] = key
-            ssl_context['ssl_version'] = ssl_version
+            # ssl_context['certfile'] = cert
+            # ssl_context['keyfile'] = key
+            # ssl_context['ssl_version'] = ssl_version
+            ssl_context = ssl.SSLContext(ssl_version)
+            ssl_context.load_cert_chain(cert, key)
+
 
             # Pass config to Flask instance
             listener.server.listener.config['iconfig'] = self.config
