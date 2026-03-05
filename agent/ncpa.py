@@ -324,7 +324,7 @@ class Listener(Base):
                                         log=listener_logger,
                                         error_log=listener_logger,
                                         spawn=Pool(max_connections),
-                                        **ssl_context)
+                                        **{'ssl_args': {'ssl_context': ssl_context}})
             logger.debug("run() - start http_server")
             http_server.serve_forever()
             logger.debug("run() - http_server running")
