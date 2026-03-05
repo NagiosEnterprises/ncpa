@@ -281,8 +281,8 @@ class Listener(Base):
                 if ssl_str_version == 'TLSv1_3':
                     logger.info('Configuring TLSv1_3 settings')
                     ssl_str_version = 'TLS_SERVER'
-                    ssl_context['minimum_version'] = ssl.TLSVersion.TLSv1_3
-                    ssl_context['maximum_version'] = ssl.TLSVersion.TLSv1_3
+                    # ssl_context['minimum_version'] = ssl.TLSVersion.TLSv1_3
+                    # ssl_context['maximum_version'] = ssl.TLSVersion.TLSv1_3
 
                 ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
                 logger.debug('Using SSL version %s', ssl_str_version)
