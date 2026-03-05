@@ -273,10 +273,6 @@ class Listener(Base):
                     ssl_context['ciphers'] = ssl_str_ciphers
                 logger.debug("ssl_str_ciphers: %s", ssl_str_ciphers)
 
-                ssl_str_version = self.config.get('listener', 'ssl_version')
-                ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
-                logger.debug('Using SSL version %s', ssl_str_version)
-
                 # TLSv1_3 requires special handling since it doesn't use the PROTOCOL_ constant like previous versions, 
                 # and instead uses the minimum_version and maximum_version settings on the SSL context. 
                 if ssl_version == 'TLSv1_3':
@@ -284,6 +280,10 @@ class Listener(Base):
                     ssl_version = 'TLS_SERVER'
                     ssl_context.minimum_version = ssl.TLSVersion.TLSv1_3
                     ssl_context.maximum_version = ssl.TLSVersion.TLSv1_3
+
+                ssl_str_version = self.config.get('listener', 'ssl_version')
+                ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
+                logger.debug('Using SSL version %s', ssl_str_version)
 
                 max_connections = self.config.getint('listener', 'max_connections')
                 logger.debug("max_connections: %s", max_connections)
