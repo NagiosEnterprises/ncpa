@@ -264,7 +264,7 @@ class Listener(Base):
                 port = self.config.getint('listener', 'port')
                 logger.debug("port: %s", port)
 
-                ssl_context = ssl.SSLContext(ssl.TLS_SERVER_METHOD)
+                ssl_context = ssl.create_default_context()
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
                 if  (ssl_str_ciphers == 'None'):
                     ssl_str_ciphers = ''
