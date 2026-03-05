@@ -264,7 +264,7 @@ class Listener(Base):
                 port = self.config.getint('listener', 'port')
                 logger.debug("port: %s", port)
 
-                ssl_context = ssl.create_default_context()
+                ssl_context = ssl.create_default_context(ssl.PROTOCOL_TLS_SERVER)
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
                 if  (ssl_str_ciphers == 'None'):
                     ssl_str_ciphers = ''
@@ -280,11 +280,12 @@ class Listener(Base):
                 # and instead uses the minimum_version and maximum_version settings on the SSL context. 
                 if ssl_str_version == 'TLSv1_3':
                     logger.info('Configuring TLSv1_3 settings')
-                    ssl_str_version = 'PROTOCOL_TLS_SERVER'
-                    # ssl_context['minimum_version'] = ssl.TLSVersion.TLSv1_3
-                    # ssl_context['maximum_version'] = ssl.TLSVersion.TLSv1_3
+                    ssl_context.minimum_version = ssl.TLSVersion.TLSv1_3
+                if ssl_str_version == 'TLSv1_2':
+                    logger.info('Configuring TLSv1_2 settings')
+                    ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
 
-                ssl_version = getattr(ssl, 'ssl.TLSVersion.' + ssl_str_version)
+                # ssl_version = getattr(ssl, 'ssl.TLSVersion.' + ssl_str_version)
                 logger.info('Using SSL version %s', ssl_str_version)
 
                 max_connections = self.config.getint('listener', 'max_connections')
@@ -308,7 +309,7 @@ class Listener(Base):
             # ssl_context['certfile'] = cert
             # ssl_context['keyfile'] = key
             # ssl_context['ssl_version'] = ssl_version
-            ssl_context = ssl.SSLContext(ssl_version)
+            # ssl_context = ssl.SSLContext(ssl_version)
             ssl_context.load_cert_chain(cert, key)
 
 
