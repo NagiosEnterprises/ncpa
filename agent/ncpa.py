@@ -284,8 +284,8 @@ class Listener(Base):
                     # ssl_context['minimum_version'] = ssl.TLSVersion.TLSv1_3
                     # ssl_context['maximum_version'] = ssl.TLSVersion.TLSv1_3
 
-                ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
-                logger.debug('Using SSL version %s', ssl_str_version)
+                ssl_version = getattr(ssl, 'ssl.PROTOCOL_' + ssl_str_version)
+                logger.info('Using SSL version %s', ssl_str_version)
 
                 max_connections = self.config.getint('listener', 'max_connections')
                 logger.debug("max_connections: %s", max_connections)
