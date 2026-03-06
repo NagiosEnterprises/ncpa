@@ -274,9 +274,9 @@ class Listener(Base):
                 if  (ssl_str_ciphers == 'None'):
                     ssl_str_ciphers = ''
                 else:
-                    logger.info("run() - ssl_str_ciphers: %s", ssl_str_ciphers)
+                    logger.debug("run() - ssl_str_ciphers: %s", ssl_str_ciphers)
                     ssl_context.set_ciphers(ssl_str_ciphers)
-                logger.info("ssl_str_ciphers: %s", ssl_str_ciphers)
+                logger.debug("ssl_str_ciphers: %s", ssl_str_ciphers)
 
                 # Get the SSL version from the config and set it on the SSL context
                 ssl_str_version = self.config.get('listener', 'ssl_version')
@@ -284,12 +284,21 @@ class Listener(Base):
                 # TLSv1_3 requires special handling since it doesn't use the PROTOCOL_ constant like previous versions, 
                 # and instead uses the minimum_version and maximum_version settings on the SSL context. 
                 if ssl_str_version == 'TLSv1_3':
-                    logger.info('Configuring TLSv1_3 settings')
+                    logger.info('Configuring TLSv1_3 as minimum version (TLSv1_3 is only supported on Python 3.7+ and OpenSSL 1.1.1+)')
                     ssl_context.minimum_version = ssl.TLSVersion.TLSv1_3
-                if ssl_str_version == 'TLSv1_2':
-                    logger.info('Configuring TLSv1_2 settings')
+                elif ssl_str_version == 'TLSv1_2':
+                    logger.info('Configuring TLSv1_2 as minimum version for compatibility with older clients')
                     ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
-                logger.info('Using SSL version %s', ssl_str_version)
+                elif ssl_str_version == 'TLSv1_1':
+                    logger.info('Configuring TLSv1_1 as minimum version for compatibility with older clients')
+                    ssl_context.minimum_version = ssl.TLSVersion.TLSv1_1
+                elif ssl_str_version == 'TLSv1':
+                    logger.info('Configuring TLSv1 as minimum version for compatibility with older clients (not recommended)')
+                    ssl_context.minimum_version = ssl.TLSVersion.TLSv1
+                else:
+                    logger.warning('Unsupported SSL version specified in config: %s. Defaulting to TLSv1_2.', ssl_str_version)
+                    ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
+                logger.debug('Using TLS version %s', ssl_str_version)
 
                 # Get the certificate settings from the config - if it's set to 'adhoc', we'll create a self-signed cert, 
                 # otherwise we'll use the provided cert and key files (which should be comma-separated in the config)
