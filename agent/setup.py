@@ -42,7 +42,7 @@ if not version[-1].isdigit():
 
 # Files to be included in the package
 packages = ['idna', 'passive', 'listener', 'gevent', 'asyncio']
-includes = ['ncpa', 'jinja2.ext']
+includes = ['ncpa', 'jinja2.ext', 'charset-normalizer']
 excludes = ['Tkinter', 'tkinter', 'unittest']
 bin_includes = []
 
