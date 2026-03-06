@@ -13,4 +13,3 @@ cffi
 appdirs
 packaging
 kafka-python
-chardet

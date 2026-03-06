@@ -271,12 +271,12 @@ class Listener(Base):
                 if  (ssl_str_ciphers == 'None'):
                     ssl_str_ciphers = ''
                 else:
-                    logger.debug("run() - ssl_str_ciphers: %s", ssl_str_ciphers)
+                    logger.info("run() - ssl_str_ciphers: %s", ssl_str_ciphers)
                     # ssl_context['ciphers'] = ssl_str_ciphers
                     ssl_context.set_ciphers(ssl_str_ciphers)
                 logger.info("ssl_str_ciphers: %s", ssl_str_ciphers)
 
-
+                # Get the SSL version from the config and set it on the SSL context
                 ssl_str_version = self.config.get('listener', 'ssl_version')
 
                 # TLSv1_3 requires special handling since it doesn't use the PROTOCOL_ constant like previous versions, 
