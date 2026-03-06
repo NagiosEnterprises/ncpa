@@ -264,7 +264,9 @@ class Listener(Base):
                 port = self.config.getint('listener', 'port')
                 logger.debug("port: %s", port)
 
-                ssl_context = ssl.create_default_context(ssl.PROTOCOL_TLS_SERVER)
+                # ssl_context = ssl.create_default_context()
+                ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+                
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
                 if  (ssl_str_ciphers == 'None'):
                     ssl_str_ciphers = ''
@@ -281,6 +283,7 @@ class Listener(Base):
                 if ssl_str_version == 'TLSv1_3':
                     logger.info('Configuring TLSv1_3 settings')
                     ssl_context.minimum_version = ssl.TLSVersion.TLSv1_3
+
                 if ssl_str_version == 'TLSv1_2':
                     logger.info('Configuring TLSv1_2 settings')
                     ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
