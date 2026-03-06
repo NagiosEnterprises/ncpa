@@ -274,7 +274,7 @@ class Listener(Base):
                     logger.debug("run() - ssl_str_ciphers: %s", ssl_str_ciphers)
                     # ssl_context['ciphers'] = ssl_str_ciphers
                     ssl_context.set_ciphers(ssl_str_ciphers)
-                logger.debug("ssl_str_ciphers: %s", ssl_str_ciphers)
+                logger.info("ssl_str_ciphers: %s", ssl_str_ciphers)
 
 
                 ssl_str_version = self.config.get('listener', 'ssl_version')
