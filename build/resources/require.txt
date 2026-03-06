@@ -13,3 +13,4 @@ cffi
 appdirs
 packaging
 kafka-python
+charset-normalizer
