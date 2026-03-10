@@ -4,7 +4,7 @@ Changelog
 ==================
 **Added**
 
-- Added support for TLSv1.3 [GH#1352] - CPD
+- Added support for TLSv1.3. This update enables the latest encryption standard, offering improved security and faster connection handshake speeds. [GH#1352] - CPD
 
 **Updates**
 
