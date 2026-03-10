@@ -292,9 +292,11 @@ class Listener(Base):
                 elif ssl_str_version == 'TLSv1_1':
                     logger.info('Configuring TLSv1_1 as minimum version for compatibility with older clients')
                     ssl_context.minimum_version = ssl.TLSVersion.TLSv1_1
+                    ssl_context.set_ciphers('DEFAULT@SECLEVEL=1')
                 elif ssl_str_version == 'TLSv1':
                     logger.info('Configuring TLSv1 as minimum version for compatibility with older clients (not recommended)')
                     ssl_context.minimum_version = ssl.TLSVersion.TLSv1
+                    ssl_context.set_ciphers('DEFAULT@SECLEVEL=1')
                 else:
                     logger.warning('Unsupported SSL version specified in config: %s. Defaulting to TLSv1_2.', ssl_str_version)
                     ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
