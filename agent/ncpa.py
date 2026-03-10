@@ -289,7 +289,6 @@ class Listener(Base):
                 elif ssl_str_version == 'TLSv1_2':
                     logger.info('Configuring TLSv1_2 as minimum version for compatibility with older clients')
                     ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
-                    context.options |= ssl.OP_NO_RENEGOTIATION
                 else:
                     logger.warning('Unsupported SSL version specified in config: %s. Defaulting to TLSv1_2.', ssl_str_version)
                     ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
