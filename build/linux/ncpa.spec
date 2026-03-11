@@ -219,17 +219,17 @@ then
 
     # Check if the link exists AND its target does not exist
     if [[ -L "$LINK_PATH/ncpa_listener.service" && ! -e "$LINK_PATH/ncpa_listener.service" ]]; then
-        echo "'$LINK_PATH/ncpa_listener.service' is a broken symbolic link."
+        echo "'$LINK_PATH/ncpa_listener.service' - removing stale symbolic link."
         rm -f "$LINK_PATH/ncpa_listener.service"
     fi
 
     if [[ -L "$LINK_PATH/ncpa_passive.service" && ! -e "$LINK_PATH/ncpa_passive.service" ]]; then
-        echo "'$LINK_PATH/ncpa_passive.service' is a broken symbolic link."
+        echo "'$LINK_PATH/ncpa_passive.service' - removing stale symbolic link."
         rm -f "$LINK_PATH/ncpa_passive.service"
     fi
 
     if [[ -L "$LINK_PATH/ncpa.service" && ! -e "$LINK_PATH/ncpa.service" ]]; then
-        echo "'$LINK_PATH/ncpa.service' is a broken symbolic link."
+        echo "'$LINK_PATH/ncpa.service' - removing stale symbolic link."
         rm -f "$LINK_PATH/ncpa.service"
     fi
 fi
