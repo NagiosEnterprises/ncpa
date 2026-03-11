@@ -264,22 +264,38 @@ class Listener(Base):
                 port = self.config.getint('listener', 'port')
                 logger.debug("port: %s", port)
 
-                ssl_context = dict()
+                max_connections = self.config.getint('listener', 'max_connections')
+                logger.debug("max_connections: %s", max_connections)
+
+                # SSL settings
+                ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
                 if  (ssl_str_ciphers == 'None'):
                     ssl_str_ciphers = ''
                 else:
                     logger.debug("run() - ssl_str_ciphers: %s", ssl_str_ciphers)
-                    ssl_context['ciphers'] = ssl_str_ciphers
+                    ssl_context.set_ciphers(ssl_str_ciphers)
                 logger.debug("ssl_str_ciphers: %s", ssl_str_ciphers)
 
+                # Get the SSL version from the config and set it on the SSL context
                 ssl_str_version = self.config.get('listener', 'ssl_version')
-                ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
-                logger.debug('Using SSL version %s', ssl_str_version)
 
-                max_connections = self.config.getint('listener', 'max_connections')
-                logger.debug("max_connections: %s", max_connections)
+                # TLSv1_3 requires special handling since it doesn't use the PROTOCOL_ constant like previous versions, 
+                # and instead uses the minimum_version and maximum_version settings on the SSL context. 
+                if ssl_str_version == 'TLSv1_3':
+                    logger.info('Configuring TLSv1_3 as minimum version (TLSv1_3 is only supported on Python 3.7+ and OpenSSL 1.1.1+)')
+                    ssl_context.minimum_version = ssl.TLSVersion.TLSv1_3
+                elif ssl_str_version == 'TLSv1_2':
+                    logger.info('Configuring TLSv1_2 as minimum version for compatibility with older clients')
+                    ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
+                else:
+                    logger.warning('Unsupported SSL version specified in config: %s. Defaulting to TLSv1_2.', ssl_str_version)
+                    ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
+                logger.debug('Using TLS version %s', ssl_str_version)
 
+                # Get the certificate settings from the config - if it's set to 'adhoc', we'll create a self-signed cert, 
+                # otherwise we'll use the provided cert and key files (which should be comma-separated in the config)
                 user_cert = self.config.get('listener', 'certificate')
 
             except Exception as e:
@@ -294,10 +310,9 @@ class Listener(Base):
                 logger.debug('Cert created')
             else:
                 cert, key = user_cert.split(',')
-
-            ssl_context['certfile'] = cert
-            ssl_context['keyfile'] = key
-            ssl_context['ssl_version'] = ssl_version
+            
+            # Load the cert and key into the SSL context
+            ssl_context.load_cert_chain(cert, key)
 
             # Pass config to Flask instance
             listener.server.listener.config['iconfig'] = self.config
@@ -311,7 +326,7 @@ class Listener(Base):
                                         log=listener_logger,
                                         error_log=listener_logger,
                                         spawn=Pool(max_connections),
-                                        **ssl_context)
+                                        ssl_context=ssl_context)
             logger.debug("run() - start http_server")
             http_server.serve_forever()
             logger.debug("run() - http_server running")
@@ -330,7 +345,7 @@ class Listener(Base):
                                         log=listener_logger,
                                         error_log=listener_logger,
                                         spawn=Pool(max_connections),
-                                        **ssl_context)
+                                        ssl_context=ssl_context)
             http_server.serve_forever()
 
         except Exception as e:
