@@ -315,8 +315,11 @@ def requires_token_or_auth(f):
     @functools.wraps(f)
     def token_auth_decoration(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
+        backup_ncpa_token = listener.config['iconfig'].get('api', 'backup_community_string', None)
         token = request.values.get('token', None)
         token_valid = secure_compare(token, ncpa_token)
+        if backup_ncpa_token is not None:
+            token_valid = token_valid or secure_compare(token, backup_ncpa_token)
 
         # This is an internal call, we don't check
         if __INTERNAL__ is True:
