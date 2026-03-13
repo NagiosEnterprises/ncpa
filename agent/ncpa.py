@@ -160,7 +160,7 @@ cfg_defaults = {
             },
             'api': {
                 'community_string': 'mytoken',
-                'backup_community_string': None,
+                'backup_community_string': '',
             },
             'passive': {
                 'handlers': 'None',

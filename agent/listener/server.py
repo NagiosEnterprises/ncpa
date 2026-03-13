@@ -320,7 +320,7 @@ def requires_token_or_auth(f):
         token_valid = secure_compare(token, ncpa_token)
 
         # Retry with backup token if primary token is not valid and backup token is set
-        if not token_valid and backup_ncpa_token is not None:
+        if not token_valid and backup_ncpa_token:
             token_valid = secure_compare(token, backup_ncpa_token)
 
         # This is an internal call, we don't check
