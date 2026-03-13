@@ -318,8 +318,8 @@ def requires_token_or_auth(f):
         backup_ncpa_token = listener.config['iconfig'].get('api', 'backup_community_string', None)
         token = request.values.get('token', None)
         token_valid = secure_compare(token, ncpa_token)
-        if backup_ncpa_token is not None:
-            token_valid = token_valid or secure_compare(token, backup_ncpa_token)
+        # if backup_ncpa_token is not None:
+        #     token_valid = token_valid or secure_compare(token, backup_ncpa_token)
 
         # This is an internal call, we don't check
         if __INTERNAL__ is True:
