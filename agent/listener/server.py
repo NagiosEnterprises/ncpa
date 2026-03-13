@@ -1087,8 +1087,9 @@ def testconnect():
     :rtype: flask.Response
     """
     real_token = listener.config['iconfig'].get('api', 'community_string')
+    real_backup_token = listener.config['iconfig'].get('api', 'backup_community_string')
     test_token = request.values.get('token', None)
-    if real_token != test_token:
+    if real_token != test_token or (real_backup_token and real_backup_token != test_token):
         return jsonify({'error': 'Bad token.'})
     else:
         return jsonify({'value': 'Success.'})
