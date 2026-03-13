@@ -402,6 +402,7 @@ def login():
         return redirect(url_for('index'))
 
     ncpa_token = listener.config['iconfig'].get('api', 'community_string')
+    backup_ncpa_token = listener.config['iconfig'].get('api', 'backup_community_string')
 
     # Admin password
     has_admin_password = False
@@ -417,6 +418,11 @@ def login():
     token = request.values.get('token', None)
 
     token_valid = secure_compare(token, ncpa_token)
+
+    # Retry with backup token if primary token is not valid and backup token is set
+    if not token_valid and backup_ncpa_token:
+        token_valid = secure_compare(token, backup_ncpa_token)    
+
     token_is_admin = secure_compare(token, admin_password)
 
     template_args = { 'hide_page_links': True,
