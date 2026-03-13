@@ -681,11 +681,11 @@ class Daemon():
 
     def set_uid_gid(self):
         """Drop root privileges"""
-        self.logger.debug("Daemon - set_uid_gid()")
+        self.logger.info("Daemon - set_uid_gid()")
         # Get set of gids to set for OS groups
         gids = [ self.gid ]
         # log gids for debugging
-        self.logger.debug("Primary GID: %d", self.gid)
+        self.logger.info("Primary GID: %d", self.gid)
 
         if self.username:
             gids = [ g.gr_gid for g in grp.getgrall() if self.username in g.gr_mem ]
@@ -702,7 +702,7 @@ class Daemon():
         try:
             os.setgroups(gids)
             supplementary_groups_set = True
-            self.logger.debug("Successfully set supplementary groups: %s", gids)
+            self.logger.info("Successfully set supplementary groups: %s", gids)
         except OSError as err:
             if (sys.platform == 'darwin' and err.errno == 1) or (sys.platform.startswith('sunos') and err.errno == 1):
                 # Operation not permitted on macOS or Solaris
