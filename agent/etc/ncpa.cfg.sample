@@ -211,7 +211,8 @@ allow_config_edit = 1
 community_string = mytoken
 
 #
-# You can setup an optional backup token that will be used if the primary token does not match. This is useful for rotating tokens without downtime.
+# You can setup an optional backup token that will be used if the primary token does not match. 
+# This is useful for rotating tokens without downtime.
 #
 # backup_community_string = mytoken2
 
