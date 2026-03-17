@@ -1092,6 +1092,10 @@ def testconnect():
 
     token_valid = secure_compare(test_token, real_token)
     
+    # Retry with backup token if primary token is not valid and backup token is set
+    if not token_valid and backup_ncpa_token:
+        token_valid = secure_compare(token, backup_ncpa_token)
+
     if token_valid:
         return jsonify({'value': 'Success.'})
     else:
