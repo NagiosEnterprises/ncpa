@@ -1094,6 +1094,7 @@ def testconnect():
     
     # Retry with backup token if primary token is not valid and backup token is set
     if not token_valid and real_backup_token:
+        listener_logger.info("testconnect() - primary token invalid, trying backup token")
         token_valid = secure_compare(test_token, real_backup_token)
 
     if token_valid:
