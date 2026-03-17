@@ -321,6 +321,7 @@ def requires_token_or_auth(f):
 
         # Retry with backup token if primary token is not valid and backup token is set
         if not token_valid and backup_ncpa_token:
+            listener_logger.debug("Token did not match primary token, retrying with backup token.")
             token_valid = secure_compare(token, backup_ncpa_token)
 
         # This is an internal call, we don't check
@@ -421,6 +422,7 @@ def login():
 
     # Retry with backup token if primary token is not valid and backup token is set
     if not token_valid and backup_ncpa_token:
+        listener_logger.debug("Token did not match primary token, retrying with backup token.")
         token_valid = secure_compare(token, backup_ncpa_token)    
 
     token_is_admin = secure_compare(token, admin_password)
@@ -1094,7 +1096,7 @@ def testconnect():
     
     # Retry with backup token if primary token is not valid and backup token is set
     if not token_valid and real_backup_token:
-        listener_logger.info("testconnect() - primary token invalid, trying backup token")
+        listener_logger.debug("testconnect() - primary token invalid, trying backup token")
         token_valid = secure_compare(test_token, real_backup_token)
 
     if token_valid:
