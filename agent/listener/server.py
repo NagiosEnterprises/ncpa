@@ -1089,10 +1089,13 @@ def testconnect():
     real_token = listener.config['iconfig'].get('api', 'community_string')
     real_backup_token = listener.config['iconfig'].get('api', 'backup_community_string')
     test_token = request.values.get('token', None)
-    if real_token != test_token or (real_backup_token and real_backup_token != test_token):
-        return jsonify({'error': 'Bad token.'})
-    else:
+
+    token_valid = secure_compare(test_token, real_token)
+    
+    if token_valid:
         return jsonify({'value': 'Success.'})
+    else:
+        return jsonify({'error': 'Bad token.'})
 
 
 @listener.route('/nrdp/', methods=['GET', 'POST'], provide_automatic_options = False)
