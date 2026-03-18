@@ -249,7 +249,7 @@
 
                 <div class="section">
                     <h3>[api]</h3>
-                    <p>This section controls the authentication token for the API and any other options that control access or change the way the API works. Currently there is only one option for this section.</p>
+                    <p>This section controls the authentication token for the API and any other options that control access or change the way the API works. Currently there are only two options for this section.</p>
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -265,6 +265,12 @@
                                 <th>community_string</th>
                                 <td>mytoken</td>
                                 <td>The token used to authenticate when accessing the API.<br>The token is also used to authenticate to the web GUI unless <code>admin_auth_only = 1</code> in the <a href="#listener">[listener]</a> section an <code>admin_password</code> is provided.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>backup_community_string</th>
+                                <td></td>
+                                <td>An optional backup token that will be used if the primary token does not match. This option was added to aid rotating tokens without downtime.</td>
                             </tr>
                         </tbody>
                     </table>
