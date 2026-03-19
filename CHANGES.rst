@@ -1,5 +1,11 @@
 Changelog
 +++++++++
+3.4.0 - 4/xx/2026
+==================
+**Added**
+
+- Placeholder for future release updates. - CPD
+
 3.3.1 - 3/19/2026
 ==================
 **Added**
