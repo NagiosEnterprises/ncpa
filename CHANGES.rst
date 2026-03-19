@@ -1,5 +1,25 @@
 Changelog
 +++++++++
+3.3.1 - 3/19/2026
+==================
+**Added**
+
+- Added support for TLSv1.3. This update enables the latest encryption standard, offering improved security and faster connection handshake speeds. [GH#1352] - CPD
+
+**Updates**
+
+- Linux builds now use OpenSSL 3.5.5 to resolve CVEs and improve compatibility. [GH#1353] - CPD
+
+**Bug Fixes**
+
+- Fixed a Linux issue where service files were being left behind after an uninstall. [GH#1063] - CPD
+- Fixed a routing issue after admin authentication that was causing the admin section to not work properly. [GH#898] - CPD
+- SSL renegotiation is now disabled to prevent security vulnerabilities. [GH#869,GH#1180] - CPD
+
+**Deprecated**
+
+- Deprecated support for TLSv1 and TLSv1.1 due to security vulnerabilities and the fact that most modern clients no longer support these protocols. - CPD
+
 3.3.0 - 2/26/2026
 ==================
 **Added**
