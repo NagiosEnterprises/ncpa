@@ -8,7 +8,7 @@ Changelog
 
 **Updates**
 
-- Removed redundant Python executables from the install to reduce potential attack surface and confusion. - CPD
+- Removed redundant Python executable from the install to reduce potential attack surface and confusion. - CPD
 
 3.3.1 - 3/19/2026
 ==================
