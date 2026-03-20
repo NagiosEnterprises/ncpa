@@ -1,5 +1,11 @@
 Changelog
 +++++++++
+3.4.0 - 4/xx/2026
+==================
+**Added**
+
+- Added a default token value to the Windows installer to prevent the token from being blank after installation. - CPD
+
 3.3.1 - 3/19/2026
 ==================
 **Added**
