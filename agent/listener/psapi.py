@@ -440,6 +440,8 @@ def get_interface_node():
     if_children = [
         make_if_nodes(if_name, io_counters, if_stats) for if_name in io_counters.keys()
     ]
+
+    logging.debug("Child data for interfaces: %s", if_children)
     return ParentNode("interface", children=if_children)
 
 
