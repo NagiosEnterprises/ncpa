@@ -230,11 +230,11 @@ def make_if_nodes(if_name, io_counters, if_stats):
 
     if if_name in if_stats:
         if if_stats[if_name].isup:
-            status = 1
-        else:
             status = 0
+        else:
+            status = 2
     else:
-        status = "unknown"
+        status = 3
     statusNode = RunnableNode("status", method=lambda: (status, ""))
 
     return RunnableParentNode(
