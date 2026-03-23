@@ -230,9 +230,9 @@ def make_if_nodes(if_name, io_counters, if_stats):
 
     if if_name in if_stats:
         if if_stats[if_name].isup:
-            status = "up"
+            status = 1
         else:
-            status = "down"
+            status = 0
     else:
         status = "unknown"
     statusNode = RunnableNode("status", method=lambda: (status, ""))
@@ -440,11 +440,6 @@ def get_interface_node():
     if_children = [
         make_if_nodes(if_name, io_counters, if_stats) for if_name in io_counters.keys()
     ]
-
-    # log if_children in a more readable format
-    for child in if_children:
-        logging.debug("Interface: %s, Children: %s", child.name, [c.name for c in child.children])
-
     return ParentNode("interface", children=if_children)
 
 
