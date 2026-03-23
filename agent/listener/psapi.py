@@ -441,7 +441,10 @@ def get_interface_node():
         make_if_nodes(if_name, io_counters, if_stats) for if_name in io_counters.keys()
     ]
 
-    logging.debug("Child data for interfaces: %s", if_children)
+    # log if_children in a more readable format
+    for child in if_children:
+        logging.debug("Interface: %s, Children: %s", child.name, [c.name for c in child.children])
+
     return ParentNode("interface", children=if_children)
 
 
