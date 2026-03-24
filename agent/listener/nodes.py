@@ -511,6 +511,19 @@ class RunnableNode(ParentNode):
             custom_output = proper_name + " was " + self.elapsed_time(values[0])
             values_for_info_line = ""
 
+        # Hack in the interface status change because we can't do much else...
+        if self.name == "status":
+            # Replace 0 with up, 2 with down and 3 with unknown for the info line
+            if values[0] == 0:
+                values_for_info_line = "up"
+            elif values[0] == 2:
+                values_for_info_line = "down"
+            else values[0] == 3:
+                values_for_info_line = "unknown"
+            # Also change the custom output to show the status instead of the numeric value
+            custom_output = proper_name + " is " + values_for_info_line
+            values_for_info_line = ""
+
         if secondary_data is True:
             stdout = "%s: %s" % (proper_name, values_for_info_line)
         else:
