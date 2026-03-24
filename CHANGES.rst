@@ -4,7 +4,7 @@ Changelog
 ==================
 **Added**
 
-- Added an option to set a second API token to help with token rotation and to allow for a smoother transition when changing tokens. - CPD
+- Added a new config option to set backup_community_string in the [api] section of ncpa.cfg to help with token rotation and to allow for a smoother transition when changing tokens. - CPD
 - Added a default token value to the Windows installer to prevent the token from being blank after installation. - CPD
 
 3.3.1 - 3/19/2026
