@@ -6,6 +6,10 @@ Changelog
 
 - Added a default token value to the Windows installer to prevent the token from being blank after installation. - CPD
 
+**Bug Fixes**
+
+- Fixed an issue where the interface/device/status endpoint was returning a string in the perfdata instead of a relevant numeric exit code. [GH#1371] - CPD
+
 3.3.1 - 3/19/2026
 ==================
 **Added**
