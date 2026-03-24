@@ -518,7 +518,7 @@ class RunnableNode(ParentNode):
 
         # Hack in the interface status change because we can't do much else...
         if self.name == "status":
-             custom_output = proper_name + " is " + values[0]
+             custom_output = proper_name + " is " + str(values[0])
              values_for_info_line = ""
 
         if secondary_data is True:
