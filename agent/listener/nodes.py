@@ -523,7 +523,7 @@ class RunnableNode(ParentNode):
                 readable_text = "up"
             elif values[0] == 2:
                 readable_text = "down"
-            else values[0] == 3:
+            else:
                 readable_text = "unknown"
 
              custom_output = proper_name + " is " + readable_text
