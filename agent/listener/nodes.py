@@ -519,7 +519,6 @@ class RunnableNode(ParentNode):
         # Hack in the interface status change because we can't do much else...
         if self.name == "status":
             # Replace 0 with up, 2 with down and 3 with unknown for the info line
-            readable_text = ""
             if values[0] == 0:
                 readable_text = "up"
             elif values[0] == 2:
@@ -528,9 +527,9 @@ class RunnableNode(ParentNode):
                 readable_text = "unknown"
             else:
                 readable_text = str(values[0])
-
-             custom_output = proper_name + " is " + readable_text
-             values_for_info_line = ""
+            # Display custom text for the status change in the info line
+            custom_output = proper_name + " is " + readable_text
+            values_for_info_line = ""
 
         if secondary_data is True:
             stdout = "%s: %s" % (proper_name, values_for_info_line)
