@@ -511,11 +511,6 @@ class RunnableNode(ParentNode):
             custom_output = proper_name + " was " + self.elapsed_time(values[0])
             values_for_info_line = ""
 
-        # Debug log self object
-        listener_logger.debug("RunnableNode object: %r", self.__dict__)
-        # Debug log the values
-        listener_logger.debug("Values for %s: %r", proper_name, values)
-
         # Hack in the interface status change because we can't do much else...
         if self.name == "status":
             # Replace 0 with up, 2 with down and 3 with unknown for the info line
