@@ -513,6 +513,8 @@ class RunnableNode(ParentNode):
 
         # Debug log self object
         listener_logger.debug("RunnableNode object: %r", self.__dict__)
+        # Debug log the values
+        listener_logger.debug("Values for %s: %r", proper_name, values)
 
         # Hack in the interface status change because we can't do much else...
         # if self.name == "status":
