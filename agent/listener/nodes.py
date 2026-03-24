@@ -519,6 +519,7 @@ class RunnableNode(ParentNode):
         # Hack in the interface status change because we can't do much else...
         if self.name == "status":
             # Replace 0 with up, 2 with down and 3 with unknown for the info line
+            readable_text = ""
             if values[0] == 0:
                 readable_text = "up"
             elif values[0] == 2:
