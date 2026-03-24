@@ -523,10 +523,8 @@ class RunnableNode(ParentNode):
                 readable_text = "up"
             elif values[0] == 2:
                 readable_text = "down"
-            elif values[0] == 3:
-                readable_text = "unknown"
             else:
-                readable_text = str(values[0])
+                readable_text = "unknown"
             # Display custom text for the status change in the info line
             custom_output = proper_name + " is " + readable_text
             values_for_info_line = ""
