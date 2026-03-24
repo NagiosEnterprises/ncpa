@@ -6,6 +6,10 @@ Changelog
 
 - Added a default token value to the Windows installer to prevent the token from being blank after installation. - CPD
 
+**Updates**
+
+- Removed redundant Python executable from the install to reduce potential attack surface and confusion. - CPD
+
 3.3.1 - 3/19/2026
 ==================
 **Added**
