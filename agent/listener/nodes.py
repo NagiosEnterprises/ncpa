@@ -515,13 +515,13 @@ class RunnableNode(ParentNode):
         if self.name == "status":
             # Replace 0 with up, 2 with down and 3 with unknown for the info line
             if values[0] == 0:
-                values_for_info_line = "up"
+                readable_text = "up"
             elif values[0] == 2:
-                values_for_info_line = "down"
+                readable_text = "down"
             else values[0] == 3:
-                values_for_info_line = "unknown"
+                readable_text = "unknown"
             # Also change the custom output to show the status instead of the numeric value
-            custom_output = proper_name + " is " + values_for_info_line
+            custom_output = proper_name + " is " + readable_text
             values_for_info_line = ""
 
         if secondary_data is True:
