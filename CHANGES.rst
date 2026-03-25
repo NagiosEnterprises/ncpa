@@ -8,7 +8,7 @@ Changelog
 
 **Updates**
 
-- Upgraded AIX Python Cryptography package to use IBM Toolbox compiled version 44.0.2 to resolve CVEs and improve compatibility. [GH#1355] - CPD
+- Upgraded AIX Python cryptography package to use IBM Toolbox compiled version 44.0.2 to resolve CVEs and improve compatibility. [GH#1355] - CPD
 - Removed redundant Python executable from the install to reduce potential attack surface and confusion. - CPD
 
 3.3.1 - 3/19/2026
