@@ -7,10 +7,6 @@
 VENV_MANAGER="${BUILD_DIR}/venv_manager.sh"
 VENV_NAME="${VENV_NAME:-ncpa-build}"
 
-# Export necessary build environment variables
-export MAKE="gmake"
-export CC="gcc"
-
 # Check if using virtual environment or fallback to system Python
 if [[ "$SKIP_PYTHON" == "1" ]]; then
     echo "***** aix/setup.sh - Using virtual environment mode"
@@ -174,6 +170,9 @@ build_patchelf() {
         fi
     fi
 
+    # Export necessary build environment variables
+    export MAKE="gmake"
+
     # Change to patchelf source directory
     echo "Changing to patchelf source directory..."
     cd patchelf-0.18.0
@@ -211,6 +210,8 @@ set +e
 mkgroup nagios
 mkuser pgrp='nagios' groups='nagios' home='/home/nagios' nagios
 set -e
+
+export CC="gcc"
 
 # Automatically install Python requirements in venv after setup
 echo "***** aix/setup.sh - Installing Python requirements in virtual environment if applicable"
