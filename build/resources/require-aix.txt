@@ -1,4 +1,4 @@
-psutil==7.0.0
+psutil
 requests
 Jinja2
 flask
