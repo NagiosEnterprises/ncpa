@@ -173,6 +173,7 @@ build_patchelf() {
     # Export necessary build environment variables
     export MAKE="gmake"
     export CC="gcc"
+    export PKG_CONFIG_PATH=/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 
     # Change to patchelf source directory
     echo "Changing to patchelf source directory..."
