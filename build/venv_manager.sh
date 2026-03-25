@@ -361,7 +361,6 @@ create_venv() {
     mkdir -p "$VENV_BASE_DIR"
     
     # Create the virtual environment
-    # Standard venv creation for other platforms
     log "Creating virtual environment with Python $PYTHON_VERSION..."
     if ! "$PYTHON_EXECUTABLE" -m venv "$VENV_PATH"; then
         error "Failed to create virtual environment"
