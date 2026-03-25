@@ -211,6 +211,7 @@ mkgroup nagios
 mkuser pgrp='nagios' groups='nagios' home='/home/nagios' nagios
 set -e
 
+# Setup the c compiler export for building python cryptography after prerequisites are installed
 export CC="gcc"
 
 # Automatically install Python requirements in venv after setup
