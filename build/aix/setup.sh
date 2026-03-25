@@ -34,7 +34,7 @@ install_prereqs() {
     
     echo "    - Installing required build packages via dnf..."
     dnf -y update
-    dnf -y install sudo gcc gcc-c++ gcc-cpp make cmake automake libffi-devel
+    dnf -y install sudo gcc gcc-c++ gcc-cpp make cmake automake libffi-devel rust cargo
 
     # Ensure Python 3.12 is installed
     if command -v python3.12 >/dev/null 2>&1; then
@@ -45,7 +45,7 @@ install_prereqs() {
     fi
 
     echo "    - Assuming Python 3.12 is the target version for NCPA build"
-    dnf -y install python3.12-pip python3.12-devel 
+    dnf -y install python3.12-pip python3.12-devel
 
     echo "----------------------------------------"
     echo "Adding additional tools from source..."
@@ -172,6 +172,7 @@ build_patchelf() {
 
     # Export necessary build environment variables
     export MAKE="gmake"
+    export CC="gcc"
 
     # Change to patchelf source directory
     echo "Changing to patchelf source directory..."

@@ -361,32 +361,11 @@ create_venv() {
     mkdir -p "$VENV_BASE_DIR"
     
     # Create the virtual environment
-    #
-    # AIX uses the IBM compiled Python cryptography package, while other platforms can use pip for all Python modules, 
-    # so we need to handle venv creation differently for AIX
-    if [ "$PLATFORM" = "aix" ]; then
-        if command -v dnf >/dev/null 2>&1; then
-            log "Using dnf to install AIX python cryptography support..."
-            dnf install -y python3.12-cryptography || {
-                error "Failed to install python3.12-cryptography on AIX. Please ensure it's available in your repositories."
-                return 1
-            }
-        else
-            error "dnf package manager not found on AIX. Please install python3.12-cryptography manually."
-            return 1
-        fi
-        log "Using system Python venv module for AIX (python3.12-venv) to create virtual environment..."
-        if ! "$PYTHON_EXECUTABLE" -m venv --system-site-packages "$VENV_PATH"; then
-            error "Failed to create virtual environment with system venv module on AIX"
-            return 1
-        fi
-    else
-        # Standard venv creation for other platforms
-        log "Creating virtual environment with Python $PYTHON_VERSION..."
-        if ! "$PYTHON_EXECUTABLE" -m venv "$VENV_PATH"; then
-            error "Failed to create virtual environment"
-            return 1
-        fi
+    # Standard venv creation for other platforms
+    log "Creating virtual environment with Python $PYTHON_VERSION..."
+    if ! "$PYTHON_EXECUTABLE" -m venv "$VENV_PATH"; then
+        error "Failed to create virtual environment"
+        return 1
     fi
     
     # Verify venv creation
