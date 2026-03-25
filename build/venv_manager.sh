@@ -387,6 +387,7 @@ create_venv() {
             error "Failed to create virtual environment"
             return 1
         fi
+    fi
     
     # Verify venv creation
     if [ ! -f "$VENV_PATH/bin/activate" ] && [ ! -f "$VENV_PATH/Scripts/activate" ]; then
