@@ -45,7 +45,7 @@ install_prereqs() {
     fi
 
     echo "    - Assuming Python 3.12 is the target version for NCPA build"
-    dnf -y install python3.12-pip python3.12-devel python3.12-cryptography
+    dnf -y install python3.12-pip python3.12-devel
 
     echo "----------------------------------------"
     echo "Adding additional tools from source..."
