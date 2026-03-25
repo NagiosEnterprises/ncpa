@@ -7,6 +7,10 @@
 VENV_MANAGER="${BUILD_DIR}/venv_manager.sh"
 VENV_NAME="${VENV_NAME:-ncpa-build}"
 
+# Export necessary build environment variables
+export MAKE="gmake"
+export CC="gcc"
+
 # Check if using virtual environment or fallback to system Python
 if [[ "$SKIP_PYTHON" == "1" ]]; then
     echo "***** aix/setup.sh - Using virtual environment mode"
@@ -169,11 +173,6 @@ build_patchelf() {
             echo "patchelf source directory found."
         fi
     fi
-
-    # Export necessary build environment variables
-    export MAKE="gmake"
-    export CC="gcc"
-    export PKG_CONFIG_PATH=/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 
     # Change to patchelf source directory
     echo "Changing to patchelf source directory..."
