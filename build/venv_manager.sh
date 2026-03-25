@@ -367,7 +367,7 @@ create_venv() {
     if [ "$PLATFORM" = "aix" ]; then
         if command -v dnf >/dev/null 2>&1; then
             log "Using dnf to install python3.12-venv for AIX virtual environment support..."
-            sudo dnf install -y python3.12-cryptography || {
+            dnf install -y python3.12-cryptography || {
                 error "Failed to install python3.12-cryptography on AIX. Please ensure it's available in your repositories."
                 return 1
             }
