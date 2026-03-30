@@ -340,6 +340,88 @@ detect_python() {
     return 1
 }
 
+# Detect specific Linux distribution and version and do platform-specific setup
+detect_linux_distro() {
+    if [[ "$PLATFORM" == "linux" ]]; then
+        echo "Detecting Linux distribution and version..."
+        echo "***** sourcing linux/init.sh"
+        source "linux/init.sh"
+
+        UNSUPPORTED_MESSAGE="Unsupported OS version detected. The NCPA build script is unable to automatically install Python 3.13 for your distribution version. \ 
+        Consider installing Python 3.13 from source or using an alternative installation method."
+
+        case "$distro" in
+            "RHEL" )
+                echo "Setting PLATFORM to rhel"
+                if [[ "$ver" == 8 ]]; then
+                    echo "Detected RHEL 8"
+                elif [[ "$ver" == 9 ]]; then
+                    echo "Detected RHEL 9"
+                elif [[ "$ver" == 10 ]]; then
+                    echo "Detected RHEL 10"
+                else
+                    echo "Detected RHEL version: $version"
+                    echo "$UNSUPPORTED_MESSAGE"
+                fi
+                ;;
+            "Oracle" )
+                echo "Setting PLATFORM to oracle"
+                if [[ "$ver" == 8 ]]; then
+                    echo "Detected Oracle Linux 8"
+                elif [[ "$ver" == 9 ]]; then
+                    echo "Detected Oracle Linux 9"
+                elif [[ "$ver" == 10 ]]; then
+                    echo "Detected Oracle Linux 10"
+                else
+                    echo "Detected Oracle Linux version: $version"
+                    echo "$UNSUPPORTED_MESSAGE"
+                fi
+                ;;
+            "CentOS" )
+                echo "Setting PLATFORM to centos"
+                if [[ "$ver" == 9 ]]; then
+                    echo "Detected CentOS 9"
+                elif [[ "$ver" == 10 ]]; then
+                    echo "Detected CentOS 10"
+                else
+                    echo "Detected CentOS version: $version"
+                    echo "$UNSUPPORTED_MESSAGE"
+                fi
+                ;;
+            "Debian" )
+                echo "Setting PLATFORM to debian"
+                if [[ "$ver" == 11 ]]; then
+                    echo "Detected Debian 11"
+                elif [[ "$ver" == 12 ]]; then
+                    echo "Detected Debian 12"
+                elif [[ "$ver" == 13 ]]; then
+                    echo "Detected Debian 13"
+                else
+                    echo "Detected Debian version: $version"
+                    echo "$UNSUPPORTED_MESSAGE"
+                fi
+                ;;
+            "Ubuntu" )
+                echo "Setting PLATFORM to ubuntu"
+                if [[ "$ver" == 20.04 ]]; then
+                    echo "Detected Ubuntu 20.04"           
+                if [[ "$ver" == 22.04 ]]; then
+                    echo "Detected Ubuntu 22.04"
+                elif [[ "$ver" == 24.04 ]]; then
+                    echo "Detected Ubuntu 24.04"
+                else
+                    echo "Detected Ubuntu version: $version"
+                    echo "$UNSUPPORTED_MESSAGE"
+                fi
+                ;;
+            *)
+                echo "Setting PLATFORM to generic_linux"
+                echo "$UNSUPPORTED_MESSAGE"
+                ;;
+        esac
+    fi
+}
+
 # Create virtual environment
 create_venv() {
     log "Creating virtual environment at: $VENV_PATH"
@@ -711,6 +793,7 @@ main() {
             activate_venv
             ;;
         "setup")
+            detect_linux_distro
             create_venv && activate_venv && setup_build_tools
             ;;
         "install-requirements")
