@@ -49,9 +49,9 @@ Building on Linux
 
 NCPA must be built on the family of distributions which it will ultimately be run on. i.e. a .deb built on Ubuntu 20 will work on Ubuntu 22/24 and should also work on Debian 10/11
 
-You will need to have python3.11+ (python3.13 is preferred) installed prior to building NCPA v3.x.
+If you are on a RHEL/Oracle/CentOS/Amazon/Rocky system you will need to enable the CodeReady Builder (CRB) and EPEL repositories specific to your distro and version to get all the required development packages, and the newer versions of Python.
 
-If you are on a RHEL/Oracle/CentOS/Amazon/Rocky system you will need to install the CodeReady Builder (CRB) and EPEL repositories specific to your distro and version to get all the required development packages, and the newer versions of Python.
+You will need to have python3.11+ (python3.13 is preferred) installed prior to building NCPA v3.x.
 
 To start, clone the repository in your directory::
 
