@@ -347,11 +347,11 @@ detect_linux_distro() {
         echo "***** sourcing linux/init.sh"
         source "linux/init.sh"
 
-        UNSUPPORTED_MESSAGE="Unsupported OS version detected. The NCPA build script is unable to automatically install Python 3.13 for your distribution version. \ 
+        UNSUPPORTED_MESSAGE="Unsupported OS version detected. The NCPA build script is unable to automatically install Python 3.13 for your distribution version. \
         Consider installing Python 3.13 from source or using an alternative installation method."
 
         case "$distro" in
-            "RHEL" )
+            "RHEL")
                 echo "Setting PLATFORM to rhel"
                 if [[ "$ver" == 8 ]]; then
                     echo "Detected RHEL 8"
@@ -364,7 +364,7 @@ detect_linux_distro() {
                     echo "$UNSUPPORTED_MESSAGE"
                 fi
                 ;;
-            "Oracle" )
+            "Oracle")
                 echo "Setting PLATFORM to oracle"
                 if [[ "$ver" == 8 ]]; then
                     echo "Detected Oracle Linux 8"
@@ -377,7 +377,7 @@ detect_linux_distro() {
                     echo "$UNSUPPORTED_MESSAGE"
                 fi
                 ;;
-            "CentOS" )
+            "CentOS")
                 echo "Setting PLATFORM to centos"
                 if [[ "$ver" == 9 ]]; then
                     echo "Detected CentOS 9"
@@ -388,7 +388,7 @@ detect_linux_distro() {
                     echo "$UNSUPPORTED_MESSAGE"
                 fi
                 ;;
-            "Debian" )
+            "Debian")
                 echo "Setting PLATFORM to debian"
                 if [[ "$ver" == 11 ]]; then
                     echo "Detected Debian 11"
@@ -401,11 +401,11 @@ detect_linux_distro() {
                     echo "$UNSUPPORTED_MESSAGE"
                 fi
                 ;;
-            "Ubuntu" )
+            "Ubuntu")
                 echo "Setting PLATFORM to ubuntu"
                 if [[ "$ver" == 20.04 ]]; then
-                    echo "Detected Ubuntu 20.04"           
-                if [[ "$ver" == 22.04 ]]; then
+                    echo "Detected Ubuntu 20.04"
+                elif [[ "$ver" == 22.04 ]]; then
                     echo "Detected Ubuntu 22.04"
                 elif [[ "$ver" == 24.04 ]]; then
                     echo "Detected Ubuntu 24.04"
