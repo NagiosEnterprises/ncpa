@@ -5,6 +5,8 @@ import platform
 import psutil as ps
 import re
 import time
+import subprocess
+
 
 from listener.nodes import ParentNode, RunnableNode, RunnableParentNode, LazyNode
 from listener.pluginnodes import PluginAgentNode
@@ -448,25 +450,36 @@ def get_plugins_node():
 
 
 def get_user_node():
-    user_count = RunnableNode(
-        "count", method=lambda: (len([x.name for x in ps.users()]), "users")
-    )
-    user_list = RunnableNode(
-        "list", method=lambda: ([x.name for x in ps.users()], "users")
-    )
-    unit_str = "[" + ",".join(map(str, [x.name for x in ps.users()])) + "] users"
-    user_countlist = RunnableNode(
-        "countlist", method=lambda: (len([x.name for x in ps.users()]), unit_str)
-    )
+    uname = platform.uname()[0]
+
+    if uname == 'Windows':
+        user_count = RunnableNode(
+            "count", method=lambda: (len([x.name for x in ps.users()]), "users")
+        )
+        user_list = RunnableNode(
+            "list", method=lambda: ([x.name for x in ps.users()], "users")
+        )
+        unit_str = "[" + ",".join(map(str, [x.name for x in ps.users()])) + "] users"
+        user_countlist = RunnableNode(
+            "countlist", method=lambda: (len([x.name for x in ps.users()]), unit_str)
+        )
+    else:
+        # On Unix-like systems, we can use the 'who' command to get the list of logged-in users
+        users = subprocess.check_output(['who']).decode('utf-8')
+        user_count = RunnableNode(
+            "count", method=lambda: (len(users.strip().split('\n')), "users")
+        )
+        user_list = RunnableNode(
+            "list", method=lambda: (users.strip().split('\n'), "users")
+        )
+        unit_str = "[" + ",".join(users.strip().split('\n')) + "] users"
+        user_countlist = RunnableNode(
+            "countlist", method=lambda: (len(users.strip().split('\n')), unit_str)
+        )
+
     # Debug logging to verify the user count and list are being retrieved correctly
     logging.debug("User count: %d", len([x.name for x in ps.users()]))
     logging.debug("User list: %s", [x.name for x in ps.users()])
-    # Troubleshoot psutil users() function by catching any exceptions and logging them
-    try:
-        users = ps.users()
-        logging.debug("psutil users() output: %s", users)
-    except Exception as e:
-        logging.exception("Error retrieving users with psutil: %s", e)
 
     return ParentNode("user", children=[user_count, user_list, user_countlist])
 
