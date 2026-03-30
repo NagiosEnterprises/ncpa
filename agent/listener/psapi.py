@@ -458,6 +458,16 @@ def get_user_node():
     user_countlist = RunnableNode(
         "countlist", method=lambda: (len([x.name for x in ps.users()]), unit_str)
     )
+    # Debug logging to verify the user count and list are being retrieved correctly
+    logging.debug("User count: %d", len([x.name for x in ps.users()]))
+    logging.debug("User list: %s", [x.name for x in ps.users()])
+    # Troubleshoot psutil users() function by catching any exceptions and logging them
+    try:
+        users = ps.users()
+        logging.debug("psutil users() output: %s", users)
+    except Exception as e:
+        logging.exception("Error retrieving users with psutil: %s", e)
+
     return ParentNode("user", children=[user_count, user_list, user_countlist])
 
 
