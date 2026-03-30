@@ -465,7 +465,7 @@ def get_user_node():
         )
     else:
         # On Unix-like systems, we can use the 'who' command to get the list of logged-in users
-        users = subprocess.check_output(['who']).decode('utf-8')
+        users = subprocess.check_output(['w']).decode('utf-8')
         user_count = RunnableNode(
             "count", method=lambda: (len(users.strip().split('\n')), "users")
         )
@@ -476,11 +476,6 @@ def get_user_node():
         user_countlist = RunnableNode(
             "countlist", method=lambda: (len(users.strip().split('\n')), unit_str)
         )
-
-    # Debug logging to verify the user count and list are being retrieved correctly
-    logging.debug("User count: %d", len([x.name for x in ps.users()]))
-    logging.debug("User list: %s", [x.name for x in ps.users()])
-
     return ParentNode("user", children=[user_count, user_list, user_countlist])
 
 
