@@ -9,6 +9,7 @@ Changelog
 
 **Updates**
 
+- Removed version pin for AIX Python cryptography to allow updates to the latest stable release. [GH#1355] - CPD
 - Removed redundant Python executable from the install to reduce potential attack surface and confusion. - CPD
 
 **Bug Fixes**
