@@ -51,8 +51,7 @@ NCPA must be built on the family of distributions which it will ultimately be ru
 
 You will need to have python3.11+ (python3.13 is preferred) installed prior to building NCPA v3.x.
 
-If you are on a RHEL/Oracle/CentOS/Amazon/Rocky system you may need to enable additional repositories to get a newer version of python3.13.
-You may also need to install the CodeReady Builder repository specific to your distro and version to get all the required development packages.
+If you are on a RHEL/Oracle/CentOS/Amazon/Rocky system you will need to install the CodeReady Builder (CRB) and EPEL repositories specific to your distro and version to get all the required development packages, and the newer versions of Python.
 
 To start, clone the repository in your directory::
 
