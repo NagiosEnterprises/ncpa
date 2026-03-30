@@ -53,6 +53,8 @@ If you are on a RHEL/Oracle/CentOS/Amazon/Rocky system you will need to enable t
 
 You will need to have python3.11+ (python3.13 is preferred) installed prior to building NCPA v3.x. The build script will attempt to install python3.13 if it is not found, but you may need to install Python (3.11+) manually if the build script fails to do so.
 
+It is also possible that python3.11+ is not available in the repositories for your distribution, in which case you will need to build Python from source and install it before building NCPA. If you do this, make sure to add the location of the python3.11+ binary to your PATH environment variable so that the build script can find it.
+
 You will also need git installed to clone the repository.
 
 To start, clone the repository in your directory::
