@@ -466,17 +466,19 @@ def get_user_node():
     else:
         # On Unix-like systems, we can use the 'who' command to get the list of logged-in users
         users = subprocess.check_output(['who']).decode('utf-8')
-        users_filtered = list(filter(None, users.strip().split('\n')))
+        # users_filtered = list(filter(None, users.strip().split('\n')))
+        # Filter out empty lines and count unique users if necessary
+        unique_users = set([line.split()[0] for line in logged_in_users if line])
 
         user_count = RunnableNode(
-            "count", method=lambda: (len(users_filtered), "users")
+            "count", method=lambda: (len(unique_users), "users")
         )
         user_list = RunnableNode(
-            "list", method=lambda: (users_filtered, "users")
+            "list", method=lambda: (unique_users, "users")
         )
-        unit_str = "[" + ",".join(users_filtered) + "] users"
+        unit_str = "[" + ",".join(unique_users) + "] users"
         user_countlist = RunnableNode(
-            "countlist", method=lambda: (len(users_filtered), unit_str)
+            "countlist", method=lambda: (len(unique_users), unit_str)
         )
 
         # Debug logging to verify the output of the 'who' command
