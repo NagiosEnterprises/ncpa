@@ -478,12 +478,6 @@ def get_user_node():
         user_countlist = RunnableNode(
             "countlist", method=lambda: (len(users_filtered), unit_str)
         )
-
-        # Debug logging to verify the output of the 'who' command
-        logging.debug("Output of 'who' command: %s", users)
-        logging.debug("Parsed user list: %s", user_list.method())
-        logging.debug("Parsed user count: %s", user_count.method())
-        logging.debug("Parsed user countlist: %s", user_countlist.method())
         
     return ParentNode("user", children=[user_count, user_list, user_countlist])
 
