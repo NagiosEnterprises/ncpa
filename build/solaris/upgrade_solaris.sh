@@ -23,10 +23,10 @@ echo "Backing up $NCPA_ETC to $NCPA_ETC_BACKUP..."
 cp -r "$NCPA_ETC" "$NCPA_ETC_BACKUP"
 
 echo "Removing current NCPA package..."
-pkgrm -n ncpa 2>/dev/null || true
+pkgrm ncpa 2>/dev/null || true
 
 echo "Installing new NCPA package..."
-pkgadd -n -d "$NEW_PKG_FILE" ncpa
+pkgadd -d "$NEW_PKG_FILE" ncpa
 
 echo "Restoring configuration files..."
 cp -r "$NCPA_ETC_BACKUP"/* "$NCPA_ETC/"
