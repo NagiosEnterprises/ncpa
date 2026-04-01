@@ -31,6 +31,9 @@ pkgadd -d "$NEW_PKG_FILE" ncpa
 echo "Restoring configuration files..."
 cp -r "$NCPA_ETC_BACKUP"/* "$NCPA_ETC/"
 
+echo "Restarting NCPA service..."
+svcadm restart ncpa
+
 echo "Cleaning up backup..."
 rm -rf "$NCPA_ETC_BACKUP"
 
