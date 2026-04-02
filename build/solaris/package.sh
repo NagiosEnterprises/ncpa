@@ -69,8 +69,6 @@ rm -rf $DIR/pkginfo.tmp
     echo "Creating prototype file..."
     # Add prototype file
     echo 'i pkginfo' > prototype
-    # Preserve ncpa.cfg file if it exists on the system during installation
-    echo 'f preserve /usr/local/ncpa/etc/ncpa.cfg=ncpa/etc/ncpa.cfg ? ? ?' >> prototype
     echo 'i postinstall' >> prototype
     echo 'i preinstall' >> prototype
     echo 'i preremove' >> prototype
