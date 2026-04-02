@@ -29,6 +29,8 @@ echo "Verifying NCPA package removal..."
 if pkginfo -l ncpa > /dev/null 2>&1; then
     echo "Error: NCPA package removal failed."
     exit 1
+else
+    echo "NCPA package removed successfully."
 fi
 
 echo "Installing new NCPA package..."
