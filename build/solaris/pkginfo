@@ -4,3 +4,4 @@ VERSION=
 ARCH=
 CATEGORY=system
 BASEDIR=/usr/local
+CLASSES=preserve
