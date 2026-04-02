@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Solaris NCPA Upgrade Script
+# This non-interactive script automates the process of upgrading NCPA on Solaris systems.
 # Preserves /usr/local/ncpa/etc during upgrade
 
 set -e
