@@ -65,6 +65,7 @@ if [ -d "/tmp/ncpa_etc_backup" ]; then
     echo "NCPA: Restoring configuration files from backup..."
     cp -r /tmp/ncpa_etc_backup/* /usr/local/ncpa/etc/ 2>/dev/null || echo "No config files to restore"
     rm -rf /tmp/ncpa_etc_backup
+    sleep 5
 fi
 
 # Set proper ownership and permissions
