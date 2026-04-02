@@ -25,6 +25,12 @@ cp -r "$NCPA_ETC" "$NCPA_ETC_BACKUP"
 echo "Removing current NCPA package..."
 pkgrm -n -a admin_file ncpa
 
+echo "Verifying NCPA package removal..."
+if pkginfo -l ncpa > /dev/null 2>&1; then
+    echo "Error: NCPA package removal failed."
+    exit 1
+fi
+
 echo "Installing new NCPA package..."
 pkgadd -a admin_file -d "$NEW_PKG_FILE" ncpa
 
