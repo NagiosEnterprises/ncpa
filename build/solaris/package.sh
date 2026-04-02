@@ -74,7 +74,7 @@ rm -rf $DIR/pkginfo.tmp
     echo 'i preremove' >> prototype
 
     # Preserve ncpa.cfg file if it exists on the system during installation
-    echo 'f preserve /usr/local/ncpa/etc/ncpa.cfg=ncpa.cfg' >> prototype
+    echo 'f preserve /usr/local/ncpa/etc/ncpa.cfg=ncpa/etc/ncpa.cfg' >> prototype
     
     # Generate file list for the package
     echo "Generating file list..."
