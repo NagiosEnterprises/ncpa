@@ -18,6 +18,13 @@ if ! getent passwd nagios >/dev/null 2>&1; then
     useradd -g nagios -d /usr/local/ncpa -s /bin/false nagios
 fi
 
+# Try to copy existing config files if they exist (for upgrades)
+if [ -d "/usr/local/ncpa/etc" ]; then
+    echo "NCPA: Backing up existing configuration files..."
+    mkdir -p /tmp/ncpa_etc_backup
+    cp -r /usr/local/ncpa/etc/* /tmp/ncpa_etc_backup/ 2>/dev/null || echo "No existing config files to backup"
+fi
+
 # Create base directory structure
 echo "NCPA: Creating directory structure..."
 mkdir -p /usr/local/ncpa/var/log

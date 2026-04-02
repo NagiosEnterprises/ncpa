@@ -60,6 +60,13 @@ rm -f /var/lock/subsys/ncpa 2>/dev/null || true
 
 echo "NCPA: Process cleanup completed, proceeding with setup..."
 
+# Restore configuration files if they were backed up in preinstall
+if [ -d "/tmp/ncpa_etc_backup" ]; then
+    echo "NCPA: Restoring configuration files from backup..."
+    cp -r /tmp/ncpa_etc_backup/* /usr/local/ncpa/etc/ 2>/dev/null || echo "No config files to restore"
+    rm -rf /tmp/ncpa_etc_backup
+fi
+
 # Set proper ownership and permissions
 chown -R nagios:nagios /usr/local/ncpa/var
 chown nagios:nagios /usr/local/ncpa/etc /usr/local/ncpa/etc/*.cfg*
