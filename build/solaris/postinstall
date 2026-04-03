@@ -65,7 +65,6 @@ if [ -d "/tmp/ncpa_etc_backup" ]; then
     echo "NCPA: Restoring configuration files from backup..."
     cp -r /tmp/ncpa_etc_backup/* /usr/local/ncpa/etc/ 2>/dev/null || echo "No config files to restore"
     rm -rf /tmp/ncpa_etc_backup
-    sleep 5
 fi
 
 # Set proper ownership and permissions
@@ -137,6 +136,10 @@ fi
 # SIMPLIFIED SMF SERVICE CREATION
 echo "NCPA: Performing complete SMF service cleanup..."
 
+# Remove the service manifest files
+rm -f /var/svc/manifest/site/ncpa.xml
+rm -f /var/svc/manifest/application/ncpa.xml
+
 # Force remove all traces of ncpa services
 echo "NCPA: Removing all traces of NCPA services..."
 svccfg delete -f application/ncpa 2>/dev/null || true
@@ -146,6 +149,7 @@ svccfg delete -f site/ncpa 2>/dev/null || true
 echo "NCPA: Clearing SMF repository state..."
 svcadm restart svc:/system/manifest-import 2>/dev/null || true
 sleep 5
+
 
 # Try the standard manifest import approach first
 echo "NCPA: Attempting standard manifest import..."
