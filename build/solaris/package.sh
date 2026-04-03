@@ -66,6 +66,10 @@ rm -rf $DIR/pkginfo.tmp
     cp solaris/preinstall ./preinstall  
     cp solaris/preremove ./preremove
 
+    # Copy the admin_file for upgrades and non-interactive installs
+    echo "Adding admin_file for non-interactive installations..."
+    cp solaris/admin_file ./admin_file
+
     echo "Creating prototype file..."
     # Add prototype file
     echo 'i pkginfo' > prototype
