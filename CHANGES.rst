@@ -15,6 +15,8 @@ Changelog
 
 **Bug Fixes**
 
+- Fixed a Solaris upgrade issue where NCPA configuration files were not preserved during upgrades. - CPD
+- Fixed a Solaris upgrade bug preventing SMF services from being correctly reinitialized during the upgrade process. - CPD
 - Fixed an issue where the interface/device/status endpoint was returning a string in the perfdata instead of a relevant numeric exit code. [GH#1371] - CPD
 
 3.3.1 - 3/19/2026

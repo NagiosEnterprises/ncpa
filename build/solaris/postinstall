@@ -17,11 +17,27 @@ elif [ -x "/usr/local/bin/ncpa-start.sh" ]; then
     /usr/local/bin/ncpa-start.sh stop 2>/dev/null || true
 fi
 
+# Cleanup Service scripts if they exist (in case of previous installation)
+echo "NCPA: Cleaning up any existing service scripts..."
 # Try SMF methods
 if command -v svcadm >/dev/null 2>&1; then
     svcadm disable -s site/ncpa 2>/dev/null || true
     svcadm disable -s application/ncpa 2>/dev/null || true
 fi
+
+# Remove the service manifest files
+rm -f /var/svc/manifest/site/ncpa.xml
+rm -f /var/svc/manifest/application/ncpa.xml
+
+# Force remove all traces of ncpa services
+echo "NCPA: Removing all traces of NCPA services..."
+svccfg delete -f application/ncpa 2>/dev/null || true
+svccfg delete -f site/ncpa 2>/dev/null || true
+
+# Clear any repository corruption by restarting manifest-import first
+echo "NCPA: Clearing SMF repository state..."
+svcadm restart svc:/system/manifest-import 2>/dev/null || true
+sleep 5
 
 # # Comprehensive process cleanup
 # echo "NCPA: Performing comprehensive process cleanup..."
@@ -59,6 +75,13 @@ rm -f /usr/local/ncpa/var/run/*.pid 2>/dev/null || true
 rm -f /var/lock/subsys/ncpa 2>/dev/null || true
 
 echo "NCPA: Process cleanup completed, proceeding with setup..."
+
+# Restore configuration files if they were backed up in preinstall
+if [ -d "/tmp/ncpa_etc_backup" ]; then
+    echo "NCPA: Restoring configuration files from backup..."
+    cp -r /tmp/ncpa_etc_backup/* /usr/local/ncpa/etc/ 2>/dev/null || echo "No config files to restore"
+    rm -rf /tmp/ncpa_etc_backup
+fi
 
 # Set proper ownership and permissions
 chown -R nagios:nagios /usr/local/ncpa/var
@@ -127,17 +150,6 @@ else
 fi
 
 # SIMPLIFIED SMF SERVICE CREATION
-echo "NCPA: Performing complete SMF service cleanup..."
-
-# Force remove all traces of ncpa services
-echo "NCPA: Removing all traces of NCPA services..."
-svccfg delete -f application/ncpa 2>/dev/null || true
-svccfg delete -f site/ncpa 2>/dev/null || true
-
-# Clear any repository corruption by restarting manifest-import first
-echo "NCPA: Clearing SMF repository state..."
-svcadm restart svc:/system/manifest-import 2>/dev/null || true
-sleep 5
 
 # Try the standard manifest import approach first
 echo "NCPA: Attempting standard manifest import..."
