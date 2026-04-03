@@ -106,6 +106,7 @@ elif __SYSTEM__ == 'posix':
     # Special includes for Solaris systems
     if 'sunos' in sys.platform.lower():
         include_files += get_solaris_lib_paths()
+        include_files += [('../build/solaris/admin_file', 'admin_file')]
 
     binary = Executable('ncpa.py', base=None)
 
