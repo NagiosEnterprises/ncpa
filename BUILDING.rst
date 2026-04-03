@@ -372,9 +372,10 @@ If ``pkgrm ncpa`` gets stuck or ``pkginfo | grep ncpa`` still shows the package 
 To upgrade NCPA:
 
 1. **Install new package** (no need to manually stop NCPA)::
-    (*There is a sample admin_file included in the Solaris NCPA install directory /usr/local/ncpa/ as well as the repo /ncpa/build/solaris/*)
 
      pkgadd -a ./admin_file -d ./ncpa-3.X.X.<arch>.pkg
+
+  (*There is a sample admin_file included in the Solaris NCPA install directory /usr/local/ncpa/ as well as the repo /ncpa/build/solaris/*)
 
 2. **The upgrade automatically**:
    
