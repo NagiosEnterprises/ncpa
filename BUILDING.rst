@@ -161,7 +161,7 @@ For automated installations without interactive prompts, use::
 
   pkgadd -a ./admin_file -d ./ncpa-3.X.X.<arch>.pkg ncpa
 
-  (*There is a sample admin_file included in the Solaris NCPA install directory /usr/local/ncpa/ as well as the repo /ncpa/build/solaris/*)
+(*There is a sample admin_file included in the Solaris NCPA install directory /usr/local/ncpa/ as well as the repo /ncpa/build/solaris/*)
 
 The installation process will:
 
