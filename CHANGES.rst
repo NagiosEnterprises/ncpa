@@ -6,6 +6,7 @@ Changelog
 
 - Added a new config option to set backup_community_string in the [api] section of ncpa.cfg to help with token rotation and to allow for a smoother transition when changing tokens. - CPD
 - Added a default token value to the Windows installer to prevent the token from being blank after installation. - CPD
+- Added an admin_file to the Solaris NCPA install directory /usr/local/ncpa/ to allow for easier management of upgrades and silent installs. - CPD
 
 **Updates**
 
@@ -15,6 +16,8 @@ Changelog
 
 **Bug Fixes**
 
+- Fixed an issue where Solaris upgrades were not preserving the NCPA configuration file(s). - CPD
+- Fixed a Solaris upgrade issue where SMF services were not being properly removed and re-created. - CPD
 - Fixed an issue where the interface/device/status endpoint was returning a string in the perfdata instead of a relevant numeric exit code. [GH#1371] - CPD
 
 3.3.1 - 3/19/2026
