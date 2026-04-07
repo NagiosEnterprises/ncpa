@@ -555,7 +555,7 @@ def refresh(config, accessor=None):
     global root
     root = get_root_node(config)
     logging.info("refresh accessor: %s", accessor)
-    logging.info("Root node structure after refresh: %s", root)
+    logging.info("Root node structure after refresh: %s", json.dumps(root.to_dict(), indent=2))
     return True
 
 
