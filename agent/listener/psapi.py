@@ -559,7 +559,7 @@ def refresh(config):
     return True
 
 
-def getter(accessor, config, full_path, args, cache=True):
+def getter(accessor, config, full_path, args, cache=False):
     global root
 
     # Sanity check. If accessor is None, we can do nothing meaningfully, and we need to stop.
