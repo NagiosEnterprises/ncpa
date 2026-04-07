@@ -1559,7 +1559,10 @@ def api(accessor=''):
     try:
         node = psapi.getter(accessor, config, full_path, request.args)
         # Log the API call with the accessor and remote address
-        listener_logger.info("API call - accessor: %s, remote_addr: %s", accessor, request.remote_addr)
+        listener_logger.info("API call - accessor: %s", accessor)
+        listener.logger.info("config: %s", config)
+        listener_logger.info("Full_path: %s", full_path)
+        listener_logger.info("API call - sane_args: %s", request.arg)
     except ValueError as exc:
         listener_logger.exception(exc)
         return error(msg='Referencing node that does not exist: %s' % accessor)
