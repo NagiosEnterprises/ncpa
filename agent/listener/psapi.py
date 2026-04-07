@@ -546,6 +546,8 @@ def get_root_node(config):
 def refresh(config):
     global root
     root = get_root_node(config)
+    # Debug log the root node structure after refresh
+    logging.debug("Root node structure after refresh: %s", root)
     return True
 
 
