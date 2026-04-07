@@ -1562,7 +1562,7 @@ def api(accessor=''):
         listener_logger.info("API call - accessor: %s", accessor)
         listener.logger.info("config: %s", config)
         listener_logger.info("Full_path: %s", full_path)
-        listener_logger.info("API call - sane_args: %s", request.arg)
+        listener_logger.info("API call - sane_args: %s", request.args)
     except ValueError as exc:
         listener_logger.exception(exc)
         return error(msg='Referencing node that does not exist: %s' % accessor)
