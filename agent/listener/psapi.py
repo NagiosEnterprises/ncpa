@@ -546,6 +546,7 @@ def get_path_node(config, path):
     return ParentNode("root", children=children)
 
 def get_root_node(config):
+    logging.info("get_root_node() was called")
     try:
         cpu = get_cpu_node()
     except Exception as e:
