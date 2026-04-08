@@ -469,13 +469,25 @@ def get_user_node():
     return ParentNode("user", children=[user_count, user_list, user_countlist])
 
 
-def get_root_node(config, path=None):
+def get_path_node(path):
+    children = []
+    logging.info("get_path_node() was called with path: %s", path)
+    
+    if path is None:
+        logging.warning("get_path_node() was called with no path, returning N/A node.")
+        return ParentNode("N/A")
 
-    if path is not None:
-        logging.info("get_root_node() was called with path: %s", path)
-    else:
-        logging.info("get_root_node() was called with no path")
+    if path == "cpu":
+        try:
+            cpu = get_cpu_node()
+            children.append(cpu)
+        except Exception as e:
+            cpu = ParentNode("N/A")
+            logging.exception(e)
+        
+    return ParentNode("root", children=children)
 
+def get_root_node(config):
     try:
         cpu = get_cpu_node()
     except Exception as e:
@@ -559,8 +571,13 @@ def get_root_node(config, path=None):
 
 def refresh(config, path=None):
     global root
-    root = get_root_node(config)
     logging.info("refresh path: %s", path)
+
+    if path is None or path == "root":
+        root = get_root_node(config)
+    elif path == "cpu":
+        root = get_path_node("cpu")
+
     return True
 
 
@@ -579,7 +596,7 @@ def getter(accessor, config, full_path, args, cache=False):
     # node. This normally only happens on new API calls. When we are using
     # websockets we use the cached version while it makes requests.
     if not cache:
-        refresh(config, path[0] if len(path) > 0 else None)
+        refresh(config)
 
     root.reset_valid_nodes()
     return root.accessor(path, config, full_path, args)
