@@ -469,8 +469,13 @@ def get_user_node():
     return ParentNode("user", children=[user_count, user_list, user_countlist])
 
 
-def get_root_node(config):
-    logging.info("get_root_node was called")
+def get_root_node(config, path=None):
+
+    if path is not None:
+        logging.info("get_root_node() was called with path: %s", path)
+    else:
+        logging.info("get_root_node() was called with no path")
+
     try:
         cpu = get_cpu_node()
     except Exception as e:
@@ -569,9 +574,6 @@ def getter(accessor, config, full_path, args, cache=False):
     # Split the accessor path on / (but not if they are inside " or ')
     pattern = re.compile(r"""((?:[^/"']|"[^"]*"|'[^']*')+)""")
     path = pattern.split(accessor)[1::2]
-
-    logging.info("getter accessor: %s", accessor)
-    logging.info("getter path: %s", path)
 
     # Check if this should be a cached query or if we should reset the root
     # node. This normally only happens on new API calls. When we are using
