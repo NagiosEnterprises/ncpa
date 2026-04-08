@@ -470,7 +470,7 @@ def get_user_node():
 
 def get_path_node(config, path):
     children = []
-    logging.info("get_path_node() was called with path: %s", path)
+    # logging.info("get_path_node() was called with path: %s", path)
     
     if path is None:
         logging.warning("get_path_node() was called with no path, returning N/A node.")
@@ -544,6 +544,7 @@ def get_path_node(config, path):
         return ParentNode("N/A")
         
     return ParentNode("root", children=children)
+
 
 def get_root_node(config):
     logging.info("get_root_node() was called")
@@ -630,9 +631,9 @@ def get_root_node(config):
 
 def refresh(config, path=None):
     global root
-    logging.info("refresh path: %s", path)
+    # logging.debug("refresh path: %s", path)
 
-    if path is None or path == "root":
+    if path is None:
         root = get_root_node(config)
     elif path:
         root = get_path_node(config, path)
