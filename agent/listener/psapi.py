@@ -552,10 +552,10 @@ def get_root_node(config):
     return ParentNode("root", children=children)
 
 
-def refresh(config, accessor=None):
+def refresh(config, path=None):
     global root
     root = get_root_node(config)
-    logging.info("refresh accessor: %s", accessor)
+    logging.info("refresh path: %s", path)
     return True
 
 
@@ -577,7 +577,7 @@ def getter(accessor, config, full_path, args, cache=False):
     # node. This normally only happens on new API calls. When we are using
     # websockets we use the cached version while it makes requests.
     if not cache:
-        refresh(config, accessor)
+        refresh(config, path[0] if len(path) > 0 else None)
 
     root.reset_valid_nodes()
     return root.accessor(path, config, full_path, args)
