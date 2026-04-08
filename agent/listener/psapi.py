@@ -570,6 +570,9 @@ def getter(accessor, config, full_path, args, cache=False):
     pattern = re.compile(r"""((?:[^/"']|"[^"]*"|'[^']*')+)""")
     path = pattern.split(accessor)[1::2]
 
+    logging.info("getter accessor: %s", accessor)
+    logging.info("getter path: %s", path)
+
     # Check if this should be a cached query or if we should reset the root
     # node. This normally only happens on new API calls. When we are using
     # websockets we use the cached version while it makes requests.
