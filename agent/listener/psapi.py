@@ -469,7 +469,7 @@ def get_user_node():
     return ParentNode("user", children=[user_count, user_list, user_countlist])
 
 
-def get_path_node(path):
+def get_path_node(config, path):
     children = []
     logging.info("get_path_node() was called with path: %s", path)
     
@@ -484,6 +484,65 @@ def get_path_node(path):
         except Exception as e:
             cpu = ParentNode("N/A")
             logging.exception(e)
+    elif path == "memory":
+        try:
+            memory = get_memory_node()
+            children.append(memory)
+        except Exception as e:
+            memory = ParentNode("N/A")
+            logging.exception(e)
+    elif path == "disk":
+        try:
+            disk = get_disk_node(config)
+            children.append(disk)
+        except Exception as e:
+            disk = ParentNode("N/A")
+            logging.exception(e)
+    elif path == "interface":
+        try:
+            interface = get_interface_node()
+            children.append(interface)
+        except Exception as e:
+            interface = ParentNode("N/A")
+            logging.exception(e)
+    elif path == "plugins":
+        try:
+            plugins = get_plugins_node()
+            children.append(plugins)
+        except Exception as e:
+            plugins = ParentNode("N/A")
+            logging.exception(e)
+    elif path == "user":
+        try:
+            user = get_user_node()
+            children.append(user)
+        except Exception as e:
+            user = ParentNode("N/A")
+            logging.exception(e)
+    elif path == "system":
+        try:
+            system = get_system_node()
+            children.append(system)
+        except Exception as e:
+            system = ParentNode("N/A")
+            logging.exception(e)
+    elif path == "service":
+        try:
+            service = services.get_node()
+            children.append(service)
+        except Exception as e:
+            service = ParentNode("N/A")
+            logging.exception(e)
+    elif path == "process":
+        try:
+            process = processes.get_node()
+            children.append(process)
+        except Exception as e:
+            process = ParentNode("N/A")
+            logging.exception(e)
+    else:
+        logging.warning("get_path_node() was called with unrecognized path: %s, returning N/A node.", path)
+        return ParentNode("N/A")
         
     return ParentNode("root", children=children)
 
