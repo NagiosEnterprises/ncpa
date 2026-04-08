@@ -10,7 +10,7 @@ Changelog
 **Updates**
 
 - Updated Windows builds to use Python version 3.13.13. - CPD
-- Updated Windows builds to use OpenSSL version to 3.0.19 to resolve CVEs and improve compatibility. [GH#1359] - CPD
+- Updated Windows builds to use OpenSSL version 3.0.19 to resolve CVEs and improve compatibility. [GH#1359] - CPD
 - Removed version pin for AIX Python cryptography to allow updates to the latest stable release. [GH#1355] - CPD
 - Removed redundant Python executable from the install to reduce potential attack surface and confusion. - CPD
 - Updated the build documentation with more detailed requirements for building on Linux systems. - CPD
