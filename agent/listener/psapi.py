@@ -634,8 +634,8 @@ def refresh(config, path=None):
 
     if path is None or path == "root":
         root = get_root_node(config)
-    elif path == "cpu":
-        root = get_path_node("cpu")
+    elif path:
+        root = get_path_node(config, path)
 
     return True
 
