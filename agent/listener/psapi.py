@@ -526,14 +526,14 @@ def get_path_node(config, path):
         except Exception as e:
             system = ParentNode("N/A")
             logging.exception(e)
-    elif path == "service":
+    elif path == "services":
         try:
             service = services.get_node()
             children.append(service)
         except Exception as e:
             service = ParentNode("N/A")
             logging.exception(e)
-    elif path == "process":
+    elif path == "processes":
         try:
             process = processes.get_node()
             children.append(process)
