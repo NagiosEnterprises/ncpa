@@ -279,6 +279,9 @@ class Listener(Base):
                     # Check if the CA certificate path is set in the config
                     mtls_ca_path = self.config.get('listener', 'mutual_tls_ca_path')
 
+                    # Get full path and normalize it
+                    mtls_ca_path = get_filename(mtls_ca_path)
+
                     # Verify path is set and file exists if mutual TLS is enabled
                     if not mtls_ca_path or not os.path.isfile(mtls_ca_path):
                         logger.error('Mutual TLS is enabled but mtls CA certificate path is not set or file does not exist: %s', mtls_ca_path)
