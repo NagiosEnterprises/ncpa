@@ -271,7 +271,7 @@ class Listener(Base):
                 # SSL settings
                 # ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
                 
-                mutual_tls = 0
+                mutual_tls = 1
                 if mutual_tls:
                     # Validates the identity of clients connecting to your server (Mutual TLS).
                     ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
