@@ -110,6 +110,15 @@ default_units = Gi
 ssl_version = TLSv1_2
 certificate = adhoc
 
+# Mutual TLS (mTLS) settings. When enabled, the server will require clients to present a valid certificate that is signed by 
+# the CA certificate specified in the mutual_tls_ca_path setting. 
+# This provides an additional layer of security by ensuring that only clients with valid certificates can connect to the server.
+# Default: 0 (disabled)
+# 1 = Enabled, 0 = Disabled
+#
+enable_mutual_tls = 0
+mutual_tls_ca_path = var/ca.crt
+
 # ssl_ciphers: sets a list of accepted SSL ciphers using the format <cipher>:<cipher>:<cipher>, e.g., AES256-GCM-SHA384:AES256-SHA256:AES256-SHA:CAMELLIA256-SHA
 # Default: ssl_ciphers =
 #
