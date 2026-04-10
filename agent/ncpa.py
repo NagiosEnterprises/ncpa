@@ -157,8 +157,8 @@ cfg_defaults = {
                 'allowed_sources': '',
                 'allow_config_edit': '1', # Note: this is limited to non-sensitive settings
                 'disable_gui': '0',  # Disable web GUI while preserving API
-                'enable_mutual_tls': '0',  # When enabled, the server will require clients to present a valid certificate that is signed by the CA certificate specified in mtls_ca_path. This provides an additional layer of security by ensuring that only clients with valid certificates can connect to the server.
-                'mutual_tls_ca_path': '/usr/local/ncpa/var/ca.crt',  # The path to the CA certificate that will be used to verify client certificates when mutual TLS is enabled.
+                'enable_mutual_tls': '0',  # When enabled, the server will require clients to present a valid certificate that is signed by the CA certificate specified in mutual_tls_ca_path.
+                'mutual_tls_ca_path': 'var/ca.crt',  # The path to the CA certificate that will be used to verify client certificates when mutual TLS is enabled.
             },
             'api': {
                 'community_string': 'mytoken',
