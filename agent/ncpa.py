@@ -274,7 +274,7 @@ class Listener(Base):
 
                 mutual_tls = 1
                 if mutual_tls:
-                    ssl_context.load_verify_locations(cafile='ca.crt')
+                    ssl_context.load_verify_locations(cafile='/usr/local/ncpa/var/ca.crt')
                     ssl_context.verify_mode = ssl.CERT_REQUIRED
 
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
