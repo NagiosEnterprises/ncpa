@@ -270,18 +270,16 @@ class Listener(Base):
 
                 # SSL settings
                 # ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+                ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
                 
                 mutual_tls = 0
                 if mutual_tls:
                     # Validates the identity of clients connecting to your server (Mutual TLS).
-                    ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
                     ssl_context.load_verify_locations(cafile='/usr/local/ncpa/var/ca.crt')
                     ssl_context.verify_mode = ssl.CERT_REQUIRED
                     logger.info('Mutual TLS enabled - client certificates will be required and verified against CA certificate at /usr/local/ncpa/var/ca.crt')
                 else:
                     # Validates that the server you are connecting to is who they say they are.
-                    # ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-                    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
                     logger.info('Mutual TLS disabled - client certificates will not be required')
 
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
