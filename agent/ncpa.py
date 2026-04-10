@@ -157,6 +157,8 @@ cfg_defaults = {
                 'allowed_sources': '',
                 'allow_config_edit': '1', # Note: this is limited to non-sensitive settings
                 'disable_gui': '0',  # Disable web GUI while preserving API
+                'enable_mutual_tls': '0',  # When enabled, the server will require clients to present a valid certificate that is signed by the CA certificate specified in mtls_ca_path. This provides an additional layer of security by ensuring that only clients with valid certificates can connect to the server.
+                'mutual_tls_ca_path': '/usr/local/ncpa/var/ca.crt',  # The path to the CA certificate that will be used to verify client certificates when mutual TLS is enabled.
             },
             'api': {
                 'community_string': 'mytoken',
@@ -269,17 +271,23 @@ class Listener(Base):
                 logger.debug("max_connections: %s", max_connections)
 
                 # SSL settings
-                # ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
                 ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
                 
-                mutual_tls = 1
+                # Check if mutual TLS is enabled in the config
+                mutual_tls = self.config.getboolean('listener', 'enable_mutual_tls')
                 if mutual_tls:
-                    # Validates the identity of clients connecting to your server (Mutual TLS).
-                    ssl_context.load_verify_locations(cafile='/usr/local/ncpa/var/ca.crt')
+                    # Check if the CA certificate path is set in the config
+                    mtls_ca_path = self.config.get('listener', 'mutual_tls_ca_path')
+
+                    if not mtls_ca_path or mtls_ca_path == 'None':
+                        logger.error('Mutual TLS is enabled but no CA certificate path is set in the config. Please set listener.mutual_tls_ca_path to the path of the CA certificate that will be used to verify client certificates.')
+                        self.send_error()
+                        return
+                    
+                    ssl_context.load_verify_locations(cafile=mtls_ca_path)
                     ssl_context.verify_mode = ssl.CERT_REQUIRED
                     logger.info('Mutual TLS enabled - client certificates will be required and verified against CA certificate at /usr/local/ncpa/var/ca.crt')
                 else:
-                    # Validates that the server you are connecting to is who they say they are.
                     logger.info('Mutual TLS disabled - client certificates will not be required')
 
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
