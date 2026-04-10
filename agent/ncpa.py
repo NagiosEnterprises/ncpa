@@ -269,7 +269,13 @@ class Listener(Base):
                 logger.debug("max_connections: %s", max_connections)
 
                 # SSL settings
-                ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+                # ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+                ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+
+                mutual_tls = 1
+                if mutual_tls:
+                    ssl_context.load_verify_locations(cafile='ca.crt')
+                    ssl_context.verify_mode = ssl.CERT_REQUIRED
 
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
                 if  (ssl_str_ciphers == 'None'):
