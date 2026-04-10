@@ -281,13 +281,13 @@ class Listener(Base):
 
                     # Verify path is set and file exists if mutual TLS is enabled
                     if not mtls_ca_path or not os.path.isfile(mtls_ca_path):
-                        logger.error('Mutual TLS is enabled but no CA certificate path is set in the config. Please set listener.mutual_tls_ca_path to the path of the CA certificate that will be used to verify client certificates.')
+                        logger.error('Mutual TLS is enabled but mtls CA certificate path is not set or file does not exist: %s', mtls_ca_path)
                         self.send_error()
                         return
                     
                     ssl_context.load_verify_locations(cafile=mtls_ca_path)
                     ssl_context.verify_mode = ssl.CERT_REQUIRED
-                    logger.info('Mutual TLS enabled - client certificates will be required and verified against CA certificate at /usr/local/ncpa/var/ca.crt')
+                    logger.info('Mutual TLS enabled - client certificates will be required and verified against CA certificate at path: %s', mtls_ca_path)
                 else:
                     logger.info('Mutual TLS disabled - client certificates will not be required')
 
