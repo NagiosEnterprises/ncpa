@@ -124,8 +124,11 @@ def parse_args():
                       help='Print performance data even when there is none. '
                            'Will print data matching the return code of this script')
     parser.add_option("-m", "--mtls", default='',
-                      help="Use mutual TLS for authentication. Pass in a list containing the paths of the ca.crt, client.crt, and client.key in that order. "
-                            "Example: -m '/path/to/ca.crt,/path/to/client.crt,/path/to/client.key'")
+                      help="Use mutual TLS for authentication. Pass in a list containing the paths of the client.crt, and client.key in that order. "
+                            "Example: -m '/path/to/client.crt,/path/to/client.key'")
+    # Add parser option to specify CA
+    parser.add_option("--ca", default='',
+                        help="Path to CA certificate for verifying server certificate when using secure mode or mutual TLS.")
     options, _ = parser.parse_args()
 
     if options.version:
@@ -249,9 +252,13 @@ def get_json(options):
             ctx = ssl.create_default_context()
 
             if options.mtls:
-                ctx = get_mtls_context(options.mtls)
+                cert_path, key_path = options.mtls.replace(' ', '').split(',')
+                ctx.load_cert_chain(certfile=cert_path, keyfile=key_path)
 
-            if not options.secure:
+            if options.ca:
+                ctx.load_verify_locations(cafile=options.ca)
+
+            if not (options.secure or options.mtls):
                 ctx.check_hostname = False
                 ctx.verify_mode = ssl.CERT_NONE
             ret = urlopen(url, context=ctx)
@@ -317,16 +324,6 @@ def timeout_handler(threshold):
         print(stdout)
         sys.exit(3)
     return wrapped
-
-def get_mtls_context(mtls_option):
-    try:
-        ca_path, cert_path, key_path = mtls_option.replace(' ', '').split(',')
-        print("Setting up mutual TLS context with CA certificate at {}, client certificate at {}, and client key at {}".format(ca_path, cert_path, key_path))
-        context.load_verify_locations(cafile=ca_path)
-        context.load_cert_chain(certfile=cert_path, keyfile=key_path)
-        return context
-    except Exception as e:
-        raise ConnectionError("Failed to set up mutual TLS context: " + str(e))
 
 def main():
     options = parse_args()
