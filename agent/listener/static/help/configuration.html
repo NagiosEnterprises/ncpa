@@ -187,6 +187,24 @@
                             </tr>
                             <tr>
                                 <td></td>
+                            <tr>
+                                <th>enable_mutual_tls</th>
+                                <td>0</td>
+                                <td>
+                                    Mutual TLS (mTLS) settings. When <code>enable_mutual_tls = 1</code>, the server will require clients to present a valid certificate that is signed by the CA certificate specified in the mutual_tls_ca_path setting. 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                            <tr>
+                                <th>mutual_tls_ca_path</th>
+                                <td>0</td>
+                                <td>
+                                    When <code>enable_mutual_tls = 1</code>, this setting specifies the path to the CA certificate that will be used to verify client certificates. This should be a single file containing one or more CA certificates. 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
                                 <th>ssl_ciphers</th>
                                 <td></td>
                                 <td>
