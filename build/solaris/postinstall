@@ -396,19 +396,19 @@ if [ "$service_created" = "true" ]; then
         echo "NCPA: Checking what services exist in application category:"
         svcs -a | grep application | head -5 2>/dev/null || echo "NCPA: No application services found"
     fi
-else
-    echo "NCPA: ⚠ Service creation failed - skipping enable attempts"
-    echo "NCPA: You may need to manually create and enable the service"
-    echo "NCPA: Try: sudo svccfg import /var/svc/manifest/application/ncpa.xml"
-    echo "NCPA: Then: sudo svcadm enable application/ncpa"
+    else
+        echo "NCPA: ⚠ Service creation failed - skipping enable attempts"
+        echo "NCPA: You may need to manually create and enable the service"
+        echo "NCPA: Try: sudo svccfg import /var/svc/manifest/application/ncpa.xml"
+        echo "NCPA: Then: sudo svcadm enable application/ncpa"
 
 
-    # Since SMF service has visibility issues, start NCPA manually and set up automatic startup
-    echo "NCPA: Setting up automatic startup and starting NCPA..."
+        # Since SMF service has visibility issues, start NCPA manually and set up automatic startup
+        echo "NCPA: Setting up automatic startup and starting NCPA..."
 
-    # Copy the manual start script to system location
-    STARTUP_SCRIPT="/usr/local/bin/ncpa-service"
-    cat > "$STARTUP_SCRIPT" << 'SCRIPT_EOF'
+        # Copy the manual start script to system location
+        STARTUP_SCRIPT="/usr/local/bin/ncpa-service"
+        cat > "$STARTUP_SCRIPT" << 'SCRIPT_EOF'
 #!/bin/bash
 
 # NCPA service management script for Solaris
@@ -523,13 +523,13 @@ case "$1" in
 esac
 SCRIPT_EOF
 
-chmod +x "$STARTUP_SCRIPT"
-chown root:root "$STARTUP_SCRIPT"
-echo "NCPA: Service script installed at $STARTUP_SCRIPT"
+        chmod +x "$STARTUP_SCRIPT"
+        chown root:root "$STARTUP_SCRIPT"
+        echo "NCPA: Service script installed at $STARTUP_SCRIPT"
 
-# Create init.d script for automatic startup on boot
-INIT_SCRIPT="/etc/init.d/ncpa"
-cat > "$INIT_SCRIPT" << 'INIT_EOF'
+        # Create init.d script for automatic startup on boot
+        INIT_SCRIPT="/etc/init.d/ncpa"
+        cat > "$INIT_SCRIPT" << 'INIT_EOF'
 #!/bin/sh
 
 # NCPA init script for Solaris
@@ -646,49 +646,49 @@ esac
 exit $?
 INIT_EOF
 
-    chmod +x "$INIT_SCRIPT"
-    chown root:root "$INIT_SCRIPT"
-    echo "NCPA: Init script installed at $INIT_SCRIPT"
+        chmod +x "$INIT_SCRIPT"
+        chown root:root "$INIT_SCRIPT"
+        echo "NCPA: Init script installed at $INIT_SCRIPT"
 
-    # Add to system startup (Solaris style)
-    # Create symbolic links for different run levels
-    for level in 2 3; do
-        if [ -d "/etc/rc${level}.d" ]; then
-            ln -sf "$INIT_SCRIPT" "/etc/rc${level}.d/S99ncpa" 2>/dev/null || true
-            echo "NCPA: Added startup link for run level $level"
-        fi
-    done
+        # Add to system startup (Solaris style)
+        # Create symbolic links for different run levels
+        for level in 2 3; do
+            if [ -d "/etc/rc${level}.d" ]; then
+                ln -sf "$INIT_SCRIPT" "/etc/rc${level}.d/S99ncpa" 2>/dev/null || true
+                echo "NCPA: Added startup link for run level $level"
+            fi
+        done
 
-    # Create shutdown links
-    for level in 0 1 6; do
-        if [ -d "/etc/rc${level}.d" ]; then
-            ln -sf "$INIT_SCRIPT" "/etc/rc${level}.d/K01ncpa" 2>/dev/null || true
-            echo "NCPA: Added shutdown link for run level $level"
-        fi
-    done
+        # Create shutdown links
+        for level in 0 1 6; do
+            if [ -d "/etc/rc${level}.d" ]; then
+                ln -sf "$INIT_SCRIPT" "/etc/rc${level}.d/K01ncpa" 2>/dev/null || true
+                echo "NCPA: Added shutdown link for run level $level"
+            fi
+        done
 
-    # CRITICAL: Enable the SMF service if it was created successfully
-    if [ "$service_created" = "true" ]; then
-        echo "NCPA: Enabling SMF service for automatic startup..."
-        
-        # Try to enable the service and start it
-        if svcadm enable application/ncpa 2>/dev/null; then
-            echo "NCPA: ✓ SMF service enabled successfully"
-            # Wait for service to start
-            sleep 5
-            service_status=$(svcs -H -o state application/ncpa 2>/dev/null || echo "unknown")
-            echo "NCPA: SMF service status: $service_status"
-        elif svcadm enable application/ncpa:default 2>/dev/null; then
-            echo "NCPA: ✓ SMF service instance enabled successfully"
-            # Wait for service to start
-            sleep 5
-            service_status=$(svcs -H -o state application/ncpa:default 2>/dev/null || echo "unknown")
-            echo "NCPA: SMF service status: $service_status"
+        # CRITICAL: Enable the SMF service if it was created successfully
+        if [ "$service_created" = "true" ]; then
+            echo "NCPA: Enabling SMF service for automatic startup..."
+            
+            # Try to enable the service and start it
+            if svcadm enable application/ncpa 2>/dev/null; then
+                echo "NCPA: ✓ SMF service enabled successfully"
+                # Wait for service to start
+                sleep 5
+                service_status=$(svcs -H -o state application/ncpa 2>/dev/null || echo "unknown")
+                echo "NCPA: SMF service status: $service_status"
+            elif svcadm enable application/ncpa:default 2>/dev/null; then
+                echo "NCPA: ✓ SMF service instance enabled successfully"
+                # Wait for service to start
+                sleep 5
+                service_status=$(svcs -H -o state application/ncpa:default 2>/dev/null || echo "unknown")
+                echo "NCPA: SMF service status: $service_status"
+            else
+                echo "NCPA: ⚠ Could not enable SMF service, relying on init script"
+            fi
         else
-            echo "NCPA: ⚠ Could not enable SMF service, relying on init script"
-        fi
-    else
-        echo "NCPA: ⚠ SMF service not created, relying on init script for startup"
+            echo "NCPA: ⚠ SMF service not created, relying on init script for startup"
 
 
         # Ensure init script is executable and test it
