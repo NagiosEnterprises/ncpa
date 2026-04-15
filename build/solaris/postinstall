@@ -3,8 +3,6 @@
 
 # NCPA Post-installation script for Solaris
 
-INSTALL_INIT_SCRIPT=false # Set to true if we want to install the init script for automatic startup
-
 echo "NCPA: Running post-installation setup..."
 
 # FIRST: Stop any existing NCPA processes (since preinstall runs AFTER file copy in Solaris)
@@ -403,12 +401,10 @@ else
     echo "NCPA: You may need to manually create and enable the service"
     echo "NCPA: Try: sudo svccfg import /var/svc/manifest/application/ncpa.xml"
     echo "NCPA: Then: sudo svcadm enable application/ncpa"
-
-    # Fall back to manual startup if service creation failed
-    INSTALL_INIT_SCRIPT=true
 fi
 
-if [ "$INSTALL_INIT_SCRIPT" = "true" ]; then
+# If service creation failed, attempt to set up manual startup as a fallback
+if [ "$service_created" = "false" ]; then
     echo "NCPA: Starting NCPA manually since SMF service is not available..."
     # Since SMF service has visibility issues, start NCPA manually and set up automatic startup
     echo "NCPA: Setting up automatic startup and starting NCPA..."
