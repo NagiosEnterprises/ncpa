@@ -689,38 +689,39 @@ if [ "$service_created" = "true" ]; then
     fi
 else
     echo "NCPA: ⚠ SMF service not created, relying on init script for startup"
-fi
 
-# Ensure init script is executable and test it
-echo "NCPA: Verifying init script functionality..."
-if [ -x "$INIT_SCRIPT" ]; then
-    echo "NCPA: ✓ Init script is executable"
-    
-    # Test the init script
-    if "$INIT_SCRIPT" status >/dev/null 2>&1; then
-        echo "NCPA: ✓ Init script is functional"
+
+    # Ensure init script is executable and test it
+    echo "NCPA: Verifying init script functionality..."
+    if [ -x "$INIT_SCRIPT" ]; then
+        echo "NCPA: ✓ Init script is executable"
+        
+        # Test the init script
+        if "$INIT_SCRIPT" status >/dev/null 2>&1; then
+            echo "NCPA: ✓ Init script is functional"
+        else
+            echo "NCPA: ⚠ Init script may have issues, but startup links are in place"
+        fi
     else
-        echo "NCPA: ⚠ Init script may have issues, but startup links are in place"
+        echo "NCPA: ✗ Init script is not executable - fixing permissions"
+        chmod +x "$INIT_SCRIPT"
     fi
-else
-    echo "NCPA: ✗ Init script is not executable - fixing permissions"
-    chmod +x "$INIT_SCRIPT"
-fi
 
-# Start NCPA immediately after installation
-echo "NCPA: Starting NCPA service..."
+    # Start NCPA immediately after installation
+    echo "NCPA: Starting NCPA service..."
 
-if "$STARTUP_SCRIPT" start; then
-    echo "NCPA: ✓ NCPA started successfully after installation"
-    echo "NCPA: Service is now running and will auto-start on boot"
-    
-    # Show current status
-    sleep 2
-    "$STARTUP_SCRIPT" status
-else
-    echo "NCPA: ✗ Failed to start NCPA after installation"
-    echo "NCPA: You can start it manually with: sudo $STARTUP_SCRIPT start"
-    echo "NCPA: For troubleshooting, use: sudo $STARTUP_SCRIPT killall"
+    if "$STARTUP_SCRIPT" start; then
+        echo "NCPA: ✓ NCPA started successfully after installation"
+        echo "NCPA: Service is now running and will auto-start on boot"
+        
+        # Show current status
+        sleep 2
+        "$STARTUP_SCRIPT" status
+    else
+        echo "NCPA: ✗ Failed to start NCPA after installation"
+        echo "NCPA: You can start it manually with: sudo $STARTUP_SCRIPT start"
+        echo "NCPA: For troubleshooting, use: sudo $STARTUP_SCRIPT killall"
+    fi
 fi
 
 echo "NCPA: Post-installation completed."
