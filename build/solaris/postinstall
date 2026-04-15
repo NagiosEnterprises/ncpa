@@ -421,8 +421,18 @@ PID_FILE="$NCPA_DIR/var/run/ncpa.pid"
 
 start_ncpa() {
     echo "Starting NCPA..."
-    
-    # Check if already running
+
+    # First, ensure no NCPA processes are running
+    echo "Checking for existing NCPA processes..."
+    existing_pids=$(pgrep -f "/usr/local/ncpa/ncpa" 2>/dev/null)
+    if [ -n "$existing_pids" ]; then
+        echo "Found existing NCPA processes: $existing_pids"
+        echo "Stopping existing processes before starting new one..."
+        stop_ncpa
+        sleep 2
+    fi
+
+    # Check PID file
     if [ -f "$PID_FILE" ]; then
         pid=$(cat "$PID_FILE")
         if ps -p $pid > /dev/null 2>&1; then
