@@ -670,30 +670,6 @@ INIT_EOF
         fi
     done
 
-    # CRITICAL: Enable the SMF service if it was created successfully
-    if [ "$service_created" = "true" ]; then
-        echo "NCPA: Enabling SMF service for automatic startup..."
-        
-        # Try to enable the service and start it
-        if svcadm enable application/ncpa 2>/dev/null; then
-            echo "NCPA: ✓ SMF service enabled successfully"
-            # Wait for service to start
-            sleep 5
-            service_status=$(svcs -H -o state application/ncpa 2>/dev/null || echo "unknown")
-            echo "NCPA: SMF service status: $service_status"
-        elif svcadm enable application/ncpa:default 2>/dev/null; then
-            echo "NCPA: ✓ SMF service instance enabled successfully"
-            # Wait for service to start
-            sleep 5
-            service_status=$(svcs -H -o state application/ncpa:default 2>/dev/null || echo "unknown")
-            echo "NCPA: SMF service status: $service_status"
-        else
-            echo "NCPA: ⚠ Could not enable SMF service, relying on init script"
-        fi
-    else
-        echo "NCPA: ⚠ SMF service not created, relying on init script for startup"
-    fi
-
     # Ensure init script is executable and test it
     echo "NCPA: Verifying init script functionality..."
     if [ -x "$INIT_SCRIPT" ]; then
