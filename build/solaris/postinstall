@@ -3,6 +3,8 @@
 
 # NCPA Post-installation script for Solaris
 
+INSTALL_INIT_SCRIPT=false # Set to true if we want to install the init script for automatic startup
+
 echo "NCPA: Running post-installation setup..."
 
 # FIRST: Stop any existing NCPA processes (since preinstall runs AFTER file copy in Solaris)
@@ -396,19 +398,24 @@ if [ "$service_created" = "true" ]; then
         echo "NCPA: Checking what services exist in application category:"
         svcs -a | grep application | head -5 2>/dev/null || echo "NCPA: No application services found"
     fi
-    else
-        echo "NCPA: ⚠ Service creation failed - skipping enable attempts"
-        echo "NCPA: You may need to manually create and enable the service"
-        echo "NCPA: Try: sudo svccfg import /var/svc/manifest/application/ncpa.xml"
-        echo "NCPA: Then: sudo svcadm enable application/ncpa"
+else
+    echo "NCPA: ⚠ Service creation failed - skipping enable attempts"
+    echo "NCPA: You may need to manually create and enable the service"
+    echo "NCPA: Try: sudo svccfg import /var/svc/manifest/application/ncpa.xml"
+    echo "NCPA: Then: sudo svcadm enable application/ncpa"
 
+    # Fall back to manual startup if service creation failed
+    INSTALL_INIT_SCRIPT=true
+fi
 
-        # Since SMF service has visibility issues, start NCPA manually and set up automatic startup
-        echo "NCPA: Setting up automatic startup and starting NCPA..."
+if [ "$INSTALL_INIT_SCRIPT" = "true" ]; then
+    echo "NCPA: Starting NCPA manually since SMF service is not available..."
+    # Since SMF service has visibility issues, start NCPA manually and set up automatic startup
+    echo "NCPA: Setting up automatic startup and starting NCPA..."
 
-        # Copy the manual start script to system location
-        STARTUP_SCRIPT="/usr/local/bin/ncpa-service"
-        cat > "$STARTUP_SCRIPT" << 'SCRIPT_EOF'
+    # Copy the manual start script to system location
+    STARTUP_SCRIPT="/usr/local/bin/ncpa-service"
+    cat > "$STARTUP_SCRIPT" << 'SCRIPT_EOF'
 #!/bin/bash
 
 # NCPA service management script for Solaris
@@ -421,18 +428,8 @@ PID_FILE="$NCPA_DIR/var/run/ncpa.pid"
 
 start_ncpa() {
     echo "Starting NCPA..."
-
-    # First, ensure no NCPA processes are running
-    echo "Checking for existing NCPA processes..."
-    existing_pids=$(pgrep -f "/usr/local/ncpa/ncpa" 2>/dev/null)
-    if [ -n "$existing_pids" ]; then
-        echo "Found existing NCPA processes: $existing_pids"
-        echo "Stopping existing processes before starting new one..."
-        stop_ncpa
-        sleep 2
-    fi
-
-    # Check PID file
+    
+    # Check if already running
     if [ -f "$PID_FILE" ]; then
         pid=$(cat "$PID_FILE")
         if ps -p $pid > /dev/null 2>&1; then
@@ -523,13 +520,13 @@ case "$1" in
 esac
 SCRIPT_EOF
 
-        chmod +x "$STARTUP_SCRIPT"
-        chown root:root "$STARTUP_SCRIPT"
-        echo "NCPA: Service script installed at $STARTUP_SCRIPT"
+    chmod +x "$STARTUP_SCRIPT"
+    chown root:root "$STARTUP_SCRIPT"
+    echo "NCPA: Service script installed at $STARTUP_SCRIPT"
 
-        # Create init.d script for automatic startup on boot
-        INIT_SCRIPT="/etc/init.d/ncpa"
-        cat > "$INIT_SCRIPT" << 'INIT_EOF'
+    # Create init.d script for automatic startup on boot
+    INIT_SCRIPT="/etc/init.d/ncpa"
+    cat > "$INIT_SCRIPT" << 'INIT_EOF'
 #!/bin/sh
 
 # NCPA init script for Solaris
@@ -646,82 +643,81 @@ esac
 exit $?
 INIT_EOF
 
+    chmod +x "$INIT_SCRIPT"
+    chown root:root "$INIT_SCRIPT"
+    echo "NCPA: Init script installed at $INIT_SCRIPT"
+
+    # Add to system startup (Solaris style)
+    # Create symbolic links for different run levels
+    for level in 2 3; do
+        if [ -d "/etc/rc${level}.d" ]; then
+            ln -sf "$INIT_SCRIPT" "/etc/rc${level}.d/S99ncpa" 2>/dev/null || true
+            echo "NCPA: Added startup link for run level $level"
+        fi
+    done
+
+    # Create shutdown links
+    for level in 0 1 6; do
+        if [ -d "/etc/rc${level}.d" ]; then
+            ln -sf "$INIT_SCRIPT" "/etc/rc${level}.d/K01ncpa" 2>/dev/null || true
+            echo "NCPA: Added shutdown link for run level $level"
+        fi
+    done
+
+    # CRITICAL: Enable the SMF service if it was created successfully
+    if [ "$service_created" = "true" ]; then
+        echo "NCPA: Enabling SMF service for automatic startup..."
+        
+        # Try to enable the service and start it
+        if svcadm enable application/ncpa 2>/dev/null; then
+            echo "NCPA: ✓ SMF service enabled successfully"
+            # Wait for service to start
+            sleep 5
+            service_status=$(svcs -H -o state application/ncpa 2>/dev/null || echo "unknown")
+            echo "NCPA: SMF service status: $service_status"
+        elif svcadm enable application/ncpa:default 2>/dev/null; then
+            echo "NCPA: ✓ SMF service instance enabled successfully"
+            # Wait for service to start
+            sleep 5
+            service_status=$(svcs -H -o state application/ncpa:default 2>/dev/null || echo "unknown")
+            echo "NCPA: SMF service status: $service_status"
+        else
+            echo "NCPA: ⚠ Could not enable SMF service, relying on init script"
+        fi
+    else
+        echo "NCPA: ⚠ SMF service not created, relying on init script for startup"
+    fi
+
+    # Ensure init script is executable and test it
+    echo "NCPA: Verifying init script functionality..."
+    if [ -x "$INIT_SCRIPT" ]; then
+        echo "NCPA: ✓ Init script is executable"
+        
+        # Test the init script
+        if "$INIT_SCRIPT" status >/dev/null 2>&1; then
+            echo "NCPA: ✓ Init script is functional"
+        else
+            echo "NCPA: ⚠ Init script may have issues, but startup links are in place"
+        fi
+    else
+        echo "NCPA: ✗ Init script is not executable - fixing permissions"
         chmod +x "$INIT_SCRIPT"
-        chown root:root "$INIT_SCRIPT"
-        echo "NCPA: Init script installed at $INIT_SCRIPT"
+    fi
 
-        # Add to system startup (Solaris style)
-        # Create symbolic links for different run levels
-        for level in 2 3; do
-            if [ -d "/etc/rc${level}.d" ]; then
-                ln -sf "$INIT_SCRIPT" "/etc/rc${level}.d/S99ncpa" 2>/dev/null || true
-                echo "NCPA: Added startup link for run level $level"
-            fi
-        done
+    # Start NCPA immediately after installation
+    echo "NCPA: Starting NCPA service..."
 
-        # Create shutdown links
-        for level in 0 1 6; do
-            if [ -d "/etc/rc${level}.d" ]; then
-                ln -sf "$INIT_SCRIPT" "/etc/rc${level}.d/K01ncpa" 2>/dev/null || true
-                echo "NCPA: Added shutdown link for run level $level"
-            fi
-        done
-
-        # CRITICAL: Enable the SMF service if it was created successfully
-        if [ "$service_created" = "true" ]; then
-            echo "NCPA: Enabling SMF service for automatic startup..."
-            
-            # Try to enable the service and start it
-            if svcadm enable application/ncpa 2>/dev/null; then
-                echo "NCPA: ✓ SMF service enabled successfully"
-                # Wait for service to start
-                sleep 5
-                service_status=$(svcs -H -o state application/ncpa 2>/dev/null || echo "unknown")
-                echo "NCPA: SMF service status: $service_status"
-            elif svcadm enable application/ncpa:default 2>/dev/null; then
-                echo "NCPA: ✓ SMF service instance enabled successfully"
-                # Wait for service to start
-                sleep 5
-                service_status=$(svcs -H -o state application/ncpa:default 2>/dev/null || echo "unknown")
-                echo "NCPA: SMF service status: $service_status"
-            else
-                echo "NCPA: ⚠ Could not enable SMF service, relying on init script"
-            fi
-        else
-            echo "NCPA: ⚠ SMF service not created, relying on init script for startup"
-
-
-        # Ensure init script is executable and test it
-        echo "NCPA: Verifying init script functionality..."
-        if [ -x "$INIT_SCRIPT" ]; then
-            echo "NCPA: ✓ Init script is executable"
-            
-            # Test the init script
-            if "$INIT_SCRIPT" status >/dev/null 2>&1; then
-                echo "NCPA: ✓ Init script is functional"
-            else
-                echo "NCPA: ⚠ Init script may have issues, but startup links are in place"
-            fi
-        else
-            echo "NCPA: ✗ Init script is not executable - fixing permissions"
-            chmod +x "$INIT_SCRIPT"
-        fi
-
-        # Start NCPA immediately after installation
-        echo "NCPA: Starting NCPA service..."
-
-        if "$STARTUP_SCRIPT" start; then
-            echo "NCPA: ✓ NCPA started successfully after installation"
-            echo "NCPA: Service is now running and will auto-start on boot"
-            
-            # Show current status
-            sleep 2
-            "$STARTUP_SCRIPT" status
-        else
-            echo "NCPA: ✗ Failed to start NCPA after installation"
-            echo "NCPA: You can start it manually with: sudo $STARTUP_SCRIPT start"
-            echo "NCPA: For troubleshooting, use: sudo $STARTUP_SCRIPT killall"
-        fi
+    if "$STARTUP_SCRIPT" start; then
+        echo "NCPA: ✓ NCPA started successfully after installation"
+        echo "NCPA: Service is now running and will auto-start on boot"
+        
+        # Show current status
+        sleep 2
+        "$STARTUP_SCRIPT" status
+    else
+        echo "NCPA: ✗ Failed to start NCPA after installation"
+        echo "NCPA: You can start it manually with: sudo $STARTUP_SCRIPT start"
+        echo "NCPA: For troubleshooting, use: sudo $STARTUP_SCRIPT killall"
     fi
 fi
 
