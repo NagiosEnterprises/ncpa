@@ -233,9 +233,16 @@ def make_if_nodes(if_name, io_counters, if_stats):
             numeric_status = 0
         else:
             numeric_status = 2
+
+        speed = if_stats[if_name].speed
+        mtu = if_stats[if_name].mtu
     else:
         numeric_status = 3
+        speed = 0
+        mtu = 0 
     statusNode = RunnableNode("status", method=lambda: (numeric_status, ""))
+    speedNode = RunnableNode('speed', method=lambda: (speed, 'Mbit/s'))
+    mtuNode = RunnableNode('mtu', method=lambda: (mtu, ""))
 
     return RunnableParentNode(
         if_name,
@@ -250,6 +257,8 @@ def make_if_nodes(if_name, io_counters, if_stats):
             bytes_sent,
             errout,
             statusNode,
+            speedNode,
+            mtuNode
         ],
     )
 
