@@ -5,7 +5,6 @@ Changelog
 **Added**
 
 - Added a new config option to set backup_community_string in the [api] section of ncpa.cfg to help with token rotation and to allow for a smoother transition when changing tokens. - CPD
-- Added a default token value to the Windows installer to prevent the token from being blank after installation. - CPD
 
 **Updates**
 
@@ -14,6 +13,7 @@ Changelog
 - Removed version pin for AIX Python cryptography to allow updates to the latest stable release. [GH#1355] - CPD
 - Removed redundant Python executable from the install to reduce potential attack surface and confusion. - CPD
 - Updated the build documentation with more detailed requirements for building on Linux systems. - CPD
+- Updated the default token value in the Windows installer to prevent the token from being blank after installation. - CPD
 
 **Bug Fixes**
 
