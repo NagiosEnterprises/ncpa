@@ -49,10 +49,13 @@ Building on Linux
 
 NCPA must be built on the family of distributions which it will ultimately be run on. i.e. a .deb built on Ubuntu 20 will work on Ubuntu 22/24 and should also work on Debian 10/11
 
-You will need to have python3.11+ (python3.13 is preferred) installed prior to building NCPA v3.x.
+If you are on a RHEL/Oracle/CentOS/Amazon/Rocky system you will need to enable the CodeReady Builder (CRB) and EPEL repositories specific to your distro and version to get all the required development packages, and the newer versions of Python.
 
-If you are on a RHEL/Oracle/CentOS/Amazon/Rocky system you may need to enable additional repositories to get a newer version of python3.13.
-You may also need to install the CodeReady Builder repository specific to your distro and version to get all the required development packages.
+You will need to have python3.11+ (python3.13 is preferred) installed prior to building NCPA v3.x. The build script will attempt to install python3.13 if it is not found, but you may need to install Python (3.11+) manually if the build script fails to do so.
+
+It is also possible that python3.11+ is not available in the repositories for your distribution, in which case you will need to build Python from source and install it before building NCPA. If you do this, make sure to add the location of the python3.11+ binary to your PATH environment variable so that the build script can find it.
+
+You will also need git installed to clone the repository.
 
 To start, clone the repository in your directory::
 
@@ -157,6 +160,8 @@ Copy the resulting ``~/ncpa/build/ncpa-3.X.X.sparc.pkg`` or ``~/ncpa/build/ncpa-
 For automated installations without interactive prompts, use::
 
   pkgadd -a ./admin_file -d ./ncpa-3.X.X.<arch>.pkg ncpa
+
+(*There is a sample admin_file included in the Solaris NCPA install directory /usr/local/ncpa/ as well as the repo /ncpa/build/solaris/*)
 
 The installation process will:
 
@@ -369,6 +374,8 @@ To upgrade NCPA:
 1. **Install new package** (no need to manually stop NCPA)::
 
      pkgadd -a ./admin_file -d ./ncpa-3.X.X.<arch>.pkg
+
+  (*There is a sample admin_file included in the Solaris NCPA install directory /usr/local/ncpa/ as well as the repo /ncpa/build/solaris/*)
 
 2. **The upgrade automatically**:
    

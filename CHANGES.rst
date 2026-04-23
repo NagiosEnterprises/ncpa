@@ -1,5 +1,26 @@
 Changelog
 +++++++++
+3.4.0 - 4/23/2026
+==================
+**Added**
+
+- Added a new config option to set backup_community_string in the [api] section of ncpa.cfg to help with token rotation and to allow for a smoother transition when changing tokens. - CPD
+
+**Updates**
+
+- Updated Windows builds to use Python version 3.13.13. - CPD
+- Updated Windows builds to use OpenSSL version 3.0.19 to resolve CVEs and improve compatibility. [GH#1359] - CPD
+- Removed version pin for AIX Python cryptography to allow updates to the latest stable release. [GH#1355] - CPD
+- Removed redundant Python executable from the install to reduce potential attack surface and confusion. - CPD
+- Updated the build documentation with more detailed requirements for building on Linux systems. - CPD
+- Updated the default token value in the Windows installer to prevent the token from being blank after installation. - CPD
+
+**Bug Fixes**
+
+- Fixed a Solaris upgrade issue where NCPA configuration files were not preserved during upgrades. - CPD
+- Fixed a Solaris upgrade bug preventing SMF services from being correctly reinitialized during the upgrade process. - CPD
+- Fixed an issue where the interface/device/status endpoint was returning a string in the perfdata instead of a relevant numeric exit code. [GH#1371] - CPD
+
 3.3.1 - 3/19/2026
 ==================
 **Added**

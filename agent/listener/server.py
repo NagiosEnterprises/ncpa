@@ -315,8 +315,14 @@ def requires_token_or_auth(f):
     @functools.wraps(f)
     def token_auth_decoration(*args, **kwargs):
         ncpa_token = listener.config['iconfig'].get('api', 'community_string')
+        backup_ncpa_token = listener.config['iconfig'].get('api', 'backup_community_string')
         token = request.values.get('token', None)
         token_valid = secure_compare(token, ncpa_token)
+
+        # Retry with backup token if primary token is not valid and backup token is set
+        if not token_valid and backup_ncpa_token:
+            listener_logger.debug("Token did not match primary token, retrying with backup token.")
+            token_valid = secure_compare(token, backup_ncpa_token)
 
         # This is an internal call, we don't check
         if __INTERNAL__ is True:
@@ -397,6 +403,7 @@ def login():
         return redirect(url_for('index'))
 
     ncpa_token = listener.config['iconfig'].get('api', 'community_string')
+    backup_ncpa_token = listener.config['iconfig'].get('api', 'backup_community_string')
 
     # Admin password
     has_admin_password = False
@@ -412,6 +419,12 @@ def login():
     token = request.values.get('token', None)
 
     token_valid = secure_compare(token, ncpa_token)
+
+    # Retry with backup token if primary token is not valid and backup token is set
+    if not token_valid and backup_ncpa_token:
+        listener_logger.debug("Token did not match primary token, retrying with backup token.")
+        token_valid = secure_compare(token, backup_ncpa_token)    
+
     token_is_admin = secure_compare(token, admin_password)
 
     template_args = { 'hide_page_links': True,
@@ -1076,11 +1089,20 @@ def testconnect():
     :rtype: flask.Response
     """
     real_token = listener.config['iconfig'].get('api', 'community_string')
+    real_backup_token = listener.config['iconfig'].get('api', 'backup_community_string')
     test_token = request.values.get('token', None)
-    if real_token != test_token:
-        return jsonify({'error': 'Bad token.'})
-    else:
+
+    token_valid = secure_compare(test_token, real_token)
+    
+    # Retry with backup token if primary token is not valid and backup token is set
+    if not token_valid and real_backup_token:
+        listener_logger.debug("testconnect() - primary token invalid, trying backup token")
+        token_valid = secure_compare(test_token, real_backup_token)
+
+    if token_valid:
         return jsonify({'value': 'Success.'})
+    else:
+        return jsonify({'error': 'Bad token.'})
 
 
 @listener.route('/nrdp/', methods=['GET', 'POST'], provide_automatic_options = False)

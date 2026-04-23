@@ -94,7 +94,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.3.1'
+__VERSION__ = '3.4.0'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -160,6 +160,7 @@ cfg_defaults = {
             },
             'api': {
                 'community_string': 'mytoken',
+                'backup_community_string': '',
             },
             'passive': {
                 'handlers': 'None',

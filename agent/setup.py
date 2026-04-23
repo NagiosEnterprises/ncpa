@@ -63,8 +63,7 @@ if __SYSTEM__ == 'nt':
                      ('../build/resources/ncpa.ico'                     , 'build_resources/ncpa.ico'),
                      ('../build/resources/nagios_installer.bmp'         , 'build_resources/nagios_installer.bmp'),
                      ('../build/resources/nagios_installer_logo.bmp'    , 'build_resources/nagios_installer_logo.bmp'),
-                     ('../build/resources/ncpa.nsi'                     , 'build_resources/ncpa.nsi'),
-                     (sys.executable                                    , 'python.exe')]
+                     ('../build/resources/ncpa.nsi'                     , 'build_resources/ncpa.nsi')]
 
     # include pywin32 modules
     packages += ['win32serviceutil', 'win32service', 'win32event', 'servicemanager', 'win32timezone']
@@ -79,8 +78,7 @@ elif __SYSTEM__ == 'posix':
 
     include_files += [('../startup/default-plist'   , 'build_resources/default-plist'),
                       ('../startup/default-init'    , 'build_resources/default-init'),
-                      ('../startup/default-service' , 'build_resources/default-service'),
-                      (os.path.join(sys.executable) , 'python')]
+                      ('../startup/default-service' , 'build_resources/default-service')]
 
     # Shared library include overrides
     bin_includes += get_linux_lib_includes()
@@ -108,6 +106,7 @@ elif __SYSTEM__ == 'posix':
     # Special includes for Solaris systems
     if 'sunos' in sys.platform.lower():
         include_files += get_solaris_lib_paths()
+        include_files += [('../build/solaris/admin_file', 'admin_file')]
 
     binary = Executable('ncpa.py', base=None)
 
