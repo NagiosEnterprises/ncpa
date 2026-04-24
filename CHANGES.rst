@@ -6,6 +6,10 @@ Changelog
 
 - Placeholder for future release updates. - CPD
 
+**Bug Fixes**
+
+- Fixed multiple issues with the add_check() function in the API that were causing errors when trying to add checks with certain parameters. - CPD
+
 3.4.0 - 4/23/2026
 ==================
 **Added**
