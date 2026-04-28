@@ -550,9 +550,7 @@ def get_path_node(config, path):
             except ImportError:
                 logging.warning("Could not import windowslogs, skipping.")
             except AttributeError:
-                logging.warning(
-                    "Trying to import windowslogs but does not get_node() function, skipping."
-                )
+                logging.warning("Trying to import windowslogs but does not get_node() function, skipping.")
         else:
             logging.warning("Logs endpoint is only supported on Windows, skipping.")
     elif path == "windowscounters":
@@ -564,9 +562,7 @@ def get_path_node(config, path):
             except ImportError:
                 logging.warning("Could not import windowscounters, skipping.")
             except AttributeError:
-                logging.warning(
-                    "Trying to import windowscounters but does not get_node() function, skipping."
-                )
+                logging.warning("Trying to import windowscounters but does not get_node() function, skipping.")
         else:
             logging.warning("Windows counters endpoint is only supported on Windows, skipping.")
     else:
