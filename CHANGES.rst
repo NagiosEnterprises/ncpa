@@ -1,17 +1,34 @@
 Changelog
 +++++++++
-3.4.0 - 4/xx/2026
+3.4.1 - 5/xx/2026
+==================
+**Added**
+
+- Added edit and delete passive check functionality to the admin passive check section of the GUI. [GH#1317] - CPD
+
+**Bug Fixes**
+
+- Fixed multiple issues on the admin passive checks page of the GUI that were causing some checks to not display properly. [GH#1238] - CPD
+- Fixed multiple issues with the add passive check function in the API that were causing errors when trying to add checks with certain parameters. - CPD
+
+**Removed**
+
+- Removed some old debug log lines to help declutter the log files when debug logging is enabled. - CPD
+
+3.4.0 - 4/23/2026
 ==================
 **Added**
 
 - Added a new config option to set backup_community_string in the [api] section of ncpa.cfg to help with token rotation and to allow for a smoother transition when changing tokens. - CPD
-- Added a default token value to the Windows installer to prevent the token from being blank after installation. - CPD
 
 **Updates**
 
+- Updated Windows builds to use Python version 3.13.13. - CPD
+- Updated Windows builds to use OpenSSL version 3.0.19 to resolve CVEs and improve compatibility. [GH#1359] - CPD
 - Removed version pin for AIX Python cryptography to allow updates to the latest stable release. [GH#1355] - CPD
 - Removed redundant Python executable from the install to reduce potential attack surface and confusion. - CPD
 - Updated the build documentation with more detailed requirements for building on Linux systems. - CPD
+- Updated the default token value in the Windows installer to prevent the token from being blank after installation. - CPD
 
 **Bug Fixes**
 
