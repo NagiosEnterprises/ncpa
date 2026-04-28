@@ -539,6 +539,36 @@ def get_path_node(config, path):
         except Exception as e:
             process = ParentNode("N/A")
             logging.exception(e)
+
+    // Windows specific endpoints
+    elif path == "logs":
+        if __SYSTEM__ == "nt":
+            try:
+                import listener.windowslogs as windowslogs
+                logs_node = windowslogs.get_node()
+                children.append(logs_node)
+            except ImportError:
+                logging.warning("Could not import windowslogs, skipping.")
+            except AttributeError:
+                logging.warning(
+                    "Trying to import windowslogs but does not get_node() function, skipping."
+                )
+        else:
+            logging.warning("Logs endpoint is only supported on Windows, skipping.")
+    elif path == "windowscounters":
+        if __SYSTEM__ == "nt":
+            try:
+                import listener.windowscounters as windowscounters
+                counters_node = windowscounters.get_node()
+                children.append(counters_node)
+            except ImportError:
+                logging.warning("Could not import windowscounters, skipping.")
+            except AttributeError:
+                logging.warning(
+                    "Trying to import windowscounters but does not get_node() function, skipping."
+                )
+        else:
+            logging.warning("Windows counters endpoint is only supported on Windows, skipping.")
     else:
         logging.warning("get_path_node() was called with unrecognized path: %s, returning N/A node.", path)
         return ParentNode("N/A")
