@@ -24,11 +24,11 @@ $(document).ready(function() {
                     '<div class="form-group" style="display:flex; margin-left:15px; margin-bottom:-10px;">' +
                         '<div class="form-group" style="width:12rem; margin-left:-15px; margin-right:-8px;">' +
                             '<label for="host_name">Hostname:<span style="color:red;">*</span></label>' +
-                            '<input class="form-control" type="text" id="host_name" name="host_name" placeholder="%HOSTNAME%" />' +
+                            '<input class="form-control" type="text" id="host_name" name="host_name" placeholder="%HOSTNAME%" required />' +
                         '</div>' +
                         '<div class="form-group" style="width:12rem; margin-left:10px; margin-right:-8px;">' +
                             '<label for="service_name">Service:<span style="color:red;">*</span></label>' +
-                            '<input class="form-control" type="text" id="service_name" name="service_name" placeholder="CPU Usage" />' +
+                            '<input class="form-control" type="text" id="service_name" name="service_name" placeholder="CPU Usage" required />' +
                         '</div>' +
                         '<div class="form-group" style="width:12rem; margin-left:10px; margin-right:-8px;">' +
                             '<label for="check_interval">Interval(sec):</label>' +
@@ -37,7 +37,7 @@ $(document).ready(function() {
                         // ?Make the check value a dropdown that is populated with the available checks from the API + an input for extra options?
                         '<div class="form-group" style="flex-grow:1; margin-left:10px; padding-right:30px;">' +
                             '<label for="check_value">Check Value:<span style="color:red;">*</span></label>' +
-                            '<input class="form-control" type="text" id="check_value" name="check_value" placeholder="cpu/percent --warning 80 --critical 90 --aggregate avg" />' +
+                            '<input class="form-control" type="text" id="check_value" name="check_value" placeholder="cpu/percent --warning 80 --critical 90 --aggregate avg" required />' +
                         '</div>' +
                     '</div>' +
                     '<div class="form-group">' +
@@ -57,6 +57,7 @@ $(document).ready(function() {
         // Cancel button functionality
         $('#cancel-check').click(function() {
             $('#new-check-form').remove();
+            $('#add-check-btn').show();
         });
 
         // Submit new check
@@ -68,7 +69,7 @@ $(document).ready(function() {
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.send(new URLSearchParams(new FormData(this)).toString());
 
-            $('#flashMessageText').addClass('alert-warning').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>').show();
+            $('#flashMessageText').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>').show();
 
             xhr.onreadystatechange = function() {
                 if (xhr.readyState != 4) {
@@ -85,9 +86,21 @@ $(document).ready(function() {
                     flashText.innerHTML = '<i class="fa fa-check"></i>  ';
                     flashText.innerHTML += response.message;
                     if (response.check) {
-                        $('.form-horizontal').append('<pre style="border-radius:5px;">' + response.check + '</pre>');
+                        $('.form-horizontal').append(
+                            '<div class="check-row" style="display:flex; align-items:center; margin-bottom:10px;">' +
+                                '<pre style="border-radius:5px; width: 70rem; margin: 0; padding-left: 1rem;">' + response.check + '</pre>' +
+                                '<button class="btn btn-secondary btn-sm edit-check-btn" style="border-radius:5px;"><i class="fa fa-edit"></i></button>' +
+                                '<button class="btn btn-danger btn-sm delete-check-btn" style="border-radius:5px;"><i class="fa fa-trash"></i></button>' +
+                            '</div>'
+                        );
                         $('#new-check-form').remove();
                         $('#add-check-btn').show();
+
+                        // If there are more than 0 checks, hide the "no checks defined" message
+                        if ($('.delete-check-btn').length > 0) {
+                            $('#no-checks-defined').hide();
+                        }
+
                     } else {
                         $('#flashMessageText').html('<i class="fa fa-times"></i> ' + response.message);
                         $('#flashMessage').addClass('alert-danger').show();
@@ -103,6 +116,174 @@ $(document).ready(function() {
             };
         });
     });
+
+    // Edit Check Functionality
+    $('.form-horizontal').on('click', '.edit-check-btn', function() {
+        // If an edit form is already open, remove it before opening a new one
+        $('#edit-check-form').remove();
+
+        checkToEdit = $(this).siblings('pre').text();
+        parsedCheck = checkToEdit.split(' = ');
+        leftSide = parsedCheck[0].split('|');
+        hostname = leftSide[0].trim();
+        service =  leftSide[1].trim();
+        interval = leftSide[2] ? leftSide[2].trim() : '';
+        checkValue = parsedCheck[1].trim();
+
+        // Open an inline form to edit the check value, similar to the add check form but pre-populated with the existing values. On submit, send an AJAX request to update the check and update the UI accordingly.
+        var formHtml = '' +
+            '<form>' +
+                '<div id="edit-check-form" style="background-color:#DDD; border-radius:5px; padding: 15px; margin-bottom:10px;">' +
+                    '<div class="form-group" style="display:flex; margin-left:15px; margin-bottom:-10px;">' +
+                        '<div class="form-group" style="width:12rem; margin-left:-15px; margin-right:-8px;">' +
+                            '<label for="host_name">Hostname:<span style="color:red;">*</span></label>' +
+                            '<input class="form-control" type="text" id="host_name" name="host_name" placeholder="%HOSTNAME%" value="' + hostname + '" required />' + 
+                        '</div>' +
+                        '<div class="form-group" style="width:12rem; margin-left:10px; margin-right:-8px;">' +
+                            '<label for="service_name">Service:<span style="color:red;">*</span></label>' +
+                            '<input class="form-control" type="text" id="service_name" name="service_name" placeholder="CPU Usage" value="' + service + '" required />' +
+                        '</div>' +
+                        '<div class="form-group" style="width:12rem; margin-left:10px; margin-right:-8px;">' +
+                            '<label for="check_interval">Interval(sec):</label>' +
+                            '<input class="form-control" type="text" id="check_interval" name="check_interval" placeholder="300" value="' + interval + '" />' +
+                        '</div>' +
+                        '<div class="form-group" style="flex-grow:1; margin-left:10px; padding-right:30px;">' +
+                            '<label for="check_value">Check Value:<span style="color:red;">*</span></label>' +
+                            '<input class="form-control" type="text" id="check_value" name="check_value" placeholder="cpu/percent --warning 80 --critical 90 --aggregate avg" value="' + checkValue + '" required />' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<p style="margin-left:15px; margin-bottom:0px; color:red; font-size:12px;">* Required Fields</p>' +
+                    '</div>' +
+                    '<div class="form-group" style="margin-left:0; margin-bottom:5px;">' +
+                        '<button class="btn btn-primary" id="submit-edit-check" style="margin-right:5px;border-radius:5px;">Submit</button>' +
+                        '<button class="btn btn-secondary" id="cancel-edit-check" style="border-radius:5px;">Cancel</button>' +
+                    '</div>' +
+                '</div>' +
+            '</form>';
+        $(this).parent().after(formHtml);
+
+        // Cancel button functionality
+        $('#cancel-edit-check').click(function() {
+            $('#edit-check-form').remove();
+        });
+
+        // Submit edited check
+        $('form').submit(function(e) {
+            new_check_string = $('#host_name').val() + '|' + $('#service_name').val();
+            if ($('#check_interval').val()) {
+                new_check_string += '|' + $('#check_interval').val();
+            }
+            new_check_string += ' = ' + $('#check_value').val();
+
+            e.preventDefault();
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', '/edit-check/', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send(new URLSearchParams({
+                'check': checkToEdit,
+                'values': new_check_string
+            }).toString());
+
+            $('#flashMessageText').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>').show();
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState != 4) {
+                    return;
+                }
+
+                let response = JSON.parse(xhr.responseText);
+                let flash = document.querySelector('#flashMessage');
+                let flashText = document.querySelector('#flashMessageText');
+                flash.classList.remove('alert-warning');
+                if (response.type == 'success') {
+                    flash.classList.add('alert-' + response.type);
+                    flash.classList.remove('alert-danger');
+                    flash.style.display = 'block';
+                    flashText.innerHTML = '<i class="fa fa-check"></i>  ';
+                    flashText.innerHTML += response.message;
+                    if (response.new_check) {
+                        // Update the check in the UI
+                        $('.check-row').filter(function() {
+                            return $(this).find('pre').text() === checkToEdit;
+                        }).find('pre').text(response.new_check);
+
+                        // Remove the edit form
+                        $('#edit-check-form').remove();
+                    } else {
+                        $('#flashMessageText').html('<i class="fa fa-times"></i> ' + response.message);
+                        $('#flashMessage').addClass('alert-danger').show();
+                    }
+                } else {
+                    $('#flashMessageText').html('<i class="fa fa-times"></i> ' + response.message);
+                    $('#flashMessage').addClass('alert-danger').show();
+                }
+                setTimeout(function() {
+                    $('#flashMessage').hide().removeClass('alert-danger').removeClass('alert-success');
+                    $('#flashMessageText').html('');
+                }, 10000);
+            };
+        });
+    });
+
+    // Delete Check Functionality
+    $('.form-horizontal').on('click', '.delete-check-btn', function() {
+        if (confirm("Are you sure you want to delete this?")) {
+            // If an edit form is open for the check being deleted, remove it
+            $('#edit-check-form').remove();
+
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', '/delete-check/', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send(new URLSearchParams({
+                'check': $(this).siblings('pre').text()
+            }).toString());
+
+            $('#flashMessageText').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>').show();
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState != 4) {
+                    return;
+                }
+
+                let response = JSON.parse(xhr.responseText);
+                let flash = document.querySelector('#flashMessage');
+                let flashText = document.querySelector('#flashMessageText');
+                flash.classList.remove('alert-warning');
+                if (response.type == 'success') {
+                    flash.classList.add('alert-' + response.type);
+                    flash.classList.remove('alert-danger');
+                    flash.style.display = 'block';
+                    flashText.innerHTML = '<i class="fa fa-check"></i>  ';
+                    flashText.innerHTML += response.message;
+                    if (response.check) {
+                        // Remove the check from the UI
+                        $('.check-row').filter(function() {
+                            return $(this).find('pre').text() === response.check;
+                        }).remove();
+
+                        // If there are no more checks, show the "no checks defined" message
+                        if ($('.delete-check-btn').length === 0) {
+                            $('.form-horizontal').append('<p id="no-checks-defined">There are no passive checks defined right now.</p>');
+                        }
+                    } else {
+                        $('#flashMessageText').html('<i class="fa fa-times"></i> ' + response.message);
+                        $('#flashMessage').addClass('alert-danger').show();
+                    }
+                setTimeout(function() {
+                    $('#flashMessage').hide().removeClass('alert-danger').removeClass('alert-success');
+                    $('#flashMessageText').html('');
+                }, 10000);
+                } else {
+                    $('#flashMessageText').html('<i class="fa fa-times"></i> ' + response.message);
+                    $('#flashMessage').addClass('alert-danger').show();
+                }
+            };
+        } else {
+            return false; // Action if user clicks Cancel
+        }
+    });
+
 });
 </script>
 {% endblock %}
@@ -131,16 +312,20 @@ $(document).ready(function() {
 
                     <input type="hidden" name="section" value="checks">
 
-                    {% if checks|length > 1 %}
+                    {% if checks|length >= 1 %}
                         {% for check in checks %}
-                        <pre style="border-radius:5px;">{{ check[0] }} = {{ check[1] }}</pre>
+                        <div class='check-row' style="display:flex; align-items:center; margin-bottom:10px;">
+                            <pre style="border-radius:5px; width: 70rem; margin: 0; padding-left: 1rem;">{{ check[0] }} = {{ check[1] }}</pre>
+                            <button class="btn btn-secondary btn-sm edit-check-btn" style="border-radius:5px;"><i class="fa fa-edit"></i></button>
+                            <button class="btn btn-danger btn-sm delete-check-btn" style="border-radius:5px;"><i class="fa fa-trash"></i></button>
+                        </div>
                         {% endfor %}
                     {% else %}
-                        <p>There are no passive checks defined right now.</p>
+                        <p id="no-checks-defined">There are no passive checks defined right now.</p>
                     {% endif %}
                     
                 </div>
-				<button class="btn btn-primary" id="add-check-btn" style="border-radius:5px; margin-bottom:10px">Add Check</button>
+				<button class="btn btn-primary" id="add-check-btn" style="border-radius:5px; margin-bottom:10px;">Add Check</button>
             </div>
 
         </div>
