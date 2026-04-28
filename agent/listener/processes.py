@@ -481,5 +481,5 @@ class ProcessNode(nodes.LazyNode):
 
 
 def get_node():
-    logging.info("get_node() was called for processes")
+    logging.debug("get_node() was called for processes")
     return ProcessNode("processes", None)

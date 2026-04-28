@@ -425,5 +425,5 @@ class ServiceNode(listener.nodes.LazyNode):
         return { 'stdout': stdout, 'returncode': returncode }
 
 def get_node():
-    logging.info("get_node() was called for services")
+    logging.debug("get_node() was called for services")
     return ServiceNode('services', None)

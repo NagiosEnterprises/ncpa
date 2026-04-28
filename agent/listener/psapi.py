@@ -262,7 +262,7 @@ def get_timezone():
 
 
 def get_system_node():
-    logging.info("get_system_node() was called")
+    logging.debug("get_system_node() was called")
     sys_system = RunnableNode("system", method=lambda: (platform.uname()[0], ""))
     sys_node = RunnableNode("node", method=lambda: (platform.uname()[1], ""))
     sys_release = RunnableNode("release", method=lambda: (platform.uname()[2], ""))
@@ -291,7 +291,7 @@ def get_system_node():
 
 
 def get_cpu_node(cpu_interval=0.5):
-    logging.info("get_cpu_node() was called")
+    logging.debug("get_cpu_node() was called")
     cpu_count = RunnableNode(
         "count", method=lambda:     ([len(ps.cpu_percent(percpu=True))], "cores")
     )
@@ -313,7 +313,7 @@ def get_cpu_node(cpu_interval=0.5):
 
 
 def get_memory_node():
-    logging.info("get_memory_node() was called")
+    logging.debug("get_memory_node() was called")
     mem_virt_total = RunnableNode(
         "total", method=lambda: (ps.virtual_memory().total, "B")
     )
@@ -373,7 +373,7 @@ def get_memory_node():
 
 
 def get_disk_node(config):
-    logging.info("get_disk_node() was called")
+    logging.debug("get_disk_node() was called")
     # Get all physical disk io counters
     try:
         disk_counters = [
@@ -438,7 +438,7 @@ def get_disk_node(config):
 
 
 def get_interface_node():
-    logging.info("get_interface_node() was called")
+    logging.debug("get_interface_node() was called")
     io_counters = ps.net_io_counters(pernic=True)
     if_stats = ps.net_if_stats()
 
@@ -449,12 +449,12 @@ def get_interface_node():
 
 
 def get_plugins_node():
-    logging.info("get_plugins_node() was called")
+    logging.debug("get_plugins_node() was called")
     return PluginAgentNode("plugins")
 
 
 def get_user_node():
-    logging.info("get_user_node() was called")
+    logging.debug("get_user_node() was called")
     user_count = RunnableNode(
         "count", method=lambda: (len([x.name for x in ps.users()]), "users")
     )
@@ -470,7 +470,7 @@ def get_user_node():
 
 def get_path_node(config, path):
     children = []
-    # logging.info("get_path_node() was called with path: %s", path)
+    logging.debug("get_path_node() was called with path: %s", path)
     
     if path is None:
         logging.warning("get_path_node() was called with no path, returning N/A node.")
@@ -547,7 +547,7 @@ def get_path_node(config, path):
 
 
 def get_root_node(config):
-    logging.info("get_root_node() was called")
+    logging.debug("get_root_node() was called")
     try:
         cpu = get_cpu_node()
     except Exception as e:
