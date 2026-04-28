@@ -191,7 +191,6 @@ def before_request():
     # allowed is set to False by default
     allowed = False
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
-    listener_logger.debug("    before_request() - type(request.view_args): %s", type(request.view_args))
 
     # For logging some debug info for actual page requests
     if isinstance(request.view_args, dict) and ('filename' not in request.view_args):
@@ -204,10 +203,6 @@ def before_request():
             new_parts.append('&'.join(sub_parts))
         logurl = 'token='.join(new_parts)
         listener_logger.info("before_request() - request.url: %s", logurl)
-        listener_logger.debug("    before_request() - request.path: %s", request.path)
-        listener_logger.debug("    before_request() - request.url_rule: %s", request.url_rule)
-        listener_logger.debug("    before_request() - request.view_args: %s", request.view_args)
-        listener_logger.debug("    before_request() - request.routing_exception: %s", request.routing_exception)
 
     if allowed_hosts and __INTERNAL__ is False:
         if request.remote_addr:
