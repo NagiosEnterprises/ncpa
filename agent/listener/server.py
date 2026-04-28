@@ -1391,7 +1391,6 @@ def set_config():
     return jsonify({'type': 'success', 'message': 'Configuration updated. <b>Note</b>: You may need to <b>restart NCPA</b> for all changes to take effect.'})
 
 # Endpoint to add a new passive check
-# TODO: implement removing checks
 @listener.route('/add-check/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
 def add_check():
@@ -1403,9 +1402,21 @@ def add_check():
 
     try:
         if environment.SYSTEM == "Windows":
-            cfg_file = os.path.join('C:\\', 'Program Files', 'Nagios', 'NCPA', 'etc', 'ncpa.cfg.d', 'example.cfg')
+            cfg_file = os.path.join('C:\\', 'Program Files', 'Nagios', 'NCPA', 'etc', 'ncpa.cfg.d', 'webui.cfg')
         else:
-            cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg.d', 'example.cfg')
+            cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg.d', 'webui.cfg')
+
+        webui_file_content = """#
+# This file is for configuration changes made through the NCPA Web GUI. It will be preserved during updates.
+#
+
+[passive checks]"""
+
+        # Ensure the webui.cfg file exists before trying to read it, if not create it
+        if not os.path.exists(cfg_file):
+            with open(cfg_file, 'w') as configfile:
+                configfile.write(webui_file_content)
+                configfile.close()
 
         with open(cfg_file, 'r') as configfile:
             lines = configfile.readlines()
@@ -1452,19 +1463,10 @@ def add_check():
             new_check = f"{values_dict['host_name']}|{values_dict['service_name']}|{values_dict['check_interval']} = {values_dict['check_value']}"
             sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
 
+        new_check = new_check.replace('\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command for GUI
 
         for sed_cmd in sed_cmds:
-            listener_logger.debug("add_check() - adding check: %s", new_check)
-
             if environment.SYSTEM == "Windows":
-                new_check = new_check.replace('\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command for GUI
-                sed_cmd = sed_cmd.replace('\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command
-                match = re.match(r"sed -i '/.*/a(.*)\' ", sed_cmd)
-                
-                if not match or len(match.groups()) < 1:
-                    continue
-                match_value = match.group(1).strip()
-
                 try:
                     with open(cfg_file, 'r', encoding='utf-8') as file:
                         lines = file.readlines()
@@ -1475,7 +1477,7 @@ def add_check():
                 for i, line in enumerate(lines):
                     if line.startswith("[passive checks]") or line.startswith("#[passive checks]"):
                         lines[i] = "[passive checks]"
-                        lines.insert(i+1, '\n' + match_value + '\n')
+                        lines.insert(i+1, '\n' + new_check + '\n')
                         break
 
                 try:
@@ -1507,12 +1509,11 @@ def add_check():
                     new_check_parts = new_check.split('=')
                     config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
 
-                new_check = new_check.replace('\/', '/').replace('\\\\','\\') # unescape the slashes that were escaped for the sed command for GUI
-
     except Exception as e:
         listener_logger.exception(e)
         return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
 
+    listener_logger.info("add_check() - added check: %s", new_check)
     return jsonify({'type': 'success', 'message': 'Check added. <b>Note</b>: You will need to <b>restart NCPA</b> for the new checks to take effect.', 'check': str(new_check)})
 
 # ------------------------------
