@@ -547,6 +547,7 @@ def get_path_node(config, path):
                 import listener.windowslogs as windowslogs
                 logs_node = windowslogs.get_node()
                 children.append(logs_node)
+                logging.debug("get_node() was called for windowslogs")
             except ImportError:
                 logging.warning("Could not import windowslogs, skipping.")
             except AttributeError:
@@ -559,6 +560,7 @@ def get_path_node(config, path):
                 import listener.windowscounters as windowscounters
                 counters_node = windowscounters.get_node()
                 children.append(counters_node)
+                logging.debug("get_node() was called for windowscounters")
             except ImportError:
                 logging.warning("Could not import windowscounters, skipping.")
             except AttributeError:
