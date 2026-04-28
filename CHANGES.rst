@@ -11,6 +11,10 @@ Changelog
 - Fixed multiple issues on the admin passive checks page of the GUI that were causing some checks to not display properly. [GH#1238] - CPD
 - Fixed multiple issues with the add passive check function in the API that were causing errors when trying to add checks with certain parameters. - CPD
 
+**Removed**
+
+- Removed some old debug log lines to help declutter the log files when debug logging is enabled. - CPD
+
 3.4.0 - 4/23/2026
 ==================
 **Added**
