@@ -644,7 +644,6 @@ def get_root_node(config):
                     node = ParentNode("N/A")
                     logging.exception(e)
                 children.append(node)
-                logging.debug("Imported %s into the API tree.", importable)
             except ImportError:
                 logging.warning("Could not import %s, skipping.", importable)
             except AttributeError:
