@@ -4,11 +4,12 @@ Changelog
 ==================
 **Added**
 
-- Placeholder for future release updates. - CPD
+- Added edit and delete passive check functionality to the admin passive check section of the GUI. [GH#1317] - CPD
 
 **Bug Fixes**
 
-- Fixed multiple issues with the add_check() function in the API that were causing errors when trying to add checks with certain parameters. - CPD
+- Fixed multiple issues on the admin passive checks page of the GUI that were causing some checks to not display properly. [GH#1238] - CPD
+- Fixed multiple issues with the add passive check function in the API that were causing errors when trying to add checks with certain parameters. - CPD
 
 3.4.0 - 4/23/2026
 ==================
