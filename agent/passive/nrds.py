@@ -108,16 +108,16 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
                 logging.debug('Successfully read the temp config')
 
-                if not test_config.sections():
-                    raise Exception('Config contained no NCPA directives, not writing.')
+                # if not test_config.sections():
+                #     raise Exception('Config contained no NCPA directives, not writing.')
         except Exception as exc:
             logging.error("NRDS config received from the server contained errors: %r", exc)
             return False
 
         if nrds_response:
             try:
-                with open(self.config.file_path, 'w') as new_config:
-                    new_config.write(str(nrds_response))
+                with open('/usr/local/ncpa/etc/ncpa.cfg.d/nrds.cfg', 'w') as new_config:
+                    new_config.write(nrds_response.decode('utf-8'))
             except Exception as exc:
                 logging.error('Could not rewrite the config: %r', exc)
                 return False
