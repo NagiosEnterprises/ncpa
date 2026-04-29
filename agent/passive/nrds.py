@@ -104,9 +104,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
         #         temp_config.seek(0)
         #         logging.debug('read the file: \n %s', temp_config.read())
 
-        test_config = cp.ConfigParser()
-        test_config.read_string(temp_config)
-        logging.debug('temp config: %s', test_config.sections())
+            test_config = cp.ConfigParser()
+            test_config.read_string(temp_config)
+            logging.debug('temp config: %s', test_config.sections())
 
         #         if not test_config.sections():
         #             raise Exception('Config contained no NCPA directives, not writing.')
