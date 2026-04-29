@@ -112,7 +112,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
         if nrds_response:
             try:
                 with open(self.config.file_path, 'w') as new_config:
-                    new_config.write(nrds_response)
+                    new_config.write(str(nrds_response))
             except Exception as exc:
                 logging.error('Could not rewrite the config: %r', exc)
                 return False
