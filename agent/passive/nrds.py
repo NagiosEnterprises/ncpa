@@ -99,6 +99,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
         try:
             with tempfile.TemporaryFile(mode="w+") as temp_config:
+                temp_config.write('[nrds config]\n')
                 temp_config.write(nrds_response.decode('utf-8'))
                 temp_config.seek(0)
                 logging.debug('read the file: %s', temp_config.read())
