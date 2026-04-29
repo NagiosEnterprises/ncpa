@@ -103,11 +103,11 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 temp_config.seek(0)
                 temp_config.write('[passive checks]\n')
 
-                logger.debug('reading file: %s', test_config.read_file(temp_config))
+                logging.debug('reading file: %s', test_config.read_file(temp_config))
                 test_config = cp.ConfigParser()
                 test_config.read_file(temp_config) # problem here, missing section headers
 
-                logger.debug('Successfully read the temp config')
+                logging.debug('Successfully read the temp config')
 
                 if not test_config.sections():
                     raise Exception('Config contained no NCPA directives, not writing.')
