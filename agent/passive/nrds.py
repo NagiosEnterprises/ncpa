@@ -105,7 +105,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 logging.debug('read the file: %s', temp_config.read())
 
                 test_config = cp.ConfigParser()
-                test_config.read_file(temp_config)
+                test_config.read(temp_config)
                 logging.debug('temp config: %s', test_config.sections())
 
                 if not test_config.sections():
