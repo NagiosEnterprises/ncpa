@@ -94,26 +94,25 @@ class Handler(passive.nagioshandler.NagiosHandler):
             'connection_timeout': 10
         }
 
-        nrds_response = passive.utils.send_request(nrds_url, **get_args)
-        logging.debug('nrds_response is: %s', nrds_response)
-        logging.debug('nrds_response decoded: %s', nrds_response.decode('utf-8'))
+        try:
+            nrds_response = passive.utils.send_request(nrds_url, **get_args)
+            logging.debug('nrds_response decoded: %s', nrds_response.decode('utf-8'))
 
-        # try:
         #     with tempfile.TemporaryFile(mode="w+") as temp_config:
         #         temp_config.write('[nrds config]\n')
         #         temp_config.write(nrds_response.decode('utf-8'))
         #         temp_config.seek(0)
         #         logging.debug('read the file: \n %s', temp_config.read())
 
-        #         test_config = cp.ConfigParser()
-        #         test_config.read(temp_config)
-        #         logging.debug('temp config: %s', test_config.sections())
+        test_config = cp.ConfigParser()
+        test_config.read_string(temp_config)
+        logging.debug('temp config: %s', test_config.sections())
 
         #         if not test_config.sections():
         #             raise Exception('Config contained no NCPA directives, not writing.')
-        # except Exception as exc:
-        #     logging.error("NRDS config received from the server contained errors: %r", exc)
-        #     return False
+        except Exception as exc:
+            logging.error("NRDS config received from the server contained errors: %r", exc)
+            return False
 
         # if nrds_response:
         #     try:
