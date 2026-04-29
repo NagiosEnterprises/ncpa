@@ -89,7 +89,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
             'configname': nrds_config,
             'cmd': 'getconfig',
             'os': 'NCPA',
-            'token': nrds_token
+            'token': nrds_token,
+            'connection_timeout': 10
         }
 
         nrds_response = passive.utils.send_request(nrds_url, **get_args)
