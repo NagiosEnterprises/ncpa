@@ -44,12 +44,13 @@ class Handler(passive.nagioshandler.NagiosHandler):
             logging.debug('Updating my NRDS config...')
             self.update_config(nrds_url, nrds_token, nrds_config)
 
+        # This section does not work
         # Then install any necessary plugins if need be.
-        needed_plugins = self.list_missing_plugins()
-        if needed_plugins:
-            logging.debug('We need some plugins. Getting them...')
-            for plugin in needed_plugins:
-                self.get_plugin(plugin)
+        # needed_plugins = self.list_missing_plugins()
+        # if needed_plugins:
+        #     logging.debug('We need some plugins. Getting them...')
+        #     for plugin in needed_plugins:
+        #         self.get_plugin(plugin)
 
         logging.debug('Done with this NRDS iteration.')
 
@@ -101,7 +102,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 temp_config.write(str(nrds_response))
                 temp_config.seek(0)
 
-                test_config = cp.ConfigParser()
+                logging.debug('Attempting to parse config file')
+                test_config = cp.ConfigParser() # problem here, missing section headers
+                logging.debug('Successfully parsed config file!')
                 test_config.read_file(temp_config)
 
                 if not test_config.sections():

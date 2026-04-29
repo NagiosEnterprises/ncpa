@@ -19,7 +19,7 @@ def send_request(url, connection_timeout, **kwargs):
 
     try:
         r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=True, allow_redirects=True)
-        logging.debug('Content response from URL: %s' % str(r.content))
+        # logging.debug('Content response from URL: %s' % str(r.content))
         return r.content
     except requests.exceptions.SSLError as ssl_err:
         logging.warning("SSL verification failed, retrying without verification: %s", ssl_err)
