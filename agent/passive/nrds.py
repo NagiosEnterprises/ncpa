@@ -96,7 +96,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
         try:
             nrds_response = passive.utils.send_request(nrds_url, **get_args)
-            logging.debug('nrds_response decoded: %s', nrds_response.decode('utf-8'))
+            nrds_res_decoded = nrds_response.decode('utf-8')
+            logging.debug('nrds_response decoded: %s', nrds_res_decoded)
 
         #     with tempfile.TemporaryFile(mode="w+") as temp_config:
         #         temp_config.write('[nrds config]\n')
@@ -105,7 +106,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
         #         logging.debug('read the file: \n %s', temp_config.read())
 
             test_config = cp.ConfigParser()
-            test_config.read_string(temp_config)
+            test_config.read_string(nrds_res_decoded)
             logging.debug('temp config: %s', test_config.sections())
 
         #         if not test_config.sections():
