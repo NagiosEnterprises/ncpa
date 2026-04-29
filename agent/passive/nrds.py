@@ -21,7 +21,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
         logging.debug('Establishing passive handler: NRDS')
 
         # The NRDS section does not exist right now..
-        return
+        # return
         
         try:
             nrds_url = self.config.get('nrds', 'url')
