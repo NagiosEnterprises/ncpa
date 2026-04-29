@@ -74,6 +74,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
         try:
             with open(plugin_abs_path, 'w') as plugin_file:
                 plugin_file.write(url_request)
+                logging.info("Successfully downloaded plugin: %s", plugin)
                 if os.name != 'nt':
                     os.chmod(plugin_abs_path, 775)
         except Exception as exc:
@@ -97,7 +98,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
         try:
             with tempfile.TemporaryFile("w+") as temp_config:
-                temp_config.write(nrds_response)
+                temp_config.write(str(nrds_response))
                 temp_config.seek(0)
 
                 test_config = cp.ConfigParser()
