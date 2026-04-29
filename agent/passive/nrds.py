@@ -31,6 +31,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
         except (cp.NoOptionError, cp.NoSectionError) as exc:
             logging.error("Encountered error while getting NRDS config values: %r", exc)
 
+        logging.info('url: %s, config_name: %s, config_version: %s, token: %s', nrds_url, nrds_config, nrds_config_version, nrds_token)
+
         # Make sure valid input was stated in the config, if not, error out and log it.
         for directive in [nrds_url, nrds_config, nrds_config_version, nrds_token]:
             if directive is None:

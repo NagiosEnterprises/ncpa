@@ -174,6 +174,12 @@ cfg_defaults = {
                 'hostname': 'NCPA',
                 'connection_timeout': '10',
             },
+            'nrds': {
+                'url': '',
+                'token': '',
+                'config_name': '',
+                'config_version': '',
+            },
             'kafkaproducer': {
                 'hostname': 'None',
                 'servers': 'localhost:9092',
