@@ -101,11 +101,10 @@ class Handler(passive.nagioshandler.NagiosHandler):
             with tempfile.TemporaryFile("w+") as temp_config:
                 temp_config.write(str(nrds_response))
                 temp_config.seek(0)
-                temp_config.write('[passive checks]\n')
+                logging.debug('read the file: %s', temp_config.read())
 
-                logging.debug('reading file: %s', test_config.read_file(temp_config))
                 test_config = cp.ConfigParser()
-                test_config.read_file(temp_config) # problem here, missing section headers
+                test_config.read_file(temp_config)
 
                 logging.debug('Successfully read the temp config')
 
