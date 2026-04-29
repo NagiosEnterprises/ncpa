@@ -133,7 +133,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
             'cmd': 'updatenrds',
             'os': 'NCPA',
             'configname': nrds_config,
-            'version': nrds_config_version
+            'version': nrds_config_version,
+            'connection_timeout': 10
         }
 
         logging.debug('Connecting to NRDS server (%s)...', nrds_url)
