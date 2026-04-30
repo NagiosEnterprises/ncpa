@@ -197,6 +197,10 @@ class Handler(passive.nagioshandler.NagiosHandler):
         """
         installed_plugins = self.get_installed_plugins()
         required_plugins = self.get_required_plugins()
+
+        logging.debug('installed plugins: %s', installed_plugins)
+        logging.debug('required plugins: %s', required_plugins)
+
         return required_plugins - installed_plugins
 
     def get_required_plugins(self):
