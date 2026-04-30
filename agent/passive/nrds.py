@@ -99,9 +99,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
         try:
             # Request the config from the server
             nrds_response = passive.utils.send_request(nrds_url, **get_args)
-            nrds_res_decoded = '[nrds config]\n'
+            nrds_res_decoded = '[nrds]\n'
             nrds_res_decoded += nrds_response.decode('utf-8')
-            # logging.debug('nrds_response decoded: \n %s', nrds_res_decoded)
+            logging.debug('nrds_response decoded: \n %s', nrds_res_decoded)
 
             # Try to parse the config downloaded from the server
             test_config = cp.ConfigParser()
@@ -114,19 +114,20 @@ class Handler(passive.nagioshandler.NagiosHandler):
             new_config_version = test_config.get('nrds config', 'CONFIG_VERSION')
             logging.debug('new config file version: %s', new_config_version)
 
-            if nrds_res_decoded:
-                try:
-                    existing_config = cp.ConfigParser()
-                    existing_config.read('/usr/local/ncpa/etc/nrds.cfg')
+            # Shouldn't be needed because of config_update_is_required()
+            # if nrds_res_decoded:
+            #     try:
+            #         existing_config = cp.ConfigParser()
+            #         existing_config.read('/usr/local/ncpa/etc/nrds.cfg')
 
-                    existing_config_version = existing_config.get('nrds config', 'CONFIG_VERSION')
-                    logging.debug('existing config file version: %s', existing_config_version)
+            #         existing_config_version = existing_config.get('nrds config', 'CONFIG_VERSION')
+            #         logging.debug('existing config file version: %s', existing_config_version)
 
-                    if existing_config_version == new_config_version:
-                        logging.debug('No version change detected, no changes to make')
-                        return True
-                    else:
-                        logging.debug('Version difference detected')
+            #         if existing_config_version == new_config_version:
+            #             logging.debug('No version change detected, no changes to make')
+            #             return True
+            #         else:
+            #             logging.debug('Version difference detected')
                 except Exception as exc:
                     logging.error('Could not read the config: %r', exc)
                     return False
