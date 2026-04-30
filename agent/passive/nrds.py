@@ -173,6 +173,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
         response_xml = ET.fromstring(url_request)
         status_xml = response_xml.findall('./status')
 
+        logging.debug('response xml: %s', response_xml)
+        logging.debug('status xml: %s', status_xml)
+
         if not status_xml:
             logging.warning("NRDS server did not respond with a status, skipping.")
             return False
