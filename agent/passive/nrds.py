@@ -101,7 +101,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
             nrds_response = passive.utils.send_request(nrds_url, **get_args)
             nrds_res_decoded = '[nrds config]\n'
             nrds_res_decoded += nrds_response.decode('utf-8')
-            logging.debug('nrds_response decoded: %s', nrds_res_decoded)
+            # logging.debug('nrds_response decoded: \n %s', nrds_res_decoded)
 
             # Try to parse the config downloaded from the server
             test_config = cp.ConfigParser()
@@ -176,7 +176,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
         # Add indentation to the tree (Python 3.9+)
         ET.indent(response_xml, space="  ", level=0)
         # Log the formatted tree
-        logging.debug('response xml: %s', ET.tostring(response_xml, encoding='unicode'))
+        logging.debug('response xml: \n %s', ET.tostring(response_xml, encoding='unicode'))
 
         if not status_xml:
             logging.warning("NRDS server did not respond with a status, skipping.")
