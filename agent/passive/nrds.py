@@ -116,7 +116,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
             if nrds_res_decoded:
                 try:
-                    with open('/usr/local/ncpa/etc/nrds.cfg', 'w+') as nrds_config:
+                    with open('/usr/local/ncpa/etc/nrds.cfg', 'r') as nrds_config:
                         existing_config = cp.ConfigParser()
                         existing_config.read(nrds_config)
                         existing_config_version = existing_config.get('nrds config', 'CONFIG_VERSION')
