@@ -119,7 +119,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
                     with open('/usr/local/ncpa/etc/nrds.cfg', 'w+') as nrds_config:
                         existing_config = cp.ConfigParser()
                         existing_config.read(nrds_config)
-                        existing_config_version = nrds_config.get('nrds config', 'CONFIG_VERSION')
+                        existing_config_version = existing_config.get('nrds config', 'CONFIG_VERSION')
                         logging.debug('existing config file version: %s', existing_config_version)
 
                         if existing_config_version == new_config_version:
