@@ -45,8 +45,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
             self.update_config(nrds_url, nrds_token, nrds_config)
 
         # Then install any necessary plugins if need be.
-        needed_plugins = self.list_missing_plugins()
-        logging.debug('Needed plugins: %s', needed_plugins)
+        # needed_plugins = self.list_missing_plugins()
+        # logging.debug('Needed plugins: %s', needed_plugins)
 
         # if needed_plugins:
         #     logging.debug('We need some plugins. Getting them...')
@@ -173,8 +173,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
         response_xml = ET.fromstring(url_request)
         status_xml = response_xml.findall('./status')
 
-        logging.debug('response xml: %s', response_xml)
-        logging.debug('status xml: %s', status_xml)
+        logging.debug('response xml: %s', response_xml.text)
+        logging.debug('status xml: %s', status_xml.text)
 
         if not status_xml:
             logging.warning("NRDS server did not respond with a status, skipping.")
