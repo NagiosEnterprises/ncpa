@@ -227,6 +227,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
         """
         logging.debug("Checking for installed plugins.")
         plugin_path = self.config.get('plugin directives', 'plugin_path')
+        logging.debug('plugin path: %s', plugin_path)
         plugins = set()
 
         try:
