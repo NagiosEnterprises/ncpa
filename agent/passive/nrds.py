@@ -95,23 +95,19 @@ class Handler(passive.nagioshandler.NagiosHandler):
         }
 
         try:
+            # Request the config from the server
             nrds_response = passive.utils.send_request(nrds_url, **get_args)
             nrds_res_decoded = '[nrds config]\n'
             nrds_res_decoded += nrds_response.decode('utf-8')
             logging.debug('nrds_response decoded: %s', nrds_res_decoded)
 
-        #     with tempfile.TemporaryFile(mode="w+") as temp_config:
-        #         temp_config.write('[nrds config]\n')
-        #         temp_config.write(nrds_response.decode('utf-8'))
-        #         temp_config.seek(0)
-        #         logging.debug('read the file: \n %s', temp_config.read())
-
+            # Try to parse the config downloaded from the server
             test_config = cp.ConfigParser()
             test_config.read_string(nrds_res_decoded)
             logging.debug('temp config: %s', test_config.sections())
 
-        #         if not test_config.sections():
-        #             raise Exception('Config contained no NCPA directives, not writing.')
+            if not test_config.sections():
+                raise Exception('Config contained no NCPA directives, not writing.')
         except Exception as exc:
             logging.error("NRDS config received from the server contained errors: %r", exc)
             return False
