@@ -173,8 +173,10 @@ class Handler(passive.nagioshandler.NagiosHandler):
         response_xml = ET.fromstring(url_request)
         status_xml = response_xml.findall('./status')
 
-        logging.debug('response xml: %s', response_xml.text)
-        logging.debug('status xml: %s', status_xml.text)
+        # Add indentation to the tree (Python 3.9+)
+        ET.indent(response_xml, space="  ", level=0)
+        # Log the formatted tree
+        logging.debug('response xml: %s', ET.tostring(response_xml, encoding='UTF-8'))
 
         if not status_xml:
             logging.warning("NRDS server did not respond with a status, skipping.")
