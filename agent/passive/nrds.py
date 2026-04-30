@@ -111,9 +111,24 @@ class Handler(passive.nagioshandler.NagiosHandler):
             if not test_config.sections():
                 raise Exception('Config contained no NCPA directives, not writing.')
 
-            logging.debug('config file version: ^%s', test_config.get('nrds config', 'CONFIG_VERSION'))
+            new_config_version = test_config.get('nrds config', 'CONFIG_VERSION')
+            logging.debug('new config file version: %s', new_config_version)
 
-            # Write config to file
+            if nrds_res_decoded:
+                try:
+                    with open('/usr/local/ncpa/etc/nrds.cfg', 'w+') as nrds_config:
+                        existing_config = cp.ConfigParser()
+                        existing_config.read(nrds_config)
+                        existing_config_version = nrds_config.get('nrds config', 'CONFIG_VERSION')
+                        logging.debug('existing config file version: %s', existing_config_version)
+
+                        if existing_config_version == new_config_version:
+                            logging.debug('No version change detected, no changes to make')
+                            return True
+                        else:
+                            logging.debug('Version difference detected')
+
+            # Write new config to file
             # if nrds_response:
             #     try:
             #         with open('/usr/local/ncpa/etc/nrds.cfg', 'w') as new_config:
