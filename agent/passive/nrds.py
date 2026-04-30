@@ -128,9 +128,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
             #             return True
             #         else:
             #             logging.debug('Version difference detected')
-                except Exception as exc:
-                    logging.error('Could not read the config: %r', exc)
-                    return False
+            #     except Exception as exc:
+            #         logging.error('Could not read the config: %r', exc)
+            #         return False
 
             # Write new config to file
             # if nrds_response:
