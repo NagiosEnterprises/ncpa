@@ -45,7 +45,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
             self.update_config(nrds_url, nrds_token, nrds_config)
 
         # Then install any necessary plugins if need be.
-        # needed_plugins = self.list_missing_plugins()
+        needed_plugins = self.list_missing_plugins()
+        logging.debug('Needed plugins: %s', needed_plugins)
+
         # if needed_plugins:
         #     logging.debug('We need some plugins. Getting them...')
         #     for plugin in needed_plugins:
