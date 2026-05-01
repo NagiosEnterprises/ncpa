@@ -133,15 +133,15 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 logging.debug('valid configuration detected')
 
             # Write new config to file
-            # if nrds_response:
-            #     try:
-            #         with open('/usr/local/ncpa/etc/nrds.cfg', 'w') as new_config:
-            #             new_config.write(nrds_response.decode('utf-8'))
-            #     except Exception as exc:
-            #         logging.error('Could not rewrite the config: %r', exc)
-            #         return False
-            #     else:
-            #         logging.info('Successfully updated NRDS config.')
+            if nrds_response:
+                try:
+                    with open('/usr/local/ncpa/etc/nrds.cfg', 'w') as new_config:
+                        new_config.write(nrds_response.decode('utf-8'))
+                except Exception as exc:
+                    logging.error('Could not rewrite the config: %r', exc)
+                    return False
+                else:
+                    logging.info('Successfully updated NRDS config.')
 
             return new_version_stripped
 
