@@ -49,9 +49,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 self.config.set('nrds', 'config_version', new_config_version)
 
                 # Write change to main config
-                with open('/usr/local/ncpa/etc/ncpa.cfg', 'w') as configfile:
+                with open('/usr/local/ncpa/etc/nrds.cfg', 'w') as configfile:
                     config.write(configfile)
-                    logging.debug('Changes written to ncpa.cfg, please restart the service for changes to take effect.')
+                    logging.debug('Changes written to nrds.cfg, please restart the service for changes to take effect.')
 
         # Then install any necessary plugins if need be.
         # needed_plugins = self.list_missing_plugins()
