@@ -114,7 +114,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
             if not test_config.sections():
                 raise Exception('Config contained no NCPA directives, not writing.')
 
-            new_config_version = test_config.get('nrds config', 'CONFIG_VERSION')
+            new_config_version = test_config.get('nrds', 'CONFIG_VERSION')
             logging.debug('new config file version: %s', new_config_version)
 
             # Write new config to file
