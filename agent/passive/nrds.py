@@ -125,24 +125,25 @@ class Handler(passive.nagioshandler.NagiosHandler):
             else:
                 valid_config = 1
 
-            # new_config_version = test_config.get('nrds', 'CONFIG_VERSION')
-            # new_version_stripped = new_config_version.replace('"', '')
-            # logging.debug('new config file version: %s', new_version_stripped)
+            new_config_version = test_config.get('nrds', 'CONFIG_VERSION')
+            new_version_stripped = new_config_version.replace('"', '')
+            logging.debug('new config file version: %s', new_version_stripped)
 
-            if valid_config:
-                logging.debug('valid configuration detected')
-                # Write new config to file
-                if  nrds_res_decoded:
-                    try:
-                        with open('/usr/local/ncpa/etc/ncpa.cfg.d/nrds.cfg', 'w') as new_config:
-                            new_config.write(nrds_res_decoded)
-                    except Exception as exc:
-                        logging.error('Could not rewrite the config: %r', exc)
-                        return False
-                    else:
-                        logging.info('Successfully updated NRDS config.')
 
-                return True
+            # if valid_config:
+            #     logging.debug('valid configuration detected')
+            #     # Write new config to file
+            #     if  nrds_res_decoded:
+            #         try:
+            #             with open('/usr/local/ncpa/etc/ncpa.cfg.d/nrds.cfg', 'w') as new_config:
+            #                 new_config.write(nrds_res_decoded)
+            #         except Exception as exc:
+            #             logging.error('Could not rewrite the config: %r', exc)
+            #             return False
+            #         else:
+            #             logging.info('Successfully updated NRDS config.')
+
+            #     return True
 
         except Exception as exc:
             logging.error("NRDS config received from the server contained errors: %r", exc)
