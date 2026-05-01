@@ -143,7 +143,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
             #         else:
             #             logging.info('Successfully updated NRDS config.')
 
-            #     return True
+            return True
 
         except Exception as exc:
             logging.error("NRDS config received from the server contained errors: %r", exc)
