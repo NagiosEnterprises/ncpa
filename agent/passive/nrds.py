@@ -145,8 +145,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 # Write new config to file
                 if  nrds_res_decoded:
                     try:
-                        with open('/usr/local/ncpa/etc/ncpa.cfg.d/nrds.cfg', 'w') as new_config:
-                            new_config.write(nrds_res_decoded)
+                        with open('/usr/local/ncpa/etc/ncpa.cfg.d/nrds.cfg', 'w') as new_config_file:
+                            new_config_file.write(nrds_res_decoded)
                     except Exception as exc:
                         logging.error('Could not rewrite the config: %r', exc)
                         return False
