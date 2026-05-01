@@ -44,7 +44,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
             logging.debug('Updating my NRDS config...')
             new_config_version = self.update_config(nrds_url, nrds_token, nrds_config)
 
-            if new_config_version > nrds_config_version:
+            if float(new_config_version) > float(nrds_config_version):
                 logging.debug('Updating config version: %s', new_config_version)
 
         # Then install any necessary plugins if need be.
