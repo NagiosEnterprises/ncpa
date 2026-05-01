@@ -125,25 +125,24 @@ class Handler(passive.nagioshandler.NagiosHandler):
             else:
                 valid_config = 1
 
-            new_config_version = test_config.get('nrds', 'CONFIG_VERSION')
-            new_version_stripped = new_config_version.replace('"', '')
-            logging.debug('new config file version: %s', new_version_stripped)
+            # new_config_version = test_config.get('nrds', 'CONFIG_VERSION')
+            # new_version_stripped = new_config_version.replace('"', '')
+            # logging.debug('new config file version: %s', new_version_stripped)
 
             if valid_config:
                 logging.debug('valid configuration detected')
+                # Write new config to file
+                if  nrds_res_decoded:
+                    try:
+                        with open('/usr/local/ncpa/etc/nrds.cfg', 'w') as new_config:
+                            new_config.write(nrds_res_decoded)
+                    except Exception as exc:
+                        logging.error('Could not rewrite the config: %r', exc)
+                        return False
+                    else:
+                        logging.info('Successfully updated NRDS config.')
 
-            # Write new config to file
-            if nrds_response:
-                try:
-                    with open('/usr/local/ncpa/etc/nrds.cfg', 'w') as new_config:
-                        new_config.write(nrds_response.decode('utf-8'))
-                except Exception as exc:
-                    logging.error('Could not rewrite the config: %r', exc)
-                    return False
-                else:
-                    logging.info('Successfully updated NRDS config.')
-
-            return new_version_stripped
+                return new_version_stripped
 
         except Exception as exc:
             logging.error("NRDS config received from the server contained errors: %r", exc)
@@ -176,10 +175,11 @@ class Handler(passive.nagioshandler.NagiosHandler):
         response_xml = ET.fromstring(url_request)
         status_xml = response_xml.findall('./status')
 
+        # Debug XML
         # Add indentation to the tree (Python 3.9+)
-        ET.indent(response_xml, space="  ", level=0)
+        # ET.indent(response_xml, space="  ", level=0)
         # Log the formatted tree
-        logging.debug('response xml: \n %s', ET.tostring(response_xml, encoding='unicode'))
+        # logging.debug('response xml: \n %s', ET.tostring(response_xml, encoding='unicode'))
 
         if not status_xml:
             logging.warning("NRDS server did not respond with a status, skipping.")
