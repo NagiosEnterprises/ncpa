@@ -42,16 +42,18 @@ class Handler(passive.nagioshandler.NagiosHandler):
         # Check to see if an update is required.
         if self.config_update_is_required(nrds_url, nrds_token, nrds_config, nrds_config_version):
             logging.debug('Updating my NRDS config...')
-            new_config_version = self.update_config(nrds_url, nrds_token, nrds_config)
+            self.update_config(nrds_url, nrds_token, nrds_config)
 
-            if new_config_version > nrds_config_version:
-                logging.debug('Updating config version: %s', new_config_version)
-                self.config.set('nrds', 'config_version', new_config_version)
+            # new_config_version = self.update_config(nrds_url, nrds_token, nrds_config)
 
-                # Write change to main config
-                with open('/usr/local/ncpa/etc/nrds.cfg', 'w') as configfile:
-                    self.config.write(configfile)
-                    logging.debug('Changes written to nrds.cfg, please restart the service for changes to take effect.')
+            # if new_config_version > nrds_config_version:
+            #     logging.debug('Updating config version: %s', new_config_version)
+            #     self.config.set('nrds', 'config_version', new_config_version)
+
+            #     # Write change to main config
+            #     with open('/usr/local/ncpa/etc/nrds.cfg', 'w') as configfile:
+            #         self.config.write(configfile)
+            #         logging.debug('Changes written to nrds.cfg, please restart the service for changes to take effect.')
 
         # Then install any necessary plugins if need be.
         # needed_plugins = self.list_missing_plugins()
@@ -117,12 +119,18 @@ class Handler(passive.nagioshandler.NagiosHandler):
             test_config.read_string(nrds_res_decoded)
             logging.debug('temp config: %s', test_config.sections())
 
+            valid_config = 0
             if not test_config.sections():
                 raise Exception('Config contained no NCPA directives, not writing.')
+            else:
+                valid_config = 1
 
             new_config_version = test_config.get('nrds', 'CONFIG_VERSION')
             new_version_stripped = new_config_version.replace('"', '')
             logging.debug('new config file version: %s', new_version_stripped)
+
+            if valid_config:
+                logging.debug('valid configuration detected')
 
             # Write new config to file
             # if nrds_response:
