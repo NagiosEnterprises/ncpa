@@ -44,7 +44,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
             logging.debug('Updating my NRDS config...')
             new_config_version = self.update_config(nrds_url, nrds_token, nrds_config)
 
-            if float(new_config_version) > float(nrds_config_version):
+            if new_config_version > nrds_config_version:
                 logging.debug('Updating config version: %s', new_config_version)
 
         # Then install any necessary plugins if need be.
@@ -115,7 +115,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 raise Exception('Config contained no NCPA directives, not writing.')
 
             new_config_version = test_config.get('nrds', 'CONFIG_VERSION')
-            logging.debug('new config file version: %s', new_config_version)
+            new_version_stripped = new_config_version.replace('"', '')
+            logging.debug('new config file version: %s', new_version_stripped)
 
             # Write new config to file
             # if nrds_response:
@@ -128,7 +129,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
             #     else:
             #         logging.info('Successfully updated NRDS config.')
 
-            return new_config_version
+            return new_version_stripped
 
         except Exception as exc:
             logging.error("NRDS config received from the server contained errors: %r", exc)
