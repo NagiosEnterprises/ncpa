@@ -42,7 +42,10 @@ class Handler(passive.nagioshandler.NagiosHandler):
         # Check to see if an update is required.
         if self.config_update_is_required(nrds_url, nrds_token, nrds_config, nrds_config_version):
             logging.debug('Updating my NRDS config...')
-            self.update_config(nrds_url, nrds_token, nrds_config)
+            new_config_version = self.update_config(nrds_url, nrds_token, nrds_config)
+
+            if new_config_version > nrds_config_version:
+                logging.debug('Updating config version: %s', new_config_version)
 
         # Then install any necessary plugins if need be.
         # needed_plugins = self.list_missing_plugins()
@@ -124,6 +127,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
             #         return False
             #     else:
             #         logging.info('Successfully updated NRDS config.')
+
+            return new_config_version
 
         except Exception as exc:
             logging.error("NRDS config received from the server contained errors: %r", exc)
