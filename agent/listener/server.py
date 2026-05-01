@@ -912,7 +912,7 @@ def top_websocket():
 
         while not ws.closed:
             listener_logger.debug("    **** top_websocket() - while open...")
-            load = psutil.cpu_percent()
+            load = psutil.cpu_percent(interval=0.5)
             vir_mem = psutil.virtual_memory().percent
             swap_mem = psutil.swap_memory().percent
             pnode = processes.get_node()
