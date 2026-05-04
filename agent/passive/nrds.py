@@ -184,28 +184,31 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
         logging.debug('Connecting to NRDS server (%s)...', nrds_url)
 
-        url_request = passive.utils.send_request(nrds_url, **get_args)
+        try:
+            url_request = passive.utils.send_request(nrds_url, **get_args)
+            response_xml = ET.fromstring(url_request)
+            status_xml = response_xml.findall('./status')
 
-        response_xml = ET.fromstring(url_request)
-        status_xml = response_xml.findall('./status')
+            # Debug XML
+            # Add indentation to the tree (Python 3.9+)
+            # ET.indent(response_xml, space="  ", level=0)
+            # Log the formatted tree
+            # logging.debug('response xml: \n %s', ET.tostring(response_xml, encoding='unicode'))
 
-        # Debug XML
-        # Add indentation to the tree (Python 3.9+)
-        # ET.indent(response_xml, space="  ", level=0)
-        # Log the formatted tree
-        # logging.debug('response xml: \n %s', ET.tostring(response_xml, encoding='unicode'))
+            if not status_xml:
+                logging.warning("NRDS server did not respond with a status, skipping.")
+                return False
 
-        if not status_xml:
-            logging.warning("NRDS server did not respond with a status, skipping.")
-            return False
-
-        status = status_xml[0].text
-        if status == "0":
-            return False
-        elif status == "1":
-            return True
-        else:
-            logging.warning("Server does not have a record for %s config.", nrds_config)
+            status = status_xml[0].text
+            if status == "0":
+                return False
+            elif status == "1":
+                return True
+            else:
+                logging.warning("Server does not have a record for %s config.", nrds_config)
+                return False
+        except Exception as exc:
+            logging.error("Encountered exception while trying to connect to NRDS server: %r", exc)
             return False
 
     @staticmethod
