@@ -131,7 +131,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 logging.debug('passive checks section data: %s', section_data)
                 
                 # Create a new parser for the output
-                new_config = configparser.ConfigParser()
+                new_config = cp.ConfigParser()
                 new_config['passive checks'] = section_data
                 logging.debug('passive checks: %s', new_config.sections())
 
