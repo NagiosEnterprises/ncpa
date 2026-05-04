@@ -119,28 +119,30 @@ class Handler(passive.nagioshandler.NagiosHandler):
             test_config.read_string(nrds_res_decoded)
             logging.debug('temp config: %s', test_config.sections())
 
-            valid_config = 0
             if not test_config.sections():
                 raise Exception('Config contained no NCPA directives, not writing.')
-            else:
-                valid_config = 1
 
             new_config_version = test_config.get('nrds', 'CONFIG_VERSION')
             new_version_stripped = new_config_version.replace('"', '')
             logging.debug('new config file version: %s', new_version_stripped)
 
             if 'passive checks' in test_config:
-                section_data = dict(config.items('passive checks'))
+                section_data = dict(test_config.items('passive checks'))
                 logging.debug('passive checks section data: %s', section_data)
                 
-            #     # Create a new parser for the output
-            #     new_config = configparser.ConfigParser()
-            #     new_config['passive checks'] = section_data
-            #     logging.debug('passive checks: %s', new_config.sections())
+                # Create a new parser for the output
+                new_config = configparser.ConfigParser()
+                new_config['passive checks'] = section_data
+                logging.debug('passive checks: %s', new_config.sections())
 
-                # # Write to a new file
-                # with open('section_only.ini', 'w') as new_config:
-                #     new_config.write(new_config)
+                # Write to a new file
+                try:
+                    with open('/usr/local/ncpa/etc/ncpa.cfg.d/nrds.cfg', 'w') as new_file:
+                        new_file.write(new_config)
+                        logging.debug('config file written')
+                    except Exception as exc:
+                        logging.error('Could not rewrite the config: %r', exc)
+                        return False 
 
             # if valid_config:
             #     logging.debug('valid configuration detected')
@@ -153,7 +155,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
             #             logging.error('Could not rewrite the config: %r', exc)
             #             return False
             #         else:
-            #             logging.info('Successfully updated NRDS config.')
+            #             
+            logging.info('Successfully updated NRDS config.')
 
             return True
 
