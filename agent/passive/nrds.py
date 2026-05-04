@@ -145,12 +145,14 @@ class Handler(passive.nagioshandler.NagiosHandler):
                     with open('/usr/local/ncpa/etc/ncpa.cfg.d/nrds.cfg', 'w') as new_file:
                         # Call write() on the CONFIG object, passing the file object
                         new_config.write(new_file)
-                        logging.debug('config file written')
+                        logging.debug('New nrds.cfg file written')
                 except Exception as exc:
                     logging.error('Could not rewrite the config: %r', exc)
                     return False 
      
-            logging.info('Successfully updated NRDS config.')
+            # Update current running config
+            self.config.set('nrds', 'config_version', new_version_stripped)
+            logging.info('Successfully updated NRDS config. Please restart NCPA for changes to take effect.')
 
             return True
 
