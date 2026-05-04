@@ -135,7 +135,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
                 # Add nrds section and config version
                 new_config.add_section('nrds')
-                new_config.set('nrds', 'config_version', new_config_version)
+                new_config.set('nrds', 'config_version', new_version_stripped)
 
                 # Add passive check section and data
                 new_config['passive checks'] = section_data
