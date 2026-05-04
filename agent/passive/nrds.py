@@ -118,6 +118,10 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
             # Try to parse the config downloaded from the server
             test_config = cp.ConfigParser()
+
+            # This line prevents the conversion to lowercase
+            test_config.optionxform = str 
+            
             test_config.read_string(nrds_res_decoded)
             logging.debug('temp config: %s', test_config.sections())
 
