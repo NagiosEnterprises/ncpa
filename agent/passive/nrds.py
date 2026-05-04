@@ -129,13 +129,13 @@ class Handler(passive.nagioshandler.NagiosHandler):
             new_version_stripped = new_config_version.replace('"', '')
             logging.debug('new config file version: %s', new_version_stripped)
 
-            if 'passive checks' in test_config:
-                section_data = dict(config.items('passive checks'))
+            # if 'passive checks' in test_config:
+            #     section_data = dict(config.items('passive checks'))
                 
-                # Create a new parser for the output
-                new_config = configparser.ConfigParser()
-                new_config['passive checks'] = section_data
-                logging.debug('passive checks: %s', new_config.sections())
+            #     # Create a new parser for the output
+            #     new_config = configparser.ConfigParser()
+            #     new_config['passive checks'] = section_data
+            #     logging.debug('passive checks: %s', new_config.sections())
 
                 # # Write to a new file
                 # with open('section_only.ini', 'w') as new_config:
