@@ -110,8 +110,10 @@ class Handler(passive.nagioshandler.NagiosHandler):
         try:
             # Request the config from the server
             nrds_response = passive.utils.send_request(nrds_url, **get_args)
-            nrds_res_decoded = '[nrds]\n'
-            nrds_res_decoded += nrds_response.decode('utf-8')
+            # nrds_res_decoded = '[nrds]\n'
+            # nrds_res_decoded += nrds_response.decode('utf-8')
+            
+            nrds_res_decoded + nrds_response.decode('utf-8')
             logging.debug('nrds_response decoded: \n%s', nrds_res_decoded)
 
             # Try to parse the config downloaded from the server
