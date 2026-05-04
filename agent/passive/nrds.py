@@ -154,11 +154,6 @@ class Handler(passive.nagioshandler.NagiosHandler):
             self.config.set('nrds', 'config_version', new_version_stripped)
             logging.info('Successfully updated NRDS config. Please restart NCPA for changes to take effect.')
 
-            # Remove old passive checks and add new ones
-            self.config.remove_section('passive checks')
-            if not self.config.has_section('passive checks'):
-                self.config['passive checks'] = section_data
-
             return True
 
         except Exception as exc:
