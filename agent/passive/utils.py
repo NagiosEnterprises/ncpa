@@ -1,5 +1,7 @@
 import requests
 import requests.exceptions
+import os
+import subprocess
 from ncpa import passive_logger as logging
 
 def send_request(url, connection_timeout, **kwargs):
@@ -87,9 +89,9 @@ def restart_ncpa_service():
                 )
             else:
                 logging.error("unsupported OS")
-                return jsonify({'type': 'danger', 'message': 'Unsupported OS. This service must be restarted manually.'})
+                return False
         except Exception as e:
             logging.exception(e)
-            return jsonify({'type': 'danger', 'message': 'Failed to restart the service.'})
+            return False
 
     logging.debug("Successfully restarted NCPA service")
