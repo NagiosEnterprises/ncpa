@@ -132,8 +132,13 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 
                 # Create a new parser for the output
                 new_config = cp.ConfigParser()
+
+                # Add nrds section and config version
+                new_config.add_section('nrds')
+                new_config.set('nrds', 'config_version', new_config_version)
+
+                # Add passive check section and data
                 new_config['passive checks'] = section_data
-                logging.debug('passive checks: %s', new_config.sections())
 
                 # Write to a new file
                 try:
@@ -144,19 +149,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 except Exception as exc:
                     logging.error('Could not rewrite the config: %r', exc)
                     return False 
-
-            # if valid_config:
-            #     logging.debug('valid configuration detected')
-            #     # Write new config to file
-            #     if  nrds_res_decoded:
-            #         try:
-            #             with open('/usr/local/ncpa/etc/ncpa.cfg.d/nrds.cfg', 'w') as new_config_file:
-            #                 new_config_file.write(nrds_res_decoded)
-            #         except Exception as exc:
-            #             logging.error('Could not rewrite the config: %r', exc)
-            #             return False
-            #         else:
-            #             
+     
             logging.info('Successfully updated NRDS config.')
 
             return True
