@@ -43,17 +43,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
         if self.config_update_is_required(nrds_url, nrds_token, nrds_config, nrds_config_version):
             logging.debug('Updating my NRDS config...')
             self.update_config(nrds_url, nrds_token, nrds_config)
+            # Restart service to apply config...
+            passive.utils.restart_ncpa_service()
 
-            # new_config_version = self.update_config(nrds_url, nrds_token, nrds_config)
-
-            # if new_config_version > nrds_config_version:
-            #     logging.debug('Updating config version: %s', new_config_version)
-            #     self.config.set('nrds', 'config_version', new_config_version)
-
-            #     # Write change to main config
-            #     with open('/usr/local/ncpa/etc/nrds.cfg', 'w') as configfile:
-            #         self.config.write(configfile)
-            #         logging.debug('Changes written to nrds.cfg, please restart the service for changes to take effect.')
 
         # Then install any necessary plugins if need be.
         # needed_plugins = self.list_missing_plugins()

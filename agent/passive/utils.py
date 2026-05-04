@@ -54,3 +54,43 @@ def send_request(url, connection_timeout, **kwargs):
             logging.debug("Exception detected during fallback retry without SSL verification")
             logging.exception(ex)
     return None
+
+
+def restart_ncpa_service():
+    # TODO: finish option of restarting of the service (disabled by default)
+    # TODO: check if the handler (NRDP/KafkaProducer) is configured and only restart if it is or else NCPA will crash
+    # TODO: Let the User know that they need to configure the handler before restarting
+    # allow_restart = config.get('general', 'allow_remote_restart').lower()
+    allow_restart = 1
+
+    logging.debug("Restarting NCPA service...")
+
+    if allow_restart in {'none', '0'}:
+        listener_logger.info("restart not allowed")
+    else:
+        try:
+            listener_logger.info("allow_restart: %s", allow_restart)
+            if os.name == 'nt':
+                listener_logger.info("restarting ncpa service")
+                restart_ncpa = subprocess.run(
+                    "net stop ncpa && net start ncpa",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT
+                )
+            elif os.name == 'posix':
+                listener_logger.info("restarting ncpa service")
+                restart_ncpa = subprocess.run(
+                    "systemctl restart ncpa",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT
+                )
+            else:
+                listener_logger.error("unsupported OS")
+                return jsonify({'type': 'danger', 'message': 'Unsupported OS. This service must be restarted manually.'})
+        except Exception as e:
+            listener_logger.exception(e)
+            return jsonify({'type': 'danger', 'message': 'Failed to restart the service.'})
+
+    logging.debug("Successfully restarted NCPA service")
