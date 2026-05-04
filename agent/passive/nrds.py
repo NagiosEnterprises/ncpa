@@ -121,7 +121,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
             # This line prevents the conversion to lowercase
             test_config.optionxform = str 
-            
+
             test_config.read_string(nrds_res_decoded)
             logging.debug('temp config: %s', test_config.sections())
 
@@ -138,6 +138,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 
                 # Create a new parser for the output
                 new_config = cp.ConfigParser()
+                
+                # This line prevents the conversion to lowercase
+                new_config.optionxform = str 
 
                 # Add nrds section and config version
                 new_config.add_section('nrds')
