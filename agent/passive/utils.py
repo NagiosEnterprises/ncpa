@@ -2,7 +2,6 @@ import requests
 import requests.exceptions
 from ncpa import passive_logger as logging
 
-
 def send_request(url, connection_timeout, **kwargs):
     """
     Send an HTTP POST request to given url.
@@ -66,12 +65,12 @@ def restart_ncpa_service():
     logging.debug("Restarting NCPA service...")
 
     if allow_restart in {'none', '0'}:
-        listener_logger.info("restart not allowed")
+        logging.info("restart not allowed")
     else:
         try:
-            listener_logger.info("allow_restart: %s", allow_restart)
+            logging.info("allow_restart: %s", allow_restart)
             if os.name == 'nt':
-                listener_logger.info("restarting ncpa service")
+                logging.info("restarting ncpa service")
                 restart_ncpa = subprocess.run(
                     "net stop ncpa && net start ncpa",
                     shell=True,
@@ -79,7 +78,7 @@ def restart_ncpa_service():
                     stderr=subprocess.STDOUT
                 )
             elif os.name == 'posix':
-                listener_logger.info("restarting ncpa service")
+                logging.info("restarting ncpa service")
                 restart_ncpa = subprocess.run(
                     "systemctl restart ncpa",
                     shell=True,
@@ -87,10 +86,10 @@ def restart_ncpa_service():
                     stderr=subprocess.STDOUT
                 )
             else:
-                listener_logger.error("unsupported OS")
+                logging.error("unsupported OS")
                 return jsonify({'type': 'danger', 'message': 'Unsupported OS. This service must be restarted manually.'})
         except Exception as e:
-            listener_logger.exception(e)
+            logging.exception(e)
             return jsonify({'type': 'danger', 'message': 'Failed to restart the service.'})
 
     logging.debug("Successfully restarted NCPA service")
