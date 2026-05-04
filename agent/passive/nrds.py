@@ -140,9 +140,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
                     with open('/usr/local/ncpa/etc/ncpa.cfg.d/nrds.cfg', 'w') as new_file:
                         new_file.write(new_config)
                         logging.debug('config file written')
-                    except Exception as exc:
-                        logging.error('Could not rewrite the config: %r', exc)
-                        return False 
+                except Exception as exc:
+                    logging.error('Could not rewrite the config: %r', exc)
+                    return False 
 
             # if valid_config:
             #     logging.debug('valid configuration detected')
