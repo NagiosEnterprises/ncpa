@@ -39,12 +39,16 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 logging.error("Cannot start NRDS transaction: %r is invalid or missing.", directive)
                 return
 
+        config_update_successful = False
         # Check to see if an update is required.
         if self.config_update_is_required(nrds_url, nrds_token, nrds_config, nrds_config_version):
             logging.debug('Updating my NRDS config...')
-            self.update_config(nrds_url, nrds_token, nrds_config)
-            # Restart service to apply config...
-            passive.utils.restart_ncpa_service()
+            config_update_successful = self.update_config(nrds_url, nrds_token, nrds_config)
+
+            logging.debug('Config update is successful: %s', config_update_successful)
+            if config_update_successful:
+                # Restart service to apply config...
+                passive.utils.restart_ncpa_service()
 
 
         # Then install any necessary plugins if need be.
@@ -154,19 +158,17 @@ class Handler(passive.nagioshandler.NagiosHandler):
                         logging.debug('New nrds.cfg file written')
                 except Exception as exc:
                     logging.error('Could not rewrite the config: %r', exc)
-                    return False 
-     
-            # Update running config
-            self.config.set('nrds', 'config_version', new_version_stripped)
-            logging.info('Successfully updated NRDS config. Please restart NCPA for changes to take effect.')
+                    return False
 
-            return True
+                # Update running config
+                self.config.set('nrds', 'config_version', new_version_stripped)
+                logging.info('Successfully updated NRDS config. Please restart NCPA for changes to take effect.')
+                return True
 
         except Exception as exc:
             logging.error("NRDS config received from the server contained errors: %r", exc)
             return False
-
-        return True
+        return False
 
 
     @staticmethod
