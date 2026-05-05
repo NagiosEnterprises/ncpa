@@ -75,7 +75,7 @@ def restart_ncpa_service():
                 subprocess.run(["net", "start", "ncpa"], check=True)
             elif os.name == 'posix':
                 logging.info("restarting ncpa service")
-                subprocess.run(["sudo", "systemctl", "restart", service_name], check=True)
+                subprocess.run(["sudo", "systemctl", "restart", "ncpa"], check=True)
             else:
                 logging.error("unsupported OS")
                 return False
