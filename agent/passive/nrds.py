@@ -143,7 +143,12 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
                 # Write to a new file
                 try:
-                    with open('/usr/local/ncpa/etc/ncpa.cfg.d/nrds.cfg', 'w') as new_file:
+                    if os.name == 'nt':
+                        existing_cfg = os.path.join('C:\\', 'Program Files', 'Nagios', 'NCPA', 'etc', 'ncpa.cfg.d', 'nrds.cfg')
+                    else:
+                        existing_cfg = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg.d', 'nrds.cfg')
+
+                    with open(existing_cfg, 'w') as new_file:
                         # Call write() on the CONFIG object, passing the file object
                         new_config.write(new_file)
                         logging.debug('New nrds.cfg file written')
@@ -188,10 +193,10 @@ class Handler(passive.nagioshandler.NagiosHandler):
             response_xml = ET.fromstring(url_request)
             status_xml = response_xml.findall('./status')
 
-            # Debug XML
-            # Add indentation to the tree (Python 3.9+)
+            # # Debug XML
+            # # Add indentation to the tree (Python 3.9+)
             # ET.indent(response_xml, space="  ", level=0)
-            # Log the formatted tree
+            # # Log the formatted tree
             # logging.debug('response xml: \n %s', ET.tostring(response_xml, encoding='unicode'))
 
             if not status_xml:
