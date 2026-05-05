@@ -26,7 +26,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
         try:
             nrds_url = self.config.get('nrds', 'url')
             nrds_config = self.config.get('nrds', 'config_name')
-            nrds_config_version = self.config.get('nrds', 'config_version', fallback='0')
+            nrds_config_version = self.config.get('nrds', 'config_version')
             nrds_token = self.config.get('nrds', 'token')
         except (cp.NoOptionError, cp.NoSectionError) as exc:
             logging.error("Encountered error while getting NRDS config values: %r", exc)

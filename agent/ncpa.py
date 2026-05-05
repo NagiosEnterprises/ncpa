@@ -178,7 +178,7 @@ cfg_defaults = {
                 'url': '',
                 'token': '',
                 'config_name': '',
-                'config_version': '',
+                'config_version': '0',
             },
             'kafkaproducer': {
                 'hostname': 'None',
