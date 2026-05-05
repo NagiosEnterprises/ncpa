@@ -58,9 +58,6 @@ def send_request(url, connection_timeout, **kwargs):
 
 
 def restart_ncpa_service():
-    # TODO: finish option of restarting of the service (disabled by default)
-    # TODO: check if the handler (NRDP/KafkaProducer) is configured and only restart if it is or else NCPA will crash
-    # TODO: Let the User know that they need to configure the handler before restarting
     # allow_restart = config.get('general', 'allow_remote_restart').lower()
     allow_restart = 1
 
@@ -73,22 +70,12 @@ def restart_ncpa_service():
             logging.info("allow_restart: %s", allow_restart)
             if os.name == 'nt':
                 logging.info("restarting ncpa service")
-                restart_ncpa = subprocess.run(
-                    "net stop ncpa && net start ncpa",
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.STDOUT
-                )
+                subprocess.run(["net", "stop", "ncpa"], check=False)
+                time.sleep(5)
+                subprocess.run(["net", "start", "ncpa"], check=True)
             elif os.name == 'posix':
                 logging.info("restarting ncpa service")
-                # restart_ncpa = subprocess.run(
-                #     "systemctl restart ncpa",
-                #     shell=True,
-                #     stdout=subprocess.PIPE,
-                #     stderr=subprocess.STDOUT
-                # )
-                # subprocess.run(["sudo", "systemctl", "restart", service_name], check=True)
-                subprocess.run(["systemctl", "--user", "restart", "ncpa"])
+                subprocess.run(["sudo", "systemctl", "restart", service_name], check=True)
             else:
                 logging.error("unsupported OS")
                 return False
