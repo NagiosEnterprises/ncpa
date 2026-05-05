@@ -2,6 +2,7 @@ import requests
 import requests.exceptions
 import os
 import subprocess
+import time
 from ncpa import passive_logger as logging
 
 def send_request(url, connection_timeout, **kwargs):
@@ -69,15 +70,15 @@ def restart_ncpa_service():
         try:
             logging.info("allow_restart: %s", allow_restart)
             if os.name == 'nt':
-                logging.info("restarting ncpa service")
+                logging.info("Restarting NCPA Windows service")
                 subprocess.run(["net", "stop", "ncpa"], check=False)
                 time.sleep(5)
                 subprocess.run(["net", "start", "ncpa"], check=True)
             elif os.name == 'posix':
-                logging.info("restarting ncpa service")
+                logging.info("Restarting NCPA POSIX service")
                 subprocess.run(["sudo", "systemctl", "restart", "ncpa.service"], check=True)
             else:
-                logging.error("unsupported OS")
+                logging.error("Unsupported OS detected. Please restart NCPA service manually to apply changes.")
                 return False
         except Exception as e:
             logging.exception(e)
