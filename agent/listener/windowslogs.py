@@ -262,6 +262,7 @@ def get_filter_dict(request_args):
 
 
 def get_node():
+    logging.debug("get_node() was called for windowslogs")
     return WindowsLogsNode('logs', None)
 
 
