@@ -262,6 +262,7 @@ def get_timezone():
 
 
 def get_system_node():
+    logging.debug("get_system_node() was called")
     sys_system = RunnableNode("system", method=lambda: (platform.uname()[0], ""))
     sys_node = RunnableNode("node", method=lambda: (platform.uname()[1], ""))
     sys_release = RunnableNode("release", method=lambda: (platform.uname()[2], ""))
@@ -290,6 +291,7 @@ def get_system_node():
 
 
 def get_cpu_node(cpu_interval=0.5):
+    logging.debug("get_cpu_node() was called")
     cpu_count = RunnableNode(
         "count", method=lambda:     ([len(ps.cpu_percent(percpu=True))], "cores")
     )
@@ -311,6 +313,7 @@ def get_cpu_node(cpu_interval=0.5):
 
 
 def get_memory_node():
+    logging.debug("get_memory_node() was called")
     mem_virt_total = RunnableNode(
         "total", method=lambda: (ps.virtual_memory().total, "B")
     )
@@ -370,6 +373,7 @@ def get_memory_node():
 
 
 def get_disk_node(config):
+    logging.debug("get_disk_node() was called")
     # Get all physical disk io counters
     try:
         disk_counters = [
@@ -434,6 +438,7 @@ def get_disk_node(config):
 
 
 def get_interface_node():
+    logging.debug("get_interface_node() was called")
     io_counters = ps.net_io_counters(pernic=True)
     if_stats = ps.net_if_stats()
 
@@ -444,10 +449,12 @@ def get_interface_node():
 
 
 def get_plugins_node():
+    logging.debug("get_plugins_node() was called")
     return PluginAgentNode("plugins")
 
 
 def get_user_node():
+    logging.debug("get_user_node() was called")
     user_count = RunnableNode(
         "count", method=lambda: (len([x.name for x in ps.users()]), "users")
     )
@@ -461,7 +468,104 @@ def get_user_node():
     return ParentNode("user", children=[user_count, user_list, user_countlist])
 
 
+def get_path_node(config, path):
+    children = []
+    logging.debug("get_path_node() was called with path: %s", path)
+    
+    if path is None:
+        logging.warning("get_path_node() was called with no path, returning N/A node.")
+        return ParentNode("N/A")
+
+    if path == "cpu":
+        try:
+            cpu = get_cpu_node()
+            children.append(cpu)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "memory":
+        try:
+            memory = get_memory_node()
+            children.append(memory)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "disk":
+        try:
+            disk = get_disk_node(config)
+            children.append(disk)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "interface":
+        try:
+            interface = get_interface_node()
+            children.append(interface)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "plugins":
+        try:
+            plugins = get_plugins_node()
+            children.append(plugins)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "user":
+        try:
+            user = get_user_node()
+            children.append(user)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "system":
+        try:
+            system = get_system_node()
+            children.append(system)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "services":
+        try:
+            service = services.get_node()
+            children.append(service)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "processes":
+        try:
+            process = processes.get_node()
+            children.append(process)
+        except Exception as e:
+            logging.exception(e)
+
+    # Windows specific endpoints
+    elif path == "logs":
+        if __SYSTEM__ == "nt":
+            try:
+                import listener.windowslogs as windowslogs
+                logs_node = windowslogs.get_node()
+                children.append(logs_node)
+            except ImportError:
+                logging.warning("Could not import windowslogs, skipping.")
+            except AttributeError:
+                logging.warning("Trying to import windowslogs but does not get_node() function, skipping.")
+        else:
+            logging.warning("Logs endpoint is only supported on Windows, skipping.")
+    elif path == "windowscounters":
+        if __SYSTEM__ == "nt":
+            try:
+                import listener.windowscounters as windowscounters
+                counters_node = windowscounters.get_node()
+                children.append(counters_node)
+            except ImportError:
+                logging.warning("Could not import windowscounters, skipping.")
+            except AttributeError:
+                logging.warning("Trying to import windowscounters but does not get_node() function, skipping.")
+        else:
+            logging.warning("Windows counters endpoint is only supported on Windows, skipping.")
+            
+    else:
+        logging.warning("get_path_node() was called with unrecognized path: %s, returning N/A node.", path)
+        return ParentNode("N/A")
+        
+    return ParentNode("root", children=children)
+
+
 def get_root_node(config):
+    logging.debug("get_root_node() was called")
     try:
         cpu = get_cpu_node()
     except Exception as e:
@@ -531,7 +635,6 @@ def get_root_node(config):
                     node = ParentNode("N/A")
                     logging.exception(e)
                 children.append(node)
-                logging.debug("Imported %s into the API tree.", importable)
             except ImportError:
                 logging.warning("Could not import %s, skipping.", importable)
             except AttributeError:
@@ -543,9 +646,15 @@ def get_root_node(config):
     return ParentNode("root", children=children)
 
 
-def refresh(config):
+def refresh(config, path=None):
     global root
-    root = get_root_node(config)
+    # logging.debug("refresh path: %s", path)
+
+    if path is None:
+        root = get_root_node(config)
+    elif path:
+        root = get_path_node(config, path)
+
     return True
 
 
@@ -564,7 +673,7 @@ def getter(accessor, config, full_path, args, cache=False):
     # node. This normally only happens on new API calls. When we are using
     # websockets we use the cached version while it makes requests.
     if not cache:
-        refresh(config)
+        refresh(config, path[0] if len(path) > 0 else None)
 
     root.reset_valid_nodes()
     return root.accessor(path, config, full_path, args)

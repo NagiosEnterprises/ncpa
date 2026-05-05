@@ -6,6 +6,10 @@ Changelog
 
 - Added edit and delete passive check functionality to the admin passive check section of the GUI. [GH#1317] - CPD
 
+**Updates**
+
+- Updated the listener API to call requested endpoints individually instead of calling the whole API for each check, improving performance and reducing the likelihood of errors. [GH#911] - CPD
+
 **Bug Fixes**
 
 - Fixed multiple issues on the admin passive checks page of the GUI that were causing some checks to not display properly. [GH#1238] - CPD
