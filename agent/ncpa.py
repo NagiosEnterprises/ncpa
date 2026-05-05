@@ -436,7 +436,7 @@ class Passive(Base):
                     next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
 
                 logger.debug("run() - loop - running")
-                time.sleep(1)
+                time.sleep(60)
 
         except Exception as e:
             logger.exception("run() - exception: %s", e)
