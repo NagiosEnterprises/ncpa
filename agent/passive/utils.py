@@ -71,9 +71,10 @@ def restart_ncpa_service():
             logging.info("allow_restart: %s", allow_restart)
             if os.name == 'nt':
                 logging.info("Restarting NCPA Windows service")
-                subprocess.run(["net", "stop", "ncpa"], check=False)
-                time.sleep(5)
-                subprocess.run(["net", "start", "ncpa"], check=True)
+                # subprocess.run(["net", "stop", "ncpa"], check=False)
+                # time.sleep(5)
+                # subprocess.run(["net", "start", "ncpa"], check=True)
+                subprocess.run("powershell -Command Restart-Service -Name ncpa", shell=True, check=True)
             elif os.name == 'posix':
                 logging.info("Restarting NCPA POSIX service")
                 subprocess.run(["sudo", "systemctl", "restart", "ncpa.service"], check=True)
