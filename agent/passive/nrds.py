@@ -6,6 +6,7 @@ import tempfile
 import re
 from ncpa import passive_logger as logging
 import os
+import time
 import configparser as cp
 
 
@@ -47,6 +48,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
             logging.debug('Config update is successful: %s', config_update_successful)
             if config_update_successful:
+                # Wait a few seconds to ensure file is written before restarting service
+                time.sleep(5)
+
                 # Restart service to apply config...
                 passive.utils.restart_ncpa_service()
 

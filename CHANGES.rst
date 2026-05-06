@@ -5,6 +5,7 @@ Changelog
 **Added**
 
 - Added edit and delete passive check functionality to the admin passive check section of the GUI. [GH#1317] - CPD
+- Added experimental support for NRDS handler to sync passive checks from NRDS config in Nagios XI. - CPD
 
 **Updates**
 
