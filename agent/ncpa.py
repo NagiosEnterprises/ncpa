@@ -1181,7 +1181,7 @@ def get_configuration(config=None, configdir=None):
 
     if config is None:
         config = os.path.join('etc', 'ncpa.cfg')
-    if configDir is None:
+    if configdir is None:
         configdir = os.path.join('etc', 'ncpa.cfg.d', '*.cfg')
 
     cp = ConfigParser(interpolation=None)
