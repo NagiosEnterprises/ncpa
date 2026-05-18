@@ -172,6 +172,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
         try:
             server = self.config.get('nrdp', 'parent')
             token = self.config.get('nrdp', 'token')
+            disable_verification = self.config.get('passive', 'disable_passive_ssl_verification')
+            
+            logging.info('Disable SSL verification: %s', disable_verification)
         except Exception as ex:
             logging.exception(ex)
 
