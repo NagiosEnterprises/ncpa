@@ -167,7 +167,7 @@ cfg_defaults = {
                 'sleep': '300',
                 'logfile': 'var/log/ncpa_passive.log',
                 'delay_start': '0',
-                'disable_passive_ssl_verification': '0',
+                'passive_ssl_verification': '1',
             },
             'nrdp': {
                 'parent': '',

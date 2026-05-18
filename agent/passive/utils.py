@@ -12,13 +12,23 @@ def send_request(url, connection_timeout, **kwargs):
     :rtype: requests.models.Response
     """
 
-    
+    try:
+        ssl_verify = kwargs.get('ssl_verify')
+        if ssl_verify == 0 or ssl_verify == '0' or ssl_verify is False:
+            ssl_verify = False
+        else:
+            ssl_verify = True
+    except Exception as ex:
+        logging.debug("Exception detected while trying to get 'disable_ssl_verify' from kwargs")
+        logging.exception(ex)
+        ssl_verify = True
+
     if url == "/":
         logging.error("Invalid URL: '/' is not a valid URL")
         return None
 
     try:
-        r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=True, allow_redirects=True)
+        r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=ssl_verify, allow_redirects=True)
         logging.debug('Content response from URL: %s' % str(r.content))
         return r.content
     except requests.exceptions.SSLError as ssl_err:
