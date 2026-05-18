@@ -12,20 +12,16 @@ def send_request(url, connection_timeout, **kwargs):
     :rtype: requests.models.Response
     """
 
-    try:
-        ssl_verify = kwargs.get('ssl_verify')
-        if ssl_verify == 0 or ssl_verify == '0' or ssl_verify is False:
-            ssl_verify = False
-        else:
-            ssl_verify = True
-    except Exception as ex:
-        logging.debug("Exception detected while trying to get 'disable_ssl_verify' from kwargs")
-        logging.exception(ex)
-        ssl_verify = True
-
     if url == "/":
         logging.error("Invalid URL: '/' is not a valid URL")
         return None
+
+    # Parse SSL verification flag cleanly
+    ssl_val = kwargs.get('ssl_verify')
+    ssl_verify = False if ssl_val in (0, '0', False) else True
+    
+    if not ssl_verify:
+        logging.debug("SSL verification is disabled for this request.")
 
     try:
         r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=ssl_verify, allow_redirects=True)
@@ -33,8 +29,6 @@ def send_request(url, connection_timeout, **kwargs):
         return r.content
     except requests.exceptions.SSLError as ssl_err:
         logging.warning("SSL verification failed, retrying without verification: %s", ssl_err)
-
-
         try:
             r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=False, allow_redirects=True)
             logging.debug('Content response from URL (no verify): %s' % str(r.content))
