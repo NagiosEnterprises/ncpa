@@ -18,11 +18,20 @@ def send_request(url, connection_timeout, **kwargs):
         return None
 
     try:
+        disable_verification = self.config.get('passive', 'disable_passive_ssl_verification')
+    except Exception as ex:
+        logging.exception(ex)
+
+    logging.info('Disable SSL verification: %s', disable_verification)
+
+    try:
         r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=True, allow_redirects=True)
         logging.debug('Content response from URL: %s' % str(r.content))
         return r.content
     except requests.exceptions.SSLError as ssl_err:
         logging.warning("SSL verification failed, retrying without verification: %s", ssl_err)
+
+
         try:
             r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=False, allow_redirects=True)
             logging.debug('Content response from URL (no verify): %s' % str(r.content))
@@ -45,6 +54,7 @@ def send_request(url, connection_timeout, **kwargs):
     except Exception as ex:
         logging.debug("Other Exception detected during request")
         logging.exception(ex)
+
         logging.info("Fallback request trying without SSL verification")
         try:
             r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=False, allow_redirects=True)
