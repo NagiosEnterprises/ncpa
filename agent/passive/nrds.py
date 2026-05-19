@@ -21,6 +21,14 @@ class Handler(passive.nagioshandler.NagiosHandler):
     def run(self, *args, **kwargs):
         logging.debug('Establishing passive handler: NRDS')
 
+        logging.debug('Logging args')
+        for arg in args:
+            logging.debug(arg)
+
+        logging.debug('Logging kwargs')
+        for key, value in kwargs.items():
+            logging.debug(f"{key}: {value}")
+
         # The NRDS section does not exist right now..
         # return
         
