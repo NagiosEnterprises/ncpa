@@ -25,9 +25,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
         for arg in args:
             logging.debug(arg)
 
-        logging.debug('Logging kwargs')
+        logging.debug('Logging kwargs keys and values')
         for key, value in kwargs.items():
-            logging.debug(f"{key}: {value}")
+            logging.debug("%s: %s", key, value)
 
         # The NRDS section does not exist right now..
         # return
