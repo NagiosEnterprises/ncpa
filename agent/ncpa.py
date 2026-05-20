@@ -414,6 +414,8 @@ class Passive(Base):
         # Check if there is a start delay
         try:
             delay_start = self.config.getint('passive', 'delay_start')
+            delay_interval = self.config.getint('passive', 'sleep')
+
             if delay_start:
                 time.sleep(delay_start)
         except Exception as e:
@@ -436,7 +438,7 @@ class Passive(Base):
                     next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
 
                 logger.debug("run() - loop - running")
-                time.sleep(60)
+                time.sleep(delay_interval)
 
         except Exception as e:
             logger.exception("run() - exception: %s", e)

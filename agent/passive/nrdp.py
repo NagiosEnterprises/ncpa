@@ -91,8 +91,6 @@ class Handler(passive.nagioshandler.NagiosHandler):
         doc.appendChild(check_results)
 
         for check in checks:
-            # log check for debugging
-            logging.debug("Processing check for NRDP: %s|%s with instruction: %s", check.hostname, check.servicename, check.instruction)
             if check.needs_to_run():
                 element = Handler.make_xml(check)
                 check.set_next_run(run_time)
