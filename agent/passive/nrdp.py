@@ -3,7 +3,7 @@ import passive.utils
 import passive.nagioshandler
 import listener.server
 from ncpa import passive_logger as logging
-
+import json
 
 class Handler(passive.nagioshandler.NagiosHandler):
     """
@@ -91,6 +91,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
         doc.appendChild(check_results)
 
         for check in checks:
+            # log check for debugging
+            logging.debug("Processing check for NRDP: %s", json.dumps(check))
             if check.needs_to_run():
                 element = Handler.make_xml(check)
                 check.set_next_run(run_time)

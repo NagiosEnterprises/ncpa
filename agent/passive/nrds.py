@@ -20,7 +20,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
     def run(self, run_time):
         logging.debug('Establishing passive handler: NRDS')
-        logging.debug('Run time for this NRDS iteration: %s', run_time)
+        super(Handler, self).run()
         
         try:
             nrds_url = self.config.get('nrds', 'url')
