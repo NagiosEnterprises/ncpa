@@ -92,7 +92,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
         for check in checks:
             # log check for debugging
-            logging.debug("Processing check for NRDP: %s", json.dumps(check))
+            logging.debug("Processing check for NRDP: %s", json.dumps(check.__dict__))
             if check.needs_to_run():
                 element = Handler.make_xml(check)
                 check.set_next_run(run_time)
