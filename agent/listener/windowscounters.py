@@ -143,4 +143,5 @@ class WindowsCountersNode(listener.nodes.LazyNode):
         return counter_path
 
 def get_node():
+    logging.debug("get_node() was called for windowscounters")
     return WindowsCountersNode('windowscounters', None)

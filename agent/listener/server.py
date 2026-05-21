@@ -22,6 +22,7 @@ import process.daemon_manager as daemon_manager
 import subprocess
 import listener.environment as environment
 from ncpa import listener_logger
+from pathlib import Path
 #import inspect
 
 
@@ -190,7 +191,6 @@ def before_request():
     # allowed is set to False by default
     allowed = False
     allowed_hosts = get_config_value('listener', 'allowed_hosts')
-    listener_logger.debug("    before_request() - type(request.view_args): %s", type(request.view_args))
 
     # For logging some debug info for actual page requests
     if isinstance(request.view_args, dict) and ('filename' not in request.view_args):
@@ -203,10 +203,6 @@ def before_request():
             new_parts.append('&'.join(sub_parts))
         logurl = 'token='.join(new_parts)
         listener_logger.info("before_request() - request.url: %s", logurl)
-        listener_logger.debug("    before_request() - request.path: %s", request.path)
-        listener_logger.debug("    before_request() - request.url_rule: %s", request.url_rule)
-        listener_logger.debug("    before_request() - request.view_args: %s", request.view_args)
-        listener_logger.debug("    before_request() - request.routing_exception: %s", request.routing_exception)
 
     if allowed_hosts and __INTERNAL__ is False:
         if request.remote_addr:
@@ -1391,7 +1387,6 @@ def set_config():
     return jsonify({'type': 'success', 'message': 'Configuration updated. <b>Note</b>: You may need to <b>restart NCPA</b> for all changes to take effect.'})
 
 # Endpoint to add a new passive check
-# TODO: implement removing checks
 @listener.route('/add-check/', methods=['POST'], provide_automatic_options = False)
 @requires_admin_auth
 def add_check():
@@ -1403,9 +1398,21 @@ def add_check():
 
     try:
         if environment.SYSTEM == "Windows":
-            cfg_file = os.path.join('C:\\', 'Program Files', 'Nagios', 'NCPA', 'etc', 'ncpa.cfg.d', 'example.cfg')
+            cfg_file = os.path.join('C:\\', 'Program Files', 'Nagios', 'NCPA', 'etc', 'ncpa.cfg.d', 'webui.cfg')
         else:
-            cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg.d', 'example.cfg')
+            cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg.d', 'webui.cfg')
+
+        webui_file_content = """#
+# This file is for configuration changes made through the NCPA Web GUI. It will be preserved during updates.
+#
+
+[passive checks]"""
+
+        # Ensure the webui.cfg file exists before trying to read it, if not create it
+        if not os.path.exists(cfg_file):
+            with open(cfg_file, 'w') as configfile:
+                configfile.write(webui_file_content)
+                configfile.close()
 
         with open(cfg_file, 'r') as configfile:
             lines = configfile.readlines()
@@ -1452,19 +1459,10 @@ def add_check():
             new_check = f"{values_dict['host_name']}|{values_dict['service_name']}|{values_dict['check_interval']} = {values_dict['check_value']}"
             sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
 
+        new_check = new_check.replace('\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command for GUI
 
         for sed_cmd in sed_cmds:
-            listener_logger.debug("add_check() - adding check: %s", new_check)
-
             if environment.SYSTEM == "Windows":
-                new_check = new_check.replace('\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command for GUI
-                sed_cmd = sed_cmd.replace('\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command
-                match = re.match(r"sed -i '/.*/a(.*)\' ", sed_cmd)
-                
-                if not match or len(match.groups()) < 1:
-                    continue
-                match_value = match.group(1).strip()
-
                 try:
                     with open(cfg_file, 'r', encoding='utf-8') as file:
                         lines = file.readlines()
@@ -1475,7 +1473,7 @@ def add_check():
                 for i, line in enumerate(lines):
                     if line.startswith("[passive checks]") or line.startswith("#[passive checks]"):
                         lines[i] = "[passive checks]"
-                        lines.insert(i+1, '\n' + match_value + '\n')
+                        lines.insert(i+1, '\n' + new_check + '\n')
                         break
 
                 try:
@@ -1507,13 +1505,189 @@ def add_check():
                     new_check_parts = new_check.split('=')
                     config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
 
-                new_check = new_check.replace('\/', '/').replace('\\\\','\\') # unescape the slashes that were escaped for the sed command for GUI
-
     except Exception as e:
         listener_logger.exception(e)
         return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
 
+    listener_logger.info("add_check() - added check: %s", new_check)
     return jsonify({'type': 'success', 'message': 'Check added. <b>Note</b>: You will need to <b>restart NCPA</b> for the new checks to take effect.', 'check': str(new_check)})
+
+# Endpoint to delete a check from the config file and the running configuration
+@listener.route('/delete-check/', methods=['POST'], provide_automatic_options = False)
+@requires_admin_auth
+def delete_check():
+    config = listener.config['iconfig']
+    existing_checks = [x for x in get_config_items('passive checks') if x[0] not in listener.config['iconfig'].defaults()]
+
+    cfg_file = None
+
+    try:
+        if environment.SYSTEM == "Windows":
+            cfg_dir = os.path.join('C:\\', 'Program Files', 'Nagios', 'NCPA', 'etc', 'ncpa.cfg.d')
+        else:
+            cfg_dir = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg.d')
+
+        # Get the check to delete from the form
+        check_to_delete = request.form.get('check', None)
+        if not check_to_delete:
+            return jsonify({'type': 'danger', 'message': 'No check specified.'})
+
+        # Attempt to find the check in the existing config files
+        directory = Path(cfg_dir)
+        # Recursively find all .cfg files
+        for file_path in directory.rglob('*.cfg'):
+            try:
+                with file_path.open('r', encoding='utf-8') as f:
+                    for line_num, line in enumerate(f, 1):
+                        clean_line = line.lstrip()
+                        # Skip empty lines or lines starting with # or ;
+                        if not clean_line or clean_line.startswith(('#', ';')):
+                            continue
+                        if check_to_delete in clean_line:
+                            cfg_file = file_path
+                            break # If we found the check, no need to continue searching in this file
+                if cfg_file:
+                    break # If we found the check, no need to continue searching other files
+            except (UnicodeDecodeError, PermissionError):
+                listener_logger.warning("delete_check() - skipping file due to read error: %s", file_path)
+                continue
+
+        check_to_delete = check_to_delete.replace('\/', '/').replace('\\\\','\\') # unescape the slashes that were escaped for the GUI
+
+        # If we did not find the check in any readable config file, return an error
+        if not cfg_file:
+            listener_logger.error("delete_check() - check not found in any accessible config file, check file permissions in ncpa.cfg.d")
+            return jsonify({'type': 'danger', 'message': 'Config file error. Check config file permissions in ncpa.cfg.d and try again.'})
+
+        # Check the config file is writable before we try to write to it
+        if not os.access(cfg_file, os.W_OK):
+            listener_logger.error("delete_check() - config file is not writable: %s", cfg_file)
+            return jsonify({'type': 'danger', 'message': 'Config file is not writable. Check file permissions in ncpa.cfg.d and try again.'})
+
+        with open(cfg_file, 'r') as configfile:
+            lines = configfile.readlines()
+            configfile.close()
+
+        new_lines = []
+        check_deleted = False
+        for line in lines:
+            if line.strip() == check_to_delete.strip():
+                check_deleted = True
+                continue
+            new_lines.append(line)
+
+        if not check_deleted:
+            return jsonify({'type': 'danger', 'message': 'Check not found.'})
+
+        with open(cfg_file, 'w') as configfile:
+            configfile.writelines(new_lines)
+            configfile.close()
+
+        # remove from running configuration so it will be removed from the GUI before restarting NCPA
+        config.remove_option('passive checks', check_to_delete.split('=')[0].strip())
+
+    except Exception as e:
+        listener_logger.exception(e)
+        return jsonify({'type': 'danger', 'message': 'Failed to delete check.'})
+
+    listener_logger.info("delete_check() - deleted check: %s", check_to_delete)
+    return jsonify({'type': 'success', 'message': 'Check deleted. <b>Note</b>: You will need to <b>restart NCPA</b> for the change to take effect.', 'check': str(check_to_delete)})
+
+# Endpoint to edit a check in the config file and the running configuration
+@listener.route('/edit-check/', methods=['POST'], provide_automatic_options = False)
+@requires_admin_auth
+def edit_check():
+    config = listener.config['iconfig']
+    existing_checks = [x for x in get_config_items('passive checks') if x[0] not in listener.config['iconfig'].defaults()]
+
+    cfg_file = None
+
+    try:
+        if environment.SYSTEM == "Windows":
+            cfg_dir = os.path.join('C:\\', 'Program Files', 'Nagios', 'NCPA', 'etc', 'ncpa.cfg.d')
+        else:
+            cfg_dir = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg.d')
+
+        # Get the check to update and the new values from the form
+        check_to_update = request.form.get('check', None)
+        new_values = request.form.get('values', None)
+        if not check_to_update or new_values is None:
+            return jsonify({'type': 'danger', 'message': 'Check or values not specified.'})
+
+        # Check that the service name does not match an existing check to prevent duplicates when editing the check name
+        service_name = new_values.split('=')[0].split('|')[1].strip()
+        for check in existing_checks:
+            # Join the check to the value to get the full string
+            check_full_string = check[0] + ' = ' + check[1]
+            check_full_string = check_full_string.replace('\/', '/').replace('\\\\','\\') # unescape the slashes that were escaped for the GUI
+            if check[0].split('|')[1] == service_name and check_full_string != check_to_update:
+                return jsonify({'type': 'danger', 'message': 'A check with that service name already exists.'})
+
+        # Attempt to find the check in the existing config files
+        directory = Path(cfg_dir)
+        # Recursively find all .cfg files
+        for file_path in directory.rglob('*.cfg'):
+            try:
+                with file_path.open('r', encoding='utf-8') as f:
+                    for line_num, line in enumerate(f, 1):
+                        clean_line = line.lstrip()
+                        # Skip empty lines or lines starting with # or ;
+                        if not clean_line or clean_line.startswith(('#', ';')):
+                            continue
+                        if check_to_update in clean_line:
+                            cfg_file = file_path
+                            break # If we found the check, no need to continue searching in this file
+                if cfg_file:
+                    break # If we found the check, no need to continue searching other files
+            except (UnicodeDecodeError, PermissionError):
+                listener_logger.warning("edit_check() - skipping file due to read error: %s", file_path)
+                continue
+
+        check_to_update = check_to_update.replace('\/', '/').replace('\\\\','\\') # unescape the slashes that were escaped for the GUI
+
+        # If we did not find the check in any readable config file, return an error
+        if not cfg_file:
+            listener_logger.error("edit_check() - check not found in any accessible config file, check file permissions in ncpa.cfg.d")
+            return jsonify({'type': 'danger', 'message': 'Config file error. Check config file permissions in ncpa.cfg.d and try again.'})
+
+        # Check the config file is writable before we try to write to it
+        if not os.access(cfg_file, os.W_OK):
+            listener_logger.error("edit_check() - config file is not writable: %s", cfg_file)
+            return jsonify({'type': 'danger', 'message': 'Config file is not writable. Check file permissions in ncpa.cfg.d and try again.'})
+
+        with open(cfg_file, 'r') as configfile:
+            lines = configfile.readlines()
+            configfile.close()
+
+        # Replace the line that matches the check to update with the new values
+        check_updated = False
+        for i, line in enumerate(lines):
+            if line.strip() == check_to_update.strip():
+                lines[i] = new_values + '\n'
+                check_updated = True
+                break
+
+        if not check_updated:
+            return jsonify({'type': 'danger', 'message': 'Error check not updated.'})
+
+        # write the new line to the config file
+        with open(cfg_file, 'w') as configfile:
+            configfile.writelines(lines)
+            configfile.close()
+
+        # remove old check from running configuration so it will be removed from the GUI before restarting NCPA
+        config.remove_option('passive checks', check_to_update.split('=')[0].strip())
+
+        # update running configuration so it will be updated in the GUI before restarting NCPA
+        updated_check_parts = new_values.split('=')
+        config.set('passive checks', updated_check_parts[0].strip(), updated_check_parts[1].strip())
+
+    except Exception as e:
+        listener_logger.exception(e)
+        return jsonify({'type': 'danger', 'message': 'Failed to update check.'})
+
+    listener_logger.info("edit_check() - updated check: %s to %s", check_to_update, new_values)
+    return jsonify({'type': 'success', 'message': 'Check updated. <b>Note</b>: You will need to <b>restart NCPA</b> for the change to take effect.', 'old_check': str(check_to_update), 'new_check': str(new_values)})
 
 # ------------------------------
 # API Endpoint
