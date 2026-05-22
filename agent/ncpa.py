@@ -1264,12 +1264,12 @@ def start_processes(options, config, has_error):
         l = p = ''
 
         if not options.get('listener_only') or options.get('passive_only'):
-            p = Process(target=Passive, args=(options, config, has_error, True)) # old way
+            p = Process(target=Passive, args=(options, config, has_error, True), name='ListenerWorkerProcess') # old way
             p.daemon = True
             p.start()
 
         if not options.get('passive_only') or options.get('listener_only'):
-            l = Process(target=Listener, args=(options, config, has_error, True))
+            l = Process(target=Listener, args=(options, config, has_error, True), name='PassiveWorkerProcess')
             l.daemon = True
             l.start()
 
