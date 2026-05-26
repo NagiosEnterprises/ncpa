@@ -2,6 +2,10 @@ import requests
 import requests.exceptions
 from ncpa import passive_logger as logging
 
+# Disable InsecureRequestWarning globally since we handle SSL verification in our send_request function 
+# and want to avoid cluttering logs with warnings when SSL verification fails and we retry without it.
+# Note: these messages will still be logged in ncpa_passive.log, but they should not go to /var/log/messages
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def send_request(url, connection_timeout, **kwargs):
     """
