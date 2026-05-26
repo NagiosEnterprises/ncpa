@@ -2,6 +2,10 @@ Changelog
 +++++++++
 3.4.2 - 6/18/2026
 ==================
+**Added**
+
+- Added a new config option in the [passive] section of ncpa.cfg and the Windows installer to enable/disable SSL verification for passive passive checks. - CPD
+
 **Bug Fixes**
 
 - Fixed an issue where the config-file and config-dir options were not working properly, causing NCPA to not read the config file(s) from the specified location(s). - coonce
