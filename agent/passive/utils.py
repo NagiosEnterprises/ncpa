@@ -1,5 +1,6 @@
 import requests
 import requests.exceptions
+import urllib3.exceptions
 from ncpa import passive_logger as logging
 
 # Disable InsecureRequestWarning globally since we handle SSL verification in our send_request function 
