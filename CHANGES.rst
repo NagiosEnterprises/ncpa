@@ -4,7 +4,7 @@ Changelog
 ==================
 **Added**
 
-- Added a new config option in the [passive] section of ncpa.cfg and the Windows installer to enable/disable SSL verification for passive passive checks. - CPD
+- Added a new config option in the [passive] section of ncpa.cfg and the Windows installer to enable/disable SSL verification for passive checks. - CPD
 
 **Bug Fixes**
 
