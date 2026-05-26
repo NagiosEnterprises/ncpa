@@ -1179,8 +1179,10 @@ def get_configuration(config=None, configdir=None):
     """Get the configuration options and return the config parser for them"""
     parent_logger.debug("get_configuration()")
 
-    config = os.path.join('etc', 'ncpa.cfg')
-    configdir = os.path.join('etc', 'ncpa.cfg.d', '*.cfg')
+    if config is None:
+        config = os.path.join('etc', 'ncpa.cfg')
+    if configdir is None:
+        configdir = os.path.join('etc', 'ncpa.cfg.d', '*.cfg')
 
     cp = ConfigParser(interpolation=None)
     cp.optionxform = str
