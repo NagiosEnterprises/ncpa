@@ -4,7 +4,8 @@ Changelog
 ==================
 **Bug Fixes**
 
-- Fixed an issue where the config-file and config-dir options were not working properly, causing NCPA to not read the config file(s) from the specified location(s). - coonce 
+- Fixed an issue where the config-file and config-dir options were not working properly, causing NCPA to not read the config file(s) from the specified location(s). - coonce
+- Fixed an issue where warnings were being logged in the system logs in addition to the ncpa_passive.log when SSL verification failed. [GH#1050] - CPD
 
 3.4.1 - 5/21/2026
 ==================
