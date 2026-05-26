@@ -392,13 +392,13 @@ Section # "Create Config.ini"
 
     ; Passive settings
     WriteINIStr $INSTDIR\etc\ncpa.cfg passive "sleep" "$check_interval"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg passive "passive_ssl_verification" "$ssl_verification_enabled"
     ; WriteINIStr $INSTDIR\etc\ncpa.cfg passive "loglevel" "$log_level_passive"
 
     ; NRDP settings
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "parent" "$nrdp_url"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "token" "$nrdp_token"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "hostname" "$nrdp_hostname"
-    WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "passive_ssl_verification" "$ssl_verification_enabled"
     
     ; Set log locations for Windows
     ; WriteINIStr $INSTDIR\etc\ncpa.cfg general "logfile" " var/log/ncpa.log"
