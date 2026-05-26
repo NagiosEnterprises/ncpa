@@ -94,7 +94,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.4.1'
+__VERSION__ = '3.4.2'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -1180,8 +1180,10 @@ def get_configuration(config=None, configdir=None):
     """Get the configuration options and return the config parser for them"""
     parent_logger.debug("get_configuration()")
 
-    config = os.path.join('etc', 'ncpa.cfg')
-    configdir = os.path.join('etc', 'ncpa.cfg.d', '*.cfg')
+    if config is None:
+        config = os.path.join('etc', 'ncpa.cfg')
+    if configdir is None:
+        configdir = os.path.join('etc', 'ncpa.cfg.d', '*.cfg')
 
     cp = ConfigParser(interpolation=None)
     cp.optionxform = str
