@@ -2,9 +2,9 @@ Changelog
 +++++++++
 3.4.2 - 6/18/2026
 ==================
-**Added**
+**Bug Fixes**
 
-- Placeholder for future release updates. - CPD
+- Fixed an issue where the config-file and config-dir options were not working properly, causing NCPA to not read the config file(s) from the specified location(s). - coonce 
 
 3.4.1 - 5/21/2026
 ==================
