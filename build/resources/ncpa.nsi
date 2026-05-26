@@ -172,6 +172,7 @@ Function .onInit
     StrCpy $check_interval "300"
     StrCpy $log_level_active "warning"
     StrCpy $log_level_passive "warning"
+    StrCpy $ssl_verification_enabled "1"
 
     ${GetParameters} $R0
 
