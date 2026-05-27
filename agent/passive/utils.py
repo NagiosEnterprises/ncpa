@@ -17,13 +17,19 @@ def send_request(url, connection_timeout, **kwargs):
     :rtype: requests.models.Response
     """
 
-    
     if url == "/":
         logging.error("Invalid URL: '/' is not a valid URL")
         return None
 
+    # Parse SSL verification flag cleanly
+    ssl_val = kwargs.get('ssl_verify')
+    ssl_verify = False if ssl_val in (0, '0', False) else True
+    
+    if not ssl_verify:
+        logging.debug("SSL verification is disabled for this request.")
+
     try:
-        r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=True, allow_redirects=True)
+        r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=ssl_verify, allow_redirects=True)
         logging.debug('Content response from URL: %s' % str(r.content))
         return r.content
     except requests.exceptions.SSLError as ssl_err:
@@ -50,6 +56,7 @@ def send_request(url, connection_timeout, **kwargs):
     except Exception as ex:
         logging.debug("Other Exception detected during request")
         logging.exception(ex)
+
         logging.info("Fallback request trying without SSL verification")
         try:
             r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=False, allow_redirects=True)

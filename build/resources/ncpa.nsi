@@ -45,6 +45,7 @@ Var nrdp
 Var nrdp_url
 Var nrdp_token
 Var nrdp_hostname
+Var ssl_verification_enabled
 Var check_interval
 Var log_level_passive
 Var passive_checks
@@ -171,6 +172,7 @@ Function .onInit
     StrCpy $check_interval "300"
     StrCpy $log_level_active "warning"
     StrCpy $log_level_passive "warning"
+    StrCpy $ssl_verification_enabled "1"
 
     ${GetParameters} $R0
 
@@ -287,6 +289,7 @@ Function ConfigPassive
     !insertmacro INSTALLOPTIONS_READ $nrdp_hostname "nsis_passive_options.ini" "Field 5" "State"
     !insertmacro INSTALLOPTIONS_READ $check_interval "nsis_passive_options.ini" "Field 6" "State"
     ; !insertmacro INSTALLOPTIONS_READ $log_level_passive "nsis_passive_options.ini" "Field 12" "State"
+    !insertmacro INSTALLOPTIONS_READ $ssl_verification_enabled "nsis_passive_options.ini" "Field 16" "State"
 
 FunctionEnd
 
@@ -390,13 +393,14 @@ Section # "Create Config.ini"
 
     ; Passive settings
     WriteINIStr $INSTDIR\etc\ncpa.cfg passive "sleep" "$check_interval"
+    WriteINIStr $INSTDIR\etc\ncpa.cfg passive "passive_ssl_verification" "$ssl_verification_enabled"
     ; WriteINIStr $INSTDIR\etc\ncpa.cfg passive "loglevel" "$log_level_passive"
 
     ; NRDP settings
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "parent" "$nrdp_url"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "token" "$nrdp_token"
     WriteINIStr $INSTDIR\etc\ncpa.cfg nrdp "hostname" "$nrdp_hostname"
-
+    
     ; Set log locations for Windows
     ; WriteINIStr $INSTDIR\etc\ncpa.cfg general "logfile" " var/log/ncpa.log"
 
