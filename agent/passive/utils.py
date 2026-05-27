@@ -33,7 +33,7 @@ def send_request(url, connection_timeout, **kwargs):
     custom_ca_cert = None
     temp_ca_cert = kwargs.get('ca_cert')
 
-    if temp_ca_cert:
+    if temp_ca_cert and ssl_verify:
         # Verify if custom CA cert exists and is readable
         if os.path.isfile(temp_ca_cert) and os.access(temp_ca_cert, os.R_OK):
             custom_ca_cert = temp_ca_cert

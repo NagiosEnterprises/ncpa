@@ -266,6 +266,10 @@ logfile = var/log/ncpa_passive.log
 #
 passive_ssl_verification = 1
 
+# Optionally specify a CA cert to use for verifying the SSL certificate of the server when sending passive check results.
+ca_cert =
+
+
 #
 # -------------------------------
 # Passive Configuration (NRDP)
