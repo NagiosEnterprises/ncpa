@@ -41,13 +41,13 @@ def send_request(url, connection_timeout, **kwargs):
             logging.warning("CA cert specified is not valid or not readable: %s", temp_ca_cert)
 
     try:
-        # r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=ssl_verify, allow_redirects=True)
-        if custom_ca_cert is not None and ssl_verify:
-            logging.info("Using custom CA cert for SSL verification: %s", custom_ca_cert)
-            r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=custom_ca_cert, allow_redirects=True)
-        else:
-            logging.info("Using default certifi CA cert for SSL verification")
-            r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=ssl_verify, allow_redirects=True)
+        r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=ssl_verify, allow_redirects=True)
+        # if custom_ca_cert is not None and ssl_verify:
+        #     logging.info("Using custom CA cert for SSL verification: %s", custom_ca_cert)
+        #     r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=custom_ca_cert, allow_redirects=True)
+        # else:
+        #     logging.info("Using default certifi CA cert for SSL verification")
+        #     r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=ssl_verify, allow_redirects=True)
 
         logging.debug('Content response from URL: %s' % str(r.content))
         return r.content
