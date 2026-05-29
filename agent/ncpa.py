@@ -168,6 +168,7 @@ cfg_defaults = {
                 'logfile': 'var/log/ncpa_passive.log',
                 'delay_start': '0',
                 'passive_ssl_verification': '1',
+                'ca_cert': '',
             },
             'nrdp': {
                 'parent': '',

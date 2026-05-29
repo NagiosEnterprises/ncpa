@@ -1,6 +1,7 @@
 import requests
 import requests.exceptions
 import urllib3.exceptions
+import os
 from ncpa import passive_logger as logging
 
 # Disable InsecureRequestWarning globally since we handle SSL verification in our send_request function 
@@ -28,8 +29,25 @@ def send_request(url, connection_timeout, **kwargs):
     if not ssl_verify:
         logging.debug("SSL verification is disabled for this request.")
 
+    # Check for a custom CA cert in kwargs and verify it before use
+    custom_ca_cert = None
+    temp_ca_cert = kwargs.get('ca_cert')
+
+    if temp_ca_cert and ssl_verify:
+        # Verify if custom CA cert exists and is readable
+        if os.path.isfile(temp_ca_cert) and os.access(temp_ca_cert, os.R_OK):
+            custom_ca_cert = temp_ca_cert
+        else:
+            logging.warning("CA cert specified is not valid or not readable: %s", temp_ca_cert)
+
     try:
-        r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=ssl_verify, allow_redirects=True)
+        if custom_ca_cert is not None and ssl_verify:
+            logging.debug("Using custom CA cert for SSL verification: %s", custom_ca_cert)
+            r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=custom_ca_cert, allow_redirects=True)
+        else:
+            logging.debug("Using default certifi CA cert for SSL verification if enabled.")
+            r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=ssl_verify, allow_redirects=True)
+
         logging.debug('Content response from URL: %s' % str(r.content))
         return r.content
     except requests.exceptions.SSLError as ssl_err:

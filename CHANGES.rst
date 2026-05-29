@@ -5,6 +5,7 @@ Changelog
 **Added**
 
 - Added passive_ssl_verification config option in the [passive] section of ncpa.cfg. - CPD
+- Added ca_cert config option in the [passive] section of ncpa.cfg to specify a custom CA certificate for SSL verification when sending passive check results. - CPD
 
 **Bug Fixes**
 
