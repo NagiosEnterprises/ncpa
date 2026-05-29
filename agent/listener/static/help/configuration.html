@@ -319,6 +319,18 @@
                                 <td>0</td>
                                 <td>The amount to seconds to wait before starting the <em>NCPA Passive</em> service. Typically passive checks are run right away when the service is restarted so if you would like to force the <em>NCPA Passive</em> service to wait before running the checks, set this value.</td>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <th>passive_ssl_verification</th>
+                                <td>1</td>
+                                <td>SSL verification for passive checks. Disabling verification can be useful if you are using a self-signed certificate or if you do not want to verify the SSL certificate for any reason.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>ca_cert</th>
+                                <td></td>
+                                <td>Optionally specify the full path to a CA cert file to use for verifying the SSL certificate of the server when sending passive check results. If this is not specified, requests will use the default certifi CA bundle that comes with Python's requests library when passive_ssl_verification is enabled.</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
