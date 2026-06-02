@@ -15,6 +15,7 @@ Changelog
 **Updates**
 
 - Updated the Windows installer to support the new SSL verification setting for passive checks. - CPD
+- Updated the help documentation to include information about the new passive SSL verification options. - CPD
 
 3.4.1 - 5/21/2026
 ==================
