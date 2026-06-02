@@ -11,7 +11,7 @@ Changelog
 
 - Fixed an issue where the config-file and config-dir options were not working properly, causing NCPA to not read the config file(s) from the specified location(s). - coonce
 - Fixed an issue where warnings were being logged in the system logs in addition to the ncpa_passive.log when SSL verification failed. [GH#1050] - CPD
-- Fixed an issue where old Windows python binary files were not being removed during upgrades. - CPD
+- Fixed an issue where old Windows python binary files in the NCPA install directory were not being removed during upgrades. - CPD
 
 **Updates**
 
