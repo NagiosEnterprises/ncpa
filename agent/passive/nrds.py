@@ -22,7 +22,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
         logging.debug('Establishing passive handler: NRDS')
 
         logging.debug('run_time: %s', run_time)
-        # logging.debug('next run_time: %s', self.next_run_time)
+        logging.debug('time now: %s', int(time.time()))
 
         # if run_time is None:
         #     run_time = int(time.time())
