@@ -17,15 +17,31 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
     def __init__(self, config):
         super(Handler, self).__init__(config)
-        self.next_run_time = None
 
     def run(self, run_time):
         logging.debug('Establishing passive handler: NRDS')
 
-        # Check if we should run based on next_run_time
-        if self.next_run_time is not None and run_time < self.next_run_time:
-            logging.debug('Not yet time to run NRDS. Next run time: %s', self.next_run_time)
-            return self.next_run_time
+        logging.debug('run_time: %s', run_time)
+        logging.debug('next run_time: %s', self.next_run_time)
+
+        # if run_time is None:
+        #     run_time = int(time.time())
+
+        # try:
+        #     run_interval = self.config.getint('passive', 'run_interval')
+        # except (cp.NoOptionError, cp.NoSectionError, ValueError) as exc:
+        #     logging.debug('No valid run_interval found in config, running immediately: %r', exc)
+        #     run_interval = None
+
+        # if run_interval and run_time is not None:
+        #     if hasattr(self, '_nrds_next_run') and run_time < self._nrds_next_run:
+        #         self.next_run_time = self._nrds_next_run
+        #         logging.debug('Skipping NRDS execution until next run time: %s', self._nrds_next_run)
+        #         return
+
+        #     self._nrds_next_run = run_time + run_interval
+        #     self.next_run_time = self._nrds_next_run
+        #     logging.debug('Next NRDS run time set to: %s', self._nrds_next_run)
 
         try:
             nrds_url = self.config.get('nrds', 'url')
@@ -68,10 +84,6 @@ class Handler(passive.nagioshandler.NagiosHandler):
         #         self.get_plugin(plugin)
 
         logging.debug('Done with this NRDS iteration.')
-
-        self.next_run_time = current_time + self.get_next_run_interval()
-        logging.debug('Next NRDS run time set to %s', self.next_run_time)
-        return self.next_run_time
 
     @staticmethod
     def get_plugin(nrds_url, nrds_token, nrds_os, plugin_path, plugin):
