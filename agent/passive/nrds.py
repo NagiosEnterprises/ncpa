@@ -37,9 +37,14 @@ class Handler(passive.nagioshandler.NagiosHandler):
         logging.debug('Establishing passive handler: NRDS')
 
         current_time = run_time if run_time is not None else time.time()
-        if self.next_run_time is not None and current_time < self.next_run_time:
-            logging.debug('Skipping NRDS run until %s', self.next_run_time)
-            return self.next_run_time
+        if self.next_run_time is not None:
+            if current_time < self.next_run_time:
+                logging.debug('Skipping NRDS run until %s', self.next_run_time)
+                return self.next_run_time
+
+            # Use the scheduled next_run_time as the execution time so we don't reset the schedule
+            # prematurely if this run is executed later than expected.
+            current_time = self.next_run_time
 
         try:
             nrds_url = self.config.get('nrds', 'url')

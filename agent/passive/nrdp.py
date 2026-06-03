@@ -4,6 +4,7 @@ import passive.nagioshandler
 import listener.server
 from ncpa import passive_logger as logging
 
+
 class Handler(passive.nagioshandler.NagiosHandler):
     """
     NRDP Handler.
