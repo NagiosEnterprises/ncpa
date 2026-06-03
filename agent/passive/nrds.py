@@ -17,10 +17,30 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
     def __init__(self, config):
         super(Handler, self).__init__(config)
+        self.next_run_time = None
+
+    def get_next_run_interval(self):
+        try:
+            interval = self.config.getint('nrds', 'run_interval')
+        except (cp.NoOptionError, cp.NoSectionError, ValueError):
+            try:
+                interval = self.config.getint('passive', 'sleep')
+            except (cp.NoOptionError, cp.NoSectionError, ValueError):
+                interval = 300
+
+        if interval <= 0:
+            interval = 300
+
+        return interval
 
     def run(self, run_time):
         logging.debug('Establishing passive handler: NRDS')
-        
+
+        current_time = run_time if run_time is not None else time.time()
+        if self.next_run_time is not None and current_time < self.next_run_time:
+            logging.debug('Skipping NRDS run until %s', self.next_run_time)
+            return self.next_run_time
+
         try:
             nrds_url = self.config.get('nrds', 'url')
             nrds_config = self.config.get('nrds', 'config_name')
@@ -62,6 +82,10 @@ class Handler(passive.nagioshandler.NagiosHandler):
         #         self.get_plugin(plugin)
 
         logging.debug('Done with this NRDS iteration.')
+
+        self.next_run_time = current_time + self.get_next_run_interval()
+        logging.debug('Next NRDS run time set to %s', self.next_run_time)
+        return self.next_run_time
 
     @staticmethod
     def get_plugin(nrds_url, nrds_token, nrds_os, plugin_path, plugin):

@@ -3,7 +3,6 @@ import passive.utils
 import passive.nagioshandler
 import listener.server
 from ncpa import passive_logger as logging
-import json
 
 class Handler(passive.nagioshandler.NagiosHandler):
     """

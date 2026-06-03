@@ -179,6 +179,7 @@ cfg_defaults = {
                 'token': '',
                 'config_name': '',
                 'config_version': '0',
+                'run_interval': '300',
             },
             'kafkaproducer': {
                 'hostname': 'None',
@@ -438,7 +439,7 @@ class Passive(Base):
                     next_db_maintenance = datetime.datetime.now() + datetime.timedelta(days=1)
 
                 logger.debug("run() - loop - running")
-                time.sleep(delay_interval)
+                time.sleep(60)
 
         except Exception as e:
             logger.exception("run() - exception: %s", e)
