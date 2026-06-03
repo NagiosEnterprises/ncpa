@@ -15,33 +15,14 @@ class Handler(passive.nagioshandler.NagiosHandler):
     Class for handling the passive NRDS component.
     """
 
-    def __init__(self, config):
-        super(Handler, self).__init__(config)
+    def __init__(self, config, *args, **kwargs):
+        super(Handler, self).__init__(config, *args, **kwargs)
 
     def run(self, run_time):
         logging.debug('Establishing passive handler: NRDS')
 
         logging.debug('run_time: %s', run_time)
-        logging.debug('time now: %s', int(time.time()))
-
-        # if run_time is None:
-        #     run_time = int(time.time())
-
-        # try:
-        #     run_interval = self.config.getint('passive', 'run_interval')
-        # except (cp.NoOptionError, cp.NoSectionError, ValueError) as exc:
-        #     logging.debug('No valid run_interval found in config, running immediately: %r', exc)
-        #     run_interval = None
-
-        # if run_interval and run_time is not None:
-        #     if hasattr(self, '_nrds_next_run') and run_time < self._nrds_next_run:
-        #         self.next_run_time = self._nrds_next_run
-        #         logging.debug('Skipping NRDS execution until next run time: %s', self._nrds_next_run)
-        #         return
-
-        #     self._nrds_next_run = run_time + run_interval
-        #     self.next_run_time = self._nrds_next_run
-        #     logging.debug('Next NRDS run time set to: %s', self._nrds_next_run)
+        logging.debug('next_run_time: %s', getattr(self, 'next_run_time', None))
 
         try:
             nrds_url = self.config.get('nrds', 'url')
