@@ -350,6 +350,7 @@ Section # "Create Config.ini"
     RMDir /r "$INSTDIR\lib"
     RMDir /r "$INSTDIR\listener"
     Delete "$INSTDIR\python*.dll"
+    Delete "$INSTDIR\python*.exe"
 
     SetOutPath $INSTDIR
 
