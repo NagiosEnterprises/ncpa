@@ -92,7 +92,8 @@ $(document).ready(function() {
                         <span>
                             <i class="fa fa-filter fa-14 fa-l"></i> Filtering by
                             {% if search != '' %}"<b>{{ search }}</b>"{% endif %}{% if status != '' %}{% if search != '' %}, {% endif %}status = <b>{{ status|human_check_result }}</b>{% endif %}
-                            {% if check_senders %}{% if status != '' or search != '' %}and{% endif %} executed by <b>{{ ', '.join(check_senders) }}</b>{% endif %}
+                            {% if ctype != '' %}{% if search != '' or status != '' %}, {% endif %}type = <b>{{ ctype }}</b>{% endif %}
+                            {% if check_senders %}{% if status != '' or search != '' or ctype != '' %}and{% endif %} executed by <b>{{ ', '.join(check_senders) }}</b>{% endif %}
                             <a href="checks" class="tt-bind" title="Clear filters"><i class="fa fa-times fa-r" style="font-size: 14px;"></i></a>
                         </span>
                         {% endif %}
