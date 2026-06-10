@@ -53,10 +53,10 @@ $(document).ready(function() {
                 </div>
                 <div class="input-group" style="width: 170px; display: inline-table; vertical-align: top;">
                     <label class="input-group-addon">Type</label>
-                    <select name="type" class="form-control">
+                    <select name="ctype" class="form-control">
                         <option value="">Both</option>
-                        <option value="Active"{% if type == 'Active' %} selected{% endif %}>Active</option>
-                        <option value="Passive"{% if type == 'Passive' %} selected{% endif %}>Passive</option>
+                        <option value="Active"{% if ctype == 'Active' %} selected{% endif %}>Active</option>
+                        <option value="Passive"{% if ctype == 'Passive' %} selected{% endif %}>Passive</option>
                     </select>
                 </div>
                 <div class="input-group" style="width: 280px;">
@@ -111,12 +111,12 @@ $(document).ready(function() {
                                 executed by <b>{{ ', '.join(check_senders) }}</b>
                             {% endif %}
 
-                            {% if type != '' %}
+                            {% if ctype != '' %}
                                 {% if status != '' or search != '' or check_senders %}
                                     and
                                 {% endif %}
 
-                                type = <b>{{ type }}</b>
+                                type = <b>{{ ctype }}</b>
                             {% endif %}
 
                             <a href="checks" class="tt-bind" title="Clear filters"><i class="fa fa-times fa-r" style="font-size: 14px;"></i></a>
