@@ -75,7 +75,7 @@ def send_request(url, connection_timeout, **kwargs):
     except requests.exceptions.Timeout as e:
         logging.error("Connection Timeout: %s", e)
     except Exception as ex:
-        logging.debug("Other Exception detected during request")
+        logging.error("Other Exception detected during request")
         logging.exception(ex)
 
         if retry_without_ssl:
