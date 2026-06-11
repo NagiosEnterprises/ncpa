@@ -174,6 +174,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
             token = self.config.get('nrdp', 'token')
             ssl_verify = self.config.get('passive', 'passive_ssl_verification')
             ca_cert = self.config.get('passive', 'ca_cert')
+            retry_without_ssl = self.config.get('passive', 'retry_without_ssl')
         except Exception as ex:
             logging.exception(ex)
 
@@ -202,7 +203,16 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 server += '/'
 
             logging.debug('XML to be submitted: %s', checkresults)
-            ret_xml = passive.utils.send_request(url=server, connection_timeout=timeout, token=token, XMLDATA=checkresults, cmd='submitcheck', ssl_verify=ssl_verify, ca_cert=ca_cert)
+            ret_xml = passive.utils.send_request(
+                url=server,
+                connection_timeout=timeout,
+                token=token,
+                XMLDATA=checkresults,
+                cmd='submitcheck',
+                ssl_verify=ssl_verify,
+                ca_cert=ca_cert,
+                retry_without_ssl=retry_without_ssl
+            )
 
             if ret_xml is not None:
                 try:

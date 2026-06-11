@@ -25,13 +25,14 @@ def send_request(url, connection_timeout, **kwargs):
     # Parse SSL verification flag cleanly
     ssl_val = kwargs.get('ssl_verify')
     ssl_verify = False if ssl_val in (0, '0', False) else True
-    
-    if not ssl_verify:
-        logging.debug("SSL verification is disabled for this request.")
+
+    # Get the retry_without_ssl flag
+    retry_without_val = kwargs.get('retry_without_ssl')
+    retry_without_ssl = False if retry_without_val in (0, '0', False) else True
 
     # Check for a custom CA cert in kwargs and verify it before use
-    custom_ca_cert = None
     temp_ca_cert = kwargs.get('ca_cert')
+    custom_ca_cert = None
 
     if temp_ca_cert and ssl_verify:
         # Verify if custom CA cert exists and is readable
@@ -39,6 +40,9 @@ def send_request(url, connection_timeout, **kwargs):
             custom_ca_cert = temp_ca_cert
         else:
             logging.warning("CA cert specified is not valid or not readable: %s", temp_ca_cert)
+
+    if not ssl_verify:
+        logging.debug("SSL verification is disabled for this request.")
 
     try:
         if custom_ca_cert is not None and ssl_verify:
@@ -51,20 +55,21 @@ def send_request(url, connection_timeout, **kwargs):
         logging.debug('Content response from URL: %s' % str(r.content))
         return r.content
     except requests.exceptions.SSLError as ssl_err:
-        logging.warning("SSL verification failed, retrying without verification: %s", ssl_err)
-        try:
-            r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=False, allow_redirects=True)
-            logging.debug('Content response from URL (no verify): %s' % str(r.content))
-            return r.content
-        except requests.exceptions.HTTPError as e:
-            logging.error("HTTP Error: %s", e)
-        except requests.exceptions.ConnectionError as e:
-            logging.error("Connection Error: %s", e)
-        except requests.exceptions.Timeout as e:
-            logging.error("Connection Timeout: %s", e)
-        except Exception as ex:
-            logging.debug("Exception detected during retry without SSL verification")
-            logging.exception(ex)
+        if retry_without_ssl:
+            logging.warning("SSL verification failed, retrying without verification: %s", ssl_err)
+            try:
+                r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=False, allow_redirects=True)
+                logging.debug('Content response from URL (no verify): %s' % str(r.content))
+                return r.content
+            except requests.exceptions.HTTPError as e:
+                logging.error("HTTP Error: %s", e)
+            except requests.exceptions.ConnectionError as e:
+                logging.error("Connection Error: %s", e)
+            except requests.exceptions.Timeout as e:
+                logging.error("Connection Timeout: %s", e)
+            except Exception as ex:
+                logging.debug("Exception detected during retry without SSL verification")
+                logging.exception(ex)
     except requests.exceptions.HTTPError as e:
         logging.error("HTTP Error: %s", e)
     except requests.exceptions.ConnectionError as e:
@@ -75,12 +80,13 @@ def send_request(url, connection_timeout, **kwargs):
         logging.debug("Other Exception detected during request")
         logging.exception(ex)
 
-        logging.info("Fallback request trying without SSL verification")
-        try:
-            r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=False, allow_redirects=True)
-            logging.debug('Content response from URL (no verify): %s' % str(r.content))
-            return r.content
-        except Exception as ex:
-            logging.debug("Exception detected during fallback retry without SSL verification")
-            logging.exception(ex)
+        if retry_without_ssl:
+            logging.info("Fallback request trying without SSL verification")
+            try:
+                r = requests.post(url, timeout=connection_timeout, data=kwargs, verify=False, allow_redirects=True)
+                logging.debug('Content response from URL (no verify): %s' % str(r.content))
+                return r.content
+            except Exception as ex:
+                logging.debug("Exception detected during fallback retry without SSL verification")
+                logging.exception(ex)
     return None

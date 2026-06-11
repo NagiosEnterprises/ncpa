@@ -169,6 +169,7 @@ cfg_defaults = {
                 'delay_start': '0',
                 'passive_ssl_verification': '1',
                 'ca_cert': '',
+                'retry_without_ssl': '1',
             },
             'nrdp': {
                 'parent': '',
