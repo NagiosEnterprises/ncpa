@@ -22,24 +22,20 @@ def send_request(url, connection_timeout, **kwargs):
         logging.error("Invalid URL: '/' is not a valid URL")
         return None
 
-    # Parse SSL verification flag cleanly
-    ssl_val = kwargs.get('ssl_verify')
-    ssl_verify = False if ssl_val in (0, '0', False) else True
+    ssl_verify = kwargs.get('ssl_verify')
+    ssl_verify = False if ssl_verify in (0, '0', False) else True
 
-    # Get the retry_without_ssl flag
-    retry_without_val = kwargs.get('retry_without_ssl')
-    retry_without_ssl = False if retry_without_val in (0, '0', False) else True
+    retry_without_ssl = kwargs.get('retry_without_ssl')
+    retry_without_ssl = False if retry_without_ssl in (0, '0', False) else True
 
-    # Check for a custom CA cert in kwargs and verify it before use
-    temp_ca_cert = kwargs.get('ca_cert')
+    ca_cert = kwargs.get('ca_cert')
     custom_ca_cert = None
 
-    if temp_ca_cert and ssl_verify:
-        # Verify if custom CA cert exists and is readable
-        if os.path.isfile(temp_ca_cert) and os.access(temp_ca_cert, os.R_OK):
-            custom_ca_cert = temp_ca_cert
+    if ca_cert and ssl_verify:
+        if os.path.isfile(ca_cert) and os.access(ca_cert, os.R_OK):
+            custom_ca_cert = ca_cert
         else:
-            logging.warning("CA cert specified is not valid or not readable: %s", temp_ca_cert)
+            logging.warning("CA cert specified is not valid or not readable: %s", ca_cert)
 
     if not ssl_verify:
         logging.debug("SSL verification is disabled for this request.")
