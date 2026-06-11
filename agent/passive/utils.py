@@ -55,6 +55,8 @@ def send_request(url, connection_timeout, **kwargs):
         logging.debug('Content response from URL: %s' % str(r.content))
         return r.content
     except requests.exceptions.SSLError as ssl_err:
+        logging.error("SSL Error occurred: %s", ssl_err)
+
         if retry_without_ssl:
             logging.warning("SSL verification failed, retrying without verification: %s", ssl_err)
             try:
