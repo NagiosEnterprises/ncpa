@@ -26,6 +26,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
             nrds_config = self.config.get('nrds', 'config_name')
             nrds_config_version = self.config.get('nrds', 'config_version')
             nrds_token = self.config.get('nrds', 'token')
+            nrds_run_interval = self.config.getint('nrds', 'run_interval')
         except (cp.NoOptionError, cp.NoSectionError) as exc:
             logging.error("Encountered error while getting NRDS config values: %r", exc)
             return
@@ -39,7 +40,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 return
 
         # Check if it's time to run this handler
-        if not self.needs_to_run(run_time):
+        if not self.needs_to_run(nrds_run_interval):
             logging.debug('NRDS handler is not scheduled to run yet.')
             return
 
@@ -67,7 +68,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
         #         self.get_plugin(plugin)
 
         # Set next run time
-        self.set_next_run(run_time)
+        self.set_next_run(nrds_run_interval)
         logging.debug('Done with this NRDS iteration.')
 
     @staticmethod

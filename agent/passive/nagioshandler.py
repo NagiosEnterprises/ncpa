@@ -75,3 +75,33 @@ class NagiosHandler(object):
         generically. This sets the checks parsed from the passive portion of the config.
         """
         self.checks = self.get_commands_from_config()
+
+    def set_next_run(self, delay_interval):
+        """
+        Set the next run time based on the delay interval.
+
+        :param delay_interval: The delay interval in seconds before the next run.
+        :type delay_interval: int
+        :rtype: None
+        """
+        import time
+        self.next_run = time.time() + delay_interval
+
+    def needs_to_run(self, delay_interval):
+        """
+        Check if the handler needs to run based on the delay interval.
+
+        :param delay_interval: The delay interval in seconds between runs.
+        :type delay_interval: int
+        :return: True if it's time to run, False otherwise.
+        :rtype: bool
+        """
+        import time
+        if not hasattr(self, 'next_run'):
+            self.set_next_run(0)
+            return True
+        if time.time() >= self.next_run:
+            self.set_next_run(delay_interval)
+            return True
+        return False
+
