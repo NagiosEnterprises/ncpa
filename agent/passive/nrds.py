@@ -18,22 +18,28 @@ class Handler(passive.nagioshandler.NagiosHandler):
     def __init__(self, config, *args, **kwargs):
         super(Handler, self).__init__(config, *args, **kwargs)
 
-    # def get_next_run_interval(self):
-    #     try:
-    #         interval = self.config.getint('nrds', 'run_interval')
-    #     except (cp.NoOptionError, cp.NoSectionError, ValueError):
-    #         try:
-    #             interval = self.config.getint('passive', 'sleep')
-    #         except (cp.NoOptionError, cp.NoSectionError, ValueError):
-    #             interval = 300
+    def get_next_run_interval(self):
+        try:
+            interval = self.config.getint('nrds', 'run_interval')
+        except (cp.NoOptionError, cp.NoSectionError, ValueError):
+            try:
+                interval = self.config.getint('passive', 'sleep')
+            except (cp.NoOptionError, cp.NoSectionError, ValueError):
+                interval = 300
 
-    #     if interval <= 0:
-    #         interval = 300
+        if interval <= 0:
+            interval = 300
 
-    #     return interval
+        return interval
 
     def run(self, run_time):
         logging.debug('Establishing passive handler: NRDS')
+
+        if not hasattr(self, 'next_run_time'):
+            self.next_run_time = 0
+        if run_time < self.next_run_time:
+            return
+        self.next_run_time = run_time + self.get_next_run_interval()
 
         # logging.debug('run_time: %s', run_time)
         # logging.debug('next_run_time: %s', getattr(self, 'next_run_time', None))
