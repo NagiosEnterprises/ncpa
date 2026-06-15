@@ -79,7 +79,6 @@ class NagiosHandler(object):
         """
         self.checks = self.get_commands_from_config()
 
-    @property
     def set_next_run(self, delay_interval):
         """
         Set the next run time based on the delay interval.
@@ -91,7 +90,6 @@ class NagiosHandler(object):
         import time
         self.next_run = time.time() + delay_interval
 
-    @property
     def get_next_run(self):
         """
         Get the next run time.
