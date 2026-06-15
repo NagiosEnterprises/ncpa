@@ -35,10 +35,10 @@ class Handler(passive.nagioshandler.NagiosHandler):
     def run(self, run_time):
         logging.debug('Establishing passive handler: NRDS')
         logging.debug('run_time: %s', run_time)
-        logging.debug('next_run: %s', getattr(self, 'next_run'))
+        logging.debug('next_run: %s', self.get_next_run())
 
-        if not hasattr(self, 'next_run'):
-            self.next_run = 0
+        # if not hasattr(self, 'next_run'):
+        #     self.next_run = 0
         if run_time < self.next_run:
             return
         # self.next_run = run_time + self.get_next_run_interval()
@@ -48,12 +48,11 @@ class Handler(passive.nagioshandler.NagiosHandler):
             nrds_config = self.config.get('nrds', 'config_name')
             nrds_config_version = self.config.get('nrds', 'config_version')
             nrds_token = self.config.get('nrds', 'token')
-            nrds_interval = self.config.get('nrds', 'run_interval')
         except (cp.NoOptionError, cp.NoSectionError) as exc:
             logging.error("Encountered error while getting NRDS config values: %r", exc)
 
         self.set_next_run(self.get_next_run_interval())
-        logging.debug('new next_run time is: %s', getattr(self, 'next_run'))
+        logging.debug('new next_run time is: %s', self.get_next_run())
 
         # logging.info('url: %s, config_name: %s, config_version: %s, token: %s', nrds_url, nrds_config, nrds_config_version, nrds_token)
 

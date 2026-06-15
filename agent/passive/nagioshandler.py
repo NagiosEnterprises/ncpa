@@ -79,6 +79,7 @@ class NagiosHandler(object):
         """
         self.checks = self.get_commands_from_config()
 
+    @property
     def set_next_run(self, delay_interval):
         """
         Set the next run time based on the delay interval.
@@ -90,21 +91,12 @@ class NagiosHandler(object):
         import time
         self.next_run = time.time() + delay_interval
 
-    def needs_to_run(self, delay_interval):
+    @property
+    def get_next_run(self):
         """
-        Check if the handler needs to run based on the delay interval.
-
-        :param delay_interval: The delay interval in seconds between runs.
-        :type delay_interval: int
-        :return: True if it's time to run, False otherwise.
-        :rtype: bool
+        Get the next run time.
+        :return: The next run time.
+        :rtype: float
         """
-        import time
-        if not hasattr(self, 'next_run'):
-            self.set_next_run(0)
-            return True
-        if time.time() >= self.next_run:
-            self.set_next_run(delay_interval)
-            return True
-        return False
+        return self.next_run
 
