@@ -21,6 +21,7 @@ class NagiosHandler(object):
         """
         self.config = config
         self.checks = None
+        self.next_run = None
 
     def get_commands_from_config(self):
         """
