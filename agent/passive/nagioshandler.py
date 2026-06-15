@@ -2,6 +2,7 @@ import platform
 import passive.ncpacheck
 from ncpa import passive_logger as logging
 
+NEXT_RUN = 0
 
 class NagiosHandler(object):
     """
@@ -21,9 +22,9 @@ class NagiosHandler(object):
         """
         self.config = config
         self.checks = None
-        self.next_run = 0
-        logging.debug('id is: %s', id(self))
-        logging.debug('next_run is: %s', self.next_run)
+        # self.next_run = 0
+        # logging.debug('id is: %s', id(self))
+        # logging.debug('next_run is: %s', self.next_run)
 
     def get_commands_from_config(self):
         """
@@ -88,7 +89,7 @@ class NagiosHandler(object):
         :rtype: None
         """
         import time
-        self.next_run = time.time() + delay_interval
+        NEXT_RUN = time.time() + delay_interval
 
     def get_next_run(self):
         """
@@ -96,5 +97,5 @@ class NagiosHandler(object):
         :return: The next run time.
         :rtype: float
         """
-        return self.next_run
+        return NEXT_RUN
 
