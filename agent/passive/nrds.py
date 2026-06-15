@@ -35,13 +35,13 @@ class Handler(passive.nagioshandler.NagiosHandler):
     def run(self, run_time):
         logging.debug('Establishing passive handler: NRDS')
         logging.debug('run_time: %s', run_time)
-        logging.debug('next_run_time: %s', getattr(self, 'next_run_time'))
+        logging.debug('next_run: %s', getattr(self, 'next_run'))
 
-        if not hasattr(self, 'next_run_time'):
-            self.next_run_time = 0
-        if run_time < self.next_run_time:
+        if not hasattr(self, 'next_run'):
+            self.next_run = 0
+        if run_time < self.next_run:
             return
-        self.next_run_time = run_time + self.get_next_run_interval()
+        self.next_run = run_time + self.get_next_run_interval()
 
         try:
             nrds_url = self.config.get('nrds', 'url')
