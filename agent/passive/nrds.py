@@ -39,7 +39,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
         # if not hasattr(self, 'next_run'):
         #     self.next_run = 0
-        if run_time < self.next_run:
+        if run_time < self.get_next_run():
             return
         # self.next_run = run_time + self.get_next_run_interval()
 
