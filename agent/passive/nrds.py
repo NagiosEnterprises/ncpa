@@ -18,30 +18,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
     def __init__(self, config, *args, **kwargs):
         super(Handler, self).__init__(config, *args, **kwargs)
 
-    def get_next_run_interval(self):
-        try:
-            interval = self.config.getint('nrds', 'run_interval')
-        except (cp.NoOptionError, cp.NoSectionError, ValueError):
-            try:
-                interval = self.config.getint('passive', 'sleep')
-            except (cp.NoOptionError, cp.NoSectionError, ValueError):
-                interval = 300
-
-        if interval <= 0:
-            interval = 300
-
-        return interval
-
     def run(self, run_time):
         logging.debug('Establishing passive handler: NRDS')
-        logging.debug('run_time: %s', run_time)
-        logging.debug('next_run: %s', self.get_next_run())
-
-        # if not hasattr(self, 'next_run'):
-        #     self.next_run = 0
-        if run_time < self.get_next_run():
-            return
-        # self.next_run = run_time + self.get_next_run_interval()
 
         try:
             nrds_url = self.config.get('nrds', 'url')
@@ -51,11 +29,6 @@ class Handler(passive.nagioshandler.NagiosHandler):
             nrds_interval = self.config.getint('nrds', 'run_interval')
         except (cp.NoOptionError, cp.NoSectionError) as exc:
             logging.error("Encountered error while getting NRDS config values: %r", exc)
-
-        self.set_next_run(nrds_interval)
-        logging.debug('new next_run time is: %s', self.get_next_run())
-
-        # logging.info('url: %s, config_name: %s, config_version: %s, token: %s', nrds_url, nrds_config, nrds_config_version, nrds_token)
 
         # Make sure valid input was stated in the config, if not, error out and log it.
         for directive in [nrds_url, nrds_config, nrds_config_version, nrds_token]:
@@ -323,3 +296,21 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
         return plugins
 
+class NRDSUpdateCheck(object):
+
+    def __init__(self, interval):
+        self.interval = interval
+        self.next_run = 0
+
+    def set_next_run(self):
+        self.next_run = time.time() + self.interval
+
+    def should_run(self):
+        return time.time() >= self.next_run
+
+    def run(self):
+        # Existing NRDS update logic
+        update_config()
+        update_plugins()
+
+        self.set_next_run()
