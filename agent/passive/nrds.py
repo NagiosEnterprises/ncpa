@@ -295,22 +295,3 @@ class Handler(passive.nagioshandler.NagiosHandler):
             logging.error("Encountered exception while trying to read plugin directory: %r", exc)
 
         return plugins
-
-class NRDSUpdateCheck(object):
-
-    def __init__(self, interval):
-        self.interval = interval
-        self.next_run = 0
-
-    def set_next_run(self):
-        self.next_run = time.time() + self.interval
-
-    def should_run(self):
-        return time.time() >= self.next_run
-
-    def run(self):
-        # Existing NRDS update logic
-        update_config()
-        update_plugins()
-
-        self.set_next_run()
