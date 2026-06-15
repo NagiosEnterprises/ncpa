@@ -37,7 +37,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 logging.error("Cannot start NRDS transaction: %r is invalid or missing.", directive)
                 return
 
-        self.next_run = time.time() + nrds_interval
+        # self.next_run = time.time() + nrds_interval
+        self.set_next_run(time.time() + nrds_interval)
         logging.debug('New next run time: %s', self.next_run)
 
         config_update_successful = False
