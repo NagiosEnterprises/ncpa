@@ -18,30 +18,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
     def __init__(self, config, *args, **kwargs):
         super(Handler, self).__init__(config, *args, **kwargs)
 
-    def get_next_run_interval(self):
-        try:
-            interval = self.config.getint('nrds', 'run_interval')
-        except (cp.NoOptionError, cp.NoSectionError, ValueError):
-            try:
-                interval = self.config.getint('passive', 'sleep')
-            except (cp.NoOptionError, cp.NoSectionError, ValueError):
-                interval = 300
-
-        if interval <= 0:
-            interval = 300
-
-        return interval
-
     def run(self, run_time):
         logging.debug('Establishing passive handler: NRDS')
-        logging.debug('run_time: %s', run_time)
-        logging.debug('next_run_time: %s', getattr(self, 'next_run_time'))
-
-        if not hasattr(self, 'next_run_time'):
-            self.next_run_time = 0
-        if run_time < self.next_run_time:
-            return
-        self.next_run_time = run_time + self.get_next_run_interval()
 
         try:
             nrds_url = self.config.get('nrds', 'url')
@@ -50,6 +28,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
             nrds_token = self.config.get('nrds', 'token')
         except (cp.NoOptionError, cp.NoSectionError) as exc:
             logging.error("Encountered error while getting NRDS config values: %r", exc)
+            return
 
         # logging.info('url: %s, config_name: %s, config_version: %s, token: %s', nrds_url, nrds_config, nrds_config_version, nrds_token)
 
@@ -58,6 +37,11 @@ class Handler(passive.nagioshandler.NagiosHandler):
             if directive is None:
                 logging.error("Cannot start NRDS transaction: %r is invalid or missing.", directive)
                 return
+
+        # Check if it's time to run this handler
+        if not self.needs_to_run(run_time):
+            logging.debug('NRDS handler is not scheduled to run yet.')
+            return
 
         config_update_successful = False
         # Check to see if an update is required.
@@ -82,6 +66,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
         #     for plugin in needed_plugins:
         #         self.get_plugin(plugin)
 
+        # Set next run time
+        self.set_next_run(run_time)
         logging.debug('Done with this NRDS iteration.')
 
     @staticmethod
