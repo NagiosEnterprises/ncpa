@@ -43,6 +43,8 @@ class Handler(passive.nagioshandler.NagiosHandler):
             return
         self.next_run = run_time + self.get_next_run_interval()
 
+        logging.debug('new next_run time is: %s', getattr(self, 'next_run'))
+
         try:
             nrds_url = self.config.get('nrds', 'url')
             nrds_config = self.config.get('nrds', 'config_name')
