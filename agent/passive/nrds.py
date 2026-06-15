@@ -20,6 +20,7 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
     def run(self, run_time):
         logging.debug('Establishing passive handler: NRDS')
+        logging.debug('Next run time: %s', self.next_run)
 
         try:
             nrds_url = self.config.get('nrds', 'url')
@@ -35,6 +36,9 @@ class Handler(passive.nagioshandler.NagiosHandler):
             if directive is None:
                 logging.error("Cannot start NRDS transaction: %r is invalid or missing.", directive)
                 return
+
+        self.next_run = time.time() + nrds_interval
+        logging.debug('New next run time: %s', self.next_run)
 
         config_update_successful = False
         # Check to see if an update is required.

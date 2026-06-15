@@ -21,6 +21,10 @@ class NagiosHandler(object):
         """
         self.config = config
         self.checks = None
+        self.next_run = 0
+        logging.debug('id is: %s', id(self))
+        logging.debug('next_run is: %s', self.next_run)
+
 
     def get_commands_from_config(self):
         """
