@@ -3,7 +3,7 @@ requests
 Jinja2
 flask
 werkzeug
-docutilsgit
+docutils
 cffi
 gevent
 gevent-websocket
