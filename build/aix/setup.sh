@@ -222,4 +222,8 @@ if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     # Use pip to install cx_Freeze into the environment
     echo "***** aix/setup.sh - Installing cx_Freeze into the environment"
     $PYTHONBIN -m pip install $BUILD_DIR/cx_Freeze-8.4.1
+
+    # Install cryptography with the correct compiler flags
+    export CC="gcc -maix64"
+    $PYTHONBIN -m pip install cryptography
 fi
