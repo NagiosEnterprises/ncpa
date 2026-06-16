@@ -225,5 +225,5 @@ if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
 
     # Install cryptography with the correct compiler flags
     export CC="gcc -maix64"
-    $PYTHONBIN -m pip install cryptography pyOpenSSL
+    $PYTHONBIN -m pip install cryptography
 fi 
