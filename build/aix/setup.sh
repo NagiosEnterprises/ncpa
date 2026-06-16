@@ -213,6 +213,7 @@ set -e
 
 # Setup the c compiler export for building python cryptography after prerequisites are installed
 export CC="gcc"
+export LDFLAGS="-L/opt/freeware/lib64 -L/opt/freeware/lib"
 
 # Automatically install Python requirements in venv after setup
 echo "***** aix/setup.sh - Installing Python requirements in virtual environment if applicable"
