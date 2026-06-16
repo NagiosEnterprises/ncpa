@@ -1,4 +1,3 @@
-psutil
 requests
 Jinja2
 flask
