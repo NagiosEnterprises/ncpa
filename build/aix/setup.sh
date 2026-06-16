@@ -212,7 +212,6 @@ mkuser pgrp='nagios' groups='nagios' home='/home/nagios' nagios
 set -e
 
 # Setup the c compiler export for building python cryptography after prerequisites are installed
-# export CC="gcc"
 export LDFLAGS="-L/opt/freeware/lib64 -L/opt/freeware/lib"
 
 # Automatically install Python requirements in venv after setup
@@ -226,5 +225,5 @@ if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
 
     # Install cryptography with the correct compiler flags
     export CC="gcc -maix64"
-    $PYTHONBIN -m pip install cryptography
-fi
+    $PYTHONBIN -m pip install cryptography pyOpenSSL
+fi 
