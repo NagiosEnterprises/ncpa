@@ -36,29 +36,41 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 logging.error("Cannot start NRDS transaction: %r is invalid or missing.", directive)
                 return
 
-        while True:
-            try:
-                config_update_successful = False
-                # Check to see if an update is required.
-                if self.config_update_is_required(nrds_url, nrds_token, nrds_config, nrds_config_version):
-                    logging.debug('Updating my NRDS config...')
-                    config_update_successful = self.update_config(nrds_url, nrds_token, nrds_config)
+        # Check the last run time
+        state_file = '/usr/local/ncpa/var/nrds.last_run'
 
-                    logging.debug('Config update is successful: %s', config_update_successful)
-                    if config_update_successful:
-                        # Wait a few seconds to ensure file is written before restarting service
-                        time.sleep(5)
+        try:
+            with open(state_file, 'r') as f:
+                last_run = int(f.read().strip())
+        except Exception:
+            last_run = 0
 
-                        # Restart service to apply config...
-                        passive.utils.restart_ncpa_service()
+        if run_time - last_run < nrds_interval:
+            logging.debug(
+                "NRDS interval not reached (%d seconds remaining)",
+                nrds_interval - (run_time - last_run)
+            )
+            return
 
-                logging.debug('Done with this NRDS iteration.')
-            except Exception as e:
-                logging.error("Error occurred while running NRDS: %r", e)
-                break
+        # Update last run immediately
+        with open(state_file, 'w') as f:
+            f.write(str(int(run_time)))
 
-            time.sleep(nrds_interval)
-        logging.debug('Exiting NRDS loop.')
+        config_update_successful = False
+        # Check to see if an update is required.
+        if self.config_update_is_required(nrds_url, nrds_token, nrds_config, nrds_config_version):
+            logging.debug('Updating my NRDS config...')
+            config_update_successful = self.update_config(nrds_url, nrds_token, nrds_config)
+
+            logging.debug('Config update is successful: %s', config_update_successful)
+            if config_update_successful:
+                # Wait a few seconds to ensure file is written before restarting service
+                time.sleep(5)
+
+                # Restart service to apply config...
+                passive.utils.restart_ncpa_service()
+
+        logging.debug('Done with this NRDS iteration.')
 
     @staticmethod
     def get_plugin(nrds_url, nrds_token, nrds_os, plugin_path, plugin):
@@ -214,83 +226,3 @@ class Handler(passive.nagioshandler.NagiosHandler):
         except Exception as exc:
             logging.error("Encountered exception while trying to connect to NRDS server: %r", exc)
             return False
-
-    @staticmethod
-    def get_os():
-        """
-        Gets the current operation system we are working on. Used for determining which architecture/build of the
-        plugin we wish to retrieve.
-
-        :return: A string representing our OS
-        :rtype: str
-        """
-        plat = sys.platform
-
-        if plat == 'darwin' or plat == 'mac':
-            nrds_os = 'Darwin'
-        elif 'linux' in plat:
-            nrds_os = 'Linux'
-        elif 'aix' in plat:
-            nrds_os = 'AIX'
-        elif 'sun' in plat:
-            nrds_os = 'SunOS'
-        elif 'win' in plat:
-            nrds_os = 'Windows'
-        else:
-            nrds_os = 'Generic'
-        return nrds_os
-
-    def list_missing_plugins(self):
-        """
-        List the plugins that will need to retrieved from the NRDS server.
-
-        :return: The set containing a list of plugin names
-        :rtype: set
-        """
-        installed_plugins = self.get_installed_plugins()
-        required_plugins = self.get_required_plugins()
-
-        logging.debug('installed plugins: %s', installed_plugins)
-        logging.debug('required plugins: %s', required_plugins)
-
-        return required_plugins - installed_plugins
-
-    def get_required_plugins(self):
-        """
-        List the plugins that are in the plugins directory
-
-        :return: The set containing a list of plugin names
-        :rtype: set
-        """
-        checks_in_config = self.config.items('passive checks')
-        required_plugins = set()
-
-        for target, check in checks_in_config:
-            if '|' in target:
-                if 'plugin/' in check:
-                    plugin_search = re.search(u'plugin/([^/]+).*', check)
-                    plugin_name = plugin_search.group(1)
-                    required_plugins.add(plugin_name)
-
-        return required_plugins
-
-    def get_installed_plugins(self):
-        """
-        Return a set containing the plugins that exist in the plugins/ directory.
-
-        :return: Set containing all the plugins that already exist in the plugins/ directory.
-        :rtype: set
-        """
-        logging.debug("Checking for installed plugins.")
-        plugin_path = self.config.get('plugin directives', 'plugin_path')
-        logging.debug('plugin path: %s', plugin_path)
-        plugins = set()
-
-        try:
-            for plugin in os.listdir(plugin_path):
-                if not plugin.startswith('.'):
-                    plugins.add(plugin)
-        except Exception as exc:
-            logging.error("Encountered exception while trying to read plugin directory: %r", exc)
-
-        return plugins
