@@ -72,33 +72,6 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
         logging.debug('Done with this NRDS iteration.')
 
-    @staticmethod
-    def get_plugin(nrds_url, nrds_token, nrds_os, plugin_path, plugin):
-        getargs = {
-            'cmd': 'getplugin',
-            'os': nrds_os,
-            'token': nrds_token,
-            'plugin': plugin
-        }
-
-        # This plugin_abs_path should be absolute, as it is adjusted when the daemon runs.
-        url_request = passive.utils.send_request(nrds_url, **getargs)
-        plugin_abs_path = os.path.join(plugin_path, plugin)
-
-        if plugin_abs_path != os.path.abspath(plugin_abs_path):
-            raise ValueError("Plugin path (%s) is not absolute, I will not continue safely.", plugin_abs_path)
-
-        logging.debug("Downloading plugin to location: %s", plugin_abs_path)
-
-        try:
-            with open(plugin_abs_path, 'w') as plugin_file:
-                plugin_file.write(url_request)
-                logging.info("Successfully downloaded plugin: %s", plugin)
-                if os.name != 'nt':
-                    os.chmod(plugin_abs_path, 775)
-        except Exception as exc:
-            logging.error('Could not write the plugin to %s: %r', plugin_abs_path, exc)
-
     def update_config(self, nrds_url, nrds_token, nrds_config):
         """
         Downloads new config to whatever is declared as path
