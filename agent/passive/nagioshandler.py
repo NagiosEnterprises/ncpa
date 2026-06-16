@@ -21,11 +21,7 @@ class NagiosHandler(object):
         """
         self.config = config
         self.checks = None
-        self.next_run = 0
-        logging.debug('id is: %s', id(self))
-        logging.debug('next_run is: %s', self.next_run)
-
-
+        
     def get_commands_from_config(self):
         """
         Get list of commands from the config.
@@ -79,13 +75,3 @@ class NagiosHandler(object):
         generically. This sets the checks parsed from the passive portion of the config.
         """
         self.checks = self.get_commands_from_config()
-
-    def set_next_run(self, next_run):
-        """
-        Set the next run time for this handler.
-
-        :param next_run: The time when the next run should occur.
-        :type next_run: float
-        """
-        self.next_run = next_run
-        logging.debug('Next run time set to: %s', self.next_run)
