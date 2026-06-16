@@ -1,7 +1,9 @@
+psutil==7.0.0
 requests
 Jinja2
 flask
 werkzeug
+docutilsgit
 cffi
 gevent
 gevent-websocket
