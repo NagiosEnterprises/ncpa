@@ -20,7 +20,6 @@ class Handler(passive.nagioshandler.NagiosHandler):
 
     def run(self, run_time):
         logging.debug('Establishing passive handler: NRDS')
-        logging.debug('Next run time: %s', self.next_run)
 
         try:
             nrds_url = self.config.get('nrds', 'url')
@@ -37,34 +36,29 @@ class Handler(passive.nagioshandler.NagiosHandler):
                 logging.error("Cannot start NRDS transaction: %r is invalid or missing.", directive)
                 return
 
-        # self.next_run = time.time() + nrds_interval
-        self.set_next_run(time.time() + nrds_interval)
-        logging.debug('New next run time: %s', self.next_run)
+        while True:
+            try:
+                config_update_successful = False
+                # Check to see if an update is required.
+                if self.config_update_is_required(nrds_url, nrds_token, nrds_config, nrds_config_version):
+                    logging.debug('Updating my NRDS config...')
+                    config_update_successful = self.update_config(nrds_url, nrds_token, nrds_config)
 
-        config_update_successful = False
-        # Check to see if an update is required.
-        if self.config_update_is_required(nrds_url, nrds_token, nrds_config, nrds_config_version):
-            logging.debug('Updating my NRDS config...')
-            config_update_successful = self.update_config(nrds_url, nrds_token, nrds_config)
+                    logging.debug('Config update is successful: %s', config_update_successful)
+                    if config_update_successful:
+                        # Wait a few seconds to ensure file is written before restarting service
+                        time.sleep(5)
 
-            logging.debug('Config update is successful: %s', config_update_successful)
-            if config_update_successful:
-                # Wait a few seconds to ensure file is written before restarting service
-                time.sleep(5)
+                        # Restart service to apply config...
+                        passive.utils.restart_ncpa_service()
 
-                # Restart service to apply config...
-                passive.utils.restart_ncpa_service()
+                logging.debug('Done with this NRDS iteration.')
+            except Exception as e:
+                logging.error("Error occurred while running NRDS: %r", e)
+                break
 
-        # Then install any necessary plugins if need be.
-        # needed_plugins = self.list_missing_plugins()
-        # logging.debug('Needed plugins: %s', needed_plugins)
-
-        # if needed_plugins:
-        #     logging.debug('We need some plugins. Getting them...')
-        #     for plugin in needed_plugins:
-        #         self.get_plugin(plugin)
-
-        logging.debug('Done with this NRDS iteration.')
+            time.sleep(nrds_interval)
+        logging.debug('Exiting NRDS loop.')
 
     @staticmethod
     def get_plugin(nrds_url, nrds_token, nrds_os, plugin_path, plugin):
