@@ -51,7 +51,7 @@ elif [ "$1" = "2" ]; then
     if lssrc -s ncpa | grep -q "active"; then
         stopsrc -s ncpa -f >/dev/null 2>&1
     fi
-    sleep 2
+    sleep 10
 fi
 
 %post
