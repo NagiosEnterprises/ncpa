@@ -30,7 +30,7 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/local
 cp -rf $RPM_BUILD_DIR/ncpa-%{version} %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
-# chown -R nagios:nagios %{buildroot}/usr/local/ncpa
+chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 
 %clean
 rm -rf %{buildroot}
@@ -49,9 +49,9 @@ if [ "$1" == "1" ]; then
 elif [ "$1" = "2" ]; then
     # Upgrades require the daemons to be stopped
     if lssrc -s ncpa | grep -q "active"; then
-        stopsrc -s ncpa -f >/dev/null 2>&1
+        stopsrc -s ncpa >/dev/null 2>&1
     fi
-    sleep 7
+    sleep 5
 fi
 
 %post
