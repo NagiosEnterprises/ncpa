@@ -51,7 +51,7 @@ elif [ "$1" = "2" ]; then
     if lssrc -s ncpa | grep -q "active"; then
         stopsrc -s ncpa -f >/dev/null 2>&1
     fi
-    sleep 10
+    sleep 2
 fi
 
 %post
@@ -69,7 +69,14 @@ elif [ "$1" == "2" ]; then
 fi
 
 # Start the daemons using SRC
-startsrc -s ncpa >/dev/null 2>&1
+# startsrc -s ncpa >/dev/null 2>&1
+
+startsrc -s ncpa
+rc=$?
+
+echo "startsrc rc=$rc" >/tmp/ncpa-rpm-post.log
+
+lssrc -s ncpa >>/tmp/ncpa-rpm-post.log 2>&1
 
 %preun
 if [ -z $RPM_INSTALL_PREFIX ]; then
