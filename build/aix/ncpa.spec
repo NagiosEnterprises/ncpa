@@ -30,7 +30,7 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/local
 cp -rf $RPM_BUILD_DIR/ncpa-%{version} %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
-chown -R nagios:nagios %{buildroot}/usr/local/ncpa
+# chown -R nagios:nagios %{buildroot}/usr/local/ncpa
 
 %clean
 rm -rf %{buildroot}
@@ -51,7 +51,7 @@ elif [ "$1" = "2" ]; then
     if lssrc -s ncpa | grep -q "active"; then
         stopsrc -s ncpa -f >/dev/null 2>&1
     fi
-    sleep 2
+    sleep 7
 fi
 
 %post
@@ -64,22 +64,12 @@ if [ "$1" == "1" ]; then
     mkssys -s ncpa -p $RPM_INSTALL_PREFIX/ncpa/bin/aix-ncpa-service.sh -G nagios -u 0 -S -n 15 -f 9 >/dev/null 2>&1
 
     mkitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
-elif [ "$1" = "2" ]; then
-
-    if ! lssrc -s ncpa >/dev/null 2>&1; then
-        mkssys -s ncpa -p $RPM_INSTALL_PREFIX/ncpa/bin/aix-ncpa-service.sh -G nagios -u 0 -S -n 15 -f 9 >/dev/null 2>&1
-    fi
-
+elif [ "$1" == "2" ]; then
     chitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
-
-    startsrc -s ncpa
-
-    sleep 3
 fi
 
 # Start the daemons using SRC
-# sleep 10
-# startsrc -s ncpa >/dev/null 2>&1
+startsrc -s ncpa >/dev/null 2>&1
 
 %preun
 if [ -z $RPM_INSTALL_PREFIX ]; then
