@@ -71,6 +71,7 @@ fi
 # Start the daemons using SRC
 # startsrc -s ncpa >/dev/null 2>&1
 
+sleep 5
 startsrc -s ncpa
 rc=$?
 
