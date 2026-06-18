@@ -259,6 +259,21 @@ logfile = var/log/ncpa_passive.log
 # Simply uncommenting the lines in that file will make those passive checks available.
 # Default: none
 
+# SSL verification for passive checks. Disabling verification can be useful if you are using a self-signed certificate
+# or if you do not want to verify the SSL certificate for any reason.
+# 0 = SSL verification disabled
+# 1 = SSL verification enabled (default)
+#
+passive_ssl_verification = 1
+
+# Optionally specify the full path to a CA cert file to use for verifying the SSL certificate of the server when sending passive check results.
+# If this is not specified, requests will use the default certifi CA bundle that comes with Python's requests library when passive_ssl_verification is enabled.
+# Example: /usr/local/ncpa/var/ca.crt
+# Example: C:\Program Files\Nagios\NCPA\var\ca.crt
+#
+ca_cert =
+
+
 #
 # -------------------------------
 # Passive Configuration (NRDP)
