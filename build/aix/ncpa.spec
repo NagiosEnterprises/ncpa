@@ -53,13 +53,11 @@ elif [ "$1" = "2" ]; then
     fi
 
     # Stop NCPA 2 daemons if present
-    if lssrc -s ncpa_listener | grep -q "active" >/dev/null 2>&1; then
-        stopsrc -s ncpa_listener >/dev/null 2>&1
-        sleep 5
+    if lssrc -s ncpa_listener | grep -q "active"; then
+        stopsrc -s ncpa_listener -f >/dev/null 2>&1
     fi
-    if lssrc -s ncpa_passive | grep -q "active" >/dev/null 2>&1; then
-        stopsrc -s ncpa_passive >/dev/null 2>&1
-        sleep 5
+    if lssrc -s ncpa_passive | grep -q "active"; then
+        stopsrc -s ncpa_passive -f >/dev/null 2>&1
     fi
 
     sleep 5
