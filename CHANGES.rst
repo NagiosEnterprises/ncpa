@@ -6,6 +6,11 @@ Changelog
 
 - Placeholder for future release updates. - CPD
 
+**Updates**
+
+- Updated Windows builds to use Python version 3.13.14. - CPD
+- Updated Windows builds to use OpenSSL version 3.0.21 to resolve CVEs and improve compatibility. [GH#1397] - CPD
+
 3.4.2 - 6/18/2026
 ==================
 **Added**
