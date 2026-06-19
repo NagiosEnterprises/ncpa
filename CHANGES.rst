@@ -4,7 +4,7 @@ Changelog
 ==================
 **Added**
 
-- Placeholder for future release updates. - CPD
+- Added retry_without_ssl config option in the [passive] section of ncpa.cfg to allow for retrying passive check requests without SSL verification. - CPD
 
 **Updates**
 

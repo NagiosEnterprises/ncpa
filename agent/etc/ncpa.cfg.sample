@@ -273,6 +273,12 @@ passive_ssl_verification = 1
 #
 ca_cert =
 
+# If enabled, the agent will attempt to retry sending passive check results without SSL verification if the initial attempt fails.
+# This is useful for environments where SSL verification is problematic.
+# 0 = Disabled
+# 1 = Enabled (default)
+#
+retry_without_ssl = 1
 
 #
 # -------------------------------
