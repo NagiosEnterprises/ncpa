@@ -49,9 +49,9 @@ if [ "$1" == "1" ]; then
 elif [ "$1" = "2" ]; then
     # Upgrades require the daemons to be stopped
     if lssrc -s ncpa | grep -q "active"; then
-        stopsrc -s ncpa -f >/dev/null 2>&1
+        stopsrc -s ncpa >/dev/null 2>&1
     fi
-    sleep 2
+    sleep 5
 fi
 
 %post
