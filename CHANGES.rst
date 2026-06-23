@@ -4,19 +4,19 @@ Changelog
 ==================
 **Bug Fixes**
 
+- Fixed an AIX upgrade issue that was preventing the NCPA service from starting automatically after an upgrade. - CPD
 - Fixed an issue where the total count and pagination numbers in the Checks UI were incorrect when filtered by Type. - CPD
 - Fixed multiple AIX build issue with dependencies that were preventing the build from completing successfully. - CPD
-- Fixed an AIX upgrade issue that was preventing the NCPA service from starting automatically after an upgrade. - CPD
 - Fixed multiple AIX upgrade issues that were preventing upgrades from NCPA 2.x to NCPA 3.x from completing successfully. - CPD
-
-**Updates**
-
-- Updated Windows builds to use Python version 3.13.14. - CPD
-- Updated Windows builds to use OpenSSL version 3.0.21 to resolve CVEs and improve compatibility. [GH#1397] - CPD
 
 **Removed**
 
 - Removed pyOenSSL from the AIX build dependency list as it was not being used and was causing build issues. - CPD
+
+**Updates**
+
+- Updated Windows builds to use OpenSSL version 3.0.21 to resolve CVEs and improve compatibility. [GH#1397] - CPD
+- Updated Windows builds to use Python version 3.13.14. - CPD
 
 3.4.2 - 6/18/2026
 ==================
