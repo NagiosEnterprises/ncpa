@@ -2,9 +2,9 @@ Changelog
 +++++++++
 3.4.3 - 7/23/2026
 ==================
-**Added**
+**Bug Fixes**
 
-- Placeholder for future release updates. - CPD
+- Fixed an issue where the total count and pagination numbers in the Checks UI were incorrect when filtered by Type. - CPD
 
 **Updates**
 
