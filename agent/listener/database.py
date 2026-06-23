@@ -70,7 +70,8 @@ class DB(object):
             logging.exception(ex)
 
     # Returns the total amount of checks in the DB
-    def get_checks_count(self, search='', status='', senders=[]):
+
+    def get_checks_count(self, search='', status='', ctype='', senders=[]):
         where = False
         data = ()
         cmd = "SELECT COUNT(*) FROM checks"
@@ -90,6 +91,16 @@ class DB(object):
                 cmd += " WHERE"
                 where = True
             cmd += " result = ?"
+
+        # Add type where clause
+        if ctype != '':
+            data += (ctype,)
+            if where:
+                cmd += " AND"
+            else:
+                cmd += " WHERE"
+                where = True
+            cmd += " type = ?"
 
         # Add senders
         if len(senders) > 0:
