@@ -47,10 +47,19 @@ if [ "$1" == "1" ]; then
         mkuser login=false rlogin=false pgrp=nagios groups=nagios nagios
     fi
 elif [ "$1" = "2" ]; then
-    # Upgrades require the daemons to be stopped
+    # Upgrades require the daemon to be stopped
     if lssrc -s ncpa | grep -q "active"; then
         stopsrc -s ncpa >/dev/null 2>&1
     fi
+
+    # Stop NCPA 2 daemons if present
+    if lssrc -s ncpa_listener | grep -q "active"; then
+        stopsrc -s ncpa_listener -f >/dev/null 2>&1
+    fi
+    if lssrc -s ncpa_passive | grep -q "active"; then
+        stopsrc -s ncpa_passive -f >/dev/null 2>&1
+    fi
+
     sleep 5
 fi
 
@@ -62,13 +71,27 @@ fi
 # Install/update SRC and add entries into inittab and remove blank files on install
 if [ "$1" == "1" ]; then
     mkssys -s ncpa -p $RPM_INSTALL_PREFIX/ncpa/bin/aix-ncpa-service.sh -G nagios -u 0 -S -n 15 -f 9 >/dev/null 2>&1
-
     mkitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
 elif [ "$1" == "2" ]; then
-    chitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
+    if lssrc -s ncpa >/dev/null 2>&1; then
+        chitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
+    else # The service is not installed, so we need to install it
+        mkssys -s ncpa -p $RPM_INSTALL_PREFIX/ncpa/bin/aix-ncpa-service.sh -G nagios -u 0 -S -n 15 -f 9 >/dev/null 2>&1
+        mkitab "ncpa:2:once:/usr/bin/startsrc -s ncpa >/dev/null 2>&1"
+    fi
+
+    # Remove NCPA 2 daemons if present
+    if lssrc -s ncpa_listener >/dev/null 2>&1; then
+        rmitab "ncpa_listener"
+        rmssys -s ncpa_listener >/dev/null 2>&1
+    fi
+    if lssrc -s ncpa_passive >/dev/null 2>&1; then
+        rmitab "ncpa_passive"
+        rmssys -s ncpa_passive >/dev/null 2>&1
+    fi
 fi
 
-# Start the daemons using SRC
+# Start the daemon using SRC
 startsrc -s ncpa >/dev/null 2>&1
 
 %preun
