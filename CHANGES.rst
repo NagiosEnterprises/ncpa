@@ -5,6 +5,7 @@ Changelog
 **Bug Fixes**
 
 - Fixed an issue where the total count and pagination numbers in the Checks UI were incorrect when filtered by Type. - CPD
+- Fixed an AIX build issue with dependencies that was preventing the build from completing successfully. - CPD
 
 **Updates**
 
