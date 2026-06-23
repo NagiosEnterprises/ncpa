@@ -6,6 +6,7 @@ Changelog
 
 - Fixed an issue where the total count and pagination numbers in the Checks UI were incorrect when filtered by Type. - CPD
 - Fixed multiple AIX build issue with dependencies that were preventing the build from completing successfully. - CPD
+- Fixed an AIX upgrade issue that was preventing the NCPA service from starting automatically after an upgrade. - CPD
 
 **Updates**
 
