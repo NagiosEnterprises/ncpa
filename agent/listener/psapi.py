@@ -26,8 +26,7 @@ def get_uptime():
     epoch_boot = int(current_time)
     return (epoch_boot - ps.boot_time(), "s")
 
-def make_disk_nodes(disk_name):
-    disk_counters = ps.disk_io_counters(perdisk=True)
+def make_disk_nodes(disk_name, disk_counters):
     counters = disk_counters.get(disk_name)
     if counters is None:
         return ParentNode(disk_name, children=[])
@@ -89,11 +88,18 @@ def make_disk_nodes(disk_name):
 def make_mountpoint_nodes(partition_name):
     mountpoint = partition_name.mountpoint
 
-    total = RunnableNode("total", method=lambda: (ps.disk_usage(mountpoint).total, "B"))
-    used = RunnableNode("used", method=lambda: (ps.disk_usage(mountpoint).used, "B"))
-    free = RunnableNode("free", method=lambda: (ps.disk_usage(mountpoint).free, "B"))
+    _cached_usage = [None]
+
+    def get_usage():
+        if _cached_usage[0] is None:
+            _cached_usage[0] = ps.disk_usage(mountpoint)
+        return _cached_usage[0]
+
+    total = RunnableNode("total", method=lambda: (get_usage().total, "B"))
+    used = RunnableNode("used", method=lambda: (get_usage().used, "B"))
+    free = RunnableNode("free", method=lambda: (get_usage().free, "B"))
     used_percent = RunnableNode(
-        "used_percent", method=lambda: (ps.disk_usage(mountpoint).percent, "%")
+        "used_percent", method=lambda: (get_usage().percent, "%")
     )
     device_name = RunnableNode(
         "device_name", method=lambda: ([partition_name.device], "")
@@ -376,8 +382,10 @@ def get_disk_node(config):
     logging.debug("get_disk_node() was called")
     # Get all physical disk io counters
     try:
+        all_disk_counters = ps.disk_io_counters(perdisk=True) or {}
         disk_counters = [
-            make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())
+            make_disk_nodes(name, all_disk_counters)
+            for name in all_disk_counters
         ]
     except IOError as ex:
         logging.exception(ex)

@@ -1,5 +1,12 @@
 Changelog
 +++++++++
+3.4.3 - X/XX/2026
+==================
+**Bug Fixes**
+
+- Several improvements to disk endpoint performance. [GH#1282] - BB
+
+
 3.4.2 - 6/18/2026
 ==================
 **Added**
