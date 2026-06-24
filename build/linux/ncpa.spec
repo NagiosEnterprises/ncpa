@@ -45,9 +45,11 @@ mkdir -p %{buildroot}/etc/init.d
 touch %{buildroot}/usr/local/ncpa/var/ncpa.db
 chown nagios:nagios %{buildroot}/usr/local/ncpa -R
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-init %{buildroot}/etc/init.d/ncpa
+sed -i 's|_BASEDIR_|BASEDIR="%{_prefix}/ncpa"|' %{buildroot}/etc/init.d/ncpa
 
 mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-service %{buildroot}/usr/lib/systemd/system/ncpa.service
+sed -i 's|_BASEDIR_|%{_prefix}/ncpa|' %{buildroot}/usr/lib/systemd/system/ncpa.service
 
 %clean
 rm -rf %{buildroot}
@@ -130,12 +132,6 @@ if [ -z $RPM_INSTALL_PREFIX ]
 then
     RPM_INSTALL_PREFIX="/usr/local"
 fi
-
-# Set the directory inside the init scripts
-dir=$RPM_INSTALL_PREFIX/ncpa
-sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa
-sed -i "s|_BASEDIR_|$dir|" /usr/lib/systemd/system/ncpa.service
-
 
 if command -v systemctl &> /dev/null; then
     systemctl enable ncpa &> /dev/null
@@ -275,10 +271,15 @@ fi
 %defattr(0664,root,nagios,0775)
 %dir /usr/local/ncpa/etc
 %dir /usr/local/ncpa/etc/ncpa.cfg.d
-/usr/local/ncpa/var
+%dir /usr/local/ncpa/var
+%dir /usr/local/ncpa/var/log
+%dir /usr/local/ncpa/var/run
+%verify(not md5 size mtime mode user group) /usr/local/ncpa/var/log/ncpa_listener.log
+%verify(not md5 size mtime mode user group) /usr/local/ncpa/var/log/ncpa_passive.log
+%verify(not md5 size mtime) /usr/local/ncpa/var/ncpa.db
 
 %defattr(0640,root,nagios,0755)
-%config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
+%config(noreplace) %verify(not md5 size mtime mode) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
 /usr/local/ncpa/etc/ncpa.cfg.d/README.txt
