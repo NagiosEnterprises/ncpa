@@ -571,7 +571,7 @@ def checks():
     data['ctype'] = ctype
 
     # Do some page math magic
-    total = db.get_checks_count(search, status=status, senders=check_senders)
+    total = db.get_checks_count(search, status=status, ctype=ctype, senders=check_senders)
 
     total_pages = int(math.ceil(float(total)/size))
     if total_pages < 1:
