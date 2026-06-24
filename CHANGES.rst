@@ -2,12 +2,14 @@ Changelog
 +++++++++
 3.4.3 - 7/23/2026
 ==================
+
 **Bug Fixes**
 
 - Fixed an AIX upgrade issue that was preventing the NCPA service from starting automatically after an upgrade. - CPD
 - Fixed an issue where the total count and pagination numbers in the Checks UI were incorrect when filtered by Type. - CPD
 - Fixed multiple AIX build issue with dependencies that were preventing the build from completing successfully. - CPD
 - Fixed multiple AIX upgrade issues that were preventing upgrades from NCPA 2.x to NCPA 3.x from completing successfully. - CPD
+- Fixed an issue where builds would fail on el 10 systems due to a missing dependency. - BB
 
 **Removed**
 

@@ -104,12 +104,17 @@ install_prereqs() {
         else
             if [ "$distro" == "CentOS" ]; then
                 yum -y install epel-release
-                
-                # Enable CRB (CodeReady Builder) repository for development packages
-                # This provides gdbm-devel and other development libraries
-                if command -v dnf >/dev/null 2>&1; then
-                    echo -e "***** linux/setup.sh - enabling CRB repository for development packages"
-                    dnf config-manager --enable crb 2>/dev/null || true
+            fi
+
+            # Enable CRB (CodeReady Builder) repository for development packages
+            # This provides gdbm-devel and other development libraries
+            if command -v dnf >/dev/null 2>&1; then
+                echo -e "***** linux/setup.sh - enabling CRB repository for development packages"
+                crb_repo=$(dnf repolist all 2>/dev/null | grep -i 'codeready-builder' | grep -i rpms | grep -v -E 'debug|source|eus' | awk '{print $1}' | head -1)
+                if [ -n "$crb_repo" ]; then
+                    dnf config-manager --set-enabled "$crb_repo" 2>/dev/null || true
+                else
+                    dnf config-manager --set-enabled crb 2>/dev/null || true
                 fi
             fi
         fi
