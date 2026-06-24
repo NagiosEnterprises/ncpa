@@ -8,6 +8,7 @@ Changelog
 - Fixed an issue where the total count and pagination numbers in the Checks UI were incorrect when filtered by Type. - CPD
 - Fixed multiple AIX build issue with dependencies that were preventing the build from completing successfully. - CPD
 - Fixed multiple AIX upgrade issues that were preventing upgrades from NCPA 2.x to NCPA 3.x from completing successfully. - CPD
+- Fixed rpm -V reporting false positives on RHEL for config, log, database, and service files. [GH#1299] - CPD
 - Several improvements to disk endpoint performance. [GH#1282] - BB
 
 **Removed**
