@@ -49,6 +49,11 @@ install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-init %{bui
 mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-service %{buildroot}/usr/lib/systemd/system/ncpa.service
 
+# Set the directory inside the init scripts
+dir=$RPM_INSTALL_PREFIX/ncpa
+sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa
+sed -i "s|_BASEDIR_|$dir|" /usr/lib/systemd/system/ncpa.service
+
 %clean
 rm -rf %{buildroot}
 
@@ -130,11 +135,6 @@ if [ -z $RPM_INSTALL_PREFIX ]
 then
     RPM_INSTALL_PREFIX="/usr/local"
 fi
-
-# Set the directory inside the init scripts
-dir=$RPM_INSTALL_PREFIX/ncpa
-sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa
-sed -i "s|_BASEDIR_|$dir|" /usr/lib/systemd/system/ncpa.service
 
 if command -v systemctl &> /dev/null; then
     systemctl enable ncpa &> /dev/null
