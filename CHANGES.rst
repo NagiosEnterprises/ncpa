@@ -10,6 +10,7 @@ Changelog
 - Fixed multiple AIX build issue with dependencies that were preventing the build from completing successfully. - CPD
 - Fixed multiple AIX upgrade issues that were preventing upgrades from NCPA 2.x to NCPA 3.x from completing successfully. - CPD
 - Fixed an issue where builds would fail on el 10 systems due to a missing dependency. - BB
+- Fixed rpm -V reporting false positives on RHEL for config, log, database, and service files. [GH#1299] - CPD
 
 **Removed**
 
