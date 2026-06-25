@@ -704,6 +704,20 @@ class Daemon():
     def set_uid_gid(self):
         """Drop root privileges"""
         self.logger.debug("Daemon - set_uid_gid()")
+
+        current_uid = os.getuid()
+        current_gid = os.getgid()
+        if current_uid == self.uid and current_gid == self.gid:
+            self.logger.debug(
+                "Already running as configured user/group (uid:%d, gid:%d), skipping privilege drop",
+                current_uid, current_gid)
+            return
+        if os.geteuid() != 0:
+            self.logger.warning(
+                "Not running as root (uid:%d, gid:%d); cannot drop to uid:%d gid:%d, skipping privilege drop",
+                current_uid, current_gid, self.uid, self.gid)
+            return
+
         # Get set of gids to set for OS groups
         gids = [ self.gid ]
         if self.username:
