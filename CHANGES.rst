@@ -6,6 +6,7 @@ Changelog
 **Bug Fixes**
 
 - Fixed an AIX upgrade issue that was preventing the NCPA service from starting automatically after an upgrade. - CPD
+- Fixed an error message that can appear in /var/log/messages on Linux systems when the NCPA service is stopped. - CPD
 - Fixed an issue where the total count and pagination numbers in the Checks UI were incorrect when filtered by Type. - CPD
 - Fixed multiple AIX build issue with dependencies that were preventing the build from completing successfully. - CPD
 - Fixed multiple AIX upgrade issues that were preventing upgrades from NCPA 2.x to NCPA 3.x from completing successfully. - CPD
