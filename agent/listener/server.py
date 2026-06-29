@@ -182,6 +182,39 @@ def secure_compare(item1, item2):
     return compare_digest(item1, item2)
 
 
+def get_gui_session_timeout():
+    try:
+        timeout = int(get_config_value('listener', 'gui_session_timeout', 3600))
+    except (TypeError, ValueError):
+        timeout = 3600
+    return max(0, timeout)
+
+
+def touch_session_activity():
+    session['last_activity'] = datetime.datetime.now().timestamp()
+
+
+def enforce_session_activity():
+    """Clear expired GUI sessions and return a redirect to login if needed."""
+    if not session.get('logged', False):
+        return None
+
+    timeout = get_gui_session_timeout()
+    if timeout <= 0:
+        return None
+
+    now = datetime.datetime.now().timestamp()
+    last = session.get('last_activity')
+    if last is not None and (now - last) > timeout:
+        session.clear()
+        session['message'] = 'Session expired due to inactivity.'
+        session['redirect'] = request.url
+        return redirect(url_for('login'))
+        
+    touch_session_activity()
+    return None
+
+
 # ------------------------------
 # Authentication Wrappers
 # ------------------------------
@@ -323,8 +356,12 @@ def requires_token_or_auth(f):
         # This is an internal call, we don't check
         if __INTERNAL__ is True:
             pass
-        elif session.get('logged', False) or token_valid:
+        elif token_valid:
             pass
+        elif session.get('logged', False):
+            expired = enforce_session_activity()
+            if expired:
+                return expired
         elif token is None:
             session['redirect'] = request.url
             return redirect(url_for('login'))
@@ -343,11 +380,13 @@ def requires_auth(f):
         # This is an internal call, we don't check
         if __INTERNAL__ is True:
             pass
-        elif session.get('logged', False):
-            pass
         else:
-            session['redirect'] = request.url
-            return redirect(url_for('login'))
+            expired = enforce_session_activity()
+            if expired:
+                return expired
+            if not session.get('logged', False):
+                session['redirect'] = request.url
+                return redirect(url_for('login'))
         return f(*args, **kwargs)
 
     return auth_decoration
@@ -361,6 +400,10 @@ def requires_admin_auth(f):
         # Verify that regular auth has happened
         if not session.get('logged', False):
             return redirect(url_for('login'))
+
+        expired = enforce_session_activity()
+        if expired:
+            return expired
 
         # Check if access to admin is okay
         admin_gui_access = int(get_config_value('listener', 'admin_gui_access', 0))
@@ -396,6 +439,9 @@ def login():
     
     # Verify authentication and redirect if we are authenticated
     if session.get('logged', False):
+        expired = enforce_session_activity()
+        if expired:
+            return expired
         return redirect(url_for('index'))
 
     ncpa_token = listener.config['iconfig'].get('api', 'community_string')
@@ -434,9 +480,11 @@ def login():
     # Do actual authentication check
     if not admin_auth_only and token_valid:
         session['logged'] = True
+        touch_session_activity()
     elif admin_password is not None and token_is_admin:
         session['logged'] = True
         session['admin_logged'] = True
+        touch_session_activity()
 
     if session.get('logged', False):
         if url:
@@ -480,6 +528,7 @@ def admin_login():
 
     if admin_password is not None and password_valid:
         session['admin_logged'] = True
+        touch_session_activity()
         return redirect(url_for('admin'))
     elif password is not None:
         template_args['error'] = 'Password was invalid.'

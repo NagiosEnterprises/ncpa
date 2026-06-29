@@ -152,6 +152,7 @@ cfg_defaults = {
                 'admin_gui_access': '1',
                 'admin_password': 'None',
                 'admin_auth_only': '0',
+                'gui_session_timeout': '3600',
                 'allowed_hosts': '',
                 'max_connections': '200',
                 'allowed_sources': '',
