@@ -415,7 +415,7 @@ def requires_auth(f=None, touch_session=True):
 
         return auth_decoration
 
-   if f is not None:
+    if f is not None:
         return decorator(f)
     return decorator
 
