@@ -215,8 +215,8 @@ def clear_expired_session():
     session['message'] = 'Session expired due to inactivity.'
 
 
-def enforce_session_activity():
-    """Clear expired GUI sessions and return a redirect to login if needed."""
+def enforce_session_activity(touch_session=True):
+    """Clear expired GUI sessions and optionally refresh the activity timestamp."""
     if not session.get('logged', False):
         return None
 
@@ -226,7 +226,7 @@ def enforce_session_activity():
         session['redirect'] = redirect_url
         
     touch_session_activity()
-    if get_gui_session_timeout() > 0:
+    if touch_session and get_gui_session_timeout() > 0:
         touch_session_activity()
     return None
 
@@ -323,6 +323,11 @@ def inject_variables():
                'no_nav': False, 'flash_msg': False,
                'session_logged': session.get('logged', False),
                'gui_session_timeout': get_gui_session_timeout() }
+    if values['session_logged'] and values['gui_session_timeout'] > 0:
+        last = session.get('last_activity', datetime.datetime.now().timestamp())
+        values['session_expires_at'] = last + values['gui_session_timeout']
+    else:
+        values['session_expires_at'] = None
     return values
 
 
@@ -377,7 +382,7 @@ def requires_token_or_auth(f):
         elif token_valid:
             pass
         elif session.get('logged', False):
-            expired = enforce_session_activity()
+            expired = enforce_session_activity(touch_session=False)
             if expired:
                 return expired
         elif token is None:
@@ -391,23 +396,28 @@ def requires_token_or_auth(f):
 
 
 # Standard auth check, no token-only access
-def requires_auth(f):
-    @functools.wraps(f)
-    def auth_decoration(*args, **kwargs):
+def requires_auth(f=None, touch_session=True):
+    def decorator(view_func):
+        @functools.wraps(view_func)
+        def auth_decoration(*args, **kwargs):
 
-        # This is an internal call, we don't check
-        if __INTERNAL__ is True:
-            pass
-        else:
-            expired = enforce_session_activity()
-            if expired:
-                return expired
-            if not session.get('logged', False):
-                session['redirect'] = request.url
-                return redirect(url_for('login'))
-        return f(*args, **kwargs)
+            # This is an internal call, we don't check
+            if __INTERNAL__ is True:
+                pass
+            else:
+                expired = enforce_session_activity(touch_session=touch_session)
+                if expired:
+                    return expired
+                if not session.get('logged', False):
+                    session['redirect'] = request.url
+                    return redirect(url_for('login'))
+            return view_func(*args, **kwargs)
 
-    return auth_decoration
+        return auth_decoration
+
+   if f is not None:
+        return decorator(f)
+    return decorator
 
 
 # Admin auth check, admin access via password if applicable
@@ -619,7 +629,7 @@ def gui_session_status():
     if session_expired():
         clear_expired_session()
         return jsonify({'logged': False}), 401
-        
+
     last = session.get('last_activity', datetime.datetime.now().timestamp())
     return jsonify({'logged': True, 'expires_at': last + timeout})
     
@@ -1063,7 +1073,7 @@ def tail_websocket():
 
 
 @listener.route('/top', provide_automatic_options = False)
-@requires_auth
+@requires_auth(touch_session=False)
 @gui_enabled_required
 def top():
     display = request.values.get('display', 0)

@@ -6,14 +6,16 @@ $(document).ready(function() {
 
     if ($('body').data('session-monitor')) {
         var sessionTimer = null;
-        var sessionPollTimer = null;
+
         function refreshOnSessionExpiry() {
-            window.location.reload();
+            window.location.href = '/login';
         }
+
         function scheduleSessionRefresh(expiresAt) {
             if (sessionTimer) {
                 clearTimeout(sessionTimer);
             }
+			
             var delay = Math.floor(expiresAt * 1000) - Date.now();
             if (delay <= 0) {
                 refreshOnSessionExpiry();
@@ -21,6 +23,7 @@ $(document).ready(function() {
             }
             sessionTimer = setTimeout(refreshOnSessionExpiry, delay);
         }
+
         function checkSessionStatus() {
             $.ajax({
                 url: '/gui/session/status',
@@ -31,6 +34,7 @@ $(document).ready(function() {
                     refreshOnSessionExpiry();
                     return;
                 }
+
                 if (data.expires_at) {
                     scheduleSessionRefresh(data.expires_at);
                 }
@@ -40,8 +44,14 @@ $(document).ready(function() {
                 }
             });
         }
+
+        var expiresAt = parseFloat($('body').data('session-expires-at'), 10);
+        if (!isNaN(expiresAt)) {
+            scheduleSessionRefresh(expiresAt);
+        }
+
         checkSessionStatus();
-        sessionPollTimer = setInterval(checkSessionStatus, 60000);
+        setInterval(checkSessionStatus, 60000);
     }
 
 });
