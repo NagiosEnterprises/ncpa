@@ -557,8 +557,6 @@ class Daemon():
         signal.signal(signal.SIGTERM, self.on_sigterm)
         signal.signal(signal.SIGINT, self.on_sigterm)
 
-    def running_as_root(self):
-        return os.geteuid() == 0
 
     # ATTENTION - This function contains the infinite while loop that prevents
     # the process from exiting during normal operation
@@ -576,7 +574,7 @@ class Daemon():
         self.prepare_dirs()
 
         try:
-            if self.running_as_root():
+            if os.geteuid() == 0:
                 # Chown the installed passive log file while root still has control
                 # Since the listener file is used for the root and parent loggers, it is chowned
                 # during the setup_logger process
@@ -709,7 +707,7 @@ class Daemon():
             parent = os.path.dirname(fn)
             if not os.path.exists(parent):
                 os.makedirs(parent)
-                if self.running_as_root():
+                if os.geteuid() == 0:
                     self.chown(parent)
 
     def set_uid_gid(self):
