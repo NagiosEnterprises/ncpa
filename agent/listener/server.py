@@ -467,10 +467,10 @@ def login():
     
     # Verify authentication and redirect if we are authenticated
     if session.get('logged', False):
-        expired = enforce_session_activity()
-        if expired:
-            return expired
-        return redirect(url_for('index'))
+        if session_expired():
+            clear_expired_session()
+        else:
+            return redirect(url_for('index'))
 
     ncpa_token = listener.config['iconfig'].get('api', 'community_string')
     backup_ncpa_token = listener.config['iconfig'].get('api', 'backup_community_string')

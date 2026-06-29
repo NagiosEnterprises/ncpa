@@ -6,9 +6,34 @@ $(document).ready(function() {
 
     if ($('body').data('session-monitor')) {
         var sessionTimer = null;
+        var sessionRedirecting = false;
+
+        function redirectToLogin() {
+            if (sessionRedirecting) {
+                return;
+            }
+            sessionRedirecting = true;
+            window.location.href = '/login';
+        }
 
         function refreshOnSessionExpiry() {
-            window.location.href = '/login';
+            $.ajax({
+                url: '/gui/session/status',
+                dataType: 'json',
+                cache: false
+            }).done(function(data) {
+                if (!data.logged) {
+                    redirectToLogin();
+                    return;
+                }
+                if (data.expires_at) {
+                    scheduleSessionRefresh(data.expires_at);
+                }
+            }).fail(function(xhr) {
+                if (xhr.status === 401) {
+                    redirectToLogin();
+                }
+            });
         }
 
         function scheduleSessionRefresh(expiresAt) {
@@ -31,7 +56,7 @@ $(document).ready(function() {
                 cache: false
             }).done(function(data) {
                 if (!data.logged) {
-                    refreshOnSessionExpiry();
+                    redirectToLogin();
                     return;
                 }
 
@@ -40,7 +65,7 @@ $(document).ready(function() {
                 }
             }).fail(function(xhr) {
                 if (xhr.status === 401) {
-                    refreshOnSessionExpiry();
+                    redirectToLogin();
                 }
             });
         }
