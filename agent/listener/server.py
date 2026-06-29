@@ -194,24 +194,40 @@ def touch_session_activity():
     session['last_activity'] = datetime.datetime.now().timestamp()
 
 
+def session_expired():
+    """Return True if the current GUI session is past its inactivity timeout."""
+    if not session.get('logged', False):
+        return False
+
+    timeout = get_gui_session_timeout()
+    if timeout <= 0:
+        return False
+
+    last = session.get('last_activity')
+    if last is None:
+        return False
+
+    return (datetime.datetime.now().timestamp() - last) > timeout
+
+    
+def clear_expired_session():
+    session.clear()
+    session['message'] = 'Session expired due to inactivity.'
+
+
 def enforce_session_activity():
     """Clear expired GUI sessions and return a redirect to login if needed."""
     if not session.get('logged', False):
         return None
 
-    timeout = get_gui_session_timeout()
-    if timeout <= 0:
-        return None
-
-    now = datetime.datetime.now().timestamp()
-    last = session.get('last_activity')
-    if last is not None and (now - last) > timeout:
-        session.clear()
-        session['message'] = 'Session expired due to inactivity.'
-        session['redirect'] = request.url
-        return redirect(url_for('login'))
+    if session_expired():
+        redirect_url = request.url
+        clear_expired_session()
+        session['redirect'] = redirect_url
         
     touch_session_activity()
+    if get_gui_session_timeout() > 0:
+        touch_session_activity()
     return None
 
 
@@ -304,7 +320,9 @@ def inject_variables():
     if os.name == 'nt':
         windows = True
     values = { 'admin_visible': admin_gui_access, 'is_windows': windows,
-               'no_nav': False, 'flash_msg': False }
+               'no_nav': False, 'flash_msg': False,
+               'session_logged': session.get('logged', False),
+               'gui_session_timeout': get_gui_session_timeout() }
     return values
 
 
@@ -587,6 +605,24 @@ def gui_index():
     except Exception as e:
         listener_logger.exception(e)
 
+
+@listener.route('/gui/session/status', methods=['GET'], provide_automatic_options = False)
+@gui_enabled_required
+def gui_session_status():
+    if not session.get('logged', False):
+        return jsonify({'logged': False}), 401
+
+    timeout = get_gui_session_timeout()
+    if timeout <= 0:
+        return jsonify({'logged': True, 'timeout': 0})
+
+    if session_expired():
+        clear_expired_session()
+        return jsonify({'logged': False}), 401
+        
+    last = session.get('last_activity', datetime.datetime.now().timestamp())
+    return jsonify({'logged': True, 'expires_at': last + timeout})
+    
 
 @listener.route('/gui/checks', provide_automatic_options = False)
 @requires_auth
