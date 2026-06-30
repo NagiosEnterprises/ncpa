@@ -59,6 +59,16 @@ import platform
 from ncpa import listener_logger as logging
 
 
+def utc_now_naive():
+    """Return a naive UTC datetime for legacy win32 event timestamp comparisons."""
+    return datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+
+
+def local_utc_offset_seconds():
+    """Return seconds between local time and UTC (equivalent to utcnow() - now())."""
+    return (datetime.datetime.now(datetime.timezone.utc) - datetime.datetime.now().astimezone()).total_seconds()
+
+
 class WindowsLogsNode(listener.nodes.LazyNode):
 
     global stdLogs
@@ -625,7 +635,7 @@ def normalize_xml_event(row, name):
         timezone_offset = datetime.timedelta(0)
     
     rDate -= timezone_offset
-    timeDiffSec=(datetime.datetime.utcnow() - datetime.datetime.now()).total_seconds()
+    timeDiffSec = local_utc_offset_seconds()
     timeLocal = str(rDate+datetime.timedelta(seconds=-timeDiffSec))
     safe_log['time_generated'] = timeLocal
     return safe_log
@@ -668,9 +678,9 @@ def get_event_logs(server, name, filters):
         logs = []
         try:
             logged_after = filters['logged_after']
-            logged_after = datetime.datetime.utcnow() - logged_after
+            logged_after = utc_now_naive() - logged_after
         except KeyError:
-            logged_after = datetime.datetime.utcnow() - datetime.timedelta(days=1)
+            logged_after = utc_now_naive() - datetime.timedelta(days=1)
         try:
             while True:
                 events = win32evtlog.EvtNext(handle, 100)
@@ -776,7 +786,7 @@ def tail_method(last_ts, server=None, *args, **kwargs):
     logs = get_event_logs(server, name, filters)
     newest_ts = last_ts
     non_dup_logs = []
-    timeDiffSec=(datetime.datetime.utcnow() - datetime.datetime.now()).total_seconds()
+    timeDiffSec = local_utc_offset_seconds()
 
     for log in logs:
         if name in stdLogs:
