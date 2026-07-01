@@ -12,6 +12,8 @@ Changelog
 - Fixed multiple AIX upgrade issues that were preventing upgrades from NCPA 2.x to NCPA 3.x from completing successfully. - CPD
 - Fixed an issue where builds would fail on el 10 systems due to a missing dependency. - BB
 - Fixed rpm -V reporting false positives on RHEL for config, log, database, and service files. [GH#1299] - CPD
+- Fixed an issue where NCPA would fail to start when started without root privileges after the configured uid/gid had already been applied. [GH#1306] - CPD
+- Fixed root-only startup tasks (log file chown, temp file cleanup, directory creation) which could cause startup failures on non-root deployments. [GH#1306] - CPD
 - Several improvements to disk endpoint performance. [GH#1282] - BB
 
 **Removed**
@@ -20,6 +22,7 @@ Changelog
 
 **Updates**
 
+- Replaced deprecated datetime.utcnow() usage in certificate generation and Windows event log handling to improve compatibility with Python 3.12+. - CPD
 - Updated Windows builds to use OpenSSL version 3.0.21 to resolve CVEs and improve compatibility. [GH#1397] - CPD
 - Updated Windows builds to use Python version 3.13.14. - CPD
 
