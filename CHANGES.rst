@@ -22,6 +22,7 @@ Changelog
 
 **Updates**
 
+- Replaced deprecated datetime.utcnow() usage in certificate generation and Windows event log handling to improve compatibility with Python 3.12+. - CPD
 - Updated Windows builds to use OpenSSL version 3.0.21 to resolve CVEs and improve compatibility. [GH#1397] - CPD
 - Updated Windows builds to use Python version 3.13.14. - CPD
 

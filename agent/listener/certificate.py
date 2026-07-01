@@ -1,7 +1,7 @@
 import os
 import socket
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from ipaddress import IPv4Address
 
 try:
@@ -84,9 +84,9 @@ def _create_cert_with_cryptography(target_cert, target_key):
     ).serial_number(
         int(time.time())
     ).not_valid_before(
-        datetime.utcnow()
+        datetime.now(timezone.utc)
     ).not_valid_after(
-        datetime.utcnow() + timedelta(days=3650)  # 10 years
+        datetime.now(timezone.utc) + timedelta(days=3650)  # 10 years
     ).add_extension(
         x509.KeyUsage(
             digital_signature=True,
