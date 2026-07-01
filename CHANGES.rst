@@ -14,6 +14,7 @@ Changelog
 - Fixed rpm -V reporting false positives on RHEL for config, log, database, and service files. [GH#1299] - CPD
 - Fixed an issue where NCPA would fail to start when started without root privileges after the configured uid/gid had already been applied. [GH#1306] - CPD
 - Fixed root-only startup tasks (log file chown, temp file cleanup, directory creation) which could cause startup failures on non-root deployments. [GH#1306] - CPD
+- Resolved test_ncpacheck unit test failures due to the backup_community_string config option not being set in the test configuration. - CPD
 - Several improvements to disk endpoint performance. [GH#1282] - BB
 
 **Removed**
