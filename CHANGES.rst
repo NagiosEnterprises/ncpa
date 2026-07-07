@@ -19,7 +19,7 @@ Changelog
 
 **Removed**
 
-- Removed pyOenSSL from the AIX build dependency list as it was not being used and was causing build issues. - CPD
+- Removed pyOpenSSL from the AIX build dependency list as it was not being used and was causing build issues. - CPD
 
 **Updates**
 
