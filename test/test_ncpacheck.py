@@ -17,6 +17,7 @@ class TestNCPACheck(unittest.TestCase):
         self.config = configparser.ConfigParser()
         self.config.add_section('api')
         self.config.set('api', 'community_string', 'mytoken')
+        self.config.set('api', 'backup_community_string', '')
 
     def test_get_api_url_from_instruction(self):
         instruction = 'cpu/percent --warning 10 --critical=11'
