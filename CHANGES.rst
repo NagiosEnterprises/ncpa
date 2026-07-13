@@ -7,13 +7,13 @@ Changelog
 
 - Fixed an AIX upgrade issue that was preventing the NCPA service from starting automatically after an upgrade. - CPD
 - Fixed an error message that can appear in /var/log/messages on Linux systems when the NCPA service is stopped. - CPD
+- Fixed an issue where builds would fail on el 10 systems due to a missing dependency. - BB
+- Fixed an issue where NCPA would fail to start when started without root privileges after the configured uid/gid had already been applied. [GH#1306] - CPD
 - Fixed an issue where the total count and pagination numbers in the Checks UI were incorrect when filtered by Type. - CPD
 - Fixed multiple AIX build issue with dependencies that were preventing the build from completing successfully. - CPD
 - Fixed multiple AIX upgrade issues that were preventing upgrades from NCPA 2.x to NCPA 3.x from completing successfully. - CPD
-- Fixed an issue where builds would fail on el 10 systems due to a missing dependency. - BB
-- Fixed rpm -V reporting false positives on RHEL for config, log, database, and service files. [GH#1299] - CPD
-- Fixed an issue where NCPA would fail to start when started without root privileges after the configured uid/gid had already been applied. [GH#1306] - CPD
 - Fixed root-only startup tasks (log file chown, temp file cleanup, directory creation) which could cause startup failures on non-root deployments. [GH#1306] - CPD
+- Fixed rpm -V reporting false positives on RHEL for config, log, database, and service files. [GH#1299] - CPD
 - Resolved test_ncpacheck unit test failures due to the backup_community_string config option not being set in the test configuration. - CPD
 - Several improvements to disk endpoint performance. [GH#1282] - BB
 
