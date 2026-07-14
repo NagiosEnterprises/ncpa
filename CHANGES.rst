@@ -2,7 +2,6 @@ Changelog
 +++++++++
 3.4.3 - 7/23/2026
 ==================
-
 **Bug Fixes**
 
 - Fixed an AIX upgrade issue that was preventing the NCPA service from starting automatically after an upgrade. - CPD
