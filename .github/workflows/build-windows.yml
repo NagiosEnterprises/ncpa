@@ -52,6 +52,7 @@ jobs:
 
       - name: Test API
         run: |
+          cat 'C:\Program Files\Nagios\NCPA\etc\ncpa.cfg'
           curl.exe -k 'https://127.0.0.1:5693/api/system/agent_version?token=8675309'
 
       - name: Upload Windows installer
