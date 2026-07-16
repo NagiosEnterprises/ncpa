@@ -1,12 +1,12 @@
-name: Build Linux
+name: Build macOS
 
 on:
   push:
     branches: [ 'cpd-test-actions-build-windows' ]
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-22.04
+  build-macos:
+    runs-on: macos-15-intel
     
     steps:
       - uses: actions/checkout@v7
@@ -22,16 +22,9 @@ jobs:
         run: |
           sudo ./build.sh
 
-      - name: Upload RPM installer
+      - name: Upload macOS installer
         uses: actions/upload-artifact@v7
         with:
-          name: ncpa-rpm
-          path: build/*.rpm
-          overwrite: true
-
-      - name: Upload DEB installer
-        uses: actions/upload-artifact@v7
-        with:
-          name: ncpa-deb
-          path: build/*.deb
+          name: ncpa-macOS
+          path: build/*.dmg
           overwrite: true
