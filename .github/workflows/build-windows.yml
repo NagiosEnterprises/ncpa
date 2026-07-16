@@ -43,9 +43,8 @@ jobs:
 
       - name: Test Windows Install
         working-directory: build
-        shell: cmd
         run: |
-          for %i in (ncpa*.exe) do start "" "%i" /S /TOKEN='8675309'
+          & (Get-Item .\ncpa*.exe).FullName "/S" "TOKEN=8675309"
 
       - name: Test API
         run: |
