@@ -41,3 +41,4 @@ jobs:
         with:
           name: ncpa-windows
           path: build/ncpa-*.exe
+          overwrites: true

@@ -1,0 +1,37 @@
+name: Build Linux
+
+on:
+  push:
+    branches: [ 'cpd-test-actions-build-windows' ]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v6
+        id: setup-python
+        with:
+          python-version: '3.13'
+
+      - name: Build project
+        working-directory: build
+        run: |
+          ./build.sh
+
+      - name: Upload RPM installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: ncpa-rpm-release
+          path: build/*.rpm
+          overwrite: true
+
+      - name: Upload DEB installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: ncpa-deb-release
+          path: build/*.rpm
+          overwrite: true
