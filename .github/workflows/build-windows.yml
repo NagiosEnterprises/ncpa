@@ -1,0 +1,43 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [ 'dev-v3.4.3' ]
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        id: setup-python
+        with:
+          python-version: '3.13'
+
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Verify runner prerequisites
+        shell: pwsh
+        run: |
+          Write-Host "Python:" (Get-Command python -ErrorAction SilentlyContinue).Source
+          Write-Host "cl.exe:" (Get-Command cl -ErrorAction SilentlyContinue).Source
+          Write-Host "makensis:" (Get-Command makensis -ErrorAction SilentlyContinue).Source
+          Write-Host "Git:" (Get-Command git -ErrorAction SilentlyContinue).Source
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r build/resources/require.win.txt
+
+      - name: Build NCPA installer
+        run: python build/windows/build_ncpa.py "${{ steps.setup-python.outputs.python-path }}"
+
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: ncpa-windows
+          path: build/ncpa-*.exe
