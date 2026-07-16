@@ -41,6 +41,14 @@ jobs:
           python -m pip install pytest
           pytest -v
 
+      - name: Test Windows Install
+        run: |
+          build/ncpa-*.exe /S /TOKEN='8675309'
+
+      - name: Test API
+        run: |
+          curl -k 'https://127.0.0.1:5693/api/system/agent_version?token=8675309'
+
       - name: Upload Windows installer
         uses: actions/upload-artifact@v7
         with:
