@@ -44,15 +44,15 @@ jobs:
       - name: Test Windows Install
         working-directory: build
         run: |
-          & (Get-Item .\ncpa*.exe).FullName "/S" "TOKEN=8675309"
+          & (Get-Item .\ncpa*.exe).FullName "/S" /"TOKEN=8675309"
 
-      - name: Sleep for 15 seconds
-        run: Start-Sleep -s 15
+      - name: Sleep for 30 seconds
+        run: Start-Sleep -s 30
         shell: powershell
 
       - name: Test API
         run: |
-          curl -k 'https://127.0.0.1:5693/api/system/agent_version?token=8675309'
+          curl.exe -k 'https://127.0.0.1:5693/api/system/agent_version?token=8675309'
 
       - name: Upload Windows installer
         uses: actions/upload-artifact@v7
