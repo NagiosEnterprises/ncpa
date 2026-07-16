@@ -20,7 +20,7 @@ jobs:
       - name: Build project
         working-directory: build
         run: |
-          ./build.sh
+          sudo ./build.sh
 
       - name: Upload RPM installer
         uses: actions/upload-artifact@v7
