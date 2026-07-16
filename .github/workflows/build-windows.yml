@@ -36,9 +36,14 @@ jobs:
       - name: Build NCPA installer
         run: python build/windows/build_ncpa.py "${{ steps.setup-python.outputs.python-path }}"
 
+      - name: Run unit tests
+        run: |
+          python -m pip install pytest
+          pytest -v
+
       - name: Upload Windows installer
         uses: actions/upload-artifact@v7
         with:
           name: ncpa-windows
           path: build/ncpa-*.exe
-          overwrites: true
+          overwrite: true
