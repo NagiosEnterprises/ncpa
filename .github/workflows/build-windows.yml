@@ -1,4 +1,4 @@
-name: Build Windows
+name: Build Windows 
 
 on:
   push:
@@ -45,6 +45,10 @@ jobs:
         working-directory: build
         run: |
           & (Get-Item .\ncpa*.exe).FullName "/S" "TOKEN=8675309"
+
+      - name: Sleep for 15 seconds
+        run: Start-Sleep -s 15
+        shell: powershell
 
       - name: Test API
         run: |
