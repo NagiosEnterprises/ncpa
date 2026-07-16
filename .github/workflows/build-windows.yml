@@ -42,8 +42,9 @@ jobs:
           pytest -v
 
       - name: Test Windows Install
+        working-directory: build
         run: |
-          build/ncpa-*.exe /S /TOKEN='8675309'
+          for %i in (ncpa*.exe) do start "" "%i" /S /TOKEN='8675309'
 
       - name: Test API
         run: |
