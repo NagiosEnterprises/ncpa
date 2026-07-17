@@ -1,9 +1,12 @@
 NCPA
 ====
 
-![Linux e2e Test](https://github.com/NagiosEnterprises/ncpa/actions/workflows/linux-e2e.yml/badge.svg?branch=cpd-test-actions-build-windows)
-![Windows e2e Test](https://github.com/NagiosEnterprises/ncpa/actions/workflows/windows-e2e.yml/badge.svg?branch=cpd-test-actions-build-windows)
-![macOS e2e Test](https://github.com/NagiosEnterprises/ncpa/actions/workflows/macos-e2e.yml/badge.svg?branch=cpd-test-actions-build-windows)
+.. image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/linux-e2e.yml/badge.svg
+    :target: https://github.com/NagiosEnterprises/ncpa/actions/workflows/linux-e2e.yml
+.. image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/windows-e2e.yml/badge.svg
+    :target: https://github.com/NagiosEnterprises/ncpa/actions/workflows/windows-e2e.yml
+.. image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/macos-e2e.yml/badge.svg
+    :target: https://github.com/NagiosEnterprises/ncpa/actions/workflows/macos-e2e.yml
 
 The *Nagios Cross-Platform Agent*; a single monitoring agent that installs on all major operating systems. NCPA allows both active checks via check_ncpa.py and passive checks via NRDP. NCPA comes with a built-in web GUI, documentation, websocket graphing, and is secured with SSL by default.
 
