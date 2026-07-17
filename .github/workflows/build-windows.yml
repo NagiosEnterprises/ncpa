@@ -50,10 +50,9 @@ jobs:
         run: Start-Sleep -s 10
         shell: powershell
 
-      - name: View if service is running
+      - name: Ensure service is running
         run: |
           Get-Service NCPA
-          netstat -an
 
       - name: Test API
         run: |

@@ -2,7 +2,7 @@ name: Build Linux
 
 on:
   push:
-    branches: [ 'cpd-test-actions-build-windows-disabled' ]
+    branches: [ 'cpd-test-actions-build-windows' ]
 
 jobs:
   build-linux:
@@ -21,6 +21,26 @@ jobs:
         working-directory: build
         run: |
           sudo ./build.sh
+
+      - name: Run unit tests
+        run: |
+          python -m pip install pytest
+          pytest -v
+
+      - name: Test Linux Install
+        run: |
+          sudo apt install -y ./ncpa*.deb
+
+      - name: Sleep for 10 seconds
+        run: sleep 10
+
+      - name: Ensure service is running
+        run: |
+          sudo systemctl is-active ncpa
+
+      - name: Test API
+        run: |
+          curl -k 'https://127.0.0.1:5693/api/system/agent_version?token=mytoken'
 
       - name: Upload RPM installer
         uses: actions/upload-artifact@v7
