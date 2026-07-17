@@ -1,4 +1,4 @@
-name: Build macOS
+name: macOS e2e Test
 
 on:
   push:
@@ -22,6 +22,8 @@ jobs:
         run: |
           sudo ./build.sh
 
+      # The GH runner default hostnames are too long and cause issues generating SSL certificates
+      # Specifically this causes issues with the unit tests related to SSL certificate generation
       - name: Change macOS Hostname
         run: |
           NEW_HOSTNAME="gh-macos-runner"
