@@ -44,16 +44,7 @@ jobs:
       - name: Test Windows Install
         working-directory: build
         run: |
-          & (Get-Item .\ncpa*.exe).FullName "/S" /"TOKEN=8675309"
-
-      - name: Sleep for 10 seconds
-        run: Start-Sleep -s 10
-        shell: powershell
-
-      - name: View if service is running
-        run: |
-          Get-Service NCPA
-          Start-Service NCPA
+          Start-Process -FilePath ".\ncpa*.exe" -ArgumentList "/S", "/TOKEN='8675309'" -Wait
 
       - name: Sleep for 10 seconds
         run: Start-Sleep -s 10
