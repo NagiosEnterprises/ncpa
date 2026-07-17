@@ -26,7 +26,7 @@ jobs:
         run: |
           source build/venvs/ncpa-build-linux/bin/activate
           sudo python -m pip install pytest
-          pytest -v
+          sudo pytest -v
           deactivate
 
       - name: Test Linux Install
