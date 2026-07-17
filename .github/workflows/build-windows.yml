@@ -50,15 +50,23 @@ jobs:
         run: Start-Sleep -s 10
         shell: powershell
 
-      - name: View network info
+      - name: View if service is running
         run: |
-          ipconfig
+          Get-Service NCPA
+          Start-Service NCPA
+
+      - name: Sleep for 10 seconds
+        run: Start-Sleep -s 10
+        shell: powershell
+
+      - name: View if service is running
+        run: |
+          Get-Service NCPA
           netstat -an
 
       - name: Test API
         run: |
-          cat 'C:\Program Files\Nagios\NCPA\etc\ncpa.cfg'
-          curl.exe -k 'https://[::1]:5693/api/system/agent_version?token=8675309'
+          curl.exe -k 'https://127.0.0.1:5693/api/system/agent_version?token=8675309'
 
       - name: Upload Windows installer
         uses: actions/upload-artifact@v7
