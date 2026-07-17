@@ -24,7 +24,7 @@ jobs:
 
       - name: Run unit tests
         run: |
-          sudo chown -R $USER:$USER build/
+          sudo chown -R $USER build/
           source build/venvs/ncpa-build-darwin/bin/activate
           python -m pip install pytest
           pytest -v
