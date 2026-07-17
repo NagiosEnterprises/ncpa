@@ -24,8 +24,10 @@ jobs:
 
       - name: Run unit tests
         run: |
+          source venvs/bin/activate
           python -m pip install pytest
           pytest -v
+          deactivate
 
       - name: Test Linux Install
         run: |
