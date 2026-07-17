@@ -24,9 +24,11 @@ jobs:
 
       - name: Run unit tests
         run: |
+          pip list modules
           source build/venvs/ncpa-build-linux/bin/activate
           echo $VIRTUAL_ENV
-          ls -l
+          ls -l build
+          pip list modules
           sudo python -m pip install pytest
           pytest -v
           deactivate
