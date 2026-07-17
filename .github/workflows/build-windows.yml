@@ -46,9 +46,14 @@ jobs:
         run: |
           & (Get-Item .\ncpa*.exe).FullName "/S" /"TOKEN=8675309"
 
-      - name: Sleep for 30 seconds
-        run: Start-Sleep -s 30
+      - name: Sleep for 10 seconds
+        run: Start-Sleep -s 10
         shell: powershell
+
+      - name: Debug file system
+        run: |
+          Get-ChildItem -Path 'C:\Program Files\Nagios\NCPA'
+          Get-PSDrive -PSProvider FileSystem
 
       - name: Test API
         run: |
