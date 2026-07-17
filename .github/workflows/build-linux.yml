@@ -2,7 +2,7 @@ name: Build Linux
 
 on:
   push:
-    branches: [ 'cpd-test-actions-build-windows' ]
+    branches: [ 'cpd-test-actions-build-windows-disabled' ]
 
 jobs:
   build-linux:

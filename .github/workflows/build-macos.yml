@@ -2,7 +2,7 @@ name: Build macOS
 
 on:
   push:
-    branches: [ 'cpd-test-actions-build-windows-disabled' ]
+    branches: [ 'cpd-test-actions-build-windows' ]
 
 jobs:
   build-macos:
@@ -21,6 +21,31 @@ jobs:
         working-directory: build
         run: |
           sudo ./build.sh
+
+      - name: Run unit tests
+        run: |
+          sudo chown -R $USER:$USER build/
+          source build/venvs/ncpa-build-darwin/bin/activate
+          python -m pip install pytest
+          pytest -v
+          deactivate
+
+      - name: Test macOS Install
+        working-directory: build
+        run: |
+          sudo hdiutil attach -nobrowse ncpa*.dmg
+          sudo zsh /Volumes/NCPA*/install.sh
+
+      - name: Sleep for 10 seconds
+        run: sleep 10
+
+      - name: Ensure service is running
+        run: |
+          sudo launchctl list | grep ncpa
+
+      - name: Test API
+        run: |
+          curl -k 'https://127.0.0.1:5693/api/system/agent_version?token=mytoken'
 
       - name: Upload macOS installer
         uses: actions/upload-artifact@v7
