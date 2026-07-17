@@ -1,7 +1,9 @@
 NCPA
 ====
 
-|linux|\ |windows|\ |macos|
+|linux|
+|windows|
+|macos|
 
 .. |linux| image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/linux-e2e.yml/badge.svg
    :target: https://github.com/NagiosEnterprises/ncpa/actions/workflows/linux-e2e.yml
