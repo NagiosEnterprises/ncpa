@@ -22,6 +22,17 @@ jobs:
         run: |
           sudo ./build.sh
 
+      - name: Change macOS Hostname
+        run: |
+          NEW_HOSTNAME="gh-macos-runner"
+          
+          sudo scutil --set HostName "${NEW_HOSTNAME}.local"
+          sudo scutil --set LocalHostName "${NEW_HOSTNAME}"
+          sudo scutil --set ComputerName "${NEW_HOSTNAME}"
+          
+          # Optional: Flush DNS cache to apply changes immediately
+          dscacheutil -flushcache
+
       - name: Run unit tests
         run: |
           sudo chown -R $USER build/
