@@ -1,15 +1,17 @@
 NCPA
 ====
 
-.. image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/linux-e2e.yml/badge.svg
+|linux| |windows| |macos|
+
+.. |linux| image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/linux-e2e.yml/badge.svg
    :target: https://github.com/NagiosEnterprises/ncpa/actions/workflows/linux-e2e.yml
    :alt: Linux e2e Test
 
-.. image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/windows-e2e.yml/badge.svg
+.. |windows| image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/windows-e2e.yml/badge.svg
    :target: https://github.com/NagiosEnterprises/ncpa/actions/workflows/windows-e2e.yml
    :alt: Windows e2e Test
-   
-.. image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/macos-e2e.yml/badge.svg
+
+.. |macos| image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/macos-e2e.yml/badge.svg
    :target: https://github.com/NagiosEnterprises/ncpa/actions/workflows/macos-e2e.yml
    :alt: macOS e2e Test
 
