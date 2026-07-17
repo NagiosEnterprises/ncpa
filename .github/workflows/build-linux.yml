@@ -24,7 +24,7 @@ jobs:
 
       - name: Run unit tests
         run: |
-          source venvs/ncpa-build-linux/bin/activate
+          source build/venvs/ncpa-build-linux/bin/activate
           python -m pip install pytest
           pytest -v
           deactivate
