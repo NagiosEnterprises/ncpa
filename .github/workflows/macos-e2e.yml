@@ -35,7 +35,7 @@ jobs:
           # Optional: Flush DNS cache to apply changes immediately
           dscacheutil -flushcache
 
-      - name: Run unit tests
+      - name: Run Unit Tests
         run: |
           sudo chown -R $USER build/
           source build/venvs/ncpa-build-darwin/bin/activate
@@ -43,16 +43,38 @@ jobs:
           pytest -v
           deactivate
 
-      - name: Test macOS Install
-        working-directory: build
+      - name: Upload macOS Installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: ncpa-macOS
+          path: build/*.dmg
+          overwrite: true
+
+  e2e-macos:
+    runs-on: macos-15-intel
+    needs: build-macos # Crucial: Enforces sequential execution
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: ncpa-macOS
+          path: downloaded-assets/
+
+      - name: Verify Artifact File
         run: |
-          sudo hdiutil attach -nobrowse ncpa*.dmg
+          ls -l ./downloaded-assets/ncpa*.dmg
+
+      - name: Test macOS Install
+        run: |
+          sudo hdiutil attach -nobrowse ./downloaded-assets/ncpa*.dmg
           sudo zsh /Volumes/NCPA*/install.sh
 
       - name: Sleep for 10 seconds
         run: sleep 10
 
-      - name: Ensure service is running
+      - name: Ensure Service is Running
         run: |
           sudo launchctl list | grep ncpa
 
@@ -66,10 +88,3 @@ jobs:
 
       - name: Run E2E Tests
         run: bash ./test/e2e/test_ncpa_e2e.sh 
-
-      - name: Upload macOS installer
-        uses: actions/upload-artifact@v7
-        with:
-          name: ncpa-macOS
-          path: build/*.dmg
-          overwrite: true
