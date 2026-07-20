@@ -38,7 +38,7 @@ fi
 
 # 3. Test Nagios Check API with Thresholds (Disk Usage)
 echo -n "[3/4] Testing Active Check Endpoint with Thresholds... "
-DISK_RESPONSE=$(curl -s -k "${BASE_URL}/disk/logical/root/used_percent?token=${NCPA_TOKEN}&warning=80&critical=90")
+DISK_RESPONSE=$(curl -s -k "${BASE_URL}/disk/logical/|/used_percent?token=${NCPA_TOKEN}&warning=80&critical=90")
 
 # Check if return code field is present (0 = OK, 1 = WARNING, 2 = CRITICAL)
 if echo "$DISK_RESPONSE" | grep -q '"returncode"'; then
