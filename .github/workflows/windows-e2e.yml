@@ -7,49 +7,56 @@ on:
       - completed
 
 jobs:
-  deploy-windows:
+  on-success:
     runs-on: windows-2022
-   # Only execute if the upstream build workflow actually succeeded
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-
     steps:
-      - uses: actions/checkout@v7
+      - run: echo "The upstream workflow succeeded!"
 
-      - name: Download Cross-Workflow Artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: ncpa-windows
-          path: downloaded-assets/
-          # Crucial inputs needed when downloading from a different workflow:
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+# jobs:
+#   deploy-windows:
+#     runs-on: windows-2022
+#    # Only execute if the upstream build workflow actually succeeded
+#     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
-      - name: Use the Downloaded Artifact
-        shell: pwsh
-        run: |
-          Write-Output "Displaying files retrieved from the build workflow:"
-          dir -la downloaded-assets/
+#     steps:
+#       - uses: actions/checkout@v7
 
-      - name: Test Windows Install
-        working-directory: build
-        run: |
-          Start-Process -FilePath ".\ncpa*.exe" -ArgumentList "/S", "/TOKEN='8675309'" -Wait
+#       - name: Download Cross-Workflow Artifact
+#         uses: actions/download-artifact@v7
+#         with:
+#           name: ncpa-windows
+#           path: downloaded-assets/
+#           # Crucial inputs needed when downloading from a different workflow:
+#           run-id: ${{ github.event.workflow_run.id }}
+#           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Sleep for 10 seconds
-        run: Start-Sleep -s 10
-        shell: powershell
+#       - name: Use the Downloaded Artifact
+#         shell: pwsh
+#         run: |
+#           Write-Output "Displaying files retrieved from the build workflow:"
+#           dir -la downloaded-assets/
 
-      - name: Ensure service is running
-        run: |
-          Get-Service NCPA
+#       - name: Test Windows Install
+#         working-directory: build
+#         run: |
+#           Start-Process -FilePath ".\ncpa*.exe" -ArgumentList "/S", "/TOKEN='8675309'" -Wait
 
-      - name: Test API Sanity Check
-        run: |
-          curl.exe -k 'https://127.0.0.1:5693/api/system/agent_version?token=8675309'
+#       - name: Sleep for 10 seconds
+#         run: Start-Sleep -s 10
+#         shell: powershell
 
-      - name: Copy Custom Plugin
-        run: |
-          Copy-Item -Path "test\e2e\plugins\check_os.ps1" -Destination "C:\Program Files\Nagios\NCPA\plugins\"
+#       - name: Ensure service is running
+#         run: |
+#           Get-Service NCPA
 
-      - name: Run E2E Tests
-        run: .\test\e2e\test_ncpa_e2e.ps1
+#       - name: Test API Sanity Check
+#         run: |
+#           curl.exe -k 'https://127.0.0.1:5693/api/system/agent_version?token=8675309'
+
+#       - name: Copy Custom Plugin
+#         run: |
+#           Copy-Item -Path "test\e2e\plugins\check_os.ps1" -Destination "C:\Program Files\Nagios\NCPA\plugins\"
+
+#       - name: Run E2E Tests
+#         run: .\test\e2e\test_ncpa_e2e.ps1
