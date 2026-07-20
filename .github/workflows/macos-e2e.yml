@@ -21,7 +21,7 @@ jobs:
         working-directory: build
         run: sudo ./build.sh
 
-      # The GH runner default hostnames are too long and cause issues generating SSL certificates
+      # The GH macOS runner default hostnames are too long and cause issues generating SSL certificates
       # Specifically this causes issues with the unit tests related to SSL certificate generation
       - name: Change macOS Hostname
         run: |
@@ -64,6 +64,19 @@ jobs:
       - name: Verify Artifact File
         run: ls -l ./downloaded-assets/ncpa*.dmg
 
+      # The GH macOS runner default hostnames are too long and cause issues generating SSL certificates
+      # Specifically this causes issues with the unit tests related to SSL certificate generation
+      - name: Change macOS Hostname
+        run: |
+          NEW_HOSTNAME="gh-macos-runner"
+          
+          sudo scutil --set HostName "${NEW_HOSTNAME}.local"
+          sudo scutil --set LocalHostName "${NEW_HOSTNAME}"
+          sudo scutil --set ComputerName "${NEW_HOSTNAME}"
+          
+          # Optional: Flush DNS cache to apply changes immediately
+          dscacheutil -flushcache
+
       - name: Test macOS Install
         run: |
           sudo hdiutil attach -nobrowse ./downloaded-assets/ncpa*.dmg
@@ -73,10 +86,7 @@ jobs:
         run: sleep 10
 
       - name: Ensure Service is Running
-        run: |
-          sudo launchctl list | grep ncpa
-          ps auxww | grep ncpa
-          cat /usr/local/ncpa/var/log/ncpa_listener.log
+        run: sudo launchctl list | grep ncpa
 
       - name: Test API Sanity Check
         run: curl -k 'https://127.0.0.1:5693/api/system/agent_version?token=mytoken'
