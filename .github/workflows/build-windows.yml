@@ -9,7 +9,6 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      - name: Checkout Code
       - uses: actions/checkout@v7
 
       - name: Set up Python 3.13
