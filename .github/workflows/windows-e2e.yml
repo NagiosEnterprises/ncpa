@@ -1,45 +1,28 @@
 name: Windows e2e Test
 
 on:
-  push:
-    branches: [ 'cpd-test-actions-build-windows' ]
+  workflow_run:
+    workflows: ["Build Windows"]
+    types:
+      - completed
 
 jobs:
-  build-windows:
+  deploy-windows:
     runs-on: windows-2022
+   # Only execute if the upstream build workflow actually succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
+      - name: Checkout Code
       - uses: actions/checkout@v7
 
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v6
-        id: setup-python
+      - name: Download Cross-Workflow Artifact
+        uses: actions/download-artifact@v4
         with:
-          python-version: '3.13'
-
-      - name: Set up MSVC
-        uses: ilammy/msvc-dev-cmd@v1
-
-      - name: Verify runner prerequisites
-        shell: pwsh
-        run: |
-          Write-Host "Python:" (Get-Command python -ErrorAction SilentlyContinue).Source
-          Write-Host "cl.exe:" (Get-Command cl -ErrorAction SilentlyContinue).Source
-          Write-Host "makensis:" (Get-Command makensis -ErrorAction SilentlyContinue).Source
-          Write-Host "Git:" (Get-Command git -ErrorAction SilentlyContinue).Source
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r build/resources/require.win.txt
-
-      - name: Build NCPA installer
-        run: python build/windows/build_ncpa.py "${{ steps.setup-python.outputs.python-path }}"
-
-      - name: Run unit tests
-        run: |
-          python -m pip install pytest
-          pytest -v
+          name: ncpa-windows
+          # Crucial inputs needed when downloading from a different workflow:
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Test Windows Install
         working-directory: build
@@ -64,10 +47,3 @@ jobs:
 
       - name: Run E2E Tests
         run: .\test\e2e\test_ncpa_e2e.ps1
-
-      - name: Upload Windows installer
-        uses: actions/upload-artifact@v7
-        with:
-          name: ncpa-windows
-          path: build/ncpa-*.exe
-          overwrite: true
