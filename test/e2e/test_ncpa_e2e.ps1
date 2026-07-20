@@ -22,7 +22,7 @@ Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host -NoNewline "[1/4] Testing API Connectivity & Auth... "
 try {
     $uri = "${BaseUrl}/system/agent_version?token=${NcpaToken}"
-    $response = Invoke-RestMethod -Uri $uri -Method Get
+    $response = Invoke-RestMethod -Uri $uri -Method Get -SkipCertificateCheck
     
     if ($response.agent_version) {
         Write-Host "SUCCESS (Version: $($response.agent_version))" -ForegroundColor Green
@@ -41,7 +41,7 @@ try {
 Write-Host -NoNewline "[2/4] Querying System Metric (CPU Percent)... "
 try {
     $uri = "${BaseUrl}/cpu/percent?token=${NcpaToken}"
-    $response = Invoke-RestMethod -Uri $uri -Method Get
+    $response = Invoke-RestMethod -Uri $uri -Method Get -SkipCertificateCheck
 
     if ($null -ne $response.percent) {
         Write-Host "SUCCESS" -ForegroundColor Green
@@ -61,7 +61,7 @@ Write-Host -NoNewline "[3/4] Testing Active Check Endpoint with Thresholds... "
 try {
     # Querying drive C on Windows
     $uri = "${BaseUrl}/disk/logical/C:|/used_percent?token=${NcpaToken}&check=true&warning=80&critical=90"
-    $response = Invoke-RestMethod -Uri $uri -Method Get
+    $response = Invoke-RestMethod -Uri $uri -Method Get -SkipCertificateCheck
 
     # NCPA active check endpoints return structured JSON with a 'returncode' (0=OK, 1=WARN, 2=CRIT)
     if ($null -ne $response.returncode) {
@@ -82,7 +82,7 @@ Write-Host -NoNewline "[4/4] Executing External Plugin via API... "
 try {
     # Assumes 'check_os.ps1' or similar plugin exists in NCPA's plugins folder
     $uri = "${BaseUrl}/plugins/check_os.ps1?token=${NcpaToken}&args=-w%205"
-    $response = Invoke-RestMethod -Uri $uri -Method Get
+    $response = Invoke-RestMethod -Uri $uri -Method Get -SkipCertificateCheck
 
     if ($null -ne $response.returncode) {
         Write-Host "SUCCESS (Plugin output: '$($response.stdout.Trim())')" -ForegroundColor Green
