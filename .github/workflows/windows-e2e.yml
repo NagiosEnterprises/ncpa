@@ -63,7 +63,7 @@ jobs:
           Copy-Item -Path "test\e2e\plugins\check_os.ps1" -Destination "C:\Program Files\Nagios\NCPA\plugins\"
 
       - name: Run E2E Tests
-        run: .\C:\Program Files\Nagios\NCPA\plugins\check_os.ps1
+        run: .\test\e2e\test_ncpa_e2e.ps1
 
       - name: Upload Windows installer
         uses: actions/upload-artifact@v7
