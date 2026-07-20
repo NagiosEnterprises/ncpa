@@ -46,7 +46,7 @@ jobs:
         run: |
           curl -k 'https://127.0.0.1:5693/api/system/agent_version?token=mytoken'
 
-      - name: Copy Custom Plugins
+      - name: Copy Custom Plugin
         run: |
           sudo cp ./test/e2e/plugins/check_os.sh /usr/local/ncpa/plugins/
 

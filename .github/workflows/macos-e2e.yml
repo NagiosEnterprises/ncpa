@@ -2,7 +2,7 @@ name: macOS e2e Test
 
 on:
   push:
-    branches: [ 'cpd-test-actions-build-windows-disabled' ]
+    branches: [ 'cpd-test-actions-build-windows' ]
 
 jobs:
   build-macos:
@@ -56,9 +56,16 @@ jobs:
         run: |
           sudo launchctl list | grep ncpa
 
-      - name: Test API
+      - name: Test API Sanity Check
         run: |
           curl -k 'https://127.0.0.1:5693/api/system/agent_version?token=mytoken'
+
+      - name: Copy Custom Plugin
+        run: |
+          sudo cp ./test/e2e/plugins/check_os.sh /usr/local/ncpa/plugins/
+
+      - name: Run E2E Tests
+        run: bash ./test/e2e/test_ncpa_e2e.sh 
 
       - name: Upload macOS installer
         uses: actions/upload-artifact@v7
