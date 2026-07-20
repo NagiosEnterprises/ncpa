@@ -2,7 +2,7 @@ name: Windows e2e Test
 
 on:
   push:
-    branches: [ 'cpd-test-actions-build-windows-disabled' ]
+    branches: [ 'cpd-test-actions-build-windows' ]
 
 jobs:
   build-windows:
@@ -54,9 +54,16 @@ jobs:
         run: |
           Get-Service NCPA
 
-      - name: Test API
+      - name: Test API Sanity Check
         run: |
           curl.exe -k 'https://127.0.0.1:5693/api/system/agent_version?token=8675309'
+
+      - name: Copy Custom Plugin
+        run: |
+          Copy-Item -Path "test\e2e\plugins\check_os.ps1" -Destination "C:\Program Files\Nagios\NCPA\plugins\"
+
+      - name: Run E2E Tests
+        run: .\C:\Program Files\Nagios\NCPA\plugins\check_os.ps1
 
       - name: Upload Windows installer
         uses: actions/upload-artifact@v7
