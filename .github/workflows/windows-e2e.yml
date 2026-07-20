@@ -19,9 +19,16 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: ncpa-windows
+          path: downloaded-assets/
           # Crucial inputs needed when downloading from a different workflow:
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Use the Downloaded Artifact
+        shell: pwsh
+        run: |
+          Write-Output "Displaying files retrieved from the build workflow:"
+          dir -la downloaded-assets/
 
       - name: Test Windows Install
         working-directory: build
