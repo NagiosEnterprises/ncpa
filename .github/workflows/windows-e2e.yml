@@ -2,7 +2,7 @@ name: Windows e2e Test
 
 on:
   push:
-    branches: [ 'cpd-test-actions-build-windows' ]
+    branches: [ 'cpd-test-actions-build-windows-disabled' ]
 
 jobs:
   build-windows:
@@ -20,7 +20,7 @@ jobs:
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Verify runner prerequisites
+      - name: Verify Runner Prerequisites
         shell: pwsh
         run: |
           Write-Host "Python:" (Get-Command python -ErrorAction SilentlyContinue).Source
@@ -28,20 +28,20 @@ jobs:
           Write-Host "makensis:" (Get-Command makensis -ErrorAction SilentlyContinue).Source
           Write-Host "Git:" (Get-Command git -ErrorAction SilentlyContinue).Source
 
-      - name: Install Python dependencies
+      - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r build/resources/require.win.txt
 
-      - name: Build NCPA installer
+      - name: Build NCPA Windows Installer
         run: python build/windows/build_ncpa.py "${{ steps.setup-python.outputs.python-path }}"
 
-      - name: Run unit tests
+      - name: Run Unit Tests
         run: |
           python -m pip install pytest
           pytest -v
 
-      - name: Upload Windows installer
+      - name: Upload Windows Installer
         uses: actions/upload-artifact@v7
         with:
           name: ncpa-windows
@@ -73,7 +73,7 @@ jobs:
         run: Start-Sleep -s 10
         shell: powershell
 
-      - name: Ensure service is running
+      - name: Ensure Service is Running
         run: |
           Get-Service NCPA
 

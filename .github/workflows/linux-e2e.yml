@@ -2,7 +2,7 @@ name: Linux e2e Test
 
 on:
   push:
-    branches: [ 'cpd-test-actions-build-windows-disabled' ]
+    branches: [ 'cpd-test-actions-build-windows' ]
 
 jobs:
   build-linux:
@@ -30,15 +30,44 @@ jobs:
           pytest -v
           deactivate
 
-      - name: Test Linux Install
-        working-directory: build
+      - name: Upload RPM Installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: ncpa-rpm
+          path: build/*.rpm
+          overwrite: true
+
+      - name: Upload DEB installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: ncpa-deb
+          path: build/*.deb
+          overwrite: true
+
+  e2e-linux:
+    runs-on: ubuntu-22.04
+    needs: build-windows # Crucial: Enforces sequential execution
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: ncpa-deb
+          path: downloaded-assets/
+
+      - name: Verify Artifact File
         run: |
-          sudo apt install -y ./ncpa*.deb
+          ls -l ./downloaded-assets/ncpa*.deb
+
+      - name: Test Linux Install
+        run: |
+          sudo apt install -y ./downloaded-assets/ncpa*.deb
 
       - name: Sleep for 10 seconds
         run: sleep 10
 
-      - name: Ensure service is running
+      - name: Ensure Service is Running
         run: |
           sudo systemctl is-active ncpa
 
@@ -53,16 +82,3 @@ jobs:
       - name: Run E2E Tests
         run: bash ./test/e2e/test_ncpa_e2e.sh 
 
-      - name: Upload RPM installer
-        uses: actions/upload-artifact@v7
-        with:
-          name: ncpa-rpm
-          path: build/*.rpm
-          overwrite: true
-
-      - name: Upload DEB installer
-        uses: actions/upload-artifact@v7
-        with:
-          name: ncpa-deb
-          path: build/*.deb
-          overwrite: true
