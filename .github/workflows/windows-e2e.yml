@@ -53,37 +53,39 @@ jobs:
     runs-on: windows-2022
     needs: build-windows # Crucial: Enforces sequential execution
     steps:
+      - uses: actions/checkout@v7
+
       - name: Download Build Artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: ncpa-windows
           path: downloaded-assets/
 
-      - name: Verify and Deploy
+      - name: Verify Artifact File
         run: |
-          dir downloaded-assets/
+          Test-Path -Path "downloaded-assets\ncpa*.exe"
 
-      # - name: Test Windows Install
-      #   working-directory: build
-      #   run: |
-      #     Start-Process -FilePath ".\ncpa*.exe" -ArgumentList "/S", "/TOKEN='8675309'" -Wait
+      - name: Test Windows Install
+        working-directory: build
+        run: |
+          Start-Process -FilePath ".\downloaded-assets\ncpa*.exe" -ArgumentList "/S", "/TOKEN='8675309'" -Wait
 
-      # - name: Sleep for 10 seconds
-      #   run: Start-Sleep -s 10
-      #   shell: powershell
+      - name: Sleep for 10 seconds
+        run: Start-Sleep -s 10
+        shell: powershell
 
-      # - name: Ensure service is running
-      #   run: |
-      #     Get-Service NCPA
+      - name: Ensure service is running
+        run: |
+          Get-Service NCPA
 
-      # - name: Test API Sanity Check
-      #   run: |
-      #     curl.exe -k 'https://127.0.0.1:5693/api/system/agent_version?token=8675309'
+      - name: Test API Sanity Check
+        run: |
+          curl.exe -k 'https://127.0.0.1:5693/api/system/agent_version?token=8675309'
 
-      # - name: Copy Custom Plugin
-      #   run: |
-      #     Copy-Item -Path "test\e2e\plugins\check_os.ps1" -Destination "C:\Program Files\Nagios\NCPA\plugins\"
+      - name: Copy Custom Plugin
+        run: |
+          Copy-Item -Path "test\e2e\plugins\check_os.ps1" -Destination "C:\Program Files\Nagios\NCPA\plugins\"
 
-      # - name: Run E2E Tests
-      #   run: .\test\e2e\test_ncpa_e2e.ps1
+      - name: Run E2E Tests
+        run: .\test\e2e\test_ncpa_e2e.ps1
 
