@@ -64,7 +64,7 @@ jobs:
       - name: Verify Artifact File
         run: |
           dir downloaded-assets/
-          Test-Path -Path "downloaded-assets\ncpa*.exe"
+          Test-Path -Path ".\downloaded-assets\ncpa*.exe"
 
       - name: Test Windows Install
         working-directory: build
