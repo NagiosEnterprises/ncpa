@@ -46,7 +46,7 @@ jobs:
 
   e2e-linux:
     runs-on: ubuntu-22.04
-    needs: build-windows # Crucial: Enforces sequential execution
+    needs: build-linux # Crucial: Enforces sequential execution
     steps:
       - uses: actions/checkout@v7
 
