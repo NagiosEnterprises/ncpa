@@ -69,11 +69,14 @@ jobs:
           sudo hdiutil attach -nobrowse ./downloaded-assets/ncpa*.dmg
           sudo zsh /Volumes/NCPA*/install.sh
 
-      - name: Sleep for 20 seconds
-        run: sleep 20
+      - name: Sleep for 10 seconds
+        run: sleep 10
 
       - name: Ensure Service is Running
-        run: sudo launchctl list | grep ncpa
+        run: |
+          sudo launchctl list | grep ncpa
+          ps auxww | grep ncpa
+          cat /usr/local/ncpa/var/log/ncpa_listener.log
 
       - name: Test API Sanity Check
         run: curl -k 'https://127.0.0.1:5693/api/system/agent_version?token=mytoken'
