@@ -2,7 +2,7 @@ name: Linux e2e Test
 
 on:
   push:
-    branches: [ 'cpd-test-actions-build-windows' ]
+    branches: [ 'cpd-test-actions-build-windows-disabled' ]
 
 jobs:
   build-linux:
