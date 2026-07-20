@@ -2,7 +2,7 @@ name: Windows e2e Test
 
 on:
   push:
-    branches: [ 'cpd-test-actions-build-windows-disabled' ]
+    branches: [ 'cpd-test-actions-build-windows' ]
 
 jobs:
   build-windows:
@@ -62,28 +62,23 @@ jobs:
           path: downloaded-assets/
 
       - name: Verify Artifact File
-        run: |
-          Test-Path -Path ".\downloaded-assets\ncpa*.exe"
+        run: Test-Path -Path ".\downloaded-assets\ncpa*.exe"
 
       - name: Test Windows Install
-        run: |
-          Start-Process -FilePath ".\downloaded-assets\ncpa*.exe" -ArgumentList "/S", "/TOKEN='8675309'" -Wait
+        run: Start-Process -FilePath ".\downloaded-assets\ncpa*.exe" -ArgumentList "/S", "/TOKEN='8675309'" -Wait
 
       - name: Sleep for 10 seconds
         run: Start-Sleep -s 10
         shell: powershell
 
       - name: Ensure Service is Running
-        run: |
-          Get-Service NCPA
+        run: Get-Service NCPA
 
       - name: Test API Sanity Check
-        run: |
-          curl.exe -k 'https://127.0.0.1:5693/api/system/agent_version?token=8675309'
+        run: curl.exe -k 'https://127.0.0.1:5693/api/system/agent_version?token=8675309'
 
       - name: Copy Custom Plugin
-        run: |
-          Copy-Item -Path "test\e2e\plugins\check_os.ps1" -Destination "C:\Program Files\Nagios\NCPA\plugins\"
+        run: Copy-Item -Path "test\e2e\plugins\check_os.ps1" -Destination "C:\Program Files\Nagios\NCPA\plugins\"
 
       - name: Run E2E Tests
         run: .\test\e2e\test_ncpa_e2e.ps1
