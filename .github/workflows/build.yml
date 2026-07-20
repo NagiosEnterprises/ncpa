@@ -1,0 +1,44 @@
+name: Multi-OS Python Matrix
+
+on:
+  push:
+    branches: [ 'cpd-test-actions-build-windows' ]
+
+jobs:
+  test:
+    name: Test (${{ matrix.os }} - Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false # Prevents one OS failure from cancelling other OS runs
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          # cache: 'pip' # Optional: Speeds up subsequent runs if using requirements.txt
+
+      - name: Install Dependencies
+        run: |
+          python -VV
+          
+  # Job 2: Runs only after the 'test' job succeeds
+  publish:
+    name: Post-Test Deployment
+    runs-on: ubuntu-latest
+    needs: test # This creates the dependency chain
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Production Step
+        run: |
+          echo "All matrix test variants passed perfectly!"
+          echo "Running release, deployment, or notification steps here..."
