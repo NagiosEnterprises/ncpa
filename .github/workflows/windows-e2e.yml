@@ -2,7 +2,7 @@ name: Windows e2e Test
 
 on:
   workflow_run:
-    workflows: ["Build Windows"]
+    workflows: [Build Windows]
     types:
       - completed
 
