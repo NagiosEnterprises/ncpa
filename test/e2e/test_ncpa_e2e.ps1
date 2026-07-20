@@ -4,7 +4,7 @@ $ErrorActionPreference = "Stop"
 # --- Configuration (Defaults via Env Vars or local fallbacks) ---
 $NcpaHost  = if ($env:NCPA_HOST)  { $env:NCPA_HOST }  else { "localhost" }
 $NcpaPort  = if ($env:NCPA_PORT)  { $env:NCPA_PORT }  else { "5693" }
-$NcpaToken = if ($env:NCPA_TOKEN) { $env:NCPA_TOKEN } else { "my-secret-token" }
+$NcpaToken = if ($env:NCPA_TOKEN) { $env:NCPA_TOKEN } else { "8675309" }
 
 $BaseUrl = "https://${NcpaHost}:${NcpaPort}/api"
 
@@ -26,7 +26,7 @@ try {
     
     # Debug response
     Write-Host "Debug: $($response | ConvertTo-Json)" -ForegroundColor Yellow
-    
+
     if ($response.agent_version) {
         Write-Host "SUCCESS (Version: $($response.agent_version))" -ForegroundColor Green
     } else {
