@@ -63,11 +63,9 @@ jobs:
 
       - name: Verify Artifact File
         run: |
-          dir downloaded-assets/
           Test-Path -Path ".\downloaded-assets\ncpa*.exe"
 
       - name: Test Windows Install
-        working-directory: build
         run: |
           Start-Process -FilePath ".\downloaded-assets\ncpa*.exe" -ArgumentList "/S", "/TOKEN='8675309'" -Wait
 
