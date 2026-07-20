@@ -24,6 +24,9 @@ try {
     $uri = "${BaseUrl}/system/agent_version?token=${NcpaToken}"
     $response = Invoke-RestMethod -Uri $uri -Method Get -SkipCertificateCheck
     
+    # Debug response
+    Write-Host "Debug: $($response | ConvertTo-Json)" -ForegroundColor Yellow
+    
     if ($response.agent_version) {
         Write-Host "SUCCESS (Version: $($response.agent_version))" -ForegroundColor Green
     } else {
@@ -81,7 +84,7 @@ try {
 Write-Host -NoNewline "[4/4] Executing External Plugin via API... "
 try {
     # Assumes 'check_os.ps1' or similar plugin exists in NCPA's plugins folder
-    $uri = "${BaseUrl}/plugins/check_os.ps1?token=${NcpaToken}&args=-w%205"
+    $uri = "${BaseUrl}/plugins/check_os.ps1?token=${NcpaToken}"
     $response = Invoke-RestMethod -Uri $uri -Method Get -SkipCertificateCheck
 
     if ($null -ne $response.returncode) {
