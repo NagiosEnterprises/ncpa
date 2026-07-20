@@ -49,17 +49,17 @@ else
     exit 1
 fi
 
-# # 4. Execute Custom Plugin Check
-# echo -n "[4/4] Executing External Plugin via API... "
-# PLUGIN_RESPONSE=$(curl -s -k "${BASE_URL}/runcheck/check_dummy?token=${NCPA_TOKEN}&args=-w%205")
+# 4. Execute Custom Plugin Check
+echo -n "[4/4] Executing External Plugin via API... "
+PLUGIN_RESPONSE=$(curl -s -k "${BASE_URL}/plugins/check_os.sh?token=${NCPA_TOKEN}")
 
-# if echo "$PLUGIN_RESPONSE" | grep -q '"returncode"'; then
-#     echo "SUCCESS"
-# else
-#     echo "FAILED - Plugin execution failed"
-#     echo "Response: $PLUGIN_RESPONSE"
-#     exit 1
-# fi
+if echo "$PLUGIN_RESPONSE" | grep -q '"returncode"'; then
+    echo "SUCCESS"
+else
+    echo "FAILED - Plugin execution failed"
+    echo "Response: $PLUGIN_RESPONSE"
+    exit 1
+fi
 
 echo "=========================================="
 echo " All NCPA E2E Tests Passed Successfully! "
