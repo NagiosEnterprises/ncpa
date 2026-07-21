@@ -28,15 +28,17 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # - name: Create build output
-      #   run: |
-      #     mkdir -p dist-linux
-      #     echo "Built on ${{ matrix.os }} with Python ${{ matrix.python-version }}" > dist-linux/build-info.txt
-      #     # Add your actual build commands here (e.g., python -m build)
-
       - name: Build project
         working-directory: build
         run: sudo ./build.sh
+
+      - name: Run Unit Tests
+        run: |
+          sudo chown -R $USER:$USER build/
+          source build/venvs/ncpa-build-linux/bin/activate
+          python -m pip install pytest
+          pytest -v
+          deactivate
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v7
