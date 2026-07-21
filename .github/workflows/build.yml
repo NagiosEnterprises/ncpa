@@ -28,87 +28,91 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Create build output
-        run: |
-          mkdir -p dist-linux
-          echo "Built on ${{ matrix.os }} with Python ${{ matrix.python-version }}" > dist-linux/build-info.txt
-          # Add your actual build commands here (e.g., python -m build)
+      # - name: Create build output
+      #   run: |
+      #     mkdir -p dist-linux
+      #     echo "Built on ${{ matrix.os }} with Python ${{ matrix.python-version }}" > dist-linux/build-info.txt
+      #     # Add your actual build commands here (e.g., python -m build)
+
+      - name: Build project
+        working-directory: build
+        run: sudo ./build.sh
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v7
         with:
           # Use dynamic, unique names for each matrix combination artifact
           name: app-build-linux-${{ matrix.os }}-py${{ matrix.python-version }}
-          path: dist-linux/
+          path: build/*.deb
           retention-days: 1
 
-  build-windows:
-    name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
-    strategy:
-      matrix:
-        os: [windows-2022, windows-2025]
-        python-version: ['3.11', '3.12']
-      # Keep running other matrix jobs even if one fails
-      fail-fast: false
+  # build-windows:
+  #   name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
+  #   strategy:
+  #     matrix:
+  #       os: [windows-2022, windows-2025]
+  #       python-version: ['3.11', '3.12']
+  #     # Keep running other matrix jobs even if one fails
+  #     fail-fast: false
 
-    runs-on: ${{ matrix.os }}
+  #   runs-on: ${{ matrix.os }}
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v7
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ matrix.python-version }}
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v6
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
 
-      - name: Create build output
-        run: |
-          mkdir dist-windows
-          Write-Host "Built on ${{ matrix.os }} with Python ${{ matrix.python-version }}" > dist-windows/build-info.txt
-          # Add your actual build commands here (e.g., python -m build)
+  #     - name: Create build output
+  #       run: |
+  #         mkdir dist-windows
+  #         Write-Host "Built on ${{ matrix.os }} with Python ${{ matrix.python-version }}" > dist-windows/build-info.txt
+  #         # Add your actual build commands here (e.g., python -m build)
 
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v7
-        with:
-          # Use dynamic, unique names for each matrix combination artifact
-          name: app-build-windows-${{ matrix.os }}-py${{ matrix.python-version }}
-          path: dist-windows/
-          retention-days: 1
+  #     - name: Upload Build Artifact
+  #       uses: actions/upload-artifact@v7
+  #       with:
+  #         # Use dynamic, unique names for each matrix combination artifact
+  #         name: app-build-windows-${{ matrix.os }}-py${{ matrix.python-version }}
+  #         path: dist-windows/
+  #         retention-days: 1
 
-  build-mac:
-    name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
-    strategy:
-      matrix:
-        os: [macos-15-intel, macos-26-intel]
-        python-version: ['3.11', '3.12']
-      # Keep running other matrix jobs even if one fails
-      fail-fast: false
+  # build-mac:
+  #   name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
+  #   strategy:
+  #     matrix:
+  #       os: [macos-15-intel, macos-26-intel]
+  #       python-version: ['3.11', '3.12']
+  #     # Keep running other matrix jobs even if one fails
+  #     fail-fast: false
 
-    runs-on: ${{ matrix.os }}
+  #   runs-on: ${{ matrix.os }}
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v7
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ matrix.python-version }}
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v6
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
 
-      - name: Create build output
-        run: |
-          mkdir -p dist-mac
-          echo "Built on ${{ matrix.os }} with Python ${{ matrix.python-version }}" > dist-mac/build-info.txt
-          # Add your actual build commands here (e.g., python -m build)
+  #     - name: Create build output
+  #       run: |
+  #         mkdir -p dist-mac
+  #         echo "Built on ${{ matrix.os }} with Python ${{ matrix.python-version }}" > dist-mac/build-info.txt
+  #         # Add your actual build commands here (e.g., python -m build)
 
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v7
-        with:
-          # Use dynamic, unique names for each matrix combination artifact
-          name: app-build-mac-${{ matrix.os }}-py${{ matrix.python-version }}
-          path: dist-mac/
-          retention-days: 1
+  #     - name: Upload Build Artifact
+  #       uses: actions/upload-artifact@v7
+  #       with:
+  #         # Use dynamic, unique names for each matrix combination artifact
+  #         name: app-build-mac-${{ matrix.os }}-py${{ matrix.python-version }}
+  #         path: dist-mac/
+  #         retention-days: 1
 
   # ------------------------------------------------------------------
   # JOB 2: Download all artifacts and test on both Ubuntu versions
@@ -151,11 +155,11 @@ jobs:
           # Verify that expected artifact files exist
           for os_ver in "${os_versions[@]}"; do
             for py_ver in "${py_versions[@]}"; do
-              artifact_file="artifacts/app-build-linux-${os_ver}-py${py_ver}/build-info.txt"
+              artifact_file="artifacts/app-build-linux-${os_ver}-py${py_ver}/build/*.deb"
 
               if [ -f "$artifact_file" ]; then
                 echo "SUCCESS: Found build output for ${os_ver} (Python ${py_ver})"
-                cat "$artifact_file"
+                echo "$artifact_file"
                 echo "" # Blank line for cleaner log readability
               else
                 echo "ERROR: Missing artifact file at '${artifact_file}'" >&2
@@ -164,101 +168,101 @@ jobs:
             done
           done
 
-  test-artifacts-windows:
-    name: Test Artifacts (${{ matrix.os }})
-    needs: build-windows
+  # test-artifacts-windows:
+  #   name: Test Artifacts (${{ matrix.os }})
+  #   needs: build-windows
     
-    strategy:
-      matrix:
-        os: [windows-2022, windows-2025]
+  #   strategy:
+  #     matrix:
+  #       os: [windows-2022, windows-2025]
 
-    runs-on: ${{ matrix.os }}
+  #   runs-on: ${{ matrix.os }}
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v7
 
-      - name: Download all build artifacts
-        uses: actions/download-artifact@v7
-        with:
-          # Downloads all artifacts from the workflow into a directory named 'artifacts/'
-          path: artifacts/
-          # Pattern matching allows pulling all artifacts generated by the build matrix
-          pattern: app-build-windows*
-          merge-multiple: false
+  #     - name: Download all build artifacts
+  #       uses: actions/download-artifact@v7
+  #       with:
+  #         # Downloads all artifacts from the workflow into a directory named 'artifacts/'
+  #         path: artifacts/
+  #         # Pattern matching allows pulling all artifacts generated by the build matrix
+  #         pattern: app-build-windows*
+  #         merge-multiple: false
 
-      - name: Verify downloaded artifacts
-        run: |
-          Write-Host "=== Inspecting downloaded artifacts ==="
-          dir artifacts/
+  #     - name: Verify downloaded artifacts
+  #       run: |
+  #         Write-Host "=== Inspecting downloaded artifacts ==="
+  #         dir artifacts/
 
-      - name: Run tests on artifacts
-        run: |
-          $osVersions = @("windows-2022", "windows-2025")
-          $pyVersions = @("3.11", "3.12")
+  #     - name: Run tests on artifacts
+  #       run: |
+  #         $osVersions = @("windows-2022", "windows-2025")
+  #         $pyVersions = @("3.11", "3.12")
 
-          foreach ($osVer in $osVersions) {
-              foreach ($pyVer in $pyVersions) {
-                  $artifactDir = "artifacts/app-build-windows-${osVer}-py${pyVer}"
-                  $filePath = "$artifactDir/build-info.txt"
+  #         foreach ($osVer in $osVersions) {
+  #             foreach ($pyVer in $pyVersions) {
+  #                 $artifactDir = "artifacts/app-build-windows-${osVer}-py${pyVer}"
+  #                 $filePath = "$artifactDir/build-info.txt"
 
-                  if (Test-Path -Path $filePath -PathType Leaf) {
-                      Write-Host "SUCCESS: Found build output for $osVer Python $pyVer"
-                      Get-Content -Path $filePath
-                  } else {
-                      Write-Error "ERROR: Missing artifact for $osVer Python $pyVer"
-                      exit 1
-                  }
-              }
-          }
+  #                 if (Test-Path -Path $filePath -PathType Leaf) {
+  #                     Write-Host "SUCCESS: Found build output for $osVer Python $pyVer"
+  #                     Get-Content -Path $filePath
+  #                 } else {
+  #                     Write-Error "ERROR: Missing artifact for $osVer Python $pyVer"
+  #                     exit 1
+  #                 }
+  #             }
+  #         }
 
-  test-artifacts-mac:
-    name: Test Artifacts (${{ matrix.os }})
-    needs: build-mac
+  # test-artifacts-mac:
+  #   name: Test Artifacts (${{ matrix.os }})
+  #   needs: build-mac
     
-    strategy:
-      matrix:
-        os: [macos-15-intel, macos-26-intel]
+  #   strategy:
+  #     matrix:
+  #       os: [macos-15-intel, macos-26-intel]
 
-    runs-on: ${{ matrix.os }}
+  #   runs-on: ${{ matrix.os }}
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v7
 
-      - name: Download all build artifacts
-        uses: actions/download-artifact@v7
-        with:
-          # Downloads all artifacts from the workflow into a directory named 'artifacts/'
-          path: artifacts/
-          # Pattern matching allows pulling all artifacts generated by the build matrix
-          pattern: app-build-mac*
-          merge-multiple: false
+  #     - name: Download all build artifacts
+  #       uses: actions/download-artifact@v7
+  #       with:
+  #         # Downloads all artifacts from the workflow into a directory named 'artifacts/'
+  #         path: artifacts/
+  #         # Pattern matching allows pulling all artifacts generated by the build matrix
+  #         pattern: app-build-mac*
+  #         merge-multiple: false
 
-      - name: Verify downloaded artifacts
-        run: |
-          echo "=== Inspecting downloaded artifacts ==="
-          ls -R artifacts/
+  #     - name: Verify downloaded artifacts
+  #       run: |
+  #         echo "=== Inspecting downloaded artifacts ==="
+  #         ls -R artifacts/
 
-      - name: Run tests on artifacts
-        run: |
-          echo "Running tests on target OS: ${{ matrix.os }}"
+  #     - name: Run tests on artifacts
+  #       run: |
+  #         echo "Running tests on target OS: ${{ matrix.os }}"
 
-          os_versions=("macos-15-intel" "macos-26-intel")
-          py_versions=("3.11" "3.12")
+  #         os_versions=("macos-15-intel" "macos-26-intel")
+  #         py_versions=("3.11" "3.12")
 
-          # Verify that expected artifact files exist
-          for os_ver in "${os_versions[@]}"; do
-            for py_ver in "${py_versions[@]}"; do
-              artifact_file="artifacts/app-build-mac-${os_ver}-py${py_ver}/build-info.txt"
+  #         # Verify that expected artifact files exist
+  #         for os_ver in "${os_versions[@]}"; do
+  #           for py_ver in "${py_versions[@]}"; do
+  #             artifact_file="artifacts/app-build-mac-${os_ver}-py${py_ver}/build-info.txt"
 
-              if [ -f "$artifact_file" ]; then
-                echo "SUCCESS: Found build output for ${os_ver} (Python ${py_ver})"
-                cat "$artifact_file"
-                echo "" # Blank line for cleaner log readability
-              else
-                echo "ERROR: Missing artifact file at '${artifact_file}'" >&2
-                exit 1
-              fi
-            done
-          done
+  #             if [ -f "$artifact_file" ]; then
+  #               echo "SUCCESS: Found build output for ${os_ver} (Python ${py_ver})"
+  #               cat "$artifact_file"
+  #               echo "" # Blank line for cleaner log readability
+  #             else
+  #               echo "ERROR: Missing artifact file at '${artifact_file}'" >&2
+  #               exit 1
+  #             fi
+  #           done
+  #         done
