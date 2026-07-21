@@ -80,7 +80,7 @@ jobs:
     name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
     strategy:
       matrix:
-        os: [macos-15-intel, macos-15-intel]
+        os: [macos-15-intel, macos-26-intel]
         python-version: ['3.11', '3.12']
       # Keep running other matrix jobs even if one fails
       fail-fast: false
@@ -144,16 +144,21 @@ jobs:
       - name: Run tests on artifacts
         run: |
           echo "Running tests on target OS: ${{ matrix.os }}"
-          
-          # Example test: Verify that all 4 expected artifact subdirectories exist
-          for os_ver in ubuntu-22.04 ubuntu-24.04; do
-            for py_ver in 3.11 3.12; do
-              artifact_dir="artifacts/app-build-linux-${os_ver}-py${py_ver}"
-              if [ -f "$artifact_dir/build-info.txt" ]; then
-                echo "SUCCESS: Found build output for $os_ver Python $py_ver"
-                cat "$artifact_dir/build-info.txt"
+
+          os_versions=("ubuntu-22.04" "ubuntu-24.04")
+          py_versions=("3.11" "3.12")
+
+          # Verify that expected artifact files exist
+          for os_ver in "${os_versions[@]}"; do
+            for py_ver in "${py_versions[@]}"; do
+              artifact_file="artifacts/app-build-linux-${os_ver}-py${py_ver}/build-info.txt"
+
+              if [ -f "$artifact_file" ]; then
+                echo "SUCCESS: Found build output for ${os_ver} (Python ${py_ver})"
+                cat "$artifact_file"
+                echo "" # Blank line for cleaner log readability
               else
-                echo "ERROR: Missing artifact for $os_ver Python $py_ver"
+                echo "ERROR: Missing artifact file at '${artifact_file}'" >&2
                 exit 1
               fi
             done
@@ -213,7 +218,7 @@ jobs:
     
     strategy:
       matrix:
-        os: [macos-15-intel, macos-15-intel]
+        os: [macos-15-intel, macos-26-intel]
 
     runs-on: ${{ matrix.os }}
 
@@ -238,16 +243,21 @@ jobs:
       - name: Run tests on artifacts
         run: |
           echo "Running tests on target OS: ${{ matrix.os }}"
-          
-          # Example test: Verify that all 4 expected artifact subdirectories exist
-          for os_ver in macos-15-intel macos-15-intel; do
-            for py_ver in 3.11 3.12; do
-              artifact_dir="artifacts/app-build-mac-${os_ver}-py${py_ver}"
-              if [ -f "$artifact_dir/build-info.txt" ]; then
-                echo "SUCCESS: Found build output for $os_ver Python $py_ver"
-                cat "$artifact_dir/build-info.txt"
+
+          os_versions=("macos-15-intel" "macos-26-intel")
+          py_versions=("3.11" "3.12")
+
+          # Verify that expected artifact files exist
+          for os_ver in "${os_versions[@]}"; do
+            for py_ver in "${py_versions[@]}"; do
+              artifact_file="artifacts/app-build-mac-${os_ver}-py${py_ver}/build-info.txt"
+
+              if [ -f "$artifact_file" ]; then
+                echo "SUCCESS: Found build output for ${os_ver} (Python ${py_ver})"
+                cat "$artifact_file"
+                echo "" # Blank line for cleaner log readability
               else
-                echo "ERROR: Missing artifact for $os_ver Python $py_ver"
+                echo "ERROR: Missing artifact file at '${artifact_file}'" >&2
                 exit 1
               fi
             done
