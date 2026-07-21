@@ -155,7 +155,7 @@ jobs:
           # Verify that expected artifact files exist
           for os_ver in "${os_versions[@]}"; do
             for py_ver in "${py_versions[@]}"; do
-              artifact_file="artifacts/app-build-linux-${os_ver}-py${py_ver}/build/*.deb"
+              artifact_file="artifacts/app-build-linux-${os_ver}-py${py_ver}/*.deb"
 
               if [ -f "$artifact_file" ]; then
                 echo "SUCCESS: Found build output for ${os_ver} (Python ${py_ver})"
