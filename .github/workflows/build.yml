@@ -46,7 +46,7 @@ jobs:
     name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
     strategy:
       matrix:
-        os: [windows-2022, windows-2022]
+        os: [windows-2022, windows-2025]
         python-version: ['3.11', '3.12']
       # Keep running other matrix jobs even if one fails
       fail-fast: false
@@ -131,7 +131,7 @@ jobs:
     
     strategy:
       matrix:
-        os: [windows-2022, windows-2022]
+        os: [windows-2022, windows-2025]
 
     runs-on: ${{ matrix.os }}
 
@@ -155,7 +155,7 @@ jobs:
 
       - name: Run tests on artifacts
         run: |
-          $osVersions = @("windows-2019", "windows-2022")
+          $osVersions = @("windows-2022", "windows-2025")
           $pyVersions = @("3.11", "3.12")
 
           foreach ($osVer in $osVersions) {
