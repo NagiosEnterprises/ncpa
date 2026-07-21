@@ -79,7 +79,7 @@ jobs:
   #       with:
   #         # Use dynamic, unique names for each matrix combination artifact
   #         name: app-build-windows-${{ matrix.os }}-py${{ matrix.python-version }}
-  #         path: dist-windows/
+  #         path: build/ncpa-*.exe
   #         retention-days: 1
 
   build-mac:
@@ -132,7 +132,7 @@ jobs:
         with:
           # Use dynamic, unique names for each matrix combination artifact
           name: app-build-mac-${{ matrix.os }}-py${{ matrix.python-version }}
-          path: dist-mac/
+          path: build/*.dmg
           retention-days: 1
 
   # ------------------------------------------------------------------
