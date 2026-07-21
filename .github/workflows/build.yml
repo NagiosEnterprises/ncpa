@@ -113,8 +113,8 @@ jobs:
   # ------------------------------------------------------------------
   # JOB 2: Download all artifacts and test on both Ubuntu versions
   # ------------------------------------------------------------------
-  test-all-artifacts-linux:
-    name: Test All Artifacts (${{ matrix.os }})
+  test-artifacts-linux:
+    name: Test Artifacts (${{ matrix.os }})
     needs: build-linux # Ensures this job only runs after 'build-linux' completes successfully
     
     strategy:
@@ -128,7 +128,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Download all build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           # Downloads all artifacts from the workflow into a directory named 'artifacts/'
           path: artifacts/
@@ -159,8 +159,8 @@ jobs:
             done
           done
 
-  test-all-artifacts-windows:
-    name: Test All Artifacts (${{ matrix.os }})
+  test-artifacts-windows:
+    name: Test Artifacts (${{ matrix.os }})
     needs: build-windows
     
     strategy:
@@ -174,7 +174,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Download all build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           # Downloads all artifacts from the workflow into a directory named 'artifacts/'
           path: artifacts/
@@ -207,8 +207,8 @@ jobs:
               }
           }
 
-  test-all-artifacts-mac:
-    name: Test All Artifacts (${{ matrix.os }})
+  test-artifacts-mac:
+    name: Test Artifacts (${{ matrix.os }})
     needs: build-mac
     
     strategy:
@@ -222,7 +222,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Download all build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           # Downloads all artifacts from the workflow into a directory named 'artifacts/'
           path: artifacts/
