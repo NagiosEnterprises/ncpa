@@ -296,7 +296,7 @@ jobs:
             for py_ver in "${py_versions[@]}"; do
 
               # Install NCPA artifact
-              sudo hdiutil attach -nobrowse ./downloaded-assets/ncpa*.dmg
+              sudo hdiutil attach -nobrowse ./artifacts/app-build-windows-${osVer}-py${pyVer}/ncpa*.dmg
               sudo zsh /Volumes/NCPA*/install.sh
               sleep 10
               sudo launchctl list | grep ncpa
