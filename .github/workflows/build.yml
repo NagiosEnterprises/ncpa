@@ -190,6 +190,7 @@ jobs:
     strategy:
       matrix:
         os: ${{ fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS) }}
+      fail-fast: false
 
     runs-on: ${{ matrix.os }}
 
@@ -249,6 +250,7 @@ jobs:
   #   strategy:
   #     matrix:
   #       os: ${{ fromJSON(needs.setup-environment.outputs.WINDOWS_VERSIONS) }}
+  #     fail-fast: false
 
   #   runs-on: ${{ matrix.os }}
 
@@ -304,6 +306,7 @@ jobs:
   #   strategy:
   #     matrix:
   #       os: ${{ fromJSON(needs.setup-environment.outputs.MACOS_VERSIONS) }}
+  #     fail-fast: false
 
   #   runs-on: ${{ matrix.os }}
 
