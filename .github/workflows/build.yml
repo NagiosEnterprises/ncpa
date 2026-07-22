@@ -18,10 +18,10 @@ jobs:
     steps:
       - id: set-vars
         run: |
-          echo 'LINUX_VERSIONS=["ubuntu-22.04", "ubuntu-24.04"]' >> $GITHUB_OUTPUT
+          echo 'LINUX_VERSIONS=["ubuntu-22.04", "ubuntu-24.04", "ubuntu-26.04"]' >> $GITHUB_OUTPUT
           echo 'WINDOWS_VERSIONS=["windows-2022", "windows-2025"]' >> $GITHUB_OUTPUT
           echo 'MACOS_VERSIONS=["macos-15-intel", "macos-26-intel"]' >> $GITHUB_OUTPUT
-          echo 'PYTHON_VERSIONS=["3.11", "3.12"]' >> $GITHUB_OUTPUT
+          echo 'PYTHON_VERSIONS=["3.11", "3.12", "3.13", "3.14"]' >> $GITHUB_OUTPUT
 
   # ------------------------------------------------------------------
   # BUILD JOBS: Build artifacts across matrix combinations
