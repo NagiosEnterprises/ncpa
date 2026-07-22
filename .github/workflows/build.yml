@@ -188,7 +188,6 @@ jobs:
     strategy:
       matrix:
         os: ${{ fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS) }}
-        os: ${{ fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS) }}
 
     runs-on: ${{ matrix.os }}
 
