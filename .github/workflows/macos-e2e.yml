@@ -2,7 +2,7 @@ name: macOS e2e Test
 
 on:
   push:
-    branches: [ 'cpd-test-actions-build-windows-disabled' ]
+    branches: [ 'cpd-test-actions-build-windows' ]
 
 jobs:
   build-macos:
@@ -11,11 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Set up Python 3.13
+      - name: Set up Python
         uses: actions/setup-python@v6
         id: setup-python
         with:
-          python-version: '3.13'
+          python-version: '3.14'
 
       - name: Build project
         working-directory: build
