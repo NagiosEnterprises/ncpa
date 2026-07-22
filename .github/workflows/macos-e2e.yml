@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-python@v6
         id: setup-python
         with:
-          python-version: '3.14'
+          python-version: '3.13'
 
       - name: Build project
         working-directory: build
