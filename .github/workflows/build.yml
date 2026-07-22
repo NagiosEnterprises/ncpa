@@ -337,7 +337,7 @@ jobs:
         run: |
           echo "Running tests on target OS: ${{ matrix.os }}"
 
-          os_versions=(${{ join(fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS), ' ') }})
+          os_versions=(${{ join(fromJSON(needs.setup-environment.outputs.MACOS_VERSIONS), ' ') }})
           py_versions=(${{ join(fromJSON(needs.setup-environment.outputs.PYTHON_VERSIONS), ' ') }})
 
           # Verify that expected artifact files exist
