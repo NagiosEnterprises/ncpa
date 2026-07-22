@@ -28,6 +28,7 @@ jobs:
   # ------------------------------------------------------------------
   build-linux:
     name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    needs: setup-environment
     strategy:
       matrix:
         os: ${{ fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS) }}
