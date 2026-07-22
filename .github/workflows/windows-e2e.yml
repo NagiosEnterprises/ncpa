@@ -17,8 +17,13 @@ jobs:
         with:
           python-version: '3.13'
 
+        # Install MSVC
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
+
+        # Install NSIS Compiler
+      - name: Install NSIS Compiler
+        uses: negrutiu/nsis-install@v3
 
       - name: Verify Runner Prerequisites
         shell: pwsh
