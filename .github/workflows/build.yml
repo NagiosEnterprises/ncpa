@@ -6,7 +6,7 @@ on:
 
 jobs:
   # ------------------------------------------------------------------
-  # NEW SETUP JOB: Define and export the array variables
+  # SETUP JOB: Define and export the array variables
   # ------------------------------------------------------------------
   setup-environment:
     runs-on: ubuntu-latest
@@ -24,7 +24,7 @@ jobs:
           echo 'PYTHON_VERSIONS=["3.11", "3.12"]' >> $GITHUB_OUTPUT
 
   # ------------------------------------------------------------------
-  # JOB 1: Build artifacts across matrix combinations
+  # BUILD JOBS: Build artifacts across matrix combinations
   # ------------------------------------------------------------------
   build-linux:
     name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
@@ -187,7 +187,7 @@ jobs:
     
     strategy:
       matrix:
-        os: ${{ fromJSON(env.LINUX_VERSIONS) }}
+        os: ${{ fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS) }}
 
     runs-on: ${{ matrix.os }}
 
