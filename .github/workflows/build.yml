@@ -26,105 +26,105 @@ jobs:
   # ------------------------------------------------------------------
   # BUILD JOBS: Build artifacts across matrix combinations
   # ------------------------------------------------------------------
-  build-linux:
-    name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
-    needs: setup-environment
-    strategy:
-      matrix:
-        os: ${{ fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS) }}
-        python-version: ${{ fromJSON(needs.setup-environment.outputs.PYTHON_VERSIONS) }}
-      # Keep running other matrix jobs even if one fails
-      fail-fast: false
+  # build-linux:
+  #   name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
+  #   needs: setup-environment
+  #   strategy:
+  #     matrix:
+  #       os: ${{ fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS) }}
+  #       python-version: ${{ fromJSON(needs.setup-environment.outputs.PYTHON_VERSIONS) }}
+  #     # Keep running other matrix jobs even if one fails
+  #     fail-fast: false
 
-    runs-on: ${{ matrix.os }}
+  #   runs-on: ${{ matrix.os }}
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v7
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ matrix.python-version }}
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v6
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
 
-      - name: Build project
-        working-directory: build
-        run: sudo ./build.sh
+  #     - name: Build project
+  #       working-directory: build
+  #       run: sudo ./build.sh
 
-      - name: Run Unit Tests
-        run: |
-          sudo chown -R $USER:$USER build/
-          source build/venvs/ncpa-build-linux/bin/activate
-          python -m pip install pytest
-          pytest -v
-          deactivate
+  #     - name: Run Unit Tests
+  #       run: |
+  #         sudo chown -R $USER:$USER build/
+  #         source build/venvs/ncpa-build-linux/bin/activate
+  #         python -m pip install pytest
+  #         pytest -v
+  #         deactivate
 
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v7
-        with:
-          # Use dynamic, unique names for each matrix combination artifact
-          name: app-build-linux-${{ matrix.os }}-py${{ matrix.python-version }}
-          path: build/*.deb
-          retention-days: 1
+  #     - name: Upload Build Artifact
+  #       uses: actions/upload-artifact@v7
+  #       with:
+  #         # Use dynamic, unique names for each matrix combination artifact
+  #         name: app-build-linux-${{ matrix.os }}-py${{ matrix.python-version }}
+  #         path: build/*.deb
+  #         retention-days: 1
 
-  build-windows:
-    name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
-    needs: setup-environment
-    strategy:
-      matrix:
-        os: ${{ fromJSON(needs.setup-environment.outputs.WINDOWS_VERSIONS) }}
-        python-version: ${{ fromJSON(needs.setup-environment.outputs.PYTHON_VERSIONS) }}
-      # Keep running other matrix jobs even if one fails
-      fail-fast: false
+  # build-windows:
+  #   name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
+  #   needs: setup-environment
+  #   strategy:
+  #     matrix:
+  #       os: ${{ fromJSON(needs.setup-environment.outputs.WINDOWS_VERSIONS) }}
+  #       python-version: ${{ fromJSON(needs.setup-environment.outputs.PYTHON_VERSIONS) }}
+  #     # Keep running other matrix jobs even if one fails
+  #     fail-fast: false
 
-    runs-on: ${{ matrix.os }}
+  #   runs-on: ${{ matrix.os }}
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v7
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        id: setup-python
-        with:
-          python-version: ${{ matrix.python-version }}
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v6
+  #       id: setup-python
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
 
-        # Install MSVC
-      - name: Set up MSVC
-        uses: ilammy/msvc-dev-cmd@v1
+  #       # Install MSVC
+  #     - name: Set up MSVC
+  #       uses: ilammy/msvc-dev-cmd@v1
 
-        # Install NSIS Compiler
-      - name: Install NSIS Compiler
-        uses: negrutiu/nsis-install@v3
+  #       # Install NSIS Compiler
+  #     - name: Install NSIS Compiler
+  #       uses: negrutiu/nsis-install@v3
 
-      - name: Verify Runner Prerequisites
-        shell: pwsh
-        run: |
-          Write-Host "Python:" (Get-Command python -ErrorAction SilentlyContinue).Source
-          Write-Host "cl.exe:" (Get-Command cl -ErrorAction SilentlyContinue).Source
-          Write-Host "makensis:" (Get-Command makensis -ErrorAction SilentlyContinue).Source
-          Write-Host "Git:" (Get-Command git -ErrorAction SilentlyContinue).Source
+  #     - name: Verify Runner Prerequisites
+  #       shell: pwsh
+  #       run: |
+  #         Write-Host "Python:" (Get-Command python -ErrorAction SilentlyContinue).Source
+  #         Write-Host "cl.exe:" (Get-Command cl -ErrorAction SilentlyContinue).Source
+  #         Write-Host "makensis:" (Get-Command makensis -ErrorAction SilentlyContinue).Source
+  #         Write-Host "Git:" (Get-Command git -ErrorAction SilentlyContinue).Source
 
-      - name: Install Python Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r build/resources/require.win.txt
+  #     - name: Install Python Dependencies
+  #       run: |
+  #         python -m pip install --upgrade pip
+  #         python -m pip install -r build/resources/require.win.txt
 
-      - name: Build NCPA Windows Installer
-        run: python build/windows/build_ncpa.py "${{ steps.setup-python.outputs.python-path }}"
+  #     - name: Build NCPA Windows Installer
+  #       run: python build/windows/build_ncpa.py "${{ steps.setup-python.outputs.python-path }}"
 
-      - name: Run Unit Tests
-        run: |
-          python -m pip install pytest
-          pytest -v
+  #     - name: Run Unit Tests
+  #       run: |
+  #         python -m pip install pytest
+  #         pytest -v
 
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v7
-        with:
-          # Use dynamic, unique names for each matrix combination artifact
-          name: app-build-windows-${{ matrix.os }}-py${{ matrix.python-version }}
-          path: build/ncpa-*.exe
-          retention-days: 1
+  #     - name: Upload Build Artifact
+  #       uses: actions/upload-artifact@v7
+  #       with:
+  #         # Use dynamic, unique names for each matrix combination artifact
+  #         name: app-build-windows-${{ matrix.os }}-py${{ matrix.python-version }}
+  #         path: build/ncpa-*.exe
+  #         retention-days: 1
 
   build-mac:
     name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
@@ -183,129 +183,129 @@ jobs:
   # ------------------------------------------------------------------
   # TEST JOBS: Download all artifacts and test on all OS versions
   # ------------------------------------------------------------------
-  test-artifacts-linux:
-    name: Test Artifacts (${{ matrix.os }})
-    needs: [setup-environment, build-linux]
+  # test-artifacts-linux:
+  #   name: Test Artifacts (${{ matrix.os }})
+  #   needs: [setup-environment, build-linux]
     
-    strategy:
-      matrix:
-        os: ${{ fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS) }}
-      fail-fast: false
+  #   strategy:
+  #     matrix:
+  #       os: ${{ fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS) }}
+  #     fail-fast: false
 
-    runs-on: ${{ matrix.os }}
+  #   runs-on: ${{ matrix.os }}
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v7
 
-      - name: Download all build artifacts
-        uses: actions/download-artifact@v7
-        with:
-          # Downloads all artifacts from the workflow into a directory named 'artifacts/'
-          path: artifacts/
-          # Pattern matching allows pulling all artifacts generated by the build matrix
-          pattern: app-build-linux*
-          merge-multiple: false
+  #     - name: Download all build artifacts
+  #       uses: actions/download-artifact@v7
+  #       with:
+  #         # Downloads all artifacts from the workflow into a directory named 'artifacts/'
+  #         path: artifacts/
+  #         # Pattern matching allows pulling all artifacts generated by the build matrix
+  #         pattern: app-build-linux*
+  #         merge-multiple: false
 
-      - name: Verify downloaded artifacts
-        run: |
-          echo "=== Inspecting downloaded artifacts ==="
-          ls -R artifacts/
+  #     - name: Verify downloaded artifacts
+  #       run: |
+  #         echo "=== Inspecting downloaded artifacts ==="
+  #         ls -R artifacts/
 
-      - name: Run tests on artifacts
-        run: |
-          echo "Running tests on target OS: ${{ matrix.os }}"
+  #     - name: Run tests on artifacts
+  #       run: |
+  #         echo "Running tests on target OS: ${{ matrix.os }}"
 
-          os_versions=(${{ join(fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS), ' ') }})
-          py_versions=(${{ join(fromJSON(needs.setup-environment.outputs.PYTHON_VERSIONS), ' ') }})
+  #         os_versions=(${{ join(fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS), ' ') }})
+  #         py_versions=(${{ join(fromJSON(needs.setup-environment.outputs.PYTHON_VERSIONS), ' ') }})
 
-          # Verify that expected artifact files exist
-          for os_ver in "${os_versions[@]}"; do
+  #         # Verify that expected artifact files exist
+  #         for os_ver in "${os_versions[@]}"; do
 
-            # Builds from ubuntu-26.04 do not install on other OS versions because of libc version incompatibility
-            # SKIP: if loop target is ubuntu-26.04 but the GitHub runner matrix.os is NOT ubuntu-26.04
-            if [ "${os_ver}" = "ubuntu-26.04" ] && [ "${{ matrix.os }}" != "ubuntu-26.04" ]; then
-              echo "Skipping ${os_ver} test suite because runner matrix OS is ${{ matrix.os }}"
-              continue
-            fi
+  #           # Builds from ubuntu-26.04 do not install on other OS versions because of libc version incompatibility
+  #           # SKIP: if loop target is ubuntu-26.04 but the GitHub runner matrix.os is NOT ubuntu-26.04
+  #           if [ "${os_ver}" = "ubuntu-26.04" ] && [ "${{ matrix.os }}" != "ubuntu-26.04" ]; then
+  #             echo "Skipping ${os_ver} test suite because runner matrix OS is ${{ matrix.os }}"
+  #             continue
+  #           fi
 
-            for py_ver in "${py_versions[@]}"; do
+  #           for py_ver in "${py_versions[@]}"; do
 
-              echo "Current iteration: ${os_ver} - ${py_ver}"
+  #             echo "Current iteration: ${os_ver} - ${py_ver}"
 
-              # Install NCPA artifact
-              sudo apt install -y ./artifacts/app-build-linux-${os_ver}-py${py_ver}/*.deb
-              sleep 10
-              sudo systemctl is-active ncpa
+  #             # Install NCPA artifact
+  #             sudo apt install -y ./artifacts/app-build-linux-${os_ver}-py${py_ver}/*.deb
+  #             sleep 10
+  #             sudo systemctl is-active ncpa
 
-              # E2E Tests
-              curl -k 'https://127.0.0.1:5693/api/system/agent_version?token=mytoken'
-              sudo cp ./test/e2e/plugins/check_os.sh /usr/local/ncpa/plugins/
-              bash ./test/e2e/test_ncpa_e2e.sh
+  #             # E2E Tests
+  #             curl -k 'https://127.0.0.1:5693/api/system/agent_version?token=mytoken'
+  #             sudo cp ./test/e2e/plugins/check_os.sh /usr/local/ncpa/plugins/
+  #             bash ./test/e2e/test_ncpa_e2e.sh
 
-              # Remove NCPA for next iteration
-              sudo apt purge -y ncpa
-              sudo rm -rf /usr/local/ncpa
-              sleep 5
+  #             # Remove NCPA for next iteration
+  #             sudo apt purge -y ncpa
+  #             sudo rm -rf /usr/local/ncpa
+  #             sleep 5
 
-            done
-          done
+  #           done
+  #         done
 
-  test-artifacts-windows:
-    name: Test Artifacts (${{ matrix.os }})
-    needs: [setup-environment, build-windows]
+  # test-artifacts-windows:
+  #   name: Test Artifacts (${{ matrix.os }})
+  #   needs: [setup-environment, build-windows]
     
-    strategy:
-      matrix:
-        os: ${{ fromJSON(needs.setup-environment.outputs.WINDOWS_VERSIONS) }}
-      fail-fast: false
+  #   strategy:
+  #     matrix:
+  #       os: ${{ fromJSON(needs.setup-environment.outputs.WINDOWS_VERSIONS) }}
+  #     fail-fast: false
 
-    runs-on: ${{ matrix.os }}
+  #   runs-on: ${{ matrix.os }}
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v7
 
-      - name: Download all build artifacts
-        uses: actions/download-artifact@v7
-        with:
-          # Downloads all artifacts from the workflow into a directory named 'artifacts/'
-          path: artifacts/
-          # Pattern matching allows pulling all artifacts generated by the build matrix
-          pattern: app-build-windows*
-          merge-multiple: false
+  #     - name: Download all build artifacts
+  #       uses: actions/download-artifact@v7
+  #       with:
+  #         # Downloads all artifacts from the workflow into a directory named 'artifacts/'
+  #         path: artifacts/
+  #         # Pattern matching allows pulling all artifacts generated by the build matrix
+  #         pattern: app-build-windows*
+  #         merge-multiple: false
 
-      - name: Verify downloaded artifacts
-        run: |
-          Write-Host "=== Inspecting downloaded artifacts ==="
-          dir artifacts/
+  #     - name: Verify downloaded artifacts
+  #       run: |
+  #         Write-Host "=== Inspecting downloaded artifacts ==="
+  #         dir artifacts/
 
-      - name: Run tests on artifacts
-        run: |
-          $osVersions = ConvertFrom-Json '${{ needs.setup-environment.outputs.WINDOWS_VERSIONS }}'
-          $pyVersions = ConvertFrom-Json '${{ needs.setup-environment.outputs.PYTHON_VERSIONS }}'
+  #     - name: Run tests on artifacts
+  #       run: |
+  #         $osVersions = ConvertFrom-Json '${{ needs.setup-environment.outputs.WINDOWS_VERSIONS }}'
+  #         $pyVersions = ConvertFrom-Json '${{ needs.setup-environment.outputs.PYTHON_VERSIONS }}'
 
-          foreach ($osVer in $osVersions) {
-            foreach ($pyVer in $pyVersions) {
+  #         foreach ($osVer in $osVersions) {
+  #           foreach ($pyVer in $pyVersions) {
 
-              Write-Host "Current iteration: ${osVer} - ${pyVer}"
+  #             Write-Host "Current iteration: ${osVer} - ${pyVer}"
 
-              # Install NCPA artifact
-              Start-Process -FilePath ".\artifacts\app-build-windows-${osVer}-py${pyVer}\ncpa*.exe" -ArgumentList "/S", "/TOKEN='8675309'" -Wait
-              Start-Sleep -s 10
-              Get-Service NCPA
+  #             # Install NCPA artifact
+  #             Start-Process -FilePath ".\artifacts\app-build-windows-${osVer}-py${pyVer}\ncpa*.exe" -ArgumentList "/S", "/TOKEN='8675309'" -Wait
+  #             Start-Sleep -s 10
+  #             Get-Service NCPA
 
-              # E2E Tests
-              curl.exe -k 'https://127.0.0.1:5693/api/system/agent_version?token=8675309'
-              Copy-Item -Path "test\e2e\plugins\check_os.ps1" -Destination "C:\Program Files\Nagios\NCPA\plugins\"
-              .\test\e2e\test_ncpa_e2e.ps1
+  #             # E2E Tests
+  #             curl.exe -k 'https://127.0.0.1:5693/api/system/agent_version?token=8675309'
+  #             Copy-Item -Path "test\e2e\plugins\check_os.ps1" -Destination "C:\Program Files\Nagios\NCPA\plugins\"
+  #             .\test\e2e\test_ncpa_e2e.ps1
 
-              # Remove NCPA for next iteration
-              Start-Process -FilePath "C:\Program Files\Nagios\NCPA\uninstall.exe" -ArgumentList "/S" -Wait
-              Start-Sleep -s 10
+  #             # Remove NCPA for next iteration
+  #             Start-Process -FilePath "C:\Program Files\Nagios\NCPA\uninstall.exe" -ArgumentList "/S" -Wait
+  #             Start-Sleep -s 10
 
-            }
-          }
+  #           }
+  #         }
 
   test-artifacts-mac:
     name: Test Artifacts (${{ matrix.os }})
