@@ -5,10 +5,10 @@ on:
     branches: [ 'cpd-test-actions-build-windows' ]
 
 env:
-  LINUX_VERSIONS: '["ubuntu-22.04", "ubuntu-24.04"]'
-  WINDOWS_VERSIONS: '["windows-2022", "windows-2025"]'
-  MACOS_VERSIONS: '["macos-15-intel", "macos-26-intel"]'
-  PYTHON_VERSIONS: '["3.11", "3.12"]'
+  LINUX_VERSIONS: "['ubuntu-22.04', 'ubuntu-24.04']"
+  # WINDOWS_VERSIONS: '["windows-2022", "windows-2025"]'
+  # MACOS_VERSIONS: '["macos-15-intel", "macos-26-intel"]'
+  PYTHON_VERSIONS: "['3.11', '3.12']"
 
 jobs:
   # ------------------------------------------------------------------
