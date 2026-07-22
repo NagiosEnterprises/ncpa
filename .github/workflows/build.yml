@@ -4,13 +4,25 @@ on:
   push:
     branches: [ 'cpd-test-actions-build-windows' ]
 
-env:
-  LINUX_VERSIONS: "['ubuntu-22.04', 'ubuntu-24.04']"
-  # WINDOWS_VERSIONS: '["windows-2022", "windows-2025"]'
-  # MACOS_VERSIONS: '["macos-15-intel", "macos-26-intel"]'
-  PYTHON_VERSIONS: "['3.11', '3.12']"
-
 jobs:
+  # ------------------------------------------------------------------
+  # NEW SETUP JOB: Define and export the array variables
+  # ------------------------------------------------------------------
+  setup-environment:
+    runs-on: ubuntu-latest
+    outputs:
+      LINUX_VERSIONS: ${{ steps.set-vars.outputs.LINUX_VERSIONS }}
+      WINDOWS_VERSIONS: ${{ steps.set-vars.outputs.WINDOWS_VERSIONS }}
+      MACOS_VERSIONS: ${{ steps.set-vars.outputs.MACOS_VERSIONS }}
+      PYTHON_VERSIONS: ${{ steps.set-vars.outputs.PYTHON_VERSIONS }}
+    steps:
+      - id: set-vars
+        run: |
+          echo 'LINUX_VERSIONS=["ubuntu-22.04", "ubuntu-24.04"]' >> $GITHUB_OUTPUT
+          echo 'WINDOWS_VERSIONS=["windows-2022", "windows-2025"]' >> $GITHUB_OUTPUT
+          echo 'MACOS_VERSIONS=["macos-15-intel", "macos-26-intel"]' >> $GITHUB_OUTPUT
+          echo 'PYTHON_VERSIONS=["3.11", "3.12"]' >> $GITHUB_OUTPUT
+
   # ------------------------------------------------------------------
   # JOB 1: Build artifacts across matrix combinations
   # ------------------------------------------------------------------
@@ -18,8 +30,8 @@ jobs:
     name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
     strategy:
       matrix:
-        os: ${{ fromJSON(env.LINUX_VERSIONS) }}
-        python-version: ${{ fromJSON(env.PYTHON_VERSIONS) }}
+        os: ${{ fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS) }}
+        python-version: ${{ fromJSON(needs.setup-environment.outputs.PYTHON_VERSIONS) }}
       # Keep running other matrix jobs even if one fails
       fail-fast: false
 
@@ -200,8 +212,8 @@ jobs:
         run: |
           echo "Running tests on target OS: ${{ matrix.os }}"
 
-          os_versions=(${{ join(fromJSON(env.LINUX_VERSIONS), ' ') }})
-          py_versions=(${{ join(fromJSON(env.PYTHON_VERSIONS), ' ') }})
+          os_versions=(${{ join(fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS), ' ') }})
+          py_versions=(${{ join(fromJSON(needs.setup-environment.outputs.PYTHON_VERSIONS), ' ') }})
 
           # Verify that expected artifact files exist
           for os_ver in "${os_versions[@]}"; do
