@@ -183,7 +183,7 @@ if not version[-1].isdigit():
 else:
     environ['NCPA_BUILD_VER_CLEAN'] = version
 shutil.copy(nsi_store, nsi)
-b = subprocess.Popen([nsis, nsi], env=environ, shell=True)
+b = subprocess.Popen([nsis, nsi], env=environ)
 b.wait()
 
 shutil.copyfile(os.path.join(basedir, 'agent', 'build', 'ncpa-%s.exe' % version),
