@@ -183,10 +183,11 @@ jobs:
   # ------------------------------------------------------------------
   test-artifacts-linux:
     name: Test Artifacts (${{ matrix.os }})
-    needs: build-linux # Ensures this job only runs after 'build-linux' completes successfully
+    needs: [setup-environment, build-linux]
     
     strategy:
       matrix:
+        os: ${{ fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS) }}
         os: ${{ fromJSON(needs.setup-environment.outputs.LINUX_VERSIONS) }}
 
     runs-on: ${{ matrix.os }}
