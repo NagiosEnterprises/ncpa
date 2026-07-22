@@ -221,6 +221,13 @@ jobs:
 
           # Verify that expected artifact files exist
           for os_ver in "${os_versions[@]}"; do
+
+            # SKIP: if loop target is ubuntu-26.04 but the GitHub runner matrix.os is NOT ubuntu-26.04
+            if [ "${os_ver}" = "ubuntu-26.04" ] && [ "${{ matrix.os }}" != "ubuntu-26.04" ]; then
+              echo "Skipping ${os_ver} test suite because runner matrix OS is ${{ matrix.os }}"
+              continue
+            fi
+
             for py_ver in "${py_versions[@]}"; do
 
               echo "Current iteration: ${os_ver} - ${py_ver}"
