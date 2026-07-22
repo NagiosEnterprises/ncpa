@@ -34,7 +34,7 @@ jobs:
           python -m pip install -r build/resources/require.win.txt
 
       - name: Build NCPA Windows Installer
-        run: python build/windows/build_ncpa.py
+        run: python build/windows/build_ncpa.py python
 
       - name: Run Unit Tests
         run: |
