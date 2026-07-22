@@ -270,8 +270,8 @@ jobs:
 
       - name: Run tests on artifacts
         run: |
-          $osVersions = @(${{ join(fromJSON(needs.setup-environment.outputs.WINDOWS_VERSIONS), ' ') }} -split ' ')
-          $pyVersions = @(${{ join(fromJSON(needs.setup-environment.outputs.PYTHON_VERSIONS), ' ') }} -split ' ')
+          $osVersions = ConvertFrom-Json '${{ needs.setup-environment.outputs.WINDOWS_VERSIONS }}'
+          $pyVersions = ConvertFrom-Json '${{ needs.setup-environment.outputs.PYTHON_VERSIONS }}'
 
           foreach ($osVer in $osVersions) {
               foreach ($pyVer in $pyVersions) {
