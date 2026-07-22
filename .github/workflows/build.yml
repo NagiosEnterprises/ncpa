@@ -2,7 +2,7 @@ name: Multi-OS Python Matrix
 
 on:
   push:
-    branches: [ 'cpd-test-actions-build-windows-disabled' ]
+    branches: [ 'cpd-test-actions-build-windows' ]
 
 jobs:
   # ------------------------------------------------------------------
@@ -69,8 +69,13 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+        # Install MSVC
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
+
+        # Install NSIS Compiler
+      - name: Install NSIS Compiler
+        uses: negrutiu/nsis-install@v3
 
       - name: Verify Runner Prerequisites
         shell: pwsh
