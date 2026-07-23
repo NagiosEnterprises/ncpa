@@ -4,15 +4,7 @@
     This script downloads and installs Chocolatey and the necessary
     prerequisites to build Python with a custom OpenSSL version
     as well as the necessary prerequisites to build NCPA.
-
-    CI mode (-CI or choco_prereqs_ci.ps1) skips Visual Studio, Perl,
-    NASM, and Python installs and does not exit on a pending reboot.
-    Use CI mode on GitHub Actions runners and pre-provisioned machines.
 #>
-
-param(
-    [switch]$CI
-)
 
 ### 1. Chocolatey Script
 ## 1.0 Install Chocolatey
@@ -29,11 +21,7 @@ $colorFGsub = "White"
 
 [System.Console]::BackgroundColor = $colorBGmain
 [System.Console]::ForegroundColor = $colorFGmain
-if ($CI) {
-    Write-Host "Running Chocolatey install script (CI mode)..."
-} else {
-    Write-Host "Running Chocolatey install script..."
-}
+Write-Host "Running Chocolatey install script..."
 [System.Console]::BackgroundColor = $colorBGsub
 [System.Console]::ForegroundColor = $colorFGsub
 
@@ -54,27 +42,20 @@ try {
 # Add Chocolatey to system path just in case
 [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "Machine") + ";C:\ProgramData\chocolatey\bin", "Machine")
 
-### 2. Install prerequisites
+### 2. Install Git, Perl and Visual Studio Build Tools
 Write-Host "Chocolatey installing prerequisites"
-if (-not $CI) {
-    choco feature enable -name=exitOnRebootDetected
-}
+choco feature enable -name=exitOnRebootDetected
+if(-not (Get-Command git    -ErrorAction SilentlyContinue)){ choco install git -y }
+if(-not (Get-Command perl   -ErrorAction SilentlyContinue)){ choco install strawberryperl -y }
+if(-not (Get-Command nasm   -ErrorAction SilentlyContinue)){ choco install nasm -y }
+if(-not (Get-Command nsis   -ErrorAction SilentlyContinue)){ choco install nsis -y }
 
-if(-not (Get-Command git -ErrorAction SilentlyContinue)) { choco install git -y }
-
-if ($CI) {
-    if(-not (Get-Command nsis -ErrorAction SilentlyContinue)) { choco install nsis -y }
-} else {
-    if(-not (Get-Command perl -ErrorAction SilentlyContinue)) { choco install strawberryperl -y }
-    if(-not (Get-Command nasm -ErrorAction SilentlyContinue)) { choco install nasm -y }
-    if(-not (Get-Command nsis -ErrorAction SilentlyContinue)) { choco install nsis -y }
-
-    # Use environment variable or default Python version
-    $pythonVersion = if ($env:WINDOWS_PYTHONVER) { $env:WINDOWS_PYTHONVER } else { "3.13.14" }
-    choco install python --version=$pythonVersion -y --force
-    #choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools;includeRecommended" -y
-    choco install visualstudio2022buildtools -y --package-parameters "--quiet --wait --norestart --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK.19041 --add Microsoft.VisualStudio.Component.Windows10SDK.18362"
-}
+# Use environment variable or default Python version
+$pythonVersion = if ($env:WINDOWS_PYTHONVER) { $env:WINDOWS_PYTHONVER } else { "3.13.14" }
+choco install python --version=$pythonVersion -y --force
+#choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools;includeRecommended" -y
+choco install visualstudio2022buildtools -y --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK.19041 --add Microsoft.VisualStudio.Component.Windows10SDK.18362"
+choco install visualstudio2022community -y --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK.19041 --add Microsoft.VisualStudio.Component.Windows10SDK.18362"
 
 Write-Host "----------------------------------------"
 Write-Host "Chocolatey install script complete"
@@ -83,19 +64,20 @@ Write-Host "----------------------------------------"
 Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
 refreshenv
 
-# Add tools to PATH
+# Add Perl, NASM, Git, etc. to the PATH
 [System.Console]::BackgroundColor = $colorBGmain
 [System.Console]::ForegroundColor = $colorFGmain
 Write-Host "Adding prerequisites to PATH"
-if (-not $CI) {
-    $env:Path += ";C:\Strawberry\perl\bin"
-    $env:Path += ";C:\Program Files\NASM"
-    $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin"
-}
+$env:Path += ";C:\Strawberry\perl\bin"
+$env:Path += ";C:\Program Files\NASM"
 $env:Path += ";C:\Program Files\Git\bin"
-$env:Path += ";C:\Program Files\NSIS"
+$env:Path += ";C:\Program Files\NSIS" # it should only be in Program Files (x86) but I want to be sure it's in the path
 $env:Path += ";C:\Program Files (x86)\NSIS"
+# $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin"
+$env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin"
 
+# Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+# refreshenv
 $rebootRequired = $false
 
 # Check for Component-Based Servicing registry key
@@ -112,12 +94,8 @@ if ($pendingFileRename) {
     $rebootRequired = $true
 }
 if ($rebootRequired) {
-    if ($CI) {
-        Write-Host "Warning: A system reboot is pending, but continuing in CI mode..."
-    } else {
-        Write-Host "A system reboot is pending. Exiting..."
-        exit 1
-    }
+    Write-Host "A system reboot is pending. Exiting..."
+    exit 1
 }
 
 
