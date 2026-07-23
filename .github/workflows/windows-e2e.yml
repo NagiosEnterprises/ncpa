@@ -2,7 +2,7 @@ name: Windows e2e Test
 
 on:
   push:
-    branches: [ 'cpd-test-actions-build-windows-disabled' ]
+    branches: [ 'cpd-enable-github-actions' ]
 
 jobs:
   build-windows:
