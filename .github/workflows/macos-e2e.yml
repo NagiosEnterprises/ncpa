@@ -1,8 +1,8 @@
-name: macOS e2e Test
+name: macOS CI
 
 on:
   push:
-    branches: [ 'cpd-test-actions-build-windows-disabled' ]
+    branches: [ 'cpd-enable-github-actions' ]
 
 jobs:
   build-macos:
@@ -65,7 +65,6 @@ jobs:
         run: ls -l ./downloaded-assets/ncpa*.dmg
 
       # The GH macOS runner default hostnames are too long and cause issues generating SSL certificates
-      # Specifically this causes issues with the unit tests related to SSL certificate generation
       - name: Change macOS Hostname
         run: |
           NEW_HOSTNAME="gh-macos-runner"

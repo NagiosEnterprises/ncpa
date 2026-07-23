@@ -1,8 +1,8 @@
-name: Windows e2e Test
+name: Windows CI
 
 on:
   push:
-    branches: [ 'cpd-enable-github-actions-disabled' ]
+    branches: [ 'cpd-enable-github-actions' ]
 
 jobs:
   build-windows:

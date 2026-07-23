@@ -2,7 +2,7 @@ name: Multi-OS Python Matrix
 
 on:
   push:
-    branches: [ 'cpd-enable-github-actions' ]
+    branches: [ 'cpd-enable-github-actions-disabled' ]
 
 jobs:
   # ------------------------------------------------------------------
