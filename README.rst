@@ -5,15 +5,15 @@ NCPA
 | |windows|
 | |macos|
 
-.. |linux| image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/linux-e2e.yml/badge.svg?branch=cpd-enable-github-actions
+.. |linux| image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/linux-e2e.yml/badge.svg?branch=master
    :target: https://github.com/NagiosEnterprises/ncpa/actions/workflows/linux-e2e.yml
    :alt: Linux e2e Test
 
-.. |windows| image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/windows-e2e.yml/badge.svg?branch=cpd-enable-github-actions
+.. |windows| image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/windows-e2e.yml/badge.svg?branch=master
    :target: https://github.com/NagiosEnterprises/ncpa/actions/workflows/windows-e2e.yml
    :alt: Windows e2e Test
 
-.. |macos| image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/macos-e2e.yml/badge.svg?branch=cpd-enable-github-actions
+.. |macos| image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/macos-e2e.yml/badge.svg?branch=master
    :target: https://github.com/NagiosEnterprises/ncpa/actions/workflows/macos-e2e.yml
    :alt: macOS e2e Test
 

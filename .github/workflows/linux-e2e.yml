@@ -2,7 +2,7 @@ name: Linux CI
 
 on:
   push:
-    branches: [ 'cpd-enable-github-actions' ]
+    branches: [ 'master' ]
 
 jobs:
   build-linux:
