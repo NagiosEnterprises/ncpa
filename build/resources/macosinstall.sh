@@ -142,7 +142,7 @@ fi
 
 # Remove MacOS x attributes
 echo -n "    Removing MacOS xattributes from LaunchDaemon plists... "
-if [[ $(xattr -l /Library/LaunchDaemons/com.nagios.ncpa.plist) ]]; then
+if xattr -p com.apple.quarantine /Library/LaunchDaemons/com.nagios.ncpa.plist >/dev/null 2>&1; then
     xattr -d com.apple.quarantine /Library/LaunchDaemons/com.nagios.ncpa.plist
 fi
 if [[ -f "/Library/LaunchDaemons/com.nagios.ncpa.watchdog.plist" ]] && [[ $(xattr -l /Library/LaunchDaemons/com.nagios.ncpa.watchdog.plist) ]]; then

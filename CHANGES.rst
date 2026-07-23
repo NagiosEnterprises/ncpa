@@ -2,9 +2,17 @@ Changelog
 +++++++++
 3.5.0 - 8/xx/2026
 ==================
+**Added**
+
+- Enabled continuous integration via GitHub Actions across Linux, Windows, and macOS. - CPD
+
 **Bug Fixes**
 
-- Placeholder for future bug fix entries
+- Fixed a macOS installation issue caused by an xattr check error on Python 3.14 builds. - CPD
+
+**Updates**
+
+- Replaced Travis CI badge with GitHub Actions CI status badges in README. - CPD
 
 3.4.3 - 7/23/2026
 ==================
