@@ -22,6 +22,7 @@ class TestNRDPHandler(TestCase):
         self.config.set('passive checks', 'TESTING|TESTING', '/cpu/count')
         self.config.add_section('api')
         self.config.set('api', 'community_string', 'mytoken')
+        self.config.set('api', 'backup_community_string', '')
         self.n = passive.nrdp.Handler(self.config)
 
     def test_guess_hostname(self):
