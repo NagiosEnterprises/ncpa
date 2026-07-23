@@ -94,7 +94,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.4.2'
+__VERSION__ = '3.4.3'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -243,8 +243,10 @@ class Listener(Base):
     to run the listener so all of NCPA is bundled in a single service
     """
     def __init__(self, options, config, has_error, autostart=False):
-        super().__init__(options, config, has_error, autostart)
-        set_process_name("Nagios Cross-Platform Agent - Listener")
+        super().__init__(options, config, has_error, False)
+        self.set_process_name("Nagios Cross-Platform Agent - Listener")
+        if autostart:
+            self.run()
 
     def run(self):
         self.init_logger('listener')
@@ -362,8 +364,10 @@ class Passive(Base):
     separate thread since it is what the main process is used for
     """
     def __init__(self, options, config, has_error, autostart=False):
-        super().__init__(options, config, has_error, autostart)
-        set_process_name("Nagios Cross-Platform Agent - Passive")
+        super().__init__(options, config, has_error, False)
+        self.set_process_name("Nagios Cross-Platform Agent - Passive")
+        if autostart:
+            self.run()
 
     def run_all_handlers(self, *args, **kwargs):
         """
@@ -493,6 +497,10 @@ class Daemon():
         terminal has not been detached and the pid of the long-running
         process is not yet known.
         """
+        if os.geteuid() != 0:
+            self.logger.debug("Not running as root; skipping root_setup_tasks()")
+            return
+
         self.logger.debug("Daemon init - setup_root()")
 
         # We need to chown any temp files we wrote out as root (or any other user)
@@ -549,6 +557,7 @@ class Daemon():
         signal.signal(signal.SIGTERM, self.on_sigterm)
         signal.signal(signal.SIGINT, self.on_sigterm)
 
+
     # ATTENTION - This function contains the infinite while loop that prevents
     # the process from exiting during normal operation
     def start(self):
@@ -565,14 +574,17 @@ class Daemon():
         self.prepare_dirs()
 
         try:
-            # Chown the installed passive log file while root still has control
-            # Since the listener file is used for the root and parent loggers, it is chowned
-            # during the setup_logger process
-            if __SYSTEM__ == 'posix' and os.path.isfile(self.passive_logfile):
-                chown(self.config.get('general', 'uid'), self.config.get('general', 'gid'), self.passive_logfile)
+            if os.geteuid() == 0:
+                # Chown the installed passive log file while root still has control
+                # Since the listener file is used for the root and parent loggers, it is chowned
+                # during the setup_logger process
+                if __SYSTEM__ == 'posix' and os.path.isfile(self.passive_logfile) and os.geteuid() == 0:
+                    chown(self.config.get('general', 'uid'), self.config.get('general', 'gid'), self.passive_logfile)
 
-            # Setup with root privileges
-            self.root_setup_tasks()
+                # Setup with root privileges
+                self.root_setup_tasks()
+            else:
+                self.logger.debug("Not running as root; skipping root-only startup tasks")
 
             # Drop permissions to specified user/group in ncpa.cfg
             self.set_uid_gid()
@@ -695,11 +707,26 @@ class Daemon():
             parent = os.path.dirname(fn)
             if not os.path.exists(parent):
                 os.makedirs(parent)
-                self.chown(parent)
+                if os.geteuid() == 0:
+                    self.chown(parent)
 
     def set_uid_gid(self):
         """Drop root privileges"""
         self.logger.debug("Daemon - set_uid_gid()")
+
+        current_uid = os.getuid()
+        current_gid = os.getgid()
+        if current_uid == self.uid and current_gid == self.gid:
+            self.logger.debug(
+                "Already running as configured user/group (uid:%d, gid:%d), skipping privilege drop",
+                current_uid, current_gid)
+            return
+        if os.geteuid() != 0:
+            self.logger.warning(
+                "Not running as root (uid:%d, gid:%d); cannot drop to uid:%d gid:%d, skipping privilege drop",
+                current_uid, current_gid, self.uid, self.gid)
+            return
+
         # Get set of gids to set for OS groups
         gids = [ self.gid ]
         if self.username:
@@ -1219,8 +1246,11 @@ def chown(user_uid, user_gid, fn):
         try:
             os.chown(fn, uid, gid)
         except OSError as err:
+            if os.geteuid() != 0:
+                parent_logger.debug("Skipping chown(%s): not running as root", repr(fn))
+                return
             sys.exit("can't chown(%s, %d, %d): %s, %s" %
-            (repr(fn), uid, gid, err.errno, err.strerror))
+                     (repr(fn), uid, gid, err.errno, err.strerror))
 
 def setup_logger(config, loggerinstance, logfile):
     """Configure the logging module"""

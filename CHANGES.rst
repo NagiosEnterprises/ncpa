@@ -1,5 +1,31 @@
 Changelog
 +++++++++
+3.4.3 - 7/23/2026
+==================
+**Bug Fixes**
+
+- Fixed an AIX upgrade issue that was preventing the NCPA service from starting automatically after an upgrade. - CPD
+- Fixed an error message that can appear in /var/log/messages on Linux systems when the NCPA service is stopped. - CPD
+- Fixed an issue where builds would fail on el 10 systems due to a missing dependency. - BB
+- Fixed an issue where NCPA would fail to start when started without root privileges after the configured uid/gid had already been applied. [GH#1306] - CPD
+- Fixed an issue where the total count and pagination numbers in the Checks UI were incorrect when filtered by Type. - CPD
+- Fixed multiple AIX build issue with dependencies that were preventing the build from completing successfully. - CPD
+- Fixed multiple AIX upgrade issues that were preventing upgrades from NCPA 2.x to NCPA 3.x from completing successfully. - CPD
+- Fixed root-only startup tasks (log file chown, temp file cleanup, directory creation) which could cause startup failures on non-root deployments. [GH#1306] - CPD
+- Fixed rpm -V reporting false positives on RHEL for config, log, database, and service files. [GH#1299] - CPD
+- Resolved test_ncpacheck unit test failures due to the backup_community_string config option not being set in the test configuration. - CPD
+- Several improvements to disk endpoint performance. [GH#1282] - BB
+
+**Removed**
+
+- Removed pyOpenSSL from the AIX build dependency list as it was not being used and was causing build issues. - CPD
+
+**Updates**
+
+- Replaced deprecated datetime.utcnow() usage in certificate generation and Windows event log handling to improve compatibility with Python 3.12+. - CPD
+- Updated Windows builds to use OpenSSL version 3.0.21 to resolve CVEs and improve compatibility. [GH#1397] - CPD
+- Updated Windows builds to use Python version 3.13.14. - CPD
+
 3.4.2 - 6/18/2026
 ==================
 **Added**

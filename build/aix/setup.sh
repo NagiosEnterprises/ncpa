@@ -212,7 +212,7 @@ mkuser pgrp='nagios' groups='nagios' home='/home/nagios' nagios
 set -e
 
 # Setup the c compiler export for building python cryptography after prerequisites are installed
-export CC="gcc"
+export LDFLAGS="-L/opt/freeware/lib64 -L/opt/freeware/lib"
 
 # Automatically install Python requirements in venv after setup
 echo "***** aix/setup.sh - Installing Python requirements in virtual environment if applicable"
@@ -222,4 +222,8 @@ if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     # Use pip to install cx_Freeze into the environment
     echo "***** aix/setup.sh - Installing cx_Freeze into the environment"
     $PYTHONBIN -m pip install $BUILD_DIR/cx_Freeze-8.4.1
-fi
+
+    # Install cryptography with the correct compiler flags
+    export CC="gcc -maix64"
+    $PYTHONBIN -m pip install cryptography==48.0.1
+fi 
