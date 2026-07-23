@@ -1,5 +1,11 @@
 Changelog
 +++++++++
+3.5.0 - 8/xx/2026
+==================
+**Bug Fixes**
+
+- Placeholder for future bug fix entries
+
 3.4.3 - 7/23/2026
 ==================
 **Bug Fixes**
