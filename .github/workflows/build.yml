@@ -2,7 +2,7 @@ name: Multi-OS Python Matrix
 
 on:
   push:
-    branches: [ 'dev-v3*',  'cpd-web-ui-session-timeout']
+    branches: [ 'dev-v3*' ]
 
 jobs:
   # ------------------------------------------------------------------
