@@ -221,6 +221,11 @@
                             </tr>
                             <tr>
                                 <td></td>
+                                <th>gui_session_timeout</th>
+                                <td>3600</td>
+                                <td>The number of seconds of GUI inactivity before a logged-in user must authenticate again. Set to <b>0</b> to disable the timeout. This does not affect API access via token. Background live data requests (graphs, websockets, and API polling) do not reset the timer; navigating between GUI pages does.</td>                            </tr>
+                            <tr>
+                                <td></td>
                                 <th>delay_start</th>
                                 <td>0</td>
                                 <td>The amount to seconds to wait before starting the <em>NCPA</em> service.</td>

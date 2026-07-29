@@ -151,6 +151,13 @@ admin_password = None
 admin_auth_only = 0
 
 #
+# Web GUI session inactivity timeout in seconds. After this period with no GUI
+# activity, the user must log in again. Set to 0 to disable the timeout.
+# Default: 3600 (1 hour)
+#
+gui_session_timeout = 3600
+
+#
 # Comma separated list of allowed hosts that can access the API (and GUI)
 # Supported types: IPv4, IPv4-mapped IPv6, IPv6, hostnames
 # Hostname wildcards are not supported.

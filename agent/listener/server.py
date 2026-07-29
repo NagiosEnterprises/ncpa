@@ -182,6 +182,55 @@ def secure_compare(item1, item2):
     return compare_digest(item1, item2)
 
 
+def get_gui_session_timeout():
+    try:
+        timeout = int(get_config_value('listener', 'gui_session_timeout', 3600))
+    except (TypeError, ValueError):
+        timeout = 3600
+    return max(0, timeout)
+
+
+def touch_session_activity():
+    session['last_activity'] = datetime.datetime.now().timestamp()
+
+
+def session_expired():
+    """Return True if the current GUI session is past its inactivity timeout."""
+    if not session.get('logged', False):
+        return False
+
+    timeout = get_gui_session_timeout()
+    if timeout <= 0:
+        return False
+
+    last = session.get('last_activity')
+    if last is None:
+        return False
+
+    return (datetime.datetime.now().timestamp() - last) > timeout
+
+    
+def clear_expired_session():
+    session.clear()
+    session['message'] = 'Session expired due to inactivity.'
+
+
+def enforce_session_activity(touch_session=True):
+    """Clear expired GUI sessions and optionally refresh the activity timestamp."""
+    if not session.get('logged', False):
+        return None
+
+    if session_expired():
+        redirect_url = request.url
+        clear_expired_session()
+        session['redirect'] = redirect_url
+        
+    touch_session_activity()
+    if touch_session and get_gui_session_timeout() > 0:
+        touch_session_activity()
+    return None
+
+
 # ------------------------------
 # Authentication Wrappers
 # ------------------------------
@@ -271,7 +320,14 @@ def inject_variables():
     if os.name == 'nt':
         windows = True
     values = { 'admin_visible': admin_gui_access, 'is_windows': windows,
-               'no_nav': False, 'flash_msg': False }
+               'no_nav': False, 'flash_msg': False,
+               'session_logged': session.get('logged', False),
+               'gui_session_timeout': get_gui_session_timeout() }
+    if values['session_logged'] and values['gui_session_timeout'] > 0:
+        last = session.get('last_activity', datetime.datetime.now().timestamp())
+        values['session_expires_at'] = last + values['gui_session_timeout']
+    else:
+        values['session_expires_at'] = None
     return values
 
 
@@ -323,8 +379,12 @@ def requires_token_or_auth(f):
         # This is an internal call, we don't check
         if __INTERNAL__ is True:
             pass
-        elif session.get('logged', False) or token_valid:
+        elif token_valid:
             pass
+        elif session.get('logged', False):
+            expired = enforce_session_activity(touch_session=False)
+            if expired:
+                return expired
         elif token is None:
             session['redirect'] = request.url
             return redirect(url_for('login'))
@@ -336,21 +396,28 @@ def requires_token_or_auth(f):
 
 
 # Standard auth check, no token-only access
-def requires_auth(f):
-    @functools.wraps(f)
-    def auth_decoration(*args, **kwargs):
+def requires_auth(f=None, touch_session=True):
+    def decorator(view_func):
+        @functools.wraps(view_func)
+        def auth_decoration(*args, **kwargs):
 
-        # This is an internal call, we don't check
-        if __INTERNAL__ is True:
-            pass
-        elif session.get('logged', False):
-            pass
-        else:
-            session['redirect'] = request.url
-            return redirect(url_for('login'))
-        return f(*args, **kwargs)
+            # This is an internal call, we don't check
+            if __INTERNAL__ is True:
+                pass
+            else:
+                expired = enforce_session_activity(touch_session=touch_session)
+                if expired:
+                    return expired
+                if not session.get('logged', False):
+                    session['redirect'] = request.url
+                    return redirect(url_for('login'))
+            return view_func(*args, **kwargs)
 
-    return auth_decoration
+        return auth_decoration
+
+    if f is not None:
+        return decorator(f)
+    return decorator
 
 
 # Admin auth check, admin access via password if applicable
@@ -361,6 +428,10 @@ def requires_admin_auth(f):
         # Verify that regular auth has happened
         if not session.get('logged', False):
             return redirect(url_for('login'))
+
+        expired = enforce_session_activity()
+        if expired:
+            return expired
 
         # Check if access to admin is okay
         admin_gui_access = int(get_config_value('listener', 'admin_gui_access', 0))
@@ -396,7 +467,10 @@ def login():
     
     # Verify authentication and redirect if we are authenticated
     if session.get('logged', False):
-        return redirect(url_for('index'))
+        if session_expired():
+            clear_expired_session()
+        else:
+            return redirect(url_for('index'))
 
     ncpa_token = listener.config['iconfig'].get('api', 'community_string')
     backup_ncpa_token = listener.config['iconfig'].get('api', 'backup_community_string')
@@ -434,9 +508,11 @@ def login():
     # Do actual authentication check
     if not admin_auth_only and token_valid:
         session['logged'] = True
+        touch_session_activity()
     elif admin_password is not None and token_is_admin:
         session['logged'] = True
         session['admin_logged'] = True
+        touch_session_activity()
 
     if session.get('logged', False):
         if url:
@@ -480,6 +556,7 @@ def admin_login():
 
     if admin_password is not None and password_valid:
         session['admin_logged'] = True
+        touch_session_activity()
         return redirect(url_for('admin'))
     elif password is not None:
         template_args['error'] = 'Password was invalid.'
@@ -538,6 +615,24 @@ def gui_index():
     except Exception as e:
         listener_logger.exception(e)
 
+
+@listener.route('/gui/session/status', methods=['GET'], provide_automatic_options = False)
+@gui_enabled_required
+def gui_session_status():
+    if not session.get('logged', False):
+        return jsonify({'logged': False}), 401
+
+    timeout = get_gui_session_timeout()
+    if timeout <= 0:
+        return jsonify({'logged': True, 'timeout': 0})
+
+    if session_expired():
+        clear_expired_session()
+        return jsonify({'logged': False}), 401
+
+    last = session.get('last_activity', datetime.datetime.now().timestamp())
+    return jsonify({'logged': True, 'expires_at': last + timeout})
+    
 
 @listener.route('/gui/checks', provide_automatic_options = False)
 @requires_auth
@@ -978,7 +1073,7 @@ def tail_websocket():
 
 
 @listener.route('/top', provide_automatic_options = False)
-@requires_auth
+@requires_auth(touch_session=False)
 @gui_enabled_required
 def top():
     display = request.values.get('display', 0)
