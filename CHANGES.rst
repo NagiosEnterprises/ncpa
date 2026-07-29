@@ -4,11 +4,13 @@ Changelog
 ==================
 **Added**
 
-- Enabled continuous integration via GitHub Actions across Linux, Windows, and macOS. - CPD
 - Added gui_session_timeout config option in the [listener] section to automatically log out inactive web GUI sessions after a configurable period (default: 1 hour). - CPD
+- Added support for running plugins in subdirectories by specifying the relative path (e.g. plugins/old/check_disk.sh). [GH#577, GH#811] - CPD
+- Enabled continuous integration via GitHub Actions across Linux, Windows, and macOS. - CPD
 
 **Bug Fixes**
 
+- Fixed an issue where NCPA would run the wrong plugin when the same filename existed in both the plugins root directory and a subdirectory. [GH#1423, GH#1257] - CPD
 - Fixed a macOS installation issue caused by an xattr check error on Python 3.14 builds. - CPD
 
 **Updates**
