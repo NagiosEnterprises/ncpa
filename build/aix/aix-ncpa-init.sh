@@ -7,6 +7,7 @@ NCPA_DIR="/usr/local/ncpa"
 NCPA_USER="nagios"
 NCPA_GROUP="nagios"
 PID_FILE="$NCPA_DIR/var/run/ncpa.pid"
+NCPA_LIBPATH="$NCPA_DIR/lib:/opt/freeware/lib"
 
 start_ncpa() {
     echo "Starting NCPA..."
@@ -37,7 +38,7 @@ start_ncpa() {
     cd "$NCPA_DIR"
     
     # Start NCPA as nagios user
-    sudo -u $NCPA_USER -g $NCPA_GROUP "$NCPA_DIR/ncpa" --start
+    su $NCPA_USER -c "LIBPATH=\"$NCPA_LIBPATH:\${LIBPATH}\" $NCPA_DIR/ncpa --start &"
     
     if [ $? -eq 0 ]; then
         echo "NCPA started successfully"

@@ -97,10 +97,10 @@ elif __SYSTEM__ == 'posix':
 
     # Special includes for AIX systems
     if 'aix' in sys.platform:
-        include_files += [('/opt/freeware/lib/libpython3.12.a'  , 'build_resources/libpython3.12.a'),
-                          ('/usr/lib/libsqlite3.a'              , 'build_resources/libsqlite3.a'),
-                          ('/usr/lib/libcrypto.a'               , 'build_resources/libcrypto.a'),
-                          ('/opt/freeware/lib/libgcc_s.a'       , 'build_resources/libgcc_s.a'),
+        include_files += [('/opt/freeware/lib/libpython3.12.a'  , 'lib/libpython3.12.a'),
+                          ('/opt/freeware/lib/libgcc_s.a'       , 'lib/libgcc_s.a'),
+                          ('/opt/freeware/lib/libintl.a'        , 'lib/libintl.a'),
+                          ('/opt/freeware/lib/libiconv.a'       , 'lib/libiconv.a'),
                           ('../build/aix/aix-ncpa-service.sh'   , 'bin/aix-ncpa-service.sh')]
 
     # Special includes for Solaris systems
