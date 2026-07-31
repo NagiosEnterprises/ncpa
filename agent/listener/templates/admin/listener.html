@@ -52,11 +52,21 @@ $(document).ready(function() {
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">SSL Version</label>
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">SSL Version (min)</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <select class="form-control" name="ssl_version">
                                 <option value="TLSv1_2"{% if sectioncfg['ssl_version'] == 'TLSv1_2' %} selected{% endif %}>TLSv1.2</option>
                                 <option value="TLSv1_3"{% if sectioncfg['ssl_version'] == 'TLSv1_3' %} selected{% endif %}>TLSv1.3</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">SSL Max Version</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <select class="form-control" name="ssl_max_version">
+                                <option value="TLSv1_2"{% if sectioncfg['ssl_max_version'] == 'TLSv1_2' %} selected{% endif %}>TLSv1.2</option>
+                                <option value="TLSv1_3"{% if sectioncfg['ssl_max_version'] == 'TLSv1_3' %} selected{% endif %}>TLSv1.3</option>
                             </select>
                         </div>
                     </div>
