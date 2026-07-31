@@ -6,6 +6,7 @@ Changelog
 
 - Enabled continuous integration via GitHub Actions across Linux, Windows, and macOS. - CPD
 - Added gui_session_timeout config option in the [listener] section to automatically log out inactive web GUI sessions after a configurable period (default: 1 hour). - CPD
+- Added ssl_max_version config option in the [listener] section to specify the maximum TLS version allowed for incoming connections. - CPD
 
 **Bug Fixes**
 
