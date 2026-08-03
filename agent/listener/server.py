@@ -1266,7 +1266,7 @@ def sanitize_for_configparser(input_value):
         sanitized = sanitized.encode().decode('unicode_escape')
         sanitized = sanitized.replace('\n', '\\n').replace('\r', '\\r')
         sanitized = sanitized.replace('\\', '\\\\') # escape backslashes for sed command, which will interpret single backslashes as escape characters
-        sanitized = sanitized.replace('/', '\/') # escape forward slashes for sed command
+        sanitized = sanitized.replace('/', '\\/') # escape forward slashes for sed command
     except Exception as e:
         listener_logger.exception(e)
         return ''
@@ -1361,7 +1361,7 @@ def write_to_config_and_file(section_options_to_update):
                     continue
                 line_number = int(match.group(1))
                 new_value = match.group(3)
-                new_value = new_value.replace('\/', '/').replace('\\\\', '\\') # unescape backslashes from sed command
+                new_value = new_value.replace('\\/', '/').replace('\\\\', '\\') # unescape backslashes from sed command
 
                 listener_logger.debug("write_to_configFile() - replacing line %d with %s", line_number, new_value)
 
@@ -1521,7 +1521,7 @@ def add_check():
                 break
 
         if not section_exists:
-            sed_cmds.append(f"sed -i 's/#\[passive checks\]/\[passive checks\]/' {cfg_file}")
+            sed_cmds.append(f"sed -i 's/#\\[passive checks\\]/\\[passive checks\\]/' {cfg_file}")
 
         values_dict = {}
 
@@ -1549,12 +1549,12 @@ def add_check():
         new_check = None
         if not values_dict['check_interval']:
             new_check = f"{values_dict['host_name']}|{values_dict['service_name']} = {values_dict['check_value']}"
-            sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
+            sed_cmds.append(f"sed -i '/\\[passive checks\\]/a {new_check}' {cfg_file}")
         else:
             new_check = f"{values_dict['host_name']}|{values_dict['service_name']}|{values_dict['check_interval']} = {values_dict['check_value']}"
-            sed_cmds.append(f"sed -i '/\[passive checks\]/a {new_check}' {cfg_file}")
+            sed_cmds.append(f"sed -i '/\\[passive checks\\]/a {new_check}' {cfg_file}")
 
-        new_check = new_check.replace('\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command for GUI
+        new_check = new_check.replace('\\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command for GUI
 
         for sed_cmd in sed_cmds:
             if environment.SYSTEM == "Windows":
@@ -1647,7 +1647,7 @@ def delete_check():
                 listener_logger.warning("delete_check() - skipping file due to read error: %s", file_path)
                 continue
 
-        check_to_delete = check_to_delete.replace('\/', '/').replace('\\\\','\\') # unescape the slashes that were escaped for the GUI
+        check_to_delete = check_to_delete.replace('\\/', '/').replace('\\\\','\\') # unescape the slashes that were escaped for the GUI
 
         # If we did not find the check in any readable config file, return an error
         if not cfg_file:
@@ -1714,7 +1714,7 @@ def edit_check():
         for check in existing_checks:
             # Join the check to the value to get the full string
             check_full_string = check[0] + ' = ' + check[1]
-            check_full_string = check_full_string.replace('\/', '/').replace('\\\\','\\') # unescape the slashes that were escaped for the GUI
+            check_full_string = check_full_string.replace('\\/', '/').replace('\\\\','\\') # unescape the slashes that were escaped for the GUI
             if check[0].split('|')[1] == service_name and check_full_string != check_to_update:
                 return jsonify({'type': 'danger', 'message': 'A check with that service name already exists.'})
 
@@ -1738,7 +1738,7 @@ def edit_check():
                 listener_logger.warning("edit_check() - skipping file due to read error: %s", file_path)
                 continue
 
-        check_to_update = check_to_update.replace('\/', '/').replace('\\\\','\\') # unescape the slashes that were escaped for the GUI
+        check_to_update = check_to_update.replace('\\/', '/').replace('\\\\','\\') # unescape the slashes that were escaped for the GUI
 
         # If we did not find the check in any readable config file, return an error
         if not cfg_file:
