@@ -97,8 +97,8 @@ elif __SYSTEM__ == 'posix':
 
     # Special includes for AIX systems
     if 'aix' in sys.platform:
-        include_files += [('/opt/freeware/lib/libpython3.12.a'  , 'lib/libpython3.12.a'),
-                          ('/opt/freeware/lib/libgcc_s.a'       , 'lib/libgcc_s.a'),
+        include_files += [('/opt/freeware/lib64/libpython3.12.a', 'lib/libpython3.12.a'),
+                          ('/opt/freeware/lib64/libgcc_s.a'     , 'lib/libgcc_s.a'),
                           ('/opt/freeware/lib/libintl.a'        , 'lib/libintl.a'),
                           ('/opt/freeware/lib/libiconv.a'       , 'lib/libiconv.a'),
                           ('../build/aix/aix-ncpa-service.sh'   , 'bin/aix-ncpa-service.sh')]
