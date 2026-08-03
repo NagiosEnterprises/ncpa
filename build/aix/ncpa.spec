@@ -135,6 +135,7 @@ fi
 
 %defattr(0755,root,root,0755)
 /usr/local/ncpa/lib/*.so*
+/usr/local/ncpa/lib/*.a*
 /usr/local/ncpa/bin/aix-ncpa-service.sh
 
 %defattr(0664,nagios,nagios,0755)
