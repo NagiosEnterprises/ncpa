@@ -135,12 +135,8 @@ fi
 
 %defattr(0755,root,root,0755)
 /usr/local/ncpa/lib/*.so*
-/usr/local/ncpa/lib/*.a*
+/usr/local/ncpa/lib/*.a
 /usr/local/ncpa/bin/aix-ncpa-service.sh
-
-%defattr(0664,nagios,nagios,0755)
-/usr/local/ncpa/var/log/ncpa_listener.log
-/usr/local/ncpa/var/log/ncpa_passive.log
 
 %defattr(0644,root,root,0755)
 /usr/local/ncpa/*.githash
@@ -156,7 +152,13 @@ fi
 %dir /usr/local/ncpa/etc
 %dir /usr/local/ncpa/etc/ncpa.cfg.d
 %dir /usr/local/ncpa/bin
-/usr/local/ncpa/var
+%dir /usr/local/ncpa/var
+%dir /usr/local/ncpa/var/log
+%dir /usr/local/ncpa/var/run
+
+%defattr(0664,nagios,nagios,0755)
+/usr/local/ncpa/var/log/ncpa_listener.log
+/usr/local/ncpa/var/log/ncpa_passive.log
 
 %defattr(0640,root,nagios,0755)
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
