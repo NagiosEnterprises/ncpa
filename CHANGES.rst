@@ -5,6 +5,7 @@ Changelog
 **Added**
 
 - Added gui_session_timeout config option in the [listener] section to automatically log out inactive web GUI sessions after a configurable period (default: 1 hour). - CPD
+- Added ssl_max_version config option in the [listener] section to specify the maximum TLS version allowed for incoming connections. [GH#1417] - CPD
 - Added support for running plugins in subdirectories by specifying the relative path (e.g. plugins/old/check_disk.sh). [GH#577, GH#811] - CPD
 - Enabled continuous integration via GitHub Actions across Linux, Windows, and macOS. - CPD
 

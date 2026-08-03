@@ -145,6 +145,7 @@ cfg_defaults = {
                 'ip': address,
                 'port': '5693',
                 'ssl_version': 'TLSv1_2',
+                'ssl_max_version': 'None',
                 'certificate': 'adhoc',
                 'ssl_ciphers': 'None',
                 'logfile': 'var/log/ncpa_listener.log',
@@ -282,10 +283,10 @@ class Listener(Base):
                 else:
                     logger.debug("run() - ssl_str_ciphers: %s", ssl_str_ciphers)
                     ssl_context.set_ciphers(ssl_str_ciphers)
-                logger.debug("ssl_str_ciphers: %s", ssl_str_ciphers)
 
                 # Get the SSL version from the config and set it on the SSL context
                 ssl_str_version = self.config.get('listener', 'ssl_version')
+                ssl_max_version = self.config.get('listener', 'ssl_max_version')
 
                 # TLSv1_3 requires special handling since it doesn't use the PROTOCOL_ constant like previous versions, 
                 # and instead uses the minimum_version and maximum_version settings on the SSL context. 
@@ -299,6 +300,24 @@ class Listener(Base):
                     logger.warning('Unsupported SSL version specified in config: %s. Defaulting to TLSv1_2.', ssl_str_version)
                     ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
                 logger.debug('Using TLS version %s', ssl_str_version)
+
+                # Set the maximum SSL version
+                if ssl_max_version not in ('None', ''):
+                    if ssl_max_version == 'TLSv1_3':
+                        logger.info('Configuring TLSv1_3 as maximum version')
+                        ssl_context.maximum_version = ssl.TLSVersion.TLSv1_3
+                    elif ssl_max_version == 'TLSv1_2':
+                        logger.info('Configuring TLSv1_2 as maximum version')
+                        ssl_context.maximum_version = ssl.TLSVersion.TLSv1_2
+                    else:
+                        logger.warning('Unsupported ssl_max_version specified in config: %s. Ignoring.', ssl_max_version)
+                    if ssl_context.minimum_version > ssl_context.maximum_version:
+                        logger.warning(
+                            'ssl_version (%s) is higher than ssl_max_version (%s). Using ssl_max_version for both.',
+                            ssl_str_version,
+                            ssl_max_version,
+                        )
+                        ssl_context.minimum_version = ssl_context.maximum_version
 
                 # Get the certificate settings from the config - if it's set to 'adhoc', we'll create a self-signed cert, 
                 # otherwise we'll use the provided cert and key files (which should be comma-separated in the config)
