@@ -9,7 +9,7 @@ Changelog
 
 **Bug Fixes**
 
-- Fixed an AIX startup failure caused by a LIBPATH configuration issue. - CPD
+- Fixed an AIX startup failure caused by a shared library loading issue. [GH#1421] - CPD
 - Fixed a macOS installation issue caused by an xattr check error on Python 3.14 builds. - CPD
 
 **Updates**
