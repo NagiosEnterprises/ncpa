@@ -15,6 +15,7 @@ Changelog
 **Updates**
 
 - Replaced Travis CI badge with GitHub Actions CI status badges in README. - CPD
+- Updated macOS build link and added Solaris and AIX build links in README. - CPD
 
 3.4.3 - 7/23/2026
 ==================
