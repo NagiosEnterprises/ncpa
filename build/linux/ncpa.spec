@@ -55,32 +55,37 @@ sed -i 's|_BASEDIR_|/usr/local/ncpa|' %{buildroot}/usr/lib/systemd/system/ncpa.s
 rm -rf %{buildroot}
 
 %pre
-if which chkconfig &> /dev/null; then
-    echo "Try to stop services with chkconfig"
-    [ -f /usr/local/ncpa/ncpa_listener ] && /usr/local/ncpa/ncpa_listener --stop &> /dev/null
-    [ -f /usr/local/ncpa/ncpa_passive ] && /usr/local/ncpa/ncpa_passive --stop &> /dev/null
-    chkconfig ncpa_listener && chkconfig --del ncpa_listener &> /dev/null
-    chkconfig ncpa_passive && chkconfig --del ncpa_passive &> /dev/null
-fi
-if command -v systemctl &> /dev/null
-then
-    echo "Try to stop services with systemctl"
-    systemctl list-units --full -all | grep -Fq 'ncpa_listener.service' && systemctl stop ncpa_listener &> /dev/null || true
-    systemctl list-units --full -all | grep -Fq 'ncpa_passive.service' && systemctl stop ncpa_passive &> /dev/null || true
+# Stop existing NCPA services before install/upgrade.
+# Prefer systemd; fall back to SysV. Avoid echoing status lines that look like errors.
+if command -v systemctl &> /dev/null; then
+    if systemctl list-units --full -all 2>/dev/null | grep -Fq 'ncpa_listener.service'; then
+        systemctl stop ncpa_listener &> /dev/null || true
+    fi
+    if systemctl list-units --full -all 2>/dev/null | grep -Fq 'ncpa_passive.service'; then
+        systemctl stop ncpa_passive &> /dev/null || true
+    fi
     systemctl stop ncpa &> /dev/null || true
-fi
-if command -v service &> /dev/null
-then
-    echo "Try to stop services with service"
-    service --status-all 2>&1 | grep -Fq 'ncpa_listener' && service ncpa_listener stop &> /dev/null || true
-    service --status-all 2>&1 | grep -Fq 'ncpa_passive' && service ncpa_passive stop &> /dev/null || true
+elif command -v service &> /dev/null; then
+    if service --status-all 2>&1 | grep -Fq 'ncpa_listener'; then
+        service ncpa_listener stop &> /dev/null || true
+    fi
+    if service --status-all 2>&1 | grep -Fq 'ncpa_passive'; then
+        service ncpa_passive stop &> /dev/null || true
+    fi
     service ncpa stop &> /dev/null || true
 fi
 
+# Clean up legacy NCPA 2 SysV registrations (safe no-ops when absent)
+if which chkconfig &> /dev/null; then
+    [ -f /usr/local/ncpa/ncpa_listener ] && /usr/local/ncpa/ncpa_listener --stop &> /dev/null || true
+    [ -f /usr/local/ncpa/ncpa_passive ] && /usr/local/ncpa/ncpa_passive --stop &> /dev/null || true
+    chkconfig ncpa_listener && chkconfig --del ncpa_listener &> /dev/null || true
+    chkconfig ncpa_passive && chkconfig --del ncpa_passive &> /dev/null || true
+fi
 
 if which update-rc.d >/dev/null 2>&1; then
-    update-rc.d -f ncpa_listener remove
-    update-rc.d -f ncpa_passive remove
+    update-rc.d -f ncpa_listener remove &> /dev/null || true
+    update-rc.d -f ncpa_passive remove &> /dev/null || true
 fi
 
 if ! getent group nagios &> /dev/null

@@ -11,6 +11,7 @@ Changelog
 **Bug Fixes**
 
 - Fixed a macOS installation issue caused by an xattr check error on Python 3.14 builds. - CPD
+- Fixed Linux RPM install/upgrade running ``service --status-all`` even when systemd is available, which could trigger unrelated SysV init scripts and cause production impact. [GH#1361] - CPD
 - Fixed multiple invalid escape sequences in the listener config/passive check GUI code that caused Python SyntaxWarnings and could break sed-based config updates on Linux. - CPD
 
 **Updates**
