@@ -2,7 +2,7 @@ name: Multi-OS Python Matrix
 
 on:
   push:
-    branches: [ 'dev-v3*' ]
+    branches: [ 'dev-v3*', 'cpd-linux-install-stop-messagees' ]
 
 jobs:
   # ------------------------------------------------------------------
