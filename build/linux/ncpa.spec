@@ -126,12 +126,8 @@ else
 fi
 
 %post
-if [ -e /etc/init.d/ncpa_listener ]; then
-    rm -f /etc/init.d/ncpa_listener
-fi
-if [ -e /etc/init.d/ncpa_passive ]; then
-    rm -f /etc/init.d/ncpa_passive
-fi
+# Leave /etc/init.d/ncpa_{listener,passive} for RPM to remove on 2.x->3.x
+# upgrades; deleting them here races old-package file erasure.
 
 if [ -z $RPM_INSTALL_PREFIX ]
 then
