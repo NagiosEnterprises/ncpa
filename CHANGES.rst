@@ -18,6 +18,7 @@ Changelog
 
 - Replaced Travis CI badge with GitHub Actions CI status badges in README. - CPD
 - Updated macOS build link and added Solaris and AIX build links in README. - CPD
+- Updated Windows builds to use Python version 3.13.15. - CPD
 
 3.4.3 - 7/23/2026
 ==================
