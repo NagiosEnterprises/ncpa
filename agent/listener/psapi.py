@@ -267,6 +267,77 @@ def get_timezone():
     return zones, ""
 
 
+# Stable subset of /etc/os-release keys exposed under /api/system/os_release
+OS_RELEASE_FIELDS = (
+    ("NAME", "name"),
+    ("ID", "id"),
+    ("PRETTY_NAME", "pretty_name"),
+    ("VERSION", "version"),
+    ("VERSION_ID", "version_id"),
+    ("VERSION_CODENAME", "version_codename"),
+    ("ID_LIKE", "id_like"),
+)
+
+
+def parse_os_release_file(contents):
+    """Parse os-release file contents into a dict of KEY -> value."""
+    data = {}
+    for line in contents.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in ('"', "'"):
+            value = value[1:-1]
+            value = (
+                value.replace("\\\"", '"')
+                .replace("\\'", "'")
+                .replace("\\\\", "\\")
+                .replace("\\$", "$")
+                .replace("\\`", "`")
+            )
+        data[key] = value
+    return data
+
+
+def read_os_release():
+    """Read distribution info from os-release. Returns {} when unavailable."""
+    try:
+        return dict(platform.freedesktop_os_release())
+    except (AttributeError, OSError):
+        pass
+
+    for path in ("/etc/os-release", "/usr/lib/os-release"):
+        try:
+            with open(path, "r", encoding="utf-8") as handle:
+                return parse_os_release_file(handle.read())
+        except (OSError, IOError):
+            continue
+    return {}
+
+
+def get_os_release_node(data=None):
+    """Build the system/os_release node, or None if os-release is unavailable."""
+    if data is None:
+        data = read_os_release()
+    if not data:
+        return None
+
+    children = []
+    for src_key, dest_key in OS_RELEASE_FIELDS:
+        value = data.get(src_key)
+        if value:
+            children.append(
+                RunnableNode(dest_key, method=lambda v=value: (v, ""))
+            )
+
+    if not children:
+        return None
+    return ParentNode("os_release", children=children)
+
+
 def get_system_node():
     logging.debug("get_system_node() was called")
     sys_system = RunnableNode("system", method=lambda: (platform.uname()[0], ""))
@@ -279,21 +350,25 @@ def get_system_node():
     sys_agent = RunnableNode("agent_version", method=lambda: (__VERSION__, ""))
     sys_time = RunnableNode("time", method=lambda: (time.time(), ""))
     sys_timezone = RunnableNode("timezone", method=get_timezone)
-    return ParentNode(
-        "system",
-        children=[
-            sys_node,
-            sys_machine,
-            sys_uptime,
-            sys_version,
-            sys_time,
-            sys_release,
-            sys_timezone,
-            sys_agent,
-            sys_system,
-            sys_processor,
-        ],
-    )
+
+    children = [
+        sys_node,
+        sys_machine,
+        sys_uptime,
+        sys_version,
+        sys_time,
+        sys_release,
+        sys_timezone,
+        sys_agent,
+        sys_system,
+        sys_processor,
+    ]
+
+    os_release = get_os_release_node()
+    if os_release is not None:
+        children.append(os_release)
+        
+    return ParentNode("system", children=children)
 
 
 def get_cpu_node(cpu_interval=0.5):
