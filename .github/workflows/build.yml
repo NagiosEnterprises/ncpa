@@ -2,8 +2,8 @@ name: Multi-OS Python Matrix
 
 on:
   push:
-    branches: [ 'dev-v3*', cpd-investigate-plugins-file-paths ]
-
+    branches: [ 'dev-v3*', 'cpd-investigate-plugins-file-paths' ]
+    
 jobs:
   # ------------------------------------------------------------------
   # SETUP JOB: Define and export the array variables
