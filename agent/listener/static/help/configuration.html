@@ -172,8 +172,8 @@
                                 <th>ssl_version</th>
                                 <td>TLSv1_2</td>
                                 <td>
-                                    Set the SSL protocol version to allow for connecting to the HTTPS server.
-                                    <div><b>Options:</b> <em>TLSv1</em>, <em>TLSv1_1</em>, or <em>TLSv1_2</em></div>
+                                    Set the minimum SSL protocol version to allow for connecting to the HTTPS server.
+                                    <div><b>Options:</b> <em>TLSv1_2</em>, or <em>TLSv1_3</em></div>
                                 </td>
                             </tr>
                             <tr>
@@ -183,6 +183,17 @@
                                 <td>
                                     Allows you to specify the file name for the SSL certificate you wish to use with the internal HTTPS server. If using <em>adhoc</em> - a new self-signed certificate will be generated and used for the server. The default cert is located in the main install directory at <code>/usr/local/ncpa/var/ncpa.crt</code> on install.
                                     <div><b>Options:</b> <em>adhoc</em> or <em>&lt;path to certificate&gt;,&lt;path to key&gt;</em></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>ssl_max_version</th>
+                                <td></td>
+                                <td>
+                                    Set the maximum SSL protocol version to allow for connecting to the HTTPS server.
+                                    <br>
+                                    Note: Must be set to TLSv1_2 if using custom 'ssl_ciphers'
+                                    <div><b>Options:</b> <em>TLSv1_2</em>, or <em>TLSv1_3</em></div>
                                 </td>
                             </tr>
                             <tr>
@@ -221,6 +232,11 @@
                             </tr>
                             <tr>
                                 <td></td>
+                                <th>gui_session_timeout</th>
+                                <td>3600</td>
+                                <td>The number of seconds of GUI inactivity before a logged-in user must authenticate again. Set to <b>0</b> to disable the timeout. This does not affect API access via token. Background live data requests (graphs, websockets, and API polling) do not reset the timer; navigating between GUI pages does.</td>                            </tr>
+                            <tr>
+                                <td></td>
                                 <th>delay_start</th>
                                 <td>0</td>
                                 <td>The amount to seconds to wait before starting the <em>NCPA</em> service.</td>
@@ -249,7 +265,7 @@
 
                 <div class="section">
                     <h3>[api]</h3>
-                    <p>This section controls the authentication token for the API and any other options that control access or change the way the API works. Currently there is only one option for this section.</p>
+                    <p>This section controls the authentication token for the API and any other options that control access or change the way the API works. Currently there are only two options for this section.</p>
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -265,6 +281,12 @@
                                 <th>community_string</th>
                                 <td>mytoken</td>
                                 <td>The token used to authenticate when accessing the API.<br>The token is also used to authenticate to the web GUI unless <code>admin_auth_only = 1</code> in the <a href="#listener">[listener]</a> section an <code>admin_password</code> is provided.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>backup_community_string</th>
+                                <td></td>
+                                <td>An optional backup token that will be used if the primary token does not match. This option was added to aid rotating tokens without downtime.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -312,6 +334,18 @@
                                 <th>delay_start</th>
                                 <td>0</td>
                                 <td>The amount to seconds to wait before starting the <em>NCPA Passive</em> service. Typically passive checks are run right away when the service is restarted so if you would like to force the <em>NCPA Passive</em> service to wait before running the checks, set this value.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>passive_ssl_verification</th>
+                                <td>1</td>
+                                <td>SSL verification for passive checks. Disabling verification can be useful if you are using a self-signed certificate or if you do not want to verify the SSL certificate for any reason.</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <th>ca_cert</th>
+                                <td></td>
+                                <td>Optionally specify the full path to a CA cert file to use for verifying the SSL certificate of the server when sending passive check results. If this is not specified, requests will use the default certifi CA bundle that comes with Python's requests library when passive_ssl_verification is enabled.</td>
                             </tr>
                         </tbody>
                     </table>

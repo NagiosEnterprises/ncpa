@@ -1,5 +1,5 @@
 mail=
-instance=unique
+instance=overwrite
 partial=nocheck
 runlevel=nocheck
 idepend=nocheck

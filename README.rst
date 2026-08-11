@@ -1,8 +1,21 @@
 NCPA
 ====
 
-.. image:: https://travis-ci.org/NagiosEnterprises/ncpa.svg?branch=master
-    :target: https://travis-ci.org/NagiosEnterprises/ncpa
+| |linux|
+| |windows|
+| |macos|
+
+.. |linux| image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/linux-e2e.yml/badge.svg?branch=master
+   :target: https://github.com/NagiosEnterprises/ncpa/actions/workflows/linux-e2e.yml
+   :alt: Linux e2e Test
+
+.. |windows| image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/windows-e2e.yml/badge.svg?branch=master
+   :target: https://github.com/NagiosEnterprises/ncpa/actions/workflows/windows-e2e.yml
+   :alt: Windows e2e Test
+
+.. |macos| image:: https://github.com/NagiosEnterprises/ncpa/actions/workflows/macos-e2e.yml/badge.svg?branch=master
+   :target: https://github.com/NagiosEnterprises/ncpa/actions/workflows/macos-e2e.yml
+   :alt: macOS e2e Test
 
 The *Nagios Cross-Platform Agent*; a single monitoring agent that installs on all major operating systems. NCPA allows both active checks via check_ncpa.py and passive checks via NRDP. NCPA comes with a built-in web GUI, documentation, websocket graphing, and is secured with SSL by default.
 
@@ -12,7 +25,7 @@ Downloads
 Current versions:
 
 +---------+-------------+-------------------------------------------------------+
-| Current | **3.3.0**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
+| Current | **3.5.0**   | `Downloads <https://www.nagios.org/ncpa/#downloads>`_ |
 +---------+-------------+-------------------------------------------------------+
 
 Note: If your nagios repo is outdated when installing NCPA, you must first update your GPG key using the following:
@@ -44,6 +57,7 @@ We currently build for the following operating systems on x86-64 architectures:
 - Windows Server 2016+
 - MacOS Ventura+ (13+)
 - Solaris 11.4 SRU78+
+- AIX 7.3 TL4+
 
 Older systems that have been supported by NCPA in the past:
 
@@ -95,7 +109,7 @@ We are always looking to improve NCPA. If you can add a feature or fix a bug, yo
 
 While we recommend using the pre-built version above, sometimes you may find the need to build your own binaries from the source. Mostly, this consists of installing the newest version of *Python 2.7* and a few modules installed through pip. There are some issues on certain systems that are explained in the build docs below.
 
-+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-| `Building for Windows <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-windows>`_ | `Building for Linux <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-linux>`_ | `Building for Mac OS X <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-mac-os-x>`_ |
-+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
++------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------+
+| `Building for Windows <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-windows>`_ | `Building for Linux <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-linux>`_ | `Building for macOS <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-macos>`_ | `Building for Solaris <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-solaris>`_ | `Building for AIX <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-aix>`_ |
++------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------+
 

@@ -1,14 +1,147 @@
 Changelog
 +++++++++
-3.3.0 - 2/xx/2026
+3.5.0 - 8/25/2026
+==================
+**Added**
+
+- Added /api/system/os_release endpoint exposing Linux distribution fields from /etc/os-release (name, id, pretty_name, etc.). [GH#1358] - CPD
+- Added cross-platform continuous integration and testing via GitHub Actions for Linux, Windows, and macOS. - CPD
+- Added gui_session_timeout config option in the [listener] section to automatically log out inactive web GUI sessions after a configurable period (default: 1 hour). - CPD
+- Added ssl_max_version config option in the [listener] section to specify the maximum TLS version allowed for incoming connections. [GH#1417] - CPD
+- Added support for running plugins in subdirectories by specifying the relative path (e.g. plugins/old/check_disk.sh). [GH#577, GH#811] - CPD
+
+**Bug Fixes**
+
+- Fixed a macOS installation issue caused by an xattr check error on Python 3.14 builds. - CPD
+- Fixed an issue in Linux RPM installs/upgrades where unrelated SysV init scripts were unintentionally triggered despite systemd being available. [GH#1361] - CPD
+- Fixed an issue where NCPA would run the wrong plugin when the same filename existed in both the plugins root directory and a subdirectory. [GH#1423, GH#1257] - CPD
+- Fixed multiple invalid escape sequences in the listener config/passive check GUI code that caused Python SyntaxWarnings and could break sed-based config updates on Linux. - CPD
+
+**Updates**
+
+- Updated macOS build link and added Solaris and AIX build links in README. - CPD
+- Updated README badges to reflect the migration from Travis CI to GitHub Actions. - CPD
+- Updated Windows builds to use Python version 3.13.15. - CPD
+
+3.4.3 - 7/23/2026
+==================
+**Bug Fixes**
+
+- Fixed an AIX upgrade issue that was preventing the NCPA service from starting automatically after an upgrade. - CPD
+- Fixed an error message that can appear in /var/log/messages on Linux systems when the NCPA service is stopped. - CPD
+- Fixed an issue where builds would fail on el 10 systems due to a missing dependency. - BB
+- Fixed an issue where NCPA would fail to start when started without root privileges after the configured uid/gid had already been applied. [GH#1306] - CPD
+- Fixed an issue where the total count and pagination numbers in the Checks UI were incorrect when filtered by Type. - CPD
+- Fixed multiple AIX build issue with dependencies that were preventing the build from completing successfully. - CPD
+- Fixed multiple AIX upgrade issues that were preventing upgrades from NCPA 2.x to NCPA 3.x from completing successfully. - CPD
+- Fixed root-only startup tasks (log file chown, temp file cleanup, directory creation) which could cause startup failures on non-root deployments. [GH#1306] - CPD
+- Fixed rpm -V reporting false positives on RHEL for config, log, database, and service files. [GH#1299] - CPD
+- Resolved test_ncpacheck unit test failures due to the backup_community_string config option not being set in the test configuration. - CPD
+- Several improvements to disk endpoint performance. [GH#1282] - BB
+
+**Removed**
+
+- Removed pyOpenSSL from the AIX build dependency list as it was not being used and was causing build issues. - CPD
+
+**Updates**
+
+- Replaced deprecated datetime.utcnow() usage in certificate generation and Windows event log handling to improve compatibility with Python 3.12+. - CPD
+- Updated Windows builds to use OpenSSL version 3.0.21 to resolve CVEs and improve compatibility. [GH#1397] - CPD
+- Updated Windows builds to use Python version 3.13.14. - CPD
+
+3.4.2 - 6/18/2026
+==================
+**Added**
+
+- Added passive_ssl_verification config option in the [passive] section of ncpa.cfg. - CPD
+- Added ca_cert config option in the [passive] section of ncpa.cfg to specify a custom CA certificate for SSL verification when sending passive check results. - CPD
+
+**Bug Fixes**
+
+- Fixed an issue where the config-file and config-dir options were not working properly, causing NCPA to not read the config file(s) from the specified location(s). - coonce
+- Fixed an issue where warnings were being logged in the system logs in addition to the ncpa_passive.log when SSL verification failed. [GH#1050] - CPD
+- Fixed an issue where old Windows python binary files in the NCPA install directory were not being removed during upgrades. - CPD
+
+**Updates**
+
+- Updated the Windows installer to support the new SSL verification setting for passive checks. - CPD
+- Updated the help documentation to include information about the new passive SSL verification options. - CPD
+
+3.4.1 - 5/21/2026
+==================
+**Added**
+
+- Added edit and delete passive check functionality to the admin passive check section of the GUI. [GH#1317] - CPD
+
+**Updates**
+
+- Updated the listener API to call requested endpoints individually instead of calling the whole API for each check, improving performance and reducing the likelihood of errors. [GH#911] - CPD
+
+**Bug Fixes**
+
+- Fixed multiple issues on the admin passive checks page of the GUI that were causing some checks to not display properly. [GH#1238] - CPD
+- Fixed multiple issues with the add passive check function in the API that were causing errors when trying to add checks with certain parameters. - CPD
+
+**Removed**
+
+- Removed some old debug log lines to help declutter the log files when debug logging is enabled. - CPD
+
+3.4.0 - 4/23/2026
+==================
+**Added**
+
+- Added a new config option to set backup_community_string in the [api] section of ncpa.cfg to help with token rotation and to allow for a smoother transition when changing tokens. - CPD
+
+**Updates**
+
+- Updated Windows builds to use Python version 3.13.13. - CPD
+- Updated Windows builds to use OpenSSL version 3.0.19 to resolve CVEs and improve compatibility. [GH#1359] - CPD
+- Removed version pin for AIX Python cryptography to allow updates to the latest stable release. [GH#1355] - CPD
+- Removed redundant Python executable from the install to reduce potential attack surface and confusion. - CPD
+- Updated the build documentation with more detailed requirements for building on Linux systems. - CPD
+- Updated the default token value in the Windows installer to prevent the token from being blank after installation. - CPD
+
+**Bug Fixes**
+
+- Fixed a Solaris upgrade issue where NCPA configuration files were not preserved during upgrades. - CPD
+- Fixed a Solaris upgrade bug preventing SMF services from being correctly reinitialized during the upgrade process. - CPD
+- Fixed an issue where the interface/device/status endpoint was returning a string in the perfdata instead of a relevant numeric exit code. [GH#1371] - CPD
+
+3.3.1 - 3/19/2026
+==================
+**Added**
+
+- Added support for TLSv1.3. This update enables the latest encryption standard, offering improved security and faster connection handshake speeds. [GH#1352] - CPD
+
+**Updates**
+
+- Linux builds now use OpenSSL 3.5.5 to resolve CVEs and improve compatibility. [GH#1353] - CPD
+
+**Bug Fixes**
+
+- Fixed a Linux issue where service files were being left behind after an uninstall. [GH#1063] - CPD
+- Fixed a routing issue after admin authentication that was causing the admin section to not work properly. [GH#898] - CPD
+- SSL renegotiation is now disabled to prevent security vulnerabilities. [GH#869,GH#1180] - CPD
+
+**Deprecated**
+
+- Deprecated support for TLSv1 and TLSv1.1 due to security vulnerabilities and the fact that most modern clients no longer support these protocols. - CPD
+
+3.3.0 - 2/26/2026
 ==================
 **Added**
 
 - Added experimental support for AIX 7.3 builds. [GH#923] - CPD
 
+**Updates**
+
+- Update Python to version 3.13.12 on Windows builds to resolve CVEs and improve compatibility. [GH#1341] - CPD
+- Update to determine which nologin path to use on Linux builds for improved compatibility. [GH#1336] - CPD
+
 **Bug Fixes** 
 
 - Fixed an issue on MacOS systems where the services endpoint was not working correctly. [GH#669] - CPD
+- Fixed an issue where a duplicate navbar would render on the admin/plugin-directives page. [GH#1167] - CPD
 
 3.2.3 - 1/22/2026
 ==================

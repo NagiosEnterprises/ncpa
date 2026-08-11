@@ -100,19 +100,29 @@ default_units = Gi
 # ip =
 # port =
 
-#
-# SSL connection, certificate and cyphers config (if an SSL option is not available on some older
-# operating systems it will default back to TLSv1)
-# ssl_version options: TLSv1, TLSv1_1, TLSv1_2
-# Default: ssl_version = TLSv1_2
-# Default: certificate = adhoc
-#
+# -------------------------------
+# SSL / TLS Configuration
+# -------------------------------
+
+# Minimum SSL protocol version
+# - Options: TLSv1_2, TLSv1_3
+# - Default: TLSv1_2
 ssl_version = TLSv1_2
+
+# Server certificate path or 'adhoc'
+# - Default: adhoc
 certificate = adhoc
 
-# ssl_cyphers: sets a list of accepted SSL ciphers using the format <cipher>:<cipher>:<cipher>, e.g., AES256-GCM-SHA384:AES256-SHA256:AES256-SHA:CAMELLIA256-SHA
-# Default: ssl_ciphers =
-#
+# Maximum SSL protocol version
+# - Options: TLSv1_2, TLSv1_3 (leave blank for highest supported)
+# - Note: Must be set to TLSv1_2 if using custom 'ssl_ciphers'
+# - Default: (blank)
+# ssl_max_version =
+
+# Accepted SSL/TLS ciphers for TLSv1_2 (Ignored for TLSv1_3)
+# - Format: <cipher>:<cipher>:<cipher> (e.g., AES256-GCM-SHA384:AES256-SHA256)
+# - Default: (blank)
+# ssl_ciphers =
 
 #
 # Listener logging file level, location, and the PID location
@@ -149,6 +159,13 @@ admin_password = None
 # Default: 0
 #
 admin_auth_only = 0
+
+#
+# Web GUI session inactivity timeout in seconds. After this period with no GUI
+# activity, the user must log in again. Set to 0 to disable the timeout.
+# Default: 3600 (1 hour)
+#
+gui_session_timeout = 3600
 
 #
 # Comma separated list of allowed hosts that can access the API (and GUI)
@@ -211,6 +228,12 @@ allow_config_edit = 1
 community_string = mytoken
 
 #
+# You can setup an optional backup token that will be used if the primary token does not match. 
+# This is useful for rotating tokens without downtime.
+#
+# backup_community_string = mytoken2
+
+#
 # -------------------------------
 # Passive Configuration (daemon)
 # -------------------------------
@@ -252,6 +275,21 @@ logfile = var/log/ncpa_passive.log
 # Passive checks: see ncpa.cfg.d/example.cfg to see how to specify passive checks.
 # Simply uncommenting the lines in that file will make those passive checks available.
 # Default: none
+
+# SSL verification for passive checks. Disabling verification can be useful if you are using a self-signed certificate
+# or if you do not want to verify the SSL certificate for any reason.
+# 0 = SSL verification disabled
+# 1 = SSL verification enabled (default)
+#
+passive_ssl_verification = 1
+
+# Optionally specify the full path to a CA cert file to use for verifying the SSL certificate of the server when sending passive check results.
+# If this is not specified, requests will use the default certifi CA bundle that comes with Python's requests library when passive_ssl_verification is enabled.
+# Example: /usr/local/ncpa/var/ca.crt
+# Example: C:\Program Files\Nagios\NCPA\var\ca.crt
+#
+ca_cert =
+
 
 #
 # -------------------------------

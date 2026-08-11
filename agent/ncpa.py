@@ -94,7 +94,7 @@ if os.name == 'nt':
 
 # Set some global variables for later
 __FROZEN__ = getattr(sys, 'frozen', False)
-__VERSION__ = '3.3.0'
+__VERSION__ = '3.5.0'
 __DEBUG__ = False
 __SYSTEM__ = os.name
 __STARTED__ = datetime.datetime.now()
@@ -145,6 +145,7 @@ cfg_defaults = {
                 'ip': address,
                 'port': '5693',
                 'ssl_version': 'TLSv1_2',
+                'ssl_max_version': 'None',
                 'certificate': 'adhoc',
                 'ssl_ciphers': 'None',
                 'logfile': 'var/log/ncpa_listener.log',
@@ -152,6 +153,7 @@ cfg_defaults = {
                 'admin_gui_access': '1',
                 'admin_password': 'None',
                 'admin_auth_only': '0',
+                'gui_session_timeout': '3600',
                 'allowed_hosts': '',
                 'max_connections': '200',
                 'allowed_sources': '',
@@ -160,12 +162,15 @@ cfg_defaults = {
             },
             'api': {
                 'community_string': 'mytoken',
+                'backup_community_string': '',
             },
             'passive': {
                 'handlers': 'None',
                 'sleep': '300',
                 'logfile': 'var/log/ncpa_passive.log',
                 'delay_start': '0',
+                'passive_ssl_verification': '1',
+                'ca_cert': '',
             },
             'nrdp': {
                 'parent': '',
@@ -240,8 +245,10 @@ class Listener(Base):
     to run the listener so all of NCPA is bundled in a single service
     """
     def __init__(self, options, config, has_error, autostart=False):
-        super().__init__(options, config, has_error, autostart)
-        set_process_name("Nagios Cross-Platform Agent - Listener")
+        super().__init__(options, config, has_error, False)
+        self.set_process_name("Nagios Cross-Platform Agent - Listener")
+        if autostart:
+            self.run()
 
     def run(self):
         self.init_logger('listener')
@@ -264,22 +271,56 @@ class Listener(Base):
                 port = self.config.getint('listener', 'port')
                 logger.debug("port: %s", port)
 
-                ssl_context = dict()
+                max_connections = self.config.getint('listener', 'max_connections')
+                logger.debug("max_connections: %s", max_connections)
+
+                # SSL settings
+                ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+
                 ssl_str_ciphers = self.config.get('listener', 'ssl_ciphers')
                 if  (ssl_str_ciphers == 'None'):
                     ssl_str_ciphers = ''
                 else:
                     logger.debug("run() - ssl_str_ciphers: %s", ssl_str_ciphers)
-                    ssl_context['ciphers'] = ssl_str_ciphers
-                logger.debug("ssl_str_ciphers: %s", ssl_str_ciphers)
+                    ssl_context.set_ciphers(ssl_str_ciphers)
 
+                # Get the SSL version from the config and set it on the SSL context
                 ssl_str_version = self.config.get('listener', 'ssl_version')
-                ssl_version = getattr(ssl, 'PROTOCOL_' + ssl_str_version)
-                logger.debug('Using SSL version %s', ssl_str_version)
+                ssl_max_version = self.config.get('listener', 'ssl_max_version')
 
-                max_connections = self.config.getint('listener', 'max_connections')
-                logger.debug("max_connections: %s", max_connections)
+                # TLSv1_3 requires special handling since it doesn't use the PROTOCOL_ constant like previous versions, 
+                # and instead uses the minimum_version and maximum_version settings on the SSL context. 
+                if ssl_str_version == 'TLSv1_3':
+                    logger.info('Configuring TLSv1_3 as minimum version (TLSv1_3 is only supported on Python 3.7+ and OpenSSL 1.1.1+)')
+                    ssl_context.minimum_version = ssl.TLSVersion.TLSv1_3
+                elif ssl_str_version == 'TLSv1_2':
+                    logger.info('Configuring TLSv1_2 as minimum version for compatibility with older clients')
+                    ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
+                else:
+                    logger.warning('Unsupported SSL version specified in config: %s. Defaulting to TLSv1_2.', ssl_str_version)
+                    ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
+                logger.debug('Using TLS version %s', ssl_str_version)
 
+                # Set the maximum SSL version
+                if ssl_max_version not in ('None', ''):
+                    if ssl_max_version == 'TLSv1_3':
+                        logger.info('Configuring TLSv1_3 as maximum version')
+                        ssl_context.maximum_version = ssl.TLSVersion.TLSv1_3
+                    elif ssl_max_version == 'TLSv1_2':
+                        logger.info('Configuring TLSv1_2 as maximum version')
+                        ssl_context.maximum_version = ssl.TLSVersion.TLSv1_2
+                    else:
+                        logger.warning('Unsupported ssl_max_version specified in config: %s. Ignoring.', ssl_max_version)
+                    if ssl_context.minimum_version > ssl_context.maximum_version:
+                        logger.warning(
+                            'ssl_version (%s) is higher than ssl_max_version (%s). Using ssl_max_version for both.',
+                            ssl_str_version,
+                            ssl_max_version,
+                        )
+                        ssl_context.minimum_version = ssl_context.maximum_version
+
+                # Get the certificate settings from the config - if it's set to 'adhoc', we'll create a self-signed cert, 
+                # otherwise we'll use the provided cert and key files (which should be comma-separated in the config)
                 user_cert = self.config.get('listener', 'certificate')
 
             except Exception as e:
@@ -294,10 +335,9 @@ class Listener(Base):
                 logger.debug('Cert created')
             else:
                 cert, key = user_cert.split(',')
-
-            ssl_context['certfile'] = cert
-            ssl_context['keyfile'] = key
-            ssl_context['ssl_version'] = ssl_version
+            
+            # Load the cert and key into the SSL context
+            ssl_context.load_cert_chain(cert, key)
 
             # Pass config to Flask instance
             listener.server.listener.config['iconfig'] = self.config
@@ -311,7 +351,7 @@ class Listener(Base):
                                         log=listener_logger,
                                         error_log=listener_logger,
                                         spawn=Pool(max_connections),
-                                        **ssl_context)
+                                        ssl_context=ssl_context)
             logger.debug("run() - start http_server")
             http_server.serve_forever()
             logger.debug("run() - http_server running")
@@ -330,7 +370,7 @@ class Listener(Base):
                                         log=listener_logger,
                                         error_log=listener_logger,
                                         spawn=Pool(max_connections),
-                                        **ssl_context)
+                                        ssl_context=ssl_context)
             http_server.serve_forever()
 
         except Exception as e:
@@ -344,8 +384,10 @@ class Passive(Base):
     separate thread since it is what the main process is used for
     """
     def __init__(self, options, config, has_error, autostart=False):
-        super().__init__(options, config, has_error, autostart)
-        set_process_name("Nagios Cross-Platform Agent - Passive")
+        super().__init__(options, config, has_error, False)
+        self.set_process_name("Nagios Cross-Platform Agent - Passive")
+        if autostart:
+            self.run()
 
     def run_all_handlers(self, *args, **kwargs):
         """
@@ -475,6 +517,10 @@ class Daemon():
         terminal has not been detached and the pid of the long-running
         process is not yet known.
         """
+        if os.geteuid() != 0:
+            self.logger.debug("Not running as root; skipping root_setup_tasks()")
+            return
+
         self.logger.debug("Daemon init - setup_root()")
 
         # We need to chown any temp files we wrote out as root (or any other user)
@@ -531,6 +577,7 @@ class Daemon():
         signal.signal(signal.SIGTERM, self.on_sigterm)
         signal.signal(signal.SIGINT, self.on_sigterm)
 
+
     # ATTENTION - This function contains the infinite while loop that prevents
     # the process from exiting during normal operation
     def start(self):
@@ -547,14 +594,17 @@ class Daemon():
         self.prepare_dirs()
 
         try:
-            # Chown the installed passive log file while root still has control
-            # Since the listener file is used for the root and parent loggers, it is chowned
-            # during the setup_logger process
-            if __SYSTEM__ == 'posix' and os.path.isfile(self.passive_logfile):
-                chown(self.config.get('general', 'uid'), self.config.get('general', 'gid'), self.passive_logfile)
+            if os.geteuid() == 0:
+                # Chown the installed passive log file while root still has control
+                # Since the listener file is used for the root and parent loggers, it is chowned
+                # during the setup_logger process
+                if __SYSTEM__ == 'posix' and os.path.isfile(self.passive_logfile) and os.geteuid() == 0:
+                    chown(self.config.get('general', 'uid'), self.config.get('general', 'gid'), self.passive_logfile)
 
-            # Setup with root privileges
-            self.root_setup_tasks()
+                # Setup with root privileges
+                self.root_setup_tasks()
+            else:
+                self.logger.debug("Not running as root; skipping root-only startup tasks")
 
             # Drop permissions to specified user/group in ncpa.cfg
             self.set_uid_gid()
@@ -677,11 +727,26 @@ class Daemon():
             parent = os.path.dirname(fn)
             if not os.path.exists(parent):
                 os.makedirs(parent)
-                self.chown(parent)
+                if os.geteuid() == 0:
+                    self.chown(parent)
 
     def set_uid_gid(self):
         """Drop root privileges"""
         self.logger.debug("Daemon - set_uid_gid()")
+
+        current_uid = os.getuid()
+        current_gid = os.getgid()
+        if current_uid == self.uid and current_gid == self.gid:
+            self.logger.debug(
+                "Already running as configured user/group (uid:%d, gid:%d), skipping privilege drop",
+                current_uid, current_gid)
+            return
+        if os.geteuid() != 0:
+            self.logger.warning(
+                "Not running as root (uid:%d, gid:%d); cannot drop to uid:%d gid:%d, skipping privilege drop",
+                current_uid, current_gid, self.uid, self.gid)
+            return
+
         # Get set of gids to set for OS groups
         gids = [ self.gid ]
         if self.username:
@@ -1163,8 +1228,10 @@ def get_configuration(config=None, configdir=None):
     """Get the configuration options and return the config parser for them"""
     parent_logger.debug("get_configuration()")
 
-    config = os.path.join('etc', 'ncpa.cfg')
-    configdir = os.path.join('etc', 'ncpa.cfg.d', '*.cfg')
+    if config is None:
+        config = os.path.join('etc', 'ncpa.cfg')
+    if configdir is None:
+        configdir = os.path.join('etc', 'ncpa.cfg.d', '*.cfg')
 
     cp = ConfigParser(interpolation=None)
     cp.optionxform = str
@@ -1199,8 +1266,11 @@ def chown(user_uid, user_gid, fn):
         try:
             os.chown(fn, uid, gid)
         except OSError as err:
+            if os.geteuid() != 0:
+                parent_logger.debug("Skipping chown(%s): not running as root", repr(fn))
+                return
             sys.exit("can't chown(%s, %d, %d): %s, %s" %
-            (repr(fn), uid, gid, err.errno, err.strerror))
+                     (repr(fn), uid, gid, err.errno, err.strerror))
 
 def setup_logger(config, loggerinstance, logfile):
     """Configure the logging module"""

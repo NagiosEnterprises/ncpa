@@ -26,8 +26,7 @@ def get_uptime():
     epoch_boot = int(current_time)
     return (epoch_boot - ps.boot_time(), "s")
 
-def make_disk_nodes(disk_name):
-    disk_counters = ps.disk_io_counters(perdisk=True)
+def make_disk_nodes(disk_name, disk_counters):
     counters = disk_counters.get(disk_name)
     if counters is None:
         return ParentNode(disk_name, children=[])
@@ -89,11 +88,18 @@ def make_disk_nodes(disk_name):
 def make_mountpoint_nodes(partition_name):
     mountpoint = partition_name.mountpoint
 
-    total = RunnableNode("total", method=lambda: (ps.disk_usage(mountpoint).total, "B"))
-    used = RunnableNode("used", method=lambda: (ps.disk_usage(mountpoint).used, "B"))
-    free = RunnableNode("free", method=lambda: (ps.disk_usage(mountpoint).free, "B"))
+    _cached_usage = [None]
+
+    def get_usage():
+        if _cached_usage[0] is None:
+            _cached_usage[0] = ps.disk_usage(mountpoint)
+        return _cached_usage[0]
+
+    total = RunnableNode("total", method=lambda: (get_usage().total, "B"))
+    used = RunnableNode("used", method=lambda: (get_usage().used, "B"))
+    free = RunnableNode("free", method=lambda: (get_usage().free, "B"))
     used_percent = RunnableNode(
-        "used_percent", method=lambda: (ps.disk_usage(mountpoint).percent, "%")
+        "used_percent", method=lambda: (get_usage().percent, "%")
     )
     device_name = RunnableNode(
         "device_name", method=lambda: ([partition_name.device], "")
@@ -230,12 +236,12 @@ def make_if_nodes(if_name, io_counters, if_stats):
 
     if if_name in if_stats:
         if if_stats[if_name].isup:
-            status = "up"
+            numeric_status = 0
         else:
-            status = "down"
+            numeric_status = 2
     else:
-        status = "unknown"
-    statusNode = RunnableNode("status", method=lambda: (status, ""))
+        numeric_status = 3
+    statusNode = RunnableNode("status", method=lambda: (numeric_status, ""))
 
     return RunnableParentNode(
         if_name,
@@ -261,7 +267,79 @@ def get_timezone():
     return zones, ""
 
 
+# Stable subset of /etc/os-release keys exposed under /api/system/os_release
+OS_RELEASE_FIELDS = (
+    ("NAME", "name"),
+    ("ID", "id"),
+    ("PRETTY_NAME", "pretty_name"),
+    ("VERSION", "version"),
+    ("VERSION_ID", "version_id"),
+    ("VERSION_CODENAME", "version_codename"),
+    ("ID_LIKE", "id_like"),
+)
+
+
+def parse_os_release_file(contents):
+    """Parse os-release file contents into a dict of KEY -> value."""
+    data = {}
+    for line in contents.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in ('"', "'"):
+            value = value[1:-1]
+            value = (
+                value.replace("\\\"", '"')
+                .replace("\\'", "'")
+                .replace("\\\\", "\\")
+                .replace("\\$", "$")
+                .replace("\\`", "`")
+            )
+        data[key] = value
+    return data
+
+
+def read_os_release():
+    """Read distribution info from os-release. Returns {} when unavailable."""
+    try:
+        return dict(platform.freedesktop_os_release())
+    except (AttributeError, OSError):
+        pass
+
+    for path in ("/etc/os-release", "/usr/lib/os-release"):
+        try:
+            with open(path, "r", encoding="utf-8") as handle:
+                return parse_os_release_file(handle.read())
+        except (OSError, IOError):
+            continue
+    return {}
+
+
+def get_os_release_node(data=None):
+    """Build the system/os_release node, or None if os-release is unavailable."""
+    if data is None:
+        data = read_os_release()
+    if not data:
+        return None
+
+    children = []
+    for src_key, dest_key in OS_RELEASE_FIELDS:
+        value = data.get(src_key)
+        if value:
+            children.append(
+                RunnableNode(dest_key, method=lambda v=value: (v, ""))
+            )
+
+    if not children:
+        return None
+    return ParentNode("os_release", children=children)
+
+
 def get_system_node():
+    logging.debug("get_system_node() was called")
     sys_system = RunnableNode("system", method=lambda: (platform.uname()[0], ""))
     sys_node = RunnableNode("node", method=lambda: (platform.uname()[1], ""))
     sys_release = RunnableNode("release", method=lambda: (platform.uname()[2], ""))
@@ -272,24 +350,29 @@ def get_system_node():
     sys_agent = RunnableNode("agent_version", method=lambda: (__VERSION__, ""))
     sys_time = RunnableNode("time", method=lambda: (time.time(), ""))
     sys_timezone = RunnableNode("timezone", method=get_timezone)
-    return ParentNode(
-        "system",
-        children=[
-            sys_node,
-            sys_machine,
-            sys_uptime,
-            sys_version,
-            sys_time,
-            sys_release,
-            sys_timezone,
-            sys_agent,
-            sys_system,
-            sys_processor,
-        ],
-    )
+
+    children = [
+        sys_node,
+        sys_machine,
+        sys_uptime,
+        sys_version,
+        sys_time,
+        sys_release,
+        sys_timezone,
+        sys_agent,
+        sys_system,
+        sys_processor,
+    ]
+
+    os_release = get_os_release_node()
+    if os_release is not None:
+        children.append(os_release)
+        
+    return ParentNode("system", children=children)
 
 
 def get_cpu_node(cpu_interval=0.5):
+    logging.debug("get_cpu_node() was called")
     cpu_count = RunnableNode(
         "count", method=lambda:     ([len(ps.cpu_percent(percpu=True))], "cores")
     )
@@ -311,6 +394,7 @@ def get_cpu_node(cpu_interval=0.5):
 
 
 def get_memory_node():
+    logging.debug("get_memory_node() was called")
     mem_virt_total = RunnableNode(
         "total", method=lambda: (ps.virtual_memory().total, "B")
     )
@@ -370,10 +454,13 @@ def get_memory_node():
 
 
 def get_disk_node(config):
+    logging.debug("get_disk_node() was called")
     # Get all physical disk io counters
     try:
+        all_disk_counters = ps.disk_io_counters(perdisk=True) or {}
         disk_counters = [
-            make_disk_nodes(x) for x in list(ps.disk_io_counters(perdisk=True).keys())
+            make_disk_nodes(name, all_disk_counters)
+            for name in all_disk_counters
         ]
     except IOError as ex:
         logging.exception(ex)
@@ -434,6 +521,7 @@ def get_disk_node(config):
 
 
 def get_interface_node():
+    logging.debug("get_interface_node() was called")
     io_counters = ps.net_io_counters(pernic=True)
     if_stats = ps.net_if_stats()
 
@@ -444,10 +532,12 @@ def get_interface_node():
 
 
 def get_plugins_node():
+    logging.debug("get_plugins_node() was called")
     return PluginAgentNode("plugins")
 
 
 def get_user_node():
+    logging.debug("get_user_node() was called")
     user_count = RunnableNode(
         "count", method=lambda: (len([x.name for x in ps.users()]), "users")
     )
@@ -461,7 +551,104 @@ def get_user_node():
     return ParentNode("user", children=[user_count, user_list, user_countlist])
 
 
+def get_path_node(config, path):
+    children = []
+    logging.debug("get_path_node() was called with path: %s", path)
+    
+    if path is None:
+        logging.warning("get_path_node() was called with no path, returning N/A node.")
+        return ParentNode("N/A")
+
+    if path == "cpu":
+        try:
+            cpu = get_cpu_node()
+            children.append(cpu)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "memory":
+        try:
+            memory = get_memory_node()
+            children.append(memory)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "disk":
+        try:
+            disk = get_disk_node(config)
+            children.append(disk)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "interface":
+        try:
+            interface = get_interface_node()
+            children.append(interface)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "plugins":
+        try:
+            plugins = get_plugins_node()
+            children.append(plugins)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "user":
+        try:
+            user = get_user_node()
+            children.append(user)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "system":
+        try:
+            system = get_system_node()
+            children.append(system)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "services":
+        try:
+            service = services.get_node()
+            children.append(service)
+        except Exception as e:
+            logging.exception(e)
+    elif path == "processes":
+        try:
+            process = processes.get_node()
+            children.append(process)
+        except Exception as e:
+            logging.exception(e)
+
+    # Windows specific endpoints
+    elif path == "logs":
+        if __SYSTEM__ == "nt":
+            try:
+                import listener.windowslogs as windowslogs
+                logs_node = windowslogs.get_node()
+                children.append(logs_node)
+            except ImportError:
+                logging.warning("Could not import windowslogs, skipping.")
+            except AttributeError:
+                logging.warning("Trying to import windowslogs but does not get_node() function, skipping.")
+        else:
+            logging.warning("Logs endpoint is only supported on Windows, skipping.")
+    elif path == "windowscounters":
+        if __SYSTEM__ == "nt":
+            try:
+                import listener.windowscounters as windowscounters
+                counters_node = windowscounters.get_node()
+                children.append(counters_node)
+            except ImportError:
+                logging.warning("Could not import windowscounters, skipping.")
+            except AttributeError:
+                logging.warning("Trying to import windowscounters but does not get_node() function, skipping.")
+        else:
+            logging.warning("Windows counters endpoint is only supported on Windows, skipping.")
+            
+    else:
+        logging.warning("get_path_node() was called with unrecognized path: %s, returning N/A node.", path)
+        return ParentNode("N/A")
+        
+    return ParentNode("root", children=children)
+
+
 def get_root_node(config):
+    logging.debug("get_root_node() was called")
     try:
         cpu = get_cpu_node()
     except Exception as e:
@@ -531,7 +718,6 @@ def get_root_node(config):
                     node = ParentNode("N/A")
                     logging.exception(e)
                 children.append(node)
-                logging.debug("Imported %s into the API tree.", importable)
             except ImportError:
                 logging.warning("Could not import %s, skipping.", importable)
             except AttributeError:
@@ -543,9 +729,15 @@ def get_root_node(config):
     return ParentNode("root", children=children)
 
 
-def refresh(config):
+def refresh(config, path=None):
     global root
-    root = get_root_node(config)
+    # logging.debug("refresh path: %s", path)
+
+    if path is None:
+        root = get_root_node(config)
+    elif path:
+        root = get_path_node(config, path)
+
     return True
 
 
@@ -564,7 +756,7 @@ def getter(accessor, config, full_path, args, cache=False):
     # node. This normally only happens on new API calls. When we are using
     # websockets we use the cached version while it makes requests.
     if not cache:
-        refresh(config)
+        refresh(config, path[0] if len(path) > 0 else None)
 
     root.reset_valid_nodes()
     return root.accessor(path, config, full_path, args)

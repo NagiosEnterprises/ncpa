@@ -43,6 +43,14 @@ rm -rf $DIR/pkginfo.tmp
         exit 1
     fi
     
+    # Remove python executables from ncpa
+    echo "Removing Python executables from ncpa directory..."
+    find ncpa -type f -name "python*" -exec rm -f {} \;
+
+    # Remove python symlinks from ncpa
+    echo "Removing Python symlinks from ncpa directory..."
+    find ncpa -type l -name "python*" -exec rm -f {} \;
+
     # Add package information/scripts to current directory (where pkgmk runs)
     # pkginfo goes into the ncpa directory for the package content
     cp pkginfo ncpa/pkginfo

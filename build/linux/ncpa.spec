@@ -45,40 +45,47 @@ mkdir -p %{buildroot}/etc/init.d
 touch %{buildroot}/usr/local/ncpa/var/ncpa.db
 chown nagios:nagios %{buildroot}/usr/local/ncpa -R
 install -m 755 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-init %{buildroot}/etc/init.d/ncpa
+sed -i 's|_BASEDIR_|BASEDIR="/usr/local/ncpa"|' %{buildroot}/etc/init.d/ncpa
 
 mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 640 $RPM_BUILD_DIR/ncpa-%{version}/build_resources/default-service %{buildroot}/usr/lib/systemd/system/ncpa.service
+sed -i 's|_BASEDIR_|/usr/local/ncpa|' %{buildroot}/usr/lib/systemd/system/ncpa.service
 
 %clean
 rm -rf %{buildroot}
 
 %pre
-if which chkconfig &> /dev/null; then
-    echo "Try to stop services with chkconfig"
-    [ -f /usr/local/ncpa/ncpa_listener ] && /usr/local/ncpa/ncpa_listener --stop &> /dev/null
-    [ -f /usr/local/ncpa/ncpa_passive ] && /usr/local/ncpa/ncpa_passive --stop &> /dev/null
-    chkconfig ncpa_listener && chkconfig --del ncpa_listener &> /dev/null
-    chkconfig ncpa_passive && chkconfig --del ncpa_passive &> /dev/null
-fi
-if command -v systemctl &> /dev/null
-then
-    echo "Try to stop services with systemctl"
-    systemctl list-units --full -all | grep -Fq 'ncpa_listener.service' && systemctl stop ncpa_listener &> /dev/null || true
-    systemctl list-units --full -all | grep -Fq 'ncpa_passive.service' && systemctl stop ncpa_passive &> /dev/null || true
+# Stop existing NCPA services before install/upgrade.
+# Prefer systemd; fall back to SysV. Avoid echoing status lines that look like errors.
+if command -v systemctl &> /dev/null; then
+    if systemctl list-units --full -all 2>/dev/null | grep -Fq 'ncpa_listener.service'; then
+        systemctl stop ncpa_listener &> /dev/null || true
+    fi
+    if systemctl list-units --full -all 2>/dev/null | grep -Fq 'ncpa_passive.service'; then
+        systemctl stop ncpa_passive &> /dev/null || true
+    fi
     systemctl stop ncpa &> /dev/null || true
-fi
-if command -v service &> /dev/null
-then
-    echo "Try to stop services with service"
-    service --status-all 2>&1 | grep -Fq 'ncpa_listener' && service ncpa_listener stop &> /dev/null || true
-    service --status-all 2>&1 | grep -Fq 'ncpa_passive' && service ncpa_passive stop &> /dev/null || true
+elif command -v service &> /dev/null; then
+    if service --status-all 2>&1 | grep -Fq 'ncpa_listener'; then
+        service ncpa_listener stop &> /dev/null || true
+    fi
+    if service --status-all 2>&1 | grep -Fq 'ncpa_passive'; then
+        service ncpa_passive stop &> /dev/null || true
+    fi
     service ncpa stop &> /dev/null || true
 fi
 
+# Clean up legacy NCPA 2 SysV registrations (safe no-ops when absent)
+if which chkconfig &> /dev/null; then
+    [ -f /usr/local/ncpa/ncpa_listener ] && /usr/local/ncpa/ncpa_listener --stop &> /dev/null || true
+    [ -f /usr/local/ncpa/ncpa_passive ] && /usr/local/ncpa/ncpa_passive --stop &> /dev/null || true
+    chkconfig ncpa_listener && chkconfig --del ncpa_listener &> /dev/null || true
+    chkconfig ncpa_passive && chkconfig --del ncpa_passive &> /dev/null || true
+fi
 
 if which update-rc.d >/dev/null 2>&1; then
-    update-rc.d -f ncpa_listener remove
-    update-rc.d -f ncpa_passive remove
+    update-rc.d -f ncpa_listener remove &> /dev/null || true
+    update-rc.d -f ncpa_passive remove &> /dev/null || true
 fi
 
 if ! getent group nagios &> /dev/null
@@ -86,10 +93,31 @@ then
     groupadd -r nagios
 fi
 
+# Determine the correct nologin path
+if [ -f /usr/sbin/nologin ]; then
+    NOLOGIN=/usr/sbin/nologin
+elif [ -f /sbin/nologin ]; then
+    NOLOGIN=/sbin/nologin
+else
+    # Fallback to /bin/false
+    NOLOGIN=/bin/false
+fi
+
 if ! getent passwd nagios &> /dev/null
 then
-    useradd -r -g nagios -s /sbin/nologin nagios 
+    useradd -r -g nagios -s $NOLOGIN nagios 
 else
+    # If the user already exists, verify they have a non-interactive shell
+    if [[ "$(getent passwd nagios | cut -d: -f7)" != *"/sbin/nologin"* ]]; then
+        # usermod -s $NOLOGIN nagios
+        echo "Warning: nagios user exists and appears to have an interactive shell."
+        echo "Current shell for nagios user: $(getent passwd nagios | cut -d: -f7)"
+        echo "You may want to run the following command to remove the login shell for the nagios user:"
+        echo ""
+        echo "usermod -s $NOLOGIN nagios"
+        echo ""
+    fi
+
     %if 0%{?suse_version} && 0%{?suse_version} < 1210
         usermod -A nagios nagios
     %else
@@ -98,23 +126,13 @@ else
 fi
 
 %post
-if [ -e /etc/init.d/ncpa_listener ]; then
-    rm -f /etc/init.d/ncpa_listener
-fi
-if [ -e /etc/init.d/ncpa_passive ]; then
-    rm -f /etc/init.d/ncpa_passive
-fi
+# Leave /etc/init.d/ncpa_{listener,passive} for RPM to remove on 2.x->3.x
+# upgrades; deleting them here races old-package file erasure.
 
 if [ -z $RPM_INSTALL_PREFIX ]
 then
     RPM_INSTALL_PREFIX="/usr/local"
 fi
-
-# Set the directory inside the init scripts
-dir=$RPM_INSTALL_PREFIX/ncpa
-sed -i "s|_BASEDIR_|BASEDIR=\x22$dir\x22|" /etc/init.d/ncpa
-sed -i "s|_BASEDIR_|$dir|" /usr/lib/systemd/system/ncpa.service
-
 
 if command -v systemctl &> /dev/null; then
     systemctl enable ncpa &> /dev/null
@@ -167,6 +185,7 @@ if [ "$1" != "1" ]; then
         fi
         if systemctl is-active --quiet ncpa; then
             systemctl stop ncpa
+            systemctl disable ncpa
         fi
     fi
     if command -v service &> /dev/null
@@ -190,6 +209,25 @@ then
     if command -v systemctl &> /dev/null
     then
         systemctl daemon-reload
+    fi
+
+    # Cleanup dead systemd symlinks
+    LINK_PATH="/etc/systemd/system/multi-user.target.wants"
+
+    # Check if the link exists AND its target does not exist
+    if [[ -L "$LINK_PATH/ncpa_listener.service" && ! -e "$LINK_PATH/ncpa_listener.service" ]]; then
+        echo "'$LINK_PATH/ncpa_listener.service' - removing stale symbolic link."
+        rm -f "$LINK_PATH/ncpa_listener.service"
+    fi
+
+    if [[ -L "$LINK_PATH/ncpa_passive.service" && ! -e "$LINK_PATH/ncpa_passive.service" ]]; then
+        echo "'$LINK_PATH/ncpa_passive.service' - removing stale symbolic link."
+        rm -f "$LINK_PATH/ncpa_passive.service"
+    fi
+
+    if [[ -L "$LINK_PATH/ncpa.service" && ! -e "$LINK_PATH/ncpa.service" ]]; then
+        echo "'$LINK_PATH/ncpa.service' - removing stale symbolic link."
+        rm -f "$LINK_PATH/ncpa.service"
     fi
 fi
 
@@ -234,10 +272,15 @@ fi
 %defattr(0664,root,nagios,0775)
 %dir /usr/local/ncpa/etc
 %dir /usr/local/ncpa/etc/ncpa.cfg.d
-/usr/local/ncpa/var
+%dir /usr/local/ncpa/var
+%dir /usr/local/ncpa/var/log
+%dir /usr/local/ncpa/var/run
+%verify(not md5 size mtime mode user group) /usr/local/ncpa/var/log/ncpa_listener.log
+%verify(not md5 size mtime mode user group) /usr/local/ncpa/var/log/ncpa_passive.log
+%verify(not md5 size mtime) /usr/local/ncpa/var/ncpa.db
 
 %defattr(0640,root,nagios,0755)
-%config(noreplace) /usr/local/ncpa/etc/ncpa.cfg
+%config(noreplace) %verify(not md5 size mtime mode) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
 /usr/local/ncpa/etc/ncpa.cfg.d/README.txt
