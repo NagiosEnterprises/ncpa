@@ -74,14 +74,14 @@ detect_python() {
         "python3.14"
         "/usr/bin/python3.14"
         "/usr/local/bin/python3.14"
-        "/usr/local/python_3.14.3/bin/python3.14"
+        "/usr/local/python_3.14*/bin/python3.14"
         "/opt/homebrew/bin/python3.14"
         "/opt/csw/bin/python3.14"
 
         "python3.13"
         "/usr/bin/python3.13"
         "/usr/local/bin/python3.13"
-        "/usr/local/python_3.13.12/bin/python3.13"
+        "/usr/local/python_3.13*/bin/python3.13"
         "/opt/homebrew/bin/python3.13"
         "/opt/csw/bin/python3.13"
 
