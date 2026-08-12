@@ -20,8 +20,6 @@ else
     exit 1
 fi
 
-echo "Using OpenSSL version: $SSLVER"
-echo "Using Python version: $PYTHONVER"
 
 # Prefer platform-resolved versions from version_config.sh (SSLVER/PYTHONVER),
 # falling back to DEFAULT_* only if those are unset.
