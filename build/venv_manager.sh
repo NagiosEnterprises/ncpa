@@ -354,47 +354,6 @@ detect_python() {
     return 1
 }
 
-# Install system dependencies for freeze-core build (Python dev headers and gcc)
-install_build_dependencies() {
-    PY_DEV_PKG_DEB="python${PYTHON_VERSION}-dev"         # apt/zypper naming
-    PY_DEV_PKG_RHEL="python${PYTHON_VERSION}-devel"   # dnf/yum naming
-
-    log "Installing build dependencies for freeze-core (Python dev headers and gcc)..."
-    log "Detected python version: $PYTHON_VERSION"
-    log "Attempting to install ${PY_DEV_PKG_DEB} or ${PY_DEV_PKG_RHEL} and gcc for Python C extensions build on $PLATFORM..."
-    log "Note: If you compiled Python from source, ensure you have the appropriate dev headers and gcc installed for that Python version."
-
-    if [ "$PLATFORM" = "linux" ]; then
-        if command -v apt-get >/dev/null 2>&1; then
-            # Debian/Ubuntu
-            sudo apt-get update
-            sudo apt-get install -y "${PY_DEV_PKG_DEB}" gcc || {
-                log "Failed to install ${PY_DEV_PKG_DEB} or gcc. Attempting to continue, but build may fail."
-            }
-        elif command -v dnf >/dev/null 2>&1; then
-            # Fedora/RHEL (dnf)
-            sudo dnf clean all -y >/dev/null 2>&1 || true
-            sudo dnf install -y "${PY_DEV_PKG_RHEL}" gcc || {
-                log "Failed to install ${PY_DEV_PKG_RHEL} or gcc. Attempting to continue, but build may fail."
-            }
-        elif command -v yum >/dev/null 2>&1; then
-            # Older RHEL/CentOS (yum)
-            sudo yum install -y "${PY_DEV_PKG_RHEL}" gcc || {
-                log "Failed to install ${PY_DEV_PKG_RHEL} or gcc. Attempting to continue, but build may fail."
-            }
-        elif command -v zypper >/dev/null 2>&1; then
-            # openSUSE/SLES
-            sudo zypper refresh
-            sudo zypper install -y "${PY_DEV_PKG_DEB}" gcc || {
-                log "Failed to install ${PY_DEV_PKG_DEB} or gcc. Attempting to continue, but build may fail."
-            }
-        else
-            log "No supported package manager found for installing build dependencies. Please ensure Python development headers and gcc are installed for Python ${PY_DOT}."
-        fi
-    fi
-
-    log "✓ Build dependencies installation attempted (check logs for success/failure)"
-}
 
 # Create virtual environment
 create_venv() {
