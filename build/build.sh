@@ -313,6 +313,7 @@ echo -e "\nRunning build for: $UNAME"
 
 # For release-style builds, compile pinned OpenSSL+Python before the venv
 ensure_prod_python
+export BUILD_PROD
 
 # Always setup virtual environment first
 setup_virtual_environment

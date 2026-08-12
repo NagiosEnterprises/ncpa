@@ -7,10 +7,11 @@ VENV_MANAGER="$BUILD_DIR/venv_manager.sh"
 export VENV_NAME="${VENV_NAME:-ncpa-build-linux}"
 
 # Globals - defined in build.sh and version_config.sh
-#     PYTHONVER, SSLVER, ZLIBVER, SKIP_PYTHON
+#     PYTHONVER, SSLVER, ZLIBVER, SKIP_PYTHON, BUILD_PROD
 
 # Skip Python detection if using virtual environment (recommended)
 SKIP_PYTHON="${SKIP_PYTHON:-0}"
+BUILD_PROD="${BUILD_PROD:-0}"
 
 # Legacy Python command for fallback compatibility
 PYTHONCMD="python$(echo $PYTHONVER | sed 's|\.[0-9]\{1,2\}$||g')"
@@ -256,8 +257,13 @@ set -e
 if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     "$VENV_MANAGER" install-requirements
 
-    # Install freeze-core without prebuilt binary wheel to ensure it builds a new one against the correct Python and OpenSSL versions in the venv
-    echo "***** linux/setup.sh - Installing freeze-core and cx_Freeze into the environment"
-    echo "Ensuring freeze-core builds a new wheel against the correct Python and OpenSSL versions"
-    $PYTHONBIN -m pip install freeze-core cx_Freeze --no-binary freeze-core
+    # On --prod builds, rebuild freeze-core from source so it links against the
+    # pinned OpenSSL/Python. Otherwise use normal pip wheels.
+    if [ "$BUILD_PROD" -eq 1 ]; then
+        echo "Prod build: installing freeze-core with --no-binary (rebuild against custom OpenSSL/Python)"
+        $PYTHONBIN -m pip install freeze-core cx_Freeze --no-binary freeze-core
+    else
+        echo "Non-prod build: installing freeze-core and cx_Freeze from pip"
+        $PYTHONBIN -m pip install freeze-core cx_Freeze
+    fi
 fi
