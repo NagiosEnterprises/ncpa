@@ -58,6 +58,13 @@ detect_python() {
     local rerun="${1:-true}"
     local python_candidates=()
     
+    # Prefer --prod / build_ssl_and_python.sh installs, then configured version
+    if [ -n "$PYTHONVER" ] && [ -n "$PYTHON_MAJOR_MINOR" ]; then
+        python_candidates+=(
+            "/usr/local/python_${PYTHONVER}/bin/python${PYTHON_MAJOR_MINOR}"
+        )
+    fi
+
     # Add configured Python version with highest priority
     if [ -n "$PYTHON_MAJOR_MINOR" ]; then
         python_candidates+=(
@@ -74,14 +81,14 @@ detect_python() {
         "python3.14"
         "/usr/bin/python3.14"
         "/usr/local/bin/python3.14"
-        "/usr/local/python_3.14.3/bin/python3.14"
+        # "/usr/local/python_3.14.3/bin/python3.14"
         "/opt/homebrew/bin/python3.14"
         "/opt/csw/bin/python3.14"
 
         "python3.13"
         "/usr/bin/python3.13"
         "/usr/local/bin/python3.13"
-        "/usr/local/python_3.13.14/bin/python3.13"
+        # "/usr/local/python_3.13.14/bin/python3.13"
         "/opt/homebrew/bin/python3.13"
         "/opt/csw/bin/python3.13"
 

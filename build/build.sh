@@ -18,6 +18,7 @@ BUILD_ONLY=0
 BUILD_TRAVIS=0
 NO_INTERACTION=0
 CLEAN_VENV=0
+BUILD_PROD=0
 
 
 # --------------------------
@@ -42,6 +43,8 @@ usage() {
     echo "  -c | --clean        Clean up the build directory"
     echo "  -n | --no-interaction  Run without interactive prompts (auto-confirm)"
     echo "  -C | --clean-venv   Clean virtual environment and recreate"
+    echo "  -P | --prod         Linux only: build pinned OpenSSL+Python from"
+    echo "                      source before creating the venv (long compile)"
     echo ""
     echo "Operating Systems Supported:"
     echo " - CentOS, RHEL, Oracle, CloudLinux"
@@ -108,6 +111,9 @@ while [ -n "$1" ]; do
             ;;
         -C | --clean-venv)
             CLEAN_VENV=1
+            ;;
+        -P | --prod)
+            BUILD_PROD=1
             ;;
     esac
     shift
@@ -205,6 +211,52 @@ VENV_MANAGER="$BUILD_DIR/venv_manager.sh"
 VENV_NAME="ncpa-build-$(echo "$UNAME" | tr '[:upper:]' '[:lower:]')"
 export VENV_NAME
 
+# Build pinned OpenSSL+Python from source (Linux --prod), then point PATH at it
+# so the venv is created against that interpreter.
+ensure_prod_python() {
+    if [ "$BUILD_PROD" -ne 1 ]; then
+        return 0
+    fi
+
+    if [ "$UNAME" != "Linux" ]; then
+        echo "ERROR: --prod is only supported on Linux (got: $UNAME)"
+        exit 1
+    fi
+
+    local prod_python_bin="/usr/local/python_${PYTHONVER}/bin/python${PYTHON_MAJOR_MINOR}"
+    local prod_python_dir="/usr/local/python_${PYTHONVER}/bin"
+    local ssl_python_script="$BUILD_DIR/linux/build_ssl_and_python.sh"
+
+    if [ ! -x "$ssl_python_script" ]; then
+        if [ -f "$ssl_python_script" ]; then
+            chmod +x "$ssl_python_script"
+        else
+            echo "ERROR: Missing $ssl_python_script"
+            exit 1
+        fi
+    fi
+
+    echo "=== Production toolchain (--prod) ==="
+    echo "Building OpenSSL $SSLVER and Python $PYTHONVER from source..."
+    echo "This can take a long time."
+    (
+        cd "$BUILD_DIR"
+        "$ssl_python_script"
+    )
+
+    if [ ! -x "$prod_python_bin" ]; then
+        echo "ERROR: Expected production Python not found at $prod_python_bin"
+        exit 1
+    fi
+
+    export PATH="$prod_python_dir:$PATH"
+    # Recreate venv so it is not left pointing at a previous system Python
+    CLEAN_VENV=1
+    echo "✓ Production Python ready: $prod_python_bin"
+    echo "  PATH prepended with: $prod_python_dir"
+    echo "====================================="
+}
+
 setup_virtual_environment() {
     echo "=== Setting up Virtual Environment ==="
     # Clean venv if requested
@@ -258,6 +310,9 @@ setup_virtual_environment() {
 # Load required things for different systems
 echo -e "\nRunning build for: $UNAME"
 
+
+# For release-style builds, compile pinned OpenSSL+Python before the venv
+ensure_prod_python
 
 # Always setup virtual environment first
 setup_virtual_environment

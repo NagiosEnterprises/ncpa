@@ -23,12 +23,16 @@ fi
 echo "Using OpenSSL version: $SSLVER"
 echo "Using Python version: $PYTHONVER"
 
-# Set versions and installation directories
-OPENSSL_VERSION=$DEFAULT_SSLVER
-PYTHON_VERSION=$DEFAULT_PYTHONVER
+# Prefer platform-resolved versions from version_config.sh (SSLVER/PYTHONVER),
+# falling back to DEFAULT_* only if those are unset.
+OPENSSL_VERSION="${SSLVER:-$DEFAULT_SSLVER}"
+PYTHON_VERSION="${PYTHONVER:-$DEFAULT_PYTHONVER}"
 PYTHON_VERSION_SHORT=$(echo $PYTHON_VERSION | cut -d. -f1,2) # Extract major.minor
 INSTALL_DIR_OPENSSL="/usr/local/openssl_${OPENSSL_VERSION}"
 INSTALL_DIR_PYTHON="/usr/local/python_${PYTHON_VERSION}"
+
+echo "Resolved OpenSSL install version: $OPENSSL_VERSION"
+echo "Resolved Python install version: $PYTHON_VERSION"
 
 
 install_dependencies() {
