@@ -81,14 +81,12 @@ detect_python() {
         "python3.14"
         "/usr/bin/python3.14"
         "/usr/local/bin/python3.14"
-        # "/usr/local/python_3.14.3/bin/python3.14"
         "/opt/homebrew/bin/python3.14"
         "/opt/csw/bin/python3.14"
 
         "python3.13"
         "/usr/bin/python3.13"
         "/usr/local/bin/python3.13"
-        # "/usr/local/python_3.13.14/bin/python3.13"
         "/opt/homebrew/bin/python3.13"
         "/opt/csw/bin/python3.13"
 
@@ -769,7 +767,7 @@ main() {
             activate_venv
             ;;
         "setup")
-            create_venv && activate_venv && setup_build_tools && install_build_dependencies
+            create_venv && activate_venv && setup_build_tools
             ;;
         "install-requirements")
             activate_venv && install_requirements "$1"
