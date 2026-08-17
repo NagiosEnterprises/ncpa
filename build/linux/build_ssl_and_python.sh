@@ -119,7 +119,8 @@ install_python() {
 
     # Configure Python to use the newly installed OpenSSL version and enable optimizations.
     # --with-openssl-rpath=auto bakes the private OpenSSL lib dir into _ssl/_hashlib
-    # so the custom Python does not need a system-wide ldconfig entry.    echo "Configuring Python with custom OpenSSL..."
+    # so the custom Python does not need a system-wide ldconfig entry.
+    echo "Configuring Python with custom OpenSSL..."
     ./configure --prefix=$INSTALL_DIR_PYTHON \
         --with-openssl=$INSTALL_DIR_OPENSSL \
         --with-openssl-rpath=auto \
