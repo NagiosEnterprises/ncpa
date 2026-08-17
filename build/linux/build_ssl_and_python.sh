@@ -88,15 +88,16 @@ install_openssl() {
     # make test # Optional: run tests
     sudo make install_sw # Use install_sw to avoid overwriting openssl.cnf
 
-    # Configure dynamic linker runtime path for the new OpenSSL version
-    echo "Configuring dynamic linker for OpenSSL..."
-    echo "$INSTALL_DIR_OPENSSL/lib64" | sudo tee /etc/ld.so.conf.d/openssl-custom.conf
-    sudo ldconfig -v
+    # Python's --with-openssl looks in prefix/lib and prefix/lib64
+    if [ -d "$INSTALL_DIR_OPENSSL/lib64" ] && [ ! -e "$INSTALL_DIR_OPENSSL/lib" ]; then
+        sudo ln -s lib64 "$INSTALL_DIR_OPENSSL/lib"
+    fi
 
-    echo "Creating symbolic links for OpenSSL binaries..."
-    sudo ln -sf $INSTALL_DIR_OPENSSL/lib64 $INSTALL_DIR_OPENSSL/lib
+    # Do not add this prefix to ld.so.conf: OpenSSL 3.x shares SONAME libssl.so.3
+    # across minor releases, so ldconfig would make system ssh/scp load 3.5.x
+    # instead of the distro's 3.0.x (OpenSSL version mismatch).
+    # Python finds these libs via --with-openssl-rpath=auto instead.
 
-    # Return to source directory
     echo "OpenSSL installation complete."
     cd /usr/local/src
 }
@@ -116,9 +117,14 @@ install_python() {
     tar -xzvf Python-${PYTHON_VERSION}.tgz
     cd Python-${PYTHON_VERSION}
 
-    # Configure Python to use the newly installed OpenSSL version and enable optimizations
-    echo "Configuring Python with custom OpenSSL..."
-    ./configure --prefix=$INSTALL_DIR_PYTHON --with-openssl=$INSTALL_DIR_OPENSSL --enable-optimizations --enable-shared
+    # Configure Python to use the newly installed OpenSSL version and enable optimizations.
+    # --with-openssl-rpath=auto bakes the private OpenSSL lib dir into _ssl/_hashlib
+    # so the custom Python does not need a system-wide ldconfig entry.    echo "Configuring Python with custom OpenSSL..."
+    ./configure --prefix=$INSTALL_DIR_PYTHON \
+        --with-openssl=$INSTALL_DIR_OPENSSL \
+        --with-openssl-rpath=auto \
+        --enable-optimizations \
+        --enable-shared
 
     echo "Compiling and installing Python..."
     make -j$(nproc)
