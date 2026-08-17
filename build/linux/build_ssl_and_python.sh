@@ -140,13 +140,13 @@ install_python() {
 # --- Verification ---
 verification() {
     echo "Installation complete."
-    echo "New OpenSSL version:"
+    echo "Verifying OpenSSL version:"
     # The openssl CLI has no RPATH; without this it loads the distro libssl.so.3.
     local openssl_libs="$INSTALL_DIR_OPENSSL/lib64:$INSTALL_DIR_OPENSSL/lib"
     LD_LIBRARY_PATH="$openssl_libs${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
         "$INSTALL_DIR_OPENSSL/bin/openssl" version
-        
-    echo "New Python version:"
+
+    echo "Verifying Python version:"
     $INSTALL_DIR_PYTHON/bin/python${PYTHON_VERSION_SHORT} -VV
 
     echo "You may need to add $INSTALL_DIR_PYTHON/bin to your PATH environment variable to use it easily."
