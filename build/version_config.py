@@ -124,8 +124,6 @@ def get_aix_lib_paths():
         'libintl.a',
         'libiconv.a',
         'libsqlite3.a',
-        'libssl.a',
-        'libcrypto.a',
         'libz.a',
         'libffi.a',
     ]

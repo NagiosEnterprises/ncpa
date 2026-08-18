@@ -67,8 +67,6 @@ verify_runtime_libs() {
         libintl.a \
         libiconv.a \
         libsqlite3.a \
-        libssl.a \
-        libcrypto.a \
         libz.a \
         libffi.a
     do
@@ -89,7 +87,7 @@ verify_runtime_libs() {
 
     if [ "$missing" -ne 0 ]; then
         echo "ERROR! Required AIX freeware libraries are missing."
-        echo "Install gettext, libiconv, sqlite, openssl, zlib, python3.12, and gcc runtime from the IBM AIX Toolbox, then retry."
+        echo "Install gettext, libiconv, sqlite, zlib, python3.12, and gcc runtime from the IBM AIX Toolbox, then retry."
         return 1
     fi
 }
