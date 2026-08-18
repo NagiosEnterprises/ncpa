@@ -54,6 +54,25 @@ def rewrite_equal_length_lib64_paths(data: bytearray) -> int:
     return replaced
 
 
+def is_loader_import(path: bytes, base: bytes, member: bytes) -> bool:
+    """True if a NUL-triplet looks like an AIX XCOFF loader import ID.
+
+    Compile-time include paths such as /opt/freeware/include/python3.12 also
+    appear as C strings in the binary and must not be rewritten or treated as
+    fatal leftovers.
+    """
+    if not base or b"/" in base or b"/" in member:
+        return False
+    if not (
+        path == b"/opt/freeware/lib"
+        or path == b"/opt/freeware/lib64"
+        or path.startswith(b"/opt/freeware/lib/")
+        or path.startswith(b"/opt/freeware/lib64/")
+    ):
+        return False
+    return base.endswith(b".a") or b".so" in base
+
+
 def clear_freeware_import_paths(data: bytearray) -> int:
     """Clear absolute /opt/freeware import path components in-place."""
     cleared = 0
@@ -73,7 +92,7 @@ def clear_freeware_import_paths(data: bytearray) -> int:
             continue
 
         # Import IDs have a basename. The embedded LIBPATH entry has empty base/member.
-        if not base:
+        if not is_loader_import(path, base, member):
             search_from = idx + 1
             continue
 
@@ -209,7 +228,7 @@ def remaining_freeware_imports(path: str) -> List[str]:
         except ValueError:
             search_from = idx + 1
             continue
-        if base:
+        if is_loader_import(path_comp, base, member):
             member_s = member.decode("ascii", "replace")
             label = f"{path_comp.decode('ascii', 'replace')}/{base.decode('ascii', 'replace')}"
             if member_s:
