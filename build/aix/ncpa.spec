@@ -1,5 +1,6 @@
 %define _source_filedigest_algorithm 8
 %define _binary_filedigest_algorithm 8
+%define _use_internal_dependency_generator 1
 
 Name:           ncpa
 Version:        __VERSION__

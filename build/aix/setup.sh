@@ -35,7 +35,7 @@ install_prereqs() {
     echo "    - Installing required build packages via dnf..."
     dnf -y update
     dnf -y install sudo gcc gcc-c++ gcc-cpp make cmake automake libffi-devel rust cargo \
-        gettext libiconv python3.12-pip python3.12-devel
+        gettext libiconv sqlite openssl zlib python3.12-pip python3.12-devel
 
     # Ensure Python 3.12 is installed
     if command -v python3.12 >/dev/null 2>&1; then
@@ -61,23 +61,35 @@ verify_runtime_libs() {
     echo "    - Verifying AIX runtime libraries required for standalone packaging..."
     missing=0
 
-    for lib in \
-        /opt/freeware/lib64/libpython3.12.a \
-        /opt/freeware/lib64/libgcc_s.a \
-        /opt/freeware/lib/libintl.a \
-        /opt/freeware/lib/libiconv.a
+    for name in \
+        libpython3.12.a \
+        libgcc_s.a \
+        libintl.a \
+        libiconv.a \
+        libsqlite3.a \
+        libssl.a \
+        libcrypto.a \
+        libz.a \
+        libffi.a
     do
-        if [ -f "$lib" ] || [ -L "$lib" ]; then
-            echo "      Found $lib"
-        else
-            echo "      Missing $lib"
+        found=""
+        for directory in /opt/freeware/lib64 /opt/freeware/lib; do
+            lib="$directory/$name"
+            if [ -f "$lib" ] || [ -L "$lib" ]; then
+                echo "      Found $lib"
+                found=1
+                break
+            fi
+        done
+        if [ -z "$found" ]; then
+            echo "      Missing $name under /opt/freeware/lib64 or /opt/freeware/lib"
             missing=1
         fi
     done
 
     if [ "$missing" -ne 0 ]; then
         echo "ERROR! Required AIX freeware libraries are missing."
-        echo "Install gettext, libiconv, python3.12, and gcc runtime from the IBM AIX Toolbox, then retry."
+        echo "Install gettext, libiconv, sqlite, openssl, zlib, python3.12, and gcc runtime from the IBM AIX Toolbox, then retry."
         return 1
     fi
 }

@@ -1,4 +1,3 @@
-
 #!/bin/bash -e
 #
 # Post-freeze AIX helper: ensure bundled runtime libs exist and rewrite
@@ -13,7 +12,7 @@ SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd -P)
 FIX_PY="$SCRIPT_DIR/fix_xcoff_imports.py"
 TARGET_LIBPATH="/usr/local/ncpa/lib:/usr/lib:/lib"
 
-REQUIRED_LIBS="libpython3.12.a libgcc_s.a libintl.a libiconv.a"
+REQUIRED_LIBS="libpython3.12.a libgcc_s.a libintl.a libiconv.a libsqlite3.a libssl.a libcrypto.a libz.a libffi.a"
 
 if [ -z "$NCPA_ROOT" ]; then
     echo "Usage: $0 /path/to/ncpa"

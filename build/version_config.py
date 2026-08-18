@@ -5,7 +5,7 @@ Update this file when upgrading Python, OpenSSL, ZLIB, or other core dependencie
 
 Different platforms may require different versions due to:
 - Available packages in repositories
-- System compatibility requirements  
+- System compatibility requirements
 - Build environment constraints
 """
 
@@ -70,7 +70,7 @@ OPENSSL_MAJOR = platform_config["openssl_major"]
 
 # Platform-specific library versions (macOS only)
 MPDECIMAL_VERSION = platform_config.get("mpdecimal", "4.0.0")
-SQLITE3_VERSION = platform_config.get("sqlite3", "3.0")  
+SQLITE3_VERSION = platform_config.get("sqlite3", "3.0")
 LIBLZMA_VERSION = platform_config.get("liblzma", "5")
 LIBFFI_VERSION = platform_config.get("libffi", "8")
 
@@ -91,7 +91,7 @@ def get_macos_lib_paths():
     """Return macOS library paths with proper versioning"""
     if system != "Darwin":
         return []
-    
+
     return [
         (f'/usr/local/opt/mpdecimal/lib/libmpdec.{MPDECIMAL_VERSION}.dylib', f'lib/libmpdec.{MPDECIMAL_VERSION}.dylib'),
         (f'/usr/local/opt/openssl@{OPENSSL_MAJOR}/lib/libcrypto.{LIBCRYPTO_VERSION}.dylib', f'lib/libcrypto.{LIBCRYPTO_VERSION}.dylib'),
@@ -110,19 +110,61 @@ def get_linux_lib_includes():
     """Return Linux library includes with proper versioning"""
     return [f'libffi.so', f'libssl.so.{LIBSSL_VERSION}', f'libcrypto.so.{LIBCRYPTO_VERSION}']
 
+def get_aix_lib_paths():
+    """Return AIX shared library archives to bundle for standalone installs."""
+    if system != "AIX" and not sys.platform.startswith("aix"):
+        return []
+
+    # Prefer lib64 (64-bit Toolbox Python) then lib. Do not use /usr/lib:
+    # IBM system archives lack the GCC _GLOBAL__AIXI_* / _GLOBAL__AIXD_*
+    # symbols that AIX Toolbox Python extensions import.
+    lib_names = [
+        'libpython3.12.a',
+        'libgcc_s.a',
+        'libintl.a',
+        'libiconv.a',
+        'libsqlite3.a',
+        'libssl.a',
+        'libcrypto.a',
+        'libz.a',
+        'libffi.a',
+    ]
+
+    lib_mappings = []
+    missing = []
+    for name in lib_names:
+        found = None
+        for directory in ('/opt/freeware/lib64', '/opt/freeware/lib'):
+            src = os.path.join(directory, name)
+            if os.path.exists(src):
+                found = src
+                break
+        if found:
+            lib_mappings.append((found, f'lib/{name}'))
+        else:
+            missing.append(name)
+
+    if missing:
+        missing_list = ', '.join(missing)
+        raise FileNotFoundError(
+            f"Missing AIX Toolbox runtime libraries required for standalone packaging: {missing_list}"
+        )
+
+    return lib_mappings
+
 def get_solaris_lib_paths():
     """Return Solaris library paths with proper versioning"""
     if system != "SunOS":
         return []
-    
+
     import sys
     import glob
-    
+
     # Detect the actual Python version being used
     actual_python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-    
+
     paths = []
-    
+
     # Try to find the Python library in IPS locations first (preferred)
     python_lib_found = False
     for python_lib_path in [
@@ -136,13 +178,13 @@ def get_solaris_lib_paths():
             paths.append((matches[0], f'lib/libpython{actual_python_version}.so'))
             python_lib_found = True
             break
-    
+
     # Fall back to OpenCSW Python if IPS version not found
     if not python_lib_found:
         csw_python_lib = f'/opt/csw/lib/libpython{actual_python_version}.so'
         if os.path.exists(csw_python_lib):
             paths.append((csw_python_lib, f'libpython{actual_python_version}.so'))
-    
+
     # Add other libraries, preferring IPS locations over OpenCSW
     lib_mappings = [
         # (IPS_path, CSW_path, target_name)
@@ -152,7 +194,7 @@ def get_solaris_lib_paths():
         ('/usr/lib/libffi.so', '/opt/csw/lib/libffi.so', 'lib/libffi.so'),
         ('/usr/lib/libz.so', '/opt/csw/lib/libz.so', 'lib/libz.so')
     ]
-    
+
     for ips_path, csw_path, target_name in lib_mappings:
         # Check for versioned libraries in IPS locations
         ips_matches = glob.glob(f'{ips_path}*')
@@ -168,5 +210,5 @@ def get_solaris_lib_paths():
                 system_matches.extend(glob.glob(f'{search_path}/{target_name}*'))
             if system_matches:
                 paths.append((system_matches[0], target_name))
-    
+
     return paths

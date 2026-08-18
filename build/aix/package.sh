@@ -5,7 +5,7 @@ DIR=$( cd "$(dirname "$0")" ; pwd -P )
 BUILD_DIR="$DIR/.."
 NCPA_VER=$(cat $BUILD_DIR/../VERSION)
 BUILD_RPM_DIR="/tmp/test/usr/src/redhat"
-REQUIRED_LIBS="libpython3.12.a libgcc_s.a libintl.a libiconv.a"
+REQUIRED_LIBS="libpython3.12.a libgcc_s.a libintl.a libiconv.a libsqlite3.a libssl.a libcrypto.a libz.a libffi.a"
 
 # Build spec file
 cd $BUILD_DIR
