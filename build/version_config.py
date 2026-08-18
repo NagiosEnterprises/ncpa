@@ -110,14 +110,49 @@ def get_linux_lib_includes():
     """Return Linux library includes with proper versioning"""
     return [f'libffi.so', f'libssl.so.{LIBSSL_VERSION}', f'libcrypto.so.{LIBCRYPTO_VERSION}']
 
+def _aix_ar64_members(archive_path):
+    """Return 64-bit members of an AIX archive, or [] if ar is unavailable."""
+    import subprocess
+
+    try:
+        out = subprocess.check_output(
+            ['ar', '-X64', '-t', archive_path],
+            stderr=subprocess.DEVNULL,
+            text=True,
+        )
+    except Exception:
+        return []
+    return [line.strip() for line in out.splitlines() if line.strip()]
+
+
+def _iter_aix_freeware_lib_candidates(name):
+    """Yield real paths for a Toolbox archive, GCC dirs first for libgcc_s."""
+    seen = set()
+    paths = []
+    if name == 'libgcc_s.a':
+        paths.extend(sorted(glob.glob('/opt/freeware/lib64/gcc/*/*/libgcc_s.a')))
+        paths.extend(sorted(glob.glob('/opt/freeware/lib/gcc/*/*/libgcc_s.a')))
+    for directory in ('/opt/freeware/lib64', '/opt/freeware/lib'):
+        paths.append(os.path.join(directory, name))
+
+    for path in paths:
+        if not os.path.exists(path):
+            continue
+        real = os.path.realpath(path)
+        if real in seen:
+            continue
+        seen.add(real)
+        yield real
+
+
 def get_aix_lib_paths():
     """Return AIX shared library archives to bundle for standalone installs."""
     if system != "AIX" and not sys.platform.startswith("aix"):
         return []
 
-    # Prefer lib64 (64-bit Toolbox Python) then lib. Do not use /usr/lib:
-    # IBM system archives lack the GCC _GLOBAL__AIXI_* / _GLOBAL__AIXD_*
-    # symbols that AIX Toolbox Python extensions import.
+    # Do not use /usr/lib: IBM system archives lack the GCC _GLOBAL__AIXI_* /
+    # _GLOBAL__AIXD_* symbols that AIX Toolbox Python extensions import.
+    # Member names must match what the frozen binary imports (ldd output).
     lib_names = [
         'libpython3.12.a',
         'libgcc_s.a',
@@ -127,23 +162,34 @@ def get_aix_lib_paths():
         'libz.a',
         'libffi.a',
     ]
+    required_members = {
+        'libgcc_s.a': 'shr.o',
+        'libiconv.a': 'libiconv.so.2',
+    }
 
     lib_mappings = []
     missing = []
     for name in lib_names:
+        required = required_members.get(name)
         found = None
-        for directory in ('/opt/freeware/lib64', '/opt/freeware/lib'):
-            src = os.path.join(directory, name)
-            if os.path.exists(src):
-                found = src
-                break
+        inspected = []
+        for src in _iter_aix_freeware_lib_candidates(name):
+            members = _aix_ar64_members(src)
+            inspected.append(f"{src} members={members or ['<none/unreadable>']}")
+            if required and members and required not in members:
+                continue
+            found = src
+            break
         if found:
             lib_mappings.append((found, f'lib/{name}'))
+        elif required:
+            detail = '; '.join(inspected) if inspected else 'no candidates'
+            missing.append(f"{name} (need member {required}; {detail})")
         else:
             missing.append(name)
 
     if missing:
-        missing_list = ', '.join(missing)
+        missing_list = '; '.join(missing)
         raise FileNotFoundError(
             f"Missing AIX Toolbox runtime libraries required for standalone packaging: {missing_list}"
         )

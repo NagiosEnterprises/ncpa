@@ -61,6 +61,28 @@ verify_runtime_libs() {
     echo "    - Verifying AIX runtime libraries required for standalone packaging..."
     missing=0
 
+    find_freeware_lib() {
+        name=$1
+        if [ "$name" = "libgcc_s.a" ]; then
+            set -- /opt/freeware/lib64/gcc/*/*/libgcc_s.a /opt/freeware/lib/gcc/*/*/libgcc_s.a \
+                /opt/freeware/lib64/libgcc_s.a /opt/freeware/lib/libgcc_s.a
+            for lib in "$@"; do
+                if [ -e "$lib" ]; then
+                    echo "$lib"
+                    return 0
+                fi
+            done
+        else
+            for directory in /opt/freeware/lib64 /opt/freeware/lib; do
+                if [ -e "$directory/$name" ]; then
+                    echo "$directory/$name"
+                    return 0
+                fi
+            done
+        fi
+        return 1
+    }
+
     for name in \
         libpython3.12.a \
         libgcc_s.a \
@@ -70,23 +92,31 @@ verify_runtime_libs() {
         libz.a \
         libffi.a
     do
-        found=""
-        for directory in /opt/freeware/lib64 /opt/freeware/lib; do
-            lib="$directory/$name"
-            if [ -f "$lib" ] || [ -L "$lib" ]; then
-                echo "      Found $lib"
-                found=1
-                break
-            fi
-        done
-        if [ -z "$found" ]; then
-            echo "      Missing $name under /opt/freeware/lib64 or /opt/freeware/lib"
+        lib=$(find_freeware_lib "$name" || true)
+        if [ -n "$lib" ]; then
+            echo "      Found $lib"
+        else
+            echo "      Missing $name under /opt/freeware/lib64, /opt/freeware/lib, or gcc dirs"
             missing=1
+            continue
+        fi
+
+        required=""
+        case "$name" in
+            libgcc_s.a) required="shr.o" ;;
+            libiconv.a) required="libiconv.so.2" ;;
+        esac
+        if [ -n "$required" ] && command -v ar >/dev/null 2>&1; then
+            if ! ar -X64 -t "$lib" 2>/dev/null | grep -qx "$required"; then
+                echo "      ERROR: $lib is missing 64-bit member $required"
+                echo "      Members: $(ar -X64 -t "$lib" 2>/dev/null | tr '\n' ' ')"
+                missing=1
+            fi
         fi
     done
 
     if [ "$missing" -ne 0 ]; then
-        echo "ERROR! Required AIX freeware libraries are missing."
+        echo "ERROR! Required AIX freeware libraries are missing or lack expected members."
         echo "Install gettext, libiconv, sqlite, zlib, python3.12, and gcc runtime from the IBM AIX Toolbox, then retry."
         return 1
     fi

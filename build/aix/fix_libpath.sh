@@ -56,6 +56,21 @@ if [ "$missing" -ne 0 ]; then
     exit 1
 fi
 
+if command -v ar >/dev/null 2>&1; then
+    echo "***** aix/fix_libpath.sh - verifying required archive members"
+    if ! ar -X64 -t "$NCPA_ROOT/lib/libgcc_s.a" 2>/dev/null | grep -qx 'shr.o'; then
+        echo "ERROR: $NCPA_ROOT/lib/libgcc_s.a is missing 64-bit member shr.o"
+        echo "Members: $(ar -X64 -t "$NCPA_ROOT/lib/libgcc_s.a" 2>/dev/null | tr '\n' ' ')"
+        echo "Copy the GCC runtime archive (often under /opt/freeware/lib*/gcc/*/*/libgcc_s.a)."
+        exit 1
+    fi
+    if ! ar -X64 -t "$NCPA_ROOT/lib/libiconv.a" 2>/dev/null | grep -qx 'libiconv.so.2'; then
+        echo "ERROR: $NCPA_ROOT/lib/libiconv.a is missing 64-bit member libiconv.so.2"
+        echo "Members: $(ar -X64 -t "$NCPA_ROOT/lib/libiconv.a" 2>/dev/null | tr '\n' ' ')"
+        exit 1
+    fi
+fi
+
 echo "***** aix/fix_libpath.sh - rewriting absolute freeware import paths"
 TARGETS="$NCPA_ROOT/ncpa"
 for lib in $REQUIRED_LIBS; do

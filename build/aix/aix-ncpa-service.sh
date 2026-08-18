@@ -37,17 +37,32 @@ start_ncpa() {
     # Change to NCPA directory and start
     cd "$NCPA_DIR"
     
-    # Start NCPA as nagios user
-    su $NCPA_USER -c "LIBPATH=\"$NCPA_LIBPATH:\${LIBPATH}\" $NCPA_DIR/ncpa --start &"
-    
-    if [ $? -eq 0 ]; then
-        echo "NCPA started successfully"
-        echo "Check status with: ps -ef | grep ncpa"
-        echo "Check logs in: $NCPA_DIR/var/log/"
-    else
-        echo "Failed to start NCPA"
-        return 1
+    # Start NCPA as nagios user. Do not background here: ncpa --start
+    # daemonizes itself, and backgrounding swallows loader errors.
+    start_out=$(su $NCPA_USER -c "LIBPATH=\"$NCPA_LIBPATH\${LIBPATH:+:\$LIBPATH}\" \"$NCPA_DIR/ncpa\" --start" 2>&1)
+    if [ -n "$start_out" ]; then
+        echo "$start_out"
     fi
+
+    sleep 2
+    if [ -f "$PID_FILE" ]; then
+        pid=$(cat "$PID_FILE")
+        if ps -p "$pid" >/dev/null 2>&1; then
+            echo "NCPA started successfully (PID: $pid)"
+            echo "Check logs in: $NCPA_DIR/var/log/"
+            return 0
+        fi
+    fi
+
+    running=$(ps -ef | grep '/usr/local/ncpa/ncpa' | grep -v grep | awk '{print $2}')
+    if [ -n "$running" ]; then
+        echo "NCPA started successfully (PID: $running)"
+        echo "Check logs in: $NCPA_DIR/var/log/"
+        return 0
+    fi
+
+    echo "Failed to start NCPA"
+    return 1
 }
 
 stop_ncpa() {
