@@ -124,7 +124,10 @@ class BuildBases(setuptools.command.build_ext.build_ext):
                 extra_args.append("-Wl,-export_dynamic")
                 extra_args.append("-Wl,-rpath,@loader_path/lib")
             if IS_AIX:
-                pass
+                # Prefer bundled libs under /usr/local/ncpa/lib and avoid baking
+                # absolute /opt/freeware import paths into the frozen binary.
+                extra_args.append("-Wl,-bnoipath")
+                extra_args.append("-Wl,-blibpath:/usr/local/ncpa/lib:/usr/lib:/lib")
             else:
                 if get_config_var("LINKFORSHARED"):
                     extra_args.extend(get_config_var("LINKFORSHARED").split())
