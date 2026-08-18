@@ -35,7 +35,7 @@ install_prereqs() {
     echo "    - Installing required build packages via dnf..."
     dnf -y update
     dnf -y install sudo gcc gcc-c++ gcc-cpp make cmake automake libffi-devel rust cargo \
-        gettext libiconv sqlite openssl zlib python3.12-pip python3.12-devel
+        gettext libiconv sqlite zlib python3.12-pip python3.12-devel
 
     # Ensure Python 3.12 is installed
     if command -v python3.12 >/dev/null 2>&1; then
