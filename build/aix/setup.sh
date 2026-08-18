@@ -31,10 +31,11 @@ install_prereqs() {
         echo "ERROR! dnf package manager not found. Please install dnf and try again."
         return 1
     fi
-    
+
     echo "    - Installing required build packages via dnf..."
     dnf -y update
-    dnf -y install sudo gcc gcc-c++ gcc-cpp make cmake automake libffi-devel rust cargo
+    dnf -y install sudo gcc gcc-c++ gcc-cpp make cmake automake libffi-devel rust cargo \
+        gettext libiconv python3.12-pip python3.12-devel
 
     # Ensure Python 3.12 is installed
     if command -v python3.12 >/dev/null 2>&1; then
@@ -45,7 +46,7 @@ install_prereqs() {
     fi
 
     echo "    - Assuming Python 3.12 is the target version for NCPA build"
-    dnf -y install python3.12-pip python3.12-devel
+    verify_runtime_libs
 
     echo "----------------------------------------"
     echo "Adding additional tools from source..."
@@ -56,21 +57,35 @@ install_prereqs() {
     echo "AIX system prerequisites installation finished successfully."
 }
 
+verify_runtime_libs() {
+    echo "    - Verifying AIX runtime libraries required for standalone packaging..."
+    missing=0
+
+    for lib in \
+        /opt/freeware/lib64/libpython3.12.a \
+        /opt/freeware/lib64/libgcc_s.a \
+        /opt/freeware/lib/libintl.a \
+        /opt/freeware/lib/libiconv.a
+    do
+        if [ -f "$lib" ] || [ -L "$lib" ]; then
+            echo "      Found $lib"
+        else
+            echo "      Missing $lib"
+            missing=1
+        fi
+    done
+
+    if [ "$missing" -ne 0 ]; then
+        echo "ERROR! Required AIX freeware libraries are missing."
+        echo "Install gettext, libiconv, python3.12, and gcc runtime from the IBM AIX Toolbox, then retry."
+        return 1
+    fi
+}
+
 build_cxFreeze() {
     # Install cx_Freeze from source to avoid AIX wheel issues
     echo "Building cx_Freeze from source..."
 
-    # Check if cx_Freeze has already completed build
-    if [ -d "$BUILD_DIR/cx_Freeze-8.4.1" ]; then
-        # Verify that the AIX build output exists
-        if [ -f "$BUILD_DIR/cx_Freeze-8.4.1/build/lib.aix-ppc64-cpython-312/cx_Freeze/bases/console-cpython-312" ]; then
-            echo "cx_Freeze has already completed the build. Skipping build."
-            echo "If something is wrong with cx_Freeze, please delete the $BUILD_DIR/cx_Freeze-8.4.1 directory to build again."
-            return 0
-        fi
-    fi
-
-    # Otherwise, proceed to download and build cx_Freeze
 
     # Check if cx_Freeze source tarball is already downloaded
     echo "Checking for existing cx_Freeze source tarball..."
@@ -107,20 +122,35 @@ build_cxFreeze() {
         fi
     fi
 
+    # Always apply the current AIX setup patch; rebuild bases if the patch changed
+    echo "Applying AIX-specific setup patch for cx_Freeze..."
+    patch_src="$BUILD_DIR/aix/setup_cxFreeze_aix.py"
+    patch_dst="$BUILD_DIR/cx_Freeze-8.4.1/setup.py"
+    need_rebuild=1
+    if [ -f "$BUILD_DIR/cx_Freeze-8.4.1/build/lib.aix-ppc64-cpython-312/cx_Freeze/bases/console-cpython-312" ]; then
+        if [ -f "$patch_dst" ] && cmp -s "$patch_src" "$patch_dst"; then
+            echo "cx_Freeze has already completed the build with the current AIX patch. Skipping build."
+            need_rebuild=0
+        else
+            echo "AIX cx_Freeze patch changed; rebuilding cx_Freeze bases..."
+        fi
+    fi
+    cp -f "$patch_src" "$patch_dst"
+
+    if [ "$need_rebuild" -eq 0 ]; then
+        return 0
+    fi
+
     # Change to cx_Freeze source directory
     echo "Changing to cx_Freeze source directory..."
-    cd cx_Freeze-8.4.1
+    cd "$BUILD_DIR/cx_Freeze-8.4.1"
 
-    # Copy cx_Freeze AIX setup patch
-    echo "Applying AIX-specific setup patch for cx_Freeze..."
-    cp -f "$BUILD_DIR/aix/setup_cxFreeze_aix.py" "$BUILD_DIR/cx_Freeze-8.4.1/setup.py"
-    
     # Build cx_Freeze, we should be in the venv
     echo "Building cx_Freeze with AIX patch..."
     $PYTHONBIN setup.py build
 
     # Return to original directory
-    cd ..
+    cd "$BUILD_DIR"
 
     echo "cx_Freeze build completed successfully."
 }
@@ -218,7 +248,7 @@ export LDFLAGS="-L/opt/freeware/lib64 -L/opt/freeware/lib"
 echo "***** aix/setup.sh - Installing Python requirements in virtual environment if applicable"
 if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     "$VENV_MANAGER" install-requirements
-    
+
     # Use pip to install cx_Freeze into the environment
     echo "***** aix/setup.sh - Installing cx_Freeze into the environment"
     $PYTHONBIN -m pip install $BUILD_DIR/cx_Freeze-8.4.1
@@ -226,4 +256,4 @@ if [ -n "$VENV_MANAGER" ] && [ -x "$VENV_MANAGER" ]; then
     # Install cryptography with the correct compiler flags
     export CC="gcc -maix64"
     $PYTHONBIN -m pip install cryptography==48.0.1
-fi 
+fi

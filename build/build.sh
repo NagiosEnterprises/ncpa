@@ -963,6 +963,14 @@ esac'
         fi
     fi
 
+    # AIX: bundle verification + rewrite absolute freeware import paths so the
+    # frozen app can load libs from /usr/local/ncpa/lib without /opt/freeware.
+    if [ "$UNAME" == "AIX" ]; then
+        echo -e "\n***** Fixing AIX shared library import paths for standalone runtime..."
+        chmod +x "$BUILD_DIR/aix/fix_libpath.sh" "$BUILD_DIR/aix/fix_xcoff_imports.py" 2>/dev/null || true
+        sudo PYTHONBIN="$PYTHONBIN" "$BUILD_DIR/aix/fix_libpath.sh" "$BUILD_DIR/ncpa"
+    fi
+
     # Set permissions (original working approach)
     echo -e "\nSetting permissions..."
     sudo chmod -R g+r $BUILD_DIR/ncpa

@@ -5,9 +5,27 @@ DIR=$( cd "$(dirname "$0")" ; pwd -P )
 BUILD_DIR="$DIR/.."
 NCPA_VER=$(cat $BUILD_DIR/../VERSION)
 BUILD_RPM_DIR="/tmp/test/usr/src/redhat"
+REQUIRED_LIBS="libpython3.12.a libgcc_s.a libintl.a libiconv.a"
 
 # Build spec file
 cd $BUILD_DIR
+
+# Verify standalone runtime libraries are present before packaging
+echo -e "***** aix/package.sh - verifying bundled AIX runtime libraries"
+missing=0
+for lib in $REQUIRED_LIBS; do
+    if [ -f "$BUILD_DIR/ncpa/lib/$lib" ]; then
+        echo "  Found ncpa/lib/$lib"
+    else
+        echo "  Missing ncpa/lib/$lib"
+        missing=1
+    fi
+done
+if [ "$missing" -ne 0 ]; then
+    echo "ERROR: Cannot package AIX NCPA without bundled runtime libraries."
+    echo "Expected under ncpa/lib: $REQUIRED_LIBS"
+    exit 1
+fi
 
 # Determine release number by checking for existing RPMs
 RELEASE=1
