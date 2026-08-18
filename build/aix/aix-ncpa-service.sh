@@ -7,7 +7,7 @@ NCPA_DIR="/usr/local/ncpa"
 NCPA_USER="nagios"
 NCPA_GROUP="nagios"
 PID_FILE="$NCPA_DIR/var/run/ncpa.pid"
-NCPA_LIBPATH="$NCPA_DIR/lib:/opt/freeware/lib"
+NCPA_LIBPATH="$NCPA_DIR/lib"
 
 start_ncpa() {
     echo "Starting NCPA..."
