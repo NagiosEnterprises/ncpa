@@ -101,6 +101,7 @@ elif __SYSTEM__ == 'posix':
                           ('/opt/freeware/lib64/libgcc_s.a'     , 'lib/libgcc_s.a'),
                           ('/opt/freeware/lib/libintl.a'        , 'lib/libintl.a'),
                           ('/opt/freeware/lib/libiconv.a'       , 'lib/libiconv.a'),
+                          ('/usr/lib/libsqlite3.a'              , 'lib/libsqlite3.a'),
                           ('../build/aix/aix-ncpa-service.sh'   , 'bin/aix-ncpa-service.sh')]
 
     # Special includes for Solaris systems
