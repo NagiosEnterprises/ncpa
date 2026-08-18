@@ -107,10 +107,10 @@ verify_runtime_libs() {
             libiconv.a) required="libiconv.so.2" ;;
         esac
         if [ -n "$required" ] && command -v ar >/dev/null 2>&1; then
-            if ! ar -X64 -t "$lib" 2>/dev/null | grep -qx "$required"; then
-                echo "      ERROR: $lib is missing 64-bit member $required"
-                echo "      Members: $(ar -X64 -t "$lib" 2>/dev/null | tr '\n' ' ')"
-                missing=1
+            if ! ar -X64 t "$lib" 2>/dev/null | grep -qx "$required"; then
+                echo "      NOTE: $lib does not list 64-bit member $required yet"
+                echo "      Members: $(ar -X64 t "$lib" 2>/dev/null | tr '\n' ' ')"
+                echo "      Freeze will copy a matching archive or add an alias member."
             fi
         fi
     done

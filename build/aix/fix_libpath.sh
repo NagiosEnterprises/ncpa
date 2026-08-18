@@ -56,19 +56,44 @@ if [ "$missing" -ne 0 ]; then
     exit 1
 fi
 
+aix_ar_t() {
+    # AIX ar wants a traditional key (t). GNU-style -t treats the archive as a member.
+    ar -X64 t "$1" 2>/dev/null
+}
+
+ensure_aix_member() {
+    archive=$1
+    need=$2
+    alt=$3
+    if aix_ar_t "$archive" | grep -qx "$need"; then
+        echo "  $archive has member $need"
+        return 0
+    fi
+    if [ -n "$alt" ] && aix_ar_t "$archive" | grep -qx "$alt"; then
+        tmpdir=/tmp/ncpa-ar.$$
+        rm -rf "$tmpdir"
+        mkdir -p "$tmpdir"
+        echo "  Adding member $need to $archive from $alt"
+        (
+            cd "$tmpdir" || exit 1
+            ar -X64 x "$archive" "$alt"
+            cp "$alt" "$need"
+            ar -X64 r "$archive" "$need"
+        )
+        rm -rf "$tmpdir"
+        if aix_ar_t "$archive" | grep -qx "$need"; then
+            return 0
+        fi
+    fi
+    echo "ERROR: $archive is missing 64-bit member $need"
+    echo "Members: $(aix_ar_t "$archive" | tr '\n' ' ')"
+    return 1
+}
+
 if command -v ar >/dev/null 2>&1; then
     echo "***** aix/fix_libpath.sh - verifying required archive members"
-    if ! ar -X64 -t "$NCPA_ROOT/lib/libgcc_s.a" 2>/dev/null | grep -qx 'shr.o'; then
-        echo "ERROR: $NCPA_ROOT/lib/libgcc_s.a is missing 64-bit member shr.o"
-        echo "Members: $(ar -X64 -t "$NCPA_ROOT/lib/libgcc_s.a" 2>/dev/null | tr '\n' ' ')"
-        echo "Copy the GCC runtime archive (often under /opt/freeware/lib*/gcc/*/*/libgcc_s.a)."
-        exit 1
-    fi
-    if ! ar -X64 -t "$NCPA_ROOT/lib/libiconv.a" 2>/dev/null | grep -qx 'libiconv.so.2'; then
-        echo "ERROR: $NCPA_ROOT/lib/libiconv.a is missing 64-bit member libiconv.so.2"
-        echo "Members: $(ar -X64 -t "$NCPA_ROOT/lib/libiconv.a" 2>/dev/null | tr '\n' ' ')"
-        exit 1
-    fi
+    ensure_aix_member "$NCPA_ROOT/lib/libgcc_s.a" "shr.o" "libgcc_s.so.1" || exit 1
+    ensure_aix_member "$NCPA_ROOT/lib/libiconv.a" "libiconv.so.2" "libiconv.so.1" || exit 1
 fi
 
 echo "***** aix/fix_libpath.sh - rewriting absolute freeware import paths"

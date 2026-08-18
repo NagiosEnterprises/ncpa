@@ -111,18 +111,67 @@ def get_linux_lib_includes():
     return [f'libffi.so', f'libssl.so.{LIBSSL_VERSION}', f'libcrypto.so.{LIBCRYPTO_VERSION}']
 
 def _aix_ar64_members(archive_path):
-    """Return 64-bit members of an AIX archive, or [] if ar is unavailable."""
+    """Return 64-bit members of an AIX archive, or [] if ar is unavailable.
+
+    AIX ar uses traditional keys (``t``, not ``-t``). GNU-style ``-t`` makes
+    AIX ar treat the archive path as a member name (0707-109).
+    """
     import subprocess
 
+    for cmd in (
+        ['ar', '-X64', 't', archive_path],
+        ['ar', '-X64', '-t', archive_path],
+    ):
+        try:
+            out = subprocess.check_output(
+                cmd,
+                stderr=subprocess.STDOUT,
+                text=True,
+            )
+        except Exception:
+            continue
+        members = []
+        failed = False
+        for line in out.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            if line.startswith('ar:') or '0707-' in line or 'Member name' in line:
+                failed = True
+                break
+            members.append(line)
+        if members and not failed:
+            return members
+    return []
+
+
+def _aix_add_archive_member_alias(archive_path, source_member, new_member):
+    """Add new_member to an AIX archive as a copy of an existing 64-bit member."""
+    import shutil
+    import subprocess
+    import tempfile
+
+    tmp = tempfile.mkdtemp(prefix='ncpa-ar-')
     try:
-        out = subprocess.check_output(
-            ['ar', '-X64', '-t', archive_path],
+        subprocess.check_call(
+            ['ar', '-X64', 'x', archive_path, source_member],
+            cwd=tmp,
+            stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
-            text=True,
         )
-    except Exception:
-        return []
-    return [line.strip() for line in out.splitlines() if line.strip()]
+        src = os.path.join(tmp, source_member)
+        dst = os.path.join(tmp, new_member)
+        if not os.path.exists(src):
+            raise FileNotFoundError(src)
+        shutil.copy2(src, dst)
+        subprocess.check_call(
+            ['ar', '-X64', 'r', archive_path, new_member],
+            cwd=tmp,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def _iter_aix_freeware_lib_candidates(name):
@@ -166,9 +215,14 @@ def get_aix_lib_paths():
         'libgcc_s.a': 'shr.o',
         'libiconv.a': 'libiconv.so.2',
     }
+    alternate_members = {
+        'libgcc_s.a': ('libgcc_s.so.1', 'libgcc_s.so'),
+        'libiconv.a': ('libiconv.so.2', 'libiconv.so.1'),
+    }
 
     lib_mappings = []
     missing = []
+    staged_dir = None
     for name in lib_names:
         required = required_members.get(name)
         found = None
@@ -176,10 +230,23 @@ def get_aix_lib_paths():
         for src in _iter_aix_freeware_lib_candidates(name):
             members = _aix_ar64_members(src)
             inspected.append(f"{src} members={members or ['<none/unreadable>']}")
-            if required and members and required not in members:
-                continue
-            found = src
-            break
+            if not required:
+                found = src
+                break
+            if required in members:
+                found = src
+                break
+            alt = next((m for m in alternate_members.get(name, ()) if m in members), None)
+            if alt:
+                import tempfile
+                if staged_dir is None:
+                    staged_dir = tempfile.mkdtemp(prefix='ncpa-aix-libs-')
+                staged = os.path.join(staged_dir, name)
+                import shutil
+                shutil.copy2(src, staged)
+                _aix_add_archive_member_alias(staged, alt, required)
+                found = staged
+                break
         if found:
             lib_mappings.append((found, f'lib/{name}'))
         elif required:
