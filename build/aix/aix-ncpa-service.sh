@@ -39,7 +39,9 @@ start_ncpa() {
     
     # Start NCPA as nagios user. Do not background here: ncpa --start
     # daemonizes itself, and backgrounding swallows loader errors.
-    start_out=$(su $NCPA_USER -c "LIBPATH=\"$NCPA_LIBPATH\${LIBPATH:+:\$LIBPATH}\" \"$NCPA_DIR/ncpa\" --start" 2>&1)
+    # Apply LIBPATH only to ncpa via env(1). Exporting LIBPATH into su/ksh
+    # makes ksh93 load GNU libiconv.a and fail looking for shr4_64.o.
+    start_out=$(su $NCPA_USER -c "/usr/bin/env LIBPATH=\"$NCPA_LIBPATH:/usr/lib:/lib\" \"$NCPA_DIR/ncpa\" --start" 2>&1)
     if [ -n "$start_out" ]; then
         echo "$start_out"
     fi

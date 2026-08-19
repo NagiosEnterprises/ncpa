@@ -38,8 +38,8 @@ start_ncpa() {
     cd "$NCPA_DIR"
     
     # Start NCPA as nagios user
-    su $NCPA_USER -c "LIBPATH=\"$NCPA_LIBPATH:\${LIBPATH}\" $NCPA_DIR/ncpa --start &"
-    
+    su $NCPA_USER -c "/usr/bin/env LIBPATH=\"$NCPA_LIBPATH:/usr/lib:/lib\" \"$NCPA_DIR/ncpa\" --start"
+        
     if [ $? -eq 0 ]; then
         echo "NCPA started successfully"
         echo "Check status with: ps -ef | grep ncpa"

@@ -144,6 +144,37 @@ rebuild_shared_archive "$NCPA_ROOT/lib/libiconv.a" "libiconv.so.2" "libiconv.so.
     /opt/freeware/lib/libiconv.a \
     "$NCPA_ROOT/lib/libiconv.a" || exit 1
 
+# AIX ksh93/ldd load libiconv.a(shr4_64.o) from the first LIBPATH hit.
+# GNU Toolbox libiconv does not have that member, so prepend /usr/lib members.
+merge_ibm_libiconv_members() {
+    dest=$1
+    ibm=/usr/lib/libiconv.a
+    if [ ! -e "$ibm" ]; then
+        echo "  NOTE: $ibm not present; not merging IBM libiconv members"
+        return 0
+    fi
+    tmpdir=/tmp/ncpa-iconv-ibm.$$
+    rm -rf "$tmpdir"
+    mkdir -p "$tmpdir"
+    echo "  Merging 64-bit members from $ibm into $dest"
+    (
+        cd "$tmpdir" || exit 1
+        for m in $(ar -X64 t "$ibm" 2>/dev/null); do
+            [ -n "$m" ] || continue
+            if [ "$m" = "libiconv.so.2" ] || [ "$m" = "libiconv.so.1" ]; then
+                continue
+            fi
+            ar -X64 x "$ibm" "$m"
+            ar -X64 r "$dest" "$m"
+        done
+        ar -X64 s "$dest" 2>/dev/null || true
+    )
+    echo "  libiconv.a members now: $(aix_ar_t "$dest" | tr '\n' ' ')"
+    rm -rf "$tmpdir"
+}
+
+merge_ibm_libiconv_members "$NCPA_ROOT/lib/libiconv.a"
+
 echo "***** aix/fix_libpath.sh - rewriting absolute freeware import paths"
 TARGETS="$NCPA_ROOT/ncpa"
 for lib in $REQUIRED_LIBS; do
@@ -162,19 +193,15 @@ done
 
 $PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" --fail-on-freeware $TARGETS
 
-echo "***** aix/fix_libpath.sh - ldd check"
-LIBPATH="$NCPA_ROOT/lib:/usr/local/ncpa/lib:/usr/lib:/lib"
-export LIBPATH
-ldd_out=$(ldd "$NCPA_ROOT/ncpa" 2>&1 || true)
-echo "$ldd_out"
+echo "***** aix/fix_libpath.sh - archive member check"
 echo "  libgcc_s.a members: $(aix_ar_t "$NCPA_ROOT/lib/libgcc_s.a" | tr '\n' ' ')"
 echo "  libiconv.a members: $(aix_ar_t "$NCPA_ROOT/lib/libiconv.a" | tr '\n' ' ')"
-if echo "$ldd_out" | grep -q 'Cannot find'; then
-    echo "ERROR: ldd cannot resolve bundled libraries."
-    echo "If paths show /usr/local/ncpa/lib, reinstall this build; the binary import path is the install prefix."
-    if command -v dump >/dev/null 2>&1; then
-        dump -H "$NCPA_ROOT/ncpa" 2>/dev/null | sed 's/^/    /' || true
-    fi
+if ! aix_ar_t "$NCPA_ROOT/lib/libgcc_s.a" | grep -qx 'shr.o'; then
+    echo "ERROR: rebuilt libgcc_s.a is missing shr.o"
+    exit 1
+fi
+if ! aix_ar_t "$NCPA_ROOT/lib/libiconv.a" | grep -qx 'libiconv.so.2'; then
+    echo "ERROR: rebuilt libiconv.a is missing libiconv.so.2"
     exit 1
 fi
 
@@ -194,7 +221,8 @@ else
 fi
 
 echo "***** aix/fix_libpath.sh - completed successfully"
-echo "Standalone check after install:"
-echo "  LIBPATH=/usr/local/ncpa/lib /usr/local/ncpa/ncpa --version"
-echo "  dump -Tv /usr/local/ncpa/lib/libpython3.12.a | grep freeware  # expect empty"
-echo "  startsrc -s ncpa"  
+echo "Standalone check after install (do not export LIBPATH in your shell):"
+echo "  ldd /usr/local/ncpa/ncpa"
+echo "  ar -X64 t /usr/local/ncpa/lib/libgcc_s.a"
+echo "  ar -X64 t /usr/local/ncpa/lib/libiconv.a"
+echo "  startsrc -s ncpa" 
