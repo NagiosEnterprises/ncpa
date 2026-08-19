@@ -56,67 +56,93 @@ if [ "$missing" -ne 0 ]; then
     exit 1
 fi
 
+export OBJECT_MODE=64
+
 aix_ar_t() {
     # AIX ar wants a traditional key (t). GNU-style -t treats the archive as a member.
     ar -X64 t "$1" 2>/dev/null
 }
 
-ensure_aix_member() {
-    archive=$1
-    need=$2
-    alt=$3
-    if aix_ar_t "$archive" | grep -qx "$need"; then
-        echo "  $archive has member $need"
+aix_ar_create() {
+    dest=$1
+    member=$2
+    rm -f "$dest"
+    if ar -X64 rcs "$dest" "$member"; then
         return 0
     fi
-    if [ -n "$alt" ] && aix_ar_t "$archive" | grep -qx "$alt"; then
-        tmpdir=/tmp/ncpa-ar.$$
-        rm -rf "$tmpdir"
-        mkdir -p "$tmpdir"
-        echo "  Adding member $need to $archive from $alt"
+    if ar -X64 rc "$dest" "$member"; then
+        ar -X64 s "$dest" 2>/dev/null || ranlib -X64 "$dest" 2>/dev/null || true
+        return 0
+    fi
+    return 1
+}
+
+# Always rebuild a loadable 64-bit archive with the exact member name ldd wants.
+# Copying Toolbox stubs and ar r into them leaves an import file the loader cannot use.
+rebuild_shared_archive() {
+    dest=$1
+    need=$2
+    alts=$3
+    shift 3
+
+    tmpdir=/tmp/ncpa-ar-rebuild.$$
+    rm -rf "$tmpdir"
+    mkdir -p "$tmpdir"
+
+    for src in "$@"; do
+        [ -e "$src" ] || continue
+        members=$(aix_ar_t "$src")
+        echo "  Candidate $src members: $(echo "$members" | tr '\n' ' ')"
+        pick=""
+        for cand in $need $alts; do
+            if echo "$members" | grep -qx "$cand"; then
+                pick=$cand
+                break
+            fi
+        done
+        [ -n "$pick" ] || continue
+
+        echo "  Extracting $src($pick) -> $dest($need)"
         (
             cd "$tmpdir" || exit 1
-            ar -X64 x "$archive" "$alt"
-            cp "$alt" "$need"
-            ar -X64 r "$archive" "$need"
-        )
-        rm -rf "$tmpdir"
-        if aix_ar_t "$archive" | grep -qx "$need"; then
-            return 0
-        fi
-    fi
-    echo "ERROR: $archive is missing 64-bit member $need"
-    echo "Members: $(aix_ar_t "$archive" | tr '\n' ' ')"
-    return 1
-}
+            rm -f ./* 2>/dev/null || true
+            ar -X64 x "$src" "$pick"
+            if [ ! -f "$pick" ]; then
+                echo "ERROR: ar -X64 x $src $pick did not produce a file"
+                exit 1
+            fi
+            if [ "$pick" != "$need" ]; then
+                cp "$pick" "$need"
+            fi
+            aix_ar_create "$dest" "$need"
+        ) || continue
 
-replace_libgcc_from_compiler_dir() {
-    dest="$NCPA_ROOT/lib/libgcc_s.a"
-    for src in /opt/freeware/lib/gcc/*/*/libgcc_s.a \
-               /opt/freeware/lib64/gcc/*/*/libgcc_s.a; do
-        [ -e "$src" ] || continue
-        echo "  Replacing libgcc_s.a with GCC runtime archive $src"
-        cp -f "$src" "$dest"
-        if aix_ar_t "$dest" | grep -qx 'shr.o'; then
+        if aix_ar_t "$dest" | grep -qx "$need"; then
+            echo "  Rebuilt $dest with 64-bit member $need from $src($pick)"
+            rm -rf "$tmpdir"
             return 0
         fi
-        if ensure_aix_member "$dest" "shr.o" "libgcc_s.so.1"; then
-            return 0
-        fi
+        echo "  WARNING: rebuilt $dest but member $need not listed"
     done
+
+    rm -rf "$tmpdir"
+    echo "ERROR: could not rebuild $dest with 64-bit member $need"
+    echo "Looked at: $*"
     return 1
 }
 
-if command -v ar >/dev/null 2>&1; then
-    echo "***** aix/fix_libpath.sh - verifying required archive members"
-    if ! aix_ar_t "$NCPA_ROOT/lib/libgcc_s.a" | grep -qx 'shr.o'; then
-        replace_libgcc_from_compiler_dir || \
-            ensure_aix_member "$NCPA_ROOT/lib/libgcc_s.a" "shr.o" "libgcc_s.so.1" || exit 1
-    else
-        echo "  $NCPA_ROOT/lib/libgcc_s.a has member shr.o"
-    fi
-    ensure_aix_member "$NCPA_ROOT/lib/libiconv.a" "libiconv.so.2" "libiconv.so.1" || exit 1
-fi
+echo "***** aix/fix_libpath.sh - rebuilding loadable libgcc_s.a and libiconv.a"
+rebuild_shared_archive "$NCPA_ROOT/lib/libgcc_s.a" "shr.o" "libgcc_s.so.1 libgcc_s.so" \
+    /opt/freeware/lib/gcc/*/*/libgcc_s.a \
+    /opt/freeware/lib64/gcc/*/*/libgcc_s.a \
+    /opt/freeware/lib64/libgcc_s.a \
+    /opt/freeware/lib/libgcc_s.a \
+    "$NCPA_ROOT/lib/libgcc_s.a" || exit 1
+
+rebuild_shared_archive "$NCPA_ROOT/lib/libiconv.a" "libiconv.so.2" "libiconv.so.1 libiconv.so" \
+    /opt/freeware/lib64/libiconv.a \
+    /opt/freeware/lib/libiconv.a \
+    "$NCPA_ROOT/lib/libiconv.a" || exit 1
 
 echo "***** aix/fix_libpath.sh - rewriting absolute freeware import paths"
 TARGETS="$NCPA_ROOT/ncpa"
@@ -135,6 +161,22 @@ for extra in "$NCPA_ROOT"/lib/*.a "$NCPA_ROOT"/lib/*.so*; do
 done
 
 $PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" --fail-on-freeware $TARGETS
+
+echo "***** aix/fix_libpath.sh - ldd check"
+LIBPATH="$NCPA_ROOT/lib:/usr/local/ncpa/lib:/usr/lib:/lib"
+export LIBPATH
+ldd_out=$(ldd "$NCPA_ROOT/ncpa" 2>&1 || true)
+echo "$ldd_out"
+echo "  libgcc_s.a members: $(aix_ar_t "$NCPA_ROOT/lib/libgcc_s.a" | tr '\n' ' ')"
+echo "  libiconv.a members: $(aix_ar_t "$NCPA_ROOT/lib/libiconv.a" | tr '\n' ' ')"
+if echo "$ldd_out" | grep -q 'Cannot find'; then
+    echo "ERROR: ldd cannot resolve bundled libraries."
+    echo "If paths show /usr/local/ncpa/lib, reinstall this build; the binary import path is the install prefix."
+    if command -v dump >/dev/null 2>&1; then
+        dump -H "$NCPA_ROOT/ncpa" 2>/dev/null | sed 's/^/    /' || true
+    fi
+    exit 1
+fi
 
 echo "***** aix/fix_libpath.sh - verifying with dump -Tv (if available)"
 if command -v dump >/dev/null 2>&1; then
@@ -155,4 +197,4 @@ echo "***** aix/fix_libpath.sh - completed successfully"
 echo "Standalone check after install:"
 echo "  LIBPATH=/usr/local/ncpa/lib /usr/local/ncpa/ncpa --version"
 echo "  dump -Tv /usr/local/ncpa/lib/libpython3.12.a | grep freeware  # expect empty"
-echo "  startsrc -s ncpa"
+echo "  startsrc -s ncpa"  
