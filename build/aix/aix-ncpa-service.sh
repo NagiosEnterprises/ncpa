@@ -173,8 +173,9 @@ killall_ncpa() {
 trap 'stop_ncpa' 15 # Trap SIGTERM (standard termination signal)
 trap 'killall_ncpa' 9 # Trap SIGKILL
 
-# Start the process initially
-start_ncpa
+# Start the process initially. Exit so SRC is not left "active" if ncpa
+# failed to exec (loader errors, missing libs, etc.).
+start_ncpa || exit 1
 
 # Allow some time for NCPA to initialize
 sleep 15
