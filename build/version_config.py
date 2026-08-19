@@ -181,8 +181,8 @@ def _iter_aix_freeware_lib_candidates(name):
     if name == 'libgcc_s.a':
         # Prefer the compiler runtime archive (has shr.o). lib64/libgcc_s.a is
         # often a linker stub and will fail ldd with libgcc_s.a(shr.o).
-        paths.extend(sorted(glob.glob('/opt/freeware/lib/gcc/*/*/libgcc_s.a')))
-        paths.extend(sorted(glob.glob('/opt/freeware/lib64/gcc/*/*/libgcc_s.a')))
+        paths.extend(sorted(glob.glob('/opt/freeware/lib/gcc/*/*/libgcc_s.a'), reverse=True))
+        paths.extend(sorted(glob.glob('/opt/freeware/lib64/gcc/*/*/libgcc_s.a'), reverse=True))
     for directory in ('/opt/freeware/lib64', '/opt/freeware/lib'):
         paths.append(os.path.join(directory, name))
 

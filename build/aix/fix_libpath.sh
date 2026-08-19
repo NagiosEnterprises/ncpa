@@ -77,6 +77,25 @@ aix_ar_create() {
     return 1
 }
 
+is_xcoff64() {
+    # AIX od has no portable -N; use Python to read the XCOFF magic (0x01F7).
+    "$PYTHONBIN" -c '
+import sys
+p = sys.argv[1]
+with open(p, "rb") as fh:
+    magic = fh.read(2)
+sys.exit(0 if magic == b"\x01\xf7" else 1)
+' "$1" 2>/dev/null
+}
+
+# Newest GCC runtime first (13 before 10). Unmatched globs are skipped by [ -e ].
+GCC_LIBGCC_S=""
+for src in /opt/freeware/lib/gcc/*/*/libgcc_s.a /opt/freeware/lib64/gcc/*/*/libgcc_s.a; do
+    if [ -e "$src" ]; then
+        GCC_LIBGCC_S="$src $GCC_LIBGCC_S"
+    fi
+done
+
 # Always rebuild a loadable 64-bit archive with the exact member name ldd wants.
 # Copying Toolbox stubs and ar r into them leaves an import file the loader cannot use.
 rebuild_shared_archive() {
@@ -100,10 +119,13 @@ rebuild_shared_archive() {
                 break
             fi
         done
-        [ -n "$pick" ] || continue
+        if [ -z "$pick" ]; then
+            echo "  No matching member ($need / $alts) in $src"
+            continue
+        fi
 
         echo "  Extracting $src($pick) -> $dest($need)"
-        (
+        if (
             cd "$tmpdir" || exit 1
             rm -f ./* 2>/dev/null || true
             ar -X64 x "$src" "$pick"
@@ -114,14 +136,16 @@ rebuild_shared_archive() {
             if [ "$pick" != "$need" ]; then
                 cp "$pick" "$need"
             fi
-            # Reject 32-bit objects; a 64-bit ncpa will SIGILL or fail ldd.
-            mag=$(od -An -tx1 -N2 "$need" | tr -d ' \n')
-            if [ "$mag" != "01f7" ]; then
-                echo "  Skipping $src($pick): not 64-bit XCOFF (magic $mag, want 01f7)"
+            if ! is_xcoff64 "$need"; then
+                echo "  Skipping $src($pick): not 64-bit XCOFF magic 0x01F7"
                 exit 1
             fi
             aix_ar_create "$dest" "$need"
-        ) || continue
+        ); then
+            :
+        else
+            continue
+        fi
 
         if aix_ar_t "$dest" | grep -qx "$need"; then
             echo "  Rebuilt $dest with 64-bit member $need from $src($pick)"
@@ -138,9 +162,8 @@ rebuild_shared_archive() {
 }
 
 echo "***** aix/fix_libpath.sh - rebuilding loadable libgcc_s.a and libiconv.a"
-rebuild_shared_archive "$NCPA_ROOT/lib/libgcc_s.a" "shr.o" "libgcc_s.so.1 libgcc_s.so" \
-    /opt/freeware/lib/gcc/*/*/libgcc_s.a \
-    /opt/freeware/lib64/gcc/*/*/libgcc_s.a \
+rebuild_shared_archive "$NCPA_ROOT/lib/libgcc_s.a" "shr.o" "libgcc_s.so.1 libgcc_s.so shr_64.o" \
+    $GCC_LIBGCC_S \
     /opt/freeware/lib64/libgcc_s.a \
     /opt/freeware/lib/libgcc_s.a \
     "$NCPA_ROOT/lib/libgcc_s.a" || exit 1
@@ -239,4 +262,4 @@ echo "Standalone check after install (do not export LIBPATH in your shell):"
 echo "  ldd /usr/local/ncpa/ncpa"
 echo "  ar -X64 t /usr/local/ncpa/lib/libgcc_s.a"
 echo "  ar -X64 t /usr/local/ncpa/lib/libiconv.a"
-echo "  startsrc -s ncpa" 
+echo "  startsrc -s ncpa"                                                                                                                                    ✓
