@@ -223,26 +223,37 @@ def rewrite_libpath_components(libpath: bytes) -> Optional[bytes]:
     return result
 
 
-def replace_nul_terminated_path(data: bytearray, old_path: bytes) -> int:
-    """Replace old_path\\0 with a same-length NCPA path\\0.
+def foreach_nul_terminated(data: bytes, path: bytes):
+    """Yield offsets where path is followed by a NUL.
 
-    Matching the trailing NUL avoids treating /opt/freeware/lib64 as
-    /opt/freeware/lib.
+    Do not pass a NUL in the find() needle. AIX Python's bytes.find is
+    implemented with C string routines and truncates the needle at the
+    first NUL, so find(b'/opt/freeware/lib\\0') matches the 'lib' prefix
+    of '/opt/freeware/lib64' and of LIBPATH components.
     """
+    n = len(path)
+    start = 0
+    while True:
+        idx = data.find(path, start)
+        if idx < 0:
+            return
+        after = idx + n
+        if after < len(data) and data[after] == 0:
+            yield idx
+        start = idx + 1
+
+
+def replace_nul_terminated_path(data: bytearray, old_path: bytes) -> int:
+    """Replace old_path\\0 with a same-length NCPA path\\0."""
     padded = pad_same_length(NCPA_LIB, old_path, b"/")
     if padded is None:
         return 0
-    needle = old_path + b"\0"
-    repl = padded + b"\0"
-    count = 0
-    start = 0
-    while True:
-        idx = data.find(needle, start)
-        if idx < 0:
-            return count
-        data[idx:idx + len(needle)] = repl
-        count += 1
-        start = idx + len(needle)
+    n = len(old_path)
+    repl = padded + bytes([0])
+    offsets = list(foreach_nul_terminated(data, old_path))
+    for idx in offsets:
+        data[idx:idx + n + 1] = repl
+    return len(offsets)
 
 
 def rewrite_exact_freeware_cstrings(data: bytearray, new_libpath: bytes) -> Tuple[int, int]:
@@ -292,14 +303,8 @@ def remaining_absolute_freeware_dirs(data: bytes) -> List[str]:
     """Leftover absolute Toolbox lib dirs (NUL-terminated import paths)."""
     found = []
     for needle in (FREEWARE_LIB64, FREEWARE_LIB):
-        start = 0
-        term = needle + b"\0"
-        while True:
-            idx = data.find(term, start)
-            if idx < 0:
-                break
+        for _idx in foreach_nul_terminated(data, needle):
             found.append(needle.decode("ascii"))
-            start = idx + len(term)
     return found
 
 
@@ -403,4 +408,4 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main()) 
+    sys.exit(main())
