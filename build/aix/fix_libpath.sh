@@ -90,10 +90,31 @@ ensure_aix_member() {
     return 1
 }
 
+replace_libgcc_from_compiler_dir() {
+    dest="$NCPA_ROOT/lib/libgcc_s.a"
+    for src in /opt/freeware/lib/gcc/*/*/libgcc_s.a \
+               /opt/freeware/lib64/gcc/*/*/libgcc_s.a; do
+        [ -e "$src" ] || continue
+        echo "  Replacing libgcc_s.a with GCC runtime archive $src"
+        cp -f "$src" "$dest"
+        if aix_ar_t "$dest" | grep -qx 'shr.o'; then
+            return 0
+        fi
+        if ensure_aix_member "$dest" "shr.o" "libgcc_s.so.1"; then
+            return 0
+        fi
+    done
+    return 1
+}
+
 if command -v ar >/dev/null 2>&1; then
     echo "***** aix/fix_libpath.sh - verifying required archive members"
-    ensure_aix_member "$NCPA_ROOT/lib/libgcc_s.a" "shr.o" "libgcc_s.so.1" || exit 1
-    ensure_aix_member "$NCPA_ROOT/lib/libiconv.a" "libiconv.so.2" "libiconv.so.1" || exit 1
+    if ! aix_ar_t "$NCPA_ROOT/lib/libgcc_s.a" | grep -qx 'shr.o'; then
+        replace_libgcc_from_compiler_dir || \
+            ensure_aix_member "$NCPA_ROOT/lib/libgcc_s.a" "shr.o" "libgcc_s.so.1" || exit 1
+    else
+        echo "  $NCPA_ROOT/lib/libgcc_s.a has member shr.o"
+    fi    ensure_aix_member "$NCPA_ROOT/lib/libiconv.a" "libiconv.so.2" "libiconv.so.1" || exit 1
 fi
 
 echo "***** aix/fix_libpath.sh - rewriting absolute freeware import paths"

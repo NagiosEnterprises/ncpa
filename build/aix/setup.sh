@@ -64,7 +64,7 @@ verify_runtime_libs() {
     find_freeware_lib() {
         name=$1
         if [ "$name" = "libgcc_s.a" ]; then
-            set -- /opt/freeware/lib64/gcc/*/*/libgcc_s.a /opt/freeware/lib/gcc/*/*/libgcc_s.a \
+            set -- /opt/freeware/lib/gcc/*/*/libgcc_s.a /opt/freeware/lib64/gcc/*/*/libgcc_s.a \
                 /opt/freeware/lib64/libgcc_s.a /opt/freeware/lib/libgcc_s.a
             for lib in "$@"; do
                 if [ -e "$lib" ]; then
