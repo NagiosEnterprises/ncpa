@@ -223,6 +223,28 @@ def rewrite_libpath_components(libpath: bytes) -> Optional[bytes]:
     return result
 
 
+def replace_nul_terminated_path(data: bytearray, old_path: bytes) -> int:
+    """Replace old_path\\0 with a same-length NCPA path\\0.
+
+    Matching the trailing NUL avoids treating /opt/freeware/lib64 as
+    /opt/freeware/lib.
+    """
+    padded = pad_same_length(NCPA_LIB, old_path, b"/")
+    if padded is None:
+        return 0
+    needle = old_path + b"\0"
+    repl = padded + b"\0"
+    count = 0
+    start = 0
+    while True:
+        idx = data.find(needle, start)
+        if idx < 0:
+            return count
+        data[idx:idx + len(needle)] = repl
+        count += 1
+        start = idx + len(needle)
+
+
 def rewrite_exact_freeware_cstrings(data: bytearray, new_libpath: bytes) -> Tuple[int, int]:
     """Same-length rewrite of Toolbox lib dirs and LIBPATHs anywhere in a file.
 
@@ -230,7 +252,10 @@ def rewrite_exact_freeware_cstrings(data: bytearray, new_libpath: bytes) -> Tupl
     AIX .a archives when dump -H shows imports but member parsing fails.
     Include paths and GCC BUILD LIBPATHs are left alone.
     """
-    dirs = 0
+    # lib64 first so the shorter /opt/freeware/lib\\0 needle cannot overlap it.
+    dirs = replace_nul_terminated_path(data, FREEWARE_LIB64)
+    dirs += replace_nul_terminated_path(data, FREEWARE_LIB)
+
     libpaths = 0
     search = 0
     while True:
@@ -246,49 +271,35 @@ def rewrite_exact_freeware_cstrings(data: bytearray, new_libpath: bytes) -> Tupl
             search = idx + len(FREEWARE_PREFIX)
             continue
 
-        replacement = None
-        kind = None
-        if old in (FREEWARE_LIB, FREEWARE_LIB64):
-            replacement = pad_same_length(NCPA_LIB, old, b"/")
-            kind = "dir"
-        elif is_toolbox_lib_libpath(old):
-            replacement = rewrite_libpath_components(old)
-            if replacement is None:
-                replacement = pad_same_length(new_libpath, old, b":")
-            kind = "libpath"
+        if not is_toolbox_lib_libpath(old):
+            search = idx + max(len(old), 1)
+            continue
 
+        replacement = rewrite_libpath_components(old)
+        if replacement is None:
+            replacement = pad_same_length(new_libpath, old, b":")
         if replacement is None:
             search = idx + max(len(old), 1)
             continue
 
         data[idx:idx + len(old)] = replacement
-        if kind == "dir":
-            dirs += 1
-        else:
-            libpaths += 1
+        libpaths += 1
         search = idx + len(old)
     return dirs, libpaths
 
 
 def remaining_absolute_freeware_dirs(data: bytes) -> List[str]:
-    """Leftover absolute Toolbox lib dirs (these bypass LIBPATH)."""
+    """Leftover absolute Toolbox lib dirs (NUL-terminated import paths)."""
     found = []
-    search = 0
-    while True:
-        idx = data.find(FREEWARE_PREFIX, search)
-        if idx < 0:
-            break
-        try:
-            old, end = read_cstring(data, idx)
-        except ValueError:
-            search = idx + 1
-            continue
-        if len(old) > MAX_IMPORT_CSTRING:
-            search = idx + len(FREEWARE_PREFIX)
-            continue
-        if old in (FREEWARE_LIB, FREEWARE_LIB64):
-            found.append(old.decode("ascii", "replace"))
-        search = end
+    for needle in (FREEWARE_LIB64, FREEWARE_LIB):
+        start = 0
+        term = needle + b"\0"
+        while True:
+            idx = data.find(term, start)
+            if idx < 0:
+                break
+            found.append(needle.decode("ascii"))
+            start = idx + len(term)
     return found
 
 
