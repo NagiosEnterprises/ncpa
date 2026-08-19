@@ -257,13 +257,13 @@ fi
 
 echo "***** aix/fix_libpath.sh - verifying ncpa loader imports (if dump available)"
 if command -v dump >/dev/null 2>&1; then
-    hits=$(dump -H "$NCPA_ROOT/ncpa" 2>/dev/null | grep '/opt/freeware/' || true)
+    hits=$(dump -X64 -H "$NCPA_ROOT/ncpa" 2>/dev/null | grep '/opt/freeware/' || true)
     if [ -n "$hits" ]; then
-        echo "  NOTE: dump -H still mentions /opt/freeware in ncpa:"
+        echo "  NOTE: dump -X64 -H still mentions /opt/freeware in ncpa:"
         echo "$hits" | sed 's/^/    /'
     fi
 else
-    echo "  dump not available; skipped dump -H verification"
+    echo "  dump not available; skipped dump -X64 -H verification"
 fi
 
 echo "***** aix/fix_libpath.sh - completed successfully"
@@ -271,4 +271,4 @@ echo "Standalone check after install (do not export LIBPATH in your shell):"
 echo "  ldd /usr/local/ncpa/ncpa"
 echo "  ar -X64 t /usr/local/ncpa/lib/libgcc_s.a"
 echo "  ar -X64 t /usr/local/ncpa/lib/libiconv.a"
-echo "  startsrc -s ncpa"                                                                                                                                    ✓
+echo "  startsrc -s ncpa"    

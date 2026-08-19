@@ -147,6 +147,7 @@ def rewrite_loader_imports(data: bytearray, new_libpath: bytes) -> Tuple[int, bo
 
 def rewrite_freeware_import_triplets(data: bytearray) -> int:
     """Rewrite path\\0lib*.a\\0member\\0 whose path is under /opt/freeware.
+
     Used when loader-header parsing fails for shared objects. Requires a
     real archive/member pair so include-path strings are not touched.
     """
@@ -250,7 +251,7 @@ def process_file(path: str, new_libpath: bytes) -> Tuple[int, bool, str]:
     cleared, libpath_updated = rewrite_loader_imports(data, new_libpath)
     cleared += rewrite_freeware_import_triplets(data)
     libpath_updated = rewrite_freeware_libpath_strings(data, new_libpath) > 0 or libpath_updated
-    
+
     if data != raw:
         with open(path, "wb") as fh:
             fh.write(data)
@@ -306,4 +307,4 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main())  
