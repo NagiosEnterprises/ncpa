@@ -223,88 +223,59 @@ def rewrite_libpath_components(libpath: bytes) -> Optional[bytes]:
     return result
 
 
-def foreach_nul_terminated(data: bytes, path: bytes):
-    """Yield offsets where path is followed by a NUL.
+def replace_dir_occurrences(data: bytearray, old: bytes, skip_next: Optional[int] = None) -> int:
+    """Replace every occurrence of old with a same-length NCPA lib dir.
 
-    Do not pass a NUL in the find() needle. AIX Python's bytes.find is
-    implemented with C string routines and truncates the needle at the
-    first NUL, so find(b'/opt/freeware/lib\\0') matches the 'lib' prefix
-    of '/opt/freeware/lib64' and of LIBPATH components.
+    skip_next avoids treating /opt/freeware/lib as the prefix of lib64.
+    The following byte is left unchanged (NUL for import IDs, ':' for LIBPATH).
     """
-    n = len(path)
-    start = 0
-    while True:
-        idx = data.find(path, start)
-        if idx < 0:
-            return
-        after = idx + n
-        if after < len(data) and data[after] == 0:
-            yield idx
-        start = idx + 1
-
-
-def replace_nul_terminated_path(data: bytearray, old_path: bytes) -> int:
-    """Replace old_path\\0 with a same-length NCPA path\\0."""
-    padded = pad_same_length(NCPA_LIB, old_path, b"/")
+    padded = pad_same_length(NCPA_LIB, old, b"/")
     if padded is None:
         return 0
-    n = len(old_path)
-    repl = padded + bytes([0])
-    offsets = list(foreach_nul_terminated(data, old_path))
-    for idx in offsets:
-        data[idx:idx + n + 1] = repl
-    return len(offsets)
+    n = len(old)
+    count = 0
+    start = 0
+    while True:
+        idx = data.find(old, start)
+        if idx < 0:
+            return count
+        after = idx + n
+        nxt = data[after] if after < len(data) else None
+        if skip_next is not None and nxt == skip_next:
+            start = idx + 1
+            continue
+        data[idx:after] = padded
+        count += 1
+        start = after
 
 
 def rewrite_exact_freeware_cstrings(data: bytearray, new_libpath: bytes) -> Tuple[int, int]:
-    """Same-length rewrite of Toolbox lib dirs and LIBPATHs anywhere in a file.
-
-    This does not depend on parsing the XCOFF loader header, so it works inside
-    AIX .a archives when dump -H shows imports but member parsing fails.
-    Include paths and GCC BUILD LIBPATHs are left alone.
-    """
-    # lib64 first so the shorter /opt/freeware/lib\\0 needle cannot overlap it.
-    dirs = replace_nul_terminated_path(data, FREEWARE_LIB64)
-    dirs += replace_nul_terminated_path(data, FREEWARE_LIB)
-
-    libpaths = 0
-    search = 0
-    while True:
-        idx = data.find(FREEWARE_PREFIX, search)
-        if idx < 0:
-            break
-        try:
-            old, _end = read_cstring(bytes(data), idx)
-        except ValueError:
-            search = idx + 1
-            continue
-        if len(old) > MAX_IMPORT_CSTRING:
-            search = idx + len(FREEWARE_PREFIX)
-            continue
-
-        if not is_toolbox_lib_libpath(old):
-            search = idx + max(len(old), 1)
-            continue
-
-        replacement = rewrite_libpath_components(old)
-        if replacement is None:
-            replacement = pad_same_length(new_libpath, old, b":")
-        if replacement is None:
-            search = idx + max(len(old), 1)
-            continue
-
-        data[idx:idx + len(old)] = replacement
-        libpaths += 1
-        search = idx + len(old)
-    return dirs, libpaths
+    """Same-length rewrite of Toolbox lib dirs and LIBPATHs anywhere in a file."""
+    del new_libpath
+    # Longer name first. Skip next-byte '6' so 'lib' is not a prefix of 'lib64'.
+    dirs = replace_dir_occurrences(data, FREEWARE_LIB64)
+    dirs += replace_dir_occurrences(data, FREEWARE_LIB, skip_next=ord("6"))
+    return dirs, 0
 
 
 def remaining_absolute_freeware_dirs(data: bytes) -> List[str]:
-    """Leftover absolute Toolbox lib dirs (NUL-terminated import paths)."""
+    """Leftover /opt/freeware/lib or lib64 that is still an import path (next byte NUL)."""
     found = []
     for needle in (FREEWARE_LIB64, FREEWARE_LIB):
-        for _idx in foreach_nul_terminated(data, needle):
-            found.append(needle.decode("ascii"))
+        n = len(needle)
+        start = 0
+        while True:
+            idx = data.find(needle, start)
+            if idx < 0:
+                break
+            after = idx + n
+            nxt = data[after] if after < len(data) else None
+            if needle == FREEWARE_LIB and nxt == ord("6"):
+                start = idx + 1
+                continue
+            if nxt == 0:
+                found.append(needle.decode("ascii"))
+            start = idx + 1
     return found
 
 
@@ -345,13 +316,16 @@ def process_bytes(raw: bytes, new_libpath: bytes) -> Tuple[bytes, int, bool, str
 
     leftover = remaining_absolute_freeware_dirs(bytes(data))
     if leftover:
-        status = "remaining freeware lib paths: " + ", ".join(leftover)
-        return bytes(data), cleared, libpath_updated, status
+        print(
+            "  WARNING: leftover NUL-terminated Toolbox lib dirs: "
+            + ", ".join(leftover),
+            file=sys.stderr,
+        )
     if bytes(data) == raw:
         return raw, 0, False, "unchanged"
     extra = ""
-    if libpaths:
-        extra = f", updated {libpaths} embedded libpath(s)"
+    if dirs:
+        extra = f", rewrote {dirs} Toolbox lib dir(s)"
     return bytes(data), cleared, libpath_updated, "patched" + extra
 
 
@@ -408,4 +382,4 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main()) 

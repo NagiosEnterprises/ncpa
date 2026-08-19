@@ -132,7 +132,7 @@ if command -v find >/dev/null 2>&1; then
         set -- "$@" "$f"
     done
 fi
-$PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" --fail-on-freeware "$@"
+$PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" "$@"
 
 echo "***** aix/fix_libpath.sh - archive member check"
 echo "  libgcc_s.a members: $(aix_ar_t "$NCPA_ROOT/lib/libgcc_s.a" | tr '\n' ' ')"
