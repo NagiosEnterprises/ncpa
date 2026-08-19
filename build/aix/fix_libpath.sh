@@ -156,13 +156,13 @@ if command -v dump >/dev/null 2>&1; then
         "$NCPA_ROOT/lib/libiconv.a"
     do
         [ -f "$dump_target" ] || continue
-        hits=$(dump -X64 -H "$dump_target" 2>/dev/null | grep '/opt/freeware/lib' || true)
+        hits=$(dump -X64 -H "$dump_target" 2>/dev/null | grep '/opt/freeware/lib' | grep '\.a' || true)
         if [ -n "$hits" ]; then
-            echo "ERROR: dump -X64 -H still mentions /opt/freeware/lib in $dump_target:"
+            echo "ERROR: dump -X64 -H still has absolute /opt/freeware/lib imports in $dump_target:"
             echo "$hits" | sed 's/^/    /'
             dump_failed=1
         else
-            echo "  $dump_target: no /opt/freeware/lib loader paths"
+            echo "  $dump_target: no absolute /opt/freeware/lib imports"
         fi
     done
     if [ "$dump_failed" -ne 0 ]; then

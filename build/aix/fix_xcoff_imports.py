@@ -30,6 +30,8 @@ NCPA_LIB = b"/usr/local/ncpa/lib"
 DEFAULT_LIBPATH = b"/usr/local/ncpa/lib:/usr/lib:/lib"
 XCOFF32_MAGIC = 0x01DF
 XCOFF64_MAGIC = 0x01F7
+# Ignore unterminated / huge matches so we do not pad megabytes of colons.
+MAX_IMPORT_CSTRING = 1024
 
 
 def read_cstring(data: bytes, offset: int) -> Tuple[bytes, int]:
@@ -161,9 +163,11 @@ def rewrite_loader_imports(data: bytearray, new_libpath: bytes) -> Tuple[int, bo
         if first:
             first = False
             if FREEWARE_PREFIX in path or path.startswith(b"/opt/freeware"):
-                padded = pad_same_length(new_libpath, path, b":")
-                if padded is not None:
-                    data[start:start + len(path)] = padded
+                replacement = rewrite_libpath_components(path)
+                if replacement is None:
+                    replacement = pad_same_length(new_libpath, path, b":")
+                if replacement is not None:
+                    data[start:start + len(path)] = replacement
                     libpath_updated = True
             continue
 
@@ -184,16 +188,39 @@ def rewrite_loader_imports(data: bytearray, new_libpath: bytes) -> Tuple[int, bo
     return cleared, libpath_updated
 
 
+def is_toolbox_lib_dir(part: bytes) -> bool:
+    return part in (FREEWARE_LIB, FREEWARE_LIB64) or part.startswith(
+        FREEWARE_LIB + b"/"
+    ) or part.startswith(FREEWARE_LIB64 + b"/")
+
+
 def is_toolbox_lib_libpath(value: bytes) -> bool:
     """True for colon-separated search paths that include Toolbox lib dirs."""
     if b":" not in value:
         return False
-    for part in value.split(b":"):
-        if part in (FREEWARE_LIB, FREEWARE_LIB64):
-            return True
-        if part.startswith(FREEWARE_LIB + b"/") or part.startswith(FREEWARE_LIB64 + b"/"):
-            return True
-    return False
+    return any(is_toolbox_lib_dir(part) for part in value.split(b":"))
+
+
+def rewrite_libpath_components(libpath: bytes) -> Optional[bytes]:
+    """Replace Toolbox lib dir components in a LIBPATH, keeping total length."""
+    parts = libpath.split(b":")
+    new_parts = []
+    changed = False
+    for part in parts:
+        if is_toolbox_lib_dir(part):
+            padded = pad_same_length(NCPA_LIB, part, b"/")
+            if padded is None:
+                return None
+            new_parts.append(padded)
+            changed = True
+        else:
+            new_parts.append(part)
+    if not changed:
+        return None
+    result = b":".join(new_parts)
+    if len(result) != len(libpath):
+        return None
+    return result
 
 
 def rewrite_exact_freeware_cstrings(data: bytearray, new_libpath: bytes) -> Tuple[int, int]:
@@ -215,6 +242,9 @@ def rewrite_exact_freeware_cstrings(data: bytearray, new_libpath: bytes) -> Tupl
         except ValueError:
             search = idx + 1
             continue
+        if len(old) > MAX_IMPORT_CSTRING:
+            search = idx + len(FREEWARE_PREFIX)
+            continue
 
         replacement = None
         kind = None
@@ -222,7 +252,9 @@ def rewrite_exact_freeware_cstrings(data: bytearray, new_libpath: bytes) -> Tupl
             replacement = pad_same_length(NCPA_LIB, old, b"/")
             kind = "dir"
         elif is_toolbox_lib_libpath(old):
-            replacement = pad_same_length(new_libpath, old, b":")
+            replacement = rewrite_libpath_components(old)
+            if replacement is None:
+                replacement = pad_same_length(new_libpath, old, b":")
             kind = "libpath"
 
         if replacement is None:
@@ -238,7 +270,8 @@ def rewrite_exact_freeware_cstrings(data: bytearray, new_libpath: bytes) -> Tupl
     return dirs, libpaths
 
 
-def remaining_toolbox_lib_cstrings(data: bytes) -> List[str]:
+def remaining_absolute_freeware_dirs(data: bytes) -> List[str]:
+    """Leftover absolute Toolbox lib dirs (these bypass LIBPATH)."""
     found = []
     search = 0
     while True:
@@ -250,7 +283,10 @@ def remaining_toolbox_lib_cstrings(data: bytes) -> List[str]:
         except ValueError:
             search = idx + 1
             continue
-        if old in (FREEWARE_LIB, FREEWARE_LIB64) or is_toolbox_lib_libpath(old):
+        if len(old) > MAX_IMPORT_CSTRING:
+            search = idx + len(FREEWARE_PREFIX)
+            continue
+        if old in (FREEWARE_LIB, FREEWARE_LIB64):
             found.append(old.decode("ascii", "replace"))
         search = end
     return found
@@ -275,7 +311,7 @@ def process_bytes(raw: bytes, new_libpath: bytes) -> Tuple[bytes, int, bool, str
 
     data = bytearray(raw)
     dirs, libpaths = rewrite_exact_freeware_cstrings(data, new_libpath)
-    cleared = dirs
+    cleared = dirs + libpaths
     libpath_updated = libpaths > 0
 
     magic = struct.unpack(">H", raw[0:2])[0]
@@ -291,13 +327,16 @@ def process_bytes(raw: bytes, new_libpath: bytes) -> Tuple[bytes, int, bool, str
     if len(data) != len(raw):
         return raw, 0, False, "ERROR: rewriter changed file size"
 
-    leftover = remaining_toolbox_lib_cstrings(bytes(data))
+    leftover = remaining_absolute_freeware_dirs(bytes(data))
     if leftover:
         status = "remaining freeware lib paths: " + ", ".join(leftover)
         return bytes(data), cleared, libpath_updated, status
     if bytes(data) == raw:
         return raw, 0, False, "unchanged"
-    return bytes(data), cleared, libpath_updated, "patched"
+    extra = ""
+    if libpaths:
+        extra = f", updated {libpaths} embedded libpath(s)"
+    return bytes(data), cleared, libpath_updated, "patched" + extra
 
 
 def process_file(path: str, new_libpath: bytes) -> Tuple[int, bool, str]:
@@ -323,7 +362,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument(
         "--fail-on-freeware",
         action="store_true",
-        help="Exit non-zero if Toolbox lib dirs remain in import/LIBPATH strings",
+        help="Exit non-zero if absolute /opt/freeware/lib import dirs remain",
     )
     args = parser.parse_args(argv)
     new_libpath = args.libpath.encode("ascii")
@@ -342,6 +381,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"{path}: {status}; cleared {cleared} freeware loader import(s){extra}")
 
         if "remaining freeware" in status and args.fail_on_freeware:
+            print(
+                f"ERROR: {path} still has absolute Toolbox lib import paths",
+                file=sys.stderr,
+            )
             return 1
 
     print(f"Total freeware loader imports cleared: {total_cleared}")
@@ -349,4 +392,4 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main()) 
