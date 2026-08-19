@@ -114,6 +114,12 @@ rebuild_shared_archive() {
             if [ "$pick" != "$need" ]; then
                 cp "$pick" "$need"
             fi
+            # Reject 32-bit objects; a 64-bit ncpa will SIGILL or fail ldd.
+            mag=$(od -An -tx1 -N2 "$need" | tr -d ' \n')
+            if [ "$mag" != "01f7" ]; then
+                echo "  Skipping $src($pick): not 64-bit XCOFF (magic $mag, want 01f7)"
+                exit 1
+            fi
             aix_ar_create "$dest" "$need"
         ) || continue
 
@@ -175,23 +181,35 @@ merge_ibm_libiconv_members() {
 
 merge_ibm_libiconv_members "$NCPA_ROOT/lib/libiconv.a"
 
-echo "***** aix/fix_libpath.sh - rewriting absolute freeware import paths"
-TARGETS="$NCPA_ROOT/ncpa"
-for lib in $REQUIRED_LIBS; do
-    TARGETS="$TARGETS $NCPA_ROOT/lib/$lib"
-done
+echo "***** aix/fix_libpath.sh - rewriting XCOFF loader imports (executable + members)"
+$PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" --fail-on-freeware "$NCPA_ROOT/ncpa"
 
-# Also rewrite any other shipped archives/shared objects under lib/
-for extra in "$NCPA_ROOT"/lib/*.a "$NCPA_ROOT"/lib/*.so*; do
-    if [ -f "$extra" ]; then
-        case " $TARGETS " in
-            *" $extra "*) ;;
-            *) TARGETS="$TARGETS $extra" ;;
-        esac
+patch_archive_xcoff_members() {
+    archive=$1
+    tmpdir=/tmp/ncpa-xcoff-mem.$$
+    rm -rf "$tmpdir"
+    mkdir -p "$tmpdir"
+    echo "  Patching 64-bit members in $archive"
+    (
+        cd "$tmpdir" || exit 1
+        for m in $(ar -X64 t "$archive" 2>/dev/null); do
+            [ -n "$m" ] || continue
+            ar -X64 x "$archive" "$m"
+            if [ -f "$m" ]; then
+                $PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" "$m" || true
+                ar -X64 r "$archive" "$m"
+            fi
+        done
+        ar -X64 s "$archive" 2>/dev/null || true
+    )
+    rm -rf "$tmpdir"
+}
+
+for lib in $REQUIRED_LIBS; do
+    if [ -f "$NCPA_ROOT/lib/$lib" ]; then
+        patch_archive_xcoff_members "$NCPA_ROOT/lib/$lib"
     fi
 done
-
-$PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" --fail-on-freeware $TARGETS
 
 echo "***** aix/fix_libpath.sh - archive member check"
 echo "  libgcc_s.a members: $(aix_ar_t "$NCPA_ROOT/lib/libgcc_s.a" | tr '\n' ' ')"
@@ -205,19 +223,15 @@ if ! aix_ar_t "$NCPA_ROOT/lib/libiconv.a" | grep -qx 'libiconv.so.2'; then
     exit 1
 fi
 
-echo "***** aix/fix_libpath.sh - verifying with dump -Tv (if available)"
+echo "***** aix/fix_libpath.sh - verifying ncpa loader imports (if dump available)"
 if command -v dump >/dev/null 2>&1; then
-    for target in $TARGETS; do
-        hits=$(dump -Tv "$target" 2>/dev/null | grep '/opt/freeware/' || true)
-        if [ -n "$hits" ]; then
-            # Embedded LIBPATH may still mention freeware directories; import IDs
-            # with basenames were already rejected by fix_xcoff_imports.py.
-            echo "  NOTE: dump -Tv mentions /opt/freeware in $target (non-fatal if only LIBPATH):"
-            echo "$hits" | sed 's/^/    /'
-        fi
-    done
+    hits=$(dump -H "$NCPA_ROOT/ncpa" 2>/dev/null | grep '/opt/freeware/' || true)
+    if [ -n "$hits" ]; then
+        echo "  NOTE: dump -H still mentions /opt/freeware in ncpa:"
+        echo "$hits" | sed 's/^/    /'
+    fi
 else
-    echo "  dump not available; skipped dump -Tv verification"
+    echo "  dump not available; skipped dump -H verification"
 fi
 
 echo "***** aix/fix_libpath.sh - completed successfully"
