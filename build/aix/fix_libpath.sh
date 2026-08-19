@@ -114,7 +114,8 @@ if command -v ar >/dev/null 2>&1; then
             ensure_aix_member "$NCPA_ROOT/lib/libgcc_s.a" "shr.o" "libgcc_s.so.1" || exit 1
     else
         echo "  $NCPA_ROOT/lib/libgcc_s.a has member shr.o"
-    fi    ensure_aix_member "$NCPA_ROOT/lib/libiconv.a" "libiconv.so.2" "libiconv.so.1" || exit 1
+    fi
+    ensure_aix_member "$NCPA_ROOT/lib/libiconv.a" "libiconv.so.2" "libiconv.so.1" || exit 1
 fi
 
 echo "***** aix/fix_libpath.sh - rewriting absolute freeware import paths"
