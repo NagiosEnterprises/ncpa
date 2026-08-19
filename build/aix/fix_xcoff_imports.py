@@ -48,29 +48,35 @@ def pad_same_length(new: bytes, old: bytes, fill: bytes) -> Optional[bytes]:
     return new + (fill * pad)
 
 
-def get_loader_import_table(data: bytes) -> Optional[Tuple[int, int]]:
-    """Return (offset, length) of the XCOFF loader import string table."""
-    if len(data) < 24:
+STYP_LOADER = 0x1000
+
+
+def get_loader_import_table(data: bytes, base: int = 0) -> Optional[Tuple[int, int]]:
+    """Return (offset, length) of the XCOFF loader import string table.
+
+    Offsets are relative to the start of *data*. *base* is the start of the
+    XCOFF object (0 for a standalone file, member offset inside an archive).
+    Loader section is found by STYP_LOADER.
+    """
+    if base + 24 > len(data):
         return None
 
-    magic = struct.unpack(">H", data[0:2])[0]
+    magic = struct.unpack(">H", data[base:base + 2])[0]
     if magic == XCOFF32_MAGIC:
-        f_opthdr = struct.unpack(">H", data[16:18])[0]
         file_hdr_size = 20
-        aux_snloader_off = 50
         scnhdr_size = 40
-        scnptr_off = 12
+        scnptr_off = 20
+        flags_off = 36
         scnptr_fmt = ">I"
         ldr_hdr_size = 32
         l_istlen_off = 12
         l_impoff_off = 20
         l_impoff_fmt = ">I"
     elif magic == XCOFF64_MAGIC:
-        f_opthdr = struct.unpack(">H", data[16:18])[0]
         file_hdr_size = 24
-        aux_snloader_off = 50
         scnhdr_size = 72
-        scnptr_off = 24
+        scnptr_off = 32
+        flags_off = 64
         scnptr_fmt = ">Q"
         ldr_hdr_size = 56
         l_istlen_off = 12
@@ -79,37 +85,41 @@ def get_loader_import_table(data: bytes) -> Optional[Tuple[int, int]]:
     else:
         return None
 
-    if f_opthdr < aux_snloader_off + 2:
+    nscns = struct.unpack(">H", data[base + 2:base + 4])[0]
+    f_opthdr = struct.unpack(">H", data[base + 16:base + 18])[0]
+    if nscns <= 0 or nscns > 64 or f_opthdr > 512:
         return None
 
-    aux_off = file_hdr_size
-    snloader = struct.unpack(
-        ">H", data[aux_off + aux_snloader_off:aux_off + aux_snloader_off + 2]
-    )[0]
-    if snloader <= 0:
-        return None
-
-    scn_off = file_hdr_size + f_opthdr + (snloader - 1) * scnhdr_size
+    scn_base = base + file_hdr_size + f_opthdr
     scnptr_size = 4 if scnptr_fmt == ">I" else 8
-    if scn_off + scnptr_off + scnptr_size > len(data):
+    ldr_off = None
+    for i in range(nscns):
+        off = scn_base + i * scnhdr_size
+        if off + flags_off + 4 > len(data):
+            return None
+        flags = struct.unpack(">I", data[off + flags_off:off + flags_off + 4])[0]
+        if (flags & STYP_LOADER) == 0:
+            continue
+        scnptr = struct.unpack(
+            scnptr_fmt, data[off + scnptr_off:off + scnptr_off + scnptr_size]
+        )[0]
+        ldr_off = base + scnptr
+        break
+
+    if ldr_off is None or ldr_off <= base or ldr_off + ldr_hdr_size > len(data):
         return None
 
-    s_scnptr = struct.unpack(
-        scnptr_fmt, data[scn_off + scnptr_off:scn_off + scnptr_off + scnptr_size]
+    l_istlen = struct.unpack(
+        ">I", data[ldr_off + l_istlen_off:ldr_off + l_istlen_off + 4]
     )[0]
-
-    ldr_off = s_scnptr
-    if ldr_off + ldr_hdr_size > len(data):
-        return None
-
-    l_istlen = struct.unpack(">I", data[ldr_off + l_istlen_off:ldr_off + l_istlen_off + 4])[0]
     impoff_size = 4 if l_impoff_fmt == ">I" else 8
     l_impoff = struct.unpack(
-        l_impoff_fmt, data[ldr_off + l_impoff_off:ldr_off + l_impoff_off + impoff_size]
+        l_impoff_fmt,
+        data[ldr_off + l_impoff_off:ldr_off + l_impoff_off + impoff_size],
     )[0]
 
     imp_off = ldr_off + l_impoff
-    if imp_off + l_istlen > len(data) or l_istlen <= 0:
+    if l_istlen < 8 or l_istlen > 65536 or imp_off + l_istlen > len(data):
         return None
     return imp_off, l_istlen
 
@@ -133,12 +143,13 @@ def iter_import_ids(data: bytes) -> List[Tuple[bytes, bytes, bytes]]:
     return ids
 
 
-def rewrite_loader_imports(data: bytearray, new_libpath: bytes) -> Tuple[int, bool]:
+def rewrite_loader_imports(data: bytearray, new_libpath: bytes, base: int = 0) -> Tuple[int, bool]:
     """Rewrite freeware import paths in place without moving later strings.
 
-    Returns (cleared_import_count, libpath_updated).
+    Returns (cleared_import_count, libpath_updated). *base* is the XCOFF
+    object start inside *data*.
     """
-    loc = get_loader_import_table(bytes(data))
+    loc = get_loader_import_table(data, base)
     if not loc:
         return 0, False
 
@@ -152,9 +163,9 @@ def rewrite_loader_imports(data: bytearray, new_libpath: bytes) -> Tuple[int, bo
     while pos < table_end:
         start = pos
         try:
-            path, pos = read_cstring(bytes(data), pos)
-            base, pos = read_cstring(bytes(data), pos)
-            member, pos = read_cstring(bytes(data), pos)
+            path, pos = read_cstring(data, pos)
+            libbase, pos = read_cstring(data, pos)
+            member, pos = read_cstring(data, pos)
         except ValueError:
             break
         if pos > table_end:
@@ -186,6 +197,27 @@ def rewrite_loader_imports(data: bytearray, new_libpath: bytes) -> Tuple[int, bo
         cleared += 1
 
     return cleared, libpath_updated
+
+
+def rewrite_all_xcoff_loaders(data: bytearray, new_libpath: bytes) -> Tuple[int, bool]:
+    """Rewrite loader import tables of every XCOFF object in a file or archive."""
+    total = 0
+    lp_any = False
+    start = 0
+    while start < len(data) - 2:
+        idx64 = data.find(b"\x01\xf7", start)
+        idx32 = data.find(b"\x01\xdf", start)
+        found = [i for i in (idx64, idx32) if i >= 0]
+        if not found:
+            break
+        idx = min(found)
+        loc = get_loader_import_table(data, idx)
+        if loc:
+            cleared, lp = rewrite_loader_imports(data, new_libpath, idx)
+            total += cleared
+            lp_any = lp_any or lp
+        start = idx + 2
+    return total, lp_any
 
 
 def is_toolbox_lib_dir(part: bytes) -> bool:
@@ -298,18 +330,9 @@ def process_bytes(raw: bytes, new_libpath: bytes) -> Tuple[bytes, int, bool, str
 
     data = bytearray(raw)
     dirs, libpaths = rewrite_exact_freeware_cstrings(data, new_libpath)
-    cleared = dirs + libpaths
-    libpath_updated = libpaths > 0
-
-    magic = struct.unpack(">H", raw[0:2])[0]
-    if magic in (XCOFF32_MAGIC, XCOFF64_MAGIC):
-        if malformed_import_count(raw):
-            return raw, 0, False, "ERROR: file already has empty loader import IDs"
-        extra, lp = rewrite_loader_imports(data, new_libpath)
-        cleared += extra
-        libpath_updated = libpath_updated or lp
-        if malformed_import_count(bytes(data)):
-            return raw, 0, False, "ERROR: rewrite produced empty loader import IDs"
+    extra, lp = rewrite_all_xcoff_loaders(data, new_libpath)
+    cleared = dirs + libpaths + extra
+    libpath_updated = libpaths > 0 or lp
 
     if len(data) != len(raw):
         return raw, 0, False, "ERROR: rewriter changed file size"
@@ -382,4 +405,4 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main()) 
+    sys.exit(main())
