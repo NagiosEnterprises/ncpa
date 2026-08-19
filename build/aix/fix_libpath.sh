@@ -115,17 +115,24 @@ ensure_archive_member "$NCPA_ROOT/lib/libiconv.a" "libiconv.so.2" \
 # ksh93 needs IBM shr4_64.o, so never export LIBPATH in the shell; the
 # service script applies LIBPATH only to ncpa via env(1).
 
-echo "***** aix/fix_libpath.sh - rewriting XCOFF loader imports in place"
-# Same-length path rewrite only. Do not `ar r` patched members back into
-# libgcc_s.a / libiconv.a / libintl.a — that is what produced blank ldd
-# "Cannot find" lines (empty import IDs) and unloadable shr.o.
-$PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" --fail-on-freeware "$NCPA_ROOT/ncpa"
-if [ -f "$NCPA_ROOT/lib/libintl.a" ]; then
-    $PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" --fail-on-freeware "$NCPA_ROOT/lib/libintl.a"
+echo "***** aix/fix_libpath.sh - rewriting Toolbox lib import paths in place"
+# Same-length C-string rewrite of /opt/freeware/lib and /opt/freeware/lib64.
+# Do not extract/`ar r` shared members. Skip libgcc_s.a (GCC BUILD LIBPATH).
+set -- "$NCPA_ROOT/ncpa"
+for f in "$NCPA_ROOT/lib"/*.a; do
+    [ -f "$f" ] || continue
+    case "$(basename "$f")" in
+        libgcc_s.a) continue ;;
+    esac
+    set -- "$@" "$f"
+done
+if command -v find >/dev/null 2>&1; then
+    for f in $(find "$NCPA_ROOT" -type f \( -name '*.so' -o -name '*.so.*' \) 2>/dev/null); do
+        [ -f "$f" ] || continue
+        set -- "$@" "$f"
+    done
 fi
-if [ -f "$NCPA_ROOT/lib/libpython3.12.a" ]; then
-    $PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" "$NCPA_ROOT/lib/libpython3.12.a"
-fi
+$PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" --fail-on-freeware "$@"
 
 echo "***** aix/fix_libpath.sh - archive member check"
 echo "  libgcc_s.a members: $(aix_ar_t "$NCPA_ROOT/lib/libgcc_s.a" | tr '\n' ' ')"
@@ -141,16 +148,26 @@ fi
 
 echo "***** aix/fix_libpath.sh - verifying loader imports (if dump available)"
 if command -v dump >/dev/null 2>&1; then
-    for dump_target in "$NCPA_ROOT/ncpa" "$NCPA_ROOT/lib/libintl.a"; do
+    dump_failed=0
+    for dump_target in \
+        "$NCPA_ROOT/ncpa" \
+        "$NCPA_ROOT/lib/libpython3.12.a" \
+        "$NCPA_ROOT/lib/libintl.a" \
+        "$NCPA_ROOT/lib/libiconv.a"
+    do
         [ -f "$dump_target" ] || continue
-        hits=$(dump -X64 -H "$dump_target" 2>/dev/null | grep '/opt/freeware/' || true)
+        hits=$(dump -X64 -H "$dump_target" 2>/dev/null | grep '/opt/freeware/lib' || true)
         if [ -n "$hits" ]; then
-            echo "  NOTE: dump -X64 -H still mentions /opt/freeware in $dump_target:"
+            echo "ERROR: dump -X64 -H still mentions /opt/freeware/lib in $dump_target:"
             echo "$hits" | sed 's/^/    /'
+            dump_failed=1
         else
-            echo "  $dump_target: no /opt/freeware loader paths"
+            echo "  $dump_target: no /opt/freeware/lib loader paths"
         fi
     done
+    if [ "$dump_failed" -ne 0 ]; then
+        exit 1
+    fi
 else
     echo "  dump not available; skipped dump -X64 -H verification"
 fi
@@ -160,4 +177,4 @@ echo "Standalone check after install (do not export LIBPATH in your shell):"
 echo "  ldd /usr/local/ncpa/ncpa"
 echo "  ar -X64 t /usr/local/ncpa/lib/libgcc_s.a"
 echo "  ar -X64 t /usr/local/ncpa/lib/libiconv.a"
-echo "  startsrc -s ncpa"    
+echo "  startsrc -s ncpa"

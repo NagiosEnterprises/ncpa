@@ -1,28 +1,31 @@
 #!/usr/bin/env python3
 """Rewrite AIX XCOFF *loader* import paths for standalone NCPA installs.
 
-Only loader import C strings are modified, and only with same-length
-replacements. Shortening a path and padding the triplet with extra NULs
-creates empty import IDs; ldd then prints dspmsg 1312-042 and "Cannot find"
-with a blank name.
+Only C strings are modified, and only with same-length replacements.
+Shortening a path and padding with extra NULs creates empty import IDs;
+ldd then prints dspmsg 1312-042 and "Cannot find" with a blank name.
 
-Archives are patched in place (member bytes spliced back). Re-inserting a
-shared member with `ar r` can make the loader report it missing.
+Toolbox directories are matched as complete C strings:
+  /opt/freeware/lib   -> /usr/local/ncpa/lib/
+  /opt/freeware/lib64 -> /usr/local/ncpa/lib///
+LIBPATH strings that search those dirs are colon-padded to the NCPA libpath.
+Include paths and GCC BUILD LIBPATHs are left alone.
+
+Works on standalone XCOFF and on AIX .a archives without extracting members.
 """
 
 from __future__ import annotations
 
 import argparse
 import os
-import shutil
 import struct
-import subprocess
 import sys
-import tempfile
 from typing import List, Optional, Tuple
 
 
 FREEWARE_PREFIX = b"/opt/freeware/"
+FREEWARE_LIB = b"/opt/freeware/lib"
+FREEWARE_LIB64 = b"/opt/freeware/lib64"
 NCPA_LIB = b"/usr/local/ncpa/lib"
 DEFAULT_LIBPATH = b"/usr/local/ncpa/lib:/usr/lib:/lib"
 XCOFF32_MAGIC = 0x01DF
@@ -181,6 +184,78 @@ def rewrite_loader_imports(data: bytearray, new_libpath: bytes) -> Tuple[int, bo
     return cleared, libpath_updated
 
 
+def is_toolbox_lib_libpath(value: bytes) -> bool:
+    """True for colon-separated search paths that include Toolbox lib dirs."""
+    if b":" not in value:
+        return False
+    for part in value.split(b":"):
+        if part in (FREEWARE_LIB, FREEWARE_LIB64):
+            return True
+        if part.startswith(FREEWARE_LIB + b"/") or part.startswith(FREEWARE_LIB64 + b"/"):
+            return True
+    return False
+
+
+def rewrite_exact_freeware_cstrings(data: bytearray, new_libpath: bytes) -> Tuple[int, int]:
+    """Same-length rewrite of Toolbox lib dirs and LIBPATHs anywhere in a file.
+
+    This does not depend on parsing the XCOFF loader header, so it works inside
+    AIX .a archives when dump -H shows imports but member parsing fails.
+    Include paths and GCC BUILD LIBPATHs are left alone.
+    """
+    dirs = 0
+    libpaths = 0
+    search = 0
+    while True:
+        idx = data.find(FREEWARE_PREFIX, search)
+        if idx < 0:
+            break
+        try:
+            old, _end = read_cstring(bytes(data), idx)
+        except ValueError:
+            search = idx + 1
+            continue
+
+        replacement = None
+        kind = None
+        if old in (FREEWARE_LIB, FREEWARE_LIB64):
+            replacement = pad_same_length(NCPA_LIB, old, b"/")
+            kind = "dir"
+        elif is_toolbox_lib_libpath(old):
+            replacement = pad_same_length(new_libpath, old, b":")
+            kind = "libpath"
+
+        if replacement is None:
+            search = idx + max(len(old), 1)
+            continue
+
+        data[idx:idx + len(old)] = replacement
+        if kind == "dir":
+            dirs += 1
+        else:
+            libpaths += 1
+        search = idx + len(old)
+    return dirs, libpaths
+
+
+def remaining_toolbox_lib_cstrings(data: bytes) -> List[str]:
+    found = []
+    search = 0
+    while True:
+        idx = data.find(FREEWARE_PREFIX, search)
+        if idx < 0:
+            break
+        try:
+            old, end = read_cstring(data, idx)
+        except ValueError:
+            search = idx + 1
+            continue
+        if old in (FREEWARE_LIB, FREEWARE_LIB64) or is_toolbox_lib_libpath(old):
+            found.append(old.decode("ascii", "replace"))
+        search = end
+    return found
+
+
 def malformed_import_count(data: bytes) -> int:
     """Count import IDs that would make ldd print a blank 'Cannot find'."""
     ids = iter_import_ids(data)
@@ -193,34 +268,33 @@ def malformed_import_count(data: bytes) -> int:
     return bad
 
 
-def remaining_freeware_imports(data: bytes) -> List[str]:
-    found = []
-    for i, (path, base, member) in enumerate(iter_import_ids(data)):
-        if i == 0:
-            continue
-        if path.startswith(FREEWARE_PREFIX) and base:
-            label = f"{path.decode('ascii', 'replace')}/{base.decode('ascii', 'replace')}"
-            if member:
-                label += f"({member.decode('ascii', 'replace')})"
-            found.append(label)
-    return found
-
-
-def process_xcoff_bytes(raw: bytes, new_libpath: bytes) -> Tuple[bytes, int, bool, str]:
+def process_bytes(raw: bytes, new_libpath: bytes) -> Tuple[bytes, int, bool, str]:
+    """Patch standalone XCOFF or an AIX archive; file size must not change."""
     if len(raw) < 2:
         return raw, 0, False, "skipped (too small)"
-    magic = struct.unpack(">H", raw[0:2])[0]
-    if magic not in (XCOFF32_MAGIC, XCOFF64_MAGIC):
-        return raw, 0, False, "skipped (not XCOFF)"
 
-    if malformed_import_count(raw):
-        return raw, 0, False, "ERROR: file already has empty loader import IDs"
     data = bytearray(raw)
-    cleared, libpath_updated = rewrite_loader_imports(data, new_libpath)
+    dirs, libpaths = rewrite_exact_freeware_cstrings(data, new_libpath)
+    cleared = dirs
+    libpath_updated = libpaths > 0
+
+    magic = struct.unpack(">H", raw[0:2])[0]
+    if magic in (XCOFF32_MAGIC, XCOFF64_MAGIC):
+        if malformed_import_count(raw):
+            return raw, 0, False, "ERROR: file already has empty loader import IDs"
+        extra, lp = rewrite_loader_imports(data, new_libpath)
+        cleared += extra
+        libpath_updated = libpath_updated or lp
+        if malformed_import_count(bytes(data)):
+            return raw, 0, False, "ERROR: rewrite produced empty loader import IDs"
+
     if len(data) != len(raw):
         return raw, 0, False, "ERROR: rewriter changed file size"
-    if malformed_import_count(bytes(data)):
-        return raw, 0, False, "ERROR: rewrite produced empty loader import IDs"
+
+    leftover = remaining_toolbox_lib_cstrings(bytes(data))
+    if leftover:
+        status = "remaining freeware lib paths: " + ", ".join(leftover)
+        return bytes(data), cleared, libpath_updated, status
     if bytes(data) == raw:
         return raw, 0, False, "unchanged"
     return bytes(data), cleared, libpath_updated, "patched"
@@ -229,7 +303,7 @@ def process_xcoff_bytes(raw: bytes, new_libpath: bytes) -> Tuple[bytes, int, boo
 def process_file(path: str, new_libpath: bytes) -> Tuple[int, bool, str]:
     with open(path, "rb") as fh:
         raw = fh.read()
-    patched, cleared, libpath_updated, status = process_xcoff_bytes(raw, new_libpath)
+    patched, cleared, libpath_updated, status = process_bytes(raw, new_libpath)
     if status.startswith("ERROR"):
         return 0, False, status
     if patched != raw:
@@ -238,116 +312,9 @@ def process_file(path: str, new_libpath: bytes) -> Tuple[int, bool, str]:
     return cleared, libpath_updated, status
 
 
-def list_ar64_members(archive: str) -> List[str]:
-    for cmd in (
-        ["ar", "-X64", "t", archive],
-        ["ar", "-X64", "-t", archive],
-    ):
-        try:
-            out = subprocess.check_output(cmd, stderr=subprocess.STDOUT, text=True)
-        except Exception:
-            continue
-        members = []
-        failed = False
-        for line in out.splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            if line.startswith("ar:") or "0707-" in line or "Member name" in line:
-                failed = True
-                break
-            members.append(line)
-        if members and not failed:
-            return members
-    return []
-
-
-def process_archive(path: str, new_libpath: bytes) -> Tuple[int, bool, str]:
-    """Patch XCOFF members inside an AIX archive without `ar r`."""
-    members = list_ar64_members(path)
-    if not members:
-        return 0, False, "skipped (no 64-bit archive members listed)"
-
-    with open(path, "rb") as fh:
-        blob = bytearray(fh.read())
-
-    tmp = tempfile.mkdtemp(prefix="ncpa-xcoff-ar-")
-    total_cleared = 0
-    libpath_updated = False
-    changed = False
-    leftover = []
-    try:
-        for member in members:
-            extracted = os.path.join(tmp, os.path.basename(member))
-            try:
-                subprocess.check_call(
-                    ["ar", "-X64", "x", os.path.abspath(path), member],
-                    cwd=tmp,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                )
-            except Exception:
-                continue
-            if not os.path.isfile(extracted):
-                alt = os.path.join(tmp, member)
-                if os.path.isfile(alt):
-                    extracted = alt
-                else:
-                    continue
-            with open(extracted, "rb") as fh:
-                original = fh.read()
-            patched, cleared, lp_upd, status = process_xcoff_bytes(original, new_libpath)
-            leftover.extend(
-                f"{member}: {item}" for item in remaining_freeware_imports(patched)
-            )
-            if status.startswith("ERROR"):
-                return 0, False, f"{status} in member {member}"
-            if patched == original:
-                continue
-            start = 0
-            found = 0
-            while True:
-                off = blob.find(original, start)
-                if off < 0:
-                    break
-                blob[off:off + len(patched)] = patched
-                found += 1
-                start = off + 1
-            if found == 0:
-                return (
-                    0,
-                    False,
-                    f"ERROR: member {member} not found as contiguous bytes in {path}",
-                )
-            changed = True
-            total_cleared += cleared
-            libpath_updated = libpath_updated or lp_upd
-            print(f"  {path}({member}): {status}; cleared {cleared} freeware import path(s)")
-    finally:
-        shutil.rmtree(tmp, ignore_errors=True)
-
-    if changed:
-        with open(path, "wb") as fh:
-            fh.write(blob)
-
-    if leftover:
-        return total_cleared, libpath_updated, "patched with remaining freeware imports: " + ", ".join(leftover)
-    return total_cleared, libpath_updated, "patched" if changed else "unchanged"
-
-
-def process_path(path: str, new_libpath: bytes) -> Tuple[int, bool, str]:
-    with open(path, "rb") as fh:
-        magic = fh.read(8)
-    if magic.startswith(b"\x01\xf7") or magic.startswith(b"\x01\xdf"):
-        return process_file(path, new_libpath)
-    if path.endswith(".a") or magic.startswith(b"<bigaf>") or magic.startswith(b"<aiaff>") or magic.startswith(b"!<arch>"):
-        return process_archive(path, new_libpath)
-    return process_file(path, new_libpath)
-
-
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("paths", nargs="+", help="XCOFF binaries or AIX .a archives")
+    parser.add_argument("paths", nargs="+", help="XCOFF binaries, shared objects, or AIX .a archives")
     parser.add_argument(
         "--libpath",
         default=DEFAULT_LIBPATH.decode(),
@@ -356,7 +323,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument(
         "--fail-on-freeware",
         action="store_true",
-        help="Exit non-zero if loader import paths still use /opt/freeware",
+        help="Exit non-zero if Toolbox lib dirs remain in import/LIBPATH strings",
     )
     args = parser.parse_args(argv)
     new_libpath = args.libpath.encode("ascii")
@@ -366,7 +333,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         if not os.path.exists(path):
             print(f"ERROR: {path} does not exist", file=sys.stderr)
             return 1
-        cleared, libpath_updated, status = process_path(path, new_libpath)
+        cleared, libpath_updated, status = process_file(path, new_libpath)
         if status.startswith("ERROR"):
             print(f"{path}: {status}", file=sys.stderr)
             return 1
@@ -374,19 +341,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         extra = ", updated embedded libpath" if libpath_updated else ""
         print(f"{path}: {status}; cleared {cleared} freeware loader import(s){extra}")
 
-        if "remaining freeware imports" in status and args.fail_on_freeware:
+        if "remaining freeware" in status and args.fail_on_freeware:
             return 1
-
-        if not path.endswith(".a"):
-            with open(path, "rb") as fh:
-                leftovers = remaining_freeware_imports(fh.read())
-            if leftovers:
-                print(
-                    f"  remaining freeware loader imports: {', '.join(leftovers)}",
-                    file=sys.stderr,
-                )
-                if args.fail_on_freeware:
-                    return 1
 
     print(f"Total freeware loader imports cleared: {total_cleared}")
     return 0
