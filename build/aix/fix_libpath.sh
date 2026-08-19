@@ -219,18 +219,27 @@ patch_archive_xcoff_members() {
             [ -n "$m" ] || continue
             ar -X64 x "$archive" "$m"
             if [ -f "$m" ]; then
-                $PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" "$m" || true
+                $PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" "$m"
                 ar -X64 r "$archive" "$m"
             fi
         done
         ar -X64 s "$archive" 2>/dev/null || true
     )
     rm -rf "$tmpdir"
+    if command -v dump >/dev/null 2>&1; then
+        hits=$(dump -X64 -H "$archive" 2>/dev/null | grep '/opt/freeware/' || true)
+        if [ -n "$hits" ]; then
+            echo "ERROR: $archive still has /opt/freeware loader entries:"
+            echo "$hits" | sed 's/^/    /'
+            return 1
+        fi
+    fi
+    return 0
 }
 
 for lib in $REQUIRED_LIBS; do
     if [ -f "$NCPA_ROOT/lib/$lib" ]; then
-        patch_archive_xcoff_members "$NCPA_ROOT/lib/$lib"
+        patch_archive_xcoff_members "$NCPA_ROOT/lib/$lib" || exit 1
     fi
 done
 

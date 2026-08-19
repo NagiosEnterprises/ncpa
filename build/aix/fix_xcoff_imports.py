@@ -145,6 +145,68 @@ def rewrite_loader_imports(data: bytearray, new_libpath: bytes) -> Tuple[int, bo
     return cleared, libpath_updated
 
 
+def rewrite_freeware_import_triplets(data: bytearray) -> int:
+    """Rewrite path\\0lib*.a\\0member\\0 whose path is under /opt/freeware.
+    Used when loader-header parsing fails for shared objects. Requires a
+    real archive/member pair so include-path strings are not touched.
+    """
+    cleared = 0
+    search = 0
+    while True:
+        idx = data.find(FREEWARE_PREFIX, search)
+        if idx < 0:
+            break
+        try:
+            path, after_path = read_cstring(bytes(data), idx)
+            base, after_base = read_cstring(bytes(data), after_path)
+            member, after_member = read_cstring(bytes(data), after_base)
+        except ValueError:
+            search = idx + 1
+            continue
+        if not base or b"/" in base or b"/" in member:
+            search = idx + 1
+            continue
+        if not (base.endswith(b".a") or b".so" in base):
+            search = idx + 1
+            continue
+
+        new_path = NCPA_LIB if len(NCPA_LIB) <= len(path) else b""
+        new_entry = new_path + b"\0" + base + b"\0" + member + b"\0"
+        old_len = after_member - idx
+        if len(new_entry) > old_len:
+            new_entry = b"\0" + base + b"\0" + member + b"\0"
+        if len(new_entry) > old_len:
+            search = idx + 1
+            continue
+        data[idx:after_member] = new_entry + (b"\0" * (old_len - len(new_entry)))
+        cleared += 1
+        search = idx + old_len
+    return cleared
+
+
+def rewrite_freeware_libpath_strings(data: bytearray, new_libpath: bytes) -> int:
+    """Replace colon-separated default LIBPATH strings that search /opt/freeware."""
+    updated = 0
+    search = 0
+    while True:
+        idx = data.find(FREEWARE_PREFIX, search)
+        if idx < 0:
+            break
+        try:
+            old, end = read_cstring(bytes(data), idx)
+        except ValueError:
+            search = idx + 1
+            continue
+        if b":/usr/lib" not in old and b":/lib" not in old:
+            search = end
+            continue
+        if len(new_libpath) <= len(old):
+            data[idx:idx + len(old)] = new_libpath + (b":" * (len(old) - len(new_libpath)))
+            updated += 1
+        search = idx + max(len(old), 1)
+    return updated
+
+
 def loader_freeware_imports(data: bytes) -> List[str]:
     loc = get_loader_import_table(data)
     if not loc:
@@ -186,7 +248,9 @@ def process_file(path: str, new_libpath: bytes) -> Tuple[int, bool, str]:
 
     data = bytearray(raw)
     cleared, libpath_updated = rewrite_loader_imports(data, new_libpath)
-
+    cleared += rewrite_freeware_import_triplets(data)
+    libpath_updated = rewrite_freeware_libpath_strings(data, new_libpath) > 0 or libpath_updated
+    
     if data != raw:
         with open(path, "wb") as fh:
             fh.write(data)
