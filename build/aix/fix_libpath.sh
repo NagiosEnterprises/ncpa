@@ -12,7 +12,7 @@ SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd -P)
 FIX_PY="$SCRIPT_DIR/fix_xcoff_imports.py"
 TARGET_LIBPATH="/usr/local/ncpa/lib:/usr/lib:/lib"
 
-REQUIRED_LIBS="libpython3.12.a libgcc_s.a libintl.a libiconv.a libsqlite3.a libz.a libffi.a"
+REQUIRED_LIBS="libpython3.12.a libgcc_s.a libstdc++.a libintl.a libiconv.a libsqlite3.a libz.a libffi.a"
 
 if [ -z "$NCPA_ROOT" ]; then
     echo "Usage: $0 /path/to/ncpa"
@@ -65,9 +65,15 @@ aix_ar_t() {
 
 # Newest GCC runtime first (13 before 10). Unmatched globs are skipped by [ -e ].
 GCC_LIBGCC_S=""
+GCC_LIBSTDCXX=""
 for src in /opt/freeware/lib/gcc/*/*/libgcc_s.a /opt/freeware/lib64/gcc/*/*/libgcc_s.a; do
     if [ -e "$src" ]; then
         GCC_LIBGCC_S="$src $GCC_LIBGCC_S"
+    fi
+done
+for src in /opt/freeware/lib/gcc/*/*/libstdc++.a /opt/freeware/lib64/gcc/*/*/libstdc++.a; do
+    if [ -e "$src" ]; then
+        GCC_LIBSTDCXX="$src $GCC_LIBSTDCXX"
     fi
 done
 
@@ -100,11 +106,16 @@ ensure_archive_member() {
     return 1
 }
 
-echo "***** aix/fix_libpath.sh - ensuring loadable libgcc_s.a and libiconv.a"
+echo "***** aix/fix_libpath.sh - ensuring loadable GCC/GNU archives"
 ensure_archive_member "$NCPA_ROOT/lib/libgcc_s.a" "shr.o" \
     $GCC_LIBGCC_S \
     /opt/freeware/lib64/libgcc_s.a \
     /opt/freeware/lib/libgcc_s.a || exit 1
+
+ensure_archive_member "$NCPA_ROOT/lib/libstdc++.a" "libstdc++.so.6" \
+    $GCC_LIBSTDCXX \
+    /opt/freeware/lib64/libstdc++.a \
+    /opt/freeware/lib/libstdc++.a || exit 1
 
 ensure_archive_member "$NCPA_ROOT/lib/libiconv.a" "libiconv.so.2" \
     /opt/freeware/lib64/libiconv.a \
@@ -119,7 +130,7 @@ echo "***** aix/fix_libpath.sh - rewriting Toolbox lib import paths in place"
 # /opt/freeware/lib is 17 bytes; /usr/local/ncpa/lib is 19, so those import
 # IDs are cleared (empty path = LIBPATH search) instead of same-length
 # replaced. Do not extract/`ar r` GCC/GNU iconv shared members.
-# Skip libgcc_s.a (GCC BUILD LIBPATH).
+# Skip GCC runtime archives (BUILD LIBPATH strings). Do not extract/`ar r`.
 set -- "$NCPA_ROOT/ncpa"
 for f in "$NCPA_ROOT/lib"/*.a; do
     [ -f "$f" ] || continue
@@ -138,9 +149,14 @@ $PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" "$@"
 
 echo "***** aix/fix_libpath.sh - archive member check"
 echo "  libgcc_s.a members: $(aix_ar_t "$NCPA_ROOT/lib/libgcc_s.a" | tr '\n' ' ')"
+echo "  libstdc++.a members: $(aix_ar_t "$NCPA_ROOT/lib/libstdc++.a" | tr '\n' ' ')"
 echo "  libiconv.a members: $(aix_ar_t "$NCPA_ROOT/lib/libiconv.a" | tr '\n' ' ')"
 if ! aix_ar_t "$NCPA_ROOT/lib/libgcc_s.a" | grep -qx 'shr.o'; then
     echo "ERROR: libgcc_s.a is missing shr.o"
+    exit 1
+fi
+if ! aix_ar_t "$NCPA_ROOT/lib/libstdc++.a" | grep -qx 'libstdc++.so.6'; then
+    echo "ERROR: libstdc++.a is missing libstdc++.so.6"
     exit 1
 fi
 if ! aix_ar_t "$NCPA_ROOT/lib/libiconv.a" | grep -qx 'libiconv.so.2'; then
@@ -187,5 +203,6 @@ echo "***** aix/fix_libpath.sh - completed successfully"
 echo "Standalone check after install (do not export LIBPATH in your shell):"
 echo "  ldd /usr/local/ncpa/ncpa"
 echo "  ar -X64 t /usr/local/ncpa/lib/libgcc_s.a"
+echo "  ar -X64 t /usr/local/ncpa/lib/libstdc++.a"
 echo "  ar -X64 t /usr/local/ncpa/lib/libiconv.a"
-echo "  startsrc -s ncpa"
+echo "  startsrc -s ncpa"  

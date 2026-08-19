@@ -39,7 +39,7 @@ BIGAF_MAGIC = b"<bigaf>\n"
 # Ignore unterminated / huge matches so we do not pad megabytes of colons.
 MAX_IMPORT_CSTRING = 1024
 # Do not ar-replace GCC/GNU iconv members; that made them unloadable.
-NO_AR_REPLACE = {"libgcc_s.a", "libiconv.a"}
+NO_AR_REPLACE = {"libgcc_s.a", "libstdc++.a", "libiconv.a"}
 
 # dump -H PATH / BASE / MEMBER triplets that still block standalone installs.
 IMPORT_TRIPLETS = (
@@ -47,6 +47,7 @@ IMPORT_TRIPLETS = (
     (b"libiconv.a", b"libiconv.so.2"),
     (b"libpython3.12.a", b"libpython3.12.so"),
     (b"libgcc_s.a", b"shr.o"),
+    (b"libstdc++.a", b"libstdc++.so.6"),
     (b"libffi.a", b"libffi.so.8"),
     (b"libz.a", b"libz.so.1"),
     (b"libsqlite3.a", b"libsqlite3.so.0"),

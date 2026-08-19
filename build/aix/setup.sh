@@ -63,9 +63,9 @@ verify_runtime_libs() {
 
     find_freeware_lib() {
         name=$1
-        if [ "$name" = "libgcc_s.a" ]; then
-            set -- /opt/freeware/lib/gcc/*/*/libgcc_s.a /opt/freeware/lib64/gcc/*/*/libgcc_s.a \
-                /opt/freeware/lib64/libgcc_s.a /opt/freeware/lib/libgcc_s.a
+        if [ "$name" = "libgcc_s.a" ] || [ "$name" = "libstdc++.a" ]; then
+            set -- /opt/freeware/lib/gcc/*/*/"$name" /opt/freeware/lib64/gcc/*/*/"$name" \
+                /opt/freeware/lib64/"$name" /opt/freeware/lib/"$name"
             for lib in "$@"; do
                 if [ -e "$lib" ]; then
                     echo "$lib"
@@ -86,6 +86,7 @@ verify_runtime_libs() {
     for name in \
         libpython3.12.a \
         libgcc_s.a \
+        libstdc++.a \
         libintl.a \
         libiconv.a \
         libsqlite3.a \
@@ -104,6 +105,7 @@ verify_runtime_libs() {
         required=""
         case "$name" in
             libgcc_s.a) required="shr.o" ;;
+            libstdc++.a) required="libstdc++.so.6" ;;
             libiconv.a) required="libiconv.so.2" ;;
         esac
         if [ -n "$required" ] && command -v ar >/dev/null 2>&1; then

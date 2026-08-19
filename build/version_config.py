@@ -175,14 +175,14 @@ def _aix_add_archive_member_alias(archive_path, source_member, new_member):
 
 
 def _iter_aix_freeware_lib_candidates(name):
-    """Yield real paths for a Toolbox archive, GCC dirs first for libgcc_s."""
+    """Yield real paths for a Toolbox archive, GCC dirs first for GCC runtimes."""
     seen = set()
     paths = []
-    if name == 'libgcc_s.a':
-        # Prefer the compiler runtime archive (has shr.o). lib64/libgcc_s.a is
-        # often a linker stub and will fail ldd with libgcc_s.a(shr.o).
-        paths.extend(sorted(glob.glob('/opt/freeware/lib/gcc/*/*/libgcc_s.a'), reverse=True))
-        paths.extend(sorted(glob.glob('/opt/freeware/lib64/gcc/*/*/libgcc_s.a'), reverse=True))
+    if name in ('libgcc_s.a', 'libstdc++.a'):
+        # Prefer the compiler runtime archive. lib64 copies are often linker
+        # stubs and fail at load with missing shr.o / libstdc++.so.6.
+        paths.extend(sorted(glob.glob('/opt/freeware/lib/gcc/*/*/' + name), reverse=True))
+        paths.extend(sorted(glob.glob('/opt/freeware/lib64/gcc/*/*/' + name), reverse=True))
     for directory in ('/opt/freeware/lib64', '/opt/freeware/lib'):
         paths.append(os.path.join(directory, name))
 
@@ -207,6 +207,7 @@ def get_aix_lib_paths():
     lib_names = [
         'libpython3.12.a',
         'libgcc_s.a',
+        'libstdc++.a',
         'libintl.a',
         'libiconv.a',
         'libsqlite3.a',
@@ -215,6 +216,7 @@ def get_aix_lib_paths():
     ]
     required_members = {
         'libgcc_s.a': 'shr.o',
+        'libstdc++.a': 'libstdc++.so.6',
         'libiconv.a': 'libiconv.so.2',
     }
     alternate_members = {
