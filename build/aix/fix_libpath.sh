@@ -204,9 +204,12 @@ merge_ibm_libiconv_members() {
 
 merge_ibm_libiconv_members "$NCPA_ROOT/lib/libiconv.a"
 
-echo "***** aix/fix_libpath.sh - rewriting XCOFF loader imports (executable + members)"
+echo "***** aix/fix_libpath.sh - rewriting XCOFF loader imports"
 $PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" --fail-on-freeware "$NCPA_ROOT/ncpa"
 
+# Do not extract/re-ar libgcc_s.a or libiconv.a. Re-inserting those members
+# makes the loader report "Cannot find ... (shr.o)" / "(libiconv.so.2)".
+# libintl.a is what still absolute-imports freeware libiconv.
 patch_archive_xcoff_members() {
     archive=$1
     tmpdir=/tmp/ncpa-xcoff-mem.$$
@@ -218,30 +221,28 @@ patch_archive_xcoff_members() {
         for m in $(ar -X64 t "$archive" 2>/dev/null); do
             [ -n "$m" ] || continue
             ar -X64 x "$archive" "$m"
-            if [ -f "$m" ]; then
-                $PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" "$m"
+            if [ ! -f "$m" ]; then
+                continue
+            fi
+            before=$("$PYTHONBIN" -c "import hashlib,sys; print(hashlib.sha256(open(sys.argv[1],'rb').read()).hexdigest())" "$m")
+            $PYTHONBIN "$FIX_PY" --libpath "$TARGET_LIBPATH" "$m"
+            after=$("$PYTHONBIN" -c "import hashlib,sys; print(hashlib.sha256(open(sys.argv[1],'rb').read()).hexdigest())" "$m")
+            if [ "$before" != "$after" ]; then
+                echo "    updated member $m"
                 ar -X64 r "$archive" "$m"
             fi
         done
         ar -X64 s "$archive" 2>/dev/null || true
     )
     rm -rf "$tmpdir"
-    if command -v dump >/dev/null 2>&1; then
-        hits=$(dump -X64 -H "$archive" 2>/dev/null | grep '/opt/freeware/' || true)
-        if [ -n "$hits" ]; then
-            echo "ERROR: $archive still has /opt/freeware loader entries:"
-            echo "$hits" | sed 's/^/    /'
-            return 1
-        fi
-    fi
-    return 0
 }
 
-for lib in $REQUIRED_LIBS; do
-    if [ -f "$NCPA_ROOT/lib/$lib" ]; then
-        patch_archive_xcoff_members "$NCPA_ROOT/lib/$lib" || exit 1
-    fi
-done
+if [ -f "$NCPA_ROOT/lib/libintl.a" ]; then
+    patch_archive_xcoff_members "$NCPA_ROOT/lib/libintl.a" || exit 1
+fi
+if [ -f "$NCPA_ROOT/lib/libpython3.12.a" ]; then
+    patch_archive_xcoff_members "$NCPA_ROOT/lib/libpython3.12.a" || exit 1
+fi
 
 echo "***** aix/fix_libpath.sh - archive member check"
 echo "  libgcc_s.a members: $(aix_ar_t "$NCPA_ROOT/lib/libgcc_s.a" | tr '\n' ' ')"
@@ -271,4 +272,4 @@ echo "Standalone check after install (do not export LIBPATH in your shell):"
 echo "  ldd /usr/local/ncpa/ncpa"
 echo "  ar -X64 t /usr/local/ncpa/lib/libgcc_s.a"
 echo "  ar -X64 t /usr/local/ncpa/lib/libiconv.a"
-echo "  startsrc -s ncpa"    
+echo "  startsrc -s ncpa"

@@ -249,8 +249,9 @@ def process_file(path: str, new_libpath: bytes) -> Tuple[int, bool, str]:
 
     data = bytearray(raw)
     cleared, libpath_updated = rewrite_loader_imports(data, new_libpath)
+    # Precise import IDs only. Do not rewrite arbitrary freeware LIBPATH
+    # strings; that corrupts GCC runtime objects and makes ldd fail.
     cleared += rewrite_freeware_import_triplets(data)
-    libpath_updated = rewrite_freeware_libpath_strings(data, new_libpath) > 0 or libpath_updated
 
     if data != raw:
         with open(path, "wb") as fh:
