@@ -5,7 +5,6 @@ Changelog
 **Added**
 
 - Added /api/system/os_release endpoint exposing Linux distribution fields from /etc/os-release (name, id, pretty_name, etc.). [GH#1358] - CPD
-- Added cross-platform continuous integration and testing via GitHub Actions for Linux, Windows, and macOS. - CPD
 - Added gui_session_timeout config option in the [listener] section to automatically log out inactive web GUI sessions after a configurable period (default: 1 hour). - CPD
 - Added ssl_max_version config option in the [listener] section to specify the maximum TLS version allowed for incoming connections. [GH#1417] - CPD
 - Added support for running plugins in subdirectories by specifying the relative path (e.g. plugins/old/check_disk.sh). [GH#577, GH#811] - CPD
