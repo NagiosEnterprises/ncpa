@@ -1,0 +1,78 @@
+name: Linux CI
+
+on:
+  push:
+    branches: [ 'master' ]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-22.04
+    
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v6
+        id: setup-python
+        with:
+          python-version: '3.13'
+
+      - name: Build project
+        working-directory: build
+        run: sudo ./build.sh
+
+      - name: Run unit tests
+        run: |
+          sudo chown -R $USER:$USER build/
+          source build/venvs/ncpa-build-linux/bin/activate
+          python -m pip install pytest
+          pytest -v
+          deactivate
+
+      # - name: Upload RPM Installer
+      #   uses: actions/upload-artifact@v7
+      #   with:
+      #     name: ncpa-rpm
+      #     path: build/*.rpm
+      #     overwrite: true
+
+      - name: Upload DEB installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: ncpa-deb
+          path: build/*.deb
+          overwrite: true
+
+  e2e-linux:
+    runs-on: ubuntu-22.04
+    needs: build-linux # Crucial: Enforces sequential execution
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: ncpa-deb
+          path: downloaded-assets/
+
+      - name: Verify Artifact File
+        run: ls -l ./downloaded-assets/ncpa*.deb
+
+      - name: Test Linux Install
+        run: sudo apt install -y ./downloaded-assets/ncpa*.deb
+
+      - name: Sleep for 10 seconds
+        run: sleep 10
+
+      - name: Ensure Service is Running
+        run: sudo systemctl is-active ncpa
+
+      - name: Test API Sanity Check
+        run: curl -k 'https://127.0.0.1:5693/api/system/agent_version?token=mytoken'
+
+      - name: Copy Custom Plugin
+        run: sudo cp ./test/e2e/plugins/check_os.sh /usr/local/ncpa/plugins/
+
+      - name: Run E2E Tests
+        run: bash ./test/e2e/test_ncpa_e2e.sh 
+

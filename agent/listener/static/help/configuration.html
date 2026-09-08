@@ -187,6 +187,17 @@
                             </tr>
                             <tr>
                                 <td></td>
+                                <th>ssl_max_version</th>
+                                <td></td>
+                                <td>
+                                    Set the maximum SSL protocol version to allow for connecting to the HTTPS server.
+                                    <br>
+                                    Note: Must be set to TLSv1_2 if using custom 'ssl_ciphers'
+                                    <div><b>Options:</b> <em>TLSv1_2</em>, or <em>TLSv1_3</em></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
                                 <th>ssl_ciphers</th>
                                 <td></td>
                                 <td>
@@ -219,6 +230,11 @@
                                 <td>0</td>
                                 <td>Setting this variable to <b>1</b> will force NCPA to require admin authentication on GUI login/access. This is useful if you don't want anyone to log into the GUI using the API token defined by <code>community_string</code> in the section below. This requires you to have a password set for <code>admin_password</code> too, since it will never allow authentication when <code>admin_password = None</code>.</td>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <th>gui_session_timeout</th>
+                                <td>3600</td>
+                                <td>The number of seconds of GUI inactivity before a logged-in user must authenticate again. Set to <b>0</b> to disable the timeout. This does not affect API access via token. Background live data requests (graphs, websockets, and API polling) do not reset the timer; navigating between GUI pages does.</td>                            </tr>
                             <tr>
                                 <td></td>
                                 <th>delay_start</th>

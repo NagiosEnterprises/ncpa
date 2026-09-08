@@ -223,9 +223,28 @@ class PluginNode(nodes.RunnableNode):
         return command
 
 
+class PluginDirNode(nodes.ParentNode):
+    """Parent node for plugin subdirectories."""
+
+    def accessor(self, path, config, full_path, args):
+        if path and environment.SYSTEM == "Windows":
+            path = [path[0].lower()] + path[1:]
+        return super(PluginDirNode, self).accessor(path, config, full_path, args)
+
+
 class PluginAgentNode(nodes.ParentNode):
     def __init__(self, name, *args, **kwargs):
         self.name = name
+
+    def _get_or_create_dir_node(self, rel_path):
+        parts = rel_path.replace("\\", "/").split("/")
+        parent = self
+        for part in parts:
+            key = part.lower() if environment.SYSTEM == "Windows" else part
+            if key not in parent.children:
+                parent.children[key] = PluginDirNode(part)
+            parent = parent.children[key]
+        return parent
 
     def setup_plugin_children(self, config):
         plugin_path = config.get("plugin directives", "plugin_path")
@@ -240,20 +259,37 @@ class PluginAgentNode(nodes.ParentNode):
 
         try:
             for root, dirs, files in os.walk(plugin_path, followlinks=follow_symlinks):
+                rel_root = os.path.relpath(root, plugin_path)
+                if rel_root == ".":
+                    parent = self
+                else:
+                    parent = self._get_or_create_dir_node(rel_root)
+
                 for plugin in files:
                     if plugin == ".keep":
                         continue
                     plugin_abs_path = os.path.join(root, plugin)
                     if os.path.isfile(plugin_abs_path):
-                        if environment.SYSTEM == "Windows":
-                            self.children[plugin.lower()] = PluginNode(plugin, plugin_abs_path)
-                        else:
-                            self.children[plugin] = PluginNode(plugin, plugin_abs_path)
+                        key = plugin.lower() if environment.SYSTEM == "Windows" else plugin
+                        parent.children[key] = PluginNode(plugin, plugin_abs_path)
         except OSError as exc:
             logging.warning("Unable to access directory %s", plugin_path)
             logging.warning(
                 "Unable to assemble plugins. Does the directory exist? - %r", exc
             )
+
+    def _collect_plugin_paths(self, node=None, prefix=""):
+        if node is None:
+            node = self
+        plugins = []
+        for name, child in node.children.items():
+            if isinstance(child, PluginNode):
+                rel_path = os.path.join(prefix, name).replace("\\", "/") if prefix else name
+                plugins.append(rel_path)
+            elif isinstance(child, PluginDirNode):
+                sub_prefix = os.path.join(prefix, name).replace("\\", "/") if prefix else name
+                plugins.extend(self._collect_plugin_paths(child, sub_prefix))
+        return plugins
 
     def accessor(self, path, config, full_path, args):
         self.setup_plugin_children(config)
@@ -261,6 +297,6 @@ class PluginAgentNode(nodes.ParentNode):
 
     def walk(self, *args, **kwargs):
         self.setup_plugin_children(kwargs["config"])
-        plugins = list(self.children.keys())
+        plugins = self._collect_plugin_paths()
         plugins.sort()
         return {self.name: plugins}

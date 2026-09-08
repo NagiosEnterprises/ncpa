@@ -1,5 +1,27 @@
 Changelog
 +++++++++
+3.5.0 - 9/8/2026
+==================
+**Added**
+
+- Added /api/system/os_release endpoint exposing Linux distribution fields from /etc/os-release (name, id, pretty_name, etc.). [GH#1358] - CPD
+- Added gui_session_timeout config option in the [listener] section to automatically log out inactive web GUI sessions after a configurable period (default: 1 hour). - CPD
+- Added ssl_max_version config option in the [listener] section to specify the maximum TLS version allowed for incoming connections. [GH#1417] - CPD
+- Added support for running plugins in subdirectories by specifying the relative path (e.g. plugins/old/check_disk.sh). [GH#577, GH#811] - CPD
+
+**Bug Fixes**
+
+- Fixed a macOS installation issue caused by an xattr check error on Python 3.14 builds. - CPD
+- Fixed an issue in Linux RPM installs/upgrades where unrelated SysV init scripts were unintentionally triggered despite systemd being available. [GH#1361] - CPD
+- Fixed an issue where NCPA would run the wrong plugin when the same filename existed in both the plugins root directory and a subdirectory. [GH#1423, GH#1257] - CPD
+- Fixed multiple invalid escape sequences in the listener config/passive check GUI code that caused Python SyntaxWarnings and could break sed-based config updates on Linux. - CPD
+
+**Updates**
+
+- Updated macOS build link and added Solaris and AIX build links in README. - CPD
+- Updated README badges to reflect the migration from Travis CI to GitHub Actions. - CPD
+- Updated Windows builds to use Python version 3.13.15. - CPD
+
 3.4.3 - 7/23/2026
 ==================
 **Bug Fixes**

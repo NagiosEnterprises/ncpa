@@ -19,7 +19,7 @@
         {% block headerjs %}
         {% endblock %}
     </head>
-    <body{% if not no_nav %} style="padding-top: 50px;"{% endif %}>
+    <body{% if not no_nav %} style="padding-top: 50px;"{% endif %}{% if session_logged and gui_session_timeout > 0 %} data-session-monitor="1" data-session-expires-at="{{ session_expires_at }}"{% endif %}>
         {% if not no_nav %}
         <nav class="navbar navbar-inverse navbar-default navbar-fixed-top">
             <div class="container-fluid">

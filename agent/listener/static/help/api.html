@@ -830,8 +830,17 @@
                     <a name="api-modules-system"></a>
                     <h4>system</h4>
                     <p>This module is used for getting information about the system that NCPA is running on and the agent version. It doesn't currently have the ability to perform many checks. However, we do use the output of the <code>system/agent_version</code> check to give the default <code>__HOST__</code> service an output in passive checks and for the host in active checks created by running the Nagios XI NCPA config wizard.</p>
+                    <p>On Linux systems that provide <code>/etc/os-release</code> (or <code>/usr/lib/os-release</code>), the <code>system/os_release</code> node exposes distribution identity fields such as <code>name</code>, <code>id</code>, <code>pretty_name</code>, <code>version_id</code>, <code>version</code>, <code>version_codename</code>, and <code>id_like</code>. This node is omitted on platforms where os-release data is unavailable.</p>
                     <p><em>You cannot use any special parameters on this module. This module is just for getting system information.</em></p>
-
+                    <pre>https://localhost:5693/api/system/os_release?token=mytoken</pre>
+                    <pre>{
+    "os_release": {
+        "name": "Red Hat Enterprise Linux",
+        "id": "rhel",
+        "pretty_name": "Red Hat Enterprise Linux 9.2 (Plow)",
+        "version_id": "9.2"
+    }
+}</pre>
                     <a name="api-modules-plugins"></a>
                     <h4>plugins</h4>
                     <p>This module will show you a list of all available plugins (that are in the directory defined <code>plugin_path</code>) and let's you run them.</p>
