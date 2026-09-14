@@ -6,6 +6,10 @@ Changelog
 
 - Placeholder for future bug fix entries
 
+**Removed**
+
+- Removed the d3.v7.min.js library from the base.html template and the graphs help page, as it is no longer used in the graphing module. - CPD
+
 3.5.0 - 9/8/2026
 ==================
 **Added**
