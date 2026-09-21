@@ -12,7 +12,7 @@ Changelog
 
 **Updates**
 
-- Updated the bundled Smoothie Charts graphing library to version 1.36.1, resolving live graph jitter and a memory leak, and improving rendering performance. - CPD
+- Updated the bundled Smoothie Charts graphing library to version 1.37, resolving live graph jitter and a memory leak, and improving rendering performance. - CPD
 
 3.5.0 - 9/8/2026
 ==================
