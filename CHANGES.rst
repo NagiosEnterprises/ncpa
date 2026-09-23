@@ -12,6 +12,7 @@ Changelog
 
 **Updates**
 
+- Updated the bundled Font Awesome library to version 7.3.1, resolving multiple CVEs and improving icon rendering performance. - CPD
 - Updated the bundled Smoothie Charts graphing library to version 1.37, resolving live graph jitter and a memory leak, and improving rendering performance. - CPD
 
 3.5.0 - 9/8/2026
