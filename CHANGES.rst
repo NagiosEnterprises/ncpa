@@ -4,11 +4,15 @@ Changelog
 ==================
 **Bug Fixes**
 
-- Placeholder for future bug fix entries
+- Fixed an invalid color value in the real-time graph template that prevented graph axis labels from rendering in the intended color. - CPD
 
 **Removed**
 
 - Removed the d3.v7.min.js library from the base.html template and the graphs help page, as it is no longer used in the graphing module. - CPD
+
+**Updates**
+
+- Updated the bundled Smoothie Charts graphing library to version 1.37, resolving live graph jitter and a memory leak, and improving rendering performance. - CPD
 
 3.5.0 - 9/8/2026
 ==================
