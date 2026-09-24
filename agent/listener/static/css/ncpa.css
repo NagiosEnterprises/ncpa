@@ -7,6 +7,7 @@ a:focus { text-decoration: none; color: #4d89f9; }
 .clear { clear: both; }
 .fa-l { margin-right: 2px; }
 .fa-r { margin-left: 2px; }
+.fa:not(.fa-fw) { --fa-width: auto; }
 .fa-14 { font-size: 13px; }
 .fa-16 { font-size: 15px; }
 .fa-btn { font-size: 14px; vertical-align: middle; }
