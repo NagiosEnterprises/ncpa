@@ -31,7 +31,7 @@ $(document).ready(function() {
     <p>These are the NRDS settings.</p>
 
     <div class="container-fluid" style="margin-top: 30px; padding: 0;">
-        
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="form-horizontal">
@@ -67,13 +67,11 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Update Config</label>
                         <div class="col-sm-6">
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if update_config %} active{% endif %}">
-                                    <input type="radio" name="update_config" value="1" autocomplete="off"{% if update_config %} checked{% endif %}> Enabled
-                                </label>
-                                <label class="btn btn-sm btn-default{% if not update_config %} active{% endif %}">
-                                    <input type="radio" name="update_config" value="0" autocomplete="off"{% if not update_config %} checked{% endif %}> Disabled
-                                </label>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="update_config" id="update_config-1" value="1" autocomplete="off"{% if update_config %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="update_config-1">Enabled</label>
+                                <input type="radio" class="btn-check" name="update_config" id="update_config-0" value="0" autocomplete="off"{% if not update_config %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="update_config-0">Disabled</label>
                             </div>
                         </div>
                     </div>
@@ -81,13 +79,11 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Update Plugins</label>
                         <div class="col-sm-6">
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if update_plugins %} active{% endif %}">
-                                    <input type="radio" name="update_plugins" value="1" autocomplete="off"{% if update_plugins %} checked{% endif %}> Enabled
-                                </label>
-                                <label class="btn btn-sm btn-default{% if not update_plugins %} active{% endif %}">
-                                    <input type="radio" name="update_plugins" value="0" autocomplete="off"{% if not update_plugins %} checked{% endif %}> Disabled
-                                </label>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="update_plugins" id="update_plugins-1" value="1" autocomplete="off"{% if update_plugins %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="update_plugins-1">Enabled</label>
+                                <input type="radio" class="btn-check" name="update_plugins" id="update_plugins-0" value="0" autocomplete="off"{% if not update_plugins %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="update_plugins-0">Disabled</label>
                             </div>
                         </div>
                     </div>

@@ -24,9 +24,9 @@ $(document).ready(function() {
         xhr.send(new URLSearchParams(new FormData(this)).toString());
 
         $('#flashMessageText').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>');
-        
+
         xhr.onreadystatechange = function() {
-            console.log(xhr.readyState, xhr.status);    
+            console.log(xhr.readyState, xhr.status);
             let response = JSON.parse(xhr.responseText);
             let flash = document.querySelector('#flashMessage');
             let flashText = document.querySelector('#flashMessageText');
@@ -54,11 +54,9 @@ $(document).ready(function() {
 
 
 {% if flash_msg %}
-<div class="alert alert-{{ flash_msg_type }}">
+<div class="alert alert-{{ flash_msg_type }} alert-dismissible">
     {{ flash_msg_text }}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {% endif %}
 
@@ -83,13 +81,11 @@ $(document).ready(function() {
                         <div class="form-group">
                             <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Logging (in browser)</label>
                             <div class="col-sm-6">
-                                <div class="btn-group" data-toggle="buttons">
-                                    <label class="btn btn-sm btn-default{% if sectioncfg['check_logging'] %} active{% endif %}">
-                                        <input type="radio" name="check_logging" value="1" autocomplete="off"{% if sectioncfg['check_logging'] %} checked{% endif %}> Enabled
-                                    </label>
-                                    <label class="btn btn-sm btn-default{% if not sectioncfg['check_logging'] %} active{% endif %}">
-                                        <input type="radio" name="check_logging" value="0" autocomplete="off"{% if not sectioncfg['check_logging'] %} checked{% endif %}> Disabled
-                                    </label>
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="check_logging" id="check_logging-1" value="1" autocomplete="off"{% if sectioncfg['check_logging'] %} checked{% endif %}>
+                                    <label class="btn btn-sm btn-default" for="check_logging-1">Enabled</label>
+                                    <input type="radio" class="btn-check" name="check_logging" id="check_logging-0" value="0" autocomplete="off"{% if not sectioncfg['check_logging'] %} checked{% endif %}>
+                                    <label class="btn btn-sm btn-default" for="check_logging-0">Disabled</label>
                                 </div>
                                 <span style="margin-left: 15px;">
                                     <i class="fa fa-trash-o fa-14"></i> <a href="clear-check-log">Clear Check Log</a>
@@ -161,7 +157,7 @@ $(document).ready(function() {
                                 <button type="submit" class="btn btn-primary">Save Changes</button>
                             </div>
                         </div>
-                        
+
                     </form>
 
 
@@ -197,13 +193,11 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">All Partitions</label>
                         <div class="col-sm-6">
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if sectioncfg['all_partitions'] %} active{% endif %}">
-                                    <input type="radio" name="all_partitions" value="1" autocomplete="off"{% if sectioncfg['all_partitions'] %} checked{% endif %}> Enabled
-                                </label>
-                                <label class="btn btn-sm btn-default{% if not sectioncfg['all_partitions'] %} active{% endif %}">
-                                    <input type="radio" name="all_partitions" value="0" autocomplete="off"{% if not sectioncfg['all_partitions'] %} checked{% endif %}> Disabled
-                                </label>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="all_partitions" id="all_partitions-1" value="1" autocomplete="off"{% if sectioncfg['all_partitions'] %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="all_partitions-1">Enabled</label>
+                                <input type="radio" class="btn-check" name="all_partitions" id="all_partitions-0" value="0" autocomplete="off"{% if not sectioncfg['all_partitions'] %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="all_partitions-0">Disabled</label>
                             </div>
                         </div>
                     </div>

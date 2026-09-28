@@ -55,13 +55,11 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">Follow Symlinks</label>
                         <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3">
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if follow_symlinks %} active{% endif %}">
-                                    <input type="radio" name="follow_symlinks" value="1" autocomplete="off"{% if follow_symlinks %} checked{% endif %}> Enabled
-                                </label>
-                                <label class="btn btn-sm btn-default{% if not follow_symlinks %} active{% endif %}">
-                                    <input type="radio" name="follow_symlinks" value="0" autocomplete="off"{% if not follow_symlinks %} checked{% endif %}> Disabled
-                                </label>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="follow_symlinks" id="follow_symlinks-1" value="1" autocomplete="off"{% if follow_symlinks %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="follow_symlinks-1">Enabled</label>
+                                <input type="radio" class="btn-check" name="follow_symlinks" id="follow_symlinks-0" value="0" autocomplete="off"{% if not follow_symlinks %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="follow_symlinks-0">Disabled</label>
                             </div>
                         </div>
                     </div>

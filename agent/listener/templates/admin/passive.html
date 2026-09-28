@@ -73,19 +73,15 @@ $(document).ready(function() {
                         <div class="form-group">
                             <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Passive Handlers</label>
                             <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                                <div class="btn-group" data-toggle="buttons">
-                                    <label class="btn btn-sm btn-default{% if sectioncfg['handlers'] == 'None' %} active{% endif %}">
-                                        <input type="radio" name="handlers" value="None" autocomplete="off"{% if sectioncfg['handlers'] == 'None' %} checked{% endif %}> None
-                                    </label>
-                                    <label class="btn btn-sm btn-default{% if sectioncfg['handlers'] == 'nrdp' %} active{% endif %}">
-                                        <input type="radio" name="handlers" value="nrdp" autocomplete="off"{% if sectioncfg['handlers'] == 'nrdp' %} checked{% endif %}> NRDP
-                                    </label>
-                                    <label class="btn btn-sm btn-default{% if sectioncfg['handlers'] == 'kafkaproducer' %} active{% endif %}">
-                                        <input type="radio" name="handlers" value="kafkaproducer" autocomplete="off"{% if sectioncfg['handlers'] == 'kafkaproducer' %} checked{% endif %}> KafkaProducer
-                                    </label>
-                                    <label class="btn btn-sm btn-default{% if sectioncfg['handlers'] == 'nrdp, kafkaproducer' or sectioncfg['handlers'] == 'kafkaproducer, nrdp' %} active{% endif %}">
-                                        <input type="radio" name="handlers" value="nrdp, kafkaproducer" autocomplete="off"{% if sectioncfg['handlers'] == 'nrdp, kafkaproducer' or sectioncfg['handlers'] == 'kafkaproducer, nrdp' %} checked{% endif %}> Both
-                                    </label>
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="handlers" id="handlers-None" value="None" autocomplete="off"{% if sectioncfg['handlers'] == 'None' %} checked{% endif %}>
+                                    <label class="btn btn-sm btn-default" for="handlers-None">None</label>
+                                    <input type="radio" class="btn-check" name="handlers" id="handlers-nrdp" value="nrdp" autocomplete="off"{% if sectioncfg['handlers'] == 'nrdp' %} checked{% endif %}>
+                                    <label class="btn btn-sm btn-default" for="handlers-nrdp">NRDP</label>
+                                    <input type="radio" class="btn-check" name="handlers" id="handlers-kafkaproducer" value="kafkaproducer" autocomplete="off"{% if sectioncfg['handlers'] == 'kafkaproducer' %} checked{% endif %}>
+                                    <label class="btn btn-sm btn-default" for="handlers-kafkaproducer">KafkaProducer</label>
+                                    <input type="radio" class="btn-check" name="handlers" id="handlers-nrdp, kafkaproducer" value="nrdp, kafkaproducer" autocomplete="off"{% if sectioncfg['handlers'] == 'nrdp, kafkaproducer' or sectioncfg['handlers'] == 'kafkaproducer, nrdp' %} checked{% endif %}>
+                                    <label class="btn btn-sm btn-default" for="handlers-nrdp, kafkaproducer">Both</label>
                                 </div>
                             </div>
                         </div>

@@ -92,13 +92,11 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Admin GUI Access</label>
                         <div class="col-sm-6">
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if sectioncfg['admin_gui_access'] %} active{% endif %}">
-                                    <input type="radio" name="admin_gui_access" value="1" autocomplete="off"{% if sectioncfg['admin_gui_access'] %} checked{% endif %}> Enabled
-                                </label>
-                                <label class="btn btn-sm btn-default{% if not sectioncfg['admin_gui_access'] %} active{% endif %}">
-                                    <input type="radio" name="admin_gui_access" value="0" autocomplete="off"{% if not sectioncfg['admin_gui_access'] %} checked{% endif %}> Disabled
-                                </label>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="admin_gui_access" id="admin_gui_access-1" value="1" autocomplete="off"{% if sectioncfg['admin_gui_access'] %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="admin_gui_access-1">Enabled</label>
+                                <input type="radio" class="btn-check" name="admin_gui_access" id="admin_gui_access-0" value="0" autocomplete="off"{% if not sectioncfg['admin_gui_access'] %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="admin_gui_access-0">Disabled</label>
                             </div>
                         </div>
                     </div>
@@ -106,13 +104,11 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Admin Auth Only</label>
                         <div class="col-sm-6">
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if sectioncfg['admin_auth_only'] %} active{% endif %}">
-                                    <input type="radio" name="admin_auth_only" value="1" autocomplete="off"{% if sectioncfg['admin_auth_only'] %} checked{% endif %}> Enabled
-                                </label>
-                                <label class="btn btn-sm btn-default{% if not sectioncfg['admin_auth_only'] %} active{% endif %}">
-                                    <input type="radio" name="admin_auth_only" value="0" autocomplete="off"{% if not sectioncfg['admin_auth_only'] %} checked{% endif %}> Disabled
-                                </label>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="admin_auth_only" id="admin_auth_only-1" value="1" autocomplete="off"{% if sectioncfg['admin_auth_only'] %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="admin_auth_only-1">Enabled</label>
+                                <input type="radio" class="btn-check" name="admin_auth_only" id="admin_auth_only-0" value="0" autocomplete="off"{% if not sectioncfg['admin_auth_only'] %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="admin_auth_only-0">Disabled</label>
                             </div>
                         </div>
                     </div>
