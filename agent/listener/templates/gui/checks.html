@@ -81,11 +81,11 @@ $(document).ready(function() {
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
-            <div style="padding: 0rem 0.75rem 3rem 0.75rem;">
-                <div style="padding: 0 0 1.25rem 0; line-height: 30px;">
+            <div style="padding: 0px 7.5px 30px 7.5px;">
+                <div style="padding: 0 0 12.5px 0; line-height: 30px;">
                     <div class="fl">
                         Page <b>{{ page }}</b> of <b>{{ total_pages }}</b>
-                        <span style="padding: 0 2rem;"><i class="fa fa-check-square fa-14 fa-l"></i>
+                        <span style="padding: 0 20px;"><i class="fa fa-check-square fa-14 fa-l"></i>
                             Showing {% if show_start_end %}<b>{{ start_record }}</b> - <b>{{ end_record }}</b> of{% endif %} <b>{{ total }}</b> total check records
                         </span>
                         {% if filters %}
@@ -152,7 +152,7 @@ $(document).ready(function() {
                         {% endif %}
                     </tbody>
                 </table>
-                <div style="line-height: 30px; padding-top: 1.25rem;">
+                <div style="line-height: 30px; padding-top: 12.5px;">
                     <!--
                     <div class="fl">
                         <div class="input-group" style="width: 150px; display: inline-table; vertical-align: top;">

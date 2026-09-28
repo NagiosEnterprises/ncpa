@@ -107,7 +107,7 @@
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-12 col-lg-4">
 
-                                <h6 style="margin-top: 1rem;">Example: Without Any Parameter</h6>
+                                <h6 style="margin-top: 10px;">Example: Without Any Parameter</h6>
                                 <p>This example shows what the standard value and unit would be without passing any special parameters.</p>
                                 <pre>https://localhost:5693/api/disk/logical/C:|/used?token=mytoken</pre>
                                 <p>This would output:</p>
@@ -121,7 +121,7 @@
                             </div>
                             <div class="col-sm-12 col-lg-4">
 
-                                <h6 style="margin-top: 1rem;">Example: Using <code>units</code> Parameter</h6>
+                                <h6 style="margin-top: 10px;">Example: Using <code>units</code> Parameter</h6>
                                 <p>This example shows how the value and unit change when passing the <code>units</code> parameter to an endpoint that returns <b>B</b>.</p>
                                 <pre>https://localhost:5693/api/disk/logical/C:|/used?token=mytoken&units=Gi</pre>
                                 <p>This would return the value and units:</p>
@@ -135,7 +135,7 @@
                             </div>
                             <div class="col-sm-12 col-lg-4">
 
-                                <h6 style="margin-top: 1rem;">Example: Using <code>unit</code> Parameter</h6>
+                                <h6 style="margin-top: 10px;">Example: Using <code>unit</code> Parameter</h6>
                                 <p>This example shows how the value <em>does not change</em> but the unit, <em>no matter what the default unit is</em>, changes to <code>unit</code>.</p>
                                 <pre>https://localhost:5693/api/disk/logical/C:|/used?token=mytoken&unit=Units</pre>
                                 <p>This would return the value and units:</p>
@@ -272,7 +272,7 @@
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-6">
 
-                                <h6 style="margin-top: 1rem;">Example of CPU Usage Per Core</h6>
+                                <h6 style="margin-top: 10px;">Example of CPU Usage Per Core</h6>
                                 <pre>https://localhost:5693/api/cpu/percent?token=mytoken</pre>
                                 <pre>{
     "percent": [
@@ -304,7 +304,7 @@
 
                             </div>
                             <div class="col-sm-6">
-                                <h6 style="margin-top: 1rem;">Basic Parameters</h6>
+                                <h6 style="margin-top: 10px;">Basic Parameters</h6>
                                 <p>
                                 <table class="table table-striped table-bordered">
                                     <thead>
@@ -356,8 +356,8 @@
                                 <p>The disk module is fairly large and one of the few modules to have combined check results for multiple nodes inside the disk/logical node. The disk module shows mount information, logical partition usage, and physical disk statistics through three main nodes shown below:</p>
                                 <p>
                                     <ul>
-                                        <li style="padding-bottom: 0.5rem;"><code>disk/mount</code> - Information on mounted devices that are not disks.</li>
-                                        <li style="padding-bottom: 0.5rem;"><code>disk/logical</code> - Information on each mounted disk partition. <em>Remember all \ and / must be represented as |.</em></li>
+                                        <li style="padding-bottom: 5px;"><code>disk/mount</code> - Information on mounted devices that are not disks.</li>
+                                        <li style="padding-bottom: 5px;"><code>disk/logical</code> - Information on each mounted disk partition. <em>Remember all \ and / must be represented as |.</em></li>
                                         <li><code>disk/physical</code> - Each physical drive's hardware stats and information.</li>
                                     </ul>
                                 </p>
@@ -366,7 +366,7 @@
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-6">
 
-                                <h6 style="margin-top: 1rem;">Example of Disk Data</h6>
+                                <h6 style="margin-top: 10px;">Example of Disk Data</h6>
                                 <pre>https://localhost:5693/api/disk/logical/C:|?token=mytoken&units=Gi</pre>
                                 <pre>{
     "C:|": {
@@ -395,7 +395,7 @@
 }</pre>
                             </div>
                             <div class="col-sm-6">
-                                <h6 style="margin-top: 1rem;">Basic Parameters</h6>
+                                <h6 style="margin-top: 10px;">Basic Parameters</h6>
                                 <p>
                                 <table class="table table-striped table-bordered">
                                     <thead>
@@ -452,7 +452,7 @@
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-6">
 
-                                <h6 style="margin-top: 1rem;">Example of Interface Data</h6>
+                                <h6 style="margin-top: 10px;">Example of Interface Data</h6>
                                 <pre>https://localhost:5693/api/interface/Local Area Connection?token=mytoken&units=Gi</pre>
                                 <pre>{
     "Local Area Connection": {
@@ -488,7 +488,7 @@
 
                             </div>
                             <div class="col-sm-6">
-                                <h6 style="margin-top: 1rem;">Basic Parameters</h6>
+                                <h6 style="margin-top: 10px;">Basic Parameters</h6>
                                 <p>
                                 <table class="table table-striped table-bordered">
                                     <thead>
@@ -544,7 +544,7 @@
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-6">
 
-                                <h6 style="margin-top: 1rem;">Example of Memory Data</h6>
+                                <h6 style="margin-top: 10px;">Example of Memory Data</h6>
                                 <pre>https://localhost:5693/api/memory/virtual?token=mytoken&units=Gi</pre>
                                 <pre>{
     "virtual": {
@@ -573,7 +573,7 @@
 
                             </div>
                             <div class="col-sm-6">
-                                <h6 style="margin-top: 1rem;">Basic Parameters</h6>
+                                <h6 style="margin-top: 10px;">Basic Parameters</h6>
                                 <p>
                                 <table class="table table-striped table-bordered">
                                     <thead>
@@ -629,7 +629,7 @@
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-6">
 
-                                <h6 style="margin-top: 1rem;">Example of Total Process Count Check</h6>
+                                <h6 style="margin-top: 10px;">Example of Total Process Count Check</h6>
                                 <pre>https://localhost:5693/api/processes?token=mytoken&check=1</pre>
                                 <pre>{
     "returncode": 0,
@@ -656,7 +656,7 @@
 
                             </div>
                             <div class="col-sm-6">
-                                <h6 style="margin-top: 1rem;">Filter Parameters</h6>
+                                <h6 style="margin-top: 10px;">Filter Parameters</h6>
                                 <p>These are special parameters that are applied to the processes module and filter out processes. You can apply as many filters as you want and multiple of each if necessary. These are combined using the <code>combiner</code> parameter which is <b>and</b> by default and not specified.</p>
                                 <p>
                                 <table class="table table-striped table-bordered">
@@ -757,7 +757,7 @@
                     <div class="container-fluid">
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-6">
-                                <h6 style="margin-top: 1rem;">Example of Service Filtering</h6>
+                                <h6 style="margin-top: 10px;">Example of Service Filtering</h6>
                                 <pre>https://localhost:5693/api/services?token=mytoken&service=sshd&service=httpd</pre>
                                 <pre>{
     "services": {
@@ -775,7 +775,7 @@
 
                             </div>
                             <div class="col-sm-6">
-                                <h6 style="margin-top: 1rem;">Filter Parameters</h6>
+                                <h6 style="margin-top: 10px;">Filter Parameters</h6>
                                 <p>You can filter down the list of services during a query and during a check by defining the service names. You can also use the service parameter as a search if you set the <code>match</code> parameter to <em>search</em> or <em>regex</em>.</p>
                                 <p>
                                 <table class="table table-striped table-bordered">
@@ -860,7 +860,7 @@
                         </div>
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-6">
-                                <h6 style="margin-top: 1rem;">Example of User Endpoint</h6>
+                                <h6 style="margin-top: 10px;">Example of User Endpoint</h6>
                                 <pre>https://localhost:5693/api/user?token=mytoken</pre>
                                 <pre>{
     "user": {
@@ -879,7 +879,7 @@
 }</pre>
                             </div>
                             <div class="col-sm-6">
-                                <h6 style="margin-top: 1rem;">Basic Parameters</h6>
+                                <h6 style="margin-top: 10px;">Basic Parameters</h6>
                                 <table class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
@@ -926,7 +926,7 @@
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-6">
 
-                                <h6 style="margin-top: 1rem;">Example of Application Logs</h6>
+                                <h6 style="margin-top: 10px;">Example of Application Logs</h6>
                                 <p>This will list all Application logs within the last 24 hours (the default lookback period) in a list. The list has been truncated due to the amount of logs.</p>
                                 <pre>https://localhost:5693/api/logs?token=mytoken&name=Application</pre>
                                 <pre>{
@@ -960,7 +960,7 @@
                             </div>
                             <div class="col-sm-6">
 
-                                <h6 style="margin-top: 1rem;">Filter Parameters</h6>
+                                <h6 style="margin-top: 10px;">Filter Parameters</h6>
                                 <p>These parameters are what filter the logs that are returned. Each event log type (defined by <code>name</code>) is listed separately by the name with it's own list of logs.</p>
                                 <p>
                                 <table class="table table-striped table-bordered">
@@ -1056,7 +1056,7 @@
                         <div class="row" style="margin: 0 -30px;">
                             <div class="col-sm-6">
 
-                                <h6 style="margin-top: 1rem;">Example of a Windows Counter</h6>
+                                <h6 style="margin-top: 10px;">Example of a Windows Counter</h6>
                                 <pre>https://localhost:5693/api/windowscounters/TCPv4/Connections Active?token=mytoken</pre>
                                 <pre>{
     "windowscounters": [
@@ -1095,7 +1095,7 @@
 
                             </div>
                             <div class="col-sm-6">
-                            <h6 style="margin-top: 1rem;">Basic Parameters</h6>
+                            <h6 style="margin-top: 10px;">Basic Parameters</h6>
                                 <p>
                                 <table class="table table-striped table-bordered">
                                     <thead>
