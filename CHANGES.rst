@@ -12,7 +12,9 @@ Changelog
 
 **Updates**
 
-- Updated the bundled Font Awesome library from version 4.7.0 to 7.3.1. - CPD
+- Refactored UI markup and styles across the application to support Bootstrap 5 standards. - CPD
+- Updated the bundled Bootstrap library to version 5.3.8, resolving CVEs and improving compatibility with modern browsers. - CPD
+- Updated the bundled Font Awesome library to version 7.3.1. - CPD
 - Updated the bundled Smoothie Charts graphing library to version 1.37, resolving live graph jitter and a memory leak, and improving rendering performance. - CPD
 
 3.5.0 - 9/8/2026
