@@ -41,11 +41,14 @@ pre code { padding: 0; font-size: inherit; color: inherit; white-space: pre-wrap
 .btn-check:checked + .btn-default:hover, .btn-default.active:hover { background-color: #d4d4d4; border-color: #8c8c8c; }
 .hide { display: none !important; }
 .form-group { margin-bottom: 15px; }
+.checkbox, .radio { position: relative; display: block; margin-top: 10px; margin-bottom: 10px; }
+.checkbox label, .radio label { min-height: 20px; padding-left: 20px; margin-bottom: 0; font-weight: 400; cursor: pointer; }
+.checkbox input[type=checkbox], .radio input[type=radio] { position: absolute; margin-left: -20px; }
 .form-horizontal .form-group { margin-left: -15px; margin-right: -15px; }
 .form-control, .form-select { color: #555; border-color: #ccc; box-shadow: inset 0 1px 1px rgba(0,0,0,.075); }
 .form-control::placeholder { color: #999; }
 .input-group { flex-wrap: nowrap; }
-.input-group-text { margin-bottom: 0; line-height: 1; color: #555; background-color: #eee; border-color: #ccc; }
+.input-group-text { margin-bottom: 0; column-gap: .35em; line-height: 1; color: #555; background-color: #eee; border-color: #ccc; }
 @media (min-width: 768px) {
     .form-inline .form-control, .form-inline .form-select { display: inline-block; width: auto; vertical-align: middle; }
     .form-inline .input-group { display: inline-flex; width: auto; vertical-align: middle; }
