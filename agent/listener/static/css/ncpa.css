@@ -45,7 +45,7 @@ pre code { padding: 0; font-size: inherit; color: inherit; white-space: pre-wrap
 .form-control, .form-select { color: #555; border-color: #ccc; box-shadow: inset 0 1px 1px rgba(0,0,0,.075); }
 .form-control::placeholder { color: #999; }
 .input-group { flex-wrap: nowrap; }
-.input-group-text { line-height: 1; color: #555; background-color: #eee; border-color: #ccc; }
+.input-group-text { margin-bottom: 0; line-height: 1; color: #555; background-color: #eee; border-color: #ccc; }
 @media (min-width: 768px) {
     .form-inline .form-control, .form-inline .form-select { display: inline-block; width: auto; vertical-align: middle; }
     .form-inline .input-group { display: inline-flex; width: auto; vertical-align: middle; }
@@ -228,7 +228,7 @@ pre { border-radius: 0; padding: 4px 6px; }
 /* Top processes page */
 .table-top { font-size: 11px; }
 .table-top th { text-align: center; }
-.table-top tr.highlight { background-color: #a6c4fc; }
+.table-top tr.highlight > td { background-color: #a6c4fc; }
 .table-top>tbody>tr>td.critical, .table-top>tbody>tr>td.critical:hover { background-color: #FF795F; }
 .table-top>tbody>tr>td.warning, .table-top>tbody>tr>td.warning:hover { background-color: #FEFF5F; }
 
