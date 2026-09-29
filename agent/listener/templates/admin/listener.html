@@ -37,34 +37,34 @@ $(document).ready(function() {
 
                     <input type="hidden" name="section" value="listener">
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">IP Address</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">IP Address</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
                             <input type="text" class="form-control" name="ip" value="{{ sectioncfg['ip'] }}" readonly>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Port</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Port</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <input type="text" class="form-control" name="port" value="{{ sectioncfg['port'] }}" readonly>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">SSL Version (min)</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">SSL Version (min)</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <select class="form-control" name="ssl_version">
+                            <select class="form-select" name="ssl_version">
                                 <option value="TLSv1_2"{% if sectioncfg['ssl_version'] == 'TLSv1_2' %} selected{% endif %}>TLSv1.2</option>
                                 <option value="TLSv1_3"{% if sectioncfg['ssl_version'] == 'TLSv1_3' %} selected{% endif %}>TLSv1.3</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">SSL Max Version</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">SSL Max Version</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <select class="form-control" name="ssl_max_version">
+                            <select class="form-select" name="ssl_max_version">
                                 <option value=""{% if not sectioncfg['ssl_max_version'] %} selected{% endif %}></option>
                                 <option value="TLSv1_2"{% if sectioncfg['ssl_max_version'] == 'TLSv1_2' %} selected{% endif %}>TLSv1.2</option>
                                 <option value="TLSv1_3"{% if sectioncfg['ssl_max_version'] == 'TLSv1_3' %} selected{% endif %}>TLSv1.3</option>
@@ -72,25 +72,25 @@ $(document).ready(function() {
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Certificate</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Certificate</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                            <select class="form-control" name="certificate">
+                            <select class="form-select" name="certificate">
                                 <option value="adhoc"{% if sectioncfg['certificate'] == 'adhoc' %} selected{% endif %}>Adhoc</option>
                                 <!--<option value="custom"{% if sectioncfg['certificate'] != 'adhoc' %} selected{% endif %}>Custom</option>-->
                             </select>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log File</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log File</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
                             <input type="text" class="form-control" name="logfile" value="{{ sectioncfg['logfile'] }}" readonly>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Admin GUI Access</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Admin GUI Access</label>
                         <div class="col-sm-6">
                             <div class="btn-group" role="group">
                                 <input type="radio" class="btn-check" name="admin_gui_access" id="admin_gui_access-1" value="1" autocomplete="off"{% if sectioncfg['admin_gui_access'] %} checked{% endif %}>
@@ -101,8 +101,8 @@ $(document).ready(function() {
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Admin Auth Only</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Admin Auth Only</label>
                         <div class="col-sm-6">
                             <div class="btn-group" role="group">
                                 <input type="radio" class="btn-check" name="admin_auth_only" id="admin_auth_only-1" value="1" autocomplete="off"{% if sectioncfg['admin_auth_only'] %} checked{% endif %}>
@@ -113,41 +113,41 @@ $(document).ready(function() {
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">GUI Session Timeout</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">GUI Session Timeout</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <div class="input-group">
                                 <input type="text" class="form-control" name="gui_session_timeout" value="{{ sectioncfg['gui_session_timeout'] }}" readonly>
-                                <div class="input-group-addon">Secs</div>
+                                <div class="input-group-text">Secs</div>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Delayed Start</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Delayed Start</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <div class="input-group">
                                 <input type="text" class="form-control" name="delay_start" value="{{ sectioncfg['delay_start'] }}" readonly>
-                                <div class="input-group-addon">Secs</div>
+                                <div class="input-group-text">Secs</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Allowed Hosts</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Allowed Hosts</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
                             <input type="text" class="form-control" name="allowed_hosts" value="{{ sectioncfg['allowed_hosts'] }}" readonly>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Allowed Sources</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Allowed Sources</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
                             <input type="text" class="form-control" name="allowed_sources" value="{{ sectioncfg['allowed_sources'] }}" readonly>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Max Connections</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Max Connections</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <input type="text" class="form-control" name="max_connections" value="{{ sectioncfg['max_connections'] }}" readonly>
                         </div>

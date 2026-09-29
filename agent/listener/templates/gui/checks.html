@@ -41,9 +41,9 @@ $(document).ready(function() {
         <form class="form-inline" action="checks" method="get" id="top-form">
             <h1 class="fl">Checks</h1>
             <div class="fl">
-                <div class="input-group" style="width: 170px; display: inline-table; vertical-align: top;">
-                    <label class="input-group-addon">Status</label>
-                    <select name="status" class="form-control">
+                <div class="input-group" style="width: 170px; display: inline-flex; vertical-align: top;">
+                    <label class="input-group-text">Status</label>
+                    <select name="status" class="form-select">
                         <option value="">Any</option>
                         <option value="0"{% if status == 0 %} selected{% endif %}>OK</option>
                         <option value="1"{% if status == 1 %} selected{% endif %}>WARNING</option>
@@ -51,16 +51,16 @@ $(document).ready(function() {
                         <option value="3"{% if status == 3 %} selected{% endif %}>UNKNOWN</option>
                     </select>
                 </div>
-                <div class="input-group" style="width: 170px; display: inline-table; vertical-align: top;">
-                    <label class="input-group-addon">Type</label>
-                    <select name="ctype" class="form-control">
+                <div class="input-group" style="width: 170px; display: inline-flex; vertical-align: top;">
+                    <label class="input-group-text">Type</label>
+                    <select name="ctype" class="form-select">
                         <option value="">Both</option>
                         <option value="Active"{% if ctype == 'Active' %} selected{% endif %}>Active</option>
                         <option value="Passive"{% if ctype == 'Passive' %} selected{% endif %}>Passive</option>
                     </select>
                 </div>
                 <div class="input-group" style="width: 280px;">
-                    <label class="input-group-addon" style="width: 100px;">Executed By</label>
+                    <label class="input-group-text" style="width: 100px;">Executed By</label>
                     <select name="check_senders" class="check_senders" multiple>
                         {% for sender in senders %}
                         <option value="{{ sender }}"{% for s in check_senders %}{% if s == sender %} selected{% endif %}{% endfor %}>{{ sender }}</option>
@@ -155,8 +155,8 @@ $(document).ready(function() {
                 <div style="line-height: 30px; padding-top: 12.5px;">
                     <!--
                     <div class="fl">
-                        <div class="input-group" style="width: 150px; display: inline-table; vertical-align: top;">
-                            <div class="input-group-addon">Jump to page</div>
+                        <div class="input-group" style="width: 150px; display: inline-flex; vertical-align: top;">
+                            <div class="input-group-text">Jump to page</div>
                             <input type="text" class="form-control" id="jumpto">
                         </div>
                         <button type="button" class="btn btn-sm btn-default" style="vertical-align: top;">Go</button>

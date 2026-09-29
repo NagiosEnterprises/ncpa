@@ -78,8 +78,8 @@ $(document).ready(function() {
 
                         <input type="hidden" name="section" value="general">
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Logging (in browser)</label>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Logging (in browser)</label>
                             <div class="col-sm-6">
                                 <div class="btn-group" role="group">
                                     <input type="radio" class="btn-check" name="check_logging" id="check_logging-1" value="1" autocomplete="off"{% if sectioncfg['check_logging'] %} checked{% endif %}>
@@ -93,20 +93,20 @@ $(document).ready(function() {
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Log Retention Time</label>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Log Retention Time</label>
                             <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="check_logging_time" value="{{ sectioncfg['check_logging_time'] }}">
-                                    <div class="input-group-addon">Days</div>
+                                    <div class="input-group-text">Days</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Level</label>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Level</label>
                             <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                                <select class="form-control" name="log_level">
+                                <select class="form-select" name="log_level">
                                     <option value="error"{% if sectioncfg['loglevel'] == 'error' %} selected{% endif %}>Error</option>
                                     <option value="warning"{% if sectioncfg['loglevel'] == 'warning' %} selected{% endif %}>Warning</option>
                                     <option value="info"{% if sectioncfg['loglevel'] == 'info' %} selected{% endif %}>Info</option>
@@ -115,30 +115,30 @@ $(document).ready(function() {
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Max MB</label>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Max MB</label>
                             <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="log_max_mb" value="{{ sectioncfg['logmaxmb'] }}">
-                                    <div class="input-group-addon">MB</div>
+                                    <div class="input-group-text">MB</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Backups</label>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Backups</label>
                             <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="log_backups" value="{{ sectioncfg['logbackups'] }}">
-                                    <div class="input-group-addon">Days</div>
+                                    <div class="input-group-text">Days</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Default Units</label>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Default Units</label>
                             <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                                <select class="form-control" name="default_units">
+                                <select class="form-select" name="default_units">
                                     <option value="k"{% if sectioncfg['default_units'] == 'K' %} selected{% endif %}>K</option>
                                     <option value="Ki"{% if sectioncfg['default_units'] == 'Ki' %} selected{% endif %}>Ki</option>
                                     <option value="M"{% if sectioncfg['default_units'] == 'M' %} selected{% endif %}>M</option>
@@ -151,8 +151,8 @@ $(document).ready(function() {
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2"></label>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2"></label>
                             <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                                 <button type="submit" class="btn btn-primary">Save Changes</button>
                             </div>
@@ -167,31 +167,31 @@ $(document).ready(function() {
                 </div>
 
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">PID File</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">PID File</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
                             <input type="text" class="form-control" name="pidfile" value="{{ sectioncfg['pidfile'] }}" readonly>
                         </div>
                     </div>
 
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">User</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">User</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <input type="text" class="form-control" name="uid" value="{{ sectioncfg['uid'] }}" readonly>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Group</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Group</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
                             <input type="text" class="form-control" name="gid" value="{{ sectioncfg['gid'] }}" readonly>
                         </div>
                     </div>
 
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">All Partitions</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">All Partitions</label>
                         <div class="col-sm-6">
                             <div class="btn-group" role="group">
                                 <input type="radio" class="btn-check" name="all_partitions" id="all_partitions-1" value="1" autocomplete="off"{% if sectioncfg['all_partitions'] %} checked{% endif %}>
@@ -202,8 +202,8 @@ $(document).ready(function() {
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Exclude FS Types</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Exclude FS Types</label>
                         <div class="col-sm-6 col-md-4 col-lg-6 col-xl-9">
                             <input type="text" class="form-control" style="display: inline-block; width: 100%;" name="exclude_fs_types" value="{{ sectioncfg['exclude_fs_types'] }}" readonly>
                         </div>

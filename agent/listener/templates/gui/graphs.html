@@ -65,7 +65,7 @@ function render_graph(target) {
 }
 
 function generate_select(obj) {
-    var select = $('<select>', { 'class': 'form-control nodes' });
+    var select = $('<select>', { 'class': 'form-select nodes' });
     $.each(obj, function(k, value) {
         if (k == 'opts' || k == 'fstype' || k == 'device_name') { return; }
         select.append($('<option>', { value: k, text: k }));
@@ -78,7 +78,7 @@ function generate_select(obj) {
 
 function get_module_selects(api_address) {
     $('#graph-selector-div').html('');
-    var select = $('<select>', { 'class': 'form-control' });
+    var select = $('<select>', { 'class': 'form-select' });
 
     $.getJSON(api_address, function(d) {
         var module = $('#modules').val();
@@ -164,7 +164,7 @@ $(document).ready(function() {
 
         <div class="api-select fl">
             <span style="font-weight: bold; margin-right: 10px;">API Endpoint</span>
-            <select id="modules" style="display: inline-block; width: auto;" class="form-control">
+            <select id="modules" style="display: inline-block; width: auto;" class="form-select">
                 <option value="cpu">cpu</option>
                 <option value="interface">interface</option>
                 <option value="memory">memory</option>
@@ -174,15 +174,15 @@ $(document).ready(function() {
         </div>
 
         <div class="input-group fl" style="width: 100px; margin-left: 20px;">
-            <label class="input-group-addon">Delta <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Delta Values" data-bs-content="When using the delta setting, the value given will be calculated 'per second' and will update the units to show this change. Only certain endpoints allow for delta values."></i></label>
+            <label class="input-group-text">Delta <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Delta Values" data-bs-content="When using the delta setting, the value given will be calculated 'per second' and will update the units to show this change. Only certain endpoints allow for delta values."></i></label>
             <span class="white-box">
                 <input type="checkbox" id="delta" style="vertical-align: middle; margin: 0;" value="1">
             </span>
         </div>
 
         <div class="input-group hide fl" id="unit-prefix-box" style="width: 140px; margin-left: 20px;">
-            <label class="input-group-addon">Unit prefix</label>
-            <select id="unit_prefix" class="form-control">
+            <label class="input-group-text">Unit prefix</label>
+            <select id="unit_prefix" class="form-select">
                 <option></option>
                 <option>k</option>
                 <option>Ki</option>

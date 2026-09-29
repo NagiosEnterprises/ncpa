@@ -127,7 +127,7 @@ $(document).ready(function() {
         // Grab the actual json data and show module accessors
         if (module != 'processes' && module != 'windowscounters' && module != 'logs' && module != 'services') {
             $.get(url, { }, function(data) {
-                var select = $('<select>', { class: 'form-control submod' });
+                var select = $('<select>', { class: 'form-select submod' });
                 select.append('<option></option>');
 
                 if (module == 'plugins') {
@@ -242,7 +242,7 @@ $(document).ready(function() {
                     $.get(url, { }, function(data) {
                         var endnode = data[selected];
                         var keys = Object.keys(endnode);
-                        var endselect = $('<select>', { class: 'form-control refresh-select memory-end-node' });
+                        var endselect = $('<select>', { class: 'form-select refresh-select memory-end-node' });
                         endselect.append('<option></option>');
                         $(keys).each(function(i, val) {
                             endselect.append('<option>' + val + '</option>');
@@ -282,7 +282,7 @@ $(document).ready(function() {
                     $.get(url, { }, function(data) {
                         var endnode = data[selected];
                         var keys = Object.keys(endnode);
-                        var endselect = $('<select>', { class: 'form-control refresh-select interface-end-node' });
+                        var endselect = $('<select>', { class: 'form-select refresh-select interface-end-node' });
                         endselect.append('<option></option>');
                         $(keys).each(function(i, val) {
                             endselect.append('<option>' + val + '</option>');
@@ -348,7 +348,7 @@ $(document).ready(function() {
                     var url = generate_url(true);
                     $.get(url, { }, function(data) {
                         TMP_JSON = data[selected];
-                        var select = $('<select>', { class: 'form-control' });
+                        var select = $('<select>', { class: 'form-select' });
 
                         // Add first set of keys
                         var keys = Object.keys(TMP_JSON);
@@ -359,7 +359,7 @@ $(document).ready(function() {
 
                         // Add selector to the first select for the endnode
                         select.change(function() {
-                            var endselect = $('<select>', { class: 'form-control end-node' });
+                            var endselect = $('<select>', { class: 'form-select end-node' });
                             endselect.append('<option></option>');
                             if ($(this).val() != '') {
                                 $('.check-settings').show();
@@ -387,7 +387,7 @@ $(document).ready(function() {
                             reload_api_browser();
                         });
 
-                        var emptyselect = $('<select>', { class: 'form-control end-node' }).prop('disabled', true);
+                        var emptyselect = $('<select>', { class: 'form-select end-node' }).prop('disabled', true);
                         $('.selector-disk').append(select).append(emptyselect).show();
 
                     }, 'json');
@@ -474,12 +474,12 @@ function add_service_selector() {
 }
 
 function add_filter_selector() {
-    var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 45%; border-right: 0;"><option value="username">username</option><option value="name">name</option><option value="exe">exe</option><option value="cmd">cmd</option><option value="mem_percent">mem_percent</option><option value="cpu_percent">cpu_percent</option><option value="mem_vms">mem_vms</option><option value="mem_rss">mem_rss</option><option value="short_output">short_output</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 55%;"></div>';
+    var filter = '<div class="filter-group"><select class="form-select filter-name" style="display: inline-block; width: 45%; border-right: 0;"><option value="username">username</option><option value="name">name</option><option value="exe">exe</option><option value="cmd">cmd</option><option value="mem_percent">mem_percent</option><option value="cpu_percent">cpu_percent</option><option value="mem_vms">mem_vms</option><option value="mem_rss">mem_rss</option><option value="short_output">short_output</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 55%;"></div>';
     $('.proc-filters .list').append(filter);
 }
 
 function add_log_name_selector(value) {
-    var name = '<div class="input-group"><div class="input-group-addon">Name</div><input type="text" class="form-control name"></div>';
+    var name = '<div class="input-group"><div class="input-group-text">Name</div><input type="text" class="form-control name"></div>';
     $('.log-name-selector .list').append(name);
     if (value) {
         $('.log-name-selector .list input').last().val(value);
@@ -761,7 +761,7 @@ function resize_api_window() {
 function set_log_timeframe_size() {
     if ($('.input-group.timeframe').is(':visible')) {
         var width = $('.input-group.timeframe').width();
-        width = width - 100 - $('.input-group.timeframe .input-group-addon').outerWidth();
+        width = width - 100 - $('.input-group.timeframe .input-group-text').outerWidth();
         $('.input-group.timeframe input').css('width', width);
     }
 }
@@ -952,7 +952,7 @@ function generate_passive_check() {
             <div class="selection-box">
                 <div class="selector">
                     <label>API Endpoint</label>
-                    <select class="form-control" id="module">
+                    <select class="form-select" id="module">
                         <option></option>
                         <option>cpu</option>
                         <option>disk</option>
@@ -988,9 +988,9 @@ function generate_passive_check() {
                     <div style="margin-bottom: 15px;">
                         <label>Log Timeframe</label>
                         <div class="input-group timeframe" style="margin-bottom: 5px;">
-                            <div class="input-group-addon tt-bind" title="The amount of time to check for logs. All logs that came in after x amount of time will be shown.">Logged After</div>
+                            <div class="input-group-text tt-bind" title="The amount of time to check for logs. All logs that came in after x amount of time will be shown.">Logged After</div>
                             <input type="text" class="form-control time-frame" placeholder="24" style="width: 30px;">
-                            <select class="form-control time-frame-suffix" style="width: 100px; border-left: 0;">
+                            <select class="form-select time-frame-suffix" style="width: 100px; border-left: 0;">
                                 <option value="s">Seconds</option>
                                 <option value="m">Minutes</option>
                                 <option value="h" selected>Hours</option>
@@ -1002,8 +1002,8 @@ function generate_passive_check() {
                     </div>
                     <label>Log Filter Settings</label>
                     <div class="input-group" style="margin-bottom: 5px;">
-                        <div class="input-group-addon tt-bind" title="severity">EventType</div>
-                        <select class="form-control severity">
+                        <div class="input-group-text tt-bind" title="severity">EventType</div>
+                        <select class="form-select severity">
                             <option></option>
                             <option value="ERROR">Error</option>
                             <option value="WARNING">Warning</option>
@@ -1014,23 +1014,23 @@ function generate_passive_check() {
                         </select>
                     </div>
                     <div class="input-group" style="margin-bottom: 5px;">
-                        <div class="input-group-addon tt-bind" title="event_id">EventID</div>
+                        <div class="input-group-text tt-bind" title="event_id">EventID</div>
                         <input type="text" class="form-control event-id" placeholder="# match">
                     </div>
                     <div class="input-group" style="margin-bottom: 5px;">
-                        <div class="input-group-addon tt-bind" title="application">SourceName</div>
+                        <div class="input-group-text tt-bind" title="application">SourceName</div>
                         <input type="text" class="form-control application" placeholder="match">
                     </div>
                     <div class="input-group" style="margin-bottom: 5px;">
-                        <div class="input-group-addon tt-bind" title="computer_name">ComputerName</div>
+                        <div class="input-group-text tt-bind" title="computer_name">ComputerName</div>
                         <input type="text" class="form-control computer-name" placeholder="match">
                     </div>
                     <div class="input-group" style="margin-bottom: 5px;">
-                        <div class="input-group-addon tt-bind" title="category">EventCategory</div>
+                        <div class="input-group-text tt-bind" title="category">EventCategory</div>
                         <input type="text" class="form-control category" placeholder="match">
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon tt-bind" title="message">Message</div>
+                        <div class="input-group-text tt-bind" title="message">Message</div>
                         <input type="text" class="form-control message" placeholder="search / regex">
                     </div>
                 </div>
@@ -1063,15 +1063,15 @@ function generate_passive_check() {
                 <div class="settings filter-settings">
                     <label>Filter Settings</label>
                     <div class="input-group combiner" style="margin-bottom: 5px;">
-                        <div class="input-group-addon">Combine using <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" title="Combine Using And or Or" data-bs-content="<p>This can either be set to <b>and</b> which is the default or to <b>or</b>. This setting determines how to add the filters to the query. When <b>and</b>, each process returned would need to match <i>all</i> supplied filters. If using <b>or</b>, then the matches must match <i>any</i> of the filters.</p>"></i></div>
-                        <select class="form-control combiner">
+                        <div class="input-group-text">Combine using <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" title="Combine Using And or Or" data-bs-content="<p>This can either be set to <b>and</b> which is the default or to <b>or</b>. This setting determines how to add the filters to the query. When <b>and</b>, each process returned would need to match <i>all</i> supplied filters. If using <b>or</b>, then the matches must match <i>any</i> of the filters.</p>"></i></div>
+                        <select class="form-select combiner">
                             <option value="">and</option>
                             <option value="or">or</option>
                         </select>
                     </div>
                     <div class="input-group match">
-                        <div class="input-group-addon">Filter match type</div>
-                        <select class="form-control match">
+                        <div class="input-group-text">Filter match type</div>
+                        <select class="form-select match">
                             <option value="">exact match</option>
                             <option value="search">search match</option>
                             <option value="regex">regex match</option>
@@ -1081,8 +1081,8 @@ function generate_passive_check() {
                 <div class="settings data-settings">
                     <label>Data Settings</label>
                     <div class="input-group agg">
-                        <div class="input-group-addon">Aggregate</div>
-                        <select class="form-control aggregate">
+                        <div class="input-group-text">Aggregate</div>
+                        <select class="form-select aggregate">
                             <option></option>
                             <option value="avg">average</option>
                             <option value="min">minimum</option>
@@ -1091,8 +1091,8 @@ function generate_passive_check() {
                         </select>
                     </div>
                     <div class="input-group unit-prefix">
-                        <div class="input-group-addon">Unit prefix</div>
-                        <select class="form-control units">
+                        <div class="input-group-text">Unit prefix</div>
+                        <select class="form-select units">
                             <option></option>
                             <option value="k">k</option>
                             <option value="Ki">Ki</option>
@@ -1106,7 +1106,7 @@ function generate_passive_check() {
                     </div>
                     <div class="delta-box style="display: none;">
                         <div class="input-group delta" style="margin-top: 5px;">
-                            <label class="input-group-addon">Delta <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Delta Values (Change in Value Over Time)" data-bs-content="Delta will take the last check call for this endpoint (that delta was applied to) and subtract it from the current data. It will then divide that by the amount of time since the last call giving a per second average value since the last call.<br><br><em>Only certain endpoints work with delta.</em>"></i></label>
+                            <label class="input-group-text">Delta <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Delta Values (Change in Value Over Time)" data-bs-content="Delta will take the last check call for this endpoint (that delta was applied to) and subtract it from the current data. It will then divide that by the amount of time since the last call giving a per second average value since the last call.<br><br><em>Only certain endpoints work with delta.</em>"></i></label>
                             <div class="white-box">
                                 <input type="checkbox" class="delta" value="1" style="vertical-align: middle; margin: 0;">
                             </div>
@@ -1129,8 +1129,8 @@ function generate_passive_check() {
                     </div>
                     <div class="status-check hide-by-default">
                         <div class="input-group">
-                            <div class="input-group-addon">Status <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Service Status" data-bs-content="<b>Default is running</b>.<br>The status option is what the service's status should be. If it does not match the set status, it will return a critical result."></i></div>
-                            <select class="status form-control">
+                            <div class="input-group-text">Status <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Service Status" data-bs-content="<b>Default is running</b>.<br>The status option is what the service's status should be. If it does not match the set status, it will return a critical result."></i></div>
+                            <select class="status form-select">
                                 <option></option>
                                 <option value="running">running</option>
                                 <option value="stopped">stopped</option>
@@ -1139,11 +1139,11 @@ function generate_passive_check() {
                     </div>
                     <div class="wc-thresholds hide-by-default form-inline">
                         <div class="input-group">
-                            <div class="input-group-addon"><img src="../../static/img/warning.png" class="tt-bind" title="Warning threshold"></div>
+                            <div class="input-group-text"><img src="../../static/img/warning.png" class="tt-bind" title="Warning threshold"></div>
                             <input type="text" class="form-control warn" placeholder="Warning">
                         </div>
                         <div class="input-group">
-                            <div class="input-group-addon"><img src="../../static/img/critical.png" class="tt-bind" title="Critical threshold"></div>
+                            <div class="input-group-text"><img src="../../static/img/critical.png" class="tt-bind" title="Critical threshold"></div>
                             <input type="text" class="form-control crit" placeholder="Critical">
                         </div>
                     </div>
@@ -1151,9 +1151,9 @@ function generate_passive_check() {
                 <div class="settings advanced-settings">
                     <label>Advanced Settings</label>
                     <div class="input-group">
-                        <div class="input-group-addon">Sleep for <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Sleep (Generate Data Per Second)" data-bs-content="<p>When checking for data such as per second counters or delta values, the sleep value is used to generate the data/sec value.</p><p>NCPA will wait the amount of sleep time specified, collecting the data that comes in between the start and end time of the sleep time.</p><p>The calculation when using a sleep value:<br><b>sum(data) / sleep = data/sec</b></p><p>Sleep value is in seconds.</p>"></i></div>
+                        <div class="input-group-text">Sleep for <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Sleep (Generate Data Per Second)" data-bs-content="<p>When checking for data such as per second counters or delta values, the sleep value is used to generate the data/sec value.</p><p>NCPA will wait the amount of sleep time specified, collecting the data that comes in between the start and end time of the sleep time.</p><p>The calculation when using a sleep value:<br><b>sum(data) / sleep = data/sec</b></p><p>Sleep value is in seconds.</p>"></i></div>
                         <input type="text" class="form-control sleep" placeholder="# of">
-                        <div class="input-group-addon">seconds</div>
+                        <div class="input-group-text">seconds</div>
                     </div>
                 </div>
                 <div style="margin-top: 20px;">
