@@ -95,7 +95,7 @@ $(document).ready(function() {
 
                         <div class="row mb-3">
                             <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Log Retention Time</label>
-                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="check_logging_time" value="{{ sectioncfg['check_logging_time'] }}">
                                     <div class="input-group-text">Days</div>
@@ -105,7 +105,7 @@ $(document).ready(function() {
 
                         <div class="row mb-3">
                             <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Level</label>
-                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <div class="col-sm-6 col-md-4 col-lg-3">
                                 <select class="form-select" name="log_level">
                                     <option value="error"{% if sectioncfg['loglevel'] == 'error' %} selected{% endif %}>Error</option>
                                     <option value="warning"{% if sectioncfg['loglevel'] == 'warning' %} selected{% endif %}>Warning</option>
@@ -117,7 +117,7 @@ $(document).ready(function() {
 
                         <div class="row mb-3">
                             <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Max MB</label>
-                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="log_max_mb" value="{{ sectioncfg['logmaxmb'] }}">
                                     <div class="input-group-text">MB</div>
@@ -127,7 +127,7 @@ $(document).ready(function() {
 
                         <div class="row mb-3">
                             <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Backups</label>
-                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="log_backups" value="{{ sectioncfg['logbackups'] }}">
                                     <div class="input-group-text">Days</div>
@@ -137,7 +137,7 @@ $(document).ready(function() {
 
                         <div class="row mb-3">
                             <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Default Units</label>
-                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <div class="col-sm-6 col-md-4 col-lg-3">
                                 <select class="form-select" name="default_units">
                                     <option value="k"{% if sectioncfg['default_units'] == 'K' %} selected{% endif %}>K</option>
                                     <option value="Ki"{% if sectioncfg['default_units'] == 'Ki' %} selected{% endif %}>Ki</option>
@@ -153,7 +153,7 @@ $(document).ready(function() {
 
                         <div class="row mb-3">
                             <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2"></label>
-                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                            <div class="col-sm-6 col-md-4 col-lg-3">
                                 <button type="submit" class="btn btn-primary">Save Changes</button>
                             </div>
                         </div>
@@ -177,14 +177,14 @@ $(document).ready(function() {
 
                     <div class="row mb-3">
                         <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">User</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="col-sm-6 col-md-4 col-lg-3">
                             <input type="text" class="form-control" name="uid" value="{{ sectioncfg['uid'] }}" readonly>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Group</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="col-sm-6 col-md-4 col-lg-3">
                             <input type="text" class="form-control" name="gid" value="{{ sectioncfg['gid'] }}" readonly>
                         </div>
                     </div>

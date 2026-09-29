@@ -46,14 +46,14 @@ $(document).ready(function() {
 
                     <div class="row mb-3">
                         <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Port</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="col-sm-6 col-md-4 col-lg-3">
                             <input type="text" class="form-control" name="port" value="{{ sectioncfg['port'] }}" readonly>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">SSL Version (min)</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="col-sm-6 col-md-4 col-lg-3">
                             <select class="form-select" name="ssl_version">
                                 <option value="TLSv1_2"{% if sectioncfg['ssl_version'] == 'TLSv1_2' %} selected{% endif %}>TLSv1.2</option>
                                 <option value="TLSv1_3"{% if sectioncfg['ssl_version'] == 'TLSv1_3' %} selected{% endif %}>TLSv1.3</option>
@@ -63,7 +63,7 @@ $(document).ready(function() {
 
                     <div class="row mb-3">
                         <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">SSL Max Version</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="col-sm-6 col-md-4 col-lg-3">
                             <select class="form-select" name="ssl_max_version">
                                 <option value=""{% if not sectioncfg['ssl_max_version'] %} selected{% endif %}></option>
                                 <option value="TLSv1_2"{% if sectioncfg['ssl_max_version'] == 'TLSv1_2' %} selected{% endif %}>TLSv1.2</option>
@@ -74,7 +74,7 @@ $(document).ready(function() {
 
                     <div class="row mb-3">
                         <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Certificate</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="col-sm-6 col-md-4 col-lg-3">
                             <select class="form-select" name="certificate">
                                 <option value="adhoc"{% if sectioncfg['certificate'] == 'adhoc' %} selected{% endif %}>Adhoc</option>
                                 <!--<option value="custom"{% if sectioncfg['certificate'] != 'adhoc' %} selected{% endif %}>Custom</option>-->
@@ -115,7 +115,7 @@ $(document).ready(function() {
 
                     <div class="row mb-3">
                         <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">GUI Session Timeout</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="col-sm-6 col-md-4 col-lg-3">
                             <div class="input-group">
                                 <input type="text" class="form-control" name="gui_session_timeout" value="{{ sectioncfg['gui_session_timeout'] }}" readonly>
                                 <div class="input-group-text">Secs</div>
@@ -124,7 +124,7 @@ $(document).ready(function() {
                     </div>
                     <div class="row mb-3">
                         <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Delayed Start</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="col-sm-6 col-md-4 col-lg-3">
                             <div class="input-group">
                                 <input type="text" class="form-control" name="delay_start" value="{{ sectioncfg['delay_start'] }}" readonly>
                                 <div class="input-group-text">Secs</div>
@@ -148,7 +148,7 @@ $(document).ready(function() {
 
                     <div class="row mb-3">
                         <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Max Connections</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="col-sm-6 col-md-4 col-lg-3">
                             <input type="text" class="form-control" name="max_connections" value="{{ sectioncfg['max_connections'] }}" readonly>
                         </div>
                     </div>
