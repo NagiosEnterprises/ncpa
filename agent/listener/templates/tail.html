@@ -54,7 +54,7 @@ $(document).ready(function() {
                 $('.tbl-message').remove();
             }
 
-            logs = $.parseJSON(d.data);
+            logs = JSON.parse(d.data);
             $.each(logs, function(i, log) {
                 add_log(log);
             })
