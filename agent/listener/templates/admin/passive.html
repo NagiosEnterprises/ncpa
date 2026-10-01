@@ -57,41 +57,37 @@ $(document).ready(function() {
     <div id="flashMessageText"></div>
 </div>
 
-<div style="padding: 3rem;">
+<div style="padding: 30px;">
 
     <h3>Passive Settings</h3>
     <p>View the general settings for the Passive service and which handlers it will be running, such as NRDP.</p>
 
     <form class="form-horizontal">
-        <div class="container-fluid" style="margin-top: 3rem; padding: 0;">
+        <div class="container-fluid" style="margin-top: 30px; padding: 0;">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-horizontal">
 
                         <input type="hidden" name="section" value="passive">
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Passive Handlers</label>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Passive Handlers</label>
                             <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                                <div class="btn-group" data-toggle="buttons">
-                                    <label class="btn btn-sm btn-default{% if sectioncfg['handlers'] == 'None' %} active{% endif %}">
-                                        <input type="radio" name="handlers" value="None" autocomplete="off"{% if sectioncfg['handlers'] == 'None' %} checked{% endif %}> None
-                                    </label>
-                                    <label class="btn btn-sm btn-default{% if sectioncfg['handlers'] == 'nrdp' %} active{% endif %}">
-                                        <input type="radio" name="handlers" value="nrdp" autocomplete="off"{% if sectioncfg['handlers'] == 'nrdp' %} checked{% endif %}> NRDP
-                                    </label>
-                                    <label class="btn btn-sm btn-default{% if sectioncfg['handlers'] == 'kafkaproducer' %} active{% endif %}">
-                                        <input type="radio" name="handlers" value="kafkaproducer" autocomplete="off"{% if sectioncfg['handlers'] == 'kafkaproducer' %} checked{% endif %}> KafkaProducer
-                                    </label>
-                                    <label class="btn btn-sm btn-default{% if sectioncfg['handlers'] == 'nrdp, kafkaproducer' or sectioncfg['handlers'] == 'kafkaproducer, nrdp' %} active{% endif %}">
-                                        <input type="radio" name="handlers" value="nrdp, kafkaproducer" autocomplete="off"{% if sectioncfg['handlers'] == 'nrdp, kafkaproducer' or sectioncfg['handlers'] == 'kafkaproducer, nrdp' %} checked{% endif %}> Both
-                                    </label>
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="handlers" id="handlers-None" value="None" autocomplete="off"{% if sectioncfg['handlers'] == 'None' %} checked{% endif %}>
+                                    <label class="btn btn-sm btn-default" for="handlers-None">None</label>
+                                    <input type="radio" class="btn-check" name="handlers" id="handlers-nrdp" value="nrdp" autocomplete="off"{% if sectioncfg['handlers'] == 'nrdp' %} checked{% endif %}>
+                                    <label class="btn btn-sm btn-default" for="handlers-nrdp">NRDP</label>
+                                    <input type="radio" class="btn-check" name="handlers" id="handlers-kafkaproducer" value="kafkaproducer" autocomplete="off"{% if sectioncfg['handlers'] == 'kafkaproducer' %} checked{% endif %}>
+                                    <label class="btn btn-sm btn-default" for="handlers-kafkaproducer">KafkaProducer</label>
+                                    <input type="radio" class="btn-check" name="handlers" id="handlers-nrdp, kafkaproducer" value="nrdp, kafkaproducer" autocomplete="off"{% if sectioncfg['handlers'] == 'nrdp, kafkaproducer' or sectioncfg['handlers'] == 'kafkaproducer, nrdp' %} checked{% endif %}>
+                                    <label class="btn btn-sm btn-default" for="handlers-nrdp, kafkaproducer">Both</label>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2"></label>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2"></label>
                             <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
                                 <button type="button" class="btn btn-primary" id="start-passive">Save Changes</button>
                             </div>
@@ -101,29 +97,29 @@ $(document).ready(function() {
                             The following section is <b>read-only</b> and any setting changes will not be saved.
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Default Sleep</label>
-                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Default Sleep</label>
+                            <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="sleep" value="{{ sectioncfg['sleep'] }}" readonly>
-                                    <div class="input-group-addon">Secs</div>
+                                    <div class="input-group-text">Secs</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log File</label>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log File</label>
                             <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
                                 <input type="text" class="form-control" name="logfile" value="{{ sectioncfg['logfile'] }}" readonly>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Delayed Start</label>
-                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Delayed Start</label>
+                            <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="delay_start" value="{{ sectioncfg['delay_start'] }}" readonly>
-                                    <div class="input-group-addon">Secs</div>
+                                    <div class="input-group-text">Secs</div>
                                 </div>
                             </div>
                         </div>

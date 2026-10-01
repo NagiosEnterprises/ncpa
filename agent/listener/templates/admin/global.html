@@ -24,9 +24,9 @@ $(document).ready(function() {
         xhr.send(new URLSearchParams(new FormData(this)).toString());
 
         $('#flashMessageText').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>');
-        
+
         xhr.onreadystatechange = function() {
-            console.log(xhr.readyState, xhr.status);    
+            console.log(xhr.readyState, xhr.status);
             let response = JSON.parse(xhr.responseText);
             let flash = document.querySelector('#flashMessage');
             let flashText = document.querySelector('#flashMessageText');
@@ -54,11 +54,9 @@ $(document).ready(function() {
 
 
 {% if flash_msg %}
-<div class="alert alert-{{ flash_msg_type }}">
+<div class="alert alert-{{ flash_msg_type }} alert-dismissible">
     {{ flash_msg_text }}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {% endif %}
 
@@ -66,12 +64,12 @@ $(document).ready(function() {
     <div id="flashMessageText"></div>
 </div>
 
-<div style="padding: 3rem;">
+<div style="padding: 30px;">
 
     <h3>Global Settings</h3>
     <p>These are generic settings that apply to all of NCPA's services and utilities. These values are stored under the [general] section in the config.</p>
 
-    <div class="container-fluid" style="margin-top: 3rem; padding: 0;">
+    <div class="container-fluid" style="margin-top: 30px; padding: 0;">
         <div class="row">
             <div class="col-lg-12">
                 <div class="form-horizontal">
@@ -80,37 +78,35 @@ $(document).ready(function() {
 
                         <input type="hidden" name="section" value="general">
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Logging (in browser)</label>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Logging (in browser)</label>
                             <div class="col-sm-6">
-                                <div class="btn-group" data-toggle="buttons">
-                                    <label class="btn btn-sm btn-default{% if sectioncfg['check_logging'] %} active{% endif %}">
-                                        <input type="radio" name="check_logging" value="1" autocomplete="off"{% if sectioncfg['check_logging'] %} checked{% endif %}> Enabled
-                                    </label>
-                                    <label class="btn btn-sm btn-default{% if not sectioncfg['check_logging'] %} active{% endif %}">
-                                        <input type="radio" name="check_logging" value="0" autocomplete="off"{% if not sectioncfg['check_logging'] %} checked{% endif %}> Disabled
-                                    </label>
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="check_logging" id="check_logging-1" value="1" autocomplete="off"{% if sectioncfg['check_logging'] %} checked{% endif %}>
+                                    <label class="btn btn-sm btn-default" for="check_logging-1">Enabled</label>
+                                    <input type="radio" class="btn-check" name="check_logging" id="check_logging-0" value="0" autocomplete="off"{% if not sectioncfg['check_logging'] %} checked{% endif %}>
+                                    <label class="btn btn-sm btn-default" for="check_logging-0">Disabled</label>
                                 </div>
-                                <span style="margin-left: 1.5rem;">
+                                <span style="margin-left: 15px;">
                                     <i class="fa fa-trash-o fa-14"></i> <a href="clear-check-log">Clear Check Log</a>
                                 </span>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Log Retention Time</label>
-                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Check Log Retention Time</label>
+                            <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="check_logging_time" value="{{ sectioncfg['check_logging_time'] }}">
-                                    <div class="input-group-addon">Days</div>
+                                    <div class="input-group-text">Days</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Level</label>
-                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                                <select class="form-control" name="log_level">
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Level</label>
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <select class="form-select" name="log_level">
                                     <option value="error"{% if sectioncfg['loglevel'] == 'error' %} selected{% endif %}>Error</option>
                                     <option value="warning"{% if sectioncfg['loglevel'] == 'warning' %} selected{% endif %}>Warning</option>
                                     <option value="info"{% if sectioncfg['loglevel'] == 'info' %} selected{% endif %}>Info</option>
@@ -119,30 +115,30 @@ $(document).ready(function() {
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Max MB</label>
-                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Max MB</label>
+                            <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="log_max_mb" value="{{ sectioncfg['logmaxmb'] }}">
-                                    <div class="input-group-addon">MB</div>
+                                    <div class="input-group-text">MB</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Backups</label>
-                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Log Backups</label>
+                            <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="log_backups" value="{{ sectioncfg['logbackups'] }}">
-                                    <div class="input-group-addon">Days</div>
+                                    <div class="input-group-text">Days</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Default Units</label>
-                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
-                                <select class="form-control" name="default_units">
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Default Units</label>
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <select class="form-select" name="default_units">
                                     <option value="k"{% if sectioncfg['default_units'] == 'K' %} selected{% endif %}>K</option>
                                     <option value="Ki"{% if sectioncfg['default_units'] == 'Ki' %} selected{% endif %}>Ki</option>
                                     <option value="M"{% if sectioncfg['default_units'] == 'M' %} selected{% endif %}>M</option>
@@ -155,13 +151,13 @@ $(document).ready(function() {
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2"></label>
-                            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2"></label>
+                            <div class="col-sm-6 col-md-4 col-lg-3">
                                 <button type="submit" class="btn btn-primary">Save Changes</button>
                             </div>
                         </div>
-                        
+
                     </form>
 
 
@@ -171,45 +167,43 @@ $(document).ready(function() {
                 </div>
 
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">PID File</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">PID File</label>
                         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
                             <input type="text" class="form-control" name="pidfile" value="{{ sectioncfg['pidfile'] }}" readonly>
                         </div>
                     </div>
 
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">User</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">User</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3">
                             <input type="text" class="form-control" name="uid" value="{{ sectioncfg['uid'] }}" readonly>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Group</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Group</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3">
                             <input type="text" class="form-control" name="gid" value="{{ sectioncfg['gid'] }}" readonly>
                         </div>
                     </div>
 
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">All Partitions</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">All Partitions</label>
                         <div class="col-sm-6">
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if sectioncfg['all_partitions'] %} active{% endif %}">
-                                    <input type="radio" name="all_partitions" value="1" autocomplete="off"{% if sectioncfg['all_partitions'] %} checked{% endif %}> Enabled
-                                </label>
-                                <label class="btn btn-sm btn-default{% if not sectioncfg['all_partitions'] %} active{% endif %}">
-                                    <input type="radio" name="all_partitions" value="0" autocomplete="off"{% if not sectioncfg['all_partitions'] %} checked{% endif %}> Disabled
-                                </label>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="all_partitions" id="all_partitions-1" value="1" autocomplete="off"{% if sectioncfg['all_partitions'] %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="all_partitions-1">Enabled</label>
+                                <input type="radio" class="btn-check" name="all_partitions" id="all_partitions-0" value="0" autocomplete="off"{% if not sectioncfg['all_partitions'] %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="all_partitions-0">Disabled</label>
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Exclude FS Types</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2 col-xl-2">Exclude FS Types</label>
                         <div class="col-sm-6 col-md-4 col-lg-6 col-xl-9">
                             <input type="text" class="form-control" style="display: inline-block; width: 100%;" name="exclude_fs_types" value="{{ sectioncfg['exclude_fs_types'] }}" readonly>
                         </div>
