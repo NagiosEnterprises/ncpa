@@ -61,7 +61,7 @@ $(document).ready(function() {
                 </div>
                 <div class="input-group" style="width: 280px;">
                     <label class="input-group-text" style="width: 100px;">Executed By</label>
-                    <select name="check_senders" class="check_senders" multiple>
+                    <select name="check_senders" class="check_senders" multiple="multiple">
                         {% for sender in senders %}
                         <option value="{{ sender }}"{% for s in check_senders %}{% if s == sender %} selected{% endif %}{% endfor %}>{{ sender }}</option>
                         {% endfor %}
