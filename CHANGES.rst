@@ -4,6 +4,7 @@ Changelog
 ==================
 **Bug Fixes**
 
+- Fixed a browser console error when clicking Save Changes on some of the admin pages, caused by parsing the response before the request finished. - CPD
 - Fixed an invalid color value in the real-time graph template that prevented graph axis labels from rendering in the intended color. - CPD
 
 **Removed**
