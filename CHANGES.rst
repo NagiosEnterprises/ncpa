@@ -9,8 +9,8 @@ Changelog
 
 **Removed**
 
-- Removed the d3.v7.min.js library from the base.html template and the graphs help page, as it is no longer used in the graphing module. - CPD
 - Removed legacy UI assets, including Bootstrap 3 glyphicons, unused background images, and redundant CSS rules. - CPD
+- Removed the d3.v7.min.js library from the base.html template and the graphs help page, as it is no longer used in the graphing module. - CPD
 
 **Updates**
 
