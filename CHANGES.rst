@@ -4,6 +4,7 @@ Changelog
 ==================
 **Bug Fixes**
 
+- Fixed a browser console error when clicking Save Changes on some of the admin pages, caused by parsing the response before the request finished. - CPD
 - Fixed an invalid color value in the real-time graph template that prevented graph axis labels from rendering in the intended color. - CPD
 
 **Removed**
@@ -15,6 +16,7 @@ Changelog
 - Refactored UI markup and styles across the application to support Bootstrap 5 standards. - CPD
 - Updated the bundled Bootstrap library to version 5.3.8, resolving CVEs and improving compatibility with modern browsers. - CPD
 - Updated the bundled Font Awesome library to version 7.3.1. - CPD
+- Updated the bundled jQuery library to version 4.0.0, now served as /static/js/jquery.min.js. The old /static/js/jquery.3.6.4.min.js file is still included for pages that embed NCPA graphs and will be removed in a future release. - CPD
 - Updated the bundled Smoothie Charts graphing library to version 1.37, resolving live graph jitter and a memory leak, and improving rendering performance. - CPD
 
 3.5.0 - 9/8/2026

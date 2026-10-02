@@ -70,7 +70,7 @@
             }
 
             ws.onmessage = function(e) {
-                var d = $.parseJSON(e.data);
+                var d = JSON.parse(e.data);
                 var ts = d[0];
                 var units = d[1];
                 var lsum = 0;

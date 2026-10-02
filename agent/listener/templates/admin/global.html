@@ -26,6 +26,9 @@ $(document).ready(function() {
         $('#flashMessageText').html('Saving changes...  <i class="fa fa-spinner fa-spin"></i>');
 
         xhr.onreadystatechange = function() {
+            if (xhr.readyState != 4) {
+                return;
+            }
             console.log(xhr.readyState, xhr.status);
             let response = JSON.parse(xhr.responseText);
             let flash = document.querySelector('#flashMessage');
