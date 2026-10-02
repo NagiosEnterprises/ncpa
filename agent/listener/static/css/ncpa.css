@@ -2,26 +2,23 @@
 body { line-height: 1.42857143; color: #333; }
 a { text-decoration: none; }
 label { max-width: 100%; margin-bottom: 5px; font-weight: 700; }
-.form-check-label { margin-bottom: 0; font-weight: 400; }
 p { margin: 0 0 10px; }
 ol, ul { margin-top: 0; margin-bottom: 10px; padding-left: 40px; }
 ol ol, ol ul, ul ol, ul ul { margin-bottom: 0; }
-h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; }
-h1, h2, h3, .h1, .h2, .h3 { margin-top: 20px; margin-bottom: 10px; }
-h4, h5, h6, .h4, .h5, .h6 { margin-top: 10px; margin-bottom: 10px; }
-h1, .h1 { font-size: 36px; }
-h2, .h2 { font-size: 30px; }
-h3, .h3 { font-size: 24px; }
-h4, .h4 { font-size: 18px; }
-h5, .h5 { font-size: 14px; }
-h6, .h6 { font-size: 12px; }
+h1, h2, h3, h4, h5, h6 { font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; }
+h1, h2, h3 { margin-top: 20px; margin-bottom: 10px; }
+h4, h5, h6 { margin-top: 10px; margin-bottom: 10px; }
+h1 { font-size: 36px; }
+h2 { font-size: 30px; }
+h3 { font-size: 24px; }
+h4 { font-size: 18px; }
+h5 { font-size: 14px; }
+h6 { font-size: 12px; }
 hr { margin-top: 20px; margin-bottom: 20px; border: 0; border-top: 1px solid #eee; opacity: 1; }
-pre { padding: 9.5px; margin: 0 0 10px; font-size: 13px; line-height: 1.42857143; color: #333; word-break: break-all; word-wrap: break-word; background-color: #f5f5f5; border: 1px solid #ccc; border-radius: 4px; }
-code { padding: 2px 4px; font-size: 90%; color: #c7254e; background-color: #f9f2f4; border-radius: 4px; }
+pre { padding: 4px 6px; margin: 0 0 10px; font-size: 13px; line-height: 1.42857143; color: #333; white-space: pre-wrap; word-break: break-all; word-wrap: break-word; background-color: #f5f5f5; border: 1px solid #ccc; border-radius: 0; }
+code { padding: 2px 4px; font-size: 90%; color: #4089F9; background-color: #ecf4ff; border-radius: 0; }
 pre code { padding: 0; font-size: inherit; color: inherit; white-space: pre-wrap; background-color: transparent; border-radius: 0; }
 .well { min-height: 20px; padding: 19px; margin-bottom: 20px; background-color: #f5f5f5; border: 1px solid #e3e3e3; border-radius: 4px; box-shadow: inset 0 1px 1px rgba(0,0,0,.05); }
-.well-lg { padding: 24px; border-radius: 6px; }
-.well-sm { padding: 9px; border-radius: 3px; }
 .btn-default {
     --bs-btn-color: #333;
     --bs-btn-bg: #fff;
@@ -67,19 +64,12 @@ a:focus { text-decoration: none; color: #4d89f9; }
 .fa-r { margin-left: 2px; }
 .fa:not(.fa-fw) { --fa-width: auto; }
 .fa-14 { font-size: 13px; }
-.fa-16 { font-size: 15px; }
-.fa-btn { font-size: 14px; vertical-align: middle; }
-pre { white-space: pre-wrap; }
 
 h3 { margin-top: 0; font-weight: bold; }
 
 .console { font-family: "Consolas", "Courier New", Courier, monospace; }
 .tab-content { padding: 20px; }
-.passive-check-box { margin-bottom: 10px; }
 
-pre, code { border-radius: 0; }
-code { color: #4089F9; background-color: #ecf4ff; }
-.bold { font-weight: bold; }
 .modal-body p:last-child { margin-bottom: 0; }
 .modal-dialog { margin: 100px auto;  }
 .btn-close { font-size: 10px; }
@@ -178,8 +168,8 @@ input.form-control { padding: 4px 8px; }
 .navbar { margin-bottom: 0; }
 .table-border { border: 1px solid #DDD; }
 input[type=checkbox], input[type=radio] { margin: 2px 0 0; }
-.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] { margin-left: -18px; }
-.form-horizontal .checkbox, .form-horizontal .checkbox-inline, .form-horizontal .radio, .form-horizontal .radio-inline { padding-top: 0; }
+.checkbox input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] { margin-left: -18px; }
+.form-horizontal .checkbox, .form-horizontal .radio, .form-horizontal .radio-inline { padding-top: 0; }
 .nav-tabs .nav-link { border-radius: 0; }
 .btn-primary { background-color: #4d89f9; border-color: #3371e6; }
 .btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary:active:focus { background-color: #3371e6; border-color: #1b59cd; }
@@ -193,7 +183,6 @@ i.fa-question-circle { font-size: 13px; cursor: pointer; }
 .popover { max-width: 350px; }
 .popover-body p:last-child { margin-bottom: 0; }
 h3.popover-header { font-weight: bold; font-size: 13px; }
-pre { border-radius: 0; padding: 4px 6px; }
 .tooltip { z-index: 10000; }
 
 .well .table { background-color: #FFF; }
@@ -212,8 +201,6 @@ pre { border-radius: 0; padding: 4px 6px; }
 #api-frame { width: 100%; height: 595px; border: none; background-color: #FFF; }
 #api-frame div { padding: 10px; white-space: pre-wrap; font-family: 'Consolas', monospace; font-size: 13px; }
 #api-input { border-top: 0; border-left: 0; border-right: 0; border-bottom: 1px solid #DDD; }
-
-#top-container { }
 
 #not-renderable { height: 220px; text-align: center; color: #999; background-color: #FBFBFB; border: 1px solid #BBB; padding-top: 48px; }
 #not-renderable h3 { font-size: 25px; margin-bottom: 20px; }
@@ -253,12 +240,10 @@ a.log-example { cursor: pointer; }
 .dropdown-link .menu { width: 150px; list-style-type: none; margin: 0; padding: 5px; background-color: #222; display: none; position: absolute; z-index: 9000; }
 .dropdown-link .menu li a { display: block; color: #BBB; margin: 10px; }
 .dropdown-link .menu li a:hover { text-decoration: none; color: #FFF; }
-/* .dropdown-link .menu li .fa { width: 15px; } */
 
 /* Graph selection page */
 select.nodes { margin-left: 4px; }
 
-#cpu_percent, #mem_percent { cursor: pointer; }
 .check-result { text-align: center; }
 .check-result.OK { background-color: #B2FF5F; }
 .check-result.WARNING { background-color: #FEFF5F; }
@@ -299,7 +284,6 @@ body.help ol li:last-child { padding-bottom: 0; }
 .page-links a:active, .page-links a:focus, .page-links a:focus:hover { color: #000; text-decoration: none; }
 
 .well.links { padding: 0; }
-.well.links .section {  }
 .well.links .section > div { font-weight: bold; padding: 6px 12px; background-color: #EBEBEB; }
 .well.links .section ul { margin: 0; padding: 8px 12px; list-style: none; }
 .well.links .section ul li { height: 19px; line-height: 19px; }

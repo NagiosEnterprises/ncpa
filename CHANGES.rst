@@ -10,10 +10,11 @@ Changelog
 **Removed**
 
 - Removed the d3.v7.min.js library from the base.html template and the graphs help page, as it is no longer used in the graphing module. - CPD
+- Removed legacy UI assets, including Bootstrap 3 glyphicons, unused background images, and redundant CSS rules. - CPD
 
 **Updates**
 
-- Refactored UI markup and styles across the application to support Bootstrap 5 standards. - CPD
+- Refactored UI markup and styles across the application to support Bootstrap 5 and jQuery 4. - CPD
 - Updated the bundled Bootstrap library to version 5.3.8, resolving CVEs and improving compatibility with modern browsers. - CPD
 - Updated the bundled Font Awesome library to version 7.3.1. - CPD
 - Updated the bundled jQuery library to version 4.0.0, now served as /static/js/jquery.min.js. The old /static/js/jquery.3.6.4.min.js file is still included for pages that embed NCPA graphs and will be removed in a future release. - CPD
