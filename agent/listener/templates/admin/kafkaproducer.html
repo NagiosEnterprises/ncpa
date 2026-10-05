@@ -29,7 +29,6 @@ $(document).ready(function() {
             if (xhr.readyState != 4) {
                 return;
             }
-            console.log(xhr.readyState, xhr.status);  
             let response = JSON.parse(xhr.responseText);
             let flash = document.querySelector('#flashMessage');
             let flashText = document.querySelector('#flashMessageText');
