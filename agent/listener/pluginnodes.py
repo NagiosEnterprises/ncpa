@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 from configparser import NoOptionError
 import subprocess
@@ -76,6 +77,20 @@ class PluginNode(nodes.RunnableNode):
             logging.error("Error processing plugin instructions: %r\nAttempting to run: %r", e, self.name)
             return "$plugin_name $plugin_args"
 
+    def get_plugin_env(self):
+        """Returns a copy of the environment for plugin subprocesses, without
+        the CA bundle variables that cx_Freeze points at NCPA's own install
+        directory. Values set by the admin outside that directory are kept.
+
+        """
+        env = os.environ.copy()
+        install_dir = os.path.dirname(os.path.abspath(sys.executable))
+        for var in ("SSL_CERT_FILE", "SSL_CERT_DIR"):
+            value = env.get(var)
+            if value and os.path.abspath(value).startswith(install_dir + os.sep):
+                del env[var]
+        return env
+
     def kill_proc(self, p, t):
         self.killed = True
         if environment.SYSTEM == "Windows":
@@ -117,10 +132,12 @@ class PluginNode(nodes.RunnableNode):
 
         # Run the command in a new subprocess
         run_time_start = time.time()
+        plugin_env = self.get_plugin_env()
 
         if environment.SYSTEM == "Windows":
             running_check = subprocess.Popen(
-                cmd, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+                cmd, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                env=plugin_env,
             )
         else:
             running_check = subprocess.Popen(
@@ -129,6 +146,7 @@ class PluginNode(nodes.RunnableNode):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 preexec_fn=os.setsid,
+                env=plugin_env,
             )
 
         timer = Timer(timeout, self.kill_proc, [running_check, timeout])
