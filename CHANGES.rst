@@ -20,6 +20,8 @@ Changelog
 - Updated the bundled Font Awesome library to version 7.3.1. - CPD
 - Updated the bundled jQuery library to version 4.0.0, now served as /static/js/jquery.min.js. The old /static/js/jquery.3.6.4.min.js file is still included for pages that embed NCPA graphs and will be removed in a future release. - CPD
 - Updated the bundled Smoothie Charts graphing library to version 1.37, resolving live graph jitter and a memory leak, and improving rendering performance. - CPD
+- Updated Windows builds to use Python version 3.13.16. - CPD
+- Updated Windows builds to use OpenSSL 3.5.9. - CPD
 
 3.5.0 - 9/8/2026
 ==================
