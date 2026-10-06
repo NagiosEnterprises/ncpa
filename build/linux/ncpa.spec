@@ -41,6 +41,7 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/local
 cp -rf $RPM_BUILD_DIR/ncpa-%{version} %{buildroot}/usr/local/ncpa
 mkdir -p %{buildroot}/usr/local/ncpa/var/run
+mkdir -p %{buildroot}/usr/local/ncpa/share
 mkdir -p %{buildroot}/etc/init.d
 touch %{buildroot}/usr/local/ncpa/var/ncpa.db
 chown nagios:nagios %{buildroot}/usr/local/ncpa -R
@@ -265,6 +266,8 @@ fi
 #/usr/local/ncpa/lib/*.py
 /usr/local/ncpa/lib/*.dat
 /usr/local/ncpa/lib/*.zip
+/usr/local/ncpa/lib/certifi
+/usr/local/ncpa/share
 /usr/local/ncpa/build_resources
 /usr/local/ncpa/listener
 /usr/local/ncpa/plugins

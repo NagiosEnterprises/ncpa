@@ -118,7 +118,9 @@ buildOptions = dict(includes=includes,
                     bin_includes=bin_includes,
                     replace_paths=[('*', '')],
                     zip_include_packages=['*'],
-                    zip_exclude_packages=[],
+                    # certifi.where() must return a real path; from inside the zip it
+                    # extracts cacert.pem to a temp file on every start
+                    zip_exclude_packages=['certifi'],
                     include_msvcr=True)
 
 # Add Solaris-specific build options to avoid patchelf issues
