@@ -48,8 +48,8 @@ We currently build for the following operating systems on x86-64 architectures:
 - CentOS 9+
 - RHEL 8+
 - Oracle 8+
-- Debian 11+
-- Ubuntu 20+
+- Debian 12+
+- Ubuntu 22.04+
 - OpenSuSE 15+
 - SLES 15+
 - Amazon Linux 2
@@ -67,10 +67,12 @@ Older systems that have been supported by NCPA in the past:
 - Ubuntu 12.04                  - v2.1.4
 - Ubuntu 14.04                  - v2.2.2
 - Ubuntu 16.04 32b, 18.04 32b   - v2.4.1
-- Ubuntu 20                     - v3.1.0
+- Ubuntu 18.04                  - v3.1.0
+- Ubuntu 20.04                  - v3.5.0
 - Debian 7                      - v2.1.4
 - Debian 8 32b, 9 32b           - v2.4.1
 - Debian 10                     - v3.1.0
+- Debian 11                     - v3.5.0
 - OpenSUSE 11, 12, 13           - v2.1.4
 - SLES 11                       - v2.4.0
 - SLES 12                       - v2.4.1

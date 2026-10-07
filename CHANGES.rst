@@ -8,6 +8,9 @@ Changelog
 - Fixed an invalid color value in the real-time graph template that prevented graph axis labels from rendering in the intended color. - CPD
 - Fixed an issue with plugins that use TLS failing on Linux and macOS because they inherited the SSL_CERT_FILE environment variable that cx_Freeze sets during the build process. [GH#1436] - CPD
 
+**Deprecated**
+- Removed official support for Debian 11 and Ubuntu 20 builds. Newer builds may still run on these distributions, but they are no longer officially supported. - CPD
+
 **Removed**
 
 - Removed legacy UI assets, including Bootstrap 3 glyphicons, unused background images, and redundant CSS rules. - CPD
