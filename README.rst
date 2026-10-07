@@ -45,7 +45,7 @@ NOTE: If you're using Debian 11 or one of the other newer OSes and you see an "E
 
 We currently build for the following operating systems on x86-64 architectures:
 
-- CentOS 9+
+- CentOS Stream 9+
 - RHEL 8+
 - Oracle 8+
 - Debian 12+

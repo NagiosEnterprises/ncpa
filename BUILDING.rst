@@ -47,7 +47,7 @@ Building on Linux
 
 *Note: Updates that involve a new/updated dependency (i.e. Python or OpenSSL) version will require that you delete the `prereqs.installed` file. If your build fails, try deleting this file and trying again.*
 
-NCPA must be built on the family of distributions which it will ultimately be run on. i.e. a .deb built on Ubuntu 20 will work on Ubuntu 22/24 and should also work on Debian 10/11
+NCPA must be built on the family of distributions which it will ultimately be run on. i.e. a .deb built on Ubuntu 22.04 will work on Ubuntu 24.04/26.04 and should also work on Debian 12/13
 
 If you are on a RHEL/Oracle/CentOS/Amazon/Rocky system you will need to enable the CodeReady Builder (CRB) and EPEL repositories specific to your distro and version to get all the required development packages, and the newer versions of Python.
 
