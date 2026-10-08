@@ -45,11 +45,11 @@ NOTE: If you're using Debian 11 or one of the other newer OSes and you see an "E
 
 We currently build for the following operating systems on x86-64 architectures:
 
-- CentOS 9+
+- CentOS Stream 9+
 - RHEL 8+
 - Oracle 8+
-- Debian 11+
-- Ubuntu 20+
+- Debian 12+
+- Ubuntu 22.04+
 - OpenSuSE 15+
 - SLES 15+
 - Amazon Linux 2
@@ -67,10 +67,12 @@ Older systems that have been supported by NCPA in the past:
 - Ubuntu 12.04                  - v2.1.4
 - Ubuntu 14.04                  - v2.2.2
 - Ubuntu 16.04 32b, 18.04 32b   - v2.4.1
-- Ubuntu 20                     - v3.1.0
+- Ubuntu 18.04                  - v3.1.0
+- Ubuntu 20.04                  - v3.5.0
 - Debian 7                      - v2.1.4
 - Debian 8 32b, 9 32b           - v2.4.1
 - Debian 10                     - v3.1.0
+- Debian 11                     - v3.5.0
 - OpenSUSE 11, 12, 13           - v2.1.4
 - SLES 11                       - v2.4.0
 - SLES 12                       - v2.4.1
@@ -107,7 +109,7 @@ We are always looking to improve NCPA. If you can add a feature or fix a bug, yo
 
 **Building From Source**
 
-While we recommend using the pre-built version above, sometimes you may find the need to build your own binaries from the source. Mostly, this consists of installing the newest version of *Python 2.7* and a few modules installed through pip. There are some issues on certain systems that are explained in the build docs below.
+While we recommend using the pre-built version above, sometimes you may find the need to build your own binaries from the source. Mostly, this consists of installing the newest version of *Python 3.11+* and a few modules installed through pip. There are some issues on certain systems that are explained in the build docs below.
 
 +------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------+
 | `Building for Windows <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-windows>`_ | `Building for Linux <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-linux>`_ | `Building for macOS <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-macos>`_ | `Building for Solaris <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-solaris>`_ | `Building for AIX <https://github.com/NagiosEnterprises/ncpa/blob/master/BUILDING.rst#building-on-aix>`_ |
