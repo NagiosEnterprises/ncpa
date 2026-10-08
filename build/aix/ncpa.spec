@@ -147,6 +147,7 @@ fi
 #/usr/local/ncpa/lib/*.py
 /usr/local/ncpa/lib/*.dat
 /usr/local/ncpa/lib/*.zip
+/usr/local/ncpa/lib/certifi
 /usr/local/ncpa/build_resources
 /usr/local/ncpa/listener
 /usr/local/ncpa/plugins
