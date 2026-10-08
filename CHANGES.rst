@@ -7,7 +7,7 @@ Changelog
 - Fixed a browser console error when clicking Save Changes on some of the admin pages, caused by parsing the response before the request finished. - CPD
 - Fixed an invalid color value in the real-time graph template that prevented graph axis labels from rendering in the intended color. - CPD
 - Fixed an issue with plugins that use TLS failing on Linux and macOS because they inherited the SSL_CERT_FILE environment variable that cx_Freeze sets during the build process. [GH#1436] - CPD
-- Fixed NCPA writing a new copy of the certifi CA bundle to the temp directory every time it started. - CPD
+- Fixed an issue where NCPA wrote the certifi CA bundle to the temp directory on every startup. The bundle is now located directly within ncpa/lib/certifi. - CPD
 
 **Removed**
 
