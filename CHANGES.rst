@@ -4,18 +4,16 @@ Changelog
 ==================
 **Bug Fixes**
 
-- Fixed a browser console error when clicking Save Changes on some of the admin pages, caused by parsing the response before the request finished. - CPD
+- Fixed a browser console error caused by parsing the response before the request finished when clicking Save Changes on some admin pages. - CPD
 - Fixed an invalid color value in the real-time graph template that prevented graph axis labels from rendering in the intended color. - CPD
 - Fixed an issue where NCPA wrote the certifi CA bundle to the temp directory on every startup. The bundle is now located directly within ncpa/lib/certifi. - CPD
-- Fixed an issue with plugins that use TLS failing on Linux and macOS because they inherited the SSL_CERT_FILE environment variable that cx_Freeze sets during the build process. [GH#1436] - CPD
+- Fixed TLS plugin failures on Linux and macOS caused by inherited cx_Freeze SSL_CERT_FILE environment variables. [GH#1436] - CPD
 - Fixed a Solaris build issue with the newer cx_Freeze version that was preventing the build from completing successfully. - CPD
-
-**Deprecated**
-- Removed official support for Debian 11 and Ubuntu 20.04 builds. Newer builds may still run on these distributions, but they are no longer officially supported. - CPD
 
 **Removed**
 
 - Removed legacy UI assets, including Bootstrap 3 glyphicons, unused background images, and redundant CSS rules. - CPD
+- Removed official support for Debian 11 and Ubuntu 20.04 builds. Newer builds may still run on these distributions, but they are no longer officially supported. - CPD
 - Removed the d3.v7.min.js library from the base.html template and the graphs help page, as it is no longer used in the graphing module. - CPD
 
 **Updates**
@@ -25,7 +23,7 @@ Changelog
 - Updated the bundled Font Awesome library to version 7.3.1. - CPD
 - Updated the bundled jQuery library to version 4.0.0, now served as /static/js/jquery.min.js. The old /static/js/jquery.3.6.4.min.js file is still included for pages that embed NCPA graphs and will be removed in a future release. - CPD
 - Updated the bundled Smoothie Charts graphing library to version 1.37, resolving live graph jitter and a memory leak, and improving rendering performance. - CPD
-- Updated Windows builds to use OpenSSL 3.5.9. - CPD
+- Updated Windows builds to use OpenSSL version 3.5.9. - CPD
 - Updated Windows builds to use Python version 3.13.16. - CPD
 
 3.5.0 - 9/8/2026
