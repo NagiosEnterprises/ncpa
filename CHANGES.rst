@@ -13,8 +13,8 @@ Changelog
 **Removed**
 
 - Removed legacy UI assets, including Bootstrap 3 glyphicons, unused background images, and redundant CSS rules. - CPD
-- Removed the d3.v7.min.js library from the base.html template and the graphs help page, as it is no longer used in the graphing module. - CPD
 - Removed official support for Debian 11 and Ubuntu 20.04 builds. Newer builds may still run on these distributions, but they are no longer officially supported. - CPD
+- Removed the d3.v7.min.js library from the base.html template and the graphs help page, as it is no longer used in the graphing module. - CPD
 
 **Updates**
 
