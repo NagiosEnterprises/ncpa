@@ -1,5 +1,11 @@
 Changelog
 +++++++++
+3.5.2 - xx/xx/xxxx
+==================
+**Bug Fixes**
+
+- Planned release for version 3.5.2. - CPD
+
 3.5.1 - 10/28/2026
 ==================
 **Bug Fixes**
