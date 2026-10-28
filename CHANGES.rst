@@ -4,6 +4,12 @@ Changelog
 ==================
 **Bug Fixes**
 
+- Planned release for version 3.5.2. - CPD
+
+3.5.1 - 10/28/2026
+==================
+**Bug Fixes**
+
 - Fixed a browser console error caused by parsing the response before the request finished when clicking Save Changes on some admin pages. - CPD
 - Fixed an invalid color value in the real-time graph template that prevented graph axis labels from rendering in the intended color. - CPD
 - Fixed an issue where NCPA wrote the certifi CA bundle to the temp directory on every startup. The bundle is now located directly within ncpa/lib/certifi. - CPD
