@@ -36,7 +36,7 @@ ARCH=$(uname -m)
 
     # Uncomment otool commands to have updated dynamic lib dependencies displayed
     echo -e "\n\n    Dependencies updated to use @loader_path:"
-    otool -L $NCPAdir/lib/* | grep "loader"
+    find "$NCPAdir/lib" -maxdepth 1 -type f -exec otool -L {} + | grep "loader"
     echo -e "\nDone"
 
     echo -e "\nCopy other resources..."

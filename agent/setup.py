@@ -118,7 +118,10 @@ buildOptions = dict(includes=includes,
                     bin_includes=bin_includes,
                     replace_paths=[('*', '')],
                     zip_include_packages=['*'],
-                    zip_exclude_packages=[],
+                    # Keep certifi out of library.zip so cacert.pem is a real file on disk.
+                    # If certifi is zipped, certifi.where() copies cacert.pem to a new temp
+                    # file in /tmp every time NCPA starts.
+                    zip_exclude_packages=['certifi'],
                     include_msvcr=True)
 
 # Add Solaris-specific build options to avoid patchelf issues

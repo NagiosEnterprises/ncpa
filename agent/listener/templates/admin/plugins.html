@@ -25,49 +25,47 @@ $(document).ready(function() {
     This section is <b>read-only</b> for security reasons. Any changes made here will not be saved. You can change these settings in the configuration file /usr/local/ncpa/etc/ncpa.cfg.
 </div>
 
-<div style="padding: 3rem;">
+<div style="padding: 30px;">
 
     <h3>Plugin Directives</h3>
     <p>View of the plugin settings and the types of custom plugins that NCPA can run.</p>
 
-    <div class="container-fluid" style="margin-top: 3rem; padding: 0;">
+    <div class="container-fluid" style="margin-top: 30px; padding: 0;">
         <div class="row">
             <div class="col-lg-12">
                 <div class="form-horizontal">
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">Plugin Path</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2">Plugin Path</label>
                         <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3">
                             <input type="text" class="form-control" name="plugin_path" value="{{ sectioncfg['plugin_path'] }}" readonly>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">Plugin Timeout</label>
-                        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1">
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2">Plugin Timeout</label>
+                        <div class="col-sm-6 col-md-4 col-lg-3">
                             <div class="input-group">
                                 <input type="text" class="form-control" name="plugin_timeout" value="{{ sectioncfg['plugin_timeout'] }}" readonly>
-                                <div class="input-group-addon">Secs</div>
+                                <div class="input-group-text">Secs</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">Follow Symlinks</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2">Follow Symlinks</label>
                         <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3">
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default{% if follow_symlinks %} active{% endif %}">
-                                    <input type="radio" name="follow_symlinks" value="1" autocomplete="off"{% if follow_symlinks %} checked{% endif %}> Enabled
-                                </label>
-                                <label class="btn btn-sm btn-default{% if not follow_symlinks %} active{% endif %}">
-                                    <input type="radio" name="follow_symlinks" value="0" autocomplete="off"{% if not follow_symlinks %} checked{% endif %}> Disabled
-                                </label>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="follow_symlinks" id="follow_symlinks-1" value="1" autocomplete="off"{% if follow_symlinks %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="follow_symlinks-1">Enabled</label>
+                                <input type="radio" class="btn-check" name="follow_symlinks" id="follow_symlinks-0" value="0" autocomplete="off"{% if not follow_symlinks %} checked{% endif %}>
+                                <label class="btn btn-sm btn-default" for="follow_symlinks-0">Disabled</label>
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">Run With Sudo</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2">Run With Sudo</label>
                         <div class="col-sm-6 col-md-4 col-lg-4 col-xl-5">
                             <input type="text" class="form-control" name="run_with_sudo" value="{{ sectioncfg['run_with_sudo'] }}" readonly>
                         </div>
@@ -75,8 +73,8 @@ $(document).ready(function() {
 
                     {% for directive in directives %}
                     {% if directive[0] != 'plugin_path' and directive[0] != 'plugin_timeout' and directive[0] != 'follow_symlinks' and directive[0] != 'run_with_sudo' %}
-                    <div class="form-group">
-                        <label class="control-label col-sm-4 col-md-3 col-lg-2 col-xl-1">{{ directive[0] }}</label>
+                    <div class="row mb-3">
+                        <label class="col-form-label col-sm-4 col-md-3 col-lg-2">{{ directive[0] }}</label>
                         <div class="col-sm-6 col-md-6 col-lg-6 col-xl-5">
                             <input type="text" class="form-control" style="display: inline-block; width: 100%;" name="directive[]" value="{{ directive[1] }}" readonly>
                         </div>

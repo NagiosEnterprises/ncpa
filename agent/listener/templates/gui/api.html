@@ -13,7 +13,7 @@ var TMP_JSON = { };
 var SERVICES = [ ];
 
 $(document).ready(function() {
-    
+
     // Set nav header active link and resize API window
     $('#api-nav').addClass('active');
     resize_api_window();
@@ -127,7 +127,7 @@ $(document).ready(function() {
         // Grab the actual json data and show module accessors
         if (module != 'processes' && module != 'windowscounters' && module != 'logs' && module != 'services') {
             $.get(url, { }, function(data) {
-                var select = $('<select>', { class: 'form-control submod' });
+                var select = $('<select>', { class: 'form-select submod' });
                 select.append('<option></option>');
 
                 if (module == 'plugins') {
@@ -242,7 +242,7 @@ $(document).ready(function() {
                     $.get(url, { }, function(data) {
                         var endnode = data[selected];
                         var keys = Object.keys(endnode);
-                        var endselect = $('<select>', { class: 'form-control refresh-select memory-end-node' });
+                        var endselect = $('<select>', { class: 'form-select refresh-select memory-end-node' });
                         endselect.append('<option></option>');
                         $(keys).each(function(i, val) {
                             endselect.append('<option>' + val + '</option>');
@@ -282,7 +282,7 @@ $(document).ready(function() {
                     $.get(url, { }, function(data) {
                         var endnode = data[selected];
                         var keys = Object.keys(endnode);
-                        var endselect = $('<select>', { class: 'form-control refresh-select interface-end-node' });
+                        var endselect = $('<select>', { class: 'form-select refresh-select interface-end-node' });
                         endselect.append('<option></option>');
                         $(keys).each(function(i, val) {
                             endselect.append('<option>' + val + '</option>');
@@ -348,7 +348,7 @@ $(document).ready(function() {
                     var url = generate_url(true);
                     $.get(url, { }, function(data) {
                         TMP_JSON = data[selected];
-                        var select = $('<select>', { class: 'form-control' });
+                        var select = $('<select>', { class: 'form-select' });
 
                         // Add first set of keys
                         var keys = Object.keys(TMP_JSON);
@@ -359,7 +359,7 @@ $(document).ready(function() {
 
                         // Add selector to the first select for the endnode
                         select.change(function() {
-                            var endselect = $('<select>', { class: 'form-control end-node' });
+                            var endselect = $('<select>', { class: 'form-select end-node' });
                             endselect.append('<option></option>');
                             if ($(this).val() != '') {
                                 $('.check-settings').show();
@@ -387,7 +387,7 @@ $(document).ready(function() {
                             reload_api_browser();
                         });
 
-                        var emptyselect = $('<select>', { class: 'form-control end-node' }).prop('disabled', true);
+                        var emptyselect = $('<select>', { class: 'form-select end-node' }).prop('disabled', true);
                         $('.selector-disk').append(select).append(emptyselect).show();
 
                     }, 'json');
@@ -474,12 +474,12 @@ function add_service_selector() {
 }
 
 function add_filter_selector() {
-    var filter = '<div class="filter-group"><select class="form-control filter-name" style="display: inline-block; width: 45%; border-right: 0;"><option value="username">username</option><option value="name">name</option><option value="exe">exe</option><option value="cmd">cmd</option><option value="mem_percent">mem_percent</option><option value="cpu_percent">cpu_percent</option><option value="mem_vms">mem_vms</option><option value="mem_rss">mem_rss</option><option value="short_output">short_output</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 55%;"></div>';
+    var filter = '<div class="filter-group"><select class="form-select filter-name" style="display: inline-block; width: 45%; border-right: 0;"><option value="username">username</option><option value="name">name</option><option value="exe">exe</option><option value="cmd">cmd</option><option value="mem_percent">mem_percent</option><option value="cpu_percent">cpu_percent</option><option value="mem_vms">mem_vms</option><option value="mem_rss">mem_rss</option><option value="short_output">short_output</option></select><input type="text" class="form-control filter-text" style="display: inline-block; width: 55%;"></div>';
     $('.proc-filters .list').append(filter);
 }
 
 function add_log_name_selector(value) {
-    var name = '<div class="input-group"><div class="input-group-addon">Name</div><input type="text" class="form-control name"></div>';
+    var name = '<div class="input-group"><div class="input-group-text">Name</div><input type="text" class="form-control name"></div>';
     $('.log-name-selector .list').append(name);
     if (value) {
         $('.log-name-selector .list input').last().val(value);
@@ -548,7 +548,7 @@ function generate_url(skip_settings, use_for_pcheck) {
     }
 
     api += '/api';
-    api += get_api_endpoints(); 
+    api += get_api_endpoints();
 
     // Clear the api url if we are going to use this for the
     // passive check section below
@@ -732,7 +732,7 @@ function clear_settings() {
     // Uncheck run as nagios check box when clearing settings
     if ($('input.check').is(':checked')) {
         $('input.check').prop('checked', false);
-    } 
+    }
     $('.settings input').val('');
     $('.data-settings select.aggregate').val('');
     $('.data-settings select.units').val('');
@@ -761,7 +761,7 @@ function resize_api_window() {
 function set_log_timeframe_size() {
     if ($('.input-group.timeframe').is(':visible')) {
         var width = $('.input-group.timeframe').width();
-        width = width - 100 - $('.input-group.timeframe .input-group-addon').outerWidth();
+        width = width - 100 - $('.input-group.timeframe .input-group-text').outerWidth();
         $('.input-group.timeframe input').css('width', width);
     }
 }
@@ -952,7 +952,7 @@ function generate_passive_check() {
             <div class="selection-box">
                 <div class="selector">
                     <label>API Endpoint</label>
-                    <select class="form-control" id="module">
+                    <select class="form-select" id="module">
                         <option></option>
                         <option>cpu</option>
                         <option>disk</option>
@@ -973,7 +973,7 @@ function generate_passive_check() {
                 <div class="selector-disk"></div>
                 <div class="settings log-name-selector">
                     <div>
-                        <label class="fl">Log Names <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" style="cursor: help;" title="Log Names" data-content="In order to see any logs in the logs endpoint you need to select the types of logs to get. In Windows, they are sorted by log names. Examples are <i>'Application', 'Security', 'Setup', 'System', 'Forwarded Events'</i>"></i></label>
+                        <label class="fl">Log Names <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" style="cursor: help;" title="Log Names" data-bs-content="In order to see any logs in the logs endpoint you need to select the types of logs to get. In Windows, they are sorted by log names. Examples are <i>'Application', 'Security', 'Setup', 'System', 'Forwarded Events'</i>"></i></label>
                         <div class="fr">Examples: <a class="log-example tt-bind" title="Multiple event log types being used in a single check"><i class="fa fa-file-text-o fa-14"></i></a></div>
                         <div class="clear"></div>
                     </div>
@@ -988,9 +988,9 @@ function generate_passive_check() {
                     <div style="margin-bottom: 15px;">
                         <label>Log Timeframe</label>
                         <div class="input-group timeframe" style="margin-bottom: 5px;">
-                            <div class="input-group-addon tt-bind" title="The amount of time to check for logs. All logs that came in after x amount of time will be shown.">Logged After</div>
+                            <div class="input-group-text tt-bind" title="The amount of time to check for logs. All logs that came in after x amount of time will be shown.">Logged After</div>
                             <input type="text" class="form-control time-frame" placeholder="24" style="width: 30px;">
-                            <select class="form-control time-frame-suffix" style="width: 100px; border-left: 0;">
+                            <select class="form-select time-frame-suffix" style="width: 100px; border-left: 0;">
                                 <option value="s">Seconds</option>
                                 <option value="m">Minutes</option>
                                 <option value="h" selected>Hours</option>
@@ -1002,8 +1002,8 @@ function generate_passive_check() {
                     </div>
                     <label>Log Filter Settings</label>
                     <div class="input-group" style="margin-bottom: 5px;">
-                        <div class="input-group-addon tt-bind" title="severity">EventType</div>
-                        <select class="form-control severity">
+                        <div class="input-group-text tt-bind" title="severity">EventType</div>
+                        <select class="form-select severity">
                             <option></option>
                             <option value="ERROR">Error</option>
                             <option value="WARNING">Warning</option>
@@ -1014,29 +1014,29 @@ function generate_passive_check() {
                         </select>
                     </div>
                     <div class="input-group" style="margin-bottom: 5px;">
-                        <div class="input-group-addon tt-bind" title="event_id">EventID</div>
+                        <div class="input-group-text tt-bind" title="event_id">EventID</div>
                         <input type="text" class="form-control event-id" placeholder="# match">
                     </div>
                     <div class="input-group" style="margin-bottom: 5px;">
-                        <div class="input-group-addon tt-bind" title="application">SourceName</div>
+                        <div class="input-group-text tt-bind" title="application">SourceName</div>
                         <input type="text" class="form-control application" placeholder="match">
                     </div>
                     <div class="input-group" style="margin-bottom: 5px;">
-                        <div class="input-group-addon tt-bind" title="computer_name">ComputerName</div>
+                        <div class="input-group-text tt-bind" title="computer_name">ComputerName</div>
                         <input type="text" class="form-control computer-name" placeholder="match">
                     </div>
                     <div class="input-group" style="margin-bottom: 5px;">
-                        <div class="input-group-addon tt-bind" title="category">EventCategory</div>
+                        <div class="input-group-text tt-bind" title="category">EventCategory</div>
                         <input type="text" class="form-control category" placeholder="match">
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon tt-bind" title="message">Message</div>
+                        <div class="input-group-text tt-bind" title="message">Message</div>
                         <input type="text" class="form-control message" placeholder="search / regex">
                     </div>
                 </div>
                 <div class="settings selector-counters">
                     <div>
-                        <label class="fl">Windows Counter <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" title="Windows Counter" data-content="<p>Since there are tons of windows counters, we cannot list them all. If you'd like a list of available counters, run the following command in the command prompt:</p> <pre>TypePerf.exe –q</pre> <p>The command should give you a list of available counters on any version of Windows over Windows 2000.</p> <p><em>Note: Not all counters have data that can be used by NCPA (must be numeric). Per second counters <b>must</b> be given a sleep amount or they will not return data.</em></p>"></i></label>
+                        <label class="fl">Windows Counter <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" title="Windows Counter" data-bs-content="<p>Since there are tons of windows counters, we cannot list them all. If you'd like a list of available counters, run the following command in the command prompt:</p> <pre>TypePerf.exe –q</pre> <p>The command should give you a list of available counters on any version of Windows over Windows 2000.</p> <p><em>Note: Not all counters have data that can be used by NCPA (must be numeric). Per second counters <b>must</b> be given a sleep amount or they will not return data.</em></p>"></i></label>
                         <div class="fr">Examples: <a class="example tt-bind" data-counter="/TCPv4/Connections Active" data-sleep="0" title="Counter example"><i class="fa fa-asterisk fa-14"></i></a> <a class="example tt-bind" data-counter="/TCPv4/Segments Received/sec" data-sleep="5" title="Per second counter example"><i class="fa fa-bar-chart fa-14"></i></a></div>
                         <div class="clear"></div>
                     </div>
@@ -1052,7 +1052,7 @@ function generate_passive_check() {
                     </div>
                 </div>
                 <div class="settings proc-filters">
-                    <label>Process Filter(s) <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" title="Process Filtering Options" data-content="<p>You can add multiple filters of the same type and they will be combined using the <b>combiner</b> variable that you can set in <i>Filter Settings</i> below.</p><p><b>name</b> and <b>exe</b> - Value will be matched using the <i>search type</i> setting in <i>Filter Settings</i>. Defaults to exact match.</p><p><b>cpu_percent</b>, <b>mem_percent</b>, <b>mem_rss</b>, <b>mem_vms</b> - These filters can be floats, and will match anything less than or equal to (&lt;=) the value.</p><p><b>short_output</b> - This filter is a bool. Shortens process output to not include a line for each running process. Defaults to False.</p>"></i></label>
+                    <label>Process Filter(s) <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" title="Process Filtering Options" data-bs-content="<p>You can add multiple filters of the same type and they will be combined using the <b>combiner</b> variable that you can set in <i>Filter Settings</i> below.</p><p><b>name</b> and <b>exe</b> - Value will be matched using the <i>search type</i> setting in <i>Filter Settings</i>. Defaults to exact match.</p><p><b>cpu_percent</b>, <b>mem_percent</b>, <b>mem_rss</b>, <b>mem_vms</b> - These filters can be floats, and will match anything less than or equal to (&lt;=) the value.</p><p><b>short_output</b> - This filter is a bool. Shortens process output to not include a line for each running process. Defaults to False.</p>"></i></label>
                     <div class="list"></div>
                     <div>
                         <button type="button" class="btn btn-xs btn-default add-filter">
@@ -1063,15 +1063,15 @@ function generate_passive_check() {
                 <div class="settings filter-settings">
                     <label>Filter Settings</label>
                     <div class="input-group combiner" style="margin-bottom: 5px;">
-                        <div class="input-group-addon">Combine using <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" title="Combine Using And or Or" data-content="<p>This can either be set to <b>and</b> which is the default or to <b>or</b>. This setting determines how to add the filters to the query. When <b>and</b>, each process returned would need to match <i>all</i> supplied filters. If using <b>or</b>, then the matches must match <i>any</i> of the filters.</p>"></i></div>
-                        <select class="form-control combiner">
+                        <div class="input-group-text">Combine using <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" title="Combine Using And or Or" data-bs-content="<p>This can either be set to <b>and</b> which is the default or to <b>or</b>. This setting determines how to add the filters to the query. When <b>and</b>, each process returned would need to match <i>all</i> supplied filters. If using <b>or</b>, then the matches must match <i>any</i> of the filters.</p>"></i></div>
+                        <select class="form-select combiner">
                             <option value="">and</option>
                             <option value="or">or</option>
                         </select>
                     </div>
                     <div class="input-group match">
-                        <div class="input-group-addon">Filter match type</div>
-                        <select class="form-control match">
+                        <div class="input-group-text">Filter match type</div>
+                        <select class="form-select match">
                             <option value="">exact match</option>
                             <option value="search">search match</option>
                             <option value="regex">regex match</option>
@@ -1081,8 +1081,8 @@ function generate_passive_check() {
                 <div class="settings data-settings">
                     <label>Data Settings</label>
                     <div class="input-group agg">
-                        <div class="input-group-addon">Aggregate</div>
-                        <select class="form-control aggregate">
+                        <div class="input-group-text">Aggregate</div>
+                        <select class="form-select aggregate">
                             <option></option>
                             <option value="avg">average</option>
                             <option value="min">minimum</option>
@@ -1091,8 +1091,8 @@ function generate_passive_check() {
                         </select>
                     </div>
                     <div class="input-group unit-prefix">
-                        <div class="input-group-addon">Unit prefix</div>
-                        <select class="form-control units">
+                        <div class="input-group-text">Unit prefix</div>
+                        <select class="form-select units">
                             <option></option>
                             <option value="k">k</option>
                             <option value="Ki">Ki</option>
@@ -1106,7 +1106,7 @@ function generate_passive_check() {
                     </div>
                     <div class="delta-box style="display: none;">
                         <div class="input-group delta" style="margin-top: 5px;">
-                            <label class="input-group-addon">Delta <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Delta Values (Change in Value Over Time)" data-content="Delta will take the last check call for this endpoint (that delta was applied to) and subtract it from the current data. It will then divide that by the amount of time since the last call giving a per second average value since the last call.<br><br><em>Only certain endpoints work with delta.</em>"></i></label>
+                            <label class="input-group-text">Delta <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Delta Values (Change in Value Over Time)" data-bs-content="Delta will take the last check call for this endpoint (that delta was applied to) and subtract it from the current data. It will then divide that by the amount of time since the last call giving a per second average value since the last call.<br><br><em>Only certain endpoints work with delta.</em>"></i></label>
                             <div class="white-box">
                                 <input type="checkbox" class="delta" value="1" style="vertical-align: middle; margin: 0;">
                             </div>
@@ -1114,7 +1114,7 @@ function generate_passive_check() {
                     </div>
                 </div>
                 <div class="settings arguments">
-                    <label>Plugin Arguments <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" style="cursor: pointer;" title="Plugin Arguments" data-content="<p>Each plugin argument will be added to the output with a space. An example is below:</p><p><pre>-a 100</pre><pre>-v 'testing'</pre></p><p>The above values in argument fields would create a command for the selected plugin like this:</p><p><pre>./test.sh -a 100 -v 'testing'</pre></p><p><b>Note</b>: You'll notice that each argument is passed into the URL with a <code>/</code> such as <code>/test.sh/-a 100/-v 'testing'</code>.</p>"></i></label>
+                    <label>Plugin Arguments <i class="fa fa-question-circle pop-bind fa-r fa-14" role="button" tabindex="0" style="cursor: pointer;" title="Plugin Arguments" data-bs-content="<p>Each plugin argument will be added to the output with a space. An example is below:</p><p><pre>-a 100</pre><pre>-v 'testing'</pre></p><p>The above values in argument fields would create a command for the selected plugin like this:</p><p><pre>./test.sh -a 100 -v 'testing'</pre></p><p><b>Note</b>: You'll notice that each argument is passed into the URL with a <code>/</code> such as <code>/test.sh/-a 100/-v 'testing'</code>.</p>"></i></label>
                     <div class="list"></div>
                     <div>
                         <button type="button" class="btn btn-xs btn-default add-argument">
@@ -1129,8 +1129,8 @@ function generate_passive_check() {
                     </div>
                     <div class="status-check hide-by-default">
                         <div class="input-group">
-                            <div class="input-group-addon">Status <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Service Status" data-content="<b>Default is running</b>.<br>The status option is what the service's status should be. If it does not match the set status, it will return a critical result."></i></div>
-                            <select class="status form-control">
+                            <div class="input-group-text">Status <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Service Status" data-bs-content="<b>Default is running</b>.<br>The status option is what the service's status should be. If it does not match the set status, it will return a critical result."></i></div>
+                            <select class="status form-select">
                                 <option></option>
                                 <option value="running">running</option>
                                 <option value="stopped">stopped</option>
@@ -1139,11 +1139,11 @@ function generate_passive_check() {
                     </div>
                     <div class="wc-thresholds hide-by-default form-inline">
                         <div class="input-group">
-                            <div class="input-group-addon"><img src="../../static/img/warning.png" class="tt-bind" title="Warning threshold"></div>
+                            <div class="input-group-text"><img src="../../static/img/warning.png" class="tt-bind" title="Warning threshold"></div>
                             <input type="text" class="form-control warn" placeholder="Warning">
                         </div>
                         <div class="input-group">
-                            <div class="input-group-addon"><img src="../../static/img/critical.png" class="tt-bind" title="Critical threshold"></div>
+                            <div class="input-group-text"><img src="../../static/img/critical.png" class="tt-bind" title="Critical threshold"></div>
                             <input type="text" class="form-control crit" placeholder="Critical">
                         </div>
                     </div>
@@ -1151,9 +1151,9 @@ function generate_passive_check() {
                 <div class="settings advanced-settings">
                     <label>Advanced Settings</label>
                     <div class="input-group">
-                        <div class="input-group-addon">Sleep for <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Sleep (Generate Data Per Second)" data-content="<p>When checking for data such as per second counters or delta values, the sleep value is used to generate the data/sec value.</p><p>NCPA will wait the amount of sleep time specified, collecting the data that comes in between the start and end time of the sleep time.</p><p>The calculation when using a sleep value:<br><b>sum(data) / sleep = data/sec</b></p><p>Sleep value is in seconds.</p>"></i></div>
+                        <div class="input-group-text">Sleep for <i class="fa fa-question-circle pop-bind" role="button" tabindex="0" title="Sleep (Generate Data Per Second)" data-bs-content="<p>When checking for data such as per second counters or delta values, the sleep value is used to generate the data/sec value.</p><p>NCPA will wait the amount of sleep time specified, collecting the data that comes in between the start and end time of the sleep time.</p><p>The calculation when using a sleep value:<br><b>sum(data) / sleep = data/sec</b></p><p>Sleep value is in seconds.</p>"></i></div>
                         <input type="text" class="form-control sleep" placeholder="# of">
-                        <div class="input-group-addon">seconds</div>
+                        <div class="input-group-text">seconds</div>
                     </div>
                 </div>
                 <div style="margin-top: 20px;">
@@ -1161,10 +1161,10 @@ function generate_passive_check() {
                 </div>
             </div>
             <div class="btn-check-ncpa btn-group dropup">
-                <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-external-link-square fa-l"></i> View in alternate format <i class="fa fa-chevron-up fa-r"></i></button>
+                <button type="button" class="btn btn-sm btn-default" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-external-link-square fa-l"></i> View in alternate format <i class="fa fa-chevron-up fa-r"></i></button>
                 <ul class="dropdown-menu">
-                    <li><a class="show-check" data-type="active">As active check using <em>check_ncpa.py</em></a></li>
-                    <li><a class="show-check" data-type="passive">As passive check config definition</a></li>
+                    <li><a class="dropdown-item show-check" data-type="active">As active check using <em>check_ncpa.py</em></a></li>
+                    <li><a class="dropdown-item show-check" data-type="passive">As passive check config definition</a></li>
                 </ul>
             </div>
         </div>
@@ -1184,12 +1184,12 @@ function generate_passive_check() {
     </div>
 </div>
 
-<div class="modal active-check-modal" data-backdrop="static">
+<div class="modal active-check-modal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Active Check Example</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p>Running the following active check from the command line:</p>
@@ -1199,27 +1199,27 @@ function generate_passive_check() {
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal passive-check-modal" data-backdrop="static">
+<div class="modal passive-check-modal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Passive Check Example</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p>You can create a passive check using the following example. We recommend putting your passive checks in a file called something like <code>passive.cfg</code> in the <code>&lt;ncpa path&gt;/etc/ncpa.cfg.d</code> folder. You must add in the <code>[passive directives]</code> header before adding the definitions. Default installs of NCPA come with an <code>example.cfg</code> that shows what a basic passive check setup looks like.</p>
-                <pre class="passive-check-val"></pre> 
+                <pre class="passive-check-val"></pre>
                 <p><i>Make sure that you restart the passive service once you've updated the configuration.</i></p>
                 <p><b>Note:</b> Passive checks also allow you to define individual check intervals. Add <code>|&lt;check duration&gt;</code> to the end of the service name in order to use the specified value in seconds. If no check interval is defined, the default interval in the ncpa.cfg will be used.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

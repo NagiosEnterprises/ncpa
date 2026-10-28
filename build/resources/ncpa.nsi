@@ -83,7 +83,7 @@ VIProductVersion ${NCPA_VERSION_CLEAN}.0
 VIAddVersionKey "ProductName" "${NAME}"
 VIAddVersionKey "CompanyName" "${COMPANY}"
 VIAddVersionKey "FileVersion" ${NCPA_VERSION}
-VIAddVersionKey "LegalCopyright" "2014-2023 ${COMPANY}"
+VIAddVersionKey "LegalCopyright" "2014-2026 ${COMPANY}"
 VIAddVersionKey "FileDescription" "NCPA Setup"
 
 ; Language values for pages

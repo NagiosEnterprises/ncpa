@@ -74,7 +74,7 @@ $(document).ready(function() {
         resize_graphs();
     });
 
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
         resize_graphs();
     });
 
@@ -94,9 +94,9 @@ function resize_graphs()
 {% block undernav %}
 <div class="undernav">
     <ul class='nav graph-tabs nav-tabs' style="margin-bottom: 20px;">
-        <li class='active'><a href='#cmu' class='graph-toggle' data-toggle='tab' data-load='cmu'>CPU/Memory</a></li>
-        <li><a href="#disk" class='graph-toggle' data-toggle='tab' data-load='disk'>Disks</a></li>
-        <li><a href="#interface" class='graph-toggle' data-toggle='tab' data-load='interface'>Interfaces</a></li>
+        <li class='nav-item'><a href='#cmu' class='nav-link graph-toggle active' data-bs-toggle='tab' data-load='cmu'>CPU/Memory</a></li>
+        <li class='nav-item'><a href="#disk" class='nav-link graph-toggle' data-bs-toggle='tab' data-load='disk'>Disks</a></li>
+        <li class='nav-item'><a href="#interface" class='nav-link graph-toggle' data-bs-toggle='tab' data-load='interface'>Interfaces</a></li>
     </ul>
 </div>
 {% endblock %}
