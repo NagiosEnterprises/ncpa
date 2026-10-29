@@ -154,6 +154,12 @@ then
     rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
 fi
 
+# Ensure the configuration file has the correct permissions after upgrades
+if [ -f "$RPM_INSTALL_PREFIX/ncpa/etc/ncpa.cfg" ]
+then
+    chmod 0660 "$RPM_INSTALL_PREFIX/ncpa/etc/ncpa.cfg"
+fi
+
 if command -v systemctl &> /dev/null
 then
     systemctl daemon-reload
