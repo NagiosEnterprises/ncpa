@@ -2,6 +2,8 @@ import ast
 import os
 import types
 import unittest
+import shutil
+import tempfile
 
 SERVER_PATH = os.path.join(os.path.dirname(__file__), '../agent/listener/server.py')
 
@@ -85,8 +87,8 @@ class TestConfigWriteNoShell(unittest.TestCase):
         return module.write_to_config_and_file
 
     def test_single_quote_value_is_written_literally_not_executed(self):
-        cfg_dir = self.id().replace('.', '_') + '_cfgdir'
-        os.makedirs(cfg_dir, exist_ok=True)
+        cfg_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, cfg_dir)
         cfg_file = os.path.join(cfg_dir, 'ncpa.cfg')
         marker_file = os.path.abspath(os.path.join(cfg_dir, 'pwned'))
 
