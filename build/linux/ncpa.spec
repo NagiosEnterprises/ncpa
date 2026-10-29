@@ -282,7 +282,7 @@ fi
 %verify(not md5 size mtime mode user group) /usr/local/ncpa/var/log/ncpa_passive.log
 %verify(not md5 size mtime) /usr/local/ncpa/var/ncpa.db
 
-%defattr(0640,root,nagios,0755)
+%defattr(0660,root,nagios,0755)
 %config(noreplace) %verify(not md5 size mtime mode) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
