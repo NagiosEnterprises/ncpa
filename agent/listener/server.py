@@ -1315,7 +1315,11 @@ def write_to_config_and_file(section_options_to_update):
         else:
             cfg_file = os.path.join('/', 'usr', 'local', 'ncpa', 'etc', 'ncpa.cfg')
 
-        sed_cmds = []
+        # (line_number, new_line_content) pairs, replacing what used to be shelled
+        # out to sed. Built from the file's own contents, never from a shell command
+        # string, so a value containing a quote or other shell metacharacter can't
+        # break out of anything: there is no shell in this path anymore.
+        line_updates = []
         lines = None
         with open(cfg_file, 'r') as configfile:
             lines = configfile.readlines()
@@ -1342,60 +1346,42 @@ def write_to_config_and_file(section_options_to_update):
                     if section == "["+target_section+"]":
                         pattern = re.compile(r'^\s*(#\s*)(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
                         no_comment_pattern = re.compile(r'^\s*(' + re.escape(target_option) + r'\s*=\s*).*$', re.IGNORECASE)
-                        
+
                         # if there is an uncommented version in the config file, we don't want to replace commented out versions
                         if (section, target_option) in uncommented_options:
                             if no_comment_pattern.match(line):
-                                sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
+                                line_updates.append((i, target_option, value))
                                 config.set(target_section, target_option, value)
                         else:
                             if pattern.match(line):
-                                sed_cmds.append(f"sed -i '{i+1}s/.*/{target_option} = {value}/' {cfg_file}")
+                                line_updates.append((i, target_option, value))
                                 config.set(target_section, target_option, value)
             configfile.close()
 
-        for sed_cmd in sed_cmds:
-            if environment.SYSTEM == "Windows":
-                match = re.match(r"sed -i '(\d*)s/(.*?)/(.*)/' ", sed_cmd)
-                if not match:
-                    continue
-                line_number = int(match.group(1))
-                new_value = match.group(3)
-                new_value = new_value.replace('\\/', '/').replace('\\\\', '\\') # unescape backslashes from sed command
+        for line_number, target_option, value in line_updates:
+            new_line = f"{target_option} = {value}"
+            new_line = new_line.replace('\\/', '/').replace('\\\\', '\\') # unescape characters escaped for the old sed-based writer
 
-                listener_logger.debug("write_to_configFile() - replacing line %d with %s", line_number, new_value)
+            listener_logger.debug("write_to_configFile() - replacing line %d with %s", line_number + 1, new_line)
 
-                try:
-                    with open(cfg_file, 'r', encoding='utf-8') as file:
-                        lines = file.readlines()
-                except FileNotFoundError:
-                    listener_logger.error("File not found: %s", cfg_file)
-                    return
-                
-                lines[line_number-1] = new_value + '\n'
+            try:
+                with open(cfg_file, 'r', encoding='utf-8') as file:
+                    lines = file.readlines()
+            except FileNotFoundError:
+                listener_logger.error("File not found: %s", cfg_file)
+                return
 
-                try:
-                    with open(cfg_file, 'w', encoding='utf-8') as file:
-                        file.writelines(lines)
-                except FileNotFoundError:
-                    listener_logger.error("File not found: %s", cfg_file)
-                    return
-                except Exception as e:
-                    listener_logger.exception(e)
-                    return
-            else:
-                listener_logger.debug("write_to_configFile() - running sed command: %s", sed_cmd)
-                running_check = subprocess.run(
-                    sed_cmd, 
-                    shell=True, 
-                    stdout=subprocess.PIPE, 
-                    stderr=subprocess.STDOUT,
-                    preexec_fn=os.setsid
-                )
+            lines[line_number] = new_line + '\n'
 
-                if running_check.returncode != 0:
-                    listener_logger.error("write_to_configFile() - sed_cmd failed: %s", running_check.stdout)
-                    return False
+            try:
+                with open(cfg_file, 'w', encoding='utf-8') as file:
+                    file.writelines(lines)
+            except FileNotFoundError:
+                listener_logger.error("File not found: %s", cfg_file)
+                return
+            except Exception as e:
+                listener_logger.exception(e)
+                return
     except Exception as e:
         listener_logger.exception(e)
         return False
@@ -1489,7 +1475,6 @@ def add_check():
     existing_checks = [x for x in get_config_items('passive checks') if x[0] not in listener.config['iconfig'].defaults()]
 
     cfg_file = None
-    sed_cmds = []
 
     try:
         if environment.SYSTEM == "Windows":
@@ -1512,16 +1497,13 @@ def add_check():
         with open(cfg_file, 'r') as configfile:
             lines = configfile.readlines()
             configfile.close()
-        
+
         # detect if [passive checks] section exists and is uncommented so we know if we need to uncomment it
         section_exists = False
         for line in lines:
             if line.startswith("[passive checks]"):
                 section_exists = True
                 break
-
-        if not section_exists:
-            sed_cmds.append(f"sed -i 's/#\\[passive checks\\]/\\[passive checks\\]/' {cfg_file}")
 
         values_dict = {}
 
@@ -1549,56 +1531,46 @@ def add_check():
         new_check = None
         if not values_dict['check_interval']:
             new_check = f"{values_dict['host_name']}|{values_dict['service_name']} = {values_dict['check_value']}"
-            sed_cmds.append(f"sed -i '/\\[passive checks\\]/a {new_check}' {cfg_file}")
         else:
             new_check = f"{values_dict['host_name']}|{values_dict['service_name']}|{values_dict['check_interval']} = {values_dict['check_value']}"
-            sed_cmds.append(f"sed -i '/\\[passive checks\\]/a {new_check}' {cfg_file}")
 
-        new_check = new_check.replace('\\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the sed command for GUI
+        new_check = new_check.replace('\\/', '/').replace('\\\\', '\\') # unescape the slashes that were escaped for the old sed command
 
-        for sed_cmd in sed_cmds:
-            if environment.SYSTEM == "Windows":
-                try:
-                    with open(cfg_file, 'r', encoding='utf-8') as file:
-                        lines = file.readlines()
-                except FileNotFoundError:
-                    listener_logger.error("File not found: %s", cfg_file)
-                    return
-                
-                for i, line in enumerate(lines):
-                    if line.startswith("[passive checks]") or line.startswith("#[passive checks]"):
-                        lines[i] = "[passive checks]"
-                        lines.insert(i+1, '\n' + new_check + '\n')
-                        break
+        # Written directly, without a shell: a check value containing a quote or
+        # other shell metacharacter used to be able to break out of the sed
+        # command this used to run.
+        try:
+            with open(cfg_file, 'r', encoding='utf-8') as file:
+                lines = file.readlines()
+        except FileNotFoundError:
+            listener_logger.error("File not found: %s", cfg_file)
+            return
 
-                try:
-                    with open(cfg_file, 'w', encoding='utf-8') as file:
-                        file.writelines(lines)
-                except FileNotFoundError:
-                    listener_logger.error("File not found: %s", cfg_file)
-                    return
-                except Exception as e:
-                    listener_logger.exception(e)
-                    return
-                new_check_parts = new_check.split('=')
-                config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
-            else:
-                running_check = subprocess.run(
-                    sed_cmd, 
-                    shell=True, 
-                    stdout=subprocess.PIPE, 
-                    stderr=subprocess.STDOUT,
-                    preexec_fn=os.setsid
-                )
+        if not section_exists:
+            for i, line in enumerate(lines):
+                if line.startswith("#[passive checks]"):
+                    lines[i] = "[passive checks]\n"
+                    break
 
-                if running_check.returncode != 0:
-                    listener_logger.error("add_check() - sed_cmd failed: %s", running_check.stdout)
-                    return jsonify({'type': 'danger', 'message': 'Failed to add check.'})
-                else:
-                    # add check to running configuration so it will be displayed in the GUI before restarting NCPA
-                    # this does NOT make NCPA start monitoring the check until it is restarted
-                    new_check_parts = new_check.split('=')
-                    config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
+        for i, line in enumerate(lines):
+            if line.startswith("[passive checks]"):
+                lines.insert(i+1, '\n' + new_check + '\n')
+                break
+
+        try:
+            with open(cfg_file, 'w', encoding='utf-8') as file:
+                file.writelines(lines)
+        except FileNotFoundError:
+            listener_logger.error("File not found: %s", cfg_file)
+            return
+        except Exception as e:
+            listener_logger.exception(e)
+            return
+
+        # add check to running configuration so it will be displayed in the GUI before restarting NCPA
+        # this does NOT make NCPA start monitoring the check until it is restarted
+        new_check_parts = new_check.split('=')
+        config.set('passive checks', new_check_parts[0].strip(), new_check_parts[1].strip())
 
     except Exception as e:
         listener_logger.exception(e)
