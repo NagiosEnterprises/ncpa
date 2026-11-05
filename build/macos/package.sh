@@ -39,6 +39,17 @@ ARCH=$(uname -m)
     find "$NCPAdir/lib" -maxdepth 1 -type f -exec otool -L {} + | grep "loader"
     echo -e "\nDone"
 
+    # cx_Freeze edits load paths with install_name_tool but only re-signs on arm64,
+    # and dyld on older macOS refuses to load a Mach-O file whose signature no longer
+    # matches it ("code signature does not cover entire file up to signature").
+    echo -e "\n    Applying ad-hoc code signatures..."
+    find "$NCPAdir" -type f | while IFS= read -r f; do
+        if file -b "$f" | grep -q "Mach-O"; then
+            sudo codesign --force --sign - "$f" || echo "    WARNING: could not sign $f"
+        fi
+    done
+    sudo codesign --verify --strict "$NCPAdir/ncpa" "$NCPAdir/lib/Python" || echo "    WARNING: code signature verification failed"
+
     echo -e "\nCopy other resources..."
     sudo mkdir NCPA-INSTALL-$NCPA_VER
     sudo mv ncpa-$NCPA_VER NCPA-INSTALL-$NCPA_VER/ncpa
