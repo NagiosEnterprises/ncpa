@@ -2,7 +2,7 @@ name: macOS CI
 
 on:
   push:
-    branches: [ 'master' ]
+    branches: [ 'master', 'cpd-macos-12x-signature-fix' ]
 
 jobs:
   build-macos:
