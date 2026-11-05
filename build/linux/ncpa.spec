@@ -154,6 +154,12 @@ then
     rm $RPM_INSTALL_PREFIX/ncpa/ncpa.key
 fi
 
+# Ensure the configuration file has the correct permissions after upgrades
+if [ -f "$RPM_INSTALL_PREFIX/ncpa/etc/ncpa.cfg" ]
+then
+    chmod 0660 "$RPM_INSTALL_PREFIX/ncpa/etc/ncpa.cfg"
+fi
+
 if command -v systemctl &> /dev/null
 then
     systemctl daemon-reload
@@ -282,7 +288,7 @@ fi
 %verify(not md5 size mtime mode user group) /usr/local/ncpa/var/log/ncpa_passive.log
 %verify(not md5 size mtime) /usr/local/ncpa/var/ncpa.db
 
-%defattr(0640,root,nagios,0755)
+%defattr(0660,root,nagios,0755)
 %config(noreplace) %verify(not md5 size mtime mode) /usr/local/ncpa/etc/ncpa.cfg
 %config(noreplace) /usr/local/ncpa/etc/ncpa.cfg.d/example.cfg
 /usr/local/ncpa/etc/ncpa.cfg.sample
