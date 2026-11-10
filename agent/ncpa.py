@@ -1136,9 +1136,10 @@ if __SYSTEM__ == 'nt':
                     self.has_error.value = True
                     self.ReportServiceStatus(win32service.SERVICE_STOPPED)
                     # log error to windows event log
-                    servicemanager.LogErrorMsg(servicemanager.EVENTLOG_ERROR_TYPE,
-                                            servicemanager.PYS_SERVICE_STOPPED,
-                                            (self._svc_name_, str(e)))
+                    try:
+                        servicemanager.LogErrorMsg("The %s service stopped due to an error: %s" % (self._svc_name_, e))
+                    except Exception as log_error:
+                        self.logger.exception("SvcDoRun - Failed to log service error: %s", log_error)
         except Exception as e:
             pass
 
@@ -1393,25 +1394,34 @@ def main(has_error):
     # Get all options as a dict
     options = vars(parser.parse_args())
 
-    # Read and parse the configuration file
-    config = get_configuration(options['config_file'], options['config_dir'])
-
-    if config.get('general', 'loglevel') == 'debug':
-        print("main - options: ", options)
-
-
-    # We set up the root logger here. It uses the listener log file, because the web components,
-    # which are part of the listener system, need to propagate up to this log. We don't assign a file
-    # handler to the listener_log, since it, too, will propagate up to the root logger and into the
-    # listener log file.
-    # Note: The passive-logger doesn't propagate up. It is a separate process, and we don't want
-    # multiple processes trying to write to the same file.
-    # That said, the listener log file will occasionally be used by two processes when --status or --stop
-    # commands are executed, and at launch, before the parent daemonizes the listener and passive
-    # processes. However, the traffic is very sparse, even in debug level, so it shouldn't cause any problems.
-    listener_logfile = get_filename(config.get('listener', 'logfile'))
-    log = logging.getLogger()
-    setup_logger(config, log, listener_logfile)
+    try:
+        # Read and parse the configuration file
+        config = get_configuration(options['config_file'], options['config_dir'])
+        if config.get('general', 'loglevel') == 'debug':
+            print("main - options: ", options)
+        # We set up the root logger here. It uses the listener log file, because the web components,
+        # which are part of the listener system, need to propagate up to this log. We don't assign a file
+        # handler to the listener_log, since it, too, will propagate up to the root logger and into the
+        # listener log file.
+        # Note: The passive-logger doesn't propagate up. It is a separate process, and we don't want
+        # multiple processes trying to write to the same file.
+        # That said, the listener log file will occasionally be used by two processes when --status or --stop
+        # commands are executed, and at launch, before the parent daemonizes the listener and passive
+        # processes. However, the traffic is very sparse, even in debug level, so it shouldn't cause any problems.
+        listener_logfile = get_filename(config.get('listener', 'logfile'))
+        log = logging.getLogger()
+        setup_logger(config, log, listener_logfile)
+    except Exception as e:
+        # The log file isn't set up yet, so when running as a Windows service the event log
+        # is the only place this error can be seen
+        if __SYSTEM__ == 'nt' and len(sys.argv) == 1:
+            try:
+                servicemanager.SetEventSourceName(WinService._svc_name_)
+                servicemanager.LogErrorMsg("The %s service could not start due to a configuration error: %s"
+                                           % (WinService._svc_name_, e))
+            except Exception:
+                pass
+        raise
 
     log.info("main - Python version: %s", sys.version)
     log.info("main - SSL version: %s", ssl.OPENSSL_VERSION)
