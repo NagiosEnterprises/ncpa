@@ -1136,9 +1136,10 @@ if __SYSTEM__ == 'nt':
                     self.has_error.value = True
                     self.ReportServiceStatus(win32service.SERVICE_STOPPED)
                     # log error to windows event log
-                    servicemanager.LogErrorMsg(servicemanager.EVENTLOG_ERROR_TYPE,
-                                            servicemanager.PYS_SERVICE_STOPPED,
-                                            (self._svc_name_, str(e)))
+                    try:
+                        servicemanager.LogErrorMsg("The %s service stopped due to an error: %s" % (self._svc_name_, e))
+                    except Exception as log_error:
+                        self.logger.exception("SvcDoRun - Failed to log service error: %s", log_error)
         except Exception as e:
             pass
 
