@@ -157,6 +157,28 @@ Function CheckAndMigrateOldInstallation
     endMigration:
 FunctionEnd
 
+; The Event Log service loads lib\servicemanager.pyd as the message file for the
+; NCPA event source and keeps it locked until it restarts. A loaded file can be
+; renamed but not deleted, so move it to a unique name (an older copy may still be
+; locked) and have Windows delete that copy on the next reboot.
+; Sets the error flag if the rename failed.
+!macro MoveAsideServiceManager
+    ${If} ${FileExists} "$INSTDIR\lib\servicemanager.pyd"
+        SetFileAttributes "$INSTDIR\lib\servicemanager.pyd" NORMAL
+        Delete "$INSTDIR\lib\servicemanager.pyd.preuninstall*"
+        StrCpy $R1 ""
+        ${DoWhile} ${FileExists} "$INSTDIR\lib\servicemanager.pyd.preuninstall$R1"
+            IntOp $R1 $R1 + 1
+        ${Loop}
+        ClearErrors
+        Rename "$INSTDIR\lib\servicemanager.pyd" "$INSTDIR\lib\servicemanager.pyd.preuninstall$R1"
+        ${IfNot} ${Errors}
+            Delete /REBOOTOK "$INSTDIR\lib\servicemanager.pyd.preuninstall$R1"
+            ClearErrors
+        ${EndIf}
+    ${EndIf}
+!macroend
+
 Function .onInit
     Call CheckAndMigrateOldInstallation
 
@@ -198,22 +220,10 @@ Function .onInit
         StrCpy $bind_ip "0.0.0.0"
     ${EndIf}
 
-    ; --- Preserve existing handles to servicemanager.pyd during upgrade ---
-    ; If the old file exists, rename it aside so Windows handles (e.g., event log) keep pointing to it.
-    ${If} ${FileExists} "$INSTDIR\lib\servicemanager.pyd"
-        SetFileAttributes "$INSTDIR\lib\servicemanager.pyd" NORMAL
-        ${If} ${FileExists} "$INSTDIR\lib\servicemanager.pyd.preuninstall"
-            Delete "$INSTDIR\lib\servicemanager.pyd.preuninstall"
-        ${EndIf}
-        ClearErrors
-        Rename "$INSTDIR\lib\servicemanager.pyd" "$INSTDIR\lib\servicemanager.pyd.preuninstall"
-        ${If} ${Errors}
-            ; If locked, schedule the rename for next reboot (MOVEFILE_DELAY_UNTIL_REBOOT=0x4)
-            System::Call 'kernel32::MoveFileExW(w "$INSTDIR\lib\servicemanager.pyd", w "$INSTDIR\lib\servicemanager.pyd.preuninstall", i 0x4) i.r0'
-        ${EndIf}
-    ${EndIf}
-
-    
+    !insertmacro MoveAsideServiceManager
+    ; The renamed copy is cleaned up on whatever reboot comes next, so don't offer a
+    ; reboot on the finish page just for that
+    SetRebootFlag false
 
 FunctionEnd
 
@@ -491,21 +501,6 @@ Section ""
 SectionEnd
 
 Section "Uninstall"
-    ; --- Preserve existing handles to servicemanager.pyd during upgrade ---
-    ; If the old file exists, rename it aside so Windows handles (e.g., event log) keep pointing to it.
-    ${If} ${FileExists} "$INSTDIR\lib\servicemanager.pyd"
-        SetFileAttributes "$INSTDIR\lib\servicemanager.pyd" NORMAL
-        ${If} ${FileExists} "$INSTDIR\lib\servicemanager.pyd.preuninstall"
-            Delete "$INSTDIR\lib\servicemanager.pyd.preuninstall"
-        ${EndIf}
-        ClearErrors
-        Rename "$INSTDIR\lib\servicemanager.pyd" "$INSTDIR\lib\servicemanager.pyd.preuninstall"
-        ${If} ${Errors}
-            ; If locked, schedule the rename for next reboot (MOVEFILE_DELAY_UNTIL_REBOOT=0x4)
-            System::Call 'kernel32::MoveFileExW(w "$INSTDIR\lib\servicemanager.pyd", w "$INSTDIR\lib\servicemanager.pyd.preuninstall", i 0x4) i.r0'
-        ${EndIf}
-    ${EndIf}
-
     Delete "$INSTDIR\uninstall.exe"
 
     ReadEnvStr $9 COMSPEC
@@ -525,6 +520,16 @@ Section "Uninstall"
     nsExec::Exec '$9 /c taskkill /F /IM ncpalistener.exe'
     Sleep 1000
 
+    !insertmacro MoveAsideServiceManager
+    ${If} ${Errors}
+        Delete /REBOOTOK "$INSTDIR\lib\servicemanager.pyd"
+    ${EndIf}
+
+    ; Remove the event log sources registered by the services
+    DeleteRegKey HKLM "SYSTEM\CurrentControlSet\Services\EventLog\Application\NCPA"
+    DeleteRegKey HKLM "SYSTEM\CurrentControlSet\Services\EventLog\Application\ncpalistener"
+    DeleteRegKey HKLM "SYSTEM\CurrentControlSet\Services\EventLog\Application\ncpapassive"
+
     ; Remove old log files and configs
     Delete "$INSTDIR\ncpa_listener.log"
     Delete "$INSTDIR\ncpa_passive.log"
@@ -540,6 +545,6 @@ Section "Uninstall"
     DeleteRegKey SHCTX "${UNINST_KEY}"
     DeleteRegKey SHCTX "${UNINST_KEY}"
 
-    ; Remove all files
-    RMDir /r "$INSTDIR"
+    ; Remove all files, leaving anything still locked to be removed on reboot
+    RMDir /r /REBOOTOK "$INSTDIR"
 SectionEnd
