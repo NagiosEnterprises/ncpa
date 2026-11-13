@@ -102,7 +102,7 @@ $(document).ready(function() {
                         <a href="{{ show_fp_link }}" class="btn btn-sm btn-default"><i class="fa fa-chevron-left"></i></a>
                         {% endif %}
                         {% for p in page_link_iters %}
-                        <a href="{% if p != page_raw %}{{ page_links[p] }}{% endif %}" class="btn btn-sm btn-default" {% if p == page_raw %}style="background-color: #E3E3E3;"{% endif %}>{{ p }}</a>
+                        <a href="{% if p != page_raw %}{{ page_links[p] }}{% endif %}" class="btn btn-sm btn-default{% if p == page_raw %} page-current{% endif %}">{{ p }}</a>
                         {% endfor %}
                         {% if show_lp %}
                         <a href="{{ show_lp_link }}" class="btn btn-sm btn-default"><i class="fa fa-chevron-right"></i></a>
@@ -167,7 +167,7 @@ $(document).ready(function() {
                         <a href="{{ show_fp_link }}" class="btn btn-sm btn-default"><i class="fa fa-chevron-left"></i></a>
                         {% endif %}
                         {% for p in page_link_iters %}
-                        <a href="{% if p != page_raw %}{{ page_links[p] }}{% endif %}" class="btn btn-sm btn-default" {% if p == page_raw %}style="background-color: #E3E3E3;"{% endif %}>{{ p }}</a>
+                        <a href="{% if p != page_raw %}{{ page_links[p] }}{% endif %}" class="btn btn-sm btn-default{% if p == page_raw %} page-current{% endif %}">{{ p }}</a>
                         {% endfor %}
                         {% if show_lp %}
                         <a href="{{ show_lp_link }}" class="btn btn-sm btn-default"><i class="fa fa-chevron-right"></i></a>
