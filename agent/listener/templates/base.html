@@ -13,6 +13,7 @@
         <link rel='stylesheet' href='/static/css/ncpa.css'>
         {% block headercss %}
         {% endblock %}
+        <script src='/static/js/theme.js'></script>
         <script src='/static/js/jquery.min.js'></script>
         <script src='/static/js/bootstrap.bundle.min.js'></script>
         <script src='/static/js/main.js'></script>
@@ -50,6 +51,9 @@
                         <li id="admin-nav" class="nav-item"><a class="nav-link" href="/gui/admin"><i class="fa fa-cog fa-14 fa-l"></i> Admin</a></li>
                         {% endif %}
                         <li id="help-nav" class="nav-item"><a class="nav-link" href="/gui/help"><i class="fa fa-life-ring fa-14 fa-l"></i> Help</a></li>
+                        {% endif %}
+                        <li class="nav-item"><a id="theme-toggle" class="nav-link" href="#" role="button"><i class="fa fa-circle-half-stroke fa-14 fa-l"></i> <span class="theme-toggle-label">Auto (system)</span></a></li>
+                        {% if not hide_page_links %}
                         <li class="divider-vertical"></li>
                         <li class="nav-item"><a class="nav-link" href="/logout"><i class="fa fa-power-off fa-14 fa-l"></i> Logout</a></li>
                         {% endif %}
