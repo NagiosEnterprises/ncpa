@@ -5,3 +5,6 @@
 .data-units table { border: 1px solid #EEE; width: auto; }
 .data-units td { padding: 5px 5px 5px 5px; font-size: 10px; }
 .data-units td.title { width: 24px; font-weight: bold; }
+
+[data-bs-theme=dark] .ncpa-graph { border-color: var(--bs-border-color); background-color: var(--bs-tertiary-bg); color: var(--bs-body-color); }
+[data-bs-theme=dark] .can-wrapper, [data-bs-theme=dark] .data-units table { border-color: var(--bs-border-color); }
