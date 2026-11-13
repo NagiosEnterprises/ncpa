@@ -244,6 +244,8 @@ a.log-example { cursor: pointer; }
 /* Graph selection page */
 select.nodes { margin-left: 4px; }
 
+.check-form { background-color: #DDD; }
+
 .check-result { text-align: center; }
 .check-result.OK { background-color: #B2FF5F; }
 .check-result.WARNING { background-color: #FEFF5F; }
@@ -330,6 +332,7 @@ body.help ol li:last-child { padding-bottom: 0; }
 [data-bs-theme=dark] .white-box { background-color: var(--bs-body-bg); border-color: var(--bs-border-color); }
 [data-bs-theme=dark] body.help .nav .nav-link:not(.active):hover { background-color: var(--bs-tertiary-bg); }
 [data-bs-theme=dark] .well.links .section > div { background-color: var(--bs-secondary-bg); }
+[data-bs-theme=dark] .check-form { background-color: var(--bs-tertiary-bg); border: 1px solid var(--bs-border-color); }
 [data-bs-theme=dark] .SumoSelect > .CaptionCont,
 [data-bs-theme=dark] .SumoSelect > .optWrapper,
 [data-bs-theme=dark] .SumoSelect .select-all,

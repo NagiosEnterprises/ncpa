@@ -20,7 +20,7 @@ $(document).ready(function() {
     $('#add-check-btn').click(function() {
         var formHtml = '' +
             '<form>' +
-                '<div id="new-check-form" style="background-color:#DDD; border-radius:5px; padding: 15px; margin-bottom:10px;">' +
+                '<div id="new-check-form" class="check-form" style="border-radius:5px; padding: 15px; margin-bottom:10px;">' +
                     '<div class="form-group" style="display:flex; margin-left:15px; margin-bottom:-10px;">' +
                         '<div class="form-group" style="width:120px; margin-left:-15px; margin-right:-8px;">' +
                             '<label for="host_name">Hostname:<span style="color:red;">*</span></label>' +
@@ -133,7 +133,7 @@ $(document).ready(function() {
         // Open an inline form to edit the check value, similar to the add check form but pre-populated with the existing values. On submit, send an AJAX request to update the check and update the UI accordingly.
         var formHtml = '' +
             '<form>' +
-                '<div id="edit-check-form" style="background-color:#DDD; border-radius:5px; padding: 15px; margin-bottom:10px;">' +
+                '<div id="edit-check-form" class="check-form" style="border-radius:5px; padding: 15px; margin-bottom:10px;">' +
                     '<div class="form-group" style="display:flex; margin-left:15px; margin-bottom:-10px;">' +
                         '<div class="form-group" style="width:120px; margin-left:-15px; margin-right:-8px;">' +
                             '<label for="host_name">Hostname:<span style="color:red;">*</span></label>' +
