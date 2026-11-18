@@ -880,11 +880,16 @@
               unsnapped = this.currentValueRange === 0
                 ? dimensions.height
                 : dimensions.height * (1 - offset / this.currentValueRange),
-              snapped = Util.pixelSnap(unsnapped, lineWidth);
-          // NCPA patch: pixel snapping can push a line at the very bottom (e.g. a value of 0 with
-          // minValue 0) fully outside the clip rect, so keep in-range values inside the canvas.
-          if (unsnapped <= dimensions.height && snapped > dimensions.height - lineWidth / 2) {
-            snapped = dimensions.height - lineWidth / 2;
+              snapped = Util.pixelSnap(unsnapped, lineWidth),
+              halfWidth = lineWidth / 2;
+          // NCPA patch: pixel snapping can push a line sitting on the top or bottom edge fully outside
+          // the clip rect (e.g. a value of 0 with minValue 0, or a value at the max while the eased
+          // value range is a hair short of its target), so keep values within 1px of an edge visible.
+          if (unsnapped >= -1 && snapped < halfWidth) {
+            snapped = halfWidth;
+          }
+          if (unsnapped <= dimensions.height + 1 && snapped > dimensions.height - halfWidth) {
+            snapped = dimensions.height - halfWidth;
           }
           return snapped;
         }.bind(this),
