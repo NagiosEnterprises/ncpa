@@ -879,8 +879,14 @@
           var offset = value - this.currentVisMinValue,
               unsnapped = this.currentValueRange === 0
                 ? dimensions.height
-                : dimensions.height * (1 - offset / this.currentValueRange);
-          return Util.pixelSnap(unsnapped, lineWidth);
+                : dimensions.height * (1 - offset / this.currentValueRange),
+              snapped = Util.pixelSnap(unsnapped, lineWidth);
+          // NCPA patch: pixel snapping can push a line at the very bottom (e.g. a value of 0 with
+          // minValue 0) fully outside the clip rect, so keep in-range values inside the canvas.
+          if (unsnapped <= dimensions.height && snapped > dimensions.height - lineWidth / 2) {
+            snapped = dimensions.height - lineWidth / 2;
+          }
+          return snapped;
         }.bind(this),
         timeToXPosition = function(t, lineWidth) {
           // Why not write it as `(time - t) / chartOptions.millisPerPixel`:
