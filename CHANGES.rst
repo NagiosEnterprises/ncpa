@@ -5,7 +5,7 @@ Changelog
 **Bug Fixes**
 
 - Fixed an issue where NCPA was failing to start on older macOS versions. - CPD
-- Fixed an issue where real-time graphs did not draw a visible line when the value was 0. - CPD
+- Fixed an issue where real-time graphs did not draw a visible line when the value was at the top or bottom of the graph. - CPD
 - Fixed an issue where the NCPA listener could be vulnerable to shell command injection when updating the configuration via the web interface. [GH#1453] - aroh3006
 - Fixed a Windows issue where errors were not being logged to the Windows Event Log when the NCPA service failed to start. - CPD
 - Fixed a Windows issue where Event Log locks lib/servicemanager.pyd during NCPA upgrades/uninstalls; locked files now clear on reboot and the event log source is cleaned up. [GH#1281] — CPD
