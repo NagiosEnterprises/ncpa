@@ -46,8 +46,11 @@
             });
 
             var smoothie = new SmoothieChart(default_smoothie);
-            var ws_loc = get_ws_address();
-            var ws = new WebSocket(ws_loc);
+            var ws;
+            var websocket_thread;
+            var reconnect_timer;
+            var unloaded = false;
+            var reconnect_delay = 5000;
             var lines = [];
             var min = undefined;
             var max = undefined;
@@ -63,7 +66,7 @@
                 lines.push(new TimeSeries());
             }
 
-            ws.onmessage = function(e) {
+            var on_message = function(e) {
                 var d = JSON.parse(e.data);
                 var ts = d[0];
                 var units = d[1];
@@ -94,19 +97,33 @@
                 td_avg.text(amean.toFixed(2) + ' ' + units);
             };
 
-            var websocket_thread;
+            var connect = function() {
+                ws = new WebSocket(get_ws_address());
+                ws.onmessage = on_message;
 
-            ws.onopen = function() {
-                websocket_thread = setInterval(function() {
-                    ws.send('{{ graph_path }}');
-                }, interval);
+                ws.onopen = function() {
+                    websocket_thread = setInterval(function() {
+                        if (ws.readyState === WebSocket.OPEN) {
+                            ws.send('{{ graph_path }}');
+                        }
+                    }, interval);
+                };
+
+                ws.onclose = function() {
+                    clearInterval(websocket_thread);
+                    if (!unloaded) {
+                        reconnect_timer = setTimeout(connect, reconnect_delay);
+                    }
+                };
             };
 
-            $('#graph-{{ graph_hash }}').on('doUnload', function() {
+            connect();
 
-                ws.close();
-                delete ws;
+            $('#graph-{{ graph_hash }}').on('doUnload', function() {
+                unloaded = true;
+                clearTimeout(reconnect_timer);
                 clearInterval(websocket_thread);
+                ws.close();
             });
 
             $.each(lines, function(i) {
