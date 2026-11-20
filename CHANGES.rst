@@ -2,6 +2,9 @@ Changelog
 +++++++++
 3.5.2 - xx/xx/xxxx
 ==================
+**Added**
+- Added dark mode support to the web interface, with a navigation bar toggle for Auto (follows the OS setting), Light, and Dark themes. - CPD
+
 **Bug Fixes**
 
 - Fixed an issue where NCPA was failing to start on older macOS versions. - CPD
