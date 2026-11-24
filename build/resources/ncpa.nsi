@@ -487,6 +487,8 @@ Section ""
     ${If} $installed == "0"
         nsExec::Exec '$9 /c diskperf -Y'
         nsExec::Exec '$9 /c sc create NCPA binPath= "\"$INSTDIR\ncpa.exe\"" DisplayName= "Nagios Cross-Platform Agent" start=delayed-auto'
+        ; netsh "add rule" doesn't check for an existing rule with the same name
+        nsExec::Exec '$9 /c netsh advfirewall firewall delete rule name="NCPA"'
         nsExec::Exec '$9 /c netsh advfirewall firewall add rule name="NCPA" dir=in action=allow protocol=TCP localport=${PORT}'
         nsExec::Exec '$9 /c sc start NCPA'
     ${EndIf}
@@ -519,6 +521,8 @@ Section "Uninstall"
     nsExec::Exec '$9 /c taskkill /F /IM ncpapassive.exe'
     nsExec::Exec '$9 /c taskkill /F /IM ncpalistener.exe'
     Sleep 1000
+
+    nsExec::Exec '$9 /c netsh advfirewall firewall delete rule name="NCPA"'
 
     !insertmacro MoveAsideServiceManager
     ${If} ${Errors}
