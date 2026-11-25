@@ -46,6 +46,9 @@ $machinePathEntries = $machinePath -split ';' | ForEach-Object { $_.TrimEnd('\')
 if ($machinePathEntries -notcontains $chocoBin) {
     [Environment]::SetEnvironmentVariable("Path", $machinePath.TrimEnd(';') + ";$chocoBin", "Machine")
 }
+if (($env:Path -split ';' | ForEach-Object { $_.TrimEnd('\') }) -notcontains $chocoBin) {
+    $env:Path = $env:Path.TrimEnd(';') + ";$chocoBin"
+}
 
 ### 2. Install Git, Perl and Visual Studio Build Tools
 Write-Host "Chocolatey installing prerequisites"
