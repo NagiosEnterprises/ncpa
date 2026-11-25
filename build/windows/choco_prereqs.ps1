@@ -40,7 +40,12 @@ try {
 }
 
 # Add Chocolatey to system path just in case
-[Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "Machine") + ";C:\ProgramData\chocolatey\bin", "Machine")
+$chocoBin = "C:\ProgramData\chocolatey\bin"
+$machinePath = [Environment]::GetEnvironmentVariable("Path", "Machine")
+$machinePathEntries = $machinePath -split ';' | ForEach-Object { $_.TrimEnd('\') }
+if ($machinePathEntries -notcontains $chocoBin) {
+    [Environment]::SetEnvironmentVariable("Path", $machinePath.TrimEnd(';') + ";$chocoBin", "Machine")
+}
 
 ### 2. Install Git, Perl and Visual Studio Build Tools
 Write-Host "Chocolatey installing prerequisites"
