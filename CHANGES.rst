@@ -9,7 +9,8 @@ Changelog
 - Fixed an issue where the NCPA listener could be vulnerable to shell command injection when updating the configuration via the web interface. [GH#1453] - aroh3006
 - Fixed an issue where real-time graphs stopped updating if their connection was unexpectedly closed. Graphs now reconnect automatically. - CPD
 - Fixed a Windows issue where errors were not being logged to the Windows Event Log when the NCPA service failed to start. - CPD
-- Fixed a Windows issue where Event Log locks lib/servicemanager.pyd during NCPA upgrades/uninstalls; locked files now clear on reboot and the event log source is cleaned up. [GH#1281] — CPD
+- Fixed a Windows issue where Event Log locks lib/servicemanager.pyd during NCPA upgrades/uninstalls; locked files now clear on reboot and the event log source is cleaned up. [GH#1281] - CPD
+- Fixed a Windows issue where reinstalling NCPA created duplicate inbound firewall rules. The rule is now removed on uninstall and overwritten on fresh installs, while upgrades leave existing rules untouched. - CPD
 
 3.5.1 - 10/28/2026
 ==================
